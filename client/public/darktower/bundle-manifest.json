@@ -1,0 +1,142 @@
+{
+ "textures": {
+  "lcd-lcd_x": [
+   128,
+   128
+  ],
+  "arc-50": [
+   256,
+   128
+  ],
+  "arc-70": [
+   256,
+   128
+  ],
+  "arc-10": [
+   256,
+   128
+  ],
+  "arc-80": [
+   256,
+   128
+  ],
+  "arc-40": [
+   256,
+   128
+  ],
+  "arc-100": [
+   256,
+   128
+  ],
+  "arc-20": [
+   256,
+   128
+  ],
+  "arc-00": [
+   256,
+   128
+  ],
+  "arc-90": [
+   256,
+   128
+  ],
+  "arc-60": [
+   256,
+   128
+  ],
+  "arc-30": [
+   256,
+   128
+  ],
+  "reels-reel1": [
+   512,
+   512
+  ],
+  "reels-reel4": [
+   512,
+   512
+  ],
+  "reels-reel3": [
+   512,
+   512
+  ],
+  "reels-reel7": [
+   512,
+   512
+  ],
+  "reels-reel6": [
+   512,
+   512
+  ],
+  "reels-reel5": [
+   512,
+   512
+  ],
+  "reels-blocker": [
+   256,
+   128
+  ],
+  "reels-90": [
+   256,
+   128
+  ],
+  "reels-95": [
+   256,
+   128
+  ],
+  "reels-reel2": [
+   512,
+   512
+  ]
+ },
+ "sounds": [
+  "rotate1",
+  "bazaar",
+  "starving",
+  "die",
+  "clear",
+  "battlelose",
+  "beep",
+  "done",
+  "pegasus",
+  "tombempty",
+  "tombbattle",
+  "intro",
+  "frontier",
+  "battle",
+  "rotate2",
+  "tick",
+  "failure",
+  "dragon",
+  "battlewin",
+  "citadel",
+  "dragondie",
+  "1812",
+  "tomb"
+ ],
+ "soundOrder": [
+  "rotate1",
+  "bazaar",
+  "starving",
+  "die",
+  "clear",
+  "battlelose",
+  "beep",
+  "done",
+  "pegasus",
+  "tombempty",
+  "tombbattle",
+  "intro",
+  "frontier",
+  "battle",
+  "rotate2",
+  "tick",
+  "failure",
+  "dragon",
+  "battlewin",
+  "citadel",
+  "dragondie",
+  "1812",
+  "tomb"
+ ]
+}

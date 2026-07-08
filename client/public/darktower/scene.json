@@ -1,0 +1,751 @@
+{
+ "source": "TTS workshop 873019835 — Dark Tower (extract-darktower.mjs)",
+ "colorCodes": {
+  "red": [
+   0.835,
+   0,
+   0
+  ],
+  "blue": [
+   0,
+   0.1725,
+   1
+  ],
+  "yellow": [
+   0.98,
+   0.71,
+   0.075
+  ],
+  "green": [
+   0,
+   0.7,
+   0.01
+  ],
+  "brown": [
+   0.26,
+   0.1725,
+   0.14
+  ],
+  "gray": [
+   0.31,
+   0.3,
+   0.28
+  ],
+  "gold": [
+   0.86,
+   0.49,
+   0
+  ],
+  "tan": [
+   0.635,
+   0.57,
+   0.49
+  ]
+ },
+ "tower": {
+  "mesh": "/darktower/8F488931736C10E5C840A7C5.obj",
+  "diffuse": "/darktower/A230B0F639A4C74DA00DF7FB.png",
+  "pos": [
+   -0.521,
+   1.352,
+   0.404
+  ],
+  "rot": [
+   0.01,
+   270,
+   359.99
+  ],
+  "scale": [
+   0.55,
+   0.55,
+   0.55
+  ]
+ },
+ "board": {
+  "mesh": "/darktower/E7FC33439ABD559DE74C4F69.obj",
+  "diffuse": null,
+  "pos": [
+   0,
+   1.362,
+   0
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   2.3,
+   2.3,
+   2.3
+  ]
+ },
+ "buildings": [
+  {
+   "kind": "tomb",
+   "tint": [
+    0.31,
+    0.3,
+    0.28
+   ],
+   "mesh": "/darktower/F1AB7FF49F588DE3759DCC15.obj",
+   "diffuse": null,
+   "pos": [
+    8.721,
+    1.581,
+    -3.672
+   ],
+   "rot": [
+    0,
+    90,
+    0
+   ],
+   "scale": [
+    0.36,
+    0.36,
+    0.36
+   ]
+  },
+  {
+   "kind": "tomb",
+   "tint": [
+    0.31,
+    0.3,
+    0.28
+   ],
+   "mesh": "/darktower/F1AB7FF49F588DE3759DCC15.obj",
+   "diffuse": null,
+   "pos": [
+    3.164,
+    1.612,
+    9.172
+   ],
+   "rot": [
+    0,
+    15.02,
+    0
+   ],
+   "scale": [
+    0.36,
+    0.36,
+    0.36
+   ]
+  },
+  {
+   "kind": "tomb",
+   "tint": [
+    0.31,
+    0.3,
+    0.28
+   ],
+   "mesh": "/darktower/F1AB7FF49F588DE3759DCC15.obj",
+   "diffuse": null,
+   "pos": [
+    -8.316,
+    1.599,
+    2.954
+   ],
+   "rot": [
+    0,
+    270.01,
+    0
+   ],
+   "scale": [
+    0.36,
+    0.36,
+    0.36
+   ]
+  },
+  {
+   "kind": "tomb",
+   "tint": [
+    0.31,
+    0.3,
+    0.28
+   ],
+   "mesh": "/darktower/F1AB7FF49F588DE3759DCC15.obj",
+   "diffuse": null,
+   "pos": [
+    -4.118,
+    1.597,
+    -9.085
+   ],
+   "rot": [
+    0,
+    210,
+    0
+   ],
+   "scale": [
+    0.36,
+    0.36,
+    0.36
+   ]
+  },
+  {
+   "kind": "bazaar",
+   "tint": [
+    0.26,
+    0.1725,
+    0.14
+   ],
+   "mesh": "/darktower/24346673D49C7EBBEB2B0647.obj",
+   "diffuse": null,
+   "pos": [
+    6.582,
+    1.49,
+    -0.245
+   ],
+   "rot": [
+    0,
+    83.38,
+    0
+   ],
+   "scale": [
+    0.36,
+    0.36,
+    0.36
+   ]
+  },
+  {
+   "kind": "bazaar",
+   "tint": [
+    0.26,
+    0.1725,
+    0.14
+   ],
+   "mesh": "/darktower/24346673D49C7EBBEB2B0647.obj",
+   "diffuse": null,
+   "pos": [
+    -0.309,
+    1.499,
+    6.727
+   ],
+   "rot": [
+    0,
+    180.01,
+    0
+   ],
+   "scale": [
+    0.36,
+    0.36,
+    0.36
+   ]
+  },
+  {
+   "kind": "bazaar",
+   "tint": [
+    0.26,
+    0.1725,
+    0.14
+   ],
+   "mesh": "/darktower/24346673D49C7EBBEB2B0647.obj",
+   "diffuse": null,
+   "pos": [
+    -6.331,
+    1.491,
+    0.035
+   ],
+   "rot": [
+    0,
+    262.21,
+    0
+   ],
+   "scale": [
+    0.36,
+    0.36,
+    0.36
+   ]
+  },
+  {
+   "kind": "bazaar",
+   "tint": [
+    0.26,
+    0.1725,
+    0.14
+   ],
+   "mesh": "/darktower/24346673D49C7EBBEB2B0647.obj",
+   "diffuse": null,
+   "pos": [
+    -1.494,
+    1.494,
+    -6.715
+   ],
+   "rot": [
+    0,
+    168.01,
+    0
+   ],
+   "scale": [
+    0.36,
+    0.36,
+    0.36
+   ]
+  },
+  {
+   "kind": "ruin",
+   "tint": [
+    0.635,
+    0.57,
+    0.49
+   ],
+   "mesh": "/darktower/A209912847059F8D531AFF85.obj",
+   "diffuse": null,
+   "pos": [
+    7.858,
+    1.406,
+    3.897
+   ],
+   "rot": [
+    0,
+    75.01,
+    0
+   ],
+   "scale": [
+    0.33,
+    0.33,
+    0.33
+   ]
+  },
+  {
+   "kind": "ruin",
+   "tint": [
+    0.635,
+    0.57,
+    0.49
+   ],
+   "mesh": "/darktower/A209912847059F8D531AFF85.obj",
+   "diffuse": null,
+   "pos": [
+    -3.979,
+    1.403,
+    8.044
+   ],
+   "rot": [
+    0,
+    15,
+    0
+   ],
+   "scale": [
+    0.33,
+    0.33,
+    0.33
+   ]
+  },
+  {
+   "kind": "ruin",
+   "tint": [
+    0.635,
+    0.57,
+    0.49
+   ],
+   "mesh": "/darktower/A209912847059F8D531AFF85.obj",
+   "diffuse": null,
+   "pos": [
+    -6.888,
+    1.401,
+    -3.216
+   ],
+   "rot": [
+    0,
+    180,
+    0
+   ],
+   "scale": [
+    0.33,
+    0.33,
+    0.33
+   ]
+  },
+  {
+   "kind": "ruin",
+   "tint": [
+    0.635,
+    0.57,
+    0.49
+   ],
+   "mesh": "/darktower/A209912847059F8D531AFF85.obj",
+   "diffuse": null,
+   "pos": [
+    3.171,
+    1.406,
+    -6.813
+   ],
+   "rot": [
+    0,
+    134.99,
+    0
+   ],
+   "scale": [
+    0.33,
+    0.33,
+    0.33
+   ]
+  },
+  {
+   "kind": "sanctuary",
+   "tint": [
+    0.635,
+    0.57,
+    0.49
+   ],
+   "mesh": "/darktower/262240D68AC4893B6444E56D.obj",
+   "diffuse": null,
+   "pos": [
+    10.064,
+    1.672,
+    5.485
+   ],
+   "rot": [
+    0,
+    67.18,
+    0
+   ],
+   "scale": [
+    0.38,
+    0.38,
+    0.38
+   ]
+  },
+  {
+   "kind": "sanctuary",
+   "tint": [
+    0.635,
+    0.57,
+    0.49
+   ],
+   "mesh": "/darktower/262240D68AC4893B6444E56D.obj",
+   "diffuse": null,
+   "pos": [
+    -5.37,
+    1.668,
+    10.305
+   ],
+   "rot": [
+    0,
+    336.59,
+    0
+   ],
+   "scale": [
+    0.38,
+    0.38,
+    0.38
+   ]
+  },
+  {
+   "kind": "sanctuary",
+   "tint": [
+    0.635,
+    0.57,
+    0.49
+   ],
+   "mesh": "/darktower/262240D68AC4893B6444E56D.obj",
+   "diffuse": null,
+   "pos": [
+    -9.586,
+    1.667,
+    -4.397
+   ],
+   "rot": [
+    0,
+    270.01,
+    0
+   ],
+   "scale": [
+    0.38,
+    0.38,
+    0.38
+   ]
+  },
+  {
+   "kind": "sanctuary",
+   "tint": [
+    0.635,
+    0.57,
+    0.49
+   ],
+   "mesh": "/darktower/262240D68AC4893B6444E56D.obj",
+   "diffuse": null,
+   "pos": [
+    4.397,
+    1.663,
+    -9.205
+   ],
+   "rot": [
+    0,
+    164.98,
+    0
+   ],
+   "scale": [
+    0.38,
+    0.38,
+    0.38
+   ]
+  },
+  {
+   "kind": "citadel",
+   "tint": null,
+   "mesh": "/darktower/29D42B64D744188181EBE8D1.obj",
+   "diffuse": "/darktower/EC53106CD3E6990767A898CF.jpg",
+   "pos": [
+    -0.57,
+    1.237,
+    -11.499
+   ],
+   "rot": [
+    0,
+    180.05,
+    0
+   ],
+   "scale": [
+    0.2,
+    0.2,
+    0.2
+   ]
+  },
+  {
+   "kind": "citadel",
+   "tint": null,
+   "mesh": "/darktower/29D42B64D744188181EBE8D1.obj",
+   "diffuse": "/darktower/E9D557FCFD628C98F74A82C5.jpg",
+   "pos": [
+    11.428,
+    1.237,
+    0.782
+   ],
+   "rot": [
+    0,
+    90.02,
+    0
+   ],
+   "scale": [
+    0.2,
+    0.2,
+    0.2
+   ]
+  },
+  {
+   "kind": "citadel",
+   "tint": null,
+   "mesh": "/darktower/29D42B64D744188181EBE8D1.obj",
+   "diffuse": "/darktower/2EF208EBF754ADA3E3C5A5B9.jpg",
+   "pos": [
+    -1.002,
+    1.237,
+    11.439
+   ],
+   "rot": [
+    0,
+    359.97,
+    0
+   ],
+   "scale": [
+    0.2,
+    0.2,
+    0.2
+   ]
+  },
+  {
+   "kind": "citadel",
+   "tint": null,
+   "mesh": "/darktower/29D42B64D744188181EBE8D1.obj",
+   "diffuse": "/darktower/EEEE199A221C8CFAC8685C8D.jpg",
+   "pos": [
+    -11.639,
+    1.237,
+    -0.713
+   ],
+   "rot": [
+    0,
+    270.03,
+    0
+   ],
+   "scale": [
+    0.2,
+    0.2,
+    0.2
+   ]
+  }
+ ],
+ "tokens": [
+  {
+   "mesh": "/darktower/5B00AF76819C086B48463C23.obj",
+   "diffuse": null,
+   "pos": [
+    -0.739,
+    1.911,
+    -11.302
+   ],
+   "rot": [
+    0,
+    180,
+    0
+   ],
+   "scale": [
+    0.3,
+    0.3,
+    0.3
+   ]
+  },
+  {
+   "mesh": "/darktower/EF61D07E355B0899EC6F719C.obj",
+   "diffuse": null,
+   "pos": [
+    11.12,
+    1.995,
+    0.519
+   ],
+   "rot": [
+    0,
+    90,
+    0
+   ],
+   "scale": [
+    0.34,
+    0.34,
+    0.34
+   ]
+  },
+  {
+   "mesh": "/darktower/5F5204DA85866A13730844C4.obj",
+   "diffuse": null,
+   "pos": [
+    -0.929,
+    2.262,
+    11.549
+   ],
+   "rot": [
+    0,
+    0.01,
+    0
+   ],
+   "scale": [
+    0.38,
+    0.38,
+    0.38
+   ]
+  },
+  {
+   "mesh": "/darktower/01D725C020C95EAE72F65FD6.obj",
+   "diffuse": null,
+   "pos": [
+    -11.803,
+    1.946,
+    -0.265
+   ],
+   "rot": [
+    0,
+    270.02,
+    0
+   ],
+   "scale": [
+    0.32,
+    0.32,
+    0.32
+   ]
+  }
+ ],
+ "tokenTints": {
+  "Red": [
+   0.835,
+   0,
+   0
+  ],
+  "Blue": [
+   0,
+   0.1725,
+   1
+  ],
+  "Yellow": [
+   0.98,
+   0.71,
+   0.075
+  ],
+  "Green": [
+   0,
+   0.7,
+   0.01
+  ]
+ },
+ "wedge": {
+  "reelOf": {
+   "cursed": 1,
+   "lost": 1,
+   "plague": 1,
+   "victory": 2,
+   "warriors": 2,
+   "brigands": 2,
+   "wizard": 3,
+   "closed": 3,
+   "missing": 3,
+   "dragon": 4,
+   "sword": 4,
+   "pegasus": 4,
+   "brasskey": 5,
+   "silverkey": 5,
+   "goldkey": 5,
+   "scout": 6,
+   "healer": 6,
+   "gold": 6,
+   "warrior": 7,
+   "food": 7,
+   "beast": 7
+  },
+  "rowOf": {
+   "cursed": 0,
+   "lost": 1,
+   "plague": 2,
+   "victory": 0,
+   "warriors": 1,
+   "brigands": 2,
+   "dragon": 0,
+   "sword": 1,
+   "pegasus": 2,
+   "brasskey": 0,
+   "silverkey": 1,
+   "goldkey": 2,
+   "wizard": 0,
+   "closed": 1,
+   "missing": 2,
+   "scout": 0,
+   "healer": 1,
+   "gold": 2,
+   "warrior": 0,
+   "food": 1,
+   "beast": 2
+  }
+ },
+ "reelTextures": {
+  "1": "/darktower/reels-reel1.png",
+  "2": "/darktower/reels-reel2.png",
+  "3": "/darktower/reels-reel3.png",
+  "4": "/darktower/reels-reel4.png",
+  "5": "/darktower/reels-reel5.png",
+  "6": "/darktower/reels-reel6.png",
+  "7": "/darktower/reels-reel7.png"
+ },
+ "sounds": {
+  "1812": "/darktower/sfx-1812.wav",
+  "beep": "/darktower/sfx-beep.wav",
+  "battle": "/darktower/sfx-battle.wav",
+  "battlelose": "/darktower/sfx-battlelose.wav",
+  "battlewin": "/darktower/sfx-battlewin.wav",
+  "bazaar": "/darktower/sfx-bazaar.wav",
+  "citadel": "/darktower/sfx-citadel.wav",
+  "clear": "/darktower/sfx-clear.wav",
+  "die": "/darktower/sfx-die.wav",
+  "done": "/darktower/sfx-done.wav",
+  "dragon": "/darktower/sfx-dragon.wav",
+  "dragondie": "/darktower/sfx-dragondie.wav",
+  "failure": "/darktower/sfx-failure.wav",
+  "frontier": "/darktower/sfx-frontier.wav",
+  "intro": "/darktower/sfx-intro.wav",
+  "pegasus": "/darktower/sfx-pegasus.wav",
+  "rotate1": "/darktower/sfx-rotate1.wav",
+  "rotate2": "/darktower/sfx-rotate2.wav",
+  "starving": "/darktower/sfx-starving.wav",
+  "tick": "/darktower/sfx-tick.wav",
+  "tomb": "/darktower/sfx-tomb.wav",
+  "tombbattle": "/darktower/sfx-tombbattle.wav",
+  "tombempty": "/darktower/sfx-tombempty.wav"
+ }
+}
