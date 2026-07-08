@@ -9,7 +9,8 @@ import crypto from 'node:crypto';
 import {
   createBrass, viewFor, applyAction,
   createTtr, ttrViewFor, applyTtrAction,
-  GAME_SEATS,
+  claimableRoutes, bestCardsFor,
+  GAME_SEATS, RULES as TTR_RULES,
   type BrassState, type TtrState, type BrassAction, type TtrAction, type TtrColor, type Color,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo,
 } from '@bge/shared';
@@ -154,6 +155,9 @@ function stale(r: { started: boolean; state: GameState | null; updatedAt: number
     restored++;
   }
   if (restored) console.log(`  Restored ${restored} saved room${restored === 1 ? '' : 's'} (${store.kind})`);
+  // a restored solo game may be waiting on a CPU — get its bots moving again
+  // (deferred: botTimers below initializes after this block evaluates)
+  setTimeout(() => { for (const room of rooms.values()) scheduleBots(room); }, 1000);
 }
 
 setInterval(() => {
@@ -221,6 +225,83 @@ function broadcast(room: Room): void {
   room.players.forEach((p, seat) => {
     for (const ws of p.sockets) { send(ws, { type: 'room', info }); sendState(room, ws, seat); }
   });
+  scheduleBots(room);
+}
+
+// ---------- CPU seats ----------
+// Solo games pad the table with CPU seats (any seat index >= the real player
+// count). They play randomly so the table never deadlocks: at setup they keep
+// random tickets and pick a random train/ship split; in play they claim a
+// random affordable route or draw random cards, one action per tick.
+
+const botTimers = new Map<string, NodeJS.Timeout>();
+
+function scheduleBots(room: Room): void {
+  if (room.game !== 'ttr' || !room.state) return;
+  const s = room.state as TtrState;
+  if (s.phase === 'ended') return;
+  const isBot = (seat: number) => seat >= room.players.length;
+  let seat: number | null = null;
+  if (s.phase === 'setup') {
+    const i = s.players.findIndex((p, idx) => isBot(idx) && !p.ready);
+    seat = i >= 0 ? i : null;
+  } else {
+    const pending = s.players.findIndex((p, idx) => isBot(idx) && p.pendingTickets.length > 0);
+    const cur = (s.first + s.turn) % s.players.length;
+    if (pending >= 0) seat = pending;
+    else if (isBot(cur)) seat = cur;
+  }
+  if (seat === null || botTimers.has(room.id)) return;
+  const botSeat = seat;
+  botTimers.set(room.id, setTimeout(() => {
+    botTimers.delete(room.id);
+    try { ttrBotAct(room, botSeat); } catch (err) { console.error('bot error:', err); }
+  }, 700));
+}
+
+function ttrBotAct(room: Room, seat: number): void {
+  const s = room.state as TtrState;
+  const p = s.players[seat];
+  if (!p) return;
+  const rand = (n: number) => Math.floor(Math.random() * n);
+  const attempt = (a: TtrAction) => applyTtrAction(s, seat, a).ok;
+  let acted = false;
+
+  if (s.phase === 'setup') {
+    if (p.ready) return;
+    // random tickets (the minimum keep), random fleet split
+    const idx = p.pendingTickets.map((_, i) => i);
+    for (let i = idx.length - 1; i > 0; i--) { const j = rand(i + 1); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+    const keep = idx.slice(0, TTR_RULES.setupKeepMin);
+    const minTrains = TTR_RULES.pieceTotal - TTR_RULES.maxShips;
+    const trains = minTrains + rand(TTR_RULES.maxTrains - minTrains + 1);
+    acted = attempt({ type: 'setup_ready', tickets: keep, trains, ships: TTR_RULES.pieceTotal - trains });
+  } else if (p.pendingTickets.length) {
+    acted = attempt({ type: 'keep_tickets', keep: [rand(p.pendingTickets.length)] });
+  } else {
+    // claim a random affordable route most of the time
+    if (s.drawsLeft === 0 && Math.random() < 0.65) {
+      const options = claimableRoutes(s, p);
+      if (options.length) {
+        const id = options[rand(options.length)];
+        const cards = bestCardsFor(s, p, id);
+        if (cards) acted = attempt({ type: 'claim', route: id, cards });
+      }
+    }
+    if (!acted) {
+      // draw a random card (market slot or a deck); a few tries in case a
+      // slot is empty or a faceup wild is illegal as the second draw
+      const sources: (number | 'train' | 'ship')[] = ['train', 'ship', 0, 1, 2, 3, 4, 5];
+      for (let k = 0; k < 10 && !acted; k++) acted = attempt({ type: 'draw_card', source: sources[rand(sources.length)] });
+    }
+    if (!acted && s.drawsLeft === 0 && s.ticketDeck.length) acted = attempt({ type: 'draw_tickets' });
+    if (!acted && s.drawsLeft === 0 && p.boxTrains + p.boxShips > 0) {
+      acted = attempt({ type: 'exchange', trains: Math.min(1, p.boxTrains), ships: p.boxTrains > 0 ? 0 : Math.min(1, p.boxShips) });
+    }
+  }
+
+  if (acted) broadcast(room); // re-enters scheduleBots for the next bot step
+  else console.warn(`bot seat ${seat} in ${room.id} found no legal action`);
 }
 
 // ---------- http ----------
