@@ -256,6 +256,26 @@ export function TtrPlay({ view, act: rawAct, error }: {
         </div>
       )}
 
+      {/* show deck — the full card sheets as a reference */}
+      {arm === 'deck' && (
+        <div className="tp-overlay" style={{ overflowY: 'auto', padding: '30px 16px' }} onClick={() => setArm('idle')}>
+          <div className="ig-lab">The decks</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, justifyContent: 'center', alignItems: 'flex-start' }} onClick={(e) => e.stopPropagation()}>
+            {(['train', 'ship', 'ticket'] as const).map((k) => {
+              const sheet = Object.values(scene.decks[k].sheets)[0];
+              const label = k === 'train' ? 'Train cards' : k === 'ship' ? 'Ship cards' : 'Tickets';
+              return sheet ? (
+                <div key={k} style={{ textAlign: 'center' }}>
+                  <div className="ig-lab" style={{ paddingBottom: 6 }}>{label}</div>
+                  <img src={sheet.face} alt={label} style={{ maxWidth: 400, maxHeight: '58vh', borderRadius: 8, border: '1px solid rgba(255,255,255,0.2)' }} />
+                </div>
+              ) : null;
+            })}
+          </div>
+          <button className="tp-act" style={{ maxWidth: 160 }} onClick={() => setArm('idle')}>Close</button>
+        </div>
+      )}
+
       {/* draw-tickets confirm (so you can cancel getting more routes) */}
       {arm === 'tickets' && (
         <div className="tp-overlay" onClick={() => setArm('idle')}>
