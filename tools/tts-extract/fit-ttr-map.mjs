@@ -2,11 +2,14 @@
 // route snap to the centroid of its printed slot's colored blob. Eyeballed
 // anchors drift (slot art has bevels/shadows); this is the computational fit.
 //
-// Model: px = ax*wx + bx*wz + cx ; py = ay*wx + by*wz + cy  (full affine, so
-// a tiny rotation is absorbed too). Iterative: project with the current fit,
-// find the local color centroid in a window, refit on the pairs, repeat.
-// Robust: drops the worst residuals each round; only strongly-colored routes
-// participate (white/gray/black are ambiguous against the parchment/sea art).
+// Model: a HOMOGRAPHY (projective), which absorbs the map art's slight
+// perspective/keystone that a plain affine leaves as a few px of residual near
+// the edges. Stored as h[8] (px = (h0 wx + h1 wz + h2)/(h6 wx + h7 wz + 1),
+// py likewise with h3..h5). A best-fit affine (ax..cy) is stored alongside for
+// legacy tools; the client renders through the homography.
+// Iterative: project with the current fit, find the local color centroid in a
+// window, refit on the pairs, drop the worst residuals, repeat. Only strongly-
+// coloured routes participate (white/gray/black are ambiguous on the parchment).
 //
 // Run: node tools/tts-extract/fit-ttr-map.mjs
 
@@ -48,7 +51,6 @@ function classify(r, g, b) {
   }
   return null;
 }
-// Pink and Purple both land in the magenta band; treat them as one class.
 const CLASS_OF = { Red: 'Red', Yellow: 'Yellow', Green: 'Green', Purple: 'Purple', Pink: 'Purple' };
 
 // participating snaps: (worldX, worldZ, colorClass)
@@ -58,15 +60,17 @@ for (const r of golden.routes) {
   if (!cls) continue;
   for (const i of r.snaps) {
     const s = golden.snaps[i - 1];
-    samples.push({ wx: s.pos[0], wz: s.pos[2], cls, snap: i });
+    samples.push({ wx: s.pos[0], wz: s.pos[2], cls });
   }
 }
 console.log(`samples: ${samples.length} snaps on strongly-colored routes`);
 
-// initial fit (from the city-anchor estimate; only needs to be within ~40px)
-let T = { ax: 1 / 0.0304, bx: 0, cx: 45.75 / 0.0304, ay: 0, by: -1 / 0.0329, cy: 27.84 / 0.0329 };
-
-const project = (wx, wz) => [T.ax * wx + T.bx * wz + T.cx, T.ay * wx + T.by * wz + T.cy];
+// homography as h[8]; initial = the affine city-anchor estimate (h6=h7=0)
+let h = [1 / 0.0304, 0, 45.75 / 0.0304, 0, -1 / 0.0329, 27.84 / 0.0329, 0, 0];
+const project = (wx, wz) => {
+  const d = h[6] * wx + h[7] * wz + 1;
+  return [(h[0] * wx + h[1] * wz + h[2]) / d, (h[3] * wx + h[4] * wz + h[5]) / d];
+};
 
 function centroidNear(cx, cy, cls, R) {
   let sx = 0, sy = 0, n = 0;
@@ -81,75 +85,71 @@ function centroidNear(cx, cy, cls, R) {
   return n >= 30 ? [sx / n, sy / n, n] : null;
 }
 
-// least squares for px row and py row separately: [wx wz 1] * beta = target
-function lsq(rows, targets) {
-  // normal equations 3x3
-  let M = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], V = [0, 0, 0];
-  rows.forEach((row, k) => {
-    for (let i = 0; i < 3; i++) {
-      V[i] += row[i] * targets[k];
-      for (let j = 0; j < 3; j++) M[i][j] += row[i] * row[j];
-    }
-  });
-  // solve 3x3 (gaussian)
-  const A = M.map((r, i) => [...r, V[i]]);
-  for (let c = 0; c < 3; c++) {
-    let p = c;
-    for (let r2 = c + 1; r2 < 3; r2++) if (Math.abs(A[r2][c]) > Math.abs(A[p][c])) p = r2;
-    [A[c], A[p]] = [A[p], A[c]];
-    for (let r2 = 0; r2 < 3; r2++) {
-      if (r2 === c) continue;
-      const f = A[r2][c] / A[c][c];
-      for (let c2 = c; c2 < 4; c2++) A[r2][c2] -= f * A[c][c2];
+// solve a linear least-squares system A beta = b via normal equations
+function solveNormal(A, b) {
+  const n = A[0].length;
+  const M = Array.from({ length: n }, () => Array(n + 1).fill(0));
+  for (let r = 0; r < A.length; r++) {
+    for (let i = 0; i < n; i++) {
+      M[i][n] += A[r][i] * b[r];
+      for (let j = 0; j < n; j++) M[i][j] += A[r][i] * A[r][j];
     }
   }
-  return [A[0][3] / A[0][0], A[1][3] / A[1][1], A[2][3] / A[2][2]];
+  for (let c = 0; c < n; c++) {
+    let p = c;
+    for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+    [M[c], M[p]] = [M[p], M[c]];
+    for (let r = 0; r < n; r++) {
+      if (r === c) continue;
+      const f = M[r][c] / M[c][c];
+      for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k];
+    }
+  }
+  return M.map((row, i) => row[n] / row[i]);
 }
 
-for (let iter = 0; iter < 4; iter++) {
-  const R = iter === 0 ? 55 : 35;
+// homography DLT (8 params) from world->pixel pairs
+function fitHomography(pairs) {
+  const A = [], b = [];
+  for (const p of pairs) {
+    A.push([p.wx, p.wz, 1, 0, 0, 0, -p.wx * p.tx, -p.wz * p.tx]); b.push(p.tx);
+    A.push([0, 0, 0, p.wx, p.wz, 1, -p.wx * p.ty, -p.wz * p.ty]); b.push(p.ty);
+  }
+  return solveNormal(A, b);
+}
+// best-fit affine (for legacy tools + fallback)
+function fitAffine(pairs) {
+  const rows = pairs.map((p) => [p.wx, p.wz, 1]);
+  const [ax, bx, cx] = solveNormal(rows, pairs.map((p) => p.tx));
+  const [ay, by, cy] = solveNormal(rows, pairs.map((p) => p.ty));
+  return { ax, bx, cx, ay, by, cy };
+}
+
+let kept = [];
+for (let iter = 0; iter < 5; iter++) {
+  const R = iter === 0 ? 55 : 32;
   const pairs = [];
   for (const s of samples) {
     const [gx, gy] = project(s.wx, s.wz);
     if (gx < 0 || gx > W || gy < 0 || gy > H) continue;
     const c = centroidNear(gx, gy, s.cls, R);
-    if (c) pairs.push({ s, tx: c[0], ty: c[1], d: Math.hypot(c[0] - gx, c[1] - gy) });
+    if (c) pairs.push({ wx: s.wx, wz: s.wz, tx: c[0], ty: c[1], d: Math.hypot(c[0] - gx, c[1] - gy) });
   }
-  // robust: drop worst 20%
   pairs.sort((a, b) => a.d - b.d);
-  const keep = pairs.slice(0, Math.floor(pairs.length * 0.8));
-  const rows = keep.map(({ s }) => [s.wx, s.wz, 1]);
-  const [ax, bx, cx] = lsq(rows, keep.map((p) => p.tx));
-  const [ay, by, cy] = lsq(rows, keep.map((p) => p.ty));
-  T = { ax, bx, cx, ay, by, cy };
-  const res = keep.map((p) => {
-    const [gx, gy] = project(p.s.wx, p.s.wz);
-    return Math.hypot(gx - p.tx, gy - p.ty);
-  });
+  kept = pairs.slice(0, Math.floor(pairs.length * 0.85)); // drop worst 15%
+  h = fitHomography(kept);
+  const res = kept.map((p) => { const [gx, gy] = project(p.wx, p.wz); return Math.hypot(gx - p.tx, gy - p.ty); });
   const mean = res.reduce((a, b) => a + b, 0) / res.length;
-  const max = Math.max(...res);
-  console.log(`iter ${iter}: ${pairs.length} matched, kept ${keep.length}, mean residual ${mean.toFixed(1)}px, max ${max.toFixed(1)}px`);
+  const sorted = [...res].sort((a, b) => a - b);
+  console.log(`iter ${iter}: ${pairs.length} matched, kept ${kept.length}, mean ${mean.toFixed(1)}px, p90 ${sorted[Math.floor(res.length * 0.9)].toFixed(1)}px, max ${Math.max(...res).toFixed(1)}px`);
 }
 
-console.log('T =', JSON.stringify(T, (k, v) => typeof v === 'number' ? +v.toFixed(6) : v));
+const affine = fitAffine(kept);
+const T = { ...affine, h: h.map((v) => +v.toFixed(9)), px: [W, H] };
+console.log('homography h =', JSON.stringify(T.h));
 
-// persist: world -> pixel affine + the inverse plane placement for rendering.
-// The 3D map plane: world rect covering the full image via the inverse affine.
-const inv = (() => {
-  const det = T.ax * T.by - T.bx * T.ay;
-  return {
-    wxOfPx: (x, y) => (T.by * (x - T.cx) - T.bx * (y - T.cy)) / det,
-    wzOfPx: (x, y) => (-T.ay * (x - T.cx) + T.ax * (y - T.cy)) / det,
-  };
-})();
-const corners = {
-  tl: [inv.wxOfPx(0, 0), inv.wzOfPx(0, 0)],
-  br: [inv.wxOfPx(W, H), inv.wzOfPx(W, H)],
-};
-console.log('map plane world corners:', JSON.stringify(corners, (k, v) => typeof v === 'number' ? +v.toFixed(3) : v));
-
-golden.mapTransform = { ...T, px: [W, H] };
+golden.mapTransform = T;
 fs.writeFileSync(path.join(ROOT, 'games/ticket-to-ride-world/golden/board.json'), JSON.stringify(golden, null, 1));
-scene.mapTransform = { ...T, px: [W, H] };
+scene.mapTransform = T;
 fs.writeFileSync(path.join(ROOT, 'client/public/ttr/scene.json'), JSON.stringify(scene));
-console.log('saved mapTransform to golden + scene');
+console.log('saved mapTransform (homography + affine) to golden + scene');

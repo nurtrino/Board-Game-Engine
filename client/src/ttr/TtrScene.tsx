@@ -19,7 +19,7 @@ import { ROUTES, ROUTE_BY_ID, type TtrColor } from '@bge/shared';
 
 export interface TtrSceneDef {
   map: { image: string; px: [number, number] };
-  mapTransform: { ax: number; bx: number; cx: number; ay: number; by: number; cy: number; px: [number, number] };
+  mapTransform: { ax: number; bx: number; cx: number; ay: number; by: number; cy: number; h?: number[]; px: [number, number] };
   rulesPdf: string;
   meshes: Record<'train' | 'ship' | 'harbor' | 'marker', { mesh: string; diffuse: string | null; scale: number[] }>;
   tints: Record<string, { train?: number[]; ship?: number[] }>;
@@ -49,28 +49,69 @@ const FOV = 38;
 const FOV_TAN = Math.tan((FOV * Math.PI) / 360);
 
 /** World rectangle covered by the map image (from the fitted affine). */
+// world(x,z) -> pixel as a 3x3 homogeneous matrix (homography if h present,
+// else the stored affine). The client renders the map through its inverse, so
+// pieces (placed at world snaps) and the map art ride the exact same transform.
+function hmat(t: TtrSceneDef['mapTransform']): number[][] {
+  if (t.h) return [[t.h[0], t.h[1], t.h[2]], [t.h[3], t.h[4], t.h[5]], [t.h[6], t.h[7], 1]];
+  return [[t.ax, t.bx, t.cx], [t.ay, t.by, t.cy], [0, 0, 1]];
+}
+function inv3(m: number[][]): number[][] {
+  const [a, b, c] = m[0], [d, e, f] = m[1], [g, h, i] = m[2];
+  const A = e * i - f * h, B = -(d * i - f * g), C = d * h - e * g;
+  const det = a * A + b * B + c * C;
+  return [
+    [A / det, -(b * i - c * h) / det, (b * f - c * e) / det],
+    [B / det, (a * i - c * g) / det, -(a * f - c * d) / det],
+    [C / det, -(a * h - b * g) / det, (a * e - b * d) / det],
+  ];
+}
+const applyH = (m: number[][], x: number, y: number): [number, number] => {
+  const w = m[2][0] * x + m[2][1] * y + m[2][2];
+  return [(m[0][0] * x + m[0][1] * y + m[0][2]) / w, (m[1][0] * x + m[1][1] * y + m[1][2]) / w];
+};
+
 export function mapRect(t: TtrSceneDef['mapTransform']) {
-  const det = t.ax * t.by - t.bx * t.ay;
-  const wx = (x: number, y: number) => (t.by * (x - t.cx) - t.bx * (y - t.cy)) / det;
-  const wz = (x: number, y: number) => (-t.ay * (x - t.cx) + t.ax * (y - t.cy)) / det;
+  const inv = inv3(hmat(t));
   const [W, H] = t.px;
-  return { tl: [wx(0, 0), wz(0, 0)], br: [wx(W, H), wz(W, H)] };
+  return { tl: applyH(inv, 0, 0), br: applyH(inv, W, H) };
 }
 
+// The map is a subdivided mesh whose vertices are the image pixels mapped to
+// world through the inverse transform — so the printed art follows the exact
+// (possibly-perspective) fit instead of a flat rectangle that drops the shear.
 function MapPlane({ scene }: { scene: TtrSceneDef }) {
   const tex = useLoader(THREE.TextureLoader, scene.map.image);
   useMemo(() => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 16; }, [tex]);
+  const geom = useMemo(() => {
+    const t = scene.mapTransform;
+    const [W, H] = t.px;
+    const inv = inv3(hmat(t));
+    const NX = 48, NZ = 28;
+    const pos: number[] = [], uv: number[] = [], idx: number[] = [];
+    for (let j = 0; j <= NZ; j++) for (let i = 0; i <= NX; i++) {
+      const [wx, wz] = applyH(inv, (i / NX) * W, (j / NZ) * H);
+      pos.push(wx, 0.98, -wz);
+      uv.push(i / NX, 1 - j / NZ);
+    }
+    for (let j = 0; j < NZ; j++) for (let i = 0; i < NX; i++) {
+      const a = j * (NX + 1) + i, b = a + 1, c = a + NX + 1, d = c + 1;
+      idx.push(a, c, b, b, c, d);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    return g;
+  }, [scene]);
   const { tl, br } = mapRect(scene.mapTransform);
-  const w = br[0] - tl[0];
-  const d = tl[1] - br[1]; // world z extent (tl z > br z)
-  const cx = (tl[0] + br[0]) / 2;
-  const cz = (tl[1] + br[1]) / 2;
-  // plane in mirrored world: geometry +y is image top (py=0, world z = tl)
+  const w = br[0] - tl[0], d = tl[1] - br[1];
+  const cx = (tl[0] + br[0]) / 2, cz = (tl[1] + br[1]) / 2;
   return (
     <group>
-      <mesh position={[cx, 0.98, -cz]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[w, d]} />
-        <meshStandardMaterial map={tex} roughness={0.92} />
+      <mesh geometry={geom}>
+        <meshStandardMaterial map={tex} roughness={0.92} side={THREE.DoubleSide} />
       </mesh>
       {/* dark felt under/around the map */}
       <mesh position={[cx, 0.9, -cz]} rotation={[-Math.PI / 2, 0, 0]}>
