@@ -130,7 +130,7 @@ export function Scorecard({ scene, view, seat, act, big = false, crop = false }:
   // so the whole rail fits an ipad without scrolling
   return (
     <div style={{
-      position: 'relative', width: '66%', margin: '0 auto', flexShrink: 0, borderRadius: 10, overflow: 'hidden',
+      position: 'relative', width: '88%', margin: '0 auto', flexShrink: 0, borderRadius: 10, overflow: 'hidden',
       boxShadow: '0 4px 16px rgba(0,0,0,0.5)', aspectRatio: `${CARD_ASPECT / (1 - CROP_TOP)}`,
     }}>
       <div style={{ position: 'absolute', left: 0, right: 0, top: `${(-CROP_TOP / (1 - CROP_TOP)) * 100}%` }}>
@@ -226,16 +226,25 @@ export function DtPlay({ view, act, error }: {
       <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: RIGHT_W }}>
         <DtTable
           scene={scene}
-          tokens={view.players.map((p) => ({ color: p.color, quad: p.quad }))}
+          tokens={view.players.map((p) => ({ seat: p.seat, color: p.color, spot: p.spot }))}
           pic={shownPic}
           lcd={shownLcd}
           wedgeMaps={scene.wedge}
           aim={focusTower ? { x: 0, z: 1, h: 7, y: 7 } : null}
+          youSeat={mine.seat}
+          canMove={myTurn && (phase === 'playing' || phase === 'turnDone')}
+          onMoveToken={(x, z) => act({ type: 'move_token', x, z })}
         />
         <button className="ig-glass" onClick={() => setFocusTower((f) => !f)} style={{
           position: 'absolute', bottom: 14, left: 14, padding: '9px 13px', borderRadius: 11,
           font: '700 11px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer',
         }}>{focusTower ? 'Show board' : 'Focus the tower'}</button>
+        {myTurn && (phase === 'playing' || phase === 'turnDone') && (
+          <div className="ig-glass" style={{
+            position: 'absolute', top: 14, left: 14, padding: '8px 12px', borderRadius: 10,
+            font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.85,
+          }}>Drag your token to move</div>
+        )}
       </div>
 
       {/* right rail: readout, the tower panel, your scorecard */}

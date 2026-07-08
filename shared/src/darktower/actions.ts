@@ -21,6 +21,7 @@ export type DtAction =
   | { type: 'bazaar_haggle' }
   | { type: 'curse'; victim: number }
   | { type: 'riddle_guess'; key: DtKey }
+  | { type: 'move_token'; x: number; z: number } // place your own token on the board
   | { type: 'end_turn' };
 
 export interface DtResult { ok: boolean; error?: string }
@@ -66,6 +67,7 @@ function upkeep(s: DtState, p: DtPlayer, steps: DtStep[]): void {
     capGold(p);
     p.cursed = 0;
     s.curse = null;
+    p.spot = { ...s.turnSpot }; // the curse holds the token where it stood (L906)
     steps.push(step('cursed', '  ', 'die', 2200), step('warriors', lcdN(p.warriors), 'beep'), step('gold', lcdN(p.gold), 'beep'));
   }
   const eats = Math.ceil(p.warriors / DT_RULES.eatPer);
@@ -163,8 +165,21 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
       const q = s.players[s.turn];
       q.fed = false;
       s.phase = 'playing';
+      s.turnSpot = { ...q.spot }; // Lua tokenX/tokenZ (L580): lost/cursed snap back here
       event(s, q, 'to act', '', [step('', ' ' + q.color[0], 'done', 800)]);
       return { ok: true };
+    }
+
+    case 'move_token': {
+      // place your own token anywhere on the board (the mod's free movement);
+      // only on your turn, and never mid-battle or mid-riddle
+      if (s.phase !== 'playing' && s.phase !== 'turnDone') return err('not now');
+      if (!Number.isFinite(a.x) || !Number.isFinite(a.z)) return err('bad spot');
+      const r = Math.hypot(a.x, a.z);
+      const MAX_R = 12.4;
+      const k = r > MAX_R ? MAX_R / r : 1;
+      p.spot = { x: +(a.x * k).toFixed(2), z: +(a.z * k).toFixed(2) };
+      return { ok: true }; // silent: no tower event, just a position sync
     }
 
     case 'pegasus': {
@@ -191,6 +206,7 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
           s.phase = 'playing';
           p.fed = true; // no second food charge (L556)
         } else {
+          p.spot = { ...s.turnSpot }; // token returns whence it came (L1669)
           steps.push(step('lost', '  ', 'failure', 2200));
           event(s, p, 'got lost', 'back where they started', steps);
           toTurnDone(s);
@@ -431,6 +447,7 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
       beginAction(s, p, steps);
       const blocked = (p.quad === 1 && !p.brasskey) || (p.quad === 2 && !p.silverkey) || (p.quad === 3 && !p.goldkey) || p.quad >= 4;
       if (blocked) {
+        if (p.quad < 4) p.spot = { ...s.turnSpot }; // marched back (keyMissing L1972)
         steps.push(step(p.quad >= 4 ? '' : 'missing', '  ', 'failure', 2500));
         event(s, p, 'turned back at the frontier', p.quad >= 4 ? 'home is the last stop — the tower awaits' : 'the frontier guard demands the key', steps);
       } else {

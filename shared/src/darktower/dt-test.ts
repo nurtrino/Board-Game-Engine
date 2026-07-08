@@ -191,6 +191,41 @@ const mk = (P = 2, seed = 5) => createDarkTower(DT_SEATS.slice(0, P).map((c) => 
   ok(p.warriors <= 2 && p.warriors >= 1, `starvation cost a warrior (${p.warriors})`);
 }
 
+// token spots: start at the citadel, free placement on your turn, lost snaps back
+{
+  const s = mk(2, 33);
+  const p = currentDtPlayer(s);
+  ok(Math.hypot(p.spot.x, p.spot.z) > 10, `token starts at the citadel (${p.spot.x},${p.spot.z})`);
+  const other = s.players[(s.turn + 1) % 2];
+  ok(!applyDtAction(s, other.seat, { type: 'move_token', x: 0, z: 0 }).ok, 'cannot move out of turn');
+  ok(applyDtAction(s, p.seat, { type: 'move_token', x: 5, z: -3 }).ok, 'own token moves on your turn');
+  ok(p.spot.x === 5 && p.spot.z === -3, 'spot updated');
+  ok(applyDtAction(s, p.seat, { type: 'move_token', x: 99, z: 0 }).ok, 'clamped placement accepted');
+  ok(Math.hypot(p.spot.x, p.spot.z) <= 12.5, 'spot clamped to the board');
+  // force a scout-less lost result: run moves until one comes up lost
+  let snapped = false;
+  for (let i = 0; i < 300 && !snapped; i++) {
+    const st = JSON.parse(JSON.stringify(s)) as DtState;
+    st.turnSpot = { x: 1, z: 1 };
+    st.players[p.seat].spot = { x: 8, z: 8 };
+    applyDtAction(st, p.seat, { type: 'move' });
+    const ev = st.lastEvent;
+    if (ev && /lost/.test(ev.title) && !st.players[p.seat].scout) {
+      ok(st.players[p.seat].spot.x === 1 && st.players[p.seat].spot.z === 1, 'lost snaps the token back');
+      snapped = true;
+    }
+    s.rolls++;
+  }
+  ok(snapped, 'lost scenario reachable');
+  // battle actions rejected outside battles
+  const s2 = mk(2, 35);
+  const q = currentDtPlayer(s2);
+  ok(!applyDtAction(s2, q.seat, { type: 'battle_continue' }).ok, 'no fighting outside a battle');
+  ok(!applyDtAction(s2, q.seat, { type: 'battle_bail' }).ok, 'no retreating outside a battle');
+  ok(!applyDtAction(s2, q.seat, { type: 'bazaar_yes' }).ok, 'no buying outside the bazaar');
+  ok(!applyDtAction(s2, q.seat, { type: 'riddle_guess', key: 'goldkey' }).ok, 'no riddle outside the tower');
+}
+
 // view: riddle hidden in play, revealed at end; dev sees all
 {
   const s = mk(2, 25);

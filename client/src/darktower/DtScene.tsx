@@ -6,7 +6,7 @@
 // negate Y rotation.
 
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useLoader, useThree } from '@react-three/fiber';
+import { Canvas, useLoader, useThree, type ThreeEvent } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
@@ -44,11 +44,17 @@ const rot3 = (r: number[]): THREE.Euler =>
 const FOV = 38;
 const FOV_TAN = Math.tan((FOV * Math.PI) / 360);
 
-function Model({ def, tint, centerXZ = false }: { def: DtModel; tint: number[] | null; centerXZ?: boolean }) {
+const BOARD_Y = 0.96; // the painted board plane
+
+function Model({ def, tint, centerXZ = false, seatY, lift = 0 }: {
+  def: DtModel; tint: number[] | null; centerXZ?: boolean;
+  seatY?: number; // seat the mesh's lowest point on this height (no floating)
+  lift?: number;
+}) {
   const obj = useLoader(OBJLoader, def.mesh!);
   const tex = def.diffuse ? useLoader(THREE.TextureLoader, def.diffuse) : null;
   useMemo(() => { if (tex) { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; } }, [tex]);
-  const { clone, midX, midZ } = useMemo(() => {
+  const { clone, midX, midZ, minY } = useMemo(() => {
     const c = obj.clone(true);
     c.traverse((o) => {
       const m = o as THREE.Mesh;
@@ -67,15 +73,16 @@ function Model({ def, tint, centerXZ = false }: { def: DtModel; tint: number[] |
     });
     c.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(c);
-    return { clone: c, midX: (box.min.x + box.max.x) / 2, midZ: (box.min.z + box.max.z) / 2 };
+    return { clone: c, midX: (box.min.x + box.max.x) / 2, midZ: (box.min.z + box.max.z) / 2, minY: box.min.y };
   }, [obj, tex, tint]);
   // OBJ meshes get the standard local 180-degree Y turn; centerXZ pins the
   // mesh's footprint on the world origin (the tower must sit dead center)
-  const pos = centerXZ ? [0, def.pos[1], 0] as [number, number, number] : pos3(def.pos);
+  const base = centerXZ ? [0, def.pos[1], 0] as [number, number, number] : pos3(def.pos);
+  const y = seatY !== undefined ? seatY - minY * def.scale[1] + lift : base[1];
   // note: the primitive's position applies AFTER its own 180-degree rotation,
   // which maps the mesh mid (mx,mz) to (-mx,-mz) — cancel with +mid
   return (
-    <group position={pos} rotation={rot3(def.rot)} scale={def.scale as [number, number, number]}>
+    <group position={[base[0], y, base[2]]} rotation={rot3(def.rot)} scale={def.scale as [number, number, number]}>
       <primitive object={clone} rotation={[0, Math.PI, 0]} position-x={centerXZ ? midX : 0} position-z={centerXZ ? midZ : 0} />
     </group>
   );
@@ -115,14 +122,128 @@ function TowerDisplay({ scene, pic, reelOf, rowOf }: {
     t.needsUpdate = true;
     return t;
   }, [tex, pic, rowOf]);
-  if (reel === null) return null;
-  // window face: same side as the printed control panel (+Z in render space);
-  // the opening sits at ~62% of the tower's height
+  // the tower's upper body front face sits at z ~= 1.85 (see mesh bands); place
+  // the reel window just proud of it so it is never occluded by the body
   return (
-    <mesh position={[0, 5.2, 1.55]}>
-      <planeGeometry args={[1.55, 1.75]} />
-      <meshBasicMaterial map={mat} toneMapped={false} />
+    <group>
+      <mesh position={[0, 6.4, 1.92]}>
+        <planeGeometry args={[1.75, 1.95]} />
+        <meshBasicMaterial color="#050505" />
+      </mesh>
+      {reel !== null && (
+        <mesh position={[0, 6.4, 1.95]}>
+          <planeGeometry args={[1.55, 1.75]} />
+          <meshBasicMaterial map={mat} toneMapped={false} transparent />
+        </mesh>
+      )}
+    </group>
+  );
+}
+
+/** The tower's 2-digit LCD, drawn on a canvas texture so it reads like the
+ *  real toy (glowing red 7-seg digits). Sits above the control panel. */
+function TowerLcd({ lcd }: { lcd: string }) {
+  const tex = useMemo(() => {
+    const cv = document.createElement('canvas');
+    cv.width = 256; cv.height = 128;
+    const t = new THREE.CanvasTexture(cv);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }, []);
+  useEffect(() => {
+    const cv = tex.image as HTMLCanvasElement;
+    const c = cv.getContext('2d')!;
+    c.fillStyle = '#0a0402';
+    c.fillRect(0, 0, 256, 128);
+    const chars = (lcd || '  ').padEnd(2, ' ').slice(0, 2);
+    c.font = 'bold 92px "Courier New", monospace';
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    c.fillStyle = '#ff5a3c';
+    c.shadowColor = '#ff5a3c';
+    c.shadowBlur = 22;
+    c.fillText(chars, 128, 70);
+    tex.needsUpdate = true;
+  }, [lcd, tex]);
+  // just above the reel window on the tower body front (z face ~= 1.82 here)
+  return (
+    <mesh position={[0, 8.0, 1.9]} rotation={[-0.05, 0, 0]}>
+      <planeGeometry args={[1.4, 0.7]} />
+      <meshBasicMaterial map={tex} toneMapped={false} />
     </mesh>
+  );
+}
+
+/** A player's token: rendered at its board `spot`, seated on the board, and —
+ *  for the local player on their turn — pick-up-and-place draggable. */
+function Token({ def, tint, spot, draggable, onPlace, onDragChange }: {
+  def: DtModel; tint: number[] | null;
+  spot: { x: number; z: number };
+  draggable: boolean;
+  onPlace?: (x: number, z: number) => void;
+  onDragChange?: (dragging: boolean) => void;
+}) {
+  const [drag, setDrag] = useState<{ x: number; z: number } | null>(null);
+  const { gl } = useThree();
+  const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 1, 0), -(BOARD_Y + 0.02)), []);
+  const active = useRef(false);
+
+  // render position: mirror world z (render z = -world z)
+  const rx = drag ? drag.x : spot.x;
+  const rz = drag ? -drag.z : -spot.z;
+  const lift = drag ? 1.6 : 0;
+
+  const toBoard = (e: ThreeEvent<PointerEvent>): { x: number; z: number } | null => {
+    const hit = new THREE.Vector3();
+    if (!e.ray.intersectPlane(plane, hit)) return null;
+    return { x: hit.x, z: -hit.z }; // back to world z
+  };
+
+  return (
+    <group
+      position={[rx, BOARD_Y + lift, rz]}
+      onPointerDown={draggable ? (e) => {
+        e.stopPropagation();
+        active.current = true;
+        onDragChange?.(true);
+        (e.target as Element).setPointerCapture?.(e.pointerId);
+        gl.domElement.style.cursor = 'grabbing';
+        const b = toBoard(e);
+        if (b) setDrag(b);
+      } : undefined}
+      onPointerMove={draggable ? (e) => {
+        if (!active.current) return;
+        e.stopPropagation();
+        const b = toBoard(e);
+        if (b) setDrag(b);
+      } : undefined}
+      onPointerUp={draggable ? (e) => {
+        if (!active.current) return;
+        active.current = false;
+        onDragChange?.(false);
+        gl.domElement.style.cursor = 'auto';
+        const b = toBoard(e) ?? drag;
+        setDrag(null);
+        if (b) onPlace?.(+b.x.toFixed(2), +b.z.toFixed(2));
+      } : undefined}
+      onPointerOver={draggable ? () => { gl.domElement.style.cursor = 'grab'; } : undefined}
+      onPointerOut={draggable ? () => { if (!active.current) gl.domElement.style.cursor = 'auto'; } : undefined}
+    >
+      {/* a slightly larger invisible grab pad so tokens are easy to grab */}
+      {draggable && (
+        <mesh position={[0, 0.9, 0]}>
+          <cylinderGeometry args={[1.1, 1.1, 2.4, 12]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
+      )}
+      <Model def={{ ...def, pos: [0, 0, 0], rot: [0, 0, 0] }} tint={tint} seatY={0} />
+      {drag && (
+        <mesh position={[0, -lift + 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[1.1, 1.35, 24]} />
+          <meshBasicMaterial color="#7fe7ff" transparent opacity={0.8} />
+        </mesh>
+      )}
+    </group>
   );
 }
 
@@ -138,7 +259,7 @@ function AimCamera({ controls, aim }: {
     let x = 0, z = 0, y = 3;
     if (aim) { x = aim.x; z = aim.z; h = aim.h; y = aim.y ?? 3; }
     const q = new URLSearchParams(location.search).get('cam');
-    if (q) { const [qx, qz, qh] = q.split(',').map(Number); x = qx; z = qz; h = qh; }
+    if (q) { const [qx, qz, qh, qy] = q.split(',').map(Number); x = qx; z = qz; h = qh; if (qy !== undefined) y = qy; }
     camera.position.set(x, y + 1 + h, z + h * 0.85);
     camera.lookAt(x, y, z);
     const c = controls.current;
@@ -147,45 +268,57 @@ function AimCamera({ controls, aim }: {
   return null;
 }
 
-export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, interactive = true, children }: {
+export interface DtTokenView { seat: number; color: DtSeat; spot: { x: number; z: number } }
+
+export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canMove, onMoveToken, interactive = true, children }: {
   scene: DtSceneDef;
-  tokens: { color: DtSeat; quad: number }[];
+  tokens: DtTokenView[];
   pic: string;
   lcd: string;
   wedgeMaps: { reelOf: Record<string, number>; rowOf: Record<string, number> };
   aim?: { x: number; z: number; h: number; y?: number } | null;
+  youSeat?: number | null; // the local player's seat (their token is draggable)
+  canMove?: boolean; // is it the local player's turn (can they move their token)
+  onMoveToken?: (x: number, z: number) => void;
   interactive?: boolean;
   children?: React.ReactNode;
 }) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const [dragging, setDragging] = useState(false);
   return (
     <Canvas camera={{ fov: FOV, position: [0, 30, 26], near: 0.5, far: 400 }} gl={{ antialias: true }}>
       <ambientLight intensity={0.85} />
       <directionalLight position={[14, 30, 10]} intensity={1.3} />
       <directionalLight position={[-12, 20, -14]} intensity={0.5} />
       <Suspense fallback={null}>
-        {/* circular play surface: kingdom quadrants + crests composed from
-            the mod's scorecard art (gen-dt-board.mjs) */}
+        {/* the mod's painted board */}
         <BoardFace />
         {scene.tower.mesh && <Model def={scene.tower} tint={null} centerXZ />}
+        {/* buildings seated on the board surface (no floating) */}
         {scene.buildings.map((b, i) => b.mesh && (
-          <Model key={i} def={b} tint={b.tint ?? null} />
+          <Model key={i} def={b} tint={b.tint ?? null} seatY={BOARD_Y} />
         ))}
-        {tokens.map((t, i) => {
-          const def = scene.tokens[i];
+        {/* player tokens at their board spots; your own is pick-up draggable */}
+        {tokens.map((t) => {
+          const def = scene.tokens[t.seat];
           if (!def?.mesh) return null;
-          // each token starts on its printed citadel badge (R bottom, B right,
-          // Y top, G left on the art) and walks counterclockwise around the
-          // board as kingdoms are crossed (cosmetic — the game has no spaces)
-          const home = { Red: 90, Blue: 0, Yellow: 270, Green: 180 }[t.color] ?? 0;
-          const a = ((home + t.quad * 90 + (t.quad ? -18 : 0)) * Math.PI) / 180;
-          const r = t.quad ? 10.6 : 11.5;
-          const d = { ...def, pos: [Math.cos(a) * r, 1.4, Math.sin(a) * r] };
-          return <Model key={`t${i}`} def={d} tint={scene.tokenTints[t.color] ?? null} />;
+          const mine = youSeat === t.seat;
+          return (
+            <Token
+              key={`tok${t.seat}`}
+              def={def}
+              tint={scene.tokenTints[t.color] ?? null}
+              spot={t.spot}
+              draggable={!!(mine && canMove && interactive)}
+              onPlace={onMoveToken}
+              onDragChange={setDragging}
+            />
+          );
         })}
         <TowerDisplay scene={scene} pic={pic} reelOf={wedgeMaps.reelOf} rowOf={wedgeMaps.rowOf} />
+        <TowerLcd lcd={lcd} />
         {/* dark felt */}
-        <mesh position={[0, 0.9, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh position={[0, 0.88, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[130, 90]} />
           <meshStandardMaterial color="#0b1218" roughness={1} />
         </mesh>
@@ -193,7 +326,8 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, interactive =
       {children}
       <OrbitControls
         ref={controlsRef}
-        enabled={interactive}
+        enabled={interactive && !dragging}
+        makeDefault
         mouseButtons={{ LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN }}
         touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
         maxPolarAngle={Math.PI / 2.15}

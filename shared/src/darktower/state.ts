@@ -38,7 +38,15 @@ export interface DtPlayer {
   citadelUsed: 0 | 1; // the once-only quad-4 warrior doubling
   moves: number;
   fed: boolean; // this turn's food check already ran
+  spot: { x: number; z: number }; // token position on the board (player-placed, like the mod)
 }
+
+/** Where each seat's token starts: its printed citadel badge (render coords,
+ *  from the citadel models the mod placed on the board art). */
+export const CITADEL_SPOTS: Record<DtSeat, { x: number; z: number }> = {
+  Red: { x: -0.6, z: 11.5 }, Blue: { x: 11.4, z: -0.8 },
+  Yellow: { x: -1.0, z: -11.4 }, Green: { x: -11.6, z: 0.7 },
+};
 
 export interface DtEvent {
   seq: number;
@@ -78,6 +86,7 @@ export interface DtState {
   } | null;
   riddlePhase: 0 | 1 | 2; // which position is being guessed
   curse: { warriors: number; gold: number } | null; // stored amounts awaiting the victim's turn
+  turnSpot: { x: number; z: number }; // current player's spot at turn start (Lua tokenX/tokenZ — lost/cursed snap back here)
   totalMoves: number;
   rolls: number; // draws taken from the seeded rng stream (persistence-safe)
   winner: DtSeat | null;
@@ -110,6 +119,7 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
     beast: 0, scout: 0, healer: 0, sword: 0, pegasus: 0,
     brasskey: 0, silverkey: 0, goldkey: 0,
     quad: 0, cursed: 0, citadelUsed: 0, moves: 0, fed: false,
+    spot: { ...CITADEL_SPOTS[s.color] },
   }));
   const first = Math.floor(rng() * players.length);
   return {
@@ -118,6 +128,7 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
     dragon: { warriors: 2, gold: 6 },
     turn: first, first, players,
     battle: null, bazaar: null, riddlePhase: 0, curse: null,
+    turnSpot: { ...CITADEL_SPOTS[players[first].color] },
     totalMoves: 0, rolls: 0, winner: null, score: null,
     lastEvent: null, log: [],
   };
