@@ -206,7 +206,7 @@ export function DtPlay({ view, act, error }: {
           pic={shownPic}
           lcd={shownLcd}
           wedgeMaps={scene.wedge}
-          aim={focusTower ? { x: -0.5, z: 0.6, h: 7, y: 7 } : null}
+          aim={focusTower ? { x: 0, z: 1, h: 7, y: 7 } : null}
         />
         <button className="ig-glass" onClick={() => setFocusTower((f) => !f)} style={{
           position: 'absolute', bottom: 14, left: 14, padding: '9px 13px', borderRadius: 11,

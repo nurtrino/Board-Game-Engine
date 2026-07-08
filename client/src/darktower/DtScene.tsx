@@ -44,11 +44,11 @@ const rot3 = (r: number[]): THREE.Euler =>
 const FOV = 38;
 const FOV_TAN = Math.tan((FOV * Math.PI) / 360);
 
-function Model({ def, tint, liftToSurface = false }: { def: DtModel; tint: number[] | null; liftToSurface?: boolean }) {
+function Model({ def, tint, centerXZ = false }: { def: DtModel; tint: number[] | null; centerXZ?: boolean }) {
   const obj = useLoader(OBJLoader, def.mesh!);
   const tex = def.diffuse ? useLoader(THREE.TextureLoader, def.diffuse) : null;
   useMemo(() => { if (tex) { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; } }, [tex]);
-  const clone = useMemo(() => {
+  const { clone, midX, midZ } = useMemo(() => {
     const c = obj.clone(true);
     c.traverse((o) => {
       const m = o as THREE.Mesh;
@@ -65,12 +65,18 @@ function Model({ def, tint, liftToSurface = false }: { def: DtModel; tint: numbe
         roughness: 0.62, metalness: 0.06,
       });
     });
-    return c;
+    c.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(c);
+    return { clone: c, midX: (box.min.x + box.max.x) / 2, midZ: (box.min.z + box.max.z) / 2 };
   }, [obj, tex, tint]);
-  // OBJ meshes get the standard local 180-degree Y turn
+  // OBJ meshes get the standard local 180-degree Y turn; centerXZ pins the
+  // mesh's footprint on the world origin (the tower must sit dead center)
+  const pos = centerXZ ? [0, def.pos[1], 0] as [number, number, number] : pos3(def.pos);
+  // note: the primitive's position applies AFTER its own 180-degree rotation,
+  // which maps the mesh mid (mx,mz) to (-mx,-mz) — cancel with +mid
   return (
-    <group position={pos3(def.pos)} rotation={rot3(def.rot)} scale={def.scale as [number, number, number]}>
-      <primitive object={clone} rotation={[0, Math.PI, 0]} position-y={liftToSurface ? 0.02 : 0} />
+    <group position={pos} rotation={rot3(def.rot)} scale={def.scale as [number, number, number]}>
+      <primitive object={clone} rotation={[0, Math.PI, 0]} position-x={centerXZ ? midX : 0} position-z={centerXZ ? midZ : 0} />
     </group>
   );
 }
@@ -109,7 +115,7 @@ function TowerDisplay({ scene, pic, reelOf, rowOf }: {
   // window face: same side as the printed control panel (+Z in render space);
   // the opening sits at ~62% of the tower's height
   return (
-    <mesh position={[-0.45, 5.2, 1.18]}>
+    <mesh position={[0, 5.2, 1.55]}>
       <planeGeometry args={[1.55, 1.75]} />
       <meshBasicMaterial map={mat} toneMapped={false} />
     </mesh>
@@ -157,8 +163,7 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, interactive =
         {/* circular play surface: kingdom quadrants + crests composed from
             the mod's scorecard art (gen-dt-board.mjs) */}
         <BoardFace />
-        {scene.board.mesh && <Model def={scene.board} tint={scene.colorCodes.tan} />}
-        {scene.tower.mesh && <Model def={scene.tower} tint={null} />}
+        {scene.tower.mesh && <Model def={scene.tower} tint={null} centerXZ />}
         {scene.buildings.map((b, i) => b.mesh && (
           <Model key={i} def={b} tint={b.tint ?? null} />
         ))}
