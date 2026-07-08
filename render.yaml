@@ -11,3 +11,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "20"
+      # The custom domain the lobby QR code should point at. Takes priority over
+      # Render's own RENDER_EXTERNAL_URL (the .onrender.com host). Update this if
+      # the domain changes.
+      - key: PUBLIC_URL
+        value: https://boardgamesengine.com
