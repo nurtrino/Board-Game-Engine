@@ -754,7 +754,11 @@ export function TableScene({
   }, [frame, objects]);
 
   return (
-    <Canvas camera={{ fov: FOV, position: [bounds.cx, 40, bounds.cz] }} gl={{ antialias: true }}>
+    // near 0.5 (not the 0.1 default): the painted board floats only 0.03 above
+    // the dark table slab, and with the camera 30-90 units out the default near
+    // plane leaves too little depth precision to separate them — the table
+    // z-fights through the board as black flicker while zooming.
+    <Canvas camera={{ fov: FOV, position: [bounds.cx, 40, bounds.cz], near: 0.5, far: 400 }} gl={{ antialias: true }}>
       <ambientLight intensity={0.85} />
       <directionalLight position={[10, 30, 10]} intensity={1.4} />
       <directionalLight position={[-15, 20, -10]} intensity={0.5} />
