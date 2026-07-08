@@ -10,8 +10,11 @@ import {
   createBrass, viewFor, applyAction,
   createTtr, ttrViewFor, applyTtrAction,
   claimableRoutes, bestCardsFor,
+  createTrek, trekViewFor, applyTrekAction,
+  distancesFrom, findPath, TREK_CATALOG, PARKS, MAJORS, TREK_RULES,
   GAME_SEATS, RULES as TTR_RULES,
-  type BrassState, type TtrState, type BrassAction, type TtrAction, type TtrColor, type Color,
+  type BrassState, type TtrState, type TrekState, type BrassAction, type TtrAction, type TrekAction,
+  type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo,
 } from '@bge/shared';
 import { createStore, type SavedRoom } from './store.js';
@@ -19,7 +22,7 @@ import { createStore, type SavedRoom } from './store.js';
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState;
+type GameState = BrassState | TtrState | TrekState;
 
 const engines = {
   brass: {
@@ -35,6 +38,13 @@ const engines = {
     view: (state: GameState, viewer: number | null | 'dev') => ttrViewFor(state as TtrState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyTtrAction(state as TtrState, seat, action as TtrAction),
     soloSeats: 5,
+  },
+  trek: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+      createTrek(seated as { name: string; color: TrekSeat }[], seed),
+    view: (state: GameState, viewer: number | null | 'dev') => trekViewFor(state as TrekState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyTrekAction(state as TrekState, seat, action as TrekAction),
+    soloSeats: 3,
   },
 } as const;
 
@@ -237,7 +247,12 @@ function broadcast(room: Room): void {
 const botTimers = new Map<string, NodeJS.Timeout>();
 
 function scheduleBots(room: Room): void {
-  if (room.game !== 'ttr' || !room.state) return;
+  if (!room.state) return;
+  if (room.game === 'ttr') return scheduleTtrBots(room);
+  if (room.game === 'trek') return scheduleTrekBots(room);
+}
+
+function scheduleTtrBots(room: Room): void {
   const s = room.state as TtrState;
   if (s.phase === 'ended') return;
   const isBot = (seat: number) => seat >= room.players.length;
@@ -260,6 +275,18 @@ function scheduleBots(room: Room): void {
     botTimers.delete(room.id);
     try { ttrBotAct(room, botSeat); } catch (err) { console.error('bot error:', err); }
   }, delay));
+}
+
+function scheduleTrekBots(room: Room): void {
+  const s = room.state as TrekState;
+  if (s.phase === 'ended') return;
+  if (s.turn < room.players.length) return; // a human's turn
+  if (botTimers.has(room.id)) return;
+  const botSeat = s.turn;
+  botTimers.set(room.id, setTimeout(() => {
+    botTimers.delete(room.id);
+    try { trekBotAct(room, botSeat); } catch (err) { console.error('bot error:', err); }
+  }, 1800));
 }
 
 function ttrBotAct(room: Room, seat: number): void {
@@ -311,6 +338,114 @@ function ttrBotAct(room: Room, seat: number): void {
 
   if (acted) broadcast(room); // re-enters scheduleBots for the next bot step
   else console.warn(`bot seat ${seat} in ${room.id} found no legal action`);
+}
+
+// Trek bot: one action per tick. Claims/occupies when standing on a payable
+// target, saves up cards and walks to the nearest payable river park,
+// otherwise draws (preferring suits it still needs).
+function trekBotAct(room: Room, seat: number): void {
+  const s = room.state as TrekState;
+  const p = s.players[seat];
+  if (!p || s.turn !== seat) return;
+  const rand = (n: number) => Math.floor(Math.random() * n);
+  const attempt = (a: TrekAction) => applyTrekAction(s, seat, a).ok;
+  let acted = false;
+
+  const payFor = (cost: TrekSuit[]): number[] | null => {
+    const used = new Set<number>();
+    for (const suit of cost) {
+      const i = p.hand.findIndex((c, idx) => !used.has(idx) && TREK_CATALOG[c].suit === suit);
+      if (i < 0) return null;
+      used.add(i);
+    }
+    return [...used];
+  };
+
+  if (s.actionsLeft <= 0) {
+    // discard to the limit, then pass
+    while (p.hand.length > TREK_RULES.handLimit) {
+      const idx = p.hand.map((c, i) => ({ i, v: TREK_CATALOG[c].value })).sort((a, b) => a.v - b.v)
+        .slice(0, p.hand.length - TREK_RULES.handLimit).map((x) => x.i);
+      if (!attempt({ type: 'discard', cards: idx })) break;
+    }
+    acted = attempt({ type: 'end_turn' });
+  } else {
+    // 1) claim a river park under our feet
+    for (let slot = 0; slot < s.parkRiver.length && !acted; slot++) {
+      const id = s.parkRiver[slot];
+      if (id === null || PARKS[id].node !== p.node) continue;
+      const cards = payFor(PARKS[id].cost);
+      if (cards) acted = attempt({ type: 'claim', slot, cards });
+    }
+    // 2) occupy a major under our feet
+    if (!acted) {
+      for (const majorId of s.majors) {
+        const m = MAJORS[majorId];
+        if (m.node !== p.node || p.majors.includes(majorId) || p.campsites <= 0) continue;
+        const cards = payFor(m.cost);
+        if (cards && attempt({ type: 'occupy', major: majorId, cards })) { acted = true; break; }
+      }
+    }
+    // 3) walk to the nearest payable river park with an exact spare-card sum
+    if (!acted && p.hand.length) {
+      const dist = distancesFrom(p.node);
+      const goals = s.parkRiver
+        .map((id, slot) => ({ id, slot }))
+        .filter((g): g is { id: number; slot: number } => g.id !== null && PARKS[g.id].node !== p.node)
+        .map((g) => ({ ...g, cost: payFor(PARKS[g.id].cost), d: dist[PARKS[g.id].node] }))
+        .filter((g) => g.cost !== null)
+        .sort((a, b) => a.d - b.d);
+      const subsetSum = (idx: number[], target: number): number[] | null => {
+        if (target === 0) return [];
+        for (let k = 0; k < idx.length; k++) {
+          const v = TREK_CATALOG[p.hand[idx[k]]].value;
+          if (v > target) continue;
+          const rest = subsetSum(idx.slice(k + 1), target - v);
+          if (rest) return [idx[k], ...rest];
+        }
+        return null;
+      };
+      for (const g of goals) {
+        const spare = p.hand.map((_, i) => i).filter((i) => !g.cost!.includes(i));
+        const cards = subsetSum(spare, g.d);
+        if (!cards) continue;
+        const path = findPath(s, p as TrekPlayer, PARKS[g.id].node, g.d);
+        if (path && attempt({ type: 'move', path, cards })) { acted = true; break; }
+      }
+      // wander toward a stone once the hand is fat enough
+      if (!acted && p.hand.length >= 6) {
+        const stonesLeft = Object.entries(s.stones).filter(([, c]) => c).map(([n]) => Number(n));
+        const one = rand(p.hand.length);
+        const len = TREK_CATALOG[p.hand[one]].value;
+        const targets = stonesLeft.filter((n) => dist[n] === len);
+        const all = Object.keys(dist).map(Number).filter((n) => dist[n] === len && n !== p.node);
+        for (const dest of [...targets, ...all.sort(() => Math.random() - 0.5).slice(0, 4)]) {
+          const path = findPath(s, p as TrekPlayer, dest, len);
+          if (path && attempt({ type: 'move', path, cards: [one] })) { acted = true; break; }
+        }
+      }
+    }
+    // 4) draw, preferring river suits still needed for a river park
+    if (!acted) {
+      const needed = new Set<string>();
+      for (const id of s.parkRiver) {
+        if (id === null) continue;
+        const have = p.hand.map((c) => TREK_CATALOG[c].suit as string);
+        for (const suit of PARKS[id].cost) {
+          const at = have.indexOf(suit);
+          if (at >= 0) have.splice(at, 1); else needed.add(suit);
+        }
+      }
+      let slot = s.trekRiver.findIndex((c) => c !== null && needed.has(TREK_CATALOG[c].suit));
+      if (slot < 0) slot = rand(5);
+      acted = attempt({ type: 'draw', source: s.trekRiver[slot] !== null ? slot : 'deck' });
+      if (!acted) acted = attempt({ type: 'draw', source: 'deck' });
+    }
+    if (!acted) acted = attempt({ type: 'end_turn' }); // truly stuck: pass
+  }
+
+  if (acted) broadcast(room);
+  else console.warn(`trek bot seat ${seat} in ${room.id} found no legal action`);
 }
 
 // ---------- http ----------

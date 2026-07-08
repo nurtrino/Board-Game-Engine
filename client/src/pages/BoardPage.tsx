@@ -11,6 +11,7 @@ import { TableScene, useBrassScene, SEAT_HEX, type GameSceneState, type FocusReq
 import { LOCATION_OF, type BrassView, type BrassEvent } from '@bge/shared';
 import { playSfx, sfxForKind, sfxEnabled, setSfxEnabled } from '../sfx';
 import { TtrBoard } from '../ttr/TtrBoard';
+import { TrekBoard } from '../trek/TrekBoard';
 
 export function gameSceneState(view: BrassView): GameSceneState {
   return {
@@ -240,6 +241,7 @@ export function BoardPage() {
 
   if (room.started && view) {
     if (view.game === 'ttr') return <TtrBoard view={view} />;
+    if (view.game === 'trek') return <TrekBoard view={view} />;
     return <TvBoard view={view} />;
   }
 

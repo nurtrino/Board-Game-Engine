@@ -38,6 +38,21 @@ export const BRASS_INTRO: Intro = {
   rulebook: 'https://www.roxley.com/wp-content/uploads/2018/09/Brass-Birmingham-Rulebook.pdf',
 };
 
+export const TREK_INTRO: Intro = {
+  title: 'Trekking the National Parks',
+  tagline: 'Race across the US map collecting stones and claiming park cards.',
+  goal: 'Score the most points by claiming park cards, occupying major parks with campsites, and collecting stones. The game ends when someone claims their fifth park card or the last stone leaves the map.',
+  points: [
+    { label: 'Two actions per turn', detail: 'Any mix of: draw a trek card, move your trekker, claim a park card, or occupy a major park.' },
+    { label: 'Moving', detail: 'Play trek cards whose numbers add up exactly to the trails you walk. Land on a park with a stone to collect it. You cannot pass through other trekkers — but landing on one bumps them back to START.' },
+    { label: 'Claiming parks', detail: 'Stand on a park shown in the face-up park row and pay its icons with matching trek cards. Each card is a number OR an icon, never both.' },
+    { label: 'Major parks', detail: 'Three are in play. Occupy one with a campsite (5 points) by paying its icons on-site; each grants a lasting or one-time power. Each player can occupy each major once.' },
+    { label: 'Stones and bonuses', detail: 'Stones are 1 point each; whoever collects the most of a color wins its bonus card (second-most too, except in 2-player). Ties cancel the card.' },
+    { label: 'Hand limit', detail: 'Discard down to 12 trek cards at the end of your turn.' },
+  ],
+  rulebook: '/trek/rulebook.pdf',
+};
+
 export function GameIntro({ intro, onClose }: { intro: Intro; onClose: () => void }) {
   return (
     <div

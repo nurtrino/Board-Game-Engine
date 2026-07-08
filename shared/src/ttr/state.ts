@@ -122,7 +122,7 @@ export const HARBOR_CITIES: string[] = board.harbors.map((h: { city: string }) =
 export const HARBOR_SNAP: Record<string, number> = Object.fromEntries(
   board.harbors.map((h: { city: string; snap: number }) => [h.city, h.snap]),
 );
-export const CITIES: string[] = board.cities;
+export const CITIES: string[] = board.cities as string[];
 export const ROUTE_SCORE: Record<number, number> = Object.fromEntries(Object.entries(cards.routeScore).map(([k, v]) => [+k, v as number]));
 export const RULES = cards.rules;
 

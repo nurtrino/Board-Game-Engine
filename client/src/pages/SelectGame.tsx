@@ -20,6 +20,11 @@ const GAMES = [
     name: 'Ticket to Ride: Rails & Sails',
     logo: '/ttr-logo.jpg',
   },
+  {
+    id: 'trek',
+    name: 'Trekking the National Parks',
+    logo: '/trek-logo.jpg',
+  },
 ];
 
 const dateOf = (t: number) =>

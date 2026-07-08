@@ -443,5 +443,5 @@ function stateShim(view: TtrView) {
       boxTrains: p.boxTrains,
       boxShips: p.boxShips,
     })),
-  } as never;
+  } as unknown as import('@bge/shared').TtrState;
 }

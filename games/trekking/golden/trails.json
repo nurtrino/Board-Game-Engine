@@ -1,0 +1,30 @@
+{
+  "source": "Transcribed from the mod board art (9000x4500 diffuse) against the numbered snap overlay; verified by line-overlay render. Node 0 = START (virtual; the printed circle has no snap). Nodes 24-68 are snap indices (1-based) on park diamonds.",
+  "start": { "px": [5615, 1555] },
+  "names": {
+    "24": "Gates of the Arctic", "25": "Denali", "26": "Crater Lake", "27": "Olympic",
+    "28": "Katmai", "29": "Wrangell-St. Elias", "30": "Redwood", "31": "Lassen Volcanic",
+    "32": "Glacier Bay", "33": "Yosemite", "34": "Pinnacles", "35": "Channel Islands",
+    "36": "Joshua Tree", "37": "Death Valley", "38": "Haleakala", "39": "American Samoa",
+    "40": "Hawai'i Volcanoes", "41": "Big Bend", "42": "Saguaro", "43": "Carlsbad Caverns",
+    "44": "Petrified Forest", "45": "Grand Canyon", "46": "Zion", "47": "Mesa Verde",
+    "48": "Great Sand Dunes", "49": "Arches", "50": "Rocky Mountain", "51": "Grand Teton",
+    "52": "Yellowstone", "53": "Glacier", "54": "Wind Cave", "55": "Theodore Roosevelt",
+    "56": "Voyageurs", "57": "Isle Royale", "58": "Badlands", "59": "Great Smoky Mountains",
+    "60": "Mammoth Cave", "61": "Hot Springs", "62": "Dry Tortugas", "63": "Everglades",
+    "64": "Virgin Islands", "65": "Congaree", "66": "Shenandoah", "67": "Cuyahoga Valley",
+    "68": "Acadia"
+  },
+  "majors": [25, 40, 45, 52, 63, 68],
+  "edges": [
+    [24, 25], [24, 27], [25, 29], [25, 28], [28, 32], [29, 32], [32, 30], [27, 26], [27, 53],
+    [26, 30], [26, 31], [30, 31], [31, 33], [33, 34], [33, 37], [34, 35], [35, 36], [35, 38],
+    [36, 37], [36, 42], [37, 46], [38, 39], [38, 40], [39, 40], [40, 42], [28, 39], [32, 38],
+    [46, 49], [46, 45], [45, 44], [44, 47], [44, 42], [47, 49], [47, 48], [48, 50], [48, 43],
+    [48, 61], [43, 42], [43, 41], [43, 61], [41, 62], [49, 50], [50, 51], [51, 52], [52, 53],
+    [52, 54], [53, 55], [54, 58], [54, 0], [50, 0], [55, 56], [55, 58], [56, 57], [56, 0],
+    [57, 67], [57, 68], [60, 0], [61, 0], [67, 0], [60, 61], [60, 59], [60, 67],
+    [61, 59], [61, 63], [59, 66], [59, 65], [66, 67], [66, 68], [66, 64], [65, 63], [63, 62],
+    [63, 64], [66, 60]
+  ]
+}
