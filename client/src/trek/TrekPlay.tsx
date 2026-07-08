@@ -16,15 +16,15 @@ import { GameIntro, TREK_INTRO } from '../ttr/GameIntro';
 import { playSfx } from '../sfx';
 
 const CSS = `
-.tk-hand { position: absolute; left: 50%; bottom: -26px; height: 150px; pointer-events: none; z-index: 30; }
+.tk-hand { position: absolute; left: 50%; bottom: -30px; height: 190px; pointer-events: none; z-index: 30; }
 .tk-card {
-  position: absolute; bottom: 0; left: 0; width: 112px; height: 78px; margin-left: -56px;
-  border-radius: 7px; transform-origin: 50% 140%; pointer-events: auto; cursor: pointer;
+  position: absolute; bottom: 0; left: 0; width: 82px; height: 116px; margin-left: -41px;
+  border-radius: 7px; transform-origin: 50% 150%; pointer-events: auto; cursor: pointer;
   box-shadow: 0 3px 10px rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.14);
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
-.tk-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 36px)) rotate(0deg) scale(1.2) !important; z-index: 40 !important; }
-.tk-card.sel { border-color: #6fd3e8; transform: translateX(var(--tx)) translateY(calc(var(--ty) - 26px)) rotate(var(--rot)) !important; }
+.tk-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 44px)) rotate(0deg) scale(1.2) !important; z-index: 40 !important; }
+.tk-card.sel { border-color: #6fd3e8; transform: translateX(var(--tx)) translateY(calc(var(--ty) - 30px)) rotate(var(--rot)) !important; }
 .tp-overlay { position: absolute; inset: 0; background: rgba(3,6,9,0.82); z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
 .tp-act {
   display: block; width: 100%; text-align: center; padding: 12px 14px; border-radius: 11px;
@@ -397,8 +397,7 @@ export function TrekPlay({ view, act: rawAct, error }: {
                 zIndex: 10 + i,
               }}>
               <div style={{
-                position: 'absolute', width: 74, height: 108, left: '50%', top: '50%',
-                transform: 'translate(-50%,-50%) rotate(-90deg)',
+                position: 'absolute', inset: 0,
                 backgroundImage: `url(${sheet.face})`,
                 backgroundSize: `${sheet.cols * 100}% ${sheet.rows * 100}%`,
                 backgroundPosition: `${(col / (sheet.cols - 1)) * 100}% ${(row / (sheet.rows - 1)) * 100}%`,

@@ -59,7 +59,7 @@ export function TtrPlay({ view, act: rawAct, error }: {
   const me = view.you !== null ? view.players[view.you] : null;
   const [picked, setPicked] = useState<number[]>([]); // pending ticket indices
   const [trains, setTrains] = useState(20);
-  const [arm, setArm] = useState<'idle' | 'draw' | 'claim' | 'harbor' | 'exchange' | 'mytickets' | 'hand' | 'tickets'>('idle');
+  const [arm, setArm] = useState<'idle' | 'draw' | 'claim' | 'harbor' | 'exchange' | 'mytickets' | 'hand' | 'tickets' | 'deck'>('idle');
   // reveal a card drawn blind from the ship/train deck
   const [reveal, setReveal] = useState<number | null>(null);
   const blindPending = useRef(false);
@@ -200,6 +200,7 @@ export function TtrPlay({ view, act: rawAct, error }: {
           <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || (mine.boxTrains + mine.boxShips === 0)}
             onClick={() => { setExTrains(0); setExShips(0); setArm('exchange'); }}>Exchange pieces</button>
           <button className="tp-act" onClick={() => setArm('mytickets')}>My tickets</button>
+          <button className="tp-act" onClick={() => setArm('deck')}>Show deck</button>
         </div>
 
         {/* End turn — shown whenever it's your turn so it's always clear how to
