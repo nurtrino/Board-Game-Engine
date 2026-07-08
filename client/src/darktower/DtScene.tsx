@@ -25,6 +25,7 @@ export interface DtSceneDef {
   wedge: { reelOf: Record<string, number>; rowOf: Record<string, number> };
   reelTextures: Record<string, string>;
   sounds: Record<string, string>;
+  scorecards: Record<string, { kingdom: string; body: string | null; tiles: Record<string, string> }>;
 }
 
 let cached: DtSceneDef | null = null;
@@ -74,9 +75,10 @@ function Model({ def, tint, liftToSurface = false }: { def: DtModel; tint: numbe
   );
 }
 
-/** The tower's wedge picture + LCD as camera-facing sprites above the tower. */
-function TowerDisplay({ scene, pic, lcd, reelOf, rowOf }: {
-  scene: DtSceneDef; pic: string; lcd: string;
+/** The tower's wedge picture, set into the tower's window opening (the mod's
+ *  rotating reel sits inside the tower at this height — global.lua wedge). */
+function TowerDisplay({ scene, pic, reelOf, rowOf }: {
+  scene: DtSceneDef; pic: string;
   reelOf: Record<string, number>; rowOf: Record<string, number>;
 }) {
   const reel = pic && reelOf[pic] !== undefined ? reelOf[pic] : null;
@@ -84,8 +86,7 @@ function TowerDisplay({ scene, pic, lcd, reelOf, rowOf }: {
   const mat = useMemo(() => {
     const t = tex.clone();
     t.colorSpace = THREE.SRGBColorSpace;
-    // each reel texture is a strip of pictures; show the row for this pic.
-    // The mod's reels carry several frames; the lit row selects vertically.
+    // each reel texture is a strip of 3 pictures; the lit row selects one
     const row = pic ? rowOf[pic] ?? 0 : 0;
     t.repeat.set(1, 1 / 3);
     t.offset.set(0, (2 - row) / 3);
@@ -93,10 +94,13 @@ function TowerDisplay({ scene, pic, lcd, reelOf, rowOf }: {
     return t;
   }, [tex, pic, rowOf]);
   if (reel === null) return null;
+  // window face: same side as the printed control panel (+Z in render space);
+  // the opening sits at ~62% of the tower's height
   return (
-    <sprite position={[-0.4, 13.2, 0.6]} scale={[4.6, 2.3, 1]}>
-      <spriteMaterial map={mat} />
-    </sprite>
+    <mesh position={[-0.45, 5.2, 1.18]}>
+      <planeGeometry args={[1.55, 1.75]} />
+      <meshBasicMaterial map={mat} toneMapped={false} />
+    </mesh>
   );
 }
 
@@ -168,7 +172,7 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, interactive =
           const d = { ...def, pos: [Math.cos(a) * r, 1.4, Math.sin(a) * r] };
           return <Model key={`t${i}`} def={d} tint={scene.tokenTints[t.color] ?? null} />;
         })}
-        <TowerDisplay scene={scene} pic={pic} lcd={lcd} reelOf={wedgeMaps.reelOf} rowOf={wedgeMaps.rowOf} />
+        <TowerDisplay scene={scene} pic={pic} reelOf={wedgeMaps.reelOf} rowOf={wedgeMaps.rowOf} />
         {/* dark felt */}
         <mesh position={[0, 0.9, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[130, 90]} />

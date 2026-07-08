@@ -666,6 +666,76 @@
    0.01
   ]
  },
+ "scorecards": {
+  "Red": {
+   "kingdom": "Arisilon",
+   "body": "/darktower/DFCA79ECDD78C0D92254696A.png",
+   "tiles": {
+    "warriors": "/darktower/153BAC90FD9BCEF5650490DE.jpg",
+    "gold": "/darktower/B8980F2E8BB5FDEE817A6BF2.jpg",
+    "food": "/darktower/9CF99A1594F3E0CD369ABB1F.jpg",
+    "beast": "/darktower/8B7519DC254C7FDA79C6D3E4.jpg",
+    "scout": "/darktower/BAB2487BFC2484AB0FB67CC9.jpg",
+    "healer": "/darktower/BED7C79A0384200C469C269F.jpg",
+    "sword": "/darktower/A9704EE14BCABA7C1BA51497.jpg",
+    "pegasus": "/darktower/DAD8681D03BF5CC71384C83A.jpg",
+    "brassk": "/darktower/64C1D45423FD2A6F3E4DD8CB.jpg",
+    "silverk": "/darktower/AE4E701A42BB799D5F1900E5.jpg",
+    "goldk": "/darktower/05369BB84B4AE56082B40FD5.jpg"
+   }
+  },
+  "Blue": {
+   "kingdom": "Brynthia",
+   "body": "/darktower/89E0C012D5C713192AF0C852.png",
+   "tiles": {
+    "warriors": "/darktower/153BAC90FD9BCEF5650490DE.jpg",
+    "gold": "/darktower/B8980F2E8BB5FDEE817A6BF2.jpg",
+    "food": "/darktower/9CF99A1594F3E0CD369ABB1F.jpg",
+    "beast": "/darktower/8B7519DC254C7FDA79C6D3E4.jpg",
+    "scout": "/darktower/BAB2487BFC2484AB0FB67CC9.jpg",
+    "healer": "/darktower/BED7C79A0384200C469C269F.jpg",
+    "sword": "/darktower/A9704EE14BCABA7C1BA51497.jpg",
+    "pegasus": "/darktower/DAD8681D03BF5CC71384C83A.jpg",
+    "brassk": "/darktower/64C1D45423FD2A6F3E4DD8CB.jpg",
+    "silverk": "/darktower/AE4E701A42BB799D5F1900E5.jpg",
+    "goldk": "/darktower/05369BB84B4AE56082B40FD5.jpg"
+   }
+  },
+  "Yellow": {
+   "kingdom": "Durnin",
+   "body": "/darktower/31DFB2BB7D52190FBE95A0B5.png",
+   "tiles": {
+    "warriors": "/darktower/153BAC90FD9BCEF5650490DE.jpg",
+    "gold": "/darktower/B8980F2E8BB5FDEE817A6BF2.jpg",
+    "food": "/darktower/9CF99A1594F3E0CD369ABB1F.jpg",
+    "beast": "/darktower/8B7519DC254C7FDA79C6D3E4.jpg",
+    "scout": "/darktower/BAB2487BFC2484AB0FB67CC9.jpg",
+    "healer": "/darktower/BED7C79A0384200C469C269F.jpg",
+    "sword": "/darktower/A9704EE14BCABA7C1BA51497.jpg",
+    "pegasus": "/darktower/DAD8681D03BF5CC71384C83A.jpg",
+    "brassk": "/darktower/64C1D45423FD2A6F3E4DD8CB.jpg",
+    "silverk": "/darktower/AE4E701A42BB799D5F1900E5.jpg",
+    "goldk": "/darktower/05369BB84B4AE56082B40FD5.jpg"
+   }
+  },
+  "Green": {
+   "kingdom": "Zenon",
+   "body": "/darktower/AEAA165B64A7A11960CEA737.png",
+   "tiles": {
+    "warriors": "/darktower/153BAC90FD9BCEF5650490DE.jpg",
+    "gold": "/darktower/B8980F2E8BB5FDEE817A6BF2.jpg",
+    "food": "/darktower/9CF99A1594F3E0CD369ABB1F.jpg",
+    "beast": "/darktower/8B7519DC254C7FDA79C6D3E4.jpg",
+    "scout": "/darktower/BAB2487BFC2484AB0FB67CC9.jpg",
+    "healer": "/darktower/BED7C79A0384200C469C269F.jpg",
+    "sword": "/darktower/A9704EE14BCABA7C1BA51497.jpg",
+    "pegasus": "/darktower/DAD8681D03BF5CC71384C83A.jpg",
+    "brassk": "/darktower/64C1D45423FD2A6F3E4DD8CB.jpg",
+    "silverk": "/darktower/AE4E701A42BB799D5F1900E5.jpg",
+    "goldk": "/darktower/05369BB84B4AE56082B40FD5.jpg"
+   }
+  }
+ },
  "wedge": {
   "reelOf": {
    "cursed": 1,

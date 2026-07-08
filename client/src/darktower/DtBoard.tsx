@@ -8,7 +8,8 @@ import { SEAT_HEX } from '../brass/TableScene';
 import { DtTable, useDtScene } from './DtScene';
 import { sfxEnabled } from '../sfx';
 
-// step-player: walks lastEvent.steps on their own timing
+// step-player: walks lastEvent.steps on their own timing; replay() re-runs
+// the current event's steps (the panel's REPEAT button)
 export function useTowerDisplay(view: DtView, playSound: boolean) {
   const [display, setDisplay] = useState<{ pic: string; lcd: string }>({ pic: '', lcd: '  ' });
   const lastSeq = useRef(0);
@@ -16,11 +17,8 @@ export function useTowerDisplay(view: DtView, playSound: boolean) {
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const scene = useDtScene();
 
-  useEffect(() => {
-    const ev = view.lastEvent;
-    if (!ev || ev.seq <= lastSeq.current) return;
-    lastSeq.current = ev.seq;
-    queue.current.push(...ev.steps);
+  const run = (steps: DtStep[]) => {
+    queue.current.push(...steps);
     const tick = () => {
       const s = queue.current.shift();
       if (!s) { timer.current = undefined; return; }
@@ -31,10 +29,18 @@ export function useTowerDisplay(view: DtView, playSound: boolean) {
       timer.current = setTimeout(tick, s.ms);
     };
     if (!timer.current) tick();
+  };
+
+  useEffect(() => {
+    const ev = view.lastEvent;
+    if (!ev || ev.seq <= lastSeq.current) return;
+    lastSeq.current = ev.seq;
+    run(ev.steps);
   }, [view.lastEvent?.seq, playSound, scene]);
 
   useEffect(() => () => clearTimeout(timer.current), []);
-  return display;
+  const replay = () => { if (view.lastEvent) run(view.lastEvent.steps); };
+  return { ...display, replay };
 }
 
 export function DtBoard({ view }: { view: DtView }) {

@@ -98,7 +98,26 @@ export function TrekBoard({ view }: { view: TrekView }) {
         ))}
       </div>
 
-      {/* shared rivers: trek cards, park cards, majors */}
+      {/* park river — big, across the top so the table can read it */}
+      <div style={{
+        position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)', zIndex: 5,
+        display: 'flex', alignItems: 'flex-start', gap: 12,
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: 150, height: 106, borderRadius: 9, background: '#16202b', border: '1px solid rgba(255,255,255,0.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 26px Inter, sans-serif' }}>{view.parkDeckCount}</div>
+          <div className="ig-lab" style={{ paddingTop: 5 }}>Park deck</div>
+        </div>
+        {view.parkRiver.map((c, i) => (
+          <div key={`P${i}`} style={{ textAlign: 'center' }}>
+            {c !== null
+              ? trekFaceByCell(scene, 'parks', PARKS[c].cell, 150, 106)
+              : <div style={{ width: 150, height: 106, borderRadius: 9, border: '1px dashed rgba(255,255,255,0.14)' }} />}
+            {c !== null && <div className="ig-lab" style={{ paddingTop: 5, maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{PARKS[c].name}</div>}
+          </div>
+        ))}
+      </div>
+
+      {/* shared rivers: trek cards + majors */}
       <div className="ig-glass" style={{
         position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
         display: 'flex', alignItems: 'flex-end', gap: 8, padding: '10px 14px', borderRadius: 16,
@@ -109,17 +128,6 @@ export function TrekBoard({ view }: { view: TrekView }) {
         </div>
         {view.trekRiver.map((c, i) => (
           <div key={`t${i}`}>{c !== null ? trekFaceByCell(scene, 'trek', TREK_CATALOG[c].cell, 52, 74) : <div style={{ width: 52, height: 74 }} />}</div>
-        ))}
-        <div style={{ width: 10 }} />
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ width: 74, height: 52, borderRadius: 6, background: '#16202b', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 13px Inter, sans-serif' }}>{view.parkDeckCount}</div>
-          <div className="ig-lab" style={{ paddingTop: 4 }}>Parks</div>
-        </div>
-        {view.parkRiver.map((c, i) => (
-          <div key={`p${i}`} style={{ textAlign: 'center' }}>
-            {c !== null ? trekFaceByCell(scene, 'parks', PARKS[c].cell, 74, 52) : <div style={{ width: 74, height: 52 }} />}
-            {c !== null && <div className="ig-lab" style={{ paddingTop: 4, maxWidth: 74, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{PARKS[c].name}</div>}
-          </div>
         ))}
         <div style={{ width: 10 }} />
         {view.majors.map((id) => (
@@ -162,19 +170,19 @@ export function TrekBoard({ view }: { view: TrekView }) {
         </div>
       )}
 
-      {/* colored award cards (most / second most stones of each colour) */}
+      {/* colored award cards (most / second most stones of each colour), left rail */}
       <div style={{
-        position: 'absolute', top: 66, right: 12, zIndex: 5,
-        display: 'flex', flexDirection: 'column', gap: 7, alignItems: 'flex-end',
+        position: 'absolute', top: 118, left: 12, zIndex: 5,
+        display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'flex-start',
       }}>
         <div className="ig-lab">Awards</div>
         {STONE_COLORS.map((color) => {
           const most = scene.bonusCards.most[color];
           const second = scene.bonusCards.second[color];
           return (
-            <div key={color} style={{ display: 'flex', gap: 5 }}>
-              {most && <CardSprite face={most.face} cols={most.cols} rows={most.rows} cell={most.cell} w={46} h={72} radius={5} rotated />}
-              {second && <CardSprite face={second.face} cols={second.cols} rows={second.rows} cell={second.cell} w={46} h={72} radius={5} rotated />}
+            <div key={color} style={{ display: 'flex', gap: 4 }}>
+              {most && <CardSprite face={most.face} cols={most.cols} rows={most.rows} cell={most.cell} w={32} h={50} radius={4} rotated />}
+              {second && <CardSprite face={second.face} cols={second.cols} rows={second.rows} cell={second.cell} w={32} h={50} radius={4} rotated />}
             </div>
           );
         })}

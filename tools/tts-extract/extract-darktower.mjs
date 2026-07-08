@@ -76,6 +76,30 @@ add(['582c69', '197a06', 'ef158a', 'fc0d02'], 'ruin', colorCodes.tan);
 add(['e5ad46', 'a0c7c2', 'bcf3d7', '8bf590'], 'sanctuary', colorCodes.tan);
 add(['d4a57e', 'e1ae0b', '3749e1', '2ee535'], 'citadel', null); // has diffuse per kingdom
 
+// scorecards: body Custom_Token + 11 tile Custom_Tokens per kingdom
+// (global.lua L264-318; bodies/scorecards arrays are both player-indexed R,B,Y,G)
+const TILE_KEYS = ['warriors', 'gold', 'food', 'beast', 'scout', 'healer', 'sword', 'pegasus', 'brassk', 'silverk', 'goldk'];
+const CARDS = {
+  Red: { kingdom: 'Arisilon', body: '2cff6a', tiles: ['fbe4dc', '88e49a', '4a6c7a', '9b165f', 'aaf953', '25f974', '2a9d71', 'c37116', 'b9c2ae', '284e43', '161cec'] },
+  Blue: { kingdom: 'Brynthia', body: '072995', tiles: ['058a1d', '401166', 'd080e8', 'c4ffc4', 'a4c2eb', '91472d', '14adbb', '0a1196', '60fb04', 'a09666', 'cd17a3'] },
+  Yellow: { kingdom: 'Durnin', body: 'a1bee5', tiles: ['4f5733', 'eb8f0e', '23daa1', '1916a0', 'f97365', 'd5f3b0', '951ac2', '078c67', '66bcfa', 'c693d9', '4d2bc7'] },
+  Green: { kingdom: 'Zenon', body: 'ba0e2c', tiles: ['103c64', '1cadb0', '71f553', '36750f', 'c9459a', '9ca295', '26f7e0', 'df3570', 'c08d4a', 'a0379e', '9ab0a5'] },
+};
+const scorecards = {};
+for (const [seatColor, def] of Object.entries(CARDS)) {
+  const body = byGuid[def.body];
+  const tiles = {};
+  def.tiles.forEach((g, i) => {
+    const o = byGuid[g];
+    if (o?.CustomImage?.ImageURL) tiles[TILE_KEYS[i]] = stage(o.CustomImage.ImageURL, 'img');
+  });
+  scorecards[seatColor] = {
+    kingdom: def.kingdom,
+    body: body?.CustomImage?.ImageURL ? stage(body.CustomImage.ImageURL, 'img') : null,
+    tiles,
+  };
+}
+
 const scene = {
   source: 'TTS workshop 873019835 — Dark Tower (extract-darktower.mjs)',
   colorCodes,
@@ -85,6 +109,7 @@ const scene = {
   // player tokens in Lua order R,B,Y,G (global.lua L242: 435f7c,64a286,fc68f8,8c047a)
   tokens: [model('435f7c'), model('64a286'), model('fc68f8'), model('8c047a')],
   tokenTints: { Red: colorCodes.red, Blue: colorCodes.blue, Yellow: colorCodes.yellow, Green: colorCodes.green },
+  scorecards,
   // wedge display: reel textures (bundle) — pic -> reel texture + row
   // (wedgeReels/wedgeLights, global.lua L158; reels trigger 4..10 = reel1..7)
   wedge: {

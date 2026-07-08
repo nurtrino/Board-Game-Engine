@@ -126,7 +126,7 @@ export function TrekPieces({ scene, stones, trekkers, majorTents }: {
         const [x, z] = nodePos(Number(id));
         return (
           <Suspense key={`s:${id}`} fallback={null}>
-            <PieceMesh scene={scene} kind="stone" tint={scene.tints.stones[color]} x={x + 0.85} z={z + 0.62} scaleMul={0.62} />
+            <PieceMesh scene={scene} kind="stone" tint={scene.tints.stones[color]} x={x} z={z} scaleMul={0.62} />
           </Suspense>
         );
       })}
@@ -265,7 +265,7 @@ export function TrekTable({ scene, stones, trekkers, majorTents, pickNodes, onPi
 }) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   // frame the masked map region (the rest of the board art is black)
-  const cx = -1.07, cz = -2.03, hx = 30.24, hz = 18.77;
+  const cx = -1.25, cz = -3.41, hx = 29.66, hz = 19.58;
   return (
     <Canvas camera={{ fov: FOV, position: [cx, 40, cz], near: 0.5, far: 400 }} gl={{ antialias: true }}>
       <ambientLight intensity={0.95} />
