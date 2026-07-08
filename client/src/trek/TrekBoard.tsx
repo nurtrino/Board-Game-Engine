@@ -65,7 +65,7 @@ export function TrekBoard({ view }: { view: TrekView }) {
   const winners = view.winners;
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#05080b', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
+    <div style={{ position: 'fixed', inset: 0, background: '#000000', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
       <div style={{ position: 'absolute', inset: 0 }}>
         <TrekTable
           scene={scene}
@@ -161,6 +161,24 @@ export function TrekBoard({ view }: { view: TrekView }) {
           {ev.detail && <div style={{ opacity: 0.7, fontSize: 13 }}>{ev.detail}</div>}
         </div>
       )}
+
+      {/* colored award cards (most / second most stones of each colour) */}
+      <div style={{
+        position: 'absolute', top: 66, right: 12, zIndex: 5,
+        display: 'flex', flexDirection: 'column', gap: 7, alignItems: 'flex-end',
+      }}>
+        <div className="ig-lab">Awards</div>
+        {STONE_COLORS.map((color) => {
+          const most = scene.bonusCards.most[color];
+          const second = scene.bonusCards.second[color];
+          return (
+            <div key={color} style={{ display: 'flex', gap: 5 }}>
+              {most && <CardSprite face={most.face} cols={most.cols} rows={most.rows} cell={most.cell} w={46} h={72} radius={5} rotated />}
+              {second && <CardSprite face={second.face} cols={second.cols} rows={second.rows} cell={second.cell} w={46} h={72} radius={5} rotated />}
+            </div>
+          );
+        })}
+      </div>
 
       {winners && (
         <div className="ig-glass" style={{

@@ -67,10 +67,10 @@ function MapPlane({ scene }: { scene: TrekSceneDef }) {
         <planeGeometry args={[96, 48]} />
         <meshStandardMaterial map={tex} roughness={0.92} />
       </mesh>
-      {/* dark felt around the board */}
+      {/* black table around the board */}
       <mesh position={[0, BOARD_Y - 0.04, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[96 * 1.6, 48 * 1.9]} />
-        <meshStandardMaterial color="#0b1218" roughness={1} />
+        <planeGeometry args={[96 * 1.8, 48 * 2.2]} />
+        <meshStandardMaterial color="#000000" roughness={1} />
       </mesh>
     </group>
   );
@@ -264,7 +264,8 @@ export function TrekTable({ scene, stones, trekkers, majorTents, pickNodes, onPi
   children?: React.ReactNode;
 }) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
-  const cx = 0, cz = 0, hx = 48, hz = 24;
+  // frame the masked map region (the rest of the board art is black)
+  const cx = -1.07, cz = -2.03, hx = 30.24, hz = 18.77;
   return (
     <Canvas camera={{ fov: FOV, position: [cx, 40, cz], near: 0.5, far: 400 }} gl={{ antialias: true }}>
       <ambientLight intensity={0.95} />
