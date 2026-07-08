@@ -2,9 +2,11 @@
 // chips top, the shared trek river + park river + major parks along the bottom
 // (public info), and a caption with camera fly-to on every action.
 
+import { useEffect, useRef } from 'react';
 import { PARKS, MAJORS, STONE_COLORS, TREK_CATALOG, type TrekView, type StoneColor } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { TrekTable, useTrekScene, nodePos, type TrekSceneDef, type TrekFocus } from './TrekScene';
+import { playSfx } from '../sfx';
 
 /** One card cropped out of a 10x7 sheet. Park/major sheets store the card art
  *  rotated 90 degrees inside portrait cells — pass `rotated` to counter-rotate
@@ -52,6 +54,22 @@ export const trekFaceByCell = (scene: TrekSceneDef, deck: 'trek' | 'parks' | 'ma
 
 export function TrekBoard({ view }: { view: TrekView }) {
   const scene = useTrekScene();
+
+  // the TV voices each action, the turnover, and the win
+  const lastSeq = useRef(0);
+  useEffect(() => {
+    const e = view.lastEvent;
+    if (!e || e.seq <= lastSeq.current) return;
+    lastSeq.current = e.seq;
+    const t = e.title ?? '';
+    playSfx(/claim|occup/i.test(t) ? 'coins' : /drew|draw/i.test(t) ? 'cardDraw' : 'link');
+  }, [view.lastEvent?.seq]);
+  const prevTurn = useRef(view.turn);
+  useEffect(() => {
+    if (view.phase === 'playing' && prevTurn.current !== view.turn) { prevTurn.current = view.turn; playSfx('turn'); }
+  }, [view.turn, view.phase]);
+  const ended = useRef(false);
+  useEffect(() => { if (view.winners && !ended.current) { ended.current = true; playSfx('win'); } }, [view.winners]);
 
   if (!scene) return <div className="page center"><h2>Loading the trails</h2></div>;
 

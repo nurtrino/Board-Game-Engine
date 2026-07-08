@@ -3,7 +3,7 @@
 // cards, claim the park you stand on, occupy a major), your hand fanned below.
 // Moving: select cards, the exact-distance destinations glow, tap one.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   TREK_CATALOG, PARKS, MAJORS, NODES, NEIGHBORS, TREK_RULES, STONE_COLORS,
   findPath, nodeName,
@@ -13,6 +13,7 @@ import { SEAT_HEX } from '../brass/TableScene';
 import { TrekTable, useTrekScene } from './TrekScene';
 import { trekFaceByCell } from './TrekBoard';
 import { GameIntro, TREK_INTRO } from '../ttr/GameIntro';
+import { playSfx } from '../sfx';
 
 const CSS = `
 .tk-hand { position: absolute; left: 50%; bottom: -26px; height: 150px; pointer-events: none; z-index: 30; }
@@ -60,12 +61,14 @@ function shimState(view: TrekView): TrekState {
   return { players: view.players.map((p) => ({ seat: p.seat, node: p.node })) } as never;
 }
 
-export function TrekPlay({ view, act, error }: {
+export function TrekPlay({ view, act: rawAct, error }: {
   view: TrekView;
   act: (a: TrekAction) => void;
   error: string | null;
 }) {
   const scene = useTrekScene();
+  const act = (a: TrekAction) => { playSfx('click'); rawAct(a); };
+  useEffect(() => { if (error) playSfx('error'); }, [error]);
   const me = view.you !== null ? view.players[view.you] : null;
   const [sel, setSel] = useState<number[]>([]); // selected hand indices (move / discard)
   const [arm, setArm] = useState<'idle' | 'move' | 'discard' | 'parks'>('idle');

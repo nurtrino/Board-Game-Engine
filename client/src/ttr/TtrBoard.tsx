@@ -2,9 +2,11 @@
 // the shared card market + decks along the bottom (public info), and a caption
 // with camera fly-to on every action.
 
+import { useEffect, useRef } from 'react';
 import { CATALOG, HARBOR_SNAP, type TtrView } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { TtrTable, useTtrScene, routeCenter, type TtrSceneDef, type TtrFocus } from './TtrScene';
+import { playSfx } from '../sfx';
 
 export function cardFace(scene: TtrSceneDef, cardId: number): string | null {
   const t = CATALOG[cardId];
@@ -21,6 +23,19 @@ export function ticketFace(scene: TtrSceneDef, idx: number): string | null {
 
 export function TtrBoard({ view }: { view: TtrView }) {
   const scene = useTtrScene();
+
+  // the TV is the table: it voices each action, the turnover, and the win
+  const lastSeq = useRef(0);
+  useEffect(() => {
+    const e = view.lastEvent;
+    if (e && e.seq > lastSeq.current) { lastSeq.current = e.seq; playSfx(e.drew ? 'cardDraw' : e.route ? 'build' : 'link'); }
+  }, [view.lastEvent?.seq]);
+  const prevColor = useRef(view.turnColor);
+  useEffect(() => {
+    if (view.phase === 'playing' && prevColor.current !== view.turnColor) { prevColor.current = view.turnColor; playSfx('turn'); }
+  }, [view.turnColor, view.phase]);
+  const ended = useRef(false);
+  useEffect(() => { if (view.phase === 'ended' && !ended.current) { ended.current = true; playSfx('win'); } }, [view.phase]);
 
   if (!scene) return <div className="page center"><h2>Loading the world</h2></div>;
 

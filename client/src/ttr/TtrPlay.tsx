@@ -3,7 +3,7 @@
 // the right (draw travel cards from the shared market, claim a glowing route,
 // draw tickets, build a harbor, exchange pieces), your hand fanned below.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   CATALOG, RULES, ROUTE_BY_ID, HARBOR_SNAP,
   claimableRoutes, bestCardsFor, harborCities, harborCardsFor,
@@ -13,6 +13,7 @@ import { SEAT_HEX } from '../brass/TableScene';
 import { TtrTable, useTtrScene, type TtrSceneDef } from './TtrScene';
 import { cardFace, ticketFace } from './TtrBoard';
 import { GameIntro, TTR_INTRO } from './GameIntro';
+import { playSfx } from '../sfx';
 
 const CSS = `
 .tp-hand { position: absolute; left: 50%; bottom: -30px; height: 170px; pointer-events: none; z-index: 30; }
@@ -47,12 +48,14 @@ const CSS = `
 
 const RIGHT_W = 'min(34vw, 420px)';
 
-export function TtrPlay({ view, act, error }: {
+export function TtrPlay({ view, act: rawAct, error }: {
   view: TtrView;
   act: (a: TtrAction) => void;
   error: string | null;
 }) {
   const scene = useTtrScene();
+  const act = (a: TtrAction) => { playSfx('click'); rawAct(a); };
+  useEffect(() => { if (error) playSfx('error'); }, [error]);
   const me = view.you !== null ? view.players[view.you] : null;
   const [picked, setPicked] = useState<number[]>([]); // pending ticket indices
   const [trains, setTrains] = useState(20);

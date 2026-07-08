@@ -174,7 +174,7 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
   // The mod's meshes are chunky and tall; keep a slightly-trimmed footprint so
   // they nestle inside the printed slots, but flatten the height a lot so the
   // low pieces don't parallax off their slots when the camera tilts.
-  const FOOT = 0.9, TALL = 0.5;
+  const FOOT = 0.9, TALL = 0.32;
   const sx = def.scale[0] * scaleMul * FOOT;
   const sy = def.scale[1] * scaleMul * TALL;
   const sz = def.scale[2] * scaleMul * FOOT;

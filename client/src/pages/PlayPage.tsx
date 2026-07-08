@@ -838,6 +838,17 @@ export function PlayPage() {
   const seatColors = (GAME_SEATS[room.game] ?? GAME_SEATS.brass).colors;
   const myColor = me !== null ? room.players[me]?.color : undefined;
   const takenBy = (c: string) => room.players.findIndex((p) => p.color === c);
+  const GAME_NAMES: Record<string, string> = {
+    brass: 'Brass: Birmingham',
+    ttr: 'Ticket to Ride: Rails & Sails',
+    trek: 'Trekking the National Parks',
+    darktower: 'Dark Tower',
+  };
+  const gameName = GAME_NAMES[room.game] ?? 'the game';
+  const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
+    : room.game === 'trek' ? 'Your colour is your trekker and the stones you collect.'
+    : room.game === 'darktower' ? 'Your colour is your warrior on the quest.'
+    : "Your piece marks your income on the board's turn-order track.";
 
   return (
     <div className="page phone-lobby">
@@ -853,7 +864,7 @@ export function PlayPage() {
             const owner = takenBy(c);
             const isMine = c === myColor;
             const taken = owner >= 0 && !isMine;
-            const tok = scene?.turnTokens?.[c];
+            const tok = room.game === 'brass' ? scene?.turnTokens?.[c] : undefined;
             return (
               <button
                 key={c}
@@ -884,11 +895,7 @@ export function PlayPage() {
             );
           })}
         </div>
-        <p className="dim" style={{ textAlign: 'center' }}>
-          {room.game === 'ttr'
-            ? 'Your color claims routes across the world.'
-            : "Your piece goes on the board's turn-order track and marks your income."}
-        </p>
+        <p className="dim" style={{ textAlign: 'center' }}>{colorBlurb}</p>
       </div>
 
       <div className="card">
@@ -905,7 +912,7 @@ export function PlayPage() {
 
       {me === 0 ? (
         <button className="big primary" onClick={start}>
-          Start {room.game === 'ttr' ? 'Rails & Sails' : 'Brass: Birmingham'}
+          Start {gameName}
         </button>
       ) : (
         <p className="dim">Waiting for the host to start.</p>
