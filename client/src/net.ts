@@ -2,7 +2,7 @@
 // been scrapped, so this now only tracks room/lobby state for the two screens.
 
 import { useEffect, useRef, useState } from 'react';
-import type { ClientMsg, ServerMsg, RoomInfo, BrassView, BrassAction } from '@bge/shared';
+import type { ClientMsg, ServerMsg, RoomInfo, GameView, GameAction } from '@bge/shared';
 
 type Listener = (msg: ServerMsg) => void;
 
@@ -58,19 +58,19 @@ export function tokenKey(roomId: string): string {
 
 export interface RoomConn {
   room: RoomInfo | null;
-  view: BrassView | null;
+  view: GameView | null;
   playerIndex: number | null;
   error: string | null;
   clearError: () => void;
   start: () => void;
-  act: (action: BrassAction) => void;
+  act: (action: GameAction) => void;
   devViewAs: (seat: number | null) => void;
 }
 
 /** mode 'watch' = TV lobby; mode 'play' = a joined player (uses a stored token). */
 export function useRoom(roomId: string, mode: 'watch' | 'play', name?: string): RoomConn {
   const [room, setRoom] = useState<RoomInfo | null>(null);
-  const [view, setView] = useState<BrassView | null>(null);
+  const [view, setView] = useState<GameView | null>(null);
   const [playerIndex, setPlayerIndex] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const errTimer = useRef<number | undefined>(undefined);

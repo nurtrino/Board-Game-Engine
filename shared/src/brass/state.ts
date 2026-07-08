@@ -174,6 +174,7 @@ export interface BrassPlayerView {
 }
 
 export interface BrassView {
+  game: 'brass';
   you: number | null; // your seat, or null for the TV
   phase: 'playing' | 'ended';
   era: 'canal' | 'rail';
@@ -196,6 +197,7 @@ export interface BrassView {
 /** viewer: a seat number, null (TV / neutral), or 'dev' (everything revealed). */
 export function viewFor(state: BrassState, viewer: number | null | 'dev'): BrassView {
   return {
+    game: 'brass',
     you: typeof viewer === 'number' ? viewer : null,
     phase: state.phase,
     era: state.era,

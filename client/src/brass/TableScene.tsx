@@ -76,6 +76,8 @@ const tint3 = (t: number[] | null): THREE.Color =>
 export const SEAT_COLORS = ['Orange', 'Purple', 'Teal', 'Yellow'] as const;
 export const SEAT_HEX: Record<string, string> = {
   Orange: '#e07a4a', Purple: '#8d73cc', Teal: '#5fb8b8', Yellow: '#dcc93e',
+  // Rails & Sails seats (Brown is the physical game's black)
+  Green: '#4da84f', Red: '#d0483a', Blue: '#3f6fd0', Brown: '#4a4a4a',
 };
 
 function useColorTexture(url: string) {

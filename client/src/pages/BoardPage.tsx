@@ -10,6 +10,7 @@ import { SidePieces } from '../three/FallingPieces';
 import { TableScene, useBrassScene, SEAT_HEX, type GameSceneState, type FocusReq, type SceneDef } from '../brass/TableScene';
 import { LOCATION_OF, type BrassView, type BrassEvent } from '@bge/shared';
 import { playSfx, sfxForKind, sfxEnabled, setSfxEnabled } from '../sfx';
+import { TtrBoard } from '../ttr/TtrBoard';
 
 export function gameSceneState(view: BrassView): GameSceneState {
   return {
@@ -237,7 +238,10 @@ export function BoardPage() {
 
   if (!room) return <div className="page center"><h2>Connecting</h2></div>;
 
-  if (room.started && view) return <TvBoard view={view} />;
+  if (room.started && view) {
+    if (view.game === 'ttr') return <TtrBoard view={view} />;
+    return <TvBoard view={view} />;
+  }
 
   // ---------- pre-game: join info + spinning pieces ----------
   return (

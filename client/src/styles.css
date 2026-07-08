@@ -148,10 +148,20 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 }
 .save-name:focus { outline: none; border-color: var(--brd-2); background: var(--glass-2); }
 .save-list { display: flex; flex-direction: column; gap: .55rem; }
-.save-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  text-align: left; padding: .85rem 1.1rem;
+.save-row { display: flex; align-items: stretch; gap: .5rem; }
+.save-row-open {
+  flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  text-align: left; padding: .85rem 1.1rem; border-radius: var(--r);
 }
+.save-del {
+  flex: none; width: 48px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem; color: var(--ink-3); border-radius: var(--r);
+}
+.save-del:hover:not(:disabled) { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 55%, var(--brd)); background: var(--glass-2); }
+.save-confirm { display: flex; gap: .4rem; align-items: stretch; }
+.save-confirm button { border-radius: var(--r); font-size: .9rem; padding: .55rem .9rem; }
+.save-confirm-yes { color: #1a0d0b; background: var(--danger); border-color: var(--danger); font-weight: 600; }
+.save-confirm-yes:hover:not(:disabled) { background: #ff6d61; border-color: #ff6d61; }
 .save-row-main { display: flex; flex-direction: column; gap: .18rem; min-width: 0; }
 .save-row-main b { font-size: 1.02rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .save-row-side { display: flex; align-items: center; gap: .9rem; flex: 0 0 auto; }

@@ -12,9 +12,10 @@ import { gameSceneState } from './BoardPage';
 import { playSfx } from '../sfx';
 import {
   buildLocations, freeSquares, buildableLinks, sellableSquares, developableTiles,
-  cardIndustries, lowestTile, planBuild,
+  cardIndustries, lowestTile, planBuild, GAME_SEATS,
   type BrassView, type BrassAction, type Card, type Color,
 } from '@bge/shared';
+import { TtrPlay } from '../ttr/TtrPlay';
 
 const ALL_COLORS: Color[] = ['Orange', 'Purple', 'Teal', 'Yellow'];
 
@@ -811,12 +812,15 @@ export function PlayPage() {
   if (!room) return <div className="page center"><h2>Connecting</h2></div>;
 
   if (room.started) {
-    if (!view || !scene) return <div className="page center"><h2>Dealing…</h2></div>;
+    if (!view) return <div className="page center"><h2>Dealing…</h2></div>;
+    if (view.game === 'ttr') return <TtrPlay view={view} act={act} error={error} />;
+    if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
 
+  const seatColors = (GAME_SEATS[room.game] ?? GAME_SEATS.brass).colors;
   const myColor = me !== null ? room.players[me]?.color : undefined;
-  const takenBy = (c: Color) => room.players.findIndex((p) => p.color === c);
+  const takenBy = (c: string) => room.players.findIndex((p) => p.color === c);
 
   return (
     <div className="page phone-lobby">
@@ -828,7 +832,7 @@ export function PlayPage() {
       <div className="card">
         <div className="pl-players-label">Pick your color</div>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', padding: '6px 0 2px' }}>
-          {ALL_COLORS.map((c) => {
+          {seatColors.map((c) => {
             const owner = takenBy(c);
             const isMine = c === myColor;
             const taken = owner >= 0 && !isMine;
@@ -864,7 +868,9 @@ export function PlayPage() {
           })}
         </div>
         <p className="dim" style={{ textAlign: 'center' }}>
-          Your piece goes on the board's turn-order track and marks your income.
+          {room.game === 'ttr'
+            ? 'Your color claims routes across the world.'
+            : "Your piece goes on the board's turn-order track and marks your income."}
         </p>
       </div>
 
@@ -881,7 +887,9 @@ export function PlayPage() {
       </div>
 
       {me === 0 ? (
-        <button className="big primary" onClick={start}>Start Brass: Birmingham</button>
+        <button className="big primary" onClick={start}>
+          Start {room.game === 'ttr' ? 'Rails & Sails' : 'Brass: Birmingham'}
+        </button>
       ) : (
         <p className="dim">Waiting for the host to start.</p>
       )}

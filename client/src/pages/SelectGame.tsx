@@ -15,6 +15,11 @@ const GAMES = [
     name: 'Brass: Birmingham',
     logo: '/brass-logo.webp',
   },
+  {
+    id: 'ttr',
+    name: 'Ticket to Ride: Rails & Sails',
+    logo: '/ttr-logo.jpg',
+  },
 ];
 
 const dateOf = (t: number) =>
@@ -23,7 +28,8 @@ const dateOf = (t: number) =>
 function statusLine(s: SaveInfo): string {
   if (s.status === 'ended') return 'Finished';
   if (s.status === 'lobby') return 'In lobby';
-  return `${s.era === 'rail' ? 'Rail' : 'Canal'} era, round ${s.round}/${s.numRounds}`;
+  if (s.era) return `${s.era === 'rail' ? 'Rail' : 'Canal'} era, round ${s.round}/${s.numRounds}`;
+  return 'In play';
 }
 
 export function SelectGame() {
@@ -31,6 +37,13 @@ export function SelectGame() {
   const [game, setGame] = useState<typeof GAMES[number] | null>(null);
   const [saves, setSaves] = useState<SaveInfo[] | null>(null);
   const [name, setName] = useState('');
+  const [confirming, setConfirming] = useState<string | null>(null);
+
+  const deleteSave = (roomId: string) => {
+    setSaves((list) => (list ? list.filter((s) => s.roomId !== roomId) : list));
+    setConfirming(null);
+    fetch(`/api/saves/${roomId}`, { method: 'DELETE' }).catch(() => { /* already gone */ });
+  };
 
   useEffect(() => {
     return socket.on((msg) => {
@@ -88,20 +101,30 @@ export function SelectGame() {
             {saves && saves.length > 0 && (
               <div className="save-list">
                 {saves.map((s) => (
-                  <button key={s.roomId} className="save-row" onClick={() => nav(`/board/${s.roomId}`)}>
-                    <span className="save-row-main">
-                      <b>{s.name}</b>
-                      <span className="dim">{statusLine(s)}</span>
-                    </span>
-                    <span className="save-row-side">
-                      <span className="save-seats">
-                        {s.players.map((p, i) => (
-                          <span key={i} className="save-seat" style={{ background: SEAT_HEX[p.color] }} title={p.name} />
-                        ))}
+                  <div key={s.roomId} className="save-row">
+                    <button className="save-row-open" onClick={() => nav(`/board/${s.roomId}`)}>
+                      <span className="save-row-main">
+                        <b>{s.name}</b>
+                        <span className="dim">{statusLine(s)}</span>
                       </span>
-                      <span className="dim">{dateOf(s.createdAt)}</span>
-                    </span>
-                  </button>
+                      <span className="save-row-side">
+                        <span className="save-seats">
+                          {s.players.map((p, i) => (
+                            <span key={i} className="save-seat" style={{ background: SEAT_HEX[p.color] }} title={p.name} />
+                          ))}
+                        </span>
+                        <span className="dim">{dateOf(s.createdAt)}</span>
+                      </span>
+                    </button>
+                    {confirming === s.roomId ? (
+                      <div className="save-confirm">
+                        <button className="save-confirm-yes" onClick={() => deleteSave(s.roomId)}>Delete</button>
+                        <button className="save-confirm-no" onClick={() => setConfirming(null)}>Cancel</button>
+                      </div>
+                    ) : (
+                      <button className="save-del" aria-label={`Delete ${s.name}`} title="Delete save" onClick={() => setConfirming(s.roomId)}>✕</button>
+                    )}
+                  </div>
                 ))}
               </div>
             )}

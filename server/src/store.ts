@@ -9,9 +9,9 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import type { BrassState, Color } from '@bge/shared';
+import type { BrassState, TtrState, SeatColor } from '@bge/shared';
 
-export interface SavedPlayer { name: string; color: Color; token: string; isBot?: boolean }
+export interface SavedPlayer { name: string; color: SeatColor; token: string; isBot?: boolean }
 export interface SavedRoom {
   id: string;
   name: string;
@@ -19,7 +19,7 @@ export interface SavedRoom {
   createdAt: number;
   players: SavedPlayer[];
   started: boolean;
-  state: BrassState | null;
+  state: BrassState | TtrState | null;
   updatedAt: number;
 }
 

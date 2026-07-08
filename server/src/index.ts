@@ -6,12 +6,39 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
 import crypto from 'node:crypto';
-import { createBrass, viewFor, applyAction, SEAT_COLORS, type BrassState, type Color, type ClientMsg, type ServerMsg, type RoomInfo } from '@bge/shared';
+import {
+  createBrass, viewFor, applyAction,
+  createTtr, ttrViewFor, applyTtrAction,
+  GAME_SEATS,
+  type BrassState, type TtrState, type BrassAction, type TtrAction, type TtrColor, type Color,
+  type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo,
+} from '@bge/shared';
 import { createStore, type SavedRoom } from './store.js';
 
-// The engine has been scrapped. The server now only manages rooms and the
-// lobby: creating a room on the TV, phones joining by QR, and broadcasting the
-// player list. Per-game state will be layered back on as games are ported.
+// Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
+// 'ttr'); start/action/view dispatch to that game's engine.
+
+type GameState = BrassState | TtrState;
+
+const engines = {
+  brass: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+      createBrass(seated as { name: string; color: Color }[], seed),
+    view: (state: GameState, viewer: number | null | 'dev') => viewFor(state as BrassState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyAction(state as BrassState, seat, action as BrassAction),
+    soloSeats: 4, // dev convenience: pad an empty table to a full game
+  },
+  ttr: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+      createTtr(seated as { name: string; color: TtrColor }[], seed),
+    view: (state: GameState, viewer: number | null | 'dev') => ttrViewFor(state as TtrState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyTtrAction(state as TtrState, seat, action as TtrAction),
+    soloSeats: 5,
+  },
+} as const;
+
+const engineOf = (game: string) => engines[game as keyof typeof engines] ?? engines.brass;
+const seatsOf = (game: string) => GAME_SEATS[game] ?? GAME_SEATS.brass;
 
 const PORT = Number(process.env.PORT ?? 8787);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -49,25 +76,25 @@ function publicBaseUrl(): string {
 
 interface PlayerSlot {
   name: string;
-  color: Color;
+  color: SeatColor;
   token: string;
   sockets: Set<WebSocket>;
   isBot?: boolean;
 }
 
-function freeColor(room: Room): Color | null {
-  return SEAT_COLORS.find((c) => !room.players.some((p) => p.color === c)) ?? null;
+function freeColor(room: Room): SeatColor | null {
+  return seatsOf(room.game).colors.find((c) => !room.players.some((p) => p.color === c)) ?? null;
 }
 
 interface Room {
   id: string;
   name: string; // the save's name, shown in the lobby and the save list
-  game: string; // game id ('brass')
+  game: string; // game id: 'brass' | 'ttr'
   createdAt: number;
   players: PlayerSlot[];
   watchers: Set<WebSocket>; // TV board views
   started: boolean;
-  state: BrassState | null;
+  state: GameState | null;
   updatedAt: number;
 }
 
@@ -101,7 +128,7 @@ function persist(room: Room): void {
 const DAY = 24 * 60 * 60 * 1000;
 
 /** Drop finished games after a week and anything untouched for 60 days. */
-function stale(r: { started: boolean; state: BrassState | null; updatedAt: number }): boolean {
+function stale(r: { started: boolean; state: GameState | null; updatedAt: number }): boolean {
   const age = Date.now() - r.updatedAt;
   if (r.state?.phase === 'ended') return age > 7 * DAY;
   if (!r.started) return age > 7 * DAY; // lobbies that never started
@@ -182,7 +209,7 @@ function viewSeat(ws: WebSocket, realSeat: number | null): number | null | 'dev'
 }
 
 function sendState(room: Room, ws: WebSocket, realSeat: number | null): void {
-  if (room.state) send(ws, { type: 'state', view: viewFor(room.state, viewSeat(ws, realSeat)) });
+  if (room.state) send(ws, { type: 'state', view: engineOf(room.game).view(room.state, viewSeat(ws, realSeat)) });
 }
 
 function broadcast(room: Room): void {
@@ -211,13 +238,26 @@ app.get('/api/saves', (_req, res) => {
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,
       status: r.state?.phase === 'ended' ? 'ended' : r.started ? 'playing' : 'lobby',
-      era: r.state?.era ?? null,
-      round: r.state?.round ?? null,
-      numRounds: r.state?.numRounds ?? null,
+      era: (r.state && 'era' in r.state ? r.state.era : null),
+      round: (r.state && 'round' in r.state ? r.state.round : null),
+      numRounds: (r.state && 'numRounds' in r.state ? r.state.numRounds : null),
       players: r.players.map((p) => ({ name: p.name, color: p.color })),
     }))
     .sort((a, b) => b.updatedAt - a.updatedAt);
   res.json(list);
+});
+
+// Delete a saved game: drop it from memory and the store, and boot anyone
+// still connected to it.
+app.delete('/api/saves/:id', (req, res) => {
+  const id = req.params.id.toUpperCase();
+  const room = rooms.get(id);
+  if (!room) { res.status(404).json({ error: 'Not found' }); return; }
+  for (const ws of room.watchers) ws.close();
+  for (const p of room.players) for (const ws of p.sockets) ws.close();
+  rooms.delete(id);
+  store.remove(id);
+  res.json({ ok: true });
 });
 
 // SPA fallback for client-side routes
@@ -342,7 +382,7 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
       const room = conn.room;
       if (!room || conn.playerIdx === null) return send(ws, { type: 'error', message: 'Join first' });
       if (room.started) return send(ws, { type: 'error', message: 'Game already started' });
-      if (!SEAT_COLORS.includes(msg.color)) return send(ws, { type: 'error', message: 'Unknown color' });
+      if (!seatsOf(room.game).colors.includes(msg.color)) return send(ws, { type: 'error', message: 'Unknown color' });
       const taken = room.players.some((p, i) => i !== conn.playerIdx && p.color === msg.color);
       if (taken) return send(ws, { type: 'error', message: `${msg.color} is taken` });
       room.players[conn.playerIdx].color = msg.color;
@@ -359,17 +399,19 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
       if (room.started) return send(ws, { type: 'error', message: 'Already started' });
       if (room.players.length < 1) return send(ws, { type: 'error', message: 'No players yet' });
       room.started = true;
-      // "Start script": build the authoritative initial state (deals hands,
-      // sets money/markers/turn order, places merchant tiles, fills markets).
+      // "Start script": build the authoritative initial state for this room's
+      // game (deals hands, fills markets, sets turn order).
       const seed = crypto.randomInt(2 ** 31);
+      const engine = engineOf(room.game);
+      const seats = seatsOf(room.game);
       const seated = room.players.map((p) => ({ name: p.name, color: p.color }));
-      // Solo dev: fill an empty table to a full 4 seats so the dev seat-switcher
-      // has all four players to drive. Real 2-4 player games are untouched.
-      while (seated.length < 2 || (room.players.length < 2 && seated.length < 4)) {
-        const c = SEAT_COLORS.find((cc) => !seated.some((s) => s.color === cc))!;
+      // Solo dev: fill an empty table to a full game so the dev seat-switcher
+      // has every seat to drive. Real multi-player games are untouched.
+      while (seated.length < 2 || (room.players.length < 2 && seated.length < engine.soloSeats)) {
+        const c = seats.colors.find((cc) => !seated.some((s) => s.color === cc))!;
         seated.push({ name: `CPU ${seated.length + 1}`, color: c });
       }
-      room.state = createBrass(seated, seed);
+      room.state = engine.create(seated, seed);
       broadcast(room);
       return;
     }
@@ -379,7 +421,7 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
       // dev harness: a socket viewing another seat acts as that seat
       const seat = conn.viewAs ?? conn.playerIdx;
       if (seat === null || seat === undefined) return send(ws, { type: 'error', message: 'Watchers cannot act' });
-      const result = applyAction(room.state, seat, msg.action);
+      const result = engineOf(room.game).apply(room.state, seat, msg.action);
       if (!result.ok) return send(ws, { type: 'error', message: result.error ?? 'Illegal action' });
       broadcast(room);
       return;
