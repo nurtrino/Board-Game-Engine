@@ -12,9 +12,11 @@ import {
   claimableRoutes, bestCardsFor,
   createTrek, trekViewFor, applyTrekAction,
   distancesFrom, findPath, TREK_CATALOG, PARKS, MAJORS, TREK_RULES,
+  createDarkTower, dtViewFor, applyDtAction, DT_KEYS,
   GAME_SEATS, RULES as TTR_RULES,
-  type BrassState, type TtrState, type TrekState, type BrassAction, type TtrAction, type TrekAction,
-  type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit,
+  type BrassState, type TtrState, type TrekState, type DtState,
+  type BrassAction, type TtrAction, type TrekAction, type DtAction,
+  type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo,
 } from '@bge/shared';
 import { createStore, type SavedRoom } from './store.js';
@@ -22,7 +24,7 @@ import { createStore, type SavedRoom } from './store.js';
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState | TrekState;
+type GameState = BrassState | TtrState | TrekState | DtState;
 
 const engines = {
   brass: {
@@ -45,6 +47,13 @@ const engines = {
     view: (state: GameState, viewer: number | null | 'dev') => trekViewFor(state as TrekState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyTrekAction(state as TrekState, seat, action as TrekAction),
     soloSeats: 3,
+  },
+  darktower: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+      createDarkTower(seated as { name: string; color: DtSeat }[], seed),
+    view: (state: GameState, viewer: number | null | 'dev') => dtViewFor(state as DtState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyDtAction(state as DtState, seat, action as DtAction),
+    soloSeats: 2,
   },
 } as const;
 
@@ -250,6 +259,21 @@ function scheduleBots(room: Room): void {
   if (!room.state) return;
   if (room.game === 'ttr') return scheduleTtrBots(room);
   if (room.game === 'trek') return scheduleTrekBots(room);
+  if (room.game === 'darktower') return scheduleDtBots(room);
+}
+
+function scheduleDtBots(room: Room): void {
+  const s = room.state as DtState;
+  if (s.phase === 'ended') return;
+  if (s.turn < room.players.length) return; // a human's turn
+  if (botTimers.has(room.id)) return;
+  const botSeat = s.turn;
+  // longer beat so the TV can replay the tower's display steps
+  const delay = s.phase === 'turnDone' ? 2600 : 2000;
+  botTimers.set(room.id, setTimeout(() => {
+    botTimers.delete(room.id);
+    try { dtBotAct(room, botSeat); } catch (err) { console.error('bot error:', err); }
+  }, delay));
 }
 
 function scheduleTtrBots(room: Room): void {
@@ -446,6 +470,51 @@ function trekBotAct(room: Room, seat: number): void {
 
   if (acted) broadcast(room);
   else console.warn(`trek bot seat ${seat} in ${room.id} found no legal action`);
+}
+
+// Dark Tower bot: one action per tick — builds an army big enough for the
+// tower (bazaar warriors + tomb raids), collects the quad keys, then storms.
+function dtBotAct(room: Room, seat: number): void {
+  const s = room.state as DtState;
+  const p = s.players[seat];
+  if (!p || s.turn !== seat || s.phase === 'ended') return;
+  const rand = Math.random;
+  const attempt = (a: DtAction) => applyDtAction(s, seat, a).ok;
+  let acted = false;
+
+  if (s.phase === 'turnDone') acted = attempt({ type: 'end_turn' });
+  else if (s.phase === 'battle') {
+    if (!s.battle!.tower && p.warriors <= 3 && rand() < 0.7) acted = attempt({ type: 'battle_bail' });
+    else acted = attempt({ type: 'battle_continue' });
+  } else if (s.phase === 'cursePick') {
+    const victims = s.players.filter((q) => q.seat !== seat);
+    const v = victims.sort((a, b) => (b.warriors + b.gold) - (a.warriors + a.gold))[0];
+    acted = attempt({ type: 'curse', victim: v.seat });
+  } else if (s.phase === 'riddle') {
+    acted = attempt({ type: 'riddle_guess', key: DT_KEYS[Math.floor(rand() * 3)] });
+  } else if (s.phase === 'bazaar') {
+    const bz = s.bazaar!;
+    if (bz.offer === 'warrior' && p.warriors < 55 && (bz.buying + 1) * bz.prices.warrior <= p.gold && bz.buying < 10) acted = attempt({ type: 'bazaar_yes' });
+    else if (bz.offer === 'food' && p.food < 30 && bz.buying < Math.min(20, p.gold)) acted = attempt({ type: 'bazaar_yes' });
+    else if (bz.buying > 0) acted = attempt({ type: 'bazaar_no' });
+    else if (bz.offer === 'beast' && bz.prices.beast <= p.gold) acted = attempt({ type: 'bazaar_yes' });
+    else if ((bz.offer === 'scout' || bz.offer === 'healer') && bz.prices[bz.offer] <= p.gold && rand() < 0.4) acted = attempt({ type: 'bazaar_yes' });
+    else if (rand() < 0.3) acted = attempt({ type: 'bazaar_haggle' });
+    else acted = attempt({ type: 'bazaar_no' });
+  } else {
+    const keyOfQuad = p.quad === 1 ? p.brasskey : p.quad === 2 ? p.silverkey : p.quad === 3 ? p.goldkey : 1;
+    const armyReady = p.warriors >= Math.min(55, s.dtBrigands - 4);
+    if (p.quad === 4 && p.goldkey && armyReady) acted = attempt({ type: 'tower' });
+    else if (p.quad < 4 && keyOfQuad && p.quad > 0) acted = attempt({ type: 'frontier' });
+    else if (p.quad === 0) acted = attempt({ type: 'frontier' });
+    else if (p.warriors <= 4 || p.food <= 4) acted = attempt({ type: 'sanctuary' });
+    else if (p.gold >= 12 && (p.warriors < 55 || p.food < 20) && rand() < 0.8) acted = attempt({ type: 'bazaar' });
+    else if (rand() < 0.65) acted = attempt({ type: 'tomb' });
+    else acted = attempt({ type: 'move' });
+  }
+
+  if (acted) broadcast(room);
+  else console.warn(`dt bot seat ${seat} in ${room.id} found no legal action`);
 }
 
 // ---------- http ----------

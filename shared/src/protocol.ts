@@ -7,22 +7,26 @@ import type { TtrView, TtrColor } from './ttr/state.js';
 import type { TtrAction } from './ttr/actions.js';
 import type { TrekView, TrekSeat } from './trek/state.js';
 import type { TrekAction } from './trek/actions.js';
+import type { DtView, DtSeat } from './darktower/state.js';
+import type { DtAction } from './darktower/actions.js';
 import { SEAT_COLORS } from './brass/state.js';
 import { TTR_COLORS } from './ttr/state.js';
 import { TREK_SEATS } from './trek/state.js';
+import { DT_SEATS } from './darktower/state.js';
 
 /** Any seat color across games. */
-export type SeatColor = Color | TtrColor | TrekSeat;
+export type SeatColor = Color | TtrColor | TrekSeat | DtSeat;
 
 /** Per-game lobby facts: seat colors in pick order + max players. */
 export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: number }> = {
   brass: { colors: SEAT_COLORS, max: 4 },
   ttr: { colors: TTR_COLORS, max: 5 },
   trek: { colors: TREK_SEATS, max: 5 },
+  darktower: { colors: DT_SEATS, max: 4 },
 };
 
-export type GameView = BrassView | TtrView | TrekView;
-export type GameAction = BrassAction | TtrAction | TrekAction;
+export type GameView = BrassView | TtrView | TrekView | DtView;
+export type GameAction = BrassAction | TtrAction | TrekAction | DtAction;
 
 export interface RoomInfo {
   roomId: string;
