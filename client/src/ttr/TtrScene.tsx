@@ -88,13 +88,30 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
 }) {
   const def = scene.meshes[kind];
   const obj = useLoader(OBJLoader, def.mesh);
-  // The OBJs are Y-up (Z is the symmetric width, Y is the height). Unity mirrors
-  // X on import, so the piece is flipped over on that axis — a 180° roll about
-  // Z rights it (roof up). Bake that into the clone, then read the resulting
-  // bounding box so we can seat the lowest point exactly on the board.
+  // The OBJs are Y-up (Z is the symmetric width, Y is the height), but they are
+  // authored inconsistently — the train sits roof-down, the ship roof-up. Decide
+  // per mesh: the detailed side (train body / ship hull) carries more vertices,
+  // so if most vertices sit BELOW the vertical mid the piece is upside down and
+  // gets a 180 roll about Z. Then read the bounding box to seat its lowest point
+  // exactly on the board.
   const { clone, minY, midX } = useMemo(() => {
     const c = obj.clone(true);
-    c.rotation.set(0, 0, Math.PI); // roll upright
+    let yMin = Infinity, yMax = -Infinity;
+    c.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh || !m.geometry) return;
+      const p = m.geometry.getAttribute('position');
+      for (let i = 0; i < p.count; i++) { const y = p.getY(i); if (y < yMin) yMin = y; if (y > yMax) yMax = y; }
+    });
+    const mid = (yMin + yMax) / 2;
+    let lo = 0, hi = 0;
+    c.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh || !m.geometry) return;
+      const p = m.geometry.getAttribute('position');
+      for (let i = 0; i < p.count; i++) (p.getY(i) < mid ? lo++ : hi++);
+    });
+    if (lo > hi) c.rotation.set(0, 0, Math.PI); // detailed side is down -> right it
     c.traverse((o) => {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
