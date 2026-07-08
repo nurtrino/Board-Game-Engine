@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
 import crypto from 'node:crypto';
 import { createBrass, viewFor, applyAction, SEAT_COLORS, type BrassState, type Color, type ClientMsg, type ServerMsg, type RoomInfo } from '@bge/shared';
+import { createStore, type SavedRoom } from './store.js';
 
 // The engine has been scrapped. The server now only manages rooms and the
 // lobby: creating a room on the TV, phones joining by QR, and broadcasting the
@@ -60,14 +61,84 @@ function freeColor(room: Room): Color | null {
 
 interface Room {
   id: string;
+  name: string; // the save's name, shown in the lobby and the save list
+  game: string; // game id ('brass')
+  createdAt: number;
   players: PlayerSlot[];
   watchers: Set<WebSocket>; // TV board views
   started: boolean;
   state: BrassState | null;
+  updatedAt: number;
 }
 
 const rooms = new Map<string, Room>();
 const MAX_PLAYERS = 6;
+
+// ---------- persistence ----------
+// Rooms are continuously saved (file locally, Postgres when DATABASE_URL is
+// set) and rehydrated at boot, so games survive restarts AND redeploys.
+// Devices hold a per-room token in localStorage and reconnect into their seat.
+
+const store = await createStore(path.resolve(__dirname, '..'));
+
+function toSaved(room: Room): SavedRoom {
+  return {
+    id: room.id,
+    name: room.name,
+    game: room.game,
+    createdAt: room.createdAt,
+    players: room.players.map(({ name, color, token, isBot }) => ({ name, color, token, isBot })),
+    started: room.started,
+    state: room.state,
+    updatedAt: room.updatedAt,
+  };
+}
+
+function persist(room: Room): void {
+  store.save(toSaved(room));
+}
+
+const DAY = 24 * 60 * 60 * 1000;
+
+/** Drop finished games after a week and anything untouched for 60 days. */
+function stale(r: { started: boolean; state: BrassState | null; updatedAt: number }): boolean {
+  const age = Date.now() - r.updatedAt;
+  if (r.state?.phase === 'ended') return age > 7 * DAY;
+  if (!r.started) return age > 7 * DAY; // lobbies that never started
+  return age > 60 * DAY;
+}
+
+{
+  const saved = await store.load();
+  let restored = 0;
+  for (const r of saved) {
+    if (stale(r)) { store.remove(r.id); continue; }
+    rooms.set(r.id, {
+      id: r.id,
+      name: r.name ?? `Room ${r.id}`,
+      game: r.game ?? 'brass',
+      createdAt: r.createdAt ?? r.updatedAt,
+      players: r.players.map((p) => ({ ...p, sockets: new Set<WebSocket>() })),
+      watchers: new Set(),
+      started: r.started,
+      state: r.state,
+      updatedAt: r.updatedAt,
+    });
+    restored++;
+  }
+  if (restored) console.log(`  Restored ${restored} saved room${restored === 1 ? '' : 's'} (${store.kind})`);
+}
+
+setInterval(() => {
+  for (const room of rooms.values()) {
+    if (stale(room)) { rooms.delete(room.id); store.remove(room.id); }
+  }
+}, 60 * 60 * 1000);
+
+// Render sends SIGTERM on every deploy — write out pending saves first.
+for (const sig of ['SIGTERM', 'SIGINT'] as const) {
+  process.on(sig, () => { store.flush().finally(() => process.exit(0)); });
+}
 
 function makeRoomId(): string {
   const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // no I/O to avoid confusion
@@ -85,6 +156,9 @@ function joinUrl(roomId: string): string {
 function roomInfo(room: Room): RoomInfo {
   return {
     roomId: room.id,
+    name: room.name,
+    game: room.game,
+    createdAt: room.createdAt,
     started: room.started,
     players: room.players.map((p) => ({ name: p.name, color: p.color, connected: p.isBot ? true : p.sockets.size > 0, isBot: p.isBot })),
     joinUrl: joinUrl(room.id),
@@ -112,6 +186,9 @@ function sendState(room: Room, ws: WebSocket, realSeat: number | null): void {
 }
 
 function broadcast(room: Room): void {
+  // every mutation funnels through here — save the room as a side effect
+  room.updatedAt = Date.now();
+  persist(room);
   const info = roomInfo(room);
   for (const ws of room.watchers) { send(ws, { type: 'room', info }); sendState(room, ws, null); }
   room.players.forEach((p, seat) => {
@@ -123,6 +200,25 @@ function broadcast(room: Room): void {
 
 const app = express();
 app.use(express.static(CLIENT_DIST));
+
+// Saved games, newest first — the "select a save" list on the new-game screen.
+app.get('/api/saves', (_req, res) => {
+  const list = [...rooms.values()]
+    .map((r) => ({
+      roomId: r.id,
+      name: r.name,
+      game: r.game,
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
+      status: r.state?.phase === 'ended' ? 'ended' : r.started ? 'playing' : 'lobby',
+      era: r.state?.era ?? null,
+      round: r.state?.round ?? null,
+      numRounds: r.state?.numRounds ?? null,
+      players: r.players.map((p) => ({ name: p.name, color: p.color })),
+    }))
+    .sort((a, b) => b.updatedAt - a.updatedAt);
+  res.json(list);
+});
 
 // SPA fallback for client-side routes
 app.get(['/new', '/join/*', '/board/*', '/play/*', '/dev/*'], (_req, res) => {
@@ -172,20 +268,26 @@ wss.on('connection', (ws) => {
 });
 
 function maybeCleanup(room: Room): void {
-  const anyone = room.watchers.size > 0 || room.players.some((p) => p.sockets.size > 0);
-  if (!anyone) {
-    // keep empty rooms for 10 minutes so people can reconnect
-    setTimeout(() => {
-      const stillEmpty = room.watchers.size === 0 && room.players.every((p) => p.sockets.size === 0);
-      if (stillEmpty) rooms.delete(room.id);
-    }, 10 * 60 * 1000);
-  }
+  // Rooms are saves now — never expire one just because everyone disconnected.
+  // Only sweep abandoned TV lobbies that no player ever joined; everything
+  // else lives until the hourly stale() sweep retires it.
+  if (room.started || room.players.length > 0) return;
+  if (room.watchers.size > 0) return;
+  setTimeout(() => {
+    const stillEmpty = room.watchers.size === 0 && room.players.length === 0 && !room.started;
+    if (stillEmpty) { rooms.delete(room.id); store.remove(room.id); }
+  }, 10 * 60 * 1000);
 }
 
 function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
   switch (msg.type) {
     case 'create_room': {
-      const room: Room = { id: makeRoomId(), players: [], watchers: new Set(), started: false, state: null };
+      const id = makeRoomId();
+      const name = (msg.name || '').trim().slice(0, 40) || `Game ${id}`;
+      const room: Room = {
+        id, name, game: msg.game || 'brass', createdAt: Date.now(),
+        players: [], watchers: new Set(), started: false, state: null, updatedAt: Date.now(),
+      };
       rooms.set(room.id, room);
       room.watchers.add(ws);
       conn.room = room;

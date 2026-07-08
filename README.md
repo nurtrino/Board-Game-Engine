@@ -40,12 +40,30 @@ works over the open internet with no same-network requirement.
 
 1. Push this repo to GitHub.
 2. In [Render](https://render.com): **New +** → **Blueprint**, point at the repo.
-   [`render.yaml`](render.yaml) sets the build/start commands.
+   [`render.yaml`](render.yaml) sets the build/start commands and provisions the
+   saves database.
 3. Render injects `PORT` and `RENDER_EXTERNAL_URL` automatically; the QR code
    resolves to the public `https://…onrender.com/join/<room>` URL.
 
 To point at a custom domain (or override), set `PUBLIC_URL` in the service env.
 WebSockets upgrade to `wss` automatically on https.
+
+## Saved games
+
+Every game is a named, dated save. The new-game screen is select a game →
+continue a save or start a new one, and rooms are continuously persisted
+(`server/src/store.ts`):
+
+- **Locally** to `server/.rooms.json` — games survive server restarts.
+- **Hosted** to Postgres when `DATABASE_URL` is set — games survive deploys,
+  since Render wipes the service filesystem on every push. The blueprint
+  provisions this automatically (Render's free Postgres expires after 30 days;
+  upgrade it or point `DATABASE_URL` at any hosted Postgres — Neon and Supabase
+  have permanent free tiers). Set `DATABASE_SSL=1` if your provider requires TLS.
+
+Devices keep a per-room token in localStorage and reconnect straight into their
+seat, so a resumed game continues exactly where it left off. Finished games and
+never-started lobbies are retired after a week, untouched games after 60 days.
 
 ## Layout
 

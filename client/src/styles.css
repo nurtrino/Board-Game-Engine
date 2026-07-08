@@ -139,6 +139,26 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .game-tile:active:not(:disabled) { transform: scale(.99); }
 .game-tile img { display: block; width: 100%; height: auto; }
 
+/* save chooser (new game -> select save) */
+.save-panel { margin: 1.6rem auto 0; display: flex; flex-direction: column; gap: 1rem; max-width: 620px; }
+.save-new { display: flex; gap: .6rem; }
+.save-name {
+  flex: 1; padding: .8rem 1rem; border-radius: var(--r); font-size: 1rem;
+  background: var(--glass); border: 1px solid var(--brd); color: inherit;
+}
+.save-name:focus { outline: none; border-color: var(--brd-2); background: var(--glass-2); }
+.save-list { display: flex; flex-direction: column; gap: .55rem; }
+.save-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  text-align: left; padding: .85rem 1.1rem;
+}
+.save-row-main { display: flex; flex-direction: column; gap: .18rem; min-width: 0; }
+.save-row-main b { font-size: 1.02rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.save-row-side { display: flex; align-items: center; gap: .9rem; flex: 0 0 auto; }
+.save-seats { display: flex; gap: .3rem; }
+.save-seat { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.save-back { align-self: center; }
+
 /* ============================================================
    TV: join screen
    ============================================================ */

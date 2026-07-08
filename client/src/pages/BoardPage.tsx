@@ -244,8 +244,11 @@ export function BoardPage() {
     <div className="tv-join">
       <div className="join-bg"><SidePieces /></div>
       <div className="tv-join-card">
-        <span className="eyebrow">Join the game</span>
-        <h1>Room {room.roomId}</h1>
+        <span className="eyebrow">
+          {new Date(room.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+          {' · Room '}{room.roomId}
+        </span>
+        <h1>{room.name}</h1>
         <div className="qr-card"><QRCodeSVG value={room.joinUrl} size={260} marginSize={2} /></div>
         <div className="join-url">{room.joinUrl.replace(/^https?:\/\//, '')}</div>
         <div className="tv-intro-players">

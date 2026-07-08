@@ -9,11 +9,13 @@
   "dependencies": {
     "@bge/shared": "*",
     "express": "^4.21.0",
+    "pg": "^8.22.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^22.0.0",
+    "@types/pg": "^8.20.0",
     "@types/ws": "^8.5.12",
     "tsx": "^4.19.0"
   }
