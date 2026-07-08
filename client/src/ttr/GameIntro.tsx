@@ -53,6 +53,21 @@ export const TREK_INTRO: Intro = {
   rulebook: '/trek/rulebook.pdf',
 };
 
+export const DT_INTRO: Intro = {
+  title: 'Dark Tower',
+  tagline: 'The 1981 electronic classic — circle the kingdoms, storm the tower.',
+  goal: 'Be first to gather the brass, silver and gold keys, return home, solve the Riddle of the Keys and defeat the brigade inside the Dark Tower. The tower itself runs the game exactly as the original did.',
+  points: [
+    { label: 'One action per turn', detail: 'Move, raid a tomb, visit the bazaar, rest at a sanctuary, cross a frontier, or attack the tower.' },
+    { label: 'Moving is risky', detail: 'Each move can be safe, or bring brigands, the dragon, plague, or leave you lost. A scout, healer or sword turns each hazard to your favor.' },
+    { label: 'Keys and kingdoms', detail: 'Cross the frontier into each kingdom in turn. Tomb treasure hides that kingdom\'s key — you cannot leave without it.' },
+    { label: 'Feed your warriors', detail: 'Every turn eats food (1 per 15 warriors). At zero food, warriors starve. The bazaar sells food, warriors and helpers — haggle, but the merchant may slam the shutters.' },
+    { label: 'Battles', detail: 'Each round both sides roll. Win a round and the brigands halve; lose one and a warrior falls. Retreating costs a warrior.' },
+    { label: 'The tower', detail: 'Home with the gold key, answer the two-key riddle, then beat the tower\'s full brigade. Victory plays the 1812 Overture and earns a 0-99 rating.' },
+  ],
+  rulebook: '/darktower/rulebook.pdf',
+};
+
 export function GameIntro({ intro, onClose }: { intro: Intro; onClose: () => void }) {
   return (
     <div

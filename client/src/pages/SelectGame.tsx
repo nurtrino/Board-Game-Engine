@@ -25,6 +25,11 @@ const GAMES = [
     name: 'Trekking the National Parks',
     logo: '/trek-logo.jpg',
   },
+  {
+    id: 'darktower',
+    name: 'Dark Tower',
+    logo: '/darktower-logo.jpg',
+  },
 ];
 
 const dateOf = (t: number) =>
