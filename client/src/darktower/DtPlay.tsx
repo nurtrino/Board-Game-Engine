@@ -65,14 +65,19 @@ const CARD_SLOTS: Record<string, { x: number; y: number; w: number }> = {
   warriors: { x: 24.6, y: 50.5, w: 20 }, gold: { x: 50, y: 50.5, w: 20 }, food: { x: 75.6, y: 50.5, w: 20 },
   beast: { x: 24.6, y: 67.5, w: 20 }, scout: { x: 50, y: 67.5, w: 20 }, healer: { x: 75.6, y: 67.5, w: 20 },
   sword: { x: 37.8, y: 83.5, w: 20 }, pegasus: { x: 63, y: 83.5, w: 20 },
-  brassk: { x: 23, y: 96, w: 25 }, silverk: { x: 50, y: 96, w: 25 }, goldk: { x: 77, y: 96, w: 25 },
+  brassk: { x: 22.5, y: 94.5, w: 24 }, silverk: { x: 50, y: 94.5, w: 24 }, goldk: { x: 77.5, y: 94.5, w: 24 },
 };
+
+// the body art's aspect (487x888) and where the tile region starts — the rail
+// shows only the tile region so the whole panel fits without scrolling
+const CARD_ASPECT = 487 / 888;
+const CROP_TOP = 0.365;
 
 /** The player's kingdom scorecard: the mod's body art with its tile art,
  *  lit when owned. Warriors/gold/food carry counts; the pegasus tile is the
- *  pegasus button, as in the mod. */
-export function Scorecard({ scene, view, seat, act, big = false }: {
-  scene: DtSceneDef; view: DtView; seat: number; act?: (a: DtAction) => void; big?: boolean;
+ *  pegasus button, as in the mod. `crop` trims the decorative top third. */
+export function Scorecard({ scene, view, seat, act, big = false, crop = false }: {
+  scene: DtSceneDef; view: DtView; seat: number; act?: (a: DtAction) => void; big?: boolean; crop?: boolean;
 }) {
   const p = view.players[seat];
   const card = scene.scorecards?.[p.color];
@@ -81,9 +86,9 @@ export function Scorecard({ scene, view, seat, act, big = false }: {
   const counts: Record<string, number | null> = { warriors: p.warriors, gold: p.gold, food: p.food };
   const owned = (k: string): boolean =>
     k === 'warriors' || k === 'gold' || k === 'food' ? true : (p as unknown as Record<string, number>)[k === 'brassk' ? 'brasskey' : k === 'silverk' ? 'silverkey' : k === 'goldk' ? 'goldkey' : k] === 1;
-  return (
-    <div style={{ position: 'relative', width: '100%', flexShrink: 0, borderRadius: 10, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}>
-      <img src={card.body} alt={`${card.kingdom} scorecard`} style={{ display: 'block', width: '100%' }} />
+  const inner = (
+    <div style={{ position: 'relative', width: '100%', aspectRatio: `${CARD_ASPECT}` }}>
+      <img src={card.body} alt={`${card.kingdom} scorecard`} style={{ display: 'block', width: '100%', height: '100%' }} />
       {Object.entries(CARD_SLOTS).map(([k, s]) => {
         const img = card.tiles[k];
         if (!img) return null;
@@ -112,6 +117,25 @@ export function Scorecard({ scene, view, seat, act, big = false }: {
           </div>
         );
       })}
+    </div>
+  );
+  if (!crop) {
+    return (
+      <div style={{ position: 'relative', width: '100%', flexShrink: 0, borderRadius: 10, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}>
+        {inner}
+      </div>
+    );
+  }
+  // rail version: only the tile region shows (logo + crest trimmed), sized
+  // so the whole rail fits an ipad without scrolling
+  return (
+    <div style={{
+      position: 'relative', width: '66%', margin: '0 auto', flexShrink: 0, borderRadius: 10, overflow: 'hidden',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.5)', aspectRatio: `${CARD_ASPECT / (1 - CROP_TOP)}`,
+    }}>
+      <div style={{ position: 'absolute', left: 0, right: 0, top: `${(-CROP_TOP / (1 - CROP_TOP)) * 100}%` }}>
+        {inner}
+      </div>
     </div>
   );
 }
@@ -252,7 +276,7 @@ export function DtPlay({ view, act, error }: {
         </div>
 
         {/* your kingdom scorecard */}
-        <Scorecard scene={scene} view={view} seat={mine.seat} act={act} />
+        <Scorecard scene={scene} view={view} seat={mine.seat} act={act} crop />
 
         {/* rivals, one line each */}
         <div className="ig-glass" style={{ padding: '9px 12px', borderRadius: 12 }}>

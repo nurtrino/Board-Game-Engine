@@ -81,14 +81,18 @@ function Model({ def, tint, centerXZ = false }: { def: DtModel; tint: number[] |
   );
 }
 
-/** The circular board face, composed from the mod's scorecard art. */
+/** The mod's painted board: a giant Custom_Token (GUID 706f42, scale 7) at
+ *  the table center. Sized so the printed citadel badges land under the
+ *  citadel models the mod placed on them (badge at 90.5% of the half-size,
+ *  red citadel at world r 11.51 -> half-size 12.72). */
 function BoardFace() {
-  const tex = useLoader(THREE.TextureLoader, '/darktower/board.png');
+  const tex = useLoader(THREE.TextureLoader, '/darktower/boardart.webp');
   useMemo(() => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 16; }, [tex]);
+  const HALF = 12.72;
   return (
-    <mesh position={[0, 0.96, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <circleGeometry args={[20, 96]} />
-      <meshStandardMaterial map={tex} roughness={0.94} transparent />
+    <mesh position={[-0.04, 0.96, -0.06]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[HALF * 2, HALF * 2]} />
+      <meshStandardMaterial map={tex} roughness={0.94} transparent alphaTest={0.4} />
     </mesh>
   );
 }
@@ -130,7 +134,7 @@ function AimCamera({ controls, aim }: {
   const size = useThree((s) => s.size);
   useEffect(() => {
     const a = size.width / Math.max(1, size.height);
-    let h = Math.max(16 / FOV_TAN, 16 / (FOV_TAN * a)) * 1.05;
+    let h = Math.max(13.4 / FOV_TAN, 13.4 / (FOV_TAN * a)) * 1.05;
     let x = 0, z = 0, y = 3;
     if (aim) { x = aim.x; z = aim.z; h = aim.h; y = aim.y ?? 3; }
     const q = new URLSearchParams(location.search).get('cam');
@@ -170,10 +174,12 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, interactive =
         {tokens.map((t, i) => {
           const def = scene.tokens[i];
           if (!def?.mesh) return null;
-          // tokens sit in their kingdom quadrant; nudge outward by quad so
-          // progress reads at a glance (cosmetic — the game has no spaces)
-          const a = (i / 4) * Math.PI * 2 + (t.quad * 0.35);
-          const r = 13.5;
+          // each token starts on its printed citadel badge (R bottom, B right,
+          // Y top, G left on the art) and walks counterclockwise around the
+          // board as kingdoms are crossed (cosmetic — the game has no spaces)
+          const home = { Red: 90, Blue: 0, Yellow: 270, Green: 180 }[t.color] ?? 0;
+          const a = ((home + t.quad * 90 + (t.quad ? -18 : 0)) * Math.PI) / 180;
+          const r = t.quad ? 10.6 : 11.5;
           const d = { ...def, pos: [Math.cos(a) * r, 1.4, Math.sin(a) * r] };
           return <Model key={`t${i}`} def={d} tint={scene.tokenTints[t.color] ?? null} />;
         })}

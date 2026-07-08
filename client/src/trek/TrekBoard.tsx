@@ -2,7 +2,7 @@
 // chips top, the shared trek river + park river + major parks along the bottom
 // (public info), and a caption with camera fly-to on every action.
 
-import { PARKS, MAJORS, STONE_COLORS, TREK_CATALOG, type TrekView } from '@bge/shared';
+import { PARKS, MAJORS, STONE_COLORS, TREK_CATALOG, type TrekView, type StoneColor } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { TrekTable, useTrekScene, nodePos, type TrekSceneDef, type TrekFocus } from './TrekScene';
 
@@ -63,6 +63,11 @@ export function TrekBoard({ view }: { view: TrekView }) {
   const stonesOf = (seat: number) => STONE_COLORS.reduce((t, c) => t + view.players[seat].stones[c], 0);
   const current = view.players[view.turn];
   const winners = view.winners;
+  // who earns each colour's most / second-most stone award (endgame display)
+  const awardOf = (color: StoneColor) => {
+    const ranked = view.players.map((p) => ({ p, n: p.stones[color] })).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
+    return { most: ranked[0]?.p ?? null, second: ranked[1]?.p ?? null };
+  };
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: '#000000', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
@@ -83,8 +88,8 @@ export function TrekBoard({ view }: { view: TrekView }) {
         <div style={{ font: '700 16px Inter, sans-serif' }}>The National Parks</div>
       </div>
 
-      {/* player chips */}
-      <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 8 }}>
+      {/* player chips (top centre) */}
+      <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 6 }}>
         {view.players.map((p) => (
           <div key={p.seat} className="ig-glass" style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 999,
@@ -98,20 +103,18 @@ export function TrekBoard({ view }: { view: TrekView }) {
         ))}
       </div>
 
-      {/* park river — big and clear across the top black band, off the board */}
-      <div style={{
-        position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', zIndex: 5,
-        display: 'flex', alignItems: 'flex-start', gap: 16,
-      }}>
+      {/* PARKS — the claimable river, big down the left margin */}
+      <div style={{ position: 'absolute', top: 0, bottom: 0, left: 16, zIndex: 5, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 14 }}>
+        <div className="ig-lab" style={{ fontSize: 13 }}>Parks</div>
         {view.parkRiver.map((c, i) => (c === null ? null : (
-          <div key={`P${i}`} style={{ textAlign: 'center' }}>
-            {trekFaceByCell(scene, 'parks', PARKS[c].cell, 176, 124)}
-            <div style={{ font: '700 13px Inter, sans-serif', paddingTop: 5, maxWidth: 176, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{PARKS[c].name}</div>
+          <div key={`P${i}`}>
+            {trekFaceByCell(scene, 'parks', PARKS[c].cell, 224, 158)}
+            <div style={{ font: '700 16px Inter, sans-serif', paddingTop: 4, maxWidth: 224, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{PARKS[c].name}</div>
           </div>
         )))}
       </div>
 
-      {/* shared rivers: trek cards + majors */}
+      {/* trek draw pile + river + the small awards strip (bottom centre) */}
       <div className="ig-glass" style={{
         position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
         display: 'flex', alignItems: 'flex-end', gap: 8, padding: '10px 14px', borderRadius: 16,
@@ -123,25 +126,39 @@ export function TrekBoard({ view }: { view: TrekView }) {
         {view.trekRiver.map((c, i) => (
           <div key={`t${i}`}>{c !== null ? trekFaceByCell(scene, 'trek', TREK_CATALOG[c].cell, 52, 74) : <div style={{ width: 52, height: 74 }} />}</div>
         ))}
-        <div style={{ width: 10 }} />
+        <div style={{ width: 14 }} />
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'flex', gap: 3 }}>
+            {STONE_COLORS.map((color) => {
+              const m = scene.bonusCards.most[color];
+              return m ? <CardSprite key={color} face={m.face} cols={m.cols} rows={m.rows} cell={m.cell} w={22} h={34} radius={3} rotated /> : null;
+            })}
+          </div>
+          <div className="ig-lab" style={{ paddingTop: 3, fontSize: 9 }}>Awards</div>
+        </div>
+      </div>
+
+      {/* MAJOR PARKS — big down the right margin */}
+      <div style={{ position: 'absolute', top: 0, bottom: 0, right: 16, zIndex: 5, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 14, alignItems: 'flex-end' }}>
+        <div className="ig-lab" style={{ fontSize: 13 }}>Major parks</div>
         {view.majors.map((id) => (
-          <div key={`m${id}`} style={{ textAlign: 'center', position: 'relative' }}>
-            {trekFaceByCell(scene, 'majors', MAJORS[id].cell, 74, 52)}
-            <div className="ig-lab" style={{ paddingTop: 4, maxWidth: 74, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{MAJORS[id].name}</div>
-            <div style={{ position: 'absolute', top: 2, right: 2, display: 'flex', gap: 2 }}>
+          <div key={`m${id}`} style={{ position: 'relative' }}>
+            {trekFaceByCell(scene, 'majors', MAJORS[id].cell, 224, 158)}
+            <div style={{ font: '700 16px Inter, sans-serif', paddingTop: 4, maxWidth: 224, textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{MAJORS[id].name}</div>
+            <div style={{ position: 'absolute', top: 6, right: 6, display: 'flex', gap: 3 }}>
               {(view.majorOwners[id] ?? []).map((c) => (
-                <span key={c} style={{ width: 8, height: 8, borderRadius: '50%', background: SEAT_HEX[c], border: '1px solid rgba(0,0,0,0.5)' }} />
+                <span key={c} style={{ width: 12, height: 12, borderRadius: '50%', background: SEAT_HEX[c], border: '1px solid rgba(0,0,0,0.5)' }} />
               ))}
             </div>
           </div>
         ))}
       </div>
 
-      {/* whose turn */}
+      {/* whose turn (top centre, under the chips) */}
       {view.phase === 'playing' && current && (
         <div className="ig-glass" style={{
-          position: 'absolute', top: 64, left: 12, padding: '8px 12px', borderRadius: 999,
-          display: 'flex', alignItems: 'center', gap: 8,
+          position: 'absolute', top: 58, left: '50%', transform: 'translateX(-50%)', padding: '8px 12px', borderRadius: 999,
+          display: 'flex', alignItems: 'center', gap: 8, zIndex: 6,
         }}>
           <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[current.color] }} />
           <b>{current.name}</b>
@@ -164,39 +181,38 @@ export function TrekBoard({ view }: { view: TrekView }) {
         </div>
       )}
 
-      {/* colored award cards (most / second most stones of each colour), left rail */}
-      <div style={{
-        position: 'absolute', top: 118, left: 12, zIndex: 5,
-        display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'flex-start',
-      }}>
-        <div className="ig-lab">Awards</div>
-        {STONE_COLORS.map((color) => {
-          const most = scene.bonusCards.most[color];
-          const second = scene.bonusCards.second[color];
-          return (
-            <div key={color} style={{ display: 'flex', gap: 4 }}>
-              {most && <CardSprite face={most.face} cols={most.cols} rows={most.rows} cell={most.cell} w={32} h={50} radius={4} rotated />}
-              {second && <CardSprite face={second.face} cols={second.cols} rows={second.rows} cell={second.cell} w={32} h={50} radius={4} rotated />}
-            </div>
-          );
-        })}
-      </div>
-
+      {/* endgame: winner + the awards, large and distributed to who earned them */}
       {winners && (
-        <div className="ig-glass" style={{
-          position: 'absolute', top: '38%', left: '50%', transform: 'translate(-50%,-50%)',
-          padding: '26px 44px', borderRadius: 20, textAlign: 'center',
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 20, background: 'rgba(2,4,6,0.86)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 22, padding: 24,
         }}>
-          <div className="ig-lab">{winners.length > 1 ? 'Shared victory' : 'Winner'}</div>
-          <div style={{ font: '800 30px Inter, sans-serif' }}>
-            {winners.map((w) => (
-              <span key={w} style={{ color: SEAT_HEX[w], padding: '0 6px' }}>
-                {view.players.find((p) => p.color === w)?.name}
-              </span>
-            ))}
+          <div style={{ textAlign: 'center' }}>
+            <div className="ig-lab">{winners.length > 1 ? 'Shared victory' : 'Winner'}</div>
+            <div style={{ font: '800 34px Inter, sans-serif' }}>
+              {winners.map((w) => (
+                <span key={w} style={{ color: SEAT_HEX[w], padding: '0 8px' }}>{view.players.find((p) => p.color === w)?.name}</span>
+              ))}
+            </div>
+            <div style={{ opacity: 0.75, paddingTop: 6 }}>{view.players.map((p) => `${p.name} ${p.score}`).join(' · ')}</div>
           </div>
-          <div style={{ opacity: 0.75, paddingTop: 8 }}>
-            {view.players.map((p) => `${p.name} ${p.score}`).join(' · ')}
+          <div className="ig-lab">Stone awards</div>
+          <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {STONE_COLORS.map((color) => {
+              const { most, second } = awardOf(color);
+              const mc = scene.bonusCards.most[color], sc = scene.bonusCards.second[color];
+              const winnerTag = (p: typeof most) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, justifyContent: 'center', paddingTop: 4, minHeight: 18 }}>
+                  {p ? <><span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[p.color] }} /><b>{p.name}</b></> : <span className="dim">—</span>}
+                </div>
+              );
+              return (
+                <div key={color} style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+                  <div>{mc && <CardSprite face={mc.face} cols={mc.cols} rows={mc.rows} cell={mc.cell} w={132} h={93} rotated />}{winnerTag(most)}</div>
+                  <div>{sc && <CardSprite face={sc.face} cols={sc.cols} rows={sc.rows} cell={sc.cell} w={104} h={73} rotated />}{winnerTag(second)}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
