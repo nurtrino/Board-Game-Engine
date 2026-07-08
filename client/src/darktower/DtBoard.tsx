@@ -9,19 +9,23 @@ import { DtTable, useDtScene } from './DtScene';
 import { sfxEnabled } from '../sfx';
 
 // step-player: walks lastEvent.steps on their own timing; replay() re-runs
-// the current event's steps (the panel's REPEAT button)
+// the current event's steps (the panel's REPEAT button). `active` is true
+// while steps are playing, so the view can focus the tower and voice it.
 export function useTowerDisplay(view: DtView, playSound: boolean) {
   const [display, setDisplay] = useState<{ pic: string; lcd: string }>({ pic: '', lcd: '  ' });
+  const [active, setActive] = useState(false);
   const lastSeq = useRef(0);
   const queue = useRef<DtStep[]>([]);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const scene = useDtScene();
 
   const run = (steps: DtStep[]) => {
+    if (!steps.length) return;
     queue.current.push(...steps);
+    setActive(true);
     const tick = () => {
       const s = queue.current.shift();
-      if (!s) { timer.current = undefined; return; }
+      if (!s) { timer.current = undefined; setActive(false); return; }
       setDisplay({ pic: s.pic, lcd: s.lcd });
       if (playSound && s.sfx && scene?.sounds[s.sfx] && sfxEnabled()) {
         try { new Audio(scene.sounds[s.sfx]).play().catch(() => undefined); } catch { /* autoplay */ }
@@ -40,12 +44,15 @@ export function useTowerDisplay(view: DtView, playSound: boolean) {
 
   useEffect(() => () => clearTimeout(timer.current), []);
   const replay = () => { if (view.lastEvent) run(view.lastEvent.steps); };
-  return { ...display, replay };
+  return { ...display, active, replay };
 }
+
+// camera aim that frames the tower's screen (reel window at y~6.4, LCD at y~8)
+export const TOWER_AIM = { x: 0, z: 4, h: 7.5, y: 7 } as const;
 
 export function DtBoard({ view }: { view: DtView }) {
   const scene = useDtScene();
-  const display = useTowerDisplay(view, true);
+  const display = useTowerDisplay(view, true); // the TV voices the tower
 
   if (!scene) return <div className="page center"><h2>Raising the tower</h2></div>;
 
@@ -61,6 +68,7 @@ export function DtBoard({ view }: { view: DtView }) {
           pic={display.pic}
           lcd={display.lcd}
           wedgeMaps={scene.wedge}
+          aim={display.active ? TOWER_AIM : null}
           interactive
         />
       </div>

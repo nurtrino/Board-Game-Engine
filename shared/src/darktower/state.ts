@@ -41,11 +41,16 @@ export interface DtPlayer {
   spot: { x: number; z: number }; // token position on the board (player-placed, like the mod)
 }
 
-/** Where each seat's token starts: its printed citadel badge (render coords,
- *  from the citadel models the mod placed on the board art). */
+/** Where each seat's token starts: on its kingdom's citadel. These are the
+ *  world (x,z) the mod placed each citadel MODEL at (GUIDs d4a57e/e1ae0b/
+ *  3749e1/2ee535), matched to kingdoms by seat proximity. `spot` is in the
+ *  same world frame as the buildings, so a token at spot = citadel lands on
+ *  the printed badge. */
 export const CITADEL_SPOTS: Record<DtSeat, { x: number; z: number }> = {
-  Red: { x: -0.6, z: 11.5 }, Blue: { x: 11.4, z: -0.8 },
-  Yellow: { x: -1.0, z: -11.4 }, Green: { x: -11.6, z: 0.7 },
+  Red: { x: -0.6, z: -11.5 }, // Arisilon
+  Blue: { x: 11.4, z: 0.8 }, // Brynthia
+  Yellow: { x: -1.0, z: 11.4 }, // Durnin
+  Green: { x: -11.6, z: -0.7 }, // Zenon
 };
 
 export interface DtEvent {

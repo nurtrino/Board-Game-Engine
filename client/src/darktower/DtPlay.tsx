@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { DT_KEYS, KINGDOMS, type DtView, type DtAction, type DtKey } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { DtTable, useDtScene, type DtSceneDef } from './DtScene';
-import { useTowerDisplay } from './DtBoard';
+import { useTowerDisplay, TOWER_AIM } from './DtBoard';
 import { GameIntro, DT_INTRO } from '../ttr/GameIntro';
 
 const CSS = `
@@ -230,9 +230,9 @@ export function DtPlay({ view, act, error }: {
           pic={shownPic}
           lcd={shownLcd}
           wedgeMaps={scene.wedge}
-          aim={focusTower ? { x: 0, z: 1, h: 7, y: 7 } : null}
+          aim={display.active ? TOWER_AIM : focusTower ? { x: 0, z: 1, h: 7, y: 7 } : null}
           youSeat={mine.seat}
-          canMove={myTurn && (phase === 'playing' || phase === 'turnDone')}
+          canMove={myTurn && !display.active && (phase === 'playing' || phase === 'turnDone')}
           onMoveToken={(x, z) => act({ type: 'move_token', x, z })}
         />
         <button className="ig-glass" onClick={() => setFocusTower((f) => !f)} style={{
