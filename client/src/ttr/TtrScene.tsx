@@ -88,8 +88,13 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
 }) {
   const def = scene.meshes[kind];
   const obj = useLoader(OBJLoader, def.mesh);
-  const clone = useMemo(() => {
+  // The OBJs are Y-up (Z is the symmetric width, Y is the height). Unity mirrors
+  // X on import, so the piece is flipped over on that axis — a 180° roll about
+  // Z rights it (roof up). Bake that into the clone, then read the resulting
+  // bounding box so we can seat the lowest point exactly on the board.
+  const { clone, minY, midX } = useMemo(() => {
     const c = obj.clone(true);
+    c.rotation.set(0, 0, Math.PI); // roll upright
     c.traverse((o) => {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
@@ -102,17 +107,19 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
         color: tint ? new THREE.Color(tint[0], tint[1], tint[2]) : new THREE.Color('#cccccc'),
         roughness: 0.55,
         metalness: 0.08,
-        side: THREE.DoubleSide,
       });
     });
-    return c;
+    c.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(c);
+    return { clone: c, minY: box.min.y, midX: (box.min.x + box.max.x) / 2 };
   }, [obj, tint]);
-  const s = def.scale;
-  // pieces rest ON the map surface — TTS snap y floats where gravity would
-  // drop them, so use the plane height instead
+  const s = def.scale.map((v) => v * scaleMul);
+  // seat the piece's lowest point on the map surface; yaw it along its route
+  const BOARD_Y = 1.0;
+  const yaw = -((snap.rot[1] ?? 0) * Math.PI) / 180;
   return (
-    <group position={[snap.pos[0], 1.02 + lift, -snap.pos[2]]} rotation={rot3(snap.rot)} scale={[s[0] * scaleMul, s[1] * scaleMul, s[2] * scaleMul]}>
-      <primitive object={clone} rotation-y={Math.PI} />
+    <group position={[snap.pos[0], BOARD_Y - minY * s[1] + lift, -snap.pos[2]]} rotation={[0, yaw, 0]} scale={[s[0], s[1], s[2]]}>
+      <primitive object={clone} position-x={-midX} />
     </group>
   );
 }
