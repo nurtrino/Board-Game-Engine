@@ -6,3 +6,5 @@ export * from './ttr/state.js';
 export * from './ttr/actions.js';
 export * from './trek/state.js';
 export * from './trek/actions.js';
+export * from './darktower/state.js';
+export * from './darktower/actions.js';
