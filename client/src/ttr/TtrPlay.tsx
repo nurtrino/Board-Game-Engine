@@ -3,7 +3,7 @@
 // the right (draw travel cards from the shared market, claim a glowing route,
 // draw tickets, build a harbor, exchange pieces), your hand fanned below.
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   CATALOG, RULES, ROUTE_BY_ID, HARBOR_SNAP,
   claimableRoutes, bestCardsFor, harborCities, harborCardsFor,
@@ -59,7 +59,22 @@ export function TtrPlay({ view, act: rawAct, error }: {
   const me = view.you !== null ? view.players[view.you] : null;
   const [picked, setPicked] = useState<number[]>([]); // pending ticket indices
   const [trains, setTrains] = useState(20);
-  const [arm, setArm] = useState<'idle' | 'draw' | 'claim' | 'harbor' | 'exchange' | 'mytickets' | 'hand'>('idle');
+  const [arm, setArm] = useState<'idle' | 'draw' | 'claim' | 'harbor' | 'exchange' | 'mytickets' | 'hand' | 'tickets'>('idle');
+  // reveal a card drawn blind from the ship/train deck
+  const [reveal, setReveal] = useState<number | null>(null);
+  const blindPending = useRef(false);
+  const prevHandLen = useRef(0);
+  useEffect(() => {
+    const hand = view.you !== null ? view.players[view.you]?.hand : undefined;
+    const len = hand?.length ?? 0;
+    if (blindPending.current && hand && len > prevHandLen.current) {
+      setReveal(hand[len - 1]);
+      blindPending.current = false;
+    }
+    prevHandLen.current = len;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view]);
+  useEffect(() => { if (reveal === null) return; const t = window.setTimeout(() => setReveal(null), 2400); return () => window.clearTimeout(t); }, [reveal]);
   const [confirmRoute, setConfirmRoute] = useState<string | null>(null);
   const [exTrains, setExTrains] = useState(0);
   const [exShips, setExShips] = useState(0);
@@ -179,7 +194,7 @@ export function TtrPlay({ view, act: rawAct, error }: {
             Claim a route{claimable.length ? ` (${claimable.length})` : ''}
           </button>
           <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || view.ticketDeckCount === 0}
-            onClick={() => act({ type: 'draw_tickets' })}>Draw tickets</button>
+            onClick={() => setArm('tickets')}>Draw tickets</button>
           <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || harborCities(shim, meShim).length === 0 || !harborCardsFor(meShim)}
             onClick={() => setArm(arm === 'harbor' ? 'idle' : 'harbor')}>Build a harbor</button>
           <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || (mine.boxTrains + mine.boxShips === 0)}
@@ -219,7 +234,7 @@ export function TtrPlay({ view, act: rawAct, error }: {
           <div className="ig-lab">Take up to two cards — a faceup wild counts as both</div>
           <div className="tp-market" onClick={(e) => e.stopPropagation()}>
             <button className="tp-mcard" disabled={view.shipDeckCount === 0} style={{ background: '#12202b', color: '#e8ebf0', font: '700 15px Inter, sans-serif' }}
-              onClick={() => act({ type: 'draw_card', source: 'ship' })}>
+              onClick={() => { blindPending.current = true; act({ type: 'draw_card', source: 'ship' }); }}>
               SHIPS<br />{view.shipDeckCount}
             </button>
             {view.market.map((c, i) => (
@@ -229,7 +244,7 @@ export function TtrPlay({ view, act: rawAct, error }: {
               </button>
             ))}
             <button className="tp-mcard" disabled={view.trainDeckCount === 0} style={{ background: '#1d1712', color: '#e8ebf0', font: '700 15px Inter, sans-serif' }}
-              onClick={() => act({ type: 'draw_card', source: 'train' })}>
+              onClick={() => { blindPending.current = true; act({ type: 'draw_card', source: 'train' }); }}>
               TRAINS<br />{view.trainDeckCount}
             </button>
           </div>
@@ -237,6 +252,30 @@ export function TtrPlay({ view, act: rawAct, error }: {
           {view.turnDraws > 0
             ? <button className="tp-act primary" style={{ maxWidth: 220 }} onClick={() => { act({ type: 'end_turn' }); setArm('idle'); }}>End turn</button>
             : <button className="tp-act" style={{ maxWidth: 200 }} onClick={() => setArm('idle')}>Close</button>}
+        </div>
+      )}
+
+      {/* draw-tickets confirm (so you can cancel getting more routes) */}
+      {arm === 'tickets' && (
+        <div className="tp-overlay" onClick={() => setArm('idle')}>
+          <div className="ig-glass" style={{ padding: '22px 30px', borderRadius: 18, textAlign: 'center', maxWidth: 380 }} onClick={(e) => e.stopPropagation()}>
+            <div className="ig-lab">Draw destination tickets</div>
+            <div style={{ opacity: 0.8, margin: '8px 0 16px' }}>You'll draw new tickets and must keep at least one. This uses your turn.</div>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+              <button className="tp-act primary" style={{ width: 'auto', padding: '12px 26px' }}
+                onClick={() => { act({ type: 'draw_tickets' }); setArm('idle'); }}>Draw</button>
+              <button className="tp-act" style={{ width: 'auto', padding: '12px 26px' }} onClick={() => setArm('idle')}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* reveal a card drawn blind from a deck */}
+      {reveal !== null && cardFace(scene, reveal) && (
+        <div className="tp-overlay" style={{ zIndex: 60 }} onClick={() => setReveal(null)}>
+          <div className="ig-lab">You drew</div>
+          <img src={cardFace(scene, reveal)!} alt="" style={{ width: 150, height: 210, borderRadius: 12, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 14px 44px rgba(0,0,0,0.75)' }} />
+          <button className="tp-act" style={{ maxWidth: 160 }} onClick={() => setReveal(null)}>OK</button>
         </div>
       )}
 
