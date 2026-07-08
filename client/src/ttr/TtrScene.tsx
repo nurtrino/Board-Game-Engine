@@ -130,12 +130,17 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
     const box = new THREE.Box3().setFromObject(c);
     return { clone: c, minY: box.min.y, midX: (box.min.x + box.max.x) / 2 };
   }, [obj, tint]);
-  const s = def.scale.map((v) => v * scaleMul);
-  // seat the piece's lowest point on the map surface; yaw it along its route
+  // The mod's meshes are chunky and tall; keep a slightly-trimmed footprint so
+  // they nestle inside the printed slots, but flatten the height a lot so the
+  // low pieces don't parallax off their slots when the camera tilts.
+  const FOOT = 0.9, TALL = 0.5;
+  const sx = def.scale[0] * scaleMul * FOOT;
+  const sy = def.scale[1] * scaleMul * TALL;
+  const sz = def.scale[2] * scaleMul * FOOT;
   const BOARD_Y = 1.0;
   const yaw = -((snap.rot[1] ?? 0) * Math.PI) / 180;
   return (
-    <group position={[snap.pos[0], BOARD_Y - minY * s[1] + lift, -snap.pos[2]]} rotation={[0, yaw, 0]} scale={[s[0], s[1], s[2]]}>
+    <group position={[snap.pos[0], BOARD_Y - minY * sy + lift, -snap.pos[2]]} rotation={[0, yaw, 0]} scale={[sx, sy, sz]}>
       <primitive object={clone} position-x={-midX} />
     </group>
   );
