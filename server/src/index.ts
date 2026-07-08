@@ -253,10 +253,13 @@ function scheduleBots(room: Room): void {
   }
   if (seat === null || botTimers.has(room.id)) return;
   const botSeat = seat;
+  // deliberate pace so the TV can show each move land with its caption/fly-to,
+  // rather than a whole bot turn resolving in a blink
+  const delay = (room.state as TtrState).phase === 'setup' ? 1100 : 1800;
   botTimers.set(room.id, setTimeout(() => {
     botTimers.delete(room.id);
     try { ttrBotAct(room, botSeat); } catch (err) { console.error('bot error:', err); }
-  }, 700));
+  }, delay));
 }
 
 function ttrBotAct(room: Room, seat: number): void {
@@ -278,9 +281,16 @@ function ttrBotAct(room: Room, seat: number): void {
     acted = attempt({ type: 'setup_ready', tickets: keep, trains, ships: TTR_RULES.pieceTotal - trains });
   } else if (p.pendingTickets.length) {
     acted = attempt({ type: 'keep_tickets', keep: [rand(p.pendingTickets.length)] });
+  } else if (s.turnDraws > 0) {
+    // mid-draw: take a second random card, or end the turn (one card is fine)
+    if (Math.random() < 0.75) {
+      const sources: (number | 'train' | 'ship')[] = ['train', 'ship', 0, 1, 2, 3, 4, 5];
+      for (let k = 0; k < 10 && !acted; k++) acted = attempt({ type: 'draw_card', source: sources[rand(sources.length)] });
+    }
+    if (!acted) acted = attempt({ type: 'end_turn' });
   } else {
-    // claim a random affordable route most of the time
-    if (s.drawsLeft === 0 && Math.random() < 0.65) {
+    // fresh turn: claim a random affordable route most of the time
+    if (Math.random() < 0.6) {
       const options = claimableRoutes(s, p);
       if (options.length) {
         const id = options[rand(options.length)];
@@ -289,15 +299,14 @@ function ttrBotAct(room: Room, seat: number): void {
       }
     }
     if (!acted) {
-      // draw a random card (market slot or a deck); a few tries in case a
-      // slot is empty or a faceup wild is illegal as the second draw
       const sources: (number | 'train' | 'ship')[] = ['train', 'ship', 0, 1, 2, 3, 4, 5];
       for (let k = 0; k < 10 && !acted; k++) acted = attempt({ type: 'draw_card', source: sources[rand(sources.length)] });
     }
-    if (!acted && s.drawsLeft === 0 && s.ticketDeck.length) acted = attempt({ type: 'draw_tickets' });
-    if (!acted && s.drawsLeft === 0 && p.boxTrains + p.boxShips > 0) {
+    if (!acted && s.ticketDeck.length) acted = attempt({ type: 'draw_tickets' });
+    if (!acted && p.boxTrains + p.boxShips > 0) {
       acted = attempt({ type: 'exchange', trains: Math.min(1, p.boxTrains), ships: p.boxTrains > 0 ? 0 : Math.min(1, p.boxShips) });
     }
+    if (!acted) acted = attempt({ type: 'end_turn' }); // pass if truly stuck
   }
 
   if (acted) broadcast(room); // re-enters scheduleBots for the next bot step

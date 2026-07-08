@@ -90,7 +90,7 @@ export interface TtrState {
   market: (number | null)[]; // 6 faceup card type ids
   ticketDeck: number[]; // ticket idx, top = end
   // turn-in-progress state
-  drawsLeft: number; // travel-card draws remaining this action (0 = action not started)
+  turnDraws: number; // travel cards drawn so far this turn (0-2); >0 = mid draw action
   finalTurns: number | null; // turns remaining after end trigger (null = not triggered)
   lastEvent: TtrEvent | null;
   winner: TtrColor | null;
@@ -189,7 +189,7 @@ export function createTtr(seated: TtrSeated[], seed: number): TtrState {
     trainDiscard: [], shipDiscard: [],
     market,
     ticketDeck,
-    drawsLeft: 0,
+    turnDraws: 0,
     finalTurns: null,
     lastEvent: null,
     winner: null,
@@ -234,7 +234,7 @@ export interface TtrView {
   trainDiscardTop: number | null;
   shipDiscardTop: number | null;
   ticketDeckCount: number;
-  drawsLeft: number;
+  turnDraws: number; // cards drawn this turn (0-2)
   finalTurns: number | null;
   lastEvent: TtrEvent | null;
   winner: TtrColor | null;
@@ -271,7 +271,7 @@ export function ttrViewFor(state: TtrState, viewer: number | null | 'dev'): TtrV
     trainDiscardTop: state.trainDiscard.at(-1) ?? null,
     shipDiscardTop: state.shipDiscard.at(-1) ?? null,
     ticketDeckCount: state.ticketDeck.length,
-    drawsLeft: state.drawsLeft,
+    turnDraws: state.turnDraws,
     finalTurns: state.finalTurns,
     lastEvent: state.lastEvent,
     winner: state.winner,

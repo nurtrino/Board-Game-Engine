@@ -37,6 +37,7 @@ export function TtrBoard({ view }: { view: TtrView }) {
           routeOwners={view.routeOwners}
           harborOwners={view.harborOwners}
           harborSnapOf={HARBOR_SNAP}
+          markers={view.players.map((p) => ({ color: p.color, score: p.score }))}
           focus={focus}
           interactive
         />

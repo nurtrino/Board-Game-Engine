@@ -82,9 +82,9 @@ function MapPlane({ scene }: { scene: TtrSceneDef }) {
 }
 
 /** A tinted piece mesh at a snap. */
-function PieceMesh({ scene, kind, tint, snap, lift = 0 }: {
+function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
   scene: TtrSceneDef; kind: 'train' | 'ship' | 'harbor' | 'marker';
-  tint: number[] | null; snap: { pos: number[]; rot: number[] }; lift?: number;
+  tint: number[] | null; snap: { pos: number[]; rot: number[] }; lift?: number; scaleMul?: number;
 }) {
   const def = scene.meshes[kind];
   const obj = useLoader(OBJLoader, def.mesh);
@@ -111,8 +111,51 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0 }: {
   // pieces rest ON the map surface — TTS snap y floats where gravity would
   // drop them, so use the plane height instead
   return (
-    <group position={[snap.pos[0], 1.02 + lift, -snap.pos[2]]} rotation={rot3(snap.rot)} scale={[s[0], s[1], s[2]]}>
+    <group position={[snap.pos[0], 1.02 + lift, -snap.pos[2]]} rotation={rot3(snap.rot)} scale={[s[0] * scaleMul, s[1] * scaleMul, s[2] * scaleMul]}>
       <primitive object={clone} rotation-y={Math.PI} />
+    </group>
+  );
+}
+
+/** A point on the perimeter scoring track for a given score (TTS-world x,z).
+ *  Score 0 sits at the top-left; increasing score runs clockwise around the
+ *  board, wrapping every 100 (a second lap). Approximate — reads as "the token
+ *  travels around the board" rather than mapping every printed number cell. */
+export function scoreTrackPos(rect: { tl: number[]; br: number[] }, score: number): [number, number] {
+  const inset = 1.4;
+  const xMin = rect.tl[0] + inset, xMax = rect.br[0] - inset;
+  const zMax = rect.tl[1] - inset, zMin = rect.br[1] + inset; // tl.z is the high (top) edge
+  const w = xMax - xMin, d = zMax - zMin;
+  const per = 2 * (w + d);
+  let t = ((score % 100) + 100) % 100 / 100 * per; // distance clockwise from top-left
+  // top edge L->R
+  if (t < w) return [xMin + t, zMax];
+  t -= w;
+  if (t < d) return [xMax, zMax - t]; // right edge top->bottom
+  t -= d;
+  if (t < w) return [xMax - t, zMin]; // bottom edge R->L
+  t -= w;
+  return [xMin, zMin + t]; // left edge bottom->top
+}
+
+/** Player scoring markers riding the perimeter track. */
+export function ScoreMarkers({ scene, markers }: {
+  scene: TtrSceneDef; markers: { color: TtrColor; score: number }[];
+}) {
+  const rect = mapRect(scene.mapTransform);
+  return (
+    <group>
+      {markers.map((m, i) => {
+        const [x, z] = scoreTrackPos(rect, m.score);
+        // fan overlapping markers slightly outward so all are visible
+        const off = (i - (markers.length - 1) / 2) * 0.9;
+        const tint = scene.tints[m.color]?.train ?? null;
+        return (
+          <Suspense key={m.color} fallback={null}>
+            <PieceMesh scene={scene} kind="marker" tint={tint} snap={{ pos: [x + off, 1.05, z], rot: [0, 0, 0] }} lift={0.4} scaleMul={1.8} />
+          </Suspense>
+        );
+      })}
     </group>
   );
 }
@@ -253,11 +296,12 @@ function FocusFly({ focus, controls }: { focus?: TtrFocus; controls: React.RefOb
 
 // ---------------------------------------------------------------------------
 
-export function TtrTable({ scene, routeOwners, harborOwners, harborSnapOf, pickRoutes, onPickRoute, focus, interactive = true, children }: {
+export function TtrTable({ scene, routeOwners, harborOwners, harborSnapOf, markers, pickRoutes, onPickRoute, focus, interactive = true, children }: {
   scene: TtrSceneDef;
   routeOwners: Record<string, TtrColor>;
   harborOwners: Record<string, TtrColor>;
   harborSnapOf: Record<string, number>;
+  markers?: { color: TtrColor; score: number }[];
   pickRoutes?: string[];
   onPickRoute?: (id: string) => void;
   focus?: TtrFocus;
@@ -276,6 +320,7 @@ export function TtrTable({ scene, routeOwners, harborOwners, harborSnapOf, pickR
       <Suspense fallback={null}>
         <MapPlane scene={scene} />
         <PlacedPieces scene={scene} routeOwners={routeOwners} harborOwners={harborOwners} harborSnapOf={harborSnapOf} />
+        {markers && <ScoreMarkers scene={scene} markers={markers} />}
       </Suspense>
       {pickRoutes?.map((id) => <RouteGlow key={id} scene={scene} routeId={id} onPick={onPickRoute} />)}
       {children}

@@ -28,11 +28,14 @@ import { mulberry32, shuffle } from '../brass/rng.js';
 export type TtrAction =
   | { type: 'setup_ready'; tickets: number[]; trains: number; ships: number } // tickets = indices into pendingTickets
   | { type: 'draw_card'; source: 'train' | 'ship' | number } // number = market slot 0-5
+  | { type: 'end_turn' } // stop drawing early / pass when stuck
   | { type: 'claim'; route: string; cards: number[] } // cards = indices into hand
   | { type: 'draw_tickets' }
   | { type: 'keep_tickets'; keep: number[] } // indices into pendingTickets
   | { type: 'build_harbor'; city: string; cards: number[] }
   | { type: 'exchange'; trains: number; ships: number }; // desired deltas (+take from box, -return)
+
+const MAX_DRAWS = 2;
 
 export interface TtrResult { ok: boolean; error?: string; }
 const err = (error: string): TtrResult => ({ ok: false, error });
@@ -98,7 +101,7 @@ function piecesLeft(p: TtrPlayer): number { return p.trains + p.ships; }
 
 function endTurn(s: TtrState): void {
   const p = currentPlayer(s);
-  s.drawsLeft = 0;
+  s.turnDraws = 0;
   if (s.finalTurns === null && piecesLeft(p) <= RULES.endTriggerPieces) {
     s.finalTurns = s.players.length * RULES.extraTurnsAfterTrigger;
     s.log.push(`${p.name} is down to ${piecesLeft(p)} pieces — ${RULES.extraTurnsAfterTrigger} more turns each.`);
@@ -303,6 +306,16 @@ export function bestCardsFor(s: TtrState, p: TtrPlayer, routeId: string): number
   return null;
 }
 
+/** Does the player have any legal action available (used to allow a pass)? */
+export function hasAnyMove(s: TtrState, p: TtrPlayer): boolean {
+  if (s.trainDeck.length || s.shipDeck.length || s.market.some((c) => c !== null)) return true; // can always draw
+  if (s.ticketDeck.length) return true;
+  if (claimableRoutes(s, p).length) return true;
+  if (harborCities(s, p).length && harborCardsFor(p)) return true;
+  if (p.boxTrains + p.boxShips > 0) return true; // exchange
+  return false;
+}
+
 /** Port cities where this player may build a harbor right now (ignoring cards). */
 export function harborCities(s: TtrState, p: TtrPlayer): string[] {
   if (p.harbors <= 0) return [];
@@ -411,31 +424,44 @@ export function applyTtrAction(s: TtrState, seat: number, a: TtrAction): TtrResu
 
   switch (a.type) {
     case 'draw_card': {
-      if (s.drawsLeft === 0) s.drawsLeft = 2;
+      if (s.turnDraws >= MAX_DRAWS) return err('You have already drawn twice');
       if (typeof a.source === 'number') {
         const slot = a.source;
         const c = s.market[slot];
         if (c === null || c === undefined) return err('Empty slot');
         const isWild = CATALOG[c].wild;
-        if (isWild && s.drawsLeft < 2) return err('A faceup wild cannot be the second card');
+        if (isWild && s.turnDraws > 0) return err('A faceup wild cannot be the second card');
         p.hand.push(c);
         s.market[slot] = null;
         refillSlot(s, slot);
-        s.drawsLeft = isWild ? 0 : s.drawsLeft - 1;
+        // a faceup wild is the whole turn; otherwise it counts as one draw
+        s.turnDraws = isWild ? MAX_DRAWS : s.turnDraws + 1;
         event(s, p, { title: isWild ? 'Took the wild' : 'Took a faceup card', detail: '' });
       } else {
         const c = drawFrom(s, a.source);
         if (c === null) return err(`The ${a.source} deck is empty`);
         p.hand.push(c);
-        s.drawsLeft--;
+        s.turnDraws++;
         event(s, p, { title: 'Drew from the deck', detail: a.source === 'train' ? 'Train deck' : 'Ship deck' });
       }
-      if (s.drawsLeft <= 0) endTurn(s);
+      // player decides when to stop (End turn) — turn no longer auto-advances,
+      // so a single card is a legal take. Wild locks the turn to end.
+      if (s.turnDraws >= MAX_DRAWS) endTurn(s);
+      return OK;
+    }
+
+    case 'end_turn': {
+      // stop drawing early (took one card), or pass when nothing else is legal
+      const drew = s.turnDraws > 0;
+      const stuck = !drew && !hasAnyMove(s, p);
+      if (!drew && !stuck) return err('Take an action first');
+      event(s, p, { title: drew ? 'Ended turn' : 'Passed', detail: '' });
+      endTurn(s);
       return OK;
     }
 
     case 'claim': {
-      if (s.drawsLeft > 0) return err('Finish drawing cards first');
+      if (s.turnDraws > 0) return err('Finish drawing cards first');
       const reason = claimError(s, p, a.route, a.cards);
       if (reason) return err(reason);
       const r = ROUTE_BY_ID[a.route];
@@ -454,7 +480,7 @@ export function applyTtrAction(s: TtrState, seat: number, a: TtrAction): TtrResu
     }
 
     case 'draw_tickets': {
-      if (s.drawsLeft > 0) return err('Finish drawing cards first');
+      if (s.turnDraws > 0) return err("Finish drawing cards first");
       if (!s.ticketDeck.length) return err('No tickets left');
       p.pendingTickets = s.ticketDeck.splice(-RULES.ticketDrawCount).map(makeTicket);
       event(s, p, { title: 'Drew tickets', detail: `${p.pendingTickets.length} to choose from`, drew: p.pendingTickets.length });
@@ -465,7 +491,7 @@ export function applyTtrAction(s: TtrState, seat: number, a: TtrAction): TtrResu
       return err('No tickets pending');
 
     case 'build_harbor': {
-      if (s.drawsLeft > 0) return err('Finish drawing cards first');
+      if (s.turnDraws > 0) return err("Finish drawing cards first");
       if (p.harbors <= 0) return err('No harbors left');
       if (!HARBOR_CITIES.includes(a.city)) return err('Not a port city');
       if (s.harborOwners[a.city]) return err('That port already has a harbor');
@@ -481,7 +507,7 @@ export function applyTtrAction(s: TtrState, seat: number, a: TtrAction): TtrResu
     }
 
     case 'exchange': {
-      if (s.drawsLeft > 0) return err('Finish drawing cards first');
+      if (s.turnDraws > 0) return err("Finish drawing cards first");
       const takeT = a.trains, takeS = a.ships;
       if (takeT < 0 || takeS < 0 || takeT + takeS === 0) return err('Nothing to exchange');
       if (takeT > p.boxTrains) return err(`Only ${p.boxTrains} trains in the box`);

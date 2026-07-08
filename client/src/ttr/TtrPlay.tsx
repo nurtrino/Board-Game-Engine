@@ -6,12 +6,13 @@
 import { useMemo, useState } from 'react';
 import {
   CATALOG, RULES, ROUTE_BY_ID, HARBOR_SNAP,
-  claimableRoutes, bestCardsFor, harborCities, harborCardsFor, currentPlayer,
-  type TtrView, type TtrAction, type TtrColor, type Ticket,
+  claimableRoutes, bestCardsFor, harborCities, harborCardsFor,
+  type TtrView, type TtrAction,
 } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { TtrTable, useTtrScene, type TtrSceneDef } from './TtrScene';
 import { cardFace, ticketFace } from './TtrBoard';
+import { GameIntro, TTR_INTRO } from './GameIntro';
 
 const CSS = `
 .tp-hand { position: absolute; left: 50%; bottom: -30px; height: 170px; pointer-events: none; z-index: 30; }
@@ -55,11 +56,12 @@ export function TtrPlay({ view, act, error }: {
   const me = view.you !== null ? view.players[view.you] : null;
   const [picked, setPicked] = useState<number[]>([]); // pending ticket indices
   const [trains, setTrains] = useState(20);
-  const [arm, setArm] = useState<'idle' | 'draw' | 'claim' | 'harbor' | 'exchange' | 'mytickets'>('idle');
+  const [arm, setArm] = useState<'idle' | 'draw' | 'claim' | 'harbor' | 'exchange' | 'mytickets' | 'hand'>('idle');
   const [confirmRoute, setConfirmRoute] = useState<string | null>(null);
   const [exTrains, setExTrains] = useState(0);
   const [exShips, setExShips] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
+  const [showIntro, setShowIntro] = useState(true);
 
   const myTurn = me !== null && view.turnColor === me.color && view.phase === 'playing';
   const claimable = useMemo(() => {
@@ -140,6 +142,7 @@ export function TtrPlay({ view, act, error }: {
           routeOwners={view.routeOwners}
           harborOwners={view.harborOwners}
           harborSnapOf={HARBOR_SNAP}
+          markers={view.players.map((p) => ({ color: p.color, score: p.score }))}
           pickRoutes={arm === 'claim' ? claimable : undefined}
           onPickRoute={(id) => setConfirmRoute(id)}
         />
@@ -162,24 +165,37 @@ export function TtrPlay({ view, act, error }: {
         </div>
 
         <div className="ig-glass" style={{ padding: '10px 12px', borderRadius: 14, textAlign: 'center', font: '700 13px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase' }}>
-          {view.winner ? `${view.winner} wins` : myTurn ? (view.drawsLeft > 0 ? `Draw ${view.drawsLeft} more` : 'Your turn') : `${view.turnColor} is sailing`}
+          {view.winner ? `${view.winner} wins` : myTurn ? (view.turnDraws > 0 ? 'Draw one more or end turn' : 'Your turn') : `${view.turnColor} is sailing`}
           {view.finalTurns !== null && !view.winner && <div className="ig-lab" style={{ paddingTop: 3 }}>Final turns</div>}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button className="tp-act" disabled={!myTurn} onClick={() => setArm(arm === 'draw' ? 'idle' : 'draw')}>Draw cards</button>
-          <button className="tp-act" disabled={!myTurn || view.drawsLeft > 0 || claimable.length === 0}
+          <button className="tp-act" disabled={!myTurn || view.turnDraws >= 2} onClick={() => setArm(arm === 'draw' ? 'idle' : 'draw')}>Draw cards</button>
+          <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || claimable.length === 0}
             onClick={() => { if (claimable.length === 0) setNotice('No route you can afford right now'); setArm(arm === 'claim' ? 'idle' : 'claim'); }}>
             Claim a route{claimable.length ? ` (${claimable.length})` : ''}
           </button>
-          <button className="tp-act" disabled={!myTurn || view.drawsLeft > 0 || view.ticketDeckCount === 0}
+          <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || view.ticketDeckCount === 0}
             onClick={() => act({ type: 'draw_tickets' })}>Draw tickets</button>
-          <button className="tp-act" disabled={!myTurn || view.drawsLeft > 0 || harborCities(shim, meShim).length === 0 || !harborCardsFor(meShim)}
+          <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || harborCities(shim, meShim).length === 0 || !harborCardsFor(meShim)}
             onClick={() => setArm(arm === 'harbor' ? 'idle' : 'harbor')}>Build a harbor</button>
-          <button className="tp-act" disabled={!myTurn || view.drawsLeft > 0 || (mine.boxTrains + mine.boxShips === 0)}
+          <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || (mine.boxTrains + mine.boxShips === 0)}
             onClick={() => { setExTrains(0); setExShips(0); setArm('exchange'); }}>Exchange pieces</button>
           <button className="tp-act" onClick={() => setArm('mytickets')}>My tickets</button>
         </div>
+
+        {/* End turn — shown whenever it's your turn so it's always clear how to
+            conclude; enabled once ending is a legal move (drew a card, or stuck) */}
+        {myTurn && !view.winner && (
+          <button
+            className="tp-act primary"
+            style={{ marginTop: 'auto' }}
+            disabled={view.turnDraws === 0 && claimable.length + harborCities(shim, meShim).length > 0}
+            onClick={() => { act({ type: 'end_turn' }); setArm('idle'); }}
+          >
+            End turn
+          </button>
+        )}
 
         {arm === 'harbor' && (
           <div className="ig-glass" style={{ padding: 12, borderRadius: 14 }}>
@@ -197,25 +213,27 @@ export function TtrPlay({ view, act, error }: {
       {/* market overlay */}
       {arm === 'draw' && (
         <div className="tp-overlay" onClick={() => setArm('idle')}>
-          <div className="ig-lab">Take two cards — a faceup wild counts as both</div>
+          <div className="ig-lab">Take up to two cards — a faceup wild counts as both</div>
           <div className="tp-market" onClick={(e) => e.stopPropagation()}>
-            <button className="tp-mcard" style={{ background: '#12202b', color: '#e8ebf0', font: '700 15px Inter, sans-serif' }}
+            <button className="tp-mcard" disabled={view.shipDeckCount === 0} style={{ background: '#12202b', color: '#e8ebf0', font: '700 15px Inter, sans-serif' }}
               onClick={() => act({ type: 'draw_card', source: 'ship' })}>
               SHIPS<br />{view.shipDeckCount}
             </button>
             {view.market.map((c, i) => (
-              <button key={i} className="tp-mcard" disabled={c === null}
+              <button key={i} className="tp-mcard" disabled={c === null || (view.turnDraws > 0 && c !== null && !!CATALOG[c]?.wild)}
                 onClick={() => act({ type: 'draw_card', source: i })}>
                 {c !== null && cardFace(scene, c) && <img src={cardFace(scene, c)!} alt="" />}
               </button>
             ))}
-            <button className="tp-mcard" style={{ background: '#1d1712', color: '#e8ebf0', font: '700 15px Inter, sans-serif' }}
+            <button className="tp-mcard" disabled={view.trainDeckCount === 0} style={{ background: '#1d1712', color: '#e8ebf0', font: '700 15px Inter, sans-serif' }}
               onClick={() => act({ type: 'draw_card', source: 'train' })}>
               TRAINS<br />{view.trainDeckCount}
             </button>
           </div>
-          <div className="ig-lab">{view.drawsLeft > 0 ? `${view.drawsLeft} draw${view.drawsLeft === 1 ? '' : 's'} left` : 'First card starts your turn'}</div>
-          <button className="tp-act" style={{ maxWidth: 200 }} onClick={() => setArm('idle')}>Close</button>
+          <div className="ig-lab">{view.turnDraws === 1 ? 'One taken — take another or end your turn' : view.turnDraws === 0 ? 'Your first card starts the turn' : ''}</div>
+          {view.turnDraws > 0
+            ? <button className="tp-act primary" style={{ maxWidth: 220 }} onClick={() => { act({ type: 'end_turn' }); setArm('idle'); }}>End turn</button>
+            : <button className="tp-act" style={{ maxWidth: 200 }} onClick={() => setArm('idle')}>Close</button>}
         </div>
       )}
 
@@ -343,11 +361,72 @@ export function TtrPlay({ view, act, error }: {
         })}
       </div>
 
+      {/* view-whole-hand button, just right of the fan */}
+      <button
+        onClick={() => setArm('hand')}
+        style={{
+          position: 'absolute', bottom: 18, left: `calc((100vw - ${RIGHT_W}) / 2 + min(46vw, 300px))`,
+          zIndex: 35, borderRadius: 12, padding: '10px 14px', font: '700 11px Inter, sans-serif',
+          letterSpacing: 1, textTransform: 'uppercase',
+        }}
+        className="ig-glass"
+      >
+        View hand<br /><span style={{ opacity: 0.6, fontWeight: 400 }}>{(mine.hand ?? []).length} cards</span>
+      </button>
+
+      {/* whole hand in the foreground, grouped by color + type with counts */}
+      {arm === 'hand' && (
+        <div className="tp-overlay" onClick={() => setArm('idle')}>
+          <div className="ig-lab">Your hand — {(mine.hand ?? []).length} cards</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, justifyContent: 'center', maxWidth: '90vw' }} onClick={(e) => e.stopPropagation()}>
+            {handGroups(mine.hand ?? []).map((grp) => (
+              <div key={grp.key} style={{ position: 'relative', width: 128, height: 182 }}>
+                {grp.cards.map((c, j) => (
+                  <div key={j} style={{
+                    position: 'absolute', top: 0, left: j * 15, width: 128, height: 182,
+                    borderRadius: 10, border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 6px 18px rgba(0,0,0,0.6)',
+                    backgroundImage: cardFace(scene, c) ? `url(${cardFace(scene, c)})` : undefined,
+                    backgroundSize: 'cover', backgroundPosition: 'center',
+                  }} />
+                ))}
+                <span style={{
+                  position: 'absolute', bottom: -10, left: grp.cards.length * 15 + 40, transform: 'translateX(-50%)',
+                  background: '#0c1116', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 999,
+                  padding: '3px 10px', font: '800 13px Inter, sans-serif', zIndex: 30,
+                }}>×{grp.cards.length}</span>
+              </div>
+            ))}
+            {(mine.hand ?? []).length === 0 && <p className="dim">Empty hand.</p>}
+          </div>
+          <button className="tp-act" style={{ maxWidth: 200, marginTop: 18 }} onClick={() => setArm('idle')}>Close</button>
+        </div>
+      )}
+
+      {/* start-of-game goal + rulebook link (dismissible; ? reopens it) */}
+      {showIntro && <GameIntro intro={TTR_INTRO} onClose={() => setShowIntro(false)} />}
+      <button
+        onClick={() => setShowIntro(true)}
+        title="How to play"
+        className="ig-glass"
+        style={{ position: 'absolute', top: 12, left: 12, zIndex: 45, width: 40, height: 40, borderRadius: '50%', font: '700 18px Inter, sans-serif', padding: 0 }}
+      >?</button>
+
       {(error || notice) && (
         <div className="toast" onAnimationEnd={() => setNotice(null)}>{error || notice}</div>
       )}
     </div>
   );
+}
+
+/** Group a hand into stacks by (type, color/wild) for the whole-hand view. */
+function handGroups(hand: number[]): { key: string; cards: number[] }[] {
+  const map = new Map<string, number[]>();
+  for (const c of hand) {
+    const t = CATALOG[c];
+    const key = `${t.type}:${t.wild ? 'wild' : t.color}:${t.double ? 'd' : 's'}`;
+    (map.get(key) ?? map.set(key, []).get(key)!).push(c);
+  }
+  return [...map.entries()].map(([key, cards]) => ({ key, cards }));
 }
 
 // The shared legality helpers take a TtrState; the view carries everything

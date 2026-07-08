@@ -16,6 +16,7 @@ import {
   type BrassView, type BrassAction, type Card, type Color,
 } from '@bge/shared';
 import { TtrPlay } from '../ttr/TtrPlay';
+import { GameIntro, BRASS_INTRO } from '../ttr/GameIntro';
 
 const ALL_COLORS: Color[] = ['Orange', 'Purple', 'Teal', 'Yellow'];
 
@@ -182,6 +183,7 @@ function GameView({ scene, view, act, error }: {
   const [sheetTab, setSheetTab] = useState<'actions' | 'cards'>('actions');
   const [notice, setNotice] = useState<string | null>(null);
   const [drawn, setDrawn] = useState<{ cards: Card[]; seq: number } | null>(null);
+  const [showIntro, setShowIntro] = useState(true);
   const noticeFor = (msg: string) => {
     playSfx('error');
     setNotice(msg);
@@ -510,7 +512,10 @@ function GameView({ scene, view, act, error }: {
         </div>
       </div>
 
-      {/* top-left: reference sheet */}
+      {/* start-of-game goal + rulebook link */}
+      {showIntro && <GameIntro intro={BRASS_INTRO} onClose={() => setShowIntro(false)} />}
+
+      {/* top-left: reference sheet (the ? — also carries the goal + rulebook) */}
       {scene.cheatSheet && (
         <button
           onClick={() => setFocus(-1)}
@@ -763,7 +768,7 @@ function GameView({ scene, view, act, error }: {
           <div className="card-focus" onClick={(e) => e.stopPropagation()}>
             {focus === -1 ? (
               <div style={{ textAlign: 'center' }}>
-                <div style={{ display: 'inline-flex', gap: 6, padding: 5, borderRadius: 10, background: 'rgba(20,24,30,0.95)', marginBottom: 10 }}>
+                <div style={{ display: 'inline-flex', gap: 6, padding: 5, borderRadius: 10, background: 'rgba(20,24,30,0.95)', marginBottom: 10, alignItems: 'center' }}>
                   {([['actions', 'How the actions work'], ['cards', 'Card distribution']] as const).map(([id, label]) => (
                     <button
                       key={id}
@@ -775,6 +780,14 @@ function GameView({ scene, view, act, error }: {
                       }}
                     >{label}</button>
                   ))}
+                  <button
+                    onClick={() => { setFocus(null); setShowIntro(true); }}
+                    style={{ padding: '7px 16px', borderRadius: 7, border: 'none', cursor: 'pointer', background: 'transparent', color: '#e8ebf0', font: '600 13px Inter, sans-serif' }}
+                  >Goal</button>
+                  <a
+                    href={BRASS_INTRO.rulebook} target="_blank" rel="noreferrer"
+                    style={{ padding: '7px 16px', borderRadius: 7, color: '#8fd0ff', font: '600 13px Inter, sans-serif', textDecoration: 'none' }}
+                  >Rulebook ↗</a>
                 </div>
                 <img
                   src={sheetTab === 'actions' ? (scene.actionsSheet?.image ?? scene.cheatSheet!.image) : scene.cheatSheet!.image}

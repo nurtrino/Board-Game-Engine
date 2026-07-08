@@ -283,6 +283,8 @@ function stage(url, kind) {
 
 const mapImage = stage(save.TableURL, 'img');
 const rulesPdf = stage(save.ObjectStates.find((o) => o.Name === 'Custom_PDF').CustomPDF.PDFUrl, 'pdf');
+// also a stable name the client's rulebook link can hard-code
+fs.copyFileSync(path.join(ROOT, 'client/public', rulesPdf.slice(1)), path.join(OUT_ASSETS, 'rulebook.pdf'));
 
 const stageModel = (o) => ({
   mesh: stage(o.CustomMesh.MeshURL, 'model'),
@@ -324,6 +326,10 @@ console.log(`map image: ${mapW}x${mapH}`);
 // 8. Write outputs
 // ---------------------------------------------------------------------------
 
+// carry the fitted transform forward across re-extracts (fit-ttr-map wrote it)
+let prevTransformGolden = null;
+try { prevTransformGolden = JSON.parse(fs.readFileSync(path.join(OUT_ASSETS, 'scene.json'), 'utf8')).mapTransform ?? null; } catch { /* first run */ }
+
 const golden = {
   source: 'TTS workshop 3324777769 — Ticket to Ride: Rails and Sails - The World [Scripted]',
   seats: SEATS,
@@ -334,6 +340,7 @@ const golden = {
     marketShipSlots: 3, // pickups 1-3
     marketTrainSlots: 3, // pickups 4-6
   },
+  mapTransform: prevTransformGolden,
   cities,
   routes,
   doubles,
