@@ -198,7 +198,9 @@ function AimCamera({ cx, cz, hx, hz, controls }: {
   const size = useThree((s) => s.size);
   useEffect(() => {
     const a = size.width / Math.max(1, size.height);
-    let h = Math.max(hz / FOV_TAN, hx / (FOV_TAN * a)) * 1.04;
+    // zoom out a touch so the map sits in the middle with black bands top and
+    // bottom for the big park river / deck HUD (keeps the cards off the board)
+    let h = Math.max(hz / FOV_TAN, hx / (FOV_TAN * a)) * 1.42;
     let x = cx, z = cz;
     // dev harness: ?cam=x,z,h aims the camera for zoomed screenshots
     const q = new URLSearchParams(location.search).get('cam');

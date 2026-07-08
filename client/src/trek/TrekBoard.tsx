@@ -98,23 +98,17 @@ export function TrekBoard({ view }: { view: TrekView }) {
         ))}
       </div>
 
-      {/* park river — big, across the top so the table can read it */}
+      {/* park river — big and clear across the top black band, off the board */}
       <div style={{
-        position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)', zIndex: 5,
-        display: 'flex', alignItems: 'flex-start', gap: 12,
+        position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', zIndex: 5,
+        display: 'flex', alignItems: 'flex-start', gap: 16,
       }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ width: 150, height: 106, borderRadius: 9, background: '#16202b', border: '1px solid rgba(255,255,255,0.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 26px Inter, sans-serif' }}>{view.parkDeckCount}</div>
-          <div className="ig-lab" style={{ paddingTop: 5 }}>Park deck</div>
-        </div>
-        {view.parkRiver.map((c, i) => (
+        {view.parkRiver.map((c, i) => (c === null ? null : (
           <div key={`P${i}`} style={{ textAlign: 'center' }}>
-            {c !== null
-              ? trekFaceByCell(scene, 'parks', PARKS[c].cell, 150, 106)
-              : <div style={{ width: 150, height: 106, borderRadius: 9, border: '1px dashed rgba(255,255,255,0.14)' }} />}
-            {c !== null && <div className="ig-lab" style={{ paddingTop: 5, maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{PARKS[c].name}</div>}
+            {trekFaceByCell(scene, 'parks', PARKS[c].cell, 176, 124)}
+            <div style={{ font: '700 13px Inter, sans-serif', paddingTop: 5, maxWidth: 176, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{PARKS[c].name}</div>
           </div>
-        ))}
+        )))}
       </div>
 
       {/* shared rivers: trek cards + majors */}
@@ -123,8 +117,8 @@ export function TrekBoard({ view }: { view: TrekView }) {
         display: 'flex', alignItems: 'flex-end', gap: 8, padding: '10px 14px', borderRadius: 16,
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ width: 52, height: 74, borderRadius: 6, background: '#1d2416', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 13px Inter, sans-serif' }}>{view.trekDeckCount}</div>
-          <div className="ig-lab" style={{ paddingTop: 4 }}>Trek</div>
+          <div style={{ width: 34, height: 48, borderRadius: 5, background: '#1d2416', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 12px Inter, sans-serif' }}>{view.trekDeckCount}</div>
+          <div className="ig-lab" style={{ paddingTop: 3, fontSize: 9 }}>Trek</div>
         </div>
         {view.trekRiver.map((c, i) => (
           <div key={`t${i}`}>{c !== null ? trekFaceByCell(scene, 'trek', TREK_CATALOG[c].cell, 52, 74) : <div style={{ width: 52, height: 74 }} />}</div>

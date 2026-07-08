@@ -75,6 +75,18 @@ function Model({ def, tint, liftToSurface = false }: { def: DtModel; tint: numbe
   );
 }
 
+/** The circular board face, composed from the mod's scorecard art. */
+function BoardFace() {
+  const tex = useLoader(THREE.TextureLoader, '/darktower/board.png');
+  useMemo(() => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 16; }, [tex]);
+  return (
+    <mesh position={[0, 0.96, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <circleGeometry args={[20, 96]} />
+      <meshStandardMaterial map={tex} roughness={0.94} transparent />
+    </mesh>
+  );
+}
+
 /** The tower's wedge picture, set into the tower's window opening (the mod's
  *  rotating reel sits inside the tower at this height — global.lua wedge). */
 function TowerDisplay({ scene, pic, reelOf, rowOf }: {
@@ -142,21 +154,9 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, interactive =
       <directionalLight position={[14, 30, 10]} intensity={1.3} />
       <directionalLight position={[-12, 20, -14]} intensity={0.5} />
       <Suspense fallback={null}>
-        {/* circular play surface with the four kingdom quadrants */}
-        <mesh position={[0, 0.96, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <circleGeometry args={[20, 96]} />
-          <meshStandardMaterial color="#26221c" roughness={0.95} />
-        </mesh>
-        {[0, Math.PI / 2].map((a) => (
-          <mesh key={a} position={[0, 0.98, 0]} rotation={[-Math.PI / 2, 0, a + Math.PI / 4]}>
-            <planeGeometry args={[40, 0.18]} />
-            <meshStandardMaterial color="#4a4238" roughness={1} />
-          </mesh>
-        ))}
-        <mesh position={[0, 0.97, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[19.7, 20, 96]} />
-          <meshStandardMaterial color="#4a4238" roughness={1} />
-        </mesh>
+        {/* circular play surface: kingdom quadrants + crests composed from
+            the mod's scorecard art (gen-dt-board.mjs) */}
+        <BoardFace />
         {scene.board.mesh && <Model def={scene.board} tint={scene.colorCodes.tan} />}
         {scene.tower.mesh && <Model def={scene.tower} tint={null} />}
         {scene.buildings.map((b, i) => b.mesh && (

@@ -5,7 +5,7 @@
 
 import { useMemo, useState } from 'react';
 import {
-  TREK_CATALOG, PARKS, MAJORS, NODES, NEIGHBORS, TREK_RULES,
+  TREK_CATALOG, PARKS, MAJORS, NODES, NEIGHBORS, TREK_RULES, STONE_COLORS,
   findPath, nodeName,
   type TrekView, type TrekAction, type TrekSuit, type StoneColor, type TrekState, type TrekPlayer,
 } from '@bge/shared';
@@ -150,6 +150,35 @@ export function TrekPlay({ view, act, error }: {
             <div><div className="ig-lab">Stones</div><div className="ig-stat-v ig-num">{myStoneTotal}</div></div>
             <div><div className="ig-lab">Campsites</div><div className="ig-stat-v ig-num">{mine.campsites}</div></div>
             <div><div className="ig-lab">Cards</div><div className="ig-stat-v ig-num">{hand.length}</div></div>
+          </div>
+        </div>
+
+        {/* your stones — a little pile, enumerated per colour */}
+        <div className="ig-glass" style={{ padding: '10px 12px', borderRadius: 14 }}>
+          <div className="ig-lab" style={{ paddingBottom: 8 }}>Your stones</div>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            {STONE_COLORS.map((color) => {
+              const n = mine.stones[color] ?? 0;
+              if (n === 0) return null;
+              const rgb = scene.tints.stones[color] ?? [0.6, 0.6, 0.6];
+              const hex = `rgb(${Math.round(rgb[0] * 255)},${Math.round(rgb[1] * 255)},${Math.round(rgb[2] * 255)})`;
+              return (
+                <div key={color} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                  <div style={{ position: 'relative', width: 30, height: 24 }}>
+                    {Array.from({ length: Math.min(n, 6) }).map((_, k) => (
+                      <span key={k} style={{
+                        position: 'absolute', width: 15, height: 15, borderRadius: '50%',
+                        left: (k % 3) * 7, top: Math.floor(k / 3) * 8,
+                        background: `radial-gradient(circle at 34% 30%, rgba(255,255,255,0.7), ${hex} 62%, rgba(0,0,0,0.4))`,
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.6)', border: '1px solid rgba(0,0,0,0.35)',
+                      }} />
+                    ))}
+                  </div>
+                  <b style={{ fontVariantNumeric: 'tabular-nums' }}>×{n}</b>
+                </div>
+              );
+            })}
+            {myStoneTotal === 0 && <span className="dim">none yet</span>}
           </div>
         </div>
 
