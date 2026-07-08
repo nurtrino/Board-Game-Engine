@@ -1,0 +1,27 @@
+{
+  "name": "board-game-engine",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Play board games together: private hands on phones, shared board on the TV. Imports Tabletop Simulator workshop assets.",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "overrides": {
+    "@types/three": "0.169.0",
+    "three": "0.169.0"
+  },
+  "scripts": {
+    "dev": "npm run dev -w server",
+    "build": "npm run build -w client",
+    "start": "npm run build -w client && npm run dev -w server",
+    "test": "npm run test -w shared"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.4.1",
+    "@gltf-transform/extensions": "^4.4.1",
+    "@gltf-transform/functions": "^4.4.1",
+    "meshoptimizer": "^1.2.0"
+  }
+}

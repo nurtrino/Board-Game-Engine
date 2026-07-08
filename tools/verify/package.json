@@ -1,0 +1,1 @@
+{ "name": "bge-verify", "private": true, "version": "0.0.0", "type": "module", "dependencies": { "puppeteer": "^23.0.0" } }

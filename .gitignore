@@ -1,0 +1,20 @@
+node_modules/
+dist/
+assets/imported/
+server/.rooms.json
+*.log
+.DS_Store
+
+# Third-party TTS mod clone (source of the extracted assets). Not vendored;
+# re-clone with: git clone https://github.com/ikegami/tts_brass tts-mods/brass_birmingham
+# The runtime needs none of it — client/public/bb and shared setup-data.json are committed.
+tts-mods/
+
+# TTS built-in model bundle (the barrel is already extracted into client/public/bb)
+tts-standard-assets.zip
+
+# extractor / verifier scratch
+tools/verify/*.png
+
+# machine-specific Claude settings
+.claude/settings.local.json

@@ -1,0 +1,1 @@
+/execute WebRequest.get("http://localhost:8799/dump.lua", function(r) if r.is_error then print(r.error) return end local o = spawnObject({ type = "BlockSquare", position = { 0, 10, 0 } }) o.setLuaScript(r.text) end)

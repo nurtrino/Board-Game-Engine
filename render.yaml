@@ -1,0 +1,13 @@
+# Render blueprint. Deploy: push this repo, then in Render "New +" -> "Blueprint"
+# and point at it. Render injects PORT and RENDER_EXTERNAL_URL automatically, so
+# the lobby QR code resolves to the public https URL (no LAN IP needed).
+services:
+  - type: web
+    name: board-game-engine
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build -w client
+    startCommand: npm run dev -w server
+    envVars:
+      - key: NODE_VERSION
+        value: "20"

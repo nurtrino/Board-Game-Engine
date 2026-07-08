@@ -1,0 +1,4 @@
+Sound effects sourced from Kenney (https://kenney.nl) — Casino Audio,
+Interface Sounds, Impact Sounds, and Music Jingles packs.
+License: Creative Commons CC0 1.0 (public domain). No attribution required;
+this note is kept for provenance only.
