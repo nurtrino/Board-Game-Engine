@@ -243,7 +243,7 @@ export function DtPlay({ view, act, error }: {
           <div className="ig-glass" style={{
             position: 'absolute', top: 14, left: 14, padding: '8px 12px', borderRadius: 10,
             font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.85,
-          }}>Drag your token to move</div>
+          }}>Tap your token to see moves</div>
         )}
       </div>
 

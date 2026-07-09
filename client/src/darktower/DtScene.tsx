@@ -46,6 +46,34 @@ const FOV_TAN = Math.tan((FOV * Math.PI) / 360);
 
 const BOARD_Y = 0.96; // the painted board plane
 
+// The board is four kingdoms (quadrants) walled off by the diagonal FRONTIER
+// bands. A token may only move among the locations of the kingdom it currently
+// stands in — crossing to the next kingdom is the FRONTIER button's job (it
+// enforces the key). We bucket every building spot into a kingdom by its world
+// angle so "where you can legally move" is just this kingdom's spots.
+export type Kingdom = 'Yellow' | 'Blue' | 'Red' | 'Green';
+export interface Spot { kind: string; x: number; z: number }
+function kingdomOf(x: number, z: number): Kingdom {
+  const a = (Math.atan2(z, x) * 180) / Math.PI;
+  if (a > -45 && a <= 45) return 'Blue';
+  if (a > 45 && a <= 135) return 'Yellow';
+  if (a > 135 || a <= -135) return 'Green';
+  return 'Red';
+}
+export function kingdomSpots(scene: DtSceneDef): Record<Kingdom, Spot[]> {
+  const out: Record<Kingdom, Spot[]> = { Yellow: [], Blue: [], Red: [], Green: [] };
+  for (const b of scene.buildings) {
+    if (!b.pos) continue;
+    out[kingdomOf(b.pos[0], b.pos[2])].push({ kind: b.kind, x: +b.pos[0].toFixed(2), z: +b.pos[2].toFixed(2) });
+  }
+  return out;
+}
+/** The spots a token at (x,z) may legally move to: the rest of its kingdom. */
+export function legalMoves(scene: DtSceneDef, x: number, z: number): Spot[] {
+  const here = kingdomOf(x, z);
+  return kingdomSpots(scene)[here].filter((s) => Math.hypot(s.x - x, s.z - z) > 0.6);
+}
+
 function Model({ def, tint, centerXZ = false, seatY, lift = 0 }: {
   def: DtModel; tint: number[] | null; centerXZ?: boolean;
   seatY?: number; // seat the mesh's lowest point on this height (no floating)
@@ -178,17 +206,20 @@ function TowerLcd({ lcd }: { lcd: string }) {
 
 /** A player's token: rendered at its board `spot`, seated on the board, and —
  *  for the local player on their turn — pick-up-and-place draggable. */
-function Token({ def, tint, spot, draggable, onPlace, onDragChange }: {
+function Token({ def, tint, spot, draggable, selected, onPlace, onTap, onDragChange }: {
   def: DtModel; tint: number[] | null;
   spot: { x: number; z: number };
   draggable: boolean;
+  selected?: boolean; // this token is picked, showing its legal moves
   onPlace?: (x: number, z: number) => void;
+  onTap?: () => void; // a click (not a drag): toggle the legal-move highlights
   onDragChange?: (dragging: boolean) => void;
 }) {
   const [drag, setDrag] = useState<{ x: number; z: number } | null>(null);
   const { gl } = useThree();
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 1, 0), -(BOARD_Y + 0.02)), []);
   const active = useRef(false);
+  const startB = useRef<{ x: number; z: number } | null>(null); // board pos at pointer-down
 
   // render position: mirror world z (render z = -world z)
   const rx = drag ? drag.x : spot.x;
@@ -211,6 +242,7 @@ function Token({ def, tint, spot, draggable, onPlace, onDragChange }: {
         (e.target as Element).setPointerCapture?.(e.pointerId);
         gl.domElement.style.cursor = 'grabbing';
         const b = toBoard(e);
+        startB.current = b;
         if (b) setDrag(b);
       } : undefined}
       onPointerMove={draggable ? (e) => {
@@ -225,7 +257,12 @@ function Token({ def, tint, spot, draggable, onPlace, onDragChange }: {
         onDragChange?.(false);
         gl.domElement.style.cursor = 'auto';
         const b = toBoard(e) ?? drag;
+        const s = startB.current;
         setDrag(null);
+        startB.current = null;
+        // a click that barely moved is a tap (show/hide legal moves); a real
+        // drag drops the token where it was dragged
+        if (b && s && Math.hypot(b.x - s.x, b.z - s.z) < 0.5) { onTap?.(); return; }
         if (b) onPlace?.(+b.x.toFixed(2), +b.z.toFixed(2));
       } : undefined}
       onPointerOver={draggable ? () => { gl.domElement.style.cursor = 'grab'; } : undefined}
@@ -243,6 +280,12 @@ function Token({ def, tint, spot, draggable, onPlace, onDragChange }: {
         <mesh position={[0, -lift + 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.1, 1.35, 24]} />
           <meshBasicMaterial color="#7fe7ff" transparent opacity={0.8} />
+        </mesh>
+      )}
+      {selected && !drag && (
+        <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[1.0, 1.3, 28]} />
+          <meshBasicMaterial color="#ffd24a" transparent opacity={0.9} />
         </mesh>
       )}
     </group>
@@ -270,6 +313,29 @@ function AimCamera({ controls, aim }: {
   return null;
 }
 
+/** A highlighted legal destination: a glowing pad on the board you can click. */
+function MoveMarker({ x, z, onPick }: { x: number; z: number; onPick: () => void }) {
+  const { gl } = useThree();
+  const [hover, setHover] = useState(false);
+  return (
+    <group
+      position={[x, BOARD_Y + 0.04, -z]}
+      onPointerDown={(e) => { e.stopPropagation(); onPick(); }}
+      onPointerOver={() => { setHover(true); gl.domElement.style.cursor = 'pointer'; }}
+      onPointerOut={() => { setHover(false); gl.domElement.style.cursor = 'auto'; }}
+    >
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.85, 1.15, 30]} />
+        <meshBasicMaterial color={hover ? '#ffffff' : '#7fe7ff'} transparent opacity={0.9} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <circleGeometry args={[0.85, 30]} />
+        <meshBasicMaterial color="#7fe7ff" transparent opacity={hover ? 0.35 : 0.16} />
+      </mesh>
+    </group>
+  );
+}
+
 export interface DtTokenView { seat: number; color: DtSeat; spot: { x: number; z: number } }
 
 export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canMove, onMoveToken, interactive = true, children }: {
@@ -287,6 +353,9 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canM
 }) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [selected, setSelected] = useState<number | null>(null); // token showing its moves
+  useEffect(() => { if (!canMove) setSelected(null); }, [canMove]);
+  const picked = selected !== null ? tokens.find((t) => t.seat === selected) : undefined;
   return (
     <Canvas camera={{ fov: FOV, position: [0, 30, 26], near: 0.5, far: 400 }} gl={{ antialias: true }}>
       <ambientLight intensity={0.85} />
@@ -313,11 +382,17 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canM
               tint={scene.tokenTints[t.color] ?? null}
               spot={t.spot}
               draggable={!!(mine && canMove && interactive)}
-              onPlace={onMoveToken}
+              selected={selected === t.seat}
+              onTap={() => setSelected((s) => (s === t.seat ? null : t.seat))}
+              onPlace={(x, z) => { setSelected(null); onMoveToken?.(x, z); }}
               onDragChange={setDragging}
             />
           );
         })}
+        {/* legal moves for the picked token: the rest of its kingdom's spots */}
+        {picked && legalMoves(scene, picked.spot.x, picked.spot.z).map((s, i) => (
+          <MoveMarker key={`mv${i}`} x={s.x} z={s.z} onPick={() => { setSelected(null); onMoveToken?.(s.x, s.z); }} />
+        ))}
         <TowerDisplay scene={scene} pic={pic} reelOf={wedgeMaps.reelOf} rowOf={wedgeMaps.rowOf} />
         <TowerLcd lcd={lcd} />
         {/* dark felt */}

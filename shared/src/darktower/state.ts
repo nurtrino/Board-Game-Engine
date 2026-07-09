@@ -46,11 +46,14 @@ export interface DtPlayer {
  *  3749e1/2ee535), matched to kingdoms by seat proximity. `spot` is in the
  *  same world frame as the buildings, so a token at spot = citadel lands on
  *  the printed badge. */
+// centres measured from the printed citadel badges on boardart.webp (colour-
+// weighted centroid), so each crest piece lands dead-on its printed badge —
+// the old hand-eyed values sat the E/W pieces ~0.27 outward of the print.
 export const CITADEL_SPOTS: Record<DtSeat, { x: number; z: number }> = {
-  Red: { x: -0.6, z: -11.5 }, // Arisilon
-  Blue: { x: 11.4, z: 0.8 }, // Brynthia
-  Yellow: { x: -1.0, z: 11.4 }, // Durnin
-  Green: { x: -11.6, z: -0.7 }, // Zenon
+  Red: { x: -0.54, z: -11.56 }, // Arisilon
+  Blue: { x: 11.13, z: 0.68 }, // Brynthia
+  Yellow: { x: -0.99, z: 11.38 }, // Durnin
+  Green: { x: -11.34, z: -0.77 }, // Zenon
 };
 
 export interface DtEvent {
