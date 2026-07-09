@@ -96,7 +96,7 @@ export function DuneBoard({ view }: { view: DuneView }) {
       <div className="ig-glass" style={{ position: 'absolute', top: 12, left: 12, padding: '10px 14px', borderRadius: 14 }}>
         <div className="ig-lab">
           {view.phase === 'leaders' ? 'Choosing leaders'
-            : view.phase === 'combat' ? `Round ${view.round} — Combat`
+            : view.phase === 'combat' ? `Round ${view.round} · Combat`
             : view.phase === 'ended' ? 'Game over'
             : `Round ${view.round} of ${view.rounds}`}
         </div>
@@ -207,7 +207,7 @@ export function DuneBoard({ view }: { view: DuneView }) {
           {view.finalScores && (
             <div style={{ opacity: 0.8, paddingTop: 8, fontSize: 13 }}>
               {view.finalScores.map((f) => (
-                <div key={f.seat}>{view.players[f.seat].name} — {f.vp} VP</div>
+                <div key={f.seat}>{view.players[f.seat].name} · {f.vp} VP</div>
               ))}
             </div>
           )}
@@ -227,9 +227,7 @@ export function DuneBoard({ view }: { view: DuneView }) {
 
       {guide && view.phase !== 'ended' && (
         <>
-          <GuideNote style={{ top: '43%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 300, textAlign: 'center' }}
-            title="The board"
-            text="Players send agents to these spaces for resources, faction influence and to join the fight. First house to 10 victory points wins." />
+          {/* HUD callouts */}
           <GuideNote style={{ top: 208, left: '50%', transform: 'translateX(-50%)' }}
             title="This round's conflict"
             text="The prize being fought over. Agents at combat spaces deploy troops; after everyone reveals, 1st and 2nd place (3rd with 4 players) claim the rewards." />
@@ -239,6 +237,28 @@ export function DuneBoard({ view }: { view: DuneView }) {
           <GuideNote style={{ bottom: 168, right: 14, maxWidth: 260 }}
             title="Imperium row & reserve"
             text="Cards to buy with persuasion on a reveal turn. The reserve piles (Foldspace, Liaison, The Spice Must Flow) are always available too." />
+
+          {/* the whole board, region by region */}
+          <div className="ig-glass" style={{ position: 'absolute', top: 150, left: 12, width: 320, maxHeight: '74vh', overflowY: 'auto', padding: '12px 14px', borderRadius: 14, border: '1px solid rgba(232,180,74,0.55)', zIndex: 20 }}>
+            <div className="ig-lab" style={{ color: '#e8b450' }}>The board, region by region</div>
+            <div style={{ fontSize: 12, opacity: 0.85, lineHeight: 1.4, paddingTop: 4, marginBottom: 8 }}>
+              Each turn a player plays a card and sends one agent to a space here, pays its cost and takes its reward. First house to 10 victory points wins; if none, the leader after the last conflict takes it.
+            </div>
+            {[
+              ['Faction spaces · left edge', 'Emperor, Spacing Guild, Bene Gesserit and Fremen. Sending an agent raises you on that faction track. Reaching 2 scores a VP; reaching 4 pays the bonus and the alliance.'],
+              ['City spaces · Arrakeen, Carthag, Imperial Basin', 'Take troops, spice or solari and plant a control flag. Holding a city pays you spice at the start of each round.'],
+              ['Spice & desert · Great Flat, Hagga Basin, Sietch Tabr', 'Harvest melange. Bonus spice piles up on these maker spaces every round until an agent finally claims it.'],
+              ['Landsraad · top row', 'Mentat (extra agent + a card), High Council (+2 persuasion each reveal), Swordmaster (a permanent third agent), Rally Troops, Hall of Oratory, Secure Contract and Sell Melange (spice into solari).'],
+              ['Combat arena · centre', 'The crossed blades. Troops deployed from combat spaces gather here. Each troop is 2 strength, each revealed sword is 1.'],
+              ['Garrisons · four corners', "Each house's troops waiting at home. You may deploy up to 2 of them (plus any recruited that turn) when you act at a combat space."],
+              ['Control flags', 'Sit under the three cities. Every flag you hold pays spice when the next round begins.'],
+            ].map(([t, d]) => (
+              <div key={t} style={{ marginTop: 8 }}>
+                <div style={{ font: '700 11.5px Inter, sans-serif', color: '#e8b450' }}>{t}</div>
+                <div style={{ fontSize: 12, opacity: 0.82, lineHeight: 1.4 }}>{d}</div>
+              </div>
+            ))}
+          </div>
         </>
       )}
     </div>

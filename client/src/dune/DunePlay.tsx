@@ -50,7 +50,7 @@ const DUNE_TOUR: { target?: string; title: string; body: string }[] = [
   { target: 'leader', title: 'Your leader', body: 'Your house leader sits here. Tap this name any time to read its two powers: a passive ability and a signet-ring ability.' },
   { target: 'resources', title: 'Your resources', body: 'Solari is money, spice is the desert currency, water is spent at several spaces. Garrison is your troops at home. Agents is how many workers you still have to place this round.' },
   { target: 'influence', title: 'Faction influence', body: 'Four faction tracks. Reaching 2 on a track scores a victory point. Reaching 4 pays the faction bonus and its alliance, worth another point. An alliance is stolen if a rival passes your spot.' },
-  { target: 'board', title: 'Your board', body: 'A live view of your player mat: agents, troops, resources and leader as real pieces. Drag to look around. Tap HOUSE for the full breakdown.' },
+  { target: 'board', title: 'Your board', body: 'A live view of your player mat: your leader, the agents you can still send, your garrison troops and your resource tokens, all as real pieces. Tap HOUSE for the full breakdown.' },
   { target: 'hand', title: 'Your hand', body: 'Your five cards this round. Each card lists the board spaces its agent can reach, plus reveal values for later. Tap a card to send an agent with it.' },
   { target: 'actions', title: 'Your buttons', body: 'REVEAL flips the rest of your hand to buy cards and add combat swords. HAND shows your cards from any menu. INTRIGUE holds your secret cards. HOUSE opens your full board and stats. END TURN passes to the next player.' },
   { target: 'conflict', title: 'This round\'s conflict', body: 'The prize everyone competes for this round. Deploy troops at combat spaces to fight for it. First and second place claim the rewards after all reveals.' },
@@ -573,41 +573,43 @@ export function DunePlay({ view, act, error }: {
             </div>
           )}
 
-          {/* hand */}
-          {(me.hand?.length ?? 0) > 0 && (
-            <>
-              <div className="dn-lab">Hand</div>
-              <div className="dn-hand" data-tour="hand">
-                {(me.hand ?? []).map((c, i) => (
-                  <button key={`${c}-${i}`} className={`dn-card${selected === c ? ' sel' : ''}`}
-                    onClick={() => { if (canAgent) { setSelected(c); setUseBox(true); playSfx('click'); } }}>
-                    <DuneCard scene={scene} id={c} w={104} h={156} />
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
+          {/* hand + in-play sit at the bottom, filling whatever space is left */}
+          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {(me.hand?.length ?? 0) > 0 && (
+              <>
+                <div className="dn-lab">Hand{canAgent ? ' · tap a card to send an agent' : ''}</div>
+                <div className="dn-hand" data-tour="hand">
+                  {(me.hand ?? []).map((c, i) => (
+                    <button key={`${c}-${i}`} className={`dn-card${selected === c ? ' sel' : ''}`}
+                      onClick={() => { if (canAgent) { setSelected(c); setUseBox(true); playSfx('click'); } }}>
+                      <DuneCard scene={scene} id={c} w={138} h={207} />
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
 
-          {/* in play */}
-          {me.inPlay.length > 0 && (
-            <>
-              <div className="dn-lab" style={{ paddingTop: 8 }}>In play</div>
-              <div className="dn-hand">
-                {me.inPlay.map((c, i) => (
-                  <div key={`${c}-${i}`} style={{ opacity: 0.8 }}>
-                    <DuneCard scene={scene} id={c} w={82} h={122} />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+            {/* in play */}
+            {me.inPlay.length > 0 && (
+              <>
+                <div className="dn-lab" style={{ paddingTop: 6 }}>In play</div>
+                <div className="dn-hand">
+                  {me.inPlay.map((c, i) => (
+                    <div key={`${c}-${i}`} style={{ opacity: 0.8 }}>
+                      <DuneCard scene={scene} id={c} w={92} h={137} />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {/* right column: the player board, expanded to fill the height */}
         <div className="dn-right" data-tour="board">
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingLeft: 2 }}>
             <span className="dn-lab">Your board</span>
-            <span style={{ fontSize: 11, opacity: 0.45 }}>drag to look around · House for the full detail</span>
+            <span style={{ fontSize: 11, opacity: 0.45 }}>House for the full detail</span>
           </div>
           <div className="dn-mat-frame">
             <DuneMat scene={scene} view={view} me={me} height="100%" />

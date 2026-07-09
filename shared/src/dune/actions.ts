@@ -30,7 +30,12 @@ export type DuneAction =
   | { type: 'end_turn' };
 
 export interface DuneResult { ok: boolean; error?: string }
-const err = (error: string): DuneResult => ({ ok: false, error });
+// Player-facing alerts stay serious: capitalise the first letter and never
+// show an em dash (the device renders these verbatim in the error toast).
+const err = (error: string): DuneResult => ({
+  ok: false,
+  error: error.replace(/\s+—\s+/g, ', ').replace(/^\p{Ll}/u, (c) => c.toUpperCase()),
+});
 
 let eventSeq = 1;
 function event(s: DuneState, p: DunePlayer, title: string, detail = ''): void {
