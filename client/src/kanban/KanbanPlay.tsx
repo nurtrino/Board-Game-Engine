@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import {
-  DEPTS, DESIGN_BY_GUID, GOAL_BY_GUID, KANBAN_RULES, MODELS, ORDER_BY_GUID, PARTS, UPGRADE_SPACES,
+  CERT_SECTIONS, DEPTS, DESIGN_BY_GUID, GOAL_BY_GUID, KANBAN_RULES, MODELS, ORDER_BY_GUID, PARTS, UPGRADE_SPACES,
   type CarModel, type Dept, type KanbanAction, type KanbanView, type Part,
 } from '@bge/shared';
 import { SEAT_TINT, useKanbanScene } from './KanbanScene';
@@ -114,10 +114,13 @@ export function KanbanPlay({ view, act, error }: {
           <div className="kb-lab" style={{ padding: '8px 0' }}>{String(d.label ?? 'Choose')}</div>
           {d.kind === 'certSpace' && [3, 2, 1, 0].map((sp) => {
             const taken = view.players.some((q) => q.seat !== me.seat && q.cert.section === d.section && q.cert.space === sp);
+            const ben = (CERT_SECTIONS as Record<string, number>[][])[d.section as number]?.[3 - sp] ?? {};
+            const bits = [ben.pp && `${ben.pp} PP`, ben.bankedShifts && `bank ${ben.bankedShifts}`,
+              ben.books && `${ben.books} book`, ben.vouchers && `${ben.vouchers} voucher`, ben.speech && 'speech token'].filter(Boolean).join(' · ');
             return (
               <button key={sp} className="kb-opt" disabled={taken} onClick={() => send({ type: 'choose', space: sp })}>
                 <b>Space {4 - sp} from the left</b>
-                <span style={{ opacity: 0.6 }}>{sp === 0 ? 'acts first' : sp === 3 ? 'acts last' : ''}{taken ? ' · taken' : ''}</span>
+                <span style={{ opacity: 0.6 }}>{bits || 'no benefit'}{sp === 0 ? ' · acts first' : sp === 3 ? ' · acts last' : ''}{taken ? ' · taken' : ''}</span>
               </button>
             );
           })}
@@ -329,7 +332,7 @@ export function KanbanPlay({ view, act, error }: {
                         <button key={p} className="kb-btn" disabled={me.shiftsLeft <= 0}
                           onClick={() => send({ type: 'provide_part', model: m, part: p })}>{p}</button>
                       ))}
-                      {me.vouchers > 0 && PARTS.filter((p) => !me.parts.includes(p)).slice(0, 3).map((p) => (
+                      {me.vouchers > 0 && PARTS.filter((p) => !me.parts.includes(p)).map((p) => (
                         <button key={`v-${p}`} className="kb-btn" disabled={me.shiftsLeft <= 0}
                           onClick={() => send({ type: 'provide_part', model: m, part: p, voucher: true })}>{p} (voucher)</button>
                       ))}
@@ -375,10 +378,16 @@ export function KanbanPlay({ view, act, error }: {
                       <span style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                         {view.upgrades[def.model].map((x, space) => x === null && (
                           <button key={space} className="kb-btn"
-                            onClick={() => send({ type: 'upgrade_design', design: g, space, voucher: !havePart, double: canDouble })}>
+                            onClick={() => send({ type: 'upgrade_design', design: g, space, voucher: !havePart })}>
                             {benefits?.[space]?.pp ? `+${benefits[space]!.pp} PP` : benefits?.[space]?.bankedShifts ? 'bank 1' : benefits?.[space]?.books ? '+1 book' : 'plain'}
                           </button>
                         ))}
+                        {canDouble && view.upgrades[def.model].some((x) => x === null) && (
+                          <button className="kb-btn primary"
+                            onClick={() => send({ type: 'upgrade_design', design: g, space: view.upgrades[def.model].findIndex((x) => x === null), voucher: !havePart, double: true })}>
+                            DOUBLE (+{Math.min(6, view.partValues[def.part!] + 2)} PP)
+                          </button>
+                        )}
                       </span>
                     </div>
                   );
@@ -387,6 +396,18 @@ export function KanbanPlay({ view, act, error }: {
             )}
           </>
         )}
+
+        {/* goals everyone plays toward */}
+        <div className="kb-lab" style={{ paddingTop: 12 }}>Final goal · 1 speech token each at game end</div>
+        <div style={{ fontSize: 13, opacity: 0.85 }}>
+          {view.finalGoal.achievements.map((a, i) => (
+            <div key={i}>{a.pp} PP · {a.kind}{'n' in a && a.n !== undefined ? ` ${a.n}` : ''}{'model' in a && a.model ? ` ${a.model}` : ''}{'part' in a && a.part ? ` ${a.part}` : ''}{'depts' in a && a.depts ? ` ${a.depts.join(' + ')}` : ''}</div>
+          ))}
+        </div>
+        <div className="kb-lab" style={{ paddingTop: 8 }}>Factory goals · speech token on the spot</div>
+        <div style={{ fontSize: 13, opacity: 0.85 }}>
+          {view.factoryGoals.length ? view.factoryGoals.map((g) => `${g.kind} ${g.need} (${g.speech} left)`).join(' · ') : 'all claimed'}
+        </div>
 
         {/* everyone: your board summary */}
         <div className="kb-lab" style={{ paddingTop: 12 }}>Your garages</div>
