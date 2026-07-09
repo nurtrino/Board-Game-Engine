@@ -268,3 +268,14 @@ secretly picks 1 remaining award tile (immediate benefit).
   four puppeteer seats clicking only the device DOM - 594 UI actions,
   251s, no stalls, on the post-gate-fix engine (conveyor exit choices
   included). tools/verify/kanban-ui-smoke.mjs.
+
+## 10. Board-first device (owner-directed rebuild, July 2026)
+
+The phone is the factory: FACTORY / MY MAT 3D toggle, Brass-style pulsing
+pick frames on every legal tap, a chip strip that completes multi-part
+choices and mirrors every board target as a labelled chip, goal cards as
+real card art, and a ten-step walkthrough in the intro. The DOM ship gate
+re-ran against this UI and PASSED (full 4-seat game, 660 UI actions,
+171s) after catching two real gaps: the chip mirror vanished in armed
+states (a dead-end for chip users), and meetings hinged on image-only
+card buttons the driver could not see.
