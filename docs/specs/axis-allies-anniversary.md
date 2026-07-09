@@ -134,9 +134,44 @@ lift).
 - [x] Rulebook secured (16pp official PDF from the assistant repo).
 - [x] Assistant repo cloned; lift list identified.
 - [ ] Map zone golden (subagent in flight).
-- [ ] Rulebook full read + rules digest into this spec (setup counts for
-      1941/1942 from the reference-card SETUP side + rulebook charts; NO
-      list; RND chart; China rules; canal rules).
+- [~] Rulebook read pp1-6 (digest below); pp7-16 next (RND chart, combat
+      sequence, mobilize/income, NOs, unit profile chart).
+- [ ] Setup counts per power per scenario: from the mod's National Setup
+      Charts cards (SETUP side); National Objectives printed on the BACK of
+      those same charts — both goldens come from the mod's 141 cards.
+
+## Rulebook digest (pp1-6)
+
+- 2-6 players; sides split Axis (Germany, Japan, Italy) vs Allies (USA, UK,
+  USSR); fewer players = multiple powers each.
+- Win: side collectively holds 15 VCs at the END of a complete round
+  (standard); 13 = short; 18 = total victory. 18 VCs exist.
+- Starting VCs+IPCs — 1941: Germany Berlin/Paris/Warsaw 31, Japan
+  Tokyo/Shanghai 17, Italy Rome 10, USA Washington/San Francisco/Honolulu/
+  Manila 40, UK London/Calcutta/Sydney/Hong Kong/Ottawa 43, USSR
+  Moscow/Stalingrad/Leningrad 30 (Axis 6 VC, Allies 12). 1942: Germany 31,
+  Japan Tokyo/Shanghai/Hong Kong/Manila 31, Italy 10, USA
+  Washington/SF/Honolulu 38, UK London/Calcutta/Sydney/Ottawa 31, USSR 24
+  (Axis 8 VC); 1942 setup overlays German/Japanese control markers on the
+  1941-printed map.
+- Board wraps horizontally: SZ 20-55, SZ 21-44, SZ 25-43 connect across the
+  edge. Top/bottom do not wrap.
+- Islands: one island group per sea zone = one territory.
+- Canals: Panama (control Panama) and Suez (control BOTH Egypt and
+  Trans-Jordan; split control = closed). Side control at the START of the
+  turn required; not usable the turn captured. Canals never block land moves.
+- Colors: USA green, Germany gray, UK tan, Japan orange, USSR maroon, Italy
+  brown, China light green; AA guns + ICs are light gray and change hands.
+- Chips: gray = +1 of that unit, red = +5.
+- China (US-controlled, separate power, resources never mixed): no income,
+  no purchases; gets 1 new infantry per 2 non-Axis-controlled Chinese
+  territories during the US purchase phase; placed with US mobilization on
+  Chinese territories with < 3 units. Chinese units confined to Chinese
+  territories (printed border) + may take Kiangsu and Manchuria; may occupy
+  (never control) Kwangtung — its IPCs go to the UK. Cannot load onto
+  transports. The Flying Tigers US fighter fights as Chinese; if lost, never
+  replaced. US must fully resolve China's combat move + combat before (or
+  after) the US's own — never interleaved.
 - [ ] extract-axis.mjs (stage board halves, unit meshes per nation bag,
       reference cards incl. face/back, flags).
 - [ ] Engine + tests; server registry; TV; phone; production screen;
