@@ -177,8 +177,9 @@ export function DtPlay({ view, act, error }: {
   const shownLcd = myTurn && phase === 'riddle' ? `${view.riddlePhase} `
     : myTurn && phase === 'cursePick' ? `C${victim?.color[0] ?? ' '}` : display.lcd;
 
-  // the panel: which buttons do something right now
-  const canAct = myTurn && phase === 'playing';
+  // the panel: YES/NO/REPEAT/HAGGLE drive the sub-phases. The six action buttons
+  // are no longer pressed directly — an action happens when you move your pawn
+  // onto the matching space on the board (they stay lit as a legend/reference).
   const press = {
     yes: myTurn && phase === 'bazaar' ? () => act({ type: 'bazaar_yes' })
       : myTurn && phase === 'battle' ? () => act({ type: 'battle_continue' })
@@ -193,13 +194,10 @@ export function DtPlay({ view, act, error }: {
       : null,
     haggle: myTurn && phase === 'bazaar' && (view.bazaar?.buying ?? 0) === 0 ? () => act({ type: 'bazaar_haggle' }) : null,
     repeat: view.lastEvent ? () => display.replay() : null,
-    clear: null, // the mod's CLEAR undoes honor-system mistakes; moves are enforced here
-    move: canAct ? () => act({ type: 'move' }) : null,
-    tomb: canAct ? () => act({ type: 'tomb' }) : null,
-    bazaar: canAct ? () => act({ type: 'bazaar' }) : null,
-    sanctuary: canAct ? () => act({ type: 'sanctuary' }) : null,
-    frontier: canAct ? () => act({ type: 'frontier' }) : null,
-    tower: canAct ? () => act({ type: 'tower' }) : null,
+    clear: null,
+    move: null as (() => void) | null, tomb: null as (() => void) | null,
+    bazaar: null as (() => void) | null, sanctuary: null as (() => void) | null,
+    frontier: null as (() => void) | null, tower: null as (() => void) | null,
     inventory: () => setShowInv(true),
   };
 
@@ -209,7 +207,7 @@ export function DtPlay({ view, act, error }: {
 
   const statusLine = view.winner ? `${view.players.find((p) => p.color === view.winner)?.name} conquered the tower`
     : !myTurn ? `${view.players[view.turn]?.name} is playing`
-    : phase === 'playing' ? 'Your turn — press an action'
+    : phase === 'playing' ? 'Your turn — tap a glowing space to move'
     : phase === 'battle' ? `${view.battle?.brigands} brigands — YES fights, NO retreats`
     : phase === 'bazaar' ? ((view.bazaar?.buying ?? 0) > 0
       ? `Buying ${view.bazaar!.buying} — YES adds one, NO pays`
@@ -226,24 +224,24 @@ export function DtPlay({ view, act, error }: {
       <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: RIGHT_W }}>
         <DtTable
           scene={scene}
-          tokens={view.players.map((p) => ({ seat: p.seat, color: p.color, spot: p.spot }))}
+          tokens={view.players.map((p) => ({ seat: p.seat, color: p.color, node: p.node }))}
           pic={shownPic}
           lcd={shownLcd}
           wedgeMaps={scene.wedge}
           aim={holdsTower(phase, display.active) ? TOWER_AIM : focusTower ? { x: 0, z: 1, h: 7, y: 6.5 } : null}
           youSeat={mine.seat}
-          canMove={myTurn && !display.active && phase === 'playing'}
-          onMoveToken={(x, z) => act({ type: 'move_token', x, z })}
+          legalSteps={display.active ? [] : view.legalSteps}
+          onStep={(id) => act({ type: 'step', to: id })}
         />
         <button className="ig-glass" onClick={() => setFocusTower((f) => !f)} style={{
           position: 'absolute', bottom: 14, left: 14, padding: '9px 13px', borderRadius: 11,
           font: '700 11px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer',
         }}>{focusTower ? 'Show board' : 'Focus the tower'}</button>
-        {myTurn && phase === 'playing' && (
+        {myTurn && phase === 'playing' && !display.active && (
           <div className="ig-glass" style={{
             position: 'absolute', top: 14, left: 14, padding: '8px 12px', borderRadius: 10,
             font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.85,
-          }}>Tap your token to see moves</div>
+          }}>Tap a glowing space to move</div>
         )}
       </div>
 

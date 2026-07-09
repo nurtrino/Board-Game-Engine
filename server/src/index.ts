@@ -12,7 +12,7 @@ import {
   claimableRoutes, bestCardsFor,
   createTrek, trekViewFor, applyTrekAction,
   distancesFrom, findPath, TREK_CATALOG, PARKS, MAJORS, TREK_RULES,
-  createDarkTower, dtViewFor, applyDtAction, DT_KEYS,
+  createDarkTower, dtViewFor, applyDtAction, dtBotStep, DT_KEYS,
   createDune, duneViewFor, applyDuneAction,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
   GAME_SEATS, RULES as TTR_RULES,
@@ -526,15 +526,8 @@ function dtBotAct(room: Room, seat: number): void {
     else if (rand() < 0.3) acted = attempt({ type: 'bazaar_haggle' });
     else acted = attempt({ type: 'bazaar_no' });
   } else {
-    const keyOfQuad = p.quad === 1 ? p.brasskey : p.quad === 2 ? p.silverkey : p.quad === 3 ? p.goldkey : 1;
-    const armyReady = p.warriors >= Math.min(55, s.dtBrigands - 4);
-    if (p.quad === 4 && p.goldkey && armyReady) acted = attempt({ type: 'tower' });
-    else if (p.quad < 4 && keyOfQuad && p.quad > 0) acted = attempt({ type: 'frontier' });
-    else if (p.quad === 0) acted = attempt({ type: 'frontier' });
-    else if (p.warriors <= 4 || p.food <= 4) acted = attempt({ type: 'sanctuary' });
-    else if (p.gold >= 12 && (p.warriors < 55 || p.food < 20) && rand() < 0.8) acted = attempt({ type: 'bazaar' });
-    else if (rand() < 0.65) acted = attempt({ type: 'tomb' });
-    else acted = attempt({ type: 'move' });
+    // move the pawn one territory; the space it lands on drives the action
+    acted = attempt({ type: 'step', to: dtBotStep(s, seat) });
   }
 
   if (acted) broadcast(room);

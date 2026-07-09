@@ -5,6 +5,8 @@
 // hidden (the original's scorecards are public).
 
 import { mulberry32 } from '../brass/rng.js';
+import { DT_CITADEL_NODE } from './territories.js';
+import { dtLegalSteps } from './actions.js';
 
 export type DtSeat = 'Red' | 'Blue' | 'Yellow' | 'Green';
 export const DT_SEATS: DtSeat[] = ['Red', 'Blue', 'Yellow', 'Green'];
@@ -38,67 +40,11 @@ export interface DtPlayer {
   citadelUsed: 0 | 1; // the once-only quad-4 warrior doubling
   moves: number;
   fed: boolean; // this turn's food check already ran
-  spot: { x: number; z: number }; // token position on the board (player-placed, like the mod)
+  node: string; // the territory the pawn stands on (see territories.ts)
 }
 
-/** Where each seat's token starts: on its kingdom's citadel. These are the
- *  world (x,z) the mod placed each citadel MODEL at (GUIDs d4a57e/e1ae0b/
- *  3749e1/2ee535), matched to kingdoms by seat proximity. `spot` is in the
- *  same world frame as the buildings, so a token at spot = citadel lands on
- *  the printed badge. */
-// centres measured from the printed citadel badges on boardart.webp (colour-
-// weighted centroid), so each crest piece lands dead-on its printed badge —
-// the old hand-eyed values sat the E/W pieces ~0.27 outward of the print.
-export const CITADEL_SPOTS: Record<DtSeat, { x: number; z: number }> = {
-  Red: { x: -0.54, z: -11.56 }, // Arisilon
-  Blue: { x: 11.13, z: 0.68 }, // Brynthia
-  Yellow: { x: -0.99, z: 11.38 }, // Durnin
-  Green: { x: -11.34, z: -0.77 }, // Zenon
-};
-
-// The disc is four 90-degree wedges, each centred on a citadel. Going CCW by
-// board bearing the order is Blue(+X) -> Yellow(+Z) -> Green(-X) -> Red(-Z).
-// A player starts in their own (home) kingdom and advances one wedge in this
-// order on every frontier crossing; quad 4 wraps back to home.
-export const KINGDOM_ORDER: DtSeat[] = ['Blue', 'Yellow', 'Green', 'Red'];
-
-/** Which kingdom a player physically occupies, from home + crossings. */
-export function currentKingdom(home: DtSeat, quad: number): DtSeat {
-  const i = KINGDOM_ORDER.indexOf(home);
-  return KINGDOM_ORDER[(i + Math.min(Math.max(quad, 0), 4)) % 4];
-}
-
-/** The centre bearing (world atan2(z,x), radians) of a kingdom's wedge. */
-export function kingdomAngle(k: DtSeat): number {
-  const c = CITADEL_SPOTS[k];
-  return Math.atan2(c.z, c.x);
-}
-
-// A token stays within +-HALF_WEDGE of its kingdom's bearing and between these
-// radii (off the tower base, on the board). It can never slide into another
-// kingdom by dragging — only FRONTIER carries it across.
-export const TOKEN_MIN_R = 4.5;
-export const TOKEN_MAX_R = 12.4;
-export const HALF_WEDGE = (43 * Math.PI) / 180; // ~90-deg wedge, small guard band
-
-/** Clamp a desired (x,z) into a kingdom's wedge and ring. */
-export function clampToKingdom(k: DtSeat, x: number, z: number): { x: number; z: number } {
-  const center = kingdomAngle(k);
-  const r = Math.min(TOKEN_MAX_R, Math.max(TOKEN_MIN_R, Math.hypot(x, z) || 1));
-  let d = Math.atan2(z, x) - center;
-  while (d > Math.PI) d -= 2 * Math.PI;
-  while (d < -Math.PI) d += 2 * Math.PI;
-  d = Math.max(-HALF_WEDGE, Math.min(HALF_WEDGE, d));
-  const a = center + d;
-  return { x: +(r * Math.cos(a)).toFixed(2), z: +(r * Math.sin(a)).toFixed(2) };
-}
-
-/** Where a token lands when it enters a kingdom: mid-wedge, mid-ring. */
-export function kingdomEntrySpot(k: DtSeat): { x: number; z: number } {
-  const a = kingdomAngle(k);
-  const r = 8.5;
-  return { x: +(r * Math.cos(a)).toFixed(2), z: +(r * Math.sin(a)).toFixed(2) };
-}
+/** Each player begins on their home kingdom's citadel (home kingdom = colour). */
+export const dtHomeNode = (color: DtSeat): string => DT_CITADEL_NODE.get(color)!;
 
 export interface DtEvent {
   seq: number;
@@ -138,7 +84,7 @@ export interface DtState {
   } | null;
   riddlePhase: 0 | 1 | 2; // which position is being guessed
   curse: { warriors: number; gold: number } | null; // stored amounts awaiting the victim's turn
-  turnSpot: { x: number; z: number }; // current player's spot at turn start (Lua tokenX/tokenZ — lost/cursed snap back here)
+  turnNode: string; // the current player's node at turn start (lost/cursed snap back here)
   totalMoves: number;
   rolls: number; // draws taken from the seeded rng stream (persistence-safe)
   winner: DtSeat | null;
@@ -171,7 +117,7 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
     beast: 0, scout: 0, healer: 0, sword: 0, pegasus: 0,
     brasskey: 0, silverkey: 0, goldkey: 0,
     quad: 0, cursed: 0, citadelUsed: 0, moves: 0, fed: false,
-    spot: { ...CITADEL_SPOTS[s.color] },
+    node: dtHomeNode(s.color),
   }));
   const first = Math.floor(rng() * players.length);
   return {
@@ -180,7 +126,7 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
     dragon: { warriors: 2, gold: 6 },
     turn: first, first, players,
     battle: null, bazaar: null, riddlePhase: 0, curse: null,
-    turnSpot: { ...CITADEL_SPOTS[players[first].color] },
+    turnNode: players[first].node,
     totalMoves: 0, rolls: 0, winner: null, score: null,
     lastEvent: null, log: [],
   };
@@ -205,6 +151,7 @@ export interface DtView {
   totalMoves: number;
   winner: DtSeat | null;
   score: number | null;
+  legalSteps: string[]; // territories the local player may step to this turn
   lastEvent: DtEvent | null;
   log: string[];
 }
@@ -221,6 +168,7 @@ export function dtViewFor(s: DtState, seat: number | null | 'dev'): DtView {
     dtBrigands: s.battle?.tower || over || seat === 'dev' ? s.dtBrigands : null,
     riddle: over || seat === 'dev' ? s.riddle : null,
     totalMoves: s.totalMoves, winner: s.winner, score: s.score,
+    legalSteps: typeof seat === 'number' ? dtLegalSteps(s, seat) : [],
     lastEvent: s.lastEvent, log: s.log.slice(-40),
   };
 }

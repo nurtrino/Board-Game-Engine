@@ -1,18 +1,18 @@
-// Dark Tower — action reducer, mirroring the mod Lua exactly (line refs in
-// docs/specs/dark-tower.md). One action per turn; sub-phases for battles,
-// the bazaar, curse-victim picks and the riddle. Every resolution emits
-// display steps (reel pic / LCD / sound) so clients replay the real tower.
+// Dark Tower — action reducer. The electronic tower's brain mirrors the mod Lua
+// exactly (line refs in docs/specs/dark-tower.md). Movement follows the 1981
+// board rules (rulebook p15-19): on your turn you move your pawn ONE adjacent
+// territory (or stay), and the SPACE you land on decides what happens — an
+// empty territory rolls a MOVE event, a tomb/ruin searches, a bazaar opens, a
+// sanctuary/citadel gives aid, a frontier crosses to the next kingdom, and your
+// home Dark Tower space begins the siege. Kingdom-to-kingdom travel is one-way
+// (CCW) and gated by the three keys.
 
 import { mulberry32 } from '../brass/rng.js';
-import { DT_RULES, clampToKingdom, currentKingdom, kingdomEntrySpot, type DtKey, type DtPlayer, type DtState, type DtStep } from './state.js';
+import { DT_RULES, type DtKey, type DtPlayer, type DtState, type DtStep } from './state.js';
+import { DT_NODE, dtAdjacent, DT_FORWARD_FRONTIER, DT_FRONTIER_DIR, dtKingdomAt } from './territories.js';
 
 export type DtAction =
-  | { type: 'move' }
-  | { type: 'tomb' }
-  | { type: 'bazaar' }
-  | { type: 'sanctuary' }
-  | { type: 'frontier' }
-  | { type: 'tower' }
+  | { type: 'step'; to: string } // move the pawn to an adjacent territory (or stay: to === your node)
   | { type: 'pegasus' }
   | { type: 'battle_continue' }
   | { type: 'battle_bail' }
@@ -21,7 +21,6 @@ export type DtAction =
   | { type: 'bazaar_haggle' }
   | { type: 'curse'; victim: number }
   | { type: 'riddle_guess'; key: DtKey }
-  | { type: 'move_token'; x: number; z: number } // place your own token on the board
   | { type: 'end_turn' };
 
 export interface DtResult { ok: boolean; error?: string }
@@ -55,9 +54,7 @@ function capGold(p: DtPlayer): void {
 }
 const lcdN = (n: number) => String(Math.max(0, Math.min(99, n))).padStart(2, '0');
 
-/** Turn-start upkeep before the first action: curse resolution, then eating.
- *  (needsFood L642: cursed first, then eats=ceil(warriors/15); food 0 ->
- *  starve: -1 warrior/turn, floor 1 in multiplayer.) */
+/** Turn-start upkeep before the first action: curse resolution, then eating. */
 function upkeep(s: DtState, p: DtPlayer, steps: DtStep[]): void {
   if (p.fed) return;
   p.fed = true;
@@ -67,7 +64,7 @@ function upkeep(s: DtState, p: DtPlayer, steps: DtStep[]): void {
     capGold(p);
     p.cursed = 0;
     s.curse = null;
-    p.spot = { ...s.turnSpot }; // the curse holds the token where it stood (L906)
+    p.node = s.turnNode; // the curse holds the pawn where it stood (L906)
     steps.push(step('cursed', '  ', 'die', 2200), step('warriors', lcdN(p.warriors), 'beep'), step('gold', lcdN(p.gold), 'beep'));
   }
   const eats = Math.ceil(p.warriors / DT_RULES.eatPer);
@@ -88,9 +85,8 @@ function toTurnDone(s: DtState): void {
   s.riddlePhase = 0;
 }
 
-function beginAction(s: DtState, p: DtPlayer, steps: DtStep[], clearsCitadel = false): void {
+function beginAction(s: DtState, p: DtPlayer, steps: DtStep[]): void {
   p.moves++;
-  if (clearsCitadel) p.citadelUsed = p.citadelUsed; // citadel flag clears on tomb/bazaar/tower (L1124 sets citadel=0)
   upkeep(s, p, steps);
 }
 
@@ -109,8 +105,6 @@ function battleRound(s: DtState, p: DtPlayer, steps: DtStep[]): 'won' | 'lost' |
     capGold(p);
     steps.push(step('warriors', lcdN(p.warriors), 'battlelose'), step('brigands', lcdN(b.brigands), 'beep'));
   }
-  // pre-roll the next round: an unlucky roll with warriors at the floor
-  // force-ends the battle (L1240)
   const nw = roll(s, 1, 4), nb = roll(s, 1, 4);
   const nextLoses = p.warriors * nw < b.brigands * nb;
   if (nextLoses && p.warriors <= 2) return 'lost';
@@ -147,6 +141,155 @@ function awardTreasure(s: DtState, p: DtPlayer, steps: DtStep[]): string {
   return got;
 }
 
+// --- per-space resolutions (called by `step` once the pawn has moved) --------
+
+/** Empty territory: the MOVE roll (safe / lost / plague / dragon / battle). */
+function resolveMove(s: DtState, p: DtPlayer, steps: DtStep[]): void {
+  const res = d16(s, MOVE_TABLE);
+  if (res === 'safe') {
+    steps.push(step('', '  ', 'beep', 600));
+    event(s, p, 'moved', 'safe trails', steps);
+    toTurnDone(s);
+  } else if (res === 'lost') {
+    if (p.scout) {
+      steps.push(step('lost', '  ', 'beep', 1500), step('scout', '  ', 'rotate2', 2000));
+      event(s, p, 'got lost', 'the scout finds the way — take another action', steps);
+      s.phase = 'playing';
+      p.fed = true; // no second food charge (L556)
+    } else {
+      p.node = s.turnNode; // the pawn returns whence it came (L1669)
+      steps.push(step('lost', '  ', 'failure', 2200));
+      event(s, p, 'got lost', 'back where they started', steps);
+      toTurnDone(s);
+    }
+  } else if (res === 'plague') {
+    if (p.healer) {
+      p.warriors = Math.min(99, p.warriors + 2);
+      steps.push(step('plague', '  ', 'beep', 1600), step('healer', '  ', 'rotate2', 1600), step('warriors', lcdN(p.warriors), 'beep'));
+      event(s, p, 'plague struck', 'the healer turns it — 2 warriors gained', steps);
+    } else {
+      p.warriors = Math.max(1, p.warriors - 2);
+      capGold(p);
+      steps.push(step('plague', '  ', 'die', 2200), step('warriors', lcdN(p.warriors), 'beep'));
+      event(s, p, 'plague struck', '2 warriors lost', steps);
+    }
+    toTurnDone(s);
+  } else if (res === 'dragon') {
+    if (p.sword) {
+      const dw = s.dragon.warriors, dg = s.dragon.gold;
+      p.warriors = Math.min(99, p.warriors + dw);
+      p.gold += dg;
+      capGold(p);
+      p.sword = 0;
+      s.dragon = { warriors: 2, gold: 6 };
+      steps.push(step('dragon', '  ', 'dragon', 1800), step('sword', '  ', 'dragondie', 2400), step('warriors', lcdN(p.warriors), 'beep'), step('gold', lcdN(p.gold), 'beep'));
+      event(s, p, 'slew the dragon', `the sword shatters — hoard claimed: ${dw} warriors, ${dg} gold`, steps);
+    } else {
+      const tw = Math.floor(p.warriors / 4), tg = Math.floor(p.gold / 4);
+      s.dragon.warriors = Math.min(99, s.dragon.warriors + tw);
+      s.dragon.gold = Math.min(99, s.dragon.gold + tg);
+      p.warriors -= tw;
+      p.gold -= tg;
+      capGold(p);
+      steps.push(step('dragon', '  ', 'dragon', 2400), step('warriors', lcdN(p.warriors), 'beep'), step('gold', lcdN(p.gold), 'beep'));
+      event(s, p, 'the dragon attacked', `it carried off ${tw} warriors and ${tg} gold`, steps);
+    }
+    toTurnDone(s);
+  } else {
+    s.battle = { brigands: Math.max(1, p.warriors + roll(s, -2, 2)), tower: false };
+    s.phase = 'battle';
+    steps.push(step('', '  ', 'battle', 1800), step('brigands', lcdN(s.battle.brigands), 'beep'));
+    event(s, p, 'brigands attack', `${s.battle.brigands} brigands — fight or retreat`, steps);
+  }
+}
+
+/** Tomb / Ruin space: empty / battle / treasure. */
+function resolveTomb(s: DtState, p: DtPlayer, steps: DtStep[]): void {
+  p.citadelUsed = 0;
+  const inside = d16(s, TOMB_TABLE);
+  if (inside === 'empty') {
+    steps.push(step('', '  ', 'tomb', 2500));
+    event(s, p, 'searched the tomb', 'empty', steps);
+    toTurnDone(s);
+  } else if (inside === 'treasure') {
+    steps.push(step('', '  ', 'tomb', 2000));
+    const got = awardTreasure(s, p, steps);
+    if (got === 'wizard') {
+      s.phase = 'cursePick';
+      steps.push(step('wizard', '  ', 'beep', 2000));
+      event(s, p, 'found treasure', 'a wizard appears — choose a victim to curse', steps);
+    } else {
+      event(s, p, 'found treasure', got !== 'none' ? `gold and the ${got.replace('key', ' key')}` : 'a hoard of gold', steps);
+      toTurnDone(s);
+    }
+  } else {
+    s.battle = { brigands: Math.max(1, p.warriors + roll(s, -2, 2)), tower: false };
+    s.phase = 'battle';
+    steps.push(step('', '  ', 'tombbattle', 2200), step('brigands', lcdN(s.battle.brigands), 'beep'));
+    event(s, p, 'brigands in the tomb', `${s.battle.brigands} brigands — fight or retreat`, steps);
+  }
+}
+
+/** Bazaar space: open the offer cycle. */
+function resolveBazaar(s: DtState, p: DtPlayer, steps: DtStep[]): void {
+  p.citadelUsed = 0;
+  s.bazaar = {
+    offer: 'warrior',
+    prices: { warrior: roll(s, 5, 8), beast: roll(s, 17, 26), scout: roll(s, 17, 26), healer: roll(s, 17, 26) },
+    buying: 0, haggled: false,
+  };
+  s.phase = 'bazaar';
+  steps.push(step('', '  ', 'bazaar', 3000), step('warrior', lcdN(s.bazaar.prices.warrior), 'beep'));
+  event(s, p, 'entered the bazaar', `warriors offered at ${s.bazaar.prices.warrior} gold`, steps);
+}
+
+/** Sanctuary or (own) Citadel space: replenish; home citadel doubles at quad 4. */
+function resolveSanctuary(s: DtState, p: DtPlayer, steps: DtStep[]): void {
+  let bw = 0, bg = 0, bf = 0;
+  if (p.warriors <= 4) bw = roll(s, 5, 8);
+  const homecoming = p.quad === 4 && p.warriors >= 5 && p.warriors <= 24 && !p.citadelUsed;
+  if (homecoming) bw = p.warriors;
+  if (p.gold <= 7) bg = roll(s, 9, 16);
+  if (p.food <= 5) bf = roll(s, 9, 16);
+  steps.push(step('', '  ', 'citadel', 2500));
+  if (bw + bg + bf === 0) {
+    event(s, p, 'rested at the sanctuary', 'no aid needed', steps);
+  } else {
+    if (homecoming) p.citadelUsed = 1;
+    if (bw) { p.warriors = Math.min(99, p.warriors + bw); steps.push(step('warriors', lcdN(p.warriors), 'beep')); }
+    if (bg) { p.gold += bg; capGold(p); steps.push(step('gold', lcdN(p.gold), 'beep')); }
+    if (bf) { p.food = Math.min(99, p.food + bf); steps.push(step('food', lcdN(p.food), 'beep')); }
+    const bits = [bw && `${bw} warriors`, bg && `${bg} gold`, bf && `${bf} food`].filter(Boolean);
+    event(s, p, homecoming ? 'the citadel doubles the garrison' : 'aid at the sanctuary', bits.join(', '), steps);
+  }
+  toTurnDone(s);
+}
+
+/** Frontier space: cross to the next kingdom (key-gated). On success the pawn
+ *  moves onto the frontier and quad advances; on a missing key it marches back. */
+function resolveFrontier(s: DtState, p: DtPlayer, steps: DtStep[], frontierId: string): void {
+  const needKey = (p.quad === 1 && !p.brasskey) || (p.quad === 2 && !p.silverkey) || (p.quad === 3 && !p.goldkey);
+  if (needKey) {
+    steps.push(step('missing', '  ', 'failure', 2500)); // pawn stays where it was (keyMissing L1972)
+    event(s, p, 'turned back at the frontier', 'the frontier guard demands the key', steps);
+  } else {
+    p.quad++;
+    p.node = frontierId; // carried onto the frontier, entering the next kingdom
+    steps.push(step('', '  ', 'frontier', 2500));
+    event(s, p, 'crossed the frontier', `kingdom ${p.quad} of 4`, steps);
+  }
+  toTurnDone(s);
+}
+
+/** Home Dark Tower space: begin the Riddle of the Keys. */
+function resolveTower(s: DtState, p: DtPlayer, steps: DtStep[]): void {
+  p.citadelUsed = 0;
+  s.phase = 'riddle';
+  s.riddlePhase = 1;
+  steps.push(step('', '  ', '1812', 3000), step('brasskey', '1 ', 'beep', 1500));
+  event(s, p, 'the riddle of the keys', 'name the first key of the sequence', steps);
+}
+
 // --- reducer ----------------------------------------------------------------
 
 export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
@@ -165,119 +308,54 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
       const q = s.players[s.turn];
       q.fed = false;
       s.phase = 'playing';
-      s.turnSpot = { ...q.spot }; // Lua tokenX/tokenZ (L580): lost/cursed snap back here
+      s.turnNode = q.node; // lost/cursed snap back here
       event(s, q, 'to act', '', [step('', ' ' + q.color[0], 'done', 800)]);
       return { ok: true };
     }
 
-    case 'move_token': {
-      // slide your token within the kingdom you are actually in — you cannot
-      // cross into another kingdom this way (only FRONTIER does that). Clamped
-      // to the current kingdom's wedge and ring. Only on your turn.
-      if (s.phase !== 'playing' && s.phase !== 'turnDone') return err('not now');
-      if (!Number.isFinite(a.x) || !Number.isFinite(a.z)) return err('bad spot');
-      p.spot = clampToKingdom(currentKingdom(p.color, p.quad), a.x, a.z);
-      return { ok: true }; // silent: no tower event, just a position sync
+    case 'step': {
+      if (s.phase !== 'playing') return err('not now');
+      const from = DT_NODE.get(p.node), to = DT_NODE.get(a.to);
+      if (!from || !to) return err('bad territory');
+      const stay = a.to === p.node;
+      if (!stay && !dtAdjacent(p.node).includes(a.to)) return err('that territory is not adjacent');
+      const home = p.color; // a player's home kingdom is their colour
+      const kNow = dtKingdomAt(p.color, p.quad); // authoritative current kingdom
+
+      // legality by destination + direction of travel
+      if (to.kind === 'citadel' && to.kingdom !== home) return err('you may never enter a foreign citadel');
+      if (to.kind === 'darktower' && !(to.kingdom === home && p.quad >= 4 && p.goldkey)) return err('the Dark Tower is sealed until you return home with all three keys');
+      if (to.kind === 'frontier' && (DT_FORWARD_FRONTIER.get(kNow) !== a.to || p.quad >= 4)) return err('you may only cross the frontier that lies ahead');
+      if (from.kind === 'frontier') {
+        // stepping off a frontier: only into the kingdom you are entering
+        const dir = DT_FRONTIER_DIR.get(p.node)!;
+        if (to.kind !== 'frontier' && to.kingdom !== dir.to) return err('step forward into the new kingdom');
+      } else if (to.kind !== 'frontier' && to.kingdom && to.kingdom !== kNow) {
+        return err('kingdoms are crossed only through a frontier');
+      }
+
+      beginAction(s, p, steps); // moves++ and turn-start upkeep
+
+      if (to.kind === 'frontier') {
+        resolveFrontier(s, p, steps, a.to);
+      } else {
+        p.node = a.to; // the pawn moves onto the chosen space
+        if (to.kind === 'tomb' || to.kind === 'ruin') resolveTomb(s, p, steps);
+        else if (to.kind === 'bazaar') resolveBazaar(s, p, steps);
+        else if (to.kind === 'sanctuary' || to.kind === 'citadel') resolveSanctuary(s, p, steps);
+        else if (to.kind === 'darktower') resolveTower(s, p, steps);
+        else resolveMove(s, p, steps); // empty
+      }
+      return { ok: true };
     }
 
     case 'pegasus': {
       if (s.phase !== 'playing') return err('not now');
       if (!p.pegasus) return err('no pegasus');
       p.pegasus = 0;
-      s.phase = 'playing'; // free extra turn: stays on the same player
+      s.phase = 'playing'; // free extra action, same player
+      p.fed = true; // no second food charge on the re-turn
       event(s, p, 'flew the pegasus', 'takes another action', [step('pegasus', '  ', 'pegasus', 2200)]);
-      return { ok: true };
-    }
-
-    case 'move': {
-      if (s.phase !== 'playing') return err('not now');
-      beginAction(s, p, steps);
-      const res = d16(s, MOVE_TABLE);
-      if (res === 'safe') {
-        steps.push(step('', '  ', 'beep', 600));
-        event(s, p, 'moved', 'safe trails', steps);
-        toTurnDone(s);
-      } else if (res === 'lost') {
-        if (p.scout) {
-          steps.push(step('lost', '  ', 'beep', 1500), step('scout', '  ', 'rotate2', 2000));
-          event(s, p, 'got lost', 'the scout finds the way — take another action', steps);
-          s.phase = 'playing';
-          p.fed = true; // no second food charge (L556)
-        } else {
-          p.spot = { ...s.turnSpot }; // token returns whence it came (L1669)
-          steps.push(step('lost', '  ', 'failure', 2200));
-          event(s, p, 'got lost', 'back where they started', steps);
-          toTurnDone(s);
-        }
-      } else if (res === 'plague') {
-        if (p.healer) {
-          p.warriors = Math.min(99, p.warriors + 2);
-          steps.push(step('plague', '  ', 'beep', 1600), step('healer', '  ', 'rotate2', 1600), step('warriors', lcdN(p.warriors), 'beep'));
-          event(s, p, 'plague struck', 'the healer turns it — 2 warriors gained', steps);
-        } else {
-          p.warriors = Math.max(1, p.warriors - 2);
-          capGold(p);
-          steps.push(step('plague', '  ', 'die', 2200), step('warriors', lcdN(p.warriors), 'beep'));
-          event(s, p, 'plague struck', '2 warriors lost', steps);
-        }
-        toTurnDone(s);
-      } else if (res === 'dragon') {
-        if (p.sword) {
-          const dw = s.dragon.warriors, dg = s.dragon.gold;
-          p.warriors = Math.min(99, p.warriors + dw);
-          p.gold += dg;
-          capGold(p);
-          p.sword = 0;
-          s.dragon = { warriors: 2, gold: 6 };
-          steps.push(step('dragon', '  ', 'dragon', 1800), step('sword', '  ', 'dragondie', 2400), step('warriors', lcdN(p.warriors), 'beep'), step('gold', lcdN(p.gold), 'beep'));
-          event(s, p, 'slew the dragon', `the sword shatters — hoard claimed: ${dw} warriors, ${dg} gold`, steps);
-        } else {
-          const tw = Math.floor(p.warriors / 4), tg = Math.floor(p.gold / 4);
-          s.dragon.warriors = Math.min(99, s.dragon.warriors + tw);
-          s.dragon.gold = Math.min(99, s.dragon.gold + tg);
-          p.warriors -= tw;
-          p.gold -= tg;
-          capGold(p);
-          steps.push(step('dragon', '  ', 'dragon', 2400), step('warriors', lcdN(p.warriors), 'beep'), step('gold', lcdN(p.gold), 'beep'));
-          event(s, p, 'the dragon attacked', `it carried off ${tw} warriors and ${tg} gold`, steps);
-        }
-        toTurnDone(s);
-      } else {
-        // battle
-        s.battle = { brigands: Math.max(1, p.warriors + roll(s, -2, 2)), tower: false };
-        s.phase = 'battle';
-        steps.push(step('', '  ', 'battle', 1800), step('brigands', lcdN(s.battle.brigands), 'beep'));
-        event(s, p, 'brigands attack', `${s.battle.brigands} brigands — fight or retreat`, steps);
-      }
-      return { ok: true };
-    }
-
-    case 'tomb': {
-      if (s.phase !== 'playing') return err('not now');
-      p.citadelUsed = 0;
-      beginAction(s, p, steps);
-      const inside = d16(s, TOMB_TABLE);
-      if (inside === 'empty') {
-        steps.push(step('', '  ', 'tomb', 2500));
-        event(s, p, 'searched the tomb', 'empty', steps);
-        toTurnDone(s);
-      } else if (inside === 'treasure') {
-        steps.push(step('', '  ', 'tomb', 2000));
-        const got = awardTreasure(s, p, steps);
-        if (got === 'wizard') {
-          s.phase = 'cursePick';
-          steps.push(step('wizard', '  ', 'beep', 2000));
-          event(s, p, 'found treasure', 'a wizard appears — choose a victim to curse', steps);
-        } else {
-          event(s, p, 'found treasure', got !== 'none' ? `gold and the ${got.replace('key', ' key')}` : 'a hoard of gold', steps);
-          toTurnDone(s);
-        }
-      } else {
-        s.battle = { brigands: Math.max(1, p.warriors + roll(s, -2, 2)), tower: false };
-        s.phase = 'battle';
-        steps.push(step('', '  ', 'tombbattle', 2200), step('brigands', lcdN(s.battle.brigands), 'beep'));
-        event(s, p, 'brigands in the tomb', `${s.battle.brigands} brigands — fight or retreat`, steps);
-      }
       return { ok: true };
     }
 
@@ -287,7 +365,7 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
       const out = battleRound(s, p, steps);
       if (out === 'won') {
         if (tower) {
-          const startW = s.battle!.startW ?? p.warriors; // warriors at turn start (Lua undoInventory L89)
+          const startW = s.battle!.startW ?? p.warriors;
           s.phase = 'ended';
           s.winner = p.color;
           s.score = Math.max(0, Math.min(99, (176 + Math.floor(s.dtBrigands * 1.25)) - ((p.moves + startW) * 4)));
@@ -337,21 +415,6 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
       return { ok: true };
     }
 
-    case 'bazaar': {
-      if (s.phase !== 'playing') return err('not now');
-      p.citadelUsed = 0;
-      beginAction(s, p, steps);
-      s.bazaar = {
-        offer: 'warrior',
-        prices: { warrior: roll(s, 5, 8), beast: roll(s, 17, 26), scout: roll(s, 17, 26), healer: roll(s, 17, 26) },
-        buying: 0, haggled: false,
-      };
-      s.phase = 'bazaar';
-      steps.push(step('', '  ', 'bazaar', 3000), step('warrior', lcdN(s.bazaar.prices.warrior), 'beep'));
-      event(s, p, 'entered the bazaar', `warriors offered at ${s.bazaar.prices.warrior} gold`, steps);
-      return { ok: true };
-    }
-
     case 'bazaar_yes': {
       if (s.phase !== 'bazaar' || !s.bazaar) return err('not shopping');
       const bz = s.bazaar;
@@ -379,7 +442,6 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
       if (s.phase !== 'bazaar' || !s.bazaar) return err('not shopping');
       const bz = s.bazaar;
       if (bz.buying > 0) {
-        // complete the warrior/food purchase
         const price = bz.offer === 'warrior' ? bz.prices.warrior : 1;
         p.gold -= bz.buying * price;
         if (bz.offer === 'warrior') p.warriors = Math.min(99, p.warriors + bz.buying);
@@ -390,7 +452,6 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
         toTurnDone(s);
         return { ok: true };
       }
-      // next offer in the Lua cycle (L966-1005)
       const next = bz.offer === 'warrior' ? 'food'
         : bz.offer === 'food' ? (!p.beast ? 'beast' : !p.scout ? 'scout' : !p.healer ? 'healer' : 'warrior')
         : bz.offer === 'beast' ? (!p.scout ? 'scout' : !p.healer ? 'healer' : 'warrior')
@@ -416,65 +477,6 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
       return { ok: true };
     }
 
-    case 'sanctuary': {
-      if (s.phase !== 'playing') return err('not now');
-      beginAction(s, p, steps);
-      let bw = 0, bg = 0, bf = 0;
-      if (p.warriors <= 4) bw = roll(s, 5, 8);
-      const homecoming = p.quad === 4 && p.warriors >= 5 && p.warriors <= 24 && !p.citadelUsed;
-      if (homecoming) bw = p.warriors;
-      if (p.gold <= 7) bg = roll(s, 9, 16);
-      if (p.food <= 5) bf = roll(s, 9, 16);
-      steps.push(step('', '  ', 'citadel', 2500));
-      if (bw + bg + bf === 0) {
-        event(s, p, 'rested at the sanctuary', 'no aid needed', steps);
-      } else {
-        if (homecoming) p.citadelUsed = 1;
-        if (bw) { p.warriors = Math.min(99, p.warriors + bw); steps.push(step('warriors', lcdN(p.warriors), 'beep')); }
-        if (bg) { p.gold += bg; capGold(p); steps.push(step('gold', lcdN(p.gold), 'beep')); }
-        if (bf) { p.food = Math.min(99, p.food + bf); steps.push(step('food', lcdN(p.food), 'beep')); }
-        const bits = [bw && `${bw} warriors`, bg && `${bg} gold`, bf && `${bf} food`].filter(Boolean);
-        event(s, p, homecoming ? 'the citadel doubles the garrison' : 'aid at the sanctuary', bits.join(', '), steps);
-      }
-      toTurnDone(s);
-      return { ok: true };
-    }
-
-    case 'frontier': {
-      if (s.phase !== 'playing') return err('not now');
-      beginAction(s, p, steps);
-      const blocked = (p.quad === 1 && !p.brasskey) || (p.quad === 2 && !p.silverkey) || (p.quad === 3 && !p.goldkey) || p.quad >= 4;
-      if (blocked) {
-        if (p.quad < 4) p.spot = { ...s.turnSpot }; // marched back (keyMissing L1972)
-        steps.push(step(p.quad >= 4 ? '' : 'missing', '  ', 'failure', 2500));
-        event(s, p, 'turned back at the frontier', p.quad >= 4 ? 'home is the last stop — the tower awaits' : 'the frontier guard demands the key', steps);
-      } else {
-        p.quad++;
-        p.spot = kingdomEntrySpot(currentKingdom(p.color, p.quad)); // carried into the new kingdom
-        steps.push(step('', '  ', 'frontier', 2500));
-        event(s, p, 'crossed the frontier', `kingdom ${p.quad} of 4`, steps);
-      }
-      toTurnDone(s);
-      return { ok: true };
-    }
-
-    case 'tower': {
-      if (s.phase !== 'playing') return err('not now');
-      p.citadelUsed = 0;
-      beginAction(s, p, steps);
-      if (!p.goldkey || p.quad < 4) {
-        steps.push(step('missing', '  ', 'failure', 2500));
-        event(s, p, 'the tower stands sealed', p.quad < 4 ? 'circle all four kingdoms first' : 'the gold key is missing', steps);
-        toTurnDone(s);
-        return { ok: true };
-      }
-      s.phase = 'riddle';
-      s.riddlePhase = 1;
-      steps.push(step('', '  ', '1812', 3000), step('brasskey', '1 ', 'beep', 1500));
-      event(s, p, 'the riddle of the keys', 'name the first key of the sequence', steps);
-      return { ok: true };
-    }
-
     case 'riddle_guess': {
       if (s.phase !== 'riddle' || !s.riddlePhase) return err('no riddle');
       const want = s.riddle[s.riddlePhase - 1];
@@ -489,7 +491,6 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
         event(s, p, 'the first lock turns', 'name the second key', [step(a.key, '2 ', 'beep', 1500)]);
         return { ok: true };
       }
-      // both right: tower battle (startW = warriors at turn start, for the score)
       s.battle = { brigands: s.dtBrigands, tower: true, startW: p.warriors };
       s.phase = 'battle';
       s.riddlePhase = 0;
@@ -506,4 +507,80 @@ function closeShop(s: DtState, p: DtPlayer, steps: DtStep[], why: string): DtRes
   event(s, p, 'the bazaar closed', why, steps);
   toTurnDone(s);
   return { ok: true };
+}
+
+// --- helpers for clients: the legal destinations from a pawn's node ---------
+
+/** The territories a player may step to this turn (adjacent + rules), excluding
+ *  illegal ones. Staying put (their own node) is legal too but not listed. */
+export function dtLegalSteps(s: DtState, seat: number): string[] {
+  const p = s.players[seat];
+  if (!p || s.turn !== seat || s.phase !== 'playing') return [];
+  const from = DT_NODE.get(p.node);
+  if (!from) return [];
+  const home = p.color, kNow = dtKingdomAt(p.color, p.quad);
+  const out: string[] = [];
+  for (const id of dtAdjacent(p.node)) {
+    const to = DT_NODE.get(id)!;
+    if (to.kind === 'citadel' && to.kingdom !== home) continue;
+    if (to.kind === 'darktower' && !(to.kingdom === home && p.quad >= 4 && p.goldkey)) continue;
+    if (to.kind === 'frontier') { if (DT_FORWARD_FRONTIER.get(kNow) !== id || p.quad >= 4) continue; }
+    else if (from.kind === 'frontier') { const dir = DT_FRONTIER_DIR.get(p.node)!; if (to.kingdom !== dir.to) continue; }
+    else if (to.kingdom && to.kingdom !== kNow) continue;
+    out.push(id);
+  }
+  return out;
+}
+
+// BFS the graph (through same-kingdom territories) to the nearest goal; return
+// the first hop if it is a legal step this turn.
+function navHop(start: string, isGoal: (id: string) => boolean, legal: string[], kNow: string): string | null {
+  const prev = new Map<string, string | null>([[start, null]]);
+  const q = [start]; let goal: string | null = null;
+  while (q.length) {
+    const c = q.shift()!;
+    if (c !== start && isGoal(c)) { goal = c; break; }
+    for (const nb of dtAdjacent(c)) {
+      if (prev.has(nb)) continue;
+      const n = DT_NODE.get(nb)!;
+      if (isGoal(nb) || (n.kingdom === kNow && n.kind !== 'frontier' && n.kind !== 'darktower')) { prev.set(nb, c); q.push(nb); }
+    }
+  }
+  if (!goal) return null;
+  let cur = goal, hop = goal;
+  while (prev.get(cur) !== start && prev.get(cur) != null) { cur = prev.get(cur)!; hop = cur; }
+  return legal.includes(hop) ? hop : null;
+}
+
+/** A CPU player's chosen destination on the `playing` phase: find this kingdom's
+ *  key at the tombs, cross the forward frontier, and once home with all keys
+ *  build the garrison and step onto the Dark Tower. Used by the server bot. */
+export function dtBotStep(s: DtState, seat: number): string {
+  const p = s.players[seat];
+  const legal = dtLegalSteps(s, seat);
+  if (!legal.length) return p.node;
+  const kindOf = (id: string) => DT_NODE.get(id)!.kind;
+  const kNow = dtKingdomAt(p.color, p.quad);
+  const haveKey = p.quad === 0 || (p.quad === 1 && !!p.brasskey) || (p.quad === 2 && !!p.silverkey) || (p.quad === 3 && !!p.goldkey);
+  const armyReady = p.warriors >= Math.min(44, s.dtBrigands);
+  const goTo = (g: (id: string) => boolean): string | null => legal.find(g) ?? navHop(p.node, g, legal, kNow);
+  const isTomb = (id: string) => kindOf(id) === 'tomb' || kindOf(id) === 'ruin';
+  const isRest = (id: string) => kindOf(id) === 'sanctuary' || kindOf(id) === 'citadel';
+  const isBazaar = (id: string) => kindOf(id) === 'bazaar';
+  const wander = () => legal.find((id) => kindOf(id) === 'empty') ?? legal[0];
+
+  if (p.warriors <= 4 || p.food <= 4) { const h = goTo(isRest); if (h) return h; if (p.gold >= 3) { const hb = goTo(isBazaar); if (hb) return hb; } }
+  if (p.quad >= 4 && p.goldkey) {
+    if (armyReady) { const h = goTo((id) => kindOf(id) === 'darktower'); if (h) return h; }
+    if (p.gold >= 8) { const h = goTo(isBazaar); if (h) return h; }
+    if (p.warriors <= 6 || p.food <= 6) { const h = goTo(isRest); if (h) return h; }
+    if (isTomb(p.node)) return p.node;
+    return goTo(isTomb) ?? wander();
+  }
+  if (haveKey) { const h = goTo((id) => id === DT_FORWARD_FRONTIER.get(kNow)); if (h) return h; }
+  if (p.warriors < 12 && p.gold >= 12) { const h = goTo(isBazaar); if (h) return h; }
+  if (isTomb(p.node)) return p.node;
+  { const h = goTo(isTomb); if (h) return h; }
+  if (p.gold >= 20) { const h = goTo(isBazaar); if (h) return h; }
+  return wander();
 }
