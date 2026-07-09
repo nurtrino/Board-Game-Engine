@@ -60,7 +60,12 @@ geometry come from elsewhere:
 
 ## Turn flow (the expanded turn portal — per owner)
 
-Per nation, in fixed order (USSR, Germany, UK, Italy, Japan, USA):
+Per nation, in the SCENARIO's turn order (rulebook p6 — this overrides the
+assistant config's single order):
+- **1941**: Germany, Soviet Union, Japan, United Kingdom, Italy, United States.
+- **1942**: Japan, Soviet Union, Germany, United Kingdom, Italy, United States.
+
+Phases per turn:
 1. **RND** (if enabled): buy dice at 5 IPC, roll for breakthroughs
    (research.ts logic; Anniversary chart from rulebook).
 2. **Purchase units**: everything bought goes to the STAGING AREA — the real
@@ -134,8 +139,9 @@ lift).
 - [x] Rulebook secured (16pp official PDF from the assistant repo).
 - [x] Assistant repo cloned; lift list identified.
 - [ ] Map zone golden (subagent in flight).
-- [~] Rulebook read pp1-6 (digest below); pp7-16 next (RND chart, combat
-      sequence, mobilize/income, NOs, unit profile chart).
+- [x] Rulebook read in full (digests below). One gap: NO bonus IPC amounts
+      are dropped by the PDF's font encoding — recover exact numbers from the
+      mod's National Setup Chart card BACKS during extraction.
 - [ ] Setup counts per power per scenario: from the mod's National Setup
       Charts cards (SETUP side); National Objectives printed on the BACK of
       those same charts — both goldens come from the mod's 141 cards.
@@ -172,6 +178,138 @@ lift).
   transports. The Flying Tigers US fighter fights as Chinese; if lost, never
   replaced. US must fully resolve China's combat move + combat before (or
   after) the US's own — never interleaved.
+## Rulebook digest (pp7-16)
+
+**Turn order is per scenario** (p6): 1941 = Germany, USSR, Japan, UK, Italy,
+USA; 1942 = Japan, USSR, Germany, UK, Italy, USA. Income/units of multiple
+powers held by one player stay separate. Collect Income is the only mandatory
+phase.
+
+**Phase 1 — RND (optional rule)**: researcher tokens cost 5 IPC each, any
+number. Roll 1d6 per token; any 6 = breakthrough (discard ALL tokens);
+no 6 = keep tokens for future turns (they persist!). On success pick chart 1
+or 2, roll 1d6 for which advance; reroll duplicates; one advance max per
+turn. Chart 1: 1 Advanced Artillery (1 art supports 2 inf), 2 Rockets (each
+AA gun may rocket-attack an enemy IC within 3 spaces for 1d6 damage during
+SBR step), 3 Paratroopers (bomber carries 1 inf, must stop at first hostile
+territory, no SBR that turn), 4 Increased Factory Production (+2 units over
+IPC value, repairs half price), 5 War Bonds (+1d6 IPC at Collect Income),
+6 Mechanized Infantry (inf paired with tank moves 2). Chart 2: 1 Super Subs
+(sub att 3), 2 Jet Fighters (ftr att 4), 3 Improved Shipyards (BB 17 CV 11
+CA 10 DD 7 TP 6 SS 5), 4 Radar (AA hits on 1-2), 5 Long-Range Aircraft
+(ftr 6, bmr 8), 6 Heavy Bombers (2 dice per bomber attack/SBR, defense
+still 1 die).
+
+**Phase 2 — Purchase**: each IC produces up to the territory IPC value in
+units/turn (mobilize-time limit). Repairs: 1 IPC per damage marker, paid at
+purchase. Unplaced purchased units carry over to future Mobilize phases.
+
+**Phase 3 — Combat Move**: land units stop on enemy units incl. AA/IC. Air
+moves through hostile freely. Sea units stop in hostile SZs (zones with only
+enemy subs/transports don't count as hostile for stopping; attacking them is
+optional; ending combat move on lone enemy transports DESTROYS them and
+counts as combat). Subs pass through hostile SZs unless an enemy destroyer
+is there (movement ends immediately). Carrier fighters launch before the
+carrier moves, move independently; guest (allied) fighters are cargo.
+Amphibious moves are declared here (loading/moving a transport for assault =
+combat move even if SZ is empty). Tanks blitz: 2 territories, first hostile-
+but-empty gets your control marker; must stop on any enemy unit incl. AA/IC.
+No suicide runs: must declare a possible landing path for all attacking air.
+No moves into/through neutrals ever.
+
+**Phase 4 — Conduct Combat** (attacker picks the order of spaces; each space
+fully resolved before the next; no reinforcements once begun):
+1. *Strategic bombing raids*: AA fires per bomber first; survivors roll 1d6
+   each (2d6 heavy) = damage markers under the IC; cap = 2× territory IPC;
+   SBR bombers do nothing else this turn.
+2. *Amphibious assaults*: (a) sea combat if defending warships (must involve
+   all attacking sea units; only subs/transports defending = attacker may
+   ignore); (b) if NO sea combat happened, each BB/CA in the offload SZ may
+   bombard once — max one ship per offloaded land unit, BB hits ≤4, CA ≤3,
+   casualties go to the casualty zone and still fire back in land combat;
+   (c) land combat. Seaborne units cannot retreat; overland units + air
+   retreat together per normal rules.
+3. *General combat sequence*: place on battle board → attacker fires →
+   defender fires → remove defender's casualties → press or retreat →
+   conclude. Hit = roll ≤ value. Defender's casualties fire back (casualty
+   zone). Subs (both sides): surprise strike before all else unless an enemy
+   destroyer is on the board; may submerge instead of rolling any time
+   they'd roll (also when only enemy aircraft remain); sub hits can only
+   kill sea units. AA: fires once, first round only, one AA per territory,
+   1d6 per attacking air unit, 1 = dead (assign per-aircraft if mixed).
+   Retreat: attacker only, between rounds, ALL units to ONE adjacent
+   friendly space at least one attacker came from; air retreats in place and
+   lands in Noncombat. Defenseless transports: auto-destroyed when attacker
+   still has units capable of hitting them.
+4. *Conclude*: attacker needs a surviving LAND unit to capture (air/sea
+   cannot). Capture: control marker, production +value for you / −value for
+   loser; captured AA/IC change hands (IC unusable until next turn, AA can't
+   move that turn). Liberation: originally-friendly territory reverts to
+   original controller (unless their capital is enemy-held → you keep it
+   until liberation). Capitals: capturer LOOTS all unspent IPCs of the
+   ORIGINAL owner; owner collects no income, no purchases, no research —
+   only Combat Move / Conduct Combat / Noncombat phases — until liberated;
+   liberation reverts ICs/AAs and friendly-held territories.
+   VC capture = take the token; win checked at END of a full round (after
+   the US turn).
+
+**Multinational forces**: allies defend together (mutual casualty picks,
+attacker breaks ties; each defender rolls own units); allies NEVER attack
+together — ally units in an attacked SZ sit out and cannot be casualties.
+Allied transports can carry your units (3-step: load your turn, move their
+turn, offload your next turn). Fighters may land on allied carriers but are
+cargo on the ally's turn.
+
+**Phase 5 — Noncombat Move**: any unit that didn't move/fight (AA guns move
+ONLY here, 1 space). Only air and subs may pass hostile spaces. Air must end
+where it can land (territory friendly since start of turn, or carrier —
+fighter may land in an IC-adjacent SZ where a NEW carrier will be placed
+this turn); no landing in just-captured territories; unlandable aircraft
+die. Carriers must move to pick up stranded fighters if possible; carrier
+stops once a fighter lands.
+
+**Phase 6 — Mobilize**: place staged units at ICs controlled since start of
+turn (not ones captured this turn). Per-IC limit = territory IPC value minus
+damage markers. Land units + bombers at the IC territory; sea units in an
+adjacent SZ (even hostile — no combat, combat is over); fighters at the IC
+or on YOUR carrier adjacent (new or existing); new ICs in any income≥1
+territory held since start of turn, one IC per territory. Unplaced units
+stay in staging for later.
+
+**Phase 7 — Collect Income**: national production value + bonus income.
+Capital enemy-held = collect nothing. No lending between powers.
+National Objectives (optional, per power, printed on setup-chart backs;
+bonus IPC AMOUNTS must be read from the mod's card backs — the PDF font
+drops the digits): USA "Arsenal of Democracy" (all 3 US territories;
+Philippines; France; 3+ of Midway/Wake/Hawaii/Solomons — each a separate
+bonus, Allied control), UK "British Empire" (all of E+W Canada, Gibraltar,
+Egypt, Australia, S. Africa; any originally-Japanese territory; France
+and/or Balkans), USSR "Great Patriotic War" (3+ of Norway/Finland/Poland/
+Bulgaria-Romania/Czech-Hungary/Balkans; no other Allied forces in
+Soviet-controlled territory AND control Archangel), Germany "Lebensraum"
+(all of France/NW Europe/Germany/Czech-Hungary/Bulgaria-Romania/Poland; 3+
+of Baltic States/East Poland/Ukraine/E. Ukraine/Belorussia; Karelia and/or
+Caucasus), Japan "Co-Prosperity Sphere" (all of Manchuria/Kiangsu/
+French Indo-China-Thailand; 4+ of Kwangtung/East Indies/Borneo/Philippines/
+New Guinea/Solomons; Hawaii/Australia/India any), Italy "Mare Nostrum"
+(all of Italy/Balkans/Morocco-Algeria/Libya AND no enemy surface warships
+in SZ 13/14/15; 3+ of Egypt/Trans-Jordan/France/Gibraltar).
+
+**Unit profiles** (confirms assistant config): inf 3 IPC 1/2/1 (att 2 when
+paired 1:1 with artillery, attack only); art 4 2/2/1; tank 5 3/3/2 blitz;
+AA 6 −/1/1 noncombat-move only, capturable, never destroyed in combat;
+IC 15, no att/def/move, damage markers, capturable; ftr 10 3/4/4;
+bmr 12 4/1/6; BB 20 4/4/2 two hits (damage persists through combat, repairs
+free after combat ends — turn upright), bombard ≤4; CV 14 1/2/2 carries 2
+fighters (fighters defend from air, cannot be sub casualties); CA 12 3/3/2
+bombard ≤3; DD 8 2/2/2 anti-sub (cancels submerge/surprise strike/sub
+movement, lets aircraft hit subs); SS 6 2/1/2 submersible + surprise strike,
+can't hit air; TP 7 0/0/2 capacity = 1 land unit + 1 extra infantry, chosen
+last, defenseless-transport rule, offload = whole move, one territory only.
+Air range: first SZ off a coast counts 1; carrier launch doesn't count the
+carrier's SZ; islands = SZ and island are separate spaces for range.
+Surface warships = BB/CV/CA/DD (not TP; SS is a warship but not surface).
+
 - [ ] extract-axis.mjs (stage board halves, unit meshes per nation bag,
       reference cards incl. face/back, flags).
 - [ ] Engine + tests; server registry; TV; phone; production screen;
