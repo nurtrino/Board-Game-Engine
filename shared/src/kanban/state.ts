@@ -48,7 +48,9 @@ export const KANBAN_RULES = {
   stripedSpaces: [0, 4],
   maxBehindPace: 4,
   claimShiftCost: [1, 2, 2, 3], // by queue position behind the pace car
-  conveyorExitPP: { top: 1, middle: 2, bottom: 1 },
+  // exit gates: the three belt-end nodes roll out through their own gate
+  // (verified against the printed arrows via the fit overlay)
+  conveyorExitPP: { 31: 1, 32: 2, 33: 1 } as Record<number, number>,
   ppStart: 15,
   weekMax: 3,
   cycleMax: 3,

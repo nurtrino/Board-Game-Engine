@@ -180,27 +180,29 @@ function moveCarTo(s: KanbanState, p: KanbanPlayer, from: number, to: number): K
   return ok;
 }
 
-/** `car` was pushed out of `node`; send it along node's arrows. */
+/** `car` was pushed out of `node`; send it along node's arrows. Belt-end
+ * nodes also offer their exit gate (option 0) at the node's printed PP. */
 function displaceOnward(s: KanbanState, p: KanbanPlayer, node: number, car: CarModel): KanbanResult {
+  const exitPP = R.conveyorExitPP[node];
   const targets = CONVEYOR[node].targets;
-  if (targets.length === 0) { carRollsOut(s, p, car); return ok; }
-  if (targets.length === 1) {
-    const to = targets[0];
+  const options = exitPP !== undefined ? [...targets, 0] : targets;
+  if (options.length === 0) { carRollsOut(s, p, car, 2); return ok; }
+  if (options.length === 1) {
+    if (options[0] === 0) { carRollsOut(s, p, car, exitPP!); return ok; }
+    const to = options[0];
     const occupant = s.conveyor[to] ?? null;
     s.conveyor[to] = car;
     if (occupant) return displaceOnward(s, p, to, occupant);
     return ok;
   }
   s.displacing = car;
-  s.pending.push({ seat: p.seat, decision: { kind: 'displace', node, options: targets, label: `Choose where the displaced ${car} car goes` } });
+  s.pending.push({ seat: p.seat, decision: { kind: 'displace', node, options, label: `Choose where the displaced ${car} car goes (0 = roll out)` } });
   s.turn = p.seat;
   return ok;
 }
 
-function carRollsOut(s: KanbanState, p: KanbanPlayer, car: CarModel): void {
-  // exit gate PP: the mod's arrow graph funnels every exit through the
-  // middle gate (2 PP); node/gate mapping re-verified in the client fit
-  p.pp += R.conveyorExitPP.middle;
+function carRollsOut(s: KanbanState, p: KanbanPlayer, car: CarModel, pp: number): void {
+  p.pp += pp;
   for (const d of s.demands) {
     if (d.tile.model === car && d.speech > 0) { d.speech--; gainGeneric(s, p, true); break; }
   }
@@ -212,7 +214,7 @@ function carRollsOut(s: KanbanState, p: KanbanPlayer, car: CarModel): void {
     s.testTrack[firstIdx] = null;
   }
   s.testTrack.push(car);
-  ev(s, p, `${car} car rolls out`, `+${R.conveyorExitPP.middle} PP`);
+  ev(s, p, `${car} car rolls out`, `+${pp} PP`);
 }
 
 // ---------- day flow ----------
@@ -833,7 +835,7 @@ function moveEntryCar(s: KanbanState, p: KanbanPlayer, entry: number, model: Car
       s.turn = p.seat;
       return ok; // the fresh car enters when the choice resolves
     } else {
-      carRollsOut(s, p, s.conveyor[entry]!);
+      carRollsOut(s, p, s.conveyor[entry]!, R.conveyorExitPP[entry] ?? 2);
       s.conveyor[entry] = null;
     }
   }
@@ -975,9 +977,14 @@ function resolveChoice(s: KanbanState, p: KanbanPlayer, a: KanbanAction & { type
       s.pending.shift();
       let r: KanbanResult = ok;
       if (s.displacing) {
-        // an in-flight displaced car picks its branch
+        // an in-flight displaced car picks its branch (0 = roll out)
         const car = s.displacing;
         s.displacing = null;
+        if (a.node === 0) {
+          carRollsOut(s, p, car, R.conveyorExitPP[d.node] ?? 2);
+          afterChoice(s);
+          return ok;
+        }
         const occupant = s.conveyor[a.node] ?? null;
         s.conveyor[a.node] = car;
         if (occupant) r = displaceOnward(s, p, a.node, occupant);
