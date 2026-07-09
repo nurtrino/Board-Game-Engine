@@ -5,7 +5,7 @@
 // and confirm with YES, exactly like the 1981 tower.
 
 import { useEffect, useRef, useState } from 'react';
-import { DT_KEYS, KINGDOMS, type DtView, type DtAction, type DtKey } from '@bge/shared';
+import { DT_KEYS, KINGDOMS, dtHomeSpot, type DtView, type DtAction, type DtKey } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { DtTable, useDtScene, type DtSceneDef } from './DtScene';
 import { useTowerDisplay, TOWER_AIM, holdsTower } from './DtBoard';
@@ -235,7 +235,11 @@ export function DtPlay({ view, act, error }: {
           pic={shownPic}
           lcd={shownLcd}
           wedgeMaps={scene.wedge}
-          aim={holdsTower(phase, display.active) ? TOWER_AIM : focusTower ? { x: 0, z: 1, h: 7, y: 6.5 } : null}
+          aim={holdsTower(phase, display.active) ? TOWER_AIM
+            : focusTower ? { x: 0, z: 1, h: 7, y: 6.5 }
+            // your turn: zoom in on your own pawn so it is easy to pick up and move
+            : (myTurn && phase === 'playing') ? (() => { const s = mine.spot ?? dtHomeSpot(mine.color); return { x: s.x, z: -s.z, h: 7, y: 1.6 }; })()
+            : null}
           youSeat={mine.seat}
           canMove={myTurn && phase === 'playing' && !display.active}
           onMoveToken={(x, z) => act({ type: 'move_token', x, z })}
