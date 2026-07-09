@@ -537,9 +537,9 @@ export function DunePlay({ view, act, error }: {
 
         {/* current conflict, always in reach on the device */}
         {view.conflict && view.phase !== 'ended' && (
-          <div data-tour="conflict" style={{ display: 'flex', gap: 10, alignItems: 'flex-end', paddingBottom: 8 }}>
-            <DuneCard scene={scene} id={view.conflict} w={86} h={132} />
-            <span className="dn-lab">Conflict · round {view.round}</span>
+          <div data-tour="conflict" style={{ display: 'flex', gap: 12, alignItems: 'flex-end', paddingBottom: 8 }}>
+            <DuneCard scene={scene} id={view.conflict} w={170} h={260} />
+            <span className="dn-lab" style={{ paddingBottom: 6 }}>Conflict · round {view.round}</span>
           </div>
         )}
 
