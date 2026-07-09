@@ -7,7 +7,11 @@ import sharp from 'sharp';
 const REPO = process.cwd();
 const ART = `${REPO}/client/public/darktower/boardart.webp`;
 const OUT = process.argv[2] || null; // optional overlay png
-const INK_MERGE = Number(process.argv[3] ?? 0.42); // merge if shared border < this frac ink
+// Merge fragments across low-ink borders. Disabled by default (0 = never merge):
+// with the clean ink+faint-line network below, adjacent cells are separated by
+// real drawn lines, so any merge bleeds zones across those lines. Kept as an
+// override for experimentation. (Pass a fraction like 0.42 to re-enable.)
+const INK_MERGE = Number(process.argv[3] ?? 0);
 const N = 1024;
 
 const scene = JSON.parse(await (await import('node:fs/promises')).readFile(`${REPO}/client/public/darktower/scene.json`, 'utf8'));
@@ -67,24 +71,67 @@ const boxMean = (x, y, r) => { const x0 = Math.max(0, x - r), y0 = Math.max(0, y
 const ink = new Uint8Array(W * H);   // strong drawn boundary ink
 const wall = new Uint8Array(W * H);  // ink + texture edges (for fine segmentation)
 const frontier = new Uint8Array(W * H); // tan diagonal bands
+const DT_DARK = Number(process.env.DT_DARK ?? 28); // faint-line local-contrast delta
+const DT_MAXG = Number(process.env.DT_MAXG ?? 145); // faint-line max brightness
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   const p = y * W + x, i = p * C, r = data[i], g = data[i + 1], b = data[i + 2];
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
   const dist = Math.hypot(x - cxp, y - cyp);
   const isInk = mx < 80 && (mx - mn) < 42;
-  const adaptive = gray[p] < boxMean(x, y, 7) - 16 && gray[p] < 150;
-  // frontier: sandy tan, and only along the diagonals (|angle mod 90 - 45| small)
+  // Some zone lines (esp. the Brynthia/right waterfall) are drawn in faint
+  // grey-brown at mx~90-135, far above the pure-black `isInk` cutoff, so they go
+  // undetected and whole rows of cells leak together. Catch them with a
+  // conservative LOCAL-CONTRAST test: markedly darker than the surrounding
+  // terrain AND low-saturation (a drawn line, not vivid forest/water). Terrain
+  // hatching that trips this is short and gets reabsorbed by the small-area pass.
+  const faint = gray[p] < boxMean(x, y, 9) - DT_DARK && gray[p] < DT_MAXG && (mx - mn) < 60;
+  const adaptive = process.env.DT_ADAPTIVE === '1' && gray[p] < boxMean(x, y, 7) - 16 && gray[p] < 150;
+  const isLine = isInk || faint;
+  // frontier: sandy tan, along the diagonals. The band flares from ~±5deg at
+  // the hub to ~±30deg at the rim, so gate a generous ±34deg and let the tan
+  // colour test carve the real edge; holes where terrain overlaps the tan are
+  // filled by a morphological close below.
   const ang = (Math.atan2(y - cyp, x - cxp) * 180 / Math.PI + 360) % 90;
-  const diag = Math.abs(ang - 45) < 15;
+  const diag = Math.abs(ang - 45) < 34;
   const tan = r > 150 && g > 110 && b < 130 && r - b > 55 && (mx - mn) < 130;
-  if (dist < R && diag && tan) frontier[p] = 1;
-  if (isInk) ink[p] = 1;
-  if (isInk || adaptive || dist > R || dist < W * 0.05) wall[p] = 1;
+  if (dist < R && dist > 0.1 * R && diag && tan) frontier[p] = 1;
+  if (isLine) ink[p] = 1;
+  if (isLine || adaptive || dist > R || dist < W * 0.05) wall[p] = 1;
 }
-// dilate wall by 1 to close gaps
-const wallD = new Uint8Array(W * H);
-for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const p = y * W + x;
-  if (wall[p] || (x && wall[p - 1]) || (x < W - 1 && wall[p + 1]) || (y && wall[p - W]) || (y < H - 1 && wall[p + W])) wallD[p] = 1; }
+// Close small gaps in the ink network without pinching wide cell necks:
+// morphological CLOSE (dilate by CLOSE then erode by CLOSE) bridges gaps up to
+// ~2*CLOSE px while restoring wall thickness, then a final DILATE seals the
+// flood-fill boundary. Ink-only segmentation needs this bridging because the old
+// adaptive-texture mask used to plug gaps incidentally.
+const dilate = (src, passes) => { let m = Uint8Array.from(src);
+  for (let pass = 0; pass < passes; pass++) { const nx = new Uint8Array(W * H);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const p = y * W + x;
+      if (m[p]) { nx[p] = 1; continue; }
+      if ((x && m[p-1]) || (x<W-1 && m[p+1]) || (y && m[p-W]) || (y<H-1 && m[p+W]) ||
+          (x&&y&&m[p-W-1]) || (x<W-1&&y&&m[p-W+1]) || (x&&y<H-1&&m[p+W-1]) || (x<W-1&&y<H-1&&m[p+W+1])) nx[p] = 1; }
+    m = nx; } return m; };
+const erode = (src, passes) => { let m = Uint8Array.from(src);
+  for (let pass = 0; pass < passes; pass++) { const nx = new Uint8Array(W * H);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const p = y * W + x; if (!m[p]) continue;
+      if (x && m[p-1] && x<W-1 && m[p+1] && y && m[p-W] && y<H-1 && m[p+W]) nx[p] = 1; }
+    m = nx; } return m; };
+// Solidify each frontier band: close the colour-detected tan (fills the holes
+// where forest/water is painted over the band) so every diagonal is ONE
+// continuous strip, then re-clip to the diagonal sector + disc so the close
+// can't bulge across the bounding ink into a kingdom. Without this the bands
+// come out patchy and kingdom cells leak into the gaps.
+const FCLOSE = Number(process.env.DT_FCLOSE ?? 6);
+{
+  const solid = erode(dilate(frontier, FCLOSE), FCLOSE);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const p = y * W + x; if (!solid[p]) { continue; }
+    const dist = Math.hypot(x - cxp, y - cyp);
+    const ang = (Math.atan2(y - cyp, x - cxp) * 180 / Math.PI + 360) % 90;
+    frontier[p] = (dist < R && dist > 0.1 * R && Math.abs(ang - 45) < 36) ? 1 : 0; }
+}
+const CLOSE = Number(process.env.DT_CLOSE ?? 3);
+const DILATE = Number(process.env.DT_DILATE ?? 1);
+let wallD = erode(dilate(wall, CLOSE), CLOSE);
+wallD = dilate(wallD, DILATE);
 
 // fine flood fill (exclude frontier so bands don't merge with kingdoms)
 const label = new Int32Array(W * H); let next = 0; const st = [];
@@ -115,7 +162,7 @@ for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
     const kk = key(la, lb); let e = adj.get(kk); if (!e) { e = { shared: 0, inkShared: 0 }; adj.set(kk, e); }
     e.shared++; e.inkShared += isInk; } }
 }
-const MINAREA = Number(process.argv[4] ?? 4200); // absorb regions smaller than this
+const MINAREA = Number(process.argv[4] ?? 1600); // absorb regions smaller than this (letter/speckle/texture fragments; real cells are larger)
 // union-find merge across low-ink borders
 const parent = new Map();
 const find = (a) => { while (parent.get(a) !== a) { parent.set(a, parent.get(parent.get(a))); a = parent.get(a); } return a; };
@@ -221,25 +268,93 @@ for (let bi = 0; bi < 4; bi++) { const f = fnodes[bi];
     else { let best = null, bd = 1e9; for (const n of nodes) { if (n.kingdom !== K) continue; const d = Math.hypot(n.wx - f.wx, n.wz - f.wz); if (d < bd) { bd = d; best = n; } } if (best) addE(best.id, `f${bi}`); }
   } }
 console.log('band kingdoms', JSON.stringify(bandK));
+
+// ---- connectivity repair ---------------------------------------------------
+// The CPU bot walks each kingdom via a BFS over SAME-kingdom, non-frontier,
+// non-darktower cells (navHop). Fine segmentation + centroid-angle kingdom
+// assignment can leave a kingdom in several disconnected clusters: a strip
+// pinched off by a frontier band, or an inner group cut from the rim by the
+// hub. Those strand the bot (unreachable tomb -> no key -> it never crosses).
+// Each kingdom's cells ARE one contiguous wedge of terrain, so re-link every
+// stray cluster to the geographically nearest cell of the kingdom's main body.
+// These are intra-kingdom (same-quad) links, so they never bypass the frontier
+// key-gates. The darktower cell is linked too so "step onto the tower" works.
+{
+  const nById = new Map(nodes.map((n) => [n.id, n]));
+  const nbr = new Map(nodes.map((n) => [n.id, []]));
+  for (const e of eset) { const [a, b] = e.split('~'); if (nbr.has(a) && nbr.has(b)) { nbr.get(a).push(b); nbr.get(b).push(a); } }
+  const addE = (a, b) => eset.add(a < b ? `${a}~${b}` : `${b}~${a}`);
+  for (const K of ['Red', 'Blue', 'Yellow', 'Green']) {
+    const cells = nodes.filter((n) => n.kingdom === K && n.kind !== 'frontier');
+    const pass = new Set(cells.filter((n) => n.kind !== 'darktower').map((n) => n.id));
+    // components over pass-through cells (mirrors navHop's traversal set)
+    const comp = new Map(); let cid = 0;
+    for (const n of cells) { if (n.kind === 'darktower' || comp.has(n.id)) continue;
+      cid++; const st = [n.id]; comp.set(n.id, cid);
+      while (st.length) { const c = st.pop(); for (const m of nbr.get(c) || []) { if (!pass.has(m) || comp.has(m)) continue; comp.set(m, cid); st.push(m); } } }
+    const groups = new Map(); for (const [id, g] of comp) { (groups.get(g) ?? groups.set(g, []).get(g)).push(id); }
+    if (groups.size > 1) {
+      const main = [...groups.values()].sort((a, b) => b.length - a.length)[0];
+      for (const g of groups.values()) { if (g === main) continue;
+        let best = null, bd = 1e9; for (const a of g) for (const b of main) {
+          const na = nById.get(a), nb2 = nById.get(b); const d = Math.hypot(na.wx - nb2.wx, na.wz - nb2.wz);
+          if (d < bd) { bd = d; best = [a, b]; } }
+        if (best) { addE(best[0], best[1]); nbr.get(best[0]).push(best[1]); nbr.get(best[1]).push(best[0]);
+          for (const id of g) comp.set(id, comp.get(main[0])); main.push(...g); }
+      }
+      console.log(`repaired ${K}: ${groups.size} clusters -> 1`);
+    }
+    // ensure the home darktower is adjacent to a pass-through cell of its kingdom
+    const dt = cells.find((n) => n.kind === 'darktower');
+    if (dt && !(nbr.get(dt.id) || []).some((m) => pass.has(m))) {
+      let best = null, bd = 1e9; for (const b of cells) { if (!pass.has(b.id)) continue; const d = Math.hypot(dt.wx - b.wx, dt.wz - b.wz); if (d < bd) { bd = d; best = b.id; } }
+      if (best) { addE(dt.id, best); console.log(`linked ${K} darktower -> ${best}`); }
+    }
+  }
+}
 const gedges = [...eset].map((e) => e.split('~'));
 
 const allNodes = [...nodes.map((n) => ({ id: n.id, kind: n.kind, kingdom: n.kingdom, wx: n.wx, wz: n.wz, px: n.px, py: n.py })), ...fnodes];
 const graph = { calib: { ax, bx, ay, by, N }, nodes: allNodes, edges: gedges };
-await (await import('node:fs/promises')).writeFile(process.env.GRAPH_OUT || `${REPO}/games/dark-tower/golden/territories.json`, JSON.stringify(graph, null, 1));
+const fs = await import('node:fs/promises');
+await fs.writeFile(process.env.GRAPH_OUT || `${REPO}/games/dark-tower/golden/territories.json`, JSON.stringify(graph, null, 1));
 const kc = {}; for (const n of nodes) kc[n.kingdom] = (kc[n.kingdom] || 0) + 1;
 const tc = {}; for (const n of allNodes) tc[n.kind] = (tc[n.kind] || 0) + 1;
 console.log('nodes', allNodes.length, 'edges', gedges.length, 'by kingdom', JSON.stringify(kc), 'by type', JSON.stringify(tc));
 
+// ---- emit shared/src/darktower/territories.ts: rewrite ONLY the DT_NODES and
+// DT_EDGES literals, preserving the file's header and hand-written movement
+// topology footer. Skipped when GRAPH_OUT is set (experimental/overlay runs).
+if (!process.env.GRAPH_OUT) {
+  const TS = `${REPO}/shared/src/darktower/territories.ts`;
+  let src = await fs.readFile(TS, 'utf8');
+  const q = (v) => v === null || v === undefined ? 'null' : `"${v}"`;
+  const nodeLines = allNodes.map((n) =>
+    `  { id: "${n.id}", kind: "${n.kind}", kingdom: ${q(n.kingdom ?? null)}, wx: ${n.wx}, wz: ${n.wz} },`).join('\n');
+  const edgeStr = gedges.map(([a, b]) => `["${a}", "${b}"]`).join(', ');
+  src = src.replace(/export const DT_NODES: DtNode\[\] = \[[\s\S]*?\n\];/,
+    `export const DT_NODES: DtNode[] = [\n${nodeLines}\n];`);
+  src = src.replace(/export const DT_EDGES: \[string, string\]\[\] = \[[\s\S]*?\];/,
+    `export const DT_EDGES: [string, string][] = [${edgeStr}];`);
+  await fs.writeFile(TS, src);
+  console.log('emitted', TS);
+}
+
 // ---- typed overlay
 const TYPECOL = { empty: [120, 200, 255], tomb: [180, 120, 220], ruin: [150, 150, 150], bazaar: [90, 160, 255], sanctuary: [120, 255, 160], citadel: [255, 220, 60], darktower: [255, 60, 60], frontier: [255, 140, 0] };
+// DISTINCT=1 tints every zone its own hashed colour so zone boundaries (not just
+// types) are visible against the black ink lines. Debug aid only.
+const DISTINCT = process.env.DISTINCT === '1';
+const zoneCol = (i) => { const h = (i * 2654435761) >>> 0; return [80 + (h & 127), 60 + ((h >> 8) & 159), 70 + ((h >> 16) & 149)]; };
 if (OUT) {
   const nodeById = new Map(allNodes.map((n) => [n.id, n]));
   const base = await sharp(ART).resize(N, N, { fit: 'fill' }).removeAlpha().raw().toBuffer();
   const out = Buffer.from(base);
   for (let p = 0; p < W * H; p++) { let col = null;
-    if (bandOfPx[p] >= 0) col = TYPECOL.frontier;
+    if (DISTINCT) { if (bandOfPx[p] >= 0) col = [40, 40, 40]; else if (owner[p] >= 0) col = zoneCol(owner[p]); }
+    else if (bandOfPx[p] >= 0) col = TYPECOL.frontier;
     else if (owner[p] >= 0) col = TYPECOL[nodes[owner[p]].kind] || TYPECOL.empty;
-    if (col) { out[p*3]=(out[p*3]+col[0])>>1; out[p*3+1]=(out[p*3+1]+col[1])>>1; out[p*3+2]=(out[p*3+2]+col[2])>>1; } }
+    if (col) { const m = DISTINCT ? 0.62 : 0.5; out[p*3]=out[p*3]*(1-m)+col[0]*m; out[p*3+1]=out[p*3+1]*(1-m)+col[1]*m; out[p*3+2]=out[p*3+2]*(1-m)+col[2]*m; } }
   for (const [a,b] of gedges){const na=nodeById.get(a),nb=nodeById.get(b);if(!na||!nb)continue;for(let s=0;s<=40;s++){const x=Math.round(na.px+(nb.px-na.px)*s/40),y=Math.round(na.py+(nb.py-na.py)*s/40);const q=(y*W+x)*3;if(q>=0&&q<out.length){out[q]=255;out[q+1]=255;out[q+2]=255;}}}
   for (const n of allNodes){for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){const q=((n.py+dy)*W+(n.px+dx))*3;if(q>=0&&q<out.length){out[q]=10;out[q+1]=10;out[q+2]=10;}}}
   await sharp(out,{raw:{width:W,height:H,channels:3}}).png().toFile(OUT);

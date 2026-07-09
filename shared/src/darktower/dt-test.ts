@@ -60,6 +60,10 @@ function playout(P: number, seed: number) {
       else if (bz.buying > 0) tryDo({ type: 'bazaar_no' });
       else if (bz.offer === 'beast' && bz.prices.beast <= p.gold) tryDo({ type: 'bazaar_yes' });
       else if ((bz.offer === 'scout' || bz.offer === 'healer') && bz.prices[bz.offer] <= p.gold && rng() < 0.5) tryDo({ type: 'bazaar_yes' });
+      // Nothing worth buying: haggle to leave. Declining only cycles the offers,
+      // so a broke shopper (0 gold, no affordable goods) would loop forever;
+      // haggling eventually slams the shutters. Mirrors the server bot (index.ts).
+      else if (rng() < 0.3) tryDo({ type: 'bazaar_haggle' });
       else tryDo({ type: 'bazaar_no' });
       continue;
     }
