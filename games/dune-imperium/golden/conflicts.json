@@ -1,0 +1,49 @@
+{
+ "source": "Transcribed from the mod's conflict card sheets (CustomDeck 25/26/20, decks 84d4cb/6e3846/1afb58), cell by cell. Icons decoded via the rulebook Icon Guide (page 16): ringed gold planet = VP, ?-diamond+chevron = influence any one faction (double chevron = 2), gold-sigil card = intrigue draw, X card = trash a card, grey pennant = control flag, silhouette = Mentat.",
+ "notes": "Reward keys: vp, solari, spice, water, intrigue, influenceAny (amount), influencePickTwo (1 each in two different factions), mentat, trash, control (space id), choice (array of alternatives, pick one), chooseTwo (array, pick two different).",
+ "tierI": [
+  {"id": "skirmishA", "name": "Skirmish", "sheet": 25, "cell": 0,
+   "first": {"vp": 1}, "second": {"intrigue": 1, "solari": 2}, "third": {"solari": 2}},
+  {"id": "skirmishB", "name": "Skirmish", "sheet": 25, "cell": 1,
+   "first": {"vp": 1}, "second": {"water": 1}, "third": {"spice": 1}},
+  {"id": "skirmishC", "name": "Skirmish", "sheet": 25, "cell": 2,
+   "first": {"influenceAny": 1, "spice": 1}, "second": {"spice": 2}, "third": {"spice": 1}},
+  {"id": "skirmishD", "name": "Skirmish", "sheet": 25, "cell": 3,
+   "first": {"influenceAny": 1, "solari": 2}, "second": {"solari": 3}, "third": {"solari": 2}}
+ ],
+ "tierII": [
+  {"id": "desertPower", "name": "Desert Power", "sheet": 26, "cell": 0,
+   "first": {"vp": 1, "water": 1}, "second": {"water": 1, "spice": 1}, "third": {"spice": 1}},
+  {"id": "raidStockpiles", "name": "Raid Stockpiles", "sheet": 26, "cell": 1,
+   "first": {"intrigue": 1, "spice": 3}, "second": {"spice": 2}, "third": {"spice": 1}},
+  {"id": "cloakAndDagger", "name": "Cloak and Dagger", "sheet": 26, "cell": 2,
+   "first": {"influenceAny": 1, "intrigue": 2}, "second": {"intrigue": 1, "spice": 1},
+   "third": {"choice": [{"intrigue": 1}, {"spice": 1}]}},
+  {"id": "machinations", "name": "Machinations", "sheet": 26, "cell": 3,
+   "first": {"influencePickTwo": 1}, "second": {"water": 1, "solari": 2}, "third": {"water": 1}},
+  {"id": "sortThroughTheChaos", "name": "Sort Through the Chaos", "sheet": 26, "cell": 4,
+   "first": {"mentat": true, "intrigue": 1, "solari": 2}, "second": {"intrigue": 1, "solari": 2}, "third": {"solari": 2}},
+  {"id": "terriblePurpose", "name": "Terrible Purpose", "sheet": 26, "cell": 5,
+   "first": {"vp": 1, "trash": 1}, "second": {"water": 1, "spice": 1}, "third": {"spice": 1}},
+  {"id": "guildBankRaid", "name": "Guild Bank Raid", "sheet": 26, "cell": 6,
+   "first": {"solari": 6}, "second": {"solari": 4}, "third": {"solari": 2}},
+  {"id": "siegeOfArrakeen", "name": "Siege of Arrakeen", "sheet": 26, "cell": 7,
+   "first": {"vp": 1, "control": "arrakeen"}, "second": {"solari": 4}, "third": {"solari": 2}},
+  {"id": "siegeOfCarthag", "name": "Siege of Carthag", "sheet": 26, "cell": 8,
+   "first": {"vp": 1, "control": "carthag"}, "second": {"intrigue": 1, "spice": 1}, "third": {"spice": 1}},
+  {"id": "secureImperialBasin", "name": "Secure Imperial Basin", "sheet": 26, "cell": 9,
+   "first": {"vp": 1, "control": "imperialBasin"}, "second": {"water": 2}, "third": {"water": 1}}
+ ],
+ "tierIII": [
+  {"id": "battleForImperialBasin", "name": "Battle for Imperial Basin", "sheet": 20, "cell": 0,
+   "first": {"vp": 2, "control": "imperialBasin"}, "second": {"spice": 5}, "third": {"spice": 3}},
+  {"id": "grandVision", "name": "Grand Vision", "sheet": 20, "cell": 1,
+   "first": {"influenceAny": 2, "intrigue": 1}, "second": {"intrigue": 1, "spice": 3}, "third": {"spice": 3}},
+  {"id": "battleForCarthag", "name": "Battle for Carthag", "sheet": 20, "cell": 2,
+   "first": {"vp": 2, "control": "carthag"}, "second": {"intrigue": 1, "spice": 3}, "third": {"spice": 3}},
+  {"id": "battleForArrakeen", "name": "Battle for Arrakeen", "sheet": 20, "cell": 3,
+   "first": {"vp": 2, "control": "arrakeen"},
+   "second": {"chooseTwo": [{"intrigue": 1}, {"spice": 2}, {"solari": 3}]},
+   "third": {"intrigue": 1, "solari": 2}}
+ ]
+}
