@@ -19,3 +19,8 @@ tools/verify/*.png
 # machine-specific Claude settings
 .claude/settings.local.json
 tools/verify/.dune-phone.json
+# generated verification art (rebuild: node tools/verify/render-axis-setup.mjs)
+client/public/axis/setup-1941.png
+client/public/axis/setup-1942.png
+client/public/axis/zones.png
+client/public/axis/zones-anchors.png

@@ -241,10 +241,9 @@ for (const scen of ['1941', '1942']) {
   for (const u of raw.units) {
     const px = toPx(u.pos[0], u.pos[1]);
     const sea = SEA_UNITS.has(u.unit);
-    const cands = sea ? engineSeaZones
-      : LAND_UNITS.has(u.unit) || u.unit === 'aaGun' || u.unit === 'factory'
-        ? landCandidatesFor(u.nation)
-        : engineTerritories.filter((t) => !t.isImpassable); // aircraft: anywhere real
+    // aircraft at setup sit on friendly land like everything else (a UK
+    // bomber cannot start in German Northwestern Europe — jitter artifact)
+    const cands = sea ? engineSeaZones : landCandidatesFor(u.nation);
     const { space, dist } = nearest(px, cands);
     if (!space) continue;
     if (dist > 450) flagged.push({ nick: u.nick, kind: u.unit, space: space.id, dist: Math.round(dist) });

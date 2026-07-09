@@ -15,6 +15,11 @@
     "power": "ussr",
     "key": "infantry",
     "count": 3
+   },
+   {
+    "power": "ussr",
+    "key": "fighter",
+    "count": 1
    }
   ],
   "archangel": [
@@ -44,6 +49,11 @@
     "power": "uk",
     "key": "aaGun",
     "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "fighter",
+    "count": 2
    },
    {
     "power": "usa",
@@ -126,18 +136,6 @@
     "count": 4
    }
   ],
-  "northwestern-europe": [
-   {
-    "power": "uk",
-    "key": "fighter",
-    "count": 2
-   },
-   {
-    "power": "germany",
-    "key": "infantry",
-    "count": 1
-   }
-  ],
   "sz-2": [
    {
     "power": "uk",
@@ -210,13 +208,6 @@
    {
     "power": "germany",
     "key": "artillery",
-    "count": 1
-   }
-  ],
-  "baltic-states": [
-   {
-    "power": "ussr",
-    "key": "fighter",
     "count": 1
    }
   ],
@@ -397,6 +388,13 @@
    {
     "power": "ussr",
     "key": "factory",
+    "count": 1
+   }
+  ],
+  "northwestern-europe": [
+   {
+    "power": "germany",
+    "key": "infantry",
     "count": 1
    }
   ],
@@ -653,7 +651,7 @@
     "count": 3
    }
   ],
-  "yunnan": [
+  "burma": [
    {
     "power": "usa",
     "key": "fighter",
@@ -749,6 +747,13 @@
     "count": 1
    }
   ],
+  "yunnan": [
+   {
+    "power": "china",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
   "sz-37": [
    {
     "power": "uk",
@@ -775,13 +780,6 @@
     "power": "ussr",
     "key": "infantry",
     "count": 2
-   }
-  ],
-  "burma": [
-   {
-    "power": "china",
-    "key": "infantry",
-    "count": 1
    }
   ],
   "sz-62": [

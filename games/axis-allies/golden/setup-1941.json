@@ -24,6 +24,11 @@
     "power": "uk",
     "key": "infantry",
     "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "fighter",
+    "count": 1
    }
   ],
   "belorussia": [
@@ -115,6 +120,11 @@
    {
     "power": "uk",
     "key": "tank",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "bomber",
     "count": 1
    }
   ],
@@ -629,11 +639,6 @@
     "power": "germany",
     "key": "infantry",
     "count": 1
-   },
-   {
-    "power": "uk",
-    "key": "bomber",
-    "count": 1
    }
   ],
   "russia": [
@@ -744,13 +749,6 @@
    {
     "power": "uk",
     "key": "battleship",
-    "count": 1
-   }
-  ],
-  "yunnan": [
-   {
-    "power": "usa",
-    "key": "fighter",
     "count": 1
    }
   ],
