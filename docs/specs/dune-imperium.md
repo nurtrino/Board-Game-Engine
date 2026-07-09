@@ -176,3 +176,12 @@ tools/verify/dune-smoke.mjs = live WS full-game driver.
 - [ ] Lobby create-options UI lands together with the first expansion.
 - [ ] Reveal-time retreat riders (Scout / Chani) are not offered — combat
       troops can only be pulled back via Master Tactician's choice.
+- [ ] Ship gates (playbook §6.4b) still to run for this game: the full
+      rulebook UI-coverage audit and the 4-seat device-DOM smoke. Gaps
+      already known from a first grep of the action union — the device
+      auto-picks values the rules leave to the player:
+      - `sell` on Sell Melange is auto-set to max affordable (should be a
+        2-5 picker);
+      - `useOptional` is never sent, so optional agent-box costs are always
+        paid when affordable ("you are never forced to pay such a cost");
+      - `deploy` on the Reinforcements intrigue is hardcoded to 3.
