@@ -166,6 +166,43 @@ the four garrison circles measured from the art. Phone: leader pick, hand
 -> space picker, reveal/acquire, intrigue drawer, choice prompts, End Turn.
 tools/verify/dune-smoke.mjs = live WS full-game driver.
 
+### 9b. Device + TV UI overhaul (July 2026, post-ship)
+
+The personal screen (`DunePlay.tsx`) is a single **no-scroll page sized for an
+iPad in landscape**. A top strip carries name / leader / VP, colour resource
+**chips** (solari, spice, water, garrison, agents, intrigue, and persuasion /
+strength when relevant) and four influence **pip-tracks** (marked at 2 = a VP,
+4 = bonus + alliance). Body is two columns:
+- **Left (what you act on):** round-status line; the enlarged **conflict card**
+  (188×288); beside it your leader's two powers, upgrade status, and deck /
+  discard / supply counts + the Prescience deck-top; then a single **swipeable
+  row of large hand cards** pinned to the bottom, in-play cards under it.
+- **Right:** a **fixed, gently-angled, non-interactive 3D player mat** (leader
+  card, unspent agents, garrison cubes, resource tokens) filling the height.
+
+The old **House overlay was removed** — everything it uniquely held now lives on
+the main page. Actions bar: Reveal / End Turn / Pass, plus **Intrigue** and
+**Hand** drawers (Hand also reachable from inside the space picker).
+
+The **space picker greys out any space you cannot use** (resource cost vs your
+pool with Duke Leto's Landsraad discount, the Sell Melange 2-spice minimum, the
+Sietch Tabr Fremen gate, and already-owned High Council / Swordmaster) with an
+inline reason — a tap never bounces back an error toast.
+
+A **first-round interface walkthrough** (`DUNE_TOUR`, coach-marks spotlighting
+real `data-tour` elements, opened from GameIntro's "Walk me through the
+interface") explains every control. All player-facing copy is **serious
+uppercase, no em dashes, no informal lowercase**; reducer alerts are capitalised
+and de-dashed at the source (`err()` in actions.ts).
+
+TV (`DuneBoard.tsx`): a host **"Explain the board"** toggle overlays a
+region-by-region legend (faction spaces, the three cities, spice/desert, the
+Landsraad row, the combat arena, garrisons, control flags) plus callouts for the
+conflict, the player panels and the imperium row. The 14 drifting worker spots
+were **snapped to their measured tile centres** so agents sit squarely on their
+spaces (`scene.spaceSpots` = overlay tile centres; Great Flat / Hagga Basin are
+printed on the base board and keep their affine-fit spots).
+
 ## 10. Open items
 
 - [ ] Rise of Ix option: content is staged (sheets, leaders, Ix deck GUIDs
