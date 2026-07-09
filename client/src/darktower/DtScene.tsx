@@ -38,6 +38,20 @@ export function useDtScene(): DtSceneDef | null {
   return scene;
 }
 
+// Per-zone border loops in world coords (client/public/darktower/zone-outlines.json,
+// traced from the board art by tools/tts-extract/extract-dt-territories.mjs).
+// Used to outline the regions the local player can move to.
+export type DtOutlines = Record<string, [number, number][]>;
+let cachedOutlines: DtOutlines | null = null;
+export function useZoneOutlines(): DtOutlines | null {
+  const [o, setO] = useState<DtOutlines | null>(cachedOutlines);
+  useEffect(() => {
+    if (cachedOutlines) return;
+    fetch('/darktower/zone-outlines.json').then((r) => r.json()).then((d) => { cachedOutlines = d; setO(d); }).catch(() => undefined);
+  }, []);
+  return o;
+}
+
 const pos3 = (p: number[]): [number, number, number] => [p[0], p[1], -p[2]];
 const rot3 = (r: number[]): THREE.Euler =>
   new THREE.Euler(THREE.MathUtils.degToRad(r[0]), -THREE.MathUtils.degToRad(r[1]), -THREE.MathUtils.degToRad(r[2]), 'YXZ');
@@ -186,19 +200,65 @@ function TowerLcd({ lcd }: { lcd: string }) {
 }
 
 /** A player's pawn, standing on its territory node. The local player's pawn
- *  gets a highlight ring while it is their turn to move. */
-function Pawn({ def, tint, wx, wz, ring }: {
+ *  gets a highlight ring while it is their turn to move, and is clickable to
+ *  reveal (toggle) the regions it can move to. */
+function Pawn({ def, tint, wx, wz, ring, selected, onSelect }: {
   def: DtModel; tint: number[] | null; wx: number; wz: number; ring: boolean;
+  selected?: boolean; onSelect?: () => void;
 }) {
+  const { gl } = useThree();
+  const pick = onSelect
+    ? {
+        onPointerDown: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); onSelect(); },
+        onPointerOver: () => { gl.domElement.style.cursor = 'pointer'; },
+        onPointerOut: () => { gl.domElement.style.cursor = 'auto'; },
+      }
+    : {};
   return (
-    <group position={[wx, BOARD_Y, -wz]}>
+    <group position={[wx, BOARD_Y, -wz]} {...pick}>
       <Model def={{ ...def, pos: [0, 0, 0], rot: [0, 0, 0] }} tint={tint} seatY={0} />
       {ring && (
         <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.0, 1.3, 28]} />
-          <meshBasicMaterial color="#ffd24a" transparent opacity={0.85} />
+          <meshBasicMaterial color={selected ? '#7fe7ff' : '#ffd24a'} transparent opacity={selected ? 0.95 : 0.85} />
         </mesh>
       )}
+    </group>
+  );
+}
+
+/** Outline (and faint clickable fill) of a region the local player can move to.
+ *  Its border is drawn from the zone's traced world-space loop. */
+function RegionHighlight({ loop, color, onPick }: {
+  loop: [number, number][]; color: string; onPick?: () => void;
+}) {
+  const { gl } = useThree();
+  const [hover, setHover] = useState(false);
+  const { fillGeo, lineGeo } = useMemo(() => {
+    const shape = new THREE.Shape();
+    loop.forEach(([x, z], i) => (i ? shape.lineTo(x, z) : shape.moveTo(x, z)));
+    shape.closePath();
+    const arr = new Float32Array(loop.length * 3);
+    loop.forEach(([x, z], i) => { arr[i * 3] = x; arr[i * 3 + 1] = z; arr[i * 3 + 2] = 0; });
+    const lg = new THREE.BufferGeometry();
+    lg.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+    return { fillGeo: new THREE.ShapeGeometry(shape), lineGeo: lg };
+  }, [loop]);
+  // shape lies in XY (z=0); rotating -90deg about X maps (x,z)->(x,0,-z), matching
+  // the pawns' world->render convention (render z = -world z).
+  return (
+    <group rotation={[-Math.PI / 2, 0, 0]} position={[0, BOARD_Y + 0.05, 0]}>
+      <mesh
+        geometry={fillGeo}
+        onPointerDown={onPick ? (e) => { e.stopPropagation(); onPick(); } : undefined}
+        onPointerOver={() => { setHover(true); gl.domElement.style.cursor = 'pointer'; }}
+        onPointerOut={() => { setHover(false); gl.domElement.style.cursor = 'auto'; }}
+      >
+        <meshBasicMaterial color={color} transparent opacity={hover ? 0.34 : 0.15} depthWrite={false} side={THREE.DoubleSide} />
+      </mesh>
+      <lineLoop geometry={lineGeo}>
+        <lineBasicMaterial color={hover ? '#ffffff' : color} transparent opacity={0.95} />
+      </lineLoop>
     </group>
   );
 }
@@ -264,7 +324,14 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, lega
   children?: React.ReactNode;
 }) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const outlines = useZoneOutlines();
   const canMove = legalSteps.length > 0;
+  // Click your own pawn to reveal (toggle) the regions you can move to. Reset
+  // whenever the set of legal moves changes (new turn / after a move).
+  const [selected, setSelected] = useState(false);
+  const stepKey = legalSteps.join(',');
+  useEffect(() => { setSelected(false); }, [stepKey, youSeat]);
+  const showMoves = canMove && selected;
   return (
     <Canvas camera={{ fov: FOV, position: [0, 30, 26], near: 0.5, far: 400 }} gl={{ antialias: true }}>
       <ambientLight intensity={0.85} />
@@ -284,21 +351,30 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, lega
           const def = scene.tokens[t.seat];
           const node = DT_NODE.get(t.node);
           if (!def?.mesh || !node) return null;
+          const you = youSeat === t.seat;
           return (
             <Pawn
               key={`tok${t.seat}`}
               def={def}
               tint={scene.tokenTints[t.color] ?? null}
               wx={node.wx} wz={node.wz}
-              ring={youSeat === t.seat && canMove}
+              ring={you && canMove}
+              selected={you && showMoves}
+              onSelect={you && canMove ? () => setSelected((s) => !s) : undefined}
             />
           );
         })}
-        {/* legal destinations for the local player this turn */}
-        {legalSteps.map((id) => {
+        {/* regions the local player can move to — revealed by clicking the pawn.
+            Each region's border is highlighted (with a faint clickable fill);
+            zones lacking a traced outline fall back to a centre pad. */}
+        {showMoves && legalSteps.map((id) => {
           const n = DT_NODE.get(id);
           if (!n) return null;
-          return <MoveMarker key={`mv${id}`} wx={n.wx} wz={n.wz} color={KIND_COLOR[n.kind] ?? '#7fe7ff'} onPick={() => onStep?.(id)} />;
+          const color = KIND_COLOR[n.kind] ?? '#7fe7ff';
+          const loop = outlines?.[id];
+          return loop
+            ? <RegionHighlight key={`hl${id}`} loop={loop} color={color} onPick={() => onStep?.(id)} />
+            : <MoveMarker key={`mv${id}`} wx={n.wx} wz={n.wz} color={color} onPick={() => onStep?.(id)} />;
         })}
         <TowerDisplay scene={scene} pic={pic} reelOf={wedgeMaps.reelOf} rowOf={wedgeMaps.rowOf} />
         <TowerLcd lcd={lcd} />

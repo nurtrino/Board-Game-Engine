@@ -207,7 +207,7 @@ export function DtPlay({ view, act, error }: {
 
   const statusLine = view.winner ? `${view.players.find((p) => p.color === view.winner)?.name} conquered the tower`
     : !myTurn ? `${view.players[view.turn]?.name} is playing`
-    : phase === 'playing' ? 'Your turn — tap a glowing space to move'
+    : phase === 'playing' ? 'Your turn — tap your piece to see where you can move'
     : phase === 'battle' ? `${view.battle?.brigands} brigands — YES fights, NO retreats`
     : phase === 'bazaar' ? ((view.bazaar?.buying ?? 0) > 0
       ? `Buying ${view.bazaar!.buying} — YES adds one, NO pays`
@@ -241,7 +241,7 @@ export function DtPlay({ view, act, error }: {
           <div className="ig-glass" style={{
             position: 'absolute', top: 14, left: 14, padding: '8px 12px', borderRadius: 10,
             font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.85,
-          }}>Tap a glowing space to move</div>
+          }}>Tap your piece to see where you can move</div>
         )}
       </div>
 

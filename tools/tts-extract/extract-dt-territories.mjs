@@ -338,6 +338,64 @@ if (!process.env.GRAPH_OUT) {
     `export const DT_EDGES: [string, string][] = [${edgeStr}];`);
   await fs.writeFile(TS, src);
   console.log('emitted', TS);
+
+  // ---- zone outlines for the client (client/public/darktower/zone-outlines.json):
+  // { nodeId: [[wx,wz], ...] } closed loop per zone, traced from the per-pixel
+  // owner map so the client can highlight a region's BORDER (click-your-pawn UX).
+  // Marching-squares over pixel boundaries -> longest loop -> RDP simplify -> world.
+  const traceLoop = (match) => {
+    let x0 = W, y0 = H, x1 = 0, y1 = 0, any = false;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (match(y * W + x)) { any = true; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    if (!any) return null;
+    x0 = Math.max(0, x0 - 1); y0 = Math.max(0, y0 - 1); x1 = Math.min(W - 1, x1 + 1); y1 = Math.min(H - 1, y1 + 1);
+    const fg = (x, y) => x >= 0 && y >= 0 && x < W && y < H && match(y * W + x);
+    // each fg pixel contributes a unit boundary edge on every side facing bg;
+    // corners are in half-pixel units (x*2, y*2) so they meet exactly.
+    const adj = new Map(); const push = (a, b) => { (adj.get(a) ?? adj.set(a, []).get(a)).push(b); };
+    const seg = (ax, ay, bx, by) => { const A = ax * 100000 + ay, B = bx * 100000 + by; push(A, B); push(B, A); };
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (!fg(x, y)) continue;
+      const l = 2 * x - 1, r = 2 * x + 1, t = 2 * y - 1, b = 2 * y + 1;
+      if (!fg(x + 1, y)) seg(r, t, r, b); if (!fg(x - 1, y)) seg(l, t, l, b);
+      if (!fg(x, y - 1)) seg(l, t, r, t); if (!fg(x, y + 1)) seg(l, b, r, b); }
+    if (!adj.size) return null;
+    // walk the longest closed loop
+    const decode = (k) => [Math.floor(k / 100000), k % 100000];
+    const used = new Set(); let bestLoop = null;
+    for (const start of adj.keys()) {
+      if (used.has(start)) continue;
+      const loop = [start]; used.add(start); let cur = start, prev = -1;
+      for (;;) { const ns = adj.get(cur) || []; let nx = -1;
+        for (const n of ns) { if (n !== prev && !used.has(n)) { nx = n; break; } }
+        if (nx < 0) { const back = ns.find((n) => n === start && loop.length > 2); if (back !== undefined) { /* closed */ } break; }
+        loop.push(nx); used.add(nx); prev = cur; cur = nx; }
+      if (!bestLoop || loop.length > bestLoop.length) bestLoop = loop;
+    }
+    if (!bestLoop || bestLoop.length < 4) return null;
+    // A clean boundary walk returns adjacent to its start; a walk that took a
+    // wrong branch at a pinch-point junction ends far away, so the closing
+    // lineLoop segment would cut a chord across the zone. Reject those (the
+    // client falls back to a centre pad) rather than emit a broken outline.
+    { const a = decode(bestLoop[0]), b = decode(bestLoop[bestLoop.length - 1]);
+      if (Math.hypot((a[0] - b[0]) / 2, (a[1] - b[1]) / 2) > 24) return null; }
+    let pts = bestLoop.map((k) => { const [cx, cy] = decode(k); return [cx / 2, cy / 2]; });
+    // RDP simplify (epsilon in px), then to world
+    const rdp = (arr, eps) => { if (arr.length < 3) return arr;
+      const d2 = (p, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy;
+        let t = L ? ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L : 0; t = Math.max(0, Math.min(1, t));
+        const px = a[0] + t * dx, py = a[1] + t * dy; return (p[0] - px) ** 2 + (p[1] - py) ** 2; };
+      const keep = new Uint8Array(arr.length); keep[0] = keep[arr.length - 1] = 1; const st = [[0, arr.length - 1]];
+      while (st.length) { const [i, j] = st.pop(); let md = 0, mi = -1; for (let k = i + 1; k < j; k++) { const dd = d2(arr[k], arr[i], arr[j]); if (dd > md) { md = dd; mi = k; } }
+        if (mi > 0 && md > eps * eps) { keep[mi] = 1; st.push([i, mi], [mi, j]); } }
+      return arr.filter((_, i) => keep[i]); };
+    pts = rdp(pts, 2.2);
+    return pts.map(([px, py]) => toWorld(px, py).map((v) => +v.toFixed(2)));
+  };
+  const outlines = {};
+  for (let i = 0; i < nodes.length; i++) { const loop = traceLoop((p) => owner[p] === i); if (loop) outlines[nodes[i].id] = loop; }
+  for (let bi = 0; bi < 4; bi++) { const loop = traceLoop((p) => bandOfPx[p] === bi); if (loop) outlines[`f${bi}`] = loop; }
+  const OUTP = `${REPO}/client/public/darktower/zone-outlines.json`;
+  await fs.writeFile(OUTP, JSON.stringify(outlines));
+  console.log('emitted', OUTP, Object.keys(outlines).length, 'zone outlines');
 }
 
 // ---- typed overlay
