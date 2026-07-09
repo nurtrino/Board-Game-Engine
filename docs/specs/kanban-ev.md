@@ -201,6 +201,42 @@ secretly picks 1 remaining award tile (immediate benefit).
   tiles (cars/certifications/upgrades pairs), final goals (11 basic +
   4 expansion).
 
+## 7b. Transcription results (art reads, July 2026)
+
+- **Performance goals**: card number printed bottom-right = 32 − sheet
+  cell; the blue disc + bolt icon = the card's per-match immediate PP
+  (reference legend). Grouped cards disambiguated:
+  3=Truck 4=City 5=Concept 6=Sport 7=SUV; 8=Battery 9=Electronics
+  10=Body 11=Autopilot 12=Drivetrain 13=Motor; 16=Bat/Ele 17=Body/Auto
+  18=Motor/Drive; 19=garages1-2 20=2-3 21=4-5; 22=RnD 23=Assembly
+  24=Logistics 25=Design 26=Admin. → golden/goals.json.
+- **Final goals**: 11 tiles, each 3 achievements; printed corner id =
+  canonical num; all mapped guid→achievements in goals.json.
+- **Awards**: four effects across 20 tiles (2 PP ×5, bank-1-shift ×3,
+  voucher ×5, book ×7) → board.json. Solo uses 1/track; multiplayer 3
+  (2 at 2-3p).
+- **Garage bonuses**: basic = speech / 2 vouchers / 2 books / 2 banked /
+  padlocked all-four; expert = nothing / voucher / book / banked /
+  padlocked speech. Padlock tile always garage 5.
+- **Certification track**: 6 sections × 4 spaces (orientation section
+  included) → board.json; sections 2 and 4 add speech tokens; section 5
+  is PP-only (5/3/1/—).
+- **Upgrade spaces**: 6 per model, player picks any empty one; benefits
+  per space in board.json (richer on cheaper models); columns above =
+  the upgrade VALUE track headers 2..6.
+- **Test track**: 8-space oval, striped (meeting) spaces at opposite
+  ends; pace car counter-clockwise; production cycle 1-3 inside; the
+  behind-pace queue holds max 4 cars (5th pushes out the closest).
+- **Assembly**: the Lua CARS.Zones.Assembly Targets graph is the printed
+  arrow topology (mod doesn't script movement — players drag); entry
+  node per line from Stocks (line 1..5 = Concept/SUV/City/Truck/Sport);
+  exit gates pay 1 / 2 / 1 PP (top/middle/bottom) — verify node→gate
+  when fitting the renderer.
+- **Workstations**: SPOTS.Departments rows = R&D, Assembly, Logistics,
+  Design, Admin (Sandra's cycle order); top slot = fewer shifts (2, or
+  1 in Admin) and acts earlier; bottom = 3 (2 in Admin); Admin's third
+  spot is Sandra's desk.
+
 ## 8. Still to transcribe during extraction
 
 - [ ] Award tile effects (20) and garage bonus tiles (basic/expert ×5
