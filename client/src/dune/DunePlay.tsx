@@ -101,6 +101,8 @@ export function DunePlay({ view, act, error }: {
   const scene = useDuneScene();
   const [selected, setSelected] = useState<string | null>(null); // hand card picked for an agent turn
   const [deploy, setDeploy] = useState(2);
+  const [sell, setSell] = useState(2); // Sell Melange amount (2-5)
+  const [useBox, setUseBox] = useState(true); // pay the card's optional agent-box cost
   const [showIntro, setShowIntro] = useState(true);
   const [showIntrigue, setShowIntrigue] = useState(false);
   const [showMat, setShowMat] = useState(false);
@@ -169,7 +171,7 @@ export function DunePlay({ view, act, error }: {
           ))}
           {d.kind === 'trash' && (
             <>
-              {[...me.hand ?? [], ...me.discard].map((c, i) => (
+              {[...me.hand ?? [], ...me.discard, ...me.inPlay].map((c, i) => (
                 <button key={`${c}-${i}`} className="dn-space" onClick={() => send({ type: 'choose', card: c })}>
                   <b>{CARD_BY_ID[c]?.name ?? c}</b><span style={{ opacity: 0.6 }}>trash</span>
                 </button>
@@ -237,6 +239,7 @@ export function DunePlay({ view, act, error }: {
   // ---------- space picker for the selected card ----------
   if (selected && myTurn && view.phase === 'round') {
     const card = CARD_BY_ID[selected];
+    const boxCost = card?.agentBox?.cost as Record<string, number> | undefined;
     return (
       <div className="dn-wrap">
         <style>{CSS}</style>
@@ -245,9 +248,25 @@ export function DunePlay({ view, act, error }: {
           <button className="dn-btn" style={{ marginLeft: 'auto' }} onClick={() => setSelected(null)}>Back</button>
         </div>
         <div className="dn-main" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {boxCost && (
+            <button
+              className="dn-space"
+              style={useBox ? { outline: '2px solid #e8ebf0' } : undefined}
+              onClick={() => setUseBox(!useBox)}
+            >
+              <span>
+                <b>Card effect · pay {costText(boxCost)}</b>
+                <div style={{ opacity: 0.65, fontSize: 12 }}>
+                  {rewardText(card.agentBox)} · tap to {useBox ? 'skip (you are never forced to pay)' : 'pay it'}
+                </div>
+              </span>
+              <span style={{ opacity: 0.7 }}>{useBox ? 'PAYING' : 'SKIPPING'}</span>
+            </button>
+          )}
           {legalSpaces.map((sp) => {
             const occupied = (view.spaces[sp.id]?.length ?? 0) > 0 && sp.id !== 'highCouncil' && sp.id !== 'swordmaster';
             const blocked = view.voiceBlock?.space === sp.id && view.voiceBlock.by !== me.seat;
+            const bonus = sp.maker ? view.makerSpice[sp.id as keyof typeof view.makerSpice] ?? 0 : 0;
             return (
               <button
                 key={sp.id}
@@ -255,26 +274,41 @@ export function DunePlay({ view, act, error }: {
                 disabled={(occupied && !card.agents.includes('any')) || blocked}
                 onClick={() => {
                   const a: DuneAction = { type: 'agent', card: selected, space: sp.id };
-                  if (sp.id === 'sellMelange') a.sell = Math.min(me.spice, 5) >= 2 ? Math.min(me.spice, 5) : 2;
+                  if (sp.id === 'sellMelange') a.sell = sell;
                   if (sp.combat) a.deploy = deploy;
+                  if (boxCost) a.useOptional = useBox;
                   send(a);
                   setSelected(null);
                 }}
               >
                 <span>
                   <b>{sp.name}</b>
-                  {sp.combat && <span style={{ opacity: 0.6 }}> — combat</span>}
-                  {occupied && <span style={{ opacity: 0.6 }}> — occupied</span>}
-                  {blocked && <span style={{ opacity: 0.6 }}> — the Voice</span>}
+                  {sp.combat && <span style={{ opacity: 0.6 }}> · combat</span>}
+                  {occupied && <span style={{ opacity: 0.6 }}> · occupied</span>}
+                  {blocked && <span style={{ opacity: 0.6 }}> · the Voice</span>}
                   <div style={{ opacity: 0.65, fontSize: 12 }}>
                     {sp.cost && `pay ${costText(sp.cost)} · `}
                     {sp.id === 'sellMelange' ? `sell 2-5 spice (${Object.entries(SELL_MELANGE).map(([k, v]) => `${k}→${v}`).join(' ')})` : rewardText(sp.rewards)}
                     {sp.influence && ` · +1 ${FACTION_NAME[sp.influence]}`}
+                    {bonus > 0 && ` · +${bonus} bonus spice waiting`}
                   </div>
                 </span>
               </button>
             );
           })}
+          {legalSpaces.some((sp) => sp.id === 'sellMelange') && me.spice >= 2 && (
+            <>
+              <div className="dn-lab" style={{ paddingTop: 8 }}>Spice to sell (Sell Melange)</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {[2, 3, 4, 5].map((n) => (
+                  <button key={n} className="dn-btn" disabled={n > me.spice}
+                    style={n === sell ? { outline: '2px solid #e8ebf0' } : undefined} onClick={() => setSell(n)}>
+                    {n} for {SELL_MELANGE[String(n)]}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
           <div className="dn-lab" style={{ paddingTop: 8 }}>Deploy to conflict (combat spaces)</div>
           <div style={{ display: 'flex', gap: 8 }}>
             {[0, 1, 2, 3, 4, 5].map((n) => (
@@ -282,6 +316,12 @@ export function DunePlay({ view, act, error }: {
             ))}
           </div>
           <div style={{ opacity: 0.55, fontSize: 12 }}>Up to 2 from your garrison plus any troops this turn recruits.</div>
+          {view.conflict && (
+            <>
+              <div className="dn-lab" style={{ paddingTop: 8 }}>This round's conflict</div>
+              <DuneCard scene={scene} id={view.conflict} w={128} h={196} />
+            </>
+          )}
         </div>
         {error && <div className="dn-err">{error}</div>}
       </div>
@@ -339,10 +379,29 @@ export function DunePlay({ view, act, error }: {
         <div className="dn-lab" style={{ padding: '6px 0' }}>
           {view.phase === 'ended' ? `${view.players.find((p) => p.color === view.winner)?.name} wins`
             : waitingOn ? `${waitingOn.name} is deciding`
-            : view.phase === 'combat' ? (view.turn === me.seat ? 'Combat — play a card or pass' : `Combat — ${view.players[view.turn].name} bids`)
+            : view.phase === 'combat' ? (view.turn === me.seat ? 'Combat · play a card or pass' : `Combat · ${view.players[view.turn].name} bids`)
             : myTurn ? (me.actedThisTurn != null ? (revealing ? 'Buy cards, then end your turn' : 'End your turn') : canAgent ? 'Play a card for an agent turn, or reveal' : 'Reveal your hand')
             : `${view.players[view.turn].name} is acting`}
         </div>
+
+        {/* combat: everyone's strength */}
+        {view.phase === 'combat' && (
+          <div style={{ display: 'flex', gap: 12, fontSize: 13, paddingBottom: 6, flexWrap: 'wrap' }}>
+            {view.players.filter((p) => p.inConflict > 0 || p.strength > 0).map((p) => (
+              <span key={p.seat} style={{ fontWeight: p.seat === me.seat ? 800 : 400 }}>
+                {p.name}: {p.strength} strength
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* current conflict, always in reach on the device */}
+        {view.conflict && view.phase !== 'ended' && (
+          <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', paddingBottom: 8 }}>
+            <DuneCard scene={scene} id={view.conflict} w={86} h={132} />
+            <span className="dn-lab">Conflict · round {view.round}</span>
+          </div>
+        )}
 
         {/* reveal strip: acquire targets */}
         {revealing && (
@@ -375,7 +434,7 @@ export function DunePlay({ view, act, error }: {
             <div className="dn-hand">
               {(me.hand ?? []).map((c, i) => (
                 <button key={`${c}-${i}`} className={`dn-card${selected === c ? ' sel' : ''}`}
-                  onClick={() => { if (canAgent) { setSelected(c); playSfx('click'); } }}>
+                  onClick={() => { if (canAgent) { setSelected(c); setUseBox(true); playSfx('click'); } }}>
                   <DuneCard scene={scene} id={c} w={104} h={156} />
                 </button>
               ))}
@@ -431,7 +490,7 @@ export function DunePlay({ view, act, error }: {
                     <div style={{ opacity: 0.75, lineHeight: 1.45 }}>{l.passive.text}</div>
                   </div>
                   <div>
-                    <div className="dn-lab" style={{ fontSize: 10 }}>Signet ring — {l.signet.title}</div>
+                    <div className="dn-lab" style={{ fontSize: 10 }}>Signet ring · {l.signet.title}</div>
                     <div style={{ opacity: 0.75, lineHeight: 1.45 }}>{l.signet.text}</div>
                   </div>
                 </div>
@@ -486,6 +545,22 @@ export function DunePlay({ view, act, error }: {
             const playable = view.phase === 'combat'
               ? view.turn === me.seat && !view.pending && combatCards.includes(c)
               : myTurn && view.phase === 'round' && plotCards.includes(c);
+            // Reinforcements on a reveal turn may deploy 0-3 of the new troops
+            if (c === 'reinforcements' && playable && me.actedThisTurn === 'reveal') {
+              return (
+                <div key={`${c}-${i}`} className="dn-space" style={{ cursor: 'default', flexDirection: 'column', display: 'flex', alignItems: 'stretch', gap: 6 }}>
+                  <span><b>{def?.name}</b> <span style={{ opacity: 0.5, fontSize: 11 }}>{def?.kind}</span></span>
+                  <span style={{ opacity: 0.65, fontSize: 12 }}>{costText(def?.effect.cost as Record<string, number>)} {rewardText(def?.effect)} · choose how many go to the conflict</span>
+                  <span style={{ display: 'flex', gap: 8 }}>
+                    {[0, 1, 2, 3].map((n) => (
+                      <button key={n} className="dn-btn" onClick={() => { setShowIntrigue(false); send({ type: 'intrigue', card: c, deploy: n }); }}>
+                        Deploy {n}
+                      </button>
+                    ))}
+                  </span>
+                </div>
+              );
+            }
             return (
               <button key={`${c}-${i}`} className="dn-space" disabled={!playable}
                 onClick={() => { setShowIntrigue(false); send({ type: 'intrigue', card: c, deploy: 3 }); }}>

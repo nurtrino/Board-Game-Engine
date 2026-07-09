@@ -73,6 +73,10 @@ export function DuneBoard({ view }: { view: DuneView }) {
             agents,
             garrisons: view.players.map((p) => ({ color: p.color, n: p.garrison })),
             conflict: view.players.map((p) => ({ color: p.color, n: p.inConflict })),
+            makers: view.makerSpice,
+            control: Object.entries(view.control)
+              .filter(([, seat]) => seat !== null)
+              .map(([space, seat]) => ({ space, color: view.players[seat!].color })),
           }}
         />
       </div>
@@ -106,6 +110,7 @@ export function DuneBoard({ view }: { view: DuneView }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
               <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
               <b>{p.name}</b>
+              {view.firstPlayer === p.seat && <span className="ig-lab" style={{ fontSize: 9 }}>First</span>}
               <span style={{ opacity: 0.55, fontSize: 11 }}>{p.leader ? LEADER_BY_ID[p.leader]?.name : ''}</span>
               <span style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{p.vp} VP</span>
             </div>
@@ -114,6 +119,7 @@ export function DuneBoard({ view }: { view: DuneView }) {
               <span title="spice">{p.spice}sp</span>
               <span title="water">{p.water}w</span>
               <span title="garrison">{p.garrison}g</span>
+              <span title="intrigue cards">{p.intrigueCount}i</span>
               {view.phase === 'combat' && <span title="strength">{p.strength} str</span>}
               <span title="agents" style={{ marginLeft: 'auto' }}>{p.agentsLeft}/{p.agentsTotal} ag</span>
             </div>

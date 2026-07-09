@@ -176,12 +176,21 @@ tools/verify/dune-smoke.mjs = live WS full-game driver.
 - [ ] Lobby create-options UI lands together with the first expansion.
 - [ ] Reveal-time retreat riders (Scout / Chani) are not offered — combat
       troops can only be pulled back via Master Tactician's choice.
-- [ ] Ship gates (playbook §6.4b) still to run for this game: the full
-      rulebook UI-coverage audit and the 4-seat device-DOM smoke. Gaps
-      already known from a first grep of the action union — the device
-      auto-picks values the rules leave to the player:
-      - `sell` on Sell Melange is auto-set to max affordable (should be a
-        2-5 picker);
-      - `useOptional` is never sent, so optional agent-box costs are always
-        paid when affordable ("you are never forced to pay such a cost");
-      - `deploy` on the Reinforcements intrigue is hardcoded to 3.
+- [x] Ship gates (playbook §6.4b) RUN July 2026: full 20-page rulebook
+      rundown audited against both screens, and the 4-seat device-DOM
+      smoke (`tools/verify/dune-ui-smoke.mjs`) played a complete game —
+      682 UI actions, 10 rounds, PASS. Fixed in the audit:
+      - Sell Melange amount picker (2-5) on the device;
+      - optional agent-box costs are now a PAYING/SKIPPING toggle
+        (`useOptional`) — Spice Smugglers, Duncan Idaho, Shifting
+        Allegiances, Firm Grip, Fremen Camp;
+      - Reinforcements intrigue offers a deploy 0-3 picker on reveal;
+      - trash prompts include in-play cards (engine always allowed it);
+      - device shows the current conflict card, maker bonus spice in the
+        space picker, and every strength during combat;
+      - TV renders maker bonus spice and control flags on the board
+        (flag slots art-verified through the affine fit) and chips show
+        intrigue count + first player.
+- [ ] 2-player games run without the House Hagal spoiler rival the
+      rulebook prescribes (solo/Hagal content is out of scope by owner
+      decision) — revisit if 2p feels too open.

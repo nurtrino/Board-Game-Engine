@@ -155,7 +155,32 @@ export interface DunePieces {
   agents: { color: DuneSeat; space: string }[];
   garrisons: { color: DuneSeat; n: number }[];
   conflict: { color: DuneSeat; n: number }[];
+  makers: Record<string, number>; // bonus spice waiting on maker spaces
+  control: { space: string; color: DuneSeat }[]; // flags below Arrakeen/Carthag/Imperial Basin
 }
+
+/** A flat token on the main board (spice piles, control flags). */
+function BoardTok({ url, x, z, w, h, tint, lift = 0 }: {
+  url: string; x: number; z: number; w: number; h: number; tint?: number[]; lift?: number;
+}) {
+  const tex = useLoader(THREE.TextureLoader, url);
+  useMemo(() => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; }, [tex]);
+  return (
+    <mesh position={[x, BOARD_Y + 0.04 + lift, z]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[w, h]} />
+      <meshStandardMaterial
+        map={tex} roughness={0.85} transparent alphaTest={0.4}
+        color={tint ? new THREE.Color(tint[0], tint[1], tint[2]) : undefined}
+      />
+    </mesh>
+  );
+}
+
+// printed flag slots under the three controllable spaces (world x,z —
+// "below" on the art is smaller world z through the affine fit)
+const CONTROL_SPOTS: Record<string, [number, number]> = {
+  arrakeen: [7.41, 7.83], carthag: [3.18, 7.03], imperialBasin: [7.09, 4.08],
+};
 
 function Pieces({ scene, pieces }: { scene: DuneSceneDef; pieces: DunePieces }) {
   // multiple agents on one space (High Council / Swordmaster) fan out
@@ -191,6 +216,21 @@ function Pieces({ scene, pieces }: { scene: DuneSceneDef; pieces: DunePieces }) 
           ));
         });
       })()}
+      {Object.entries(pieces.makers).map(([space, n]) => {
+        const spot = scene.spaceSpots[space];
+        if (!spot || n <= 0) return null;
+        const [x, z] = rz([spot[0] - 1.1, spot[1] - 0.9]);
+        return Array.from({ length: Math.min(n, 6) }, (_, i) => (
+          <BoardTok key={`m-${space}-${i}`} url={scene.mat.spice1} x={x + (i % 3) * 0.5} z={z + Math.floor(i / 3) * 0.5}
+            w={0.62} h={0.54} tint={scene.mat.tokenTints.spice} lift={i * 0.005} />
+        ));
+      })}
+      {pieces.control.map(({ space, color }) => {
+        const spot = CONTROL_SPOTS[space];
+        if (!spot) return null;
+        const [x, z] = rz(spot);
+        return <BoardTok key={`ctl-${space}`} url={scene.mat.control[color]} x={x} z={z} w={0.85} h={1.06} />;
+      })}
     </group>
   );
 }
