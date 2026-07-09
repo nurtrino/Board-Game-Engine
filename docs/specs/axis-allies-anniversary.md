@@ -393,9 +393,9 @@ Combat move + conduct combat
   landing spots).
 - Captures: control flip, production swing, capital loot + purchase/income
   lockout of the captured power, VC tokens, win check at the end of a full
-  round: FULL. Liberation (revert to original owner unless their capital is
-  held): SIMPLIFIED — currently the capturer takes control outright; the
-  original-owner revert is queued for the next wave.
+  round: FULL. Liberation: FULL — same-side captures revert to the printed
+  original owner (China included) unless that owner's capital is enemy-held;
+  liberating or retaking a capital restores its owner's economy.
 
 Noncombat + mobilize + income
 - Moves into friendly spaces only, AA guns noncombat-only, transports
@@ -415,5 +415,5 @@ Noncombat + mobilize + income
   FULL.
 
 Known deliberate gaps (owner-visible list): SBR/rockets/paratroopers,
-repairs UI, liberation revert, multi-leg transport bridging, Kwangtung/
-Flying Tigers nuances. All recorded here so nothing is silently dropped.
+repairs UI, multi-leg transport bridging, Kwangtung/Flying Tigers nuances.
+All recorded here so nothing is silently dropped.

@@ -89,6 +89,8 @@ export interface AxisState {
   board: Record<string, UnitStack[]>;
   // territory control: territoryId -> power ('china' allowed) or null neutral
   control: Record<string, PowerKey | 'china' | null>;
+  // printed original owners (liberation reverts to these)
+  originalOwner: Record<string, PowerKey | 'china' | null>;
   // factory damage markers: territoryId -> damage
   factoryDamage: Record<string, number>;
   combat: ActiveCombat | null;
@@ -147,6 +149,10 @@ export function createAxis(
     board[space] = stacks.map((s) => ({ ...s }));
   }
   const control: AxisState['control'] = { ...setup.control };
+  const originalOwner: AxisState['originalOwner'] = {};
+  for (const t of map.territories) {
+    if (!t.isImpassable) originalOwner[t.id] = (t.originalOwner ?? null) as PowerKey | 'china' | null;
+  }
   const idx = indexMap(map);
   const vcHolders: AxisState['vcHolders'] = {};
   for (const t of map.territories) {
@@ -163,6 +169,7 @@ export function createAxis(
     powers,
     board,
     control,
+    originalOwner,
     factoryDamage: {},
     combat: null,
     combatSeq: 1,

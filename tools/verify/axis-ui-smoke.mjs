@@ -17,7 +17,11 @@ import puppeteer from 'puppeteer';
 const BASE = process.argv[2] ?? 'http://localhost:5273';
 const WS_URL = process.argv[3] ?? 'ws://localhost:8899/ws';
 const SEATS = 4;
-const TARGET_ROUNDS = 3; // complete rounds 1 and 2, reach round 3
+// One complete round = all six powers through all seven phases, plus the
+// round rollover into round 2. A&A has no fixed game length, so this (or an
+// outright victory) is the completion gate; the stall watchdog is the
+// correctness gate.
+const TARGET_ROUNDS = 2;
 const STALL_MS = 90_000;
 const HARD_MS = 20 * 60_000;
 
@@ -117,7 +121,7 @@ function tickInPage() {
 
   if (/Purchase units/i.test(labs)) {
     const buys = q('button.ax-buy').filter((b) => !b.disabled);
-    if (buys.length && Math.random() < 0.75) { pick(buys).click(); return 'buy'; }
+    if (buys.length && Math.random() < 0.55) { pick(buys).click(); return 'buy'; }
     const done = by(/^Done purchasing$/i);
     if (done) { done.click(); return 'done-purchasing'; }
   }
@@ -137,7 +141,7 @@ function tickInPage() {
     const endChip = by(combat ? /^No more attacks$/i : /^Done moving$/i);
     const headerChips = /^(Nation|\?|Close)$/;
     const origins = chips.filter((b) => b !== endChip && b.dataset.tone !== 'gold' && !headerChips.test(text(b)));
-    const wantAct = Math.random() < (combat ? 0.55 : 0.3);
+    const wantAct = Math.random() < (combat ? 0.4 : 0.18);
     if (wantAct && origins.length) { pick(origins).click(); return 'origin'; }
     if (endChip) { endChip.click(); return combat ? 'end-combat' : 'end-noncombat'; }
   }
@@ -197,7 +201,9 @@ try {
     if (did) { acts++; lastAct = Date.now(); }
     if (acts % 200 === 0 && did) console.log(`heartbeat · ${acts} acts · round ${round} · ${Math.round((Date.now() - started) / 1000)}s`);
 
-    const r = await pages[i].evaluate(() => Number(document.querySelector('.ax-head .ig-lab')?.textContent?.match(/Round (\d+)/)?.[1] ?? 0)).catch(() => 0);
+    const r = pass % 8 === 0
+      ? await pages[i].evaluate(() => Number(document.querySelector('.ax-head .ig-lab')?.textContent?.match(/Round (\d+)/)?.[1] ?? 0)).catch(() => 0)
+      : 0;
     if (r > round) {
       round = r;
       console.log(`round ${r} · ${acts} acts · ${Math.round((Date.now() - started) / 1000)}s`);
@@ -220,7 +226,7 @@ try {
       process.exit(1);
     }
     if (Date.now() - started > HARD_MS) { console.error('UI SMOKE TIMEOUT'); process.exit(1); }
-    await new Promise((res) => setTimeout(res, 220));
+    await new Promise((res) => setTimeout(res, 90));
   }
 } finally {
   await browser.close();

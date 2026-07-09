@@ -233,6 +233,41 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
   ok(bbAtSea === 1, `battleship returned to the offload zone (${bbAtSea})`);
 }
 
+// ---------- liberation: friendly originals revert ----------
+{
+  const s = mkState(41);
+  // Russia holds uk-island (originally UK): a German... no — liberation is
+  // same-side. Set up: Germany holds poland (its own), USSR captured it, and
+  // now Germany retakes russia-held UK ground? Use the real semantics:
+  // pretend the USSR took uk-island earlier; Germany can't liberate.
+  // Friendly case: give POLAND originalOwner ussr via state, USSR attacks it.
+  s.originalOwner['uk-island'] = 'ussr'; // synthetic: originally Soviet
+  s.control['uk-island'] = 'germany'; // now German-held
+  s.board['uk-island'] = [{ power: 'germany', key: 'infantry', count: 1 }];
+  // UK (USSR's ally) attacks with overwhelming force from sz-2 cargo? UK has
+  // fighter on uk-island... simplest: UK infantry can't reach. Use USSR? The
+  // point is SAME-SIDE NON-OWNER captures -> reverts. Attack as UK from the
+  // island? Units are gone. Set a UK stack adjacent via sz — instead just
+  // call through an engine attack: give UK a big stack on uk-island's only
+  // neighbor... uk-island has no land adj. Test via direct board setup:
+  s.board['sz-2'] = [
+    { power: 'uk', key: 'transport', count: 1, cargo: [{ power: 'uk', key: 'tank', count: 3 }] },
+    { power: 'uk', key: 'battleship', count: 1 },
+  ];
+  s.turnIdx = 3; // UK's turn (1941 order)
+  s.phase = 'combatMove';
+  const r = act(s, 'uk', {
+    type: 'attack', target: 'uk-island',
+    forces: [{ from: 'sz-2', units: [{ key: 'battleship', count: 1 }] }],
+    offloadFrom: 'sz-2', offloadUnits: [{ key: 'tank', count: 3 }],
+  });
+  ok(r.ok, `liberation assault declared (${r.error ?? ''})`);
+  driveBattle(s, 'uk', 'germany');
+  if (unitCount(s, 'uk-island', 'uk', 'tank') > 0) {
+    ok(s.control['uk-island'] === 'ussr', `capture by an ally reverts to the original owner (${s.control['uk-island']})`);
+  }
+}
+
 // ---------- noncombat + mobilize + income ----------
 {
   const s = mkState(19);

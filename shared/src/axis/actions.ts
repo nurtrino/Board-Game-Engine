@@ -510,17 +510,30 @@ function battleOutcomeText(s: AxisState, c: ActiveCombat): string {
 }
 
 function captureTerritory(s: AxisState, territory: string, by: PowerKey): void {
-  const prev = s.control[territory];
-  // liberation: originally another power on MY side -> revert to them unless
-  // their capital is enemy-held
-  // (idx not in scope here; original owner is read from setup control at
-  //  create time via territory def — the engine keeps it in map data)
-  s.control[territory] = by;
-  if (prev && !sameSide(prev, by) && prev !== 'china') {
-    const loser = s.powers[prev as PowerKey];
-    void loser;
+  const orig = s.originalOwner[territory] ?? null;
+
+  // liberation: a territory originally owned by a FRIENDLY power (or China,
+  // for the Allies) reverts to its original owner — unless that owner's
+  // capital is in enemy hands, in which case the capturer keeps it for now
+  if (orig && orig !== by && sameSide(orig, by)) {
+    const origHeld = orig !== 'china' && s.powers[orig as PowerKey].capitalHeldBy != null;
+    if (!origHeld) {
+      s.control[territory] = orig;
+      const name = orig === 'china' ? 'China' : POWERS[orig as PowerKey].name;
+      s.log.push({ round: s.round, power: by, space: territory, text: `${POWERS[by].name} liberates ${territory} for ${name}.` });
+      // liberating a capital brings its owner back into the game
+      if (orig !== 'china' && POWERS[orig as PowerKey].capital === territory) {
+        s.powers[orig as PowerKey].capitalHeldBy = null;
+        s.log.push({ round: s.round, power: by, text: `${POWERS[orig as PowerKey].name}'s capital is liberated.` });
+      }
+      return;
+    }
   }
-  // capital capture: loot unspent IPCs of the ORIGINAL owner
+
+  s.control[territory] = by;
+  // recapturing your OWN capital frees your economy again
+  if (POWERS[by].capital === territory) s.powers[by].capitalHeldBy = null;
+  // capital capture: loot unspent IPCs of the original owner
   for (const pk of Object.keys(POWERS) as PowerKey[]) {
     if (POWERS[pk].capital === territory && !sameSide(pk, by)) {
       const looted = s.powers[pk].ipcs;
