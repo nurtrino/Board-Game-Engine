@@ -222,6 +222,14 @@ whether the board art already prints the base layout — Dune's does, so
 the overlays are near-invisible duplicates and alignment errors show up
 as double vision at a glance.
 
+**Derive each agent's placement spot from its overlay tile's fitted centre,
+not a hand-nudged offset.** Hand-tuned per-space offsets drift inconsistently
+(Dune had 14 worker spots off by anywhere from 0.3 to 1.6 units while the
+exact-match spaces sat dead centre) and land pawns off their tiles. The tile
+centre is the same anchor you already fit — snap the pawn spot to it. Spaces
+printed on the base board with no overlay (Great Flat / Hagga Basin) keep their
+own affine-fit spots.
+
 ### 3D pieces parallax off their slots
 
 Even with a perfect transform, pieces are 3D meshes with height, so when the
@@ -338,11 +346,27 @@ doesn't double up.
   the mod's own player board, leader/reference card, pawns, troop pieces and
   resource tokens laid out like the physical table (skip the storage bowls).
   Text counts alone are not enough; the mat is a scene, not a stat sheet.
+- **Orbit camera is for the shared TV board; the personal mat is a fixed
+  frame.** The main board keeps a movable orbit camera (authenticity, §5
+  authenticity). The *personal player-mat* view is real 3D but a **fixed,
+  gently-angled, non-interactive** readout — the owner asked for it not to be
+  movable (nothing to fly around on your own board). Frame it flat-ish so the
+  whole mat reads at a glance.
+- **Surface everything on the one no-scroll page — don't hide it behind a
+  stats/overlay menu.** Once the mat and the resource/influence readouts live on
+  the main device screen, a separate "house/detail" overlay that repeats them is
+  redundant; the owner had it removed. When there's spare space on the main
+  screen, **fill it with the missing info** (leader powers, upgrades,
+  deck/discard counts) rather than tucking it in a popup.
 
 **Copy**
 - Serious **UPPERCASE** labels, middot `·` separators, **no em dashes**, **no
   emoji anywhere** (use inline SVG icons instead).
 - Sentence-level copy: plain, imperative, no fluff.
+- **Error/alert toasts obey the same rules.** No lowercase-first, no em dashes.
+  Capitalise and de-dash them **at the source** — one `err()` helper in the
+  reducer (`error.replace(/\s+—\s+/g, ', ').replace(/^\p{Ll}/u, upper)`), not per
+  call site — so every message is fixed in one place and proper nouns survive.
 
 **HUD specifics**
 - Seat colour is an **outline**, never a dot.
@@ -378,6 +402,15 @@ Style it primary when it's the only remaining legal act.
 **View the whole hand** — a button beside the hand fan brings the full hand to
 the foreground, grouped into stacks by type/colour with counts.
 
+**Teaching aids point at the real interface, not a slideshow.** A game may offer
+a **first-round interface walkthrough** — coach-marks over the *live* device
+screen that spotlight each actual control (target real elements by a `data-tour`
+attribute and read their bounding box), opened from `GameIntro`'s "Walk me
+through the interface". The TV can carry a host-toggled **"Explain the board"**
+overlay that labels every region of the board (a region-by-region legend plus
+callouts for the shared HUD). Both explain the concrete UI in front of the
+player; the intro popup covers goal + rules, the walkthrough covers the buttons.
+
 **AI pace** — CPU seats act on a deliberate delay (~1.1s setup, ~1.8–2.6s in
 play) so the TV can narrate each move; instant bot turns were rejected.
 
@@ -395,13 +428,29 @@ doesn't have. But **do** disallow actions that are simply illegal in the current
 state (you can't "fight" when there's no fight) — reject sub-phase actions
 outside their phase and grey out the buttons.
 
+**Grey out what the player can't afford — never let a tap bounce an error.**
+The owner's rule: "if you don't have enough solari for an action, just don't let
+them do it — grey it out." A device option whose cost exceeds the player's
+resources (or that fails a requirement — a faction gate, an already-owned
+once-per-game upgrade) must be **disabled with an inline reason** ("· not enough
+solari"), not clickable-then-rejected. Mirror the reducer's own affordability
+check on the client, including any leader discount (Duke Leto pays 1 less on
+Landsraad), so the two never disagree — a disabled option the engine would allow,
+or a live option the engine would reject, is a bug. The error toast is a
+backstop, not the primary feedback.
+
 **Cards read upright** — portrait, not lying on their side. Mod card sheets
 often store art rotated inside the cell; render it upright in a portrait frame.
 The personal hand fans vertically.
 
 **It must fit — no scrolling the personal board.** Size the device rail so the
 readout, controls, and the player's card all fit an iPad without scrolling; crop
-decorative header art if needed.
+decorative header art if needed. Verify against **iPad-landscape height (768)**,
+the tightest case — a layout that fits your wide preview can still overflow
+there. When a large element (an enlarged conflict/reference card) competes with
+the hand for vertical space, make the hand a **single horizontal swipeable row**
+(`nowrap` + `overflow-x`) rather than letting it wrap to two rows and push itself
+below the fold.
 
 ### 5.1 Dislikes — the things that come back (fix before showing)
 
@@ -412,7 +461,9 @@ decorative header art if needed.
   a made-up board face, a placeholder logo.
 - **A game's own screen not working** — a floating/blank LCD, a reel that shows
   nothing, sound that doesn't play "through" the tower.
-- **Illegal actions offered** — buttons live when the action can't legally fire.
+- **Illegal actions offered** — buttons live when the action can't legally fire,
+  or when the player can't pay the cost (grey out unaffordable options with a
+  reason; don't let the tap bounce an error toast).
 - **Cards sideways**, hands horizontal, art rotated wrong.
 - **Scrolling** to see your own board/card.
 - **Emoji, em dashes, a hardcoded game name** in the lobby, a dot instead of an
