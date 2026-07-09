@@ -114,6 +114,15 @@ The mod's `CustomPDF` is the official rulebook — stage it to
 `Read` tool needs poppler which isn't installed. Wrap stdout in a utf-8
 `TextIOWrapper` or cp1252 will throw on box-drawing glyphs.
 
+The back matter is often the jackpot: Dune's rulebook PDF embeds a complete
+Board Space Guide (every space's costs/rewards, verbatim) and an icon guide
+that decodes card iconography (the ringed gold planet = VP, ?-diamond with
+chevrons = influence-any, one chevron per point). Read those pages as
+rendered images (`page.get_pixmap`) before transcribing anything from board
+or card art — it can eliminate whole transcription passes. Still cross-check
+the handful of values the text can't carry (Dune's rulebook never states the
+Emperor 4-influence bonus; the art shows two troop cubes, not solari).
+
 ### 2.4 Transcribing what the Lua doesn't encode (card costs, graphs, colours)
 
 Some rules data only exists as printed art. The workflow that held up:
@@ -154,6 +163,10 @@ Some rules data only exists as printed art. The workflow that held up:
 
 ---
 
+Cards with empty Nicknames (Dune's conflict deck, starters) still identify
+uniquely by (CustomDeck sheet, CardID cell) — crop the cell, read it, key
+the golden by cell. Never assume every deck is named just because one is.
+
 ## 3. Map fit — the important, non-obvious part
 
 Two very different situations. Diagnose which one you have first.
@@ -193,6 +206,21 @@ construction. Don't add a homography here; it would only add error.
 
 A plain disc with four quadrants + the electronic tower (LCD/reel step
 playback). Pieces sit in a *quadrant*, not on precise snaps. No map, no fit.
+
+### D. Board art anchored by the mod's own labelled overlay tiles (Dune Imperium)
+
+Some mods ship an expansion-layout board and lay *labelled overlay tiles*
+over it during setup for the base game (`sendAgentSetup` in global.lua,
+exact `setPositionSmooth` coordinates per tile). Those tiles are gold:
+each one is a named object with a known world position AND a printed slot
+in the board art — free calibration anchors. Fit an affine art-px -> world
+mapping on two or three of them (one pair for x, one for z; verify on a
+third) and place the board plane from that fit instead of trusting
+Custom_Token scale ratios. Measure combat arenas / garrison circles /
+anything else straight off the art through the same affine. Also check
+whether the board art already prints the base layout — Dune's does, so
+the overlays are near-invisible duplicates and alignment errors show up
+as double vision at a glance.
 
 ### 3D pieces parallax off their slots
 
@@ -508,6 +536,21 @@ Use a **seeded RNG stream** in the engine (advance a `rolls` counter, hash
 `seed ^ rolls`) so saves replay identically and tests are deterministic.
 
 ---
+
+### 6.4 Multi-choice card games: the pending-decision queue
+
+For engines where card effects branch (pick a faction, trash a card, choose
+one of N rewards), don't try to encode choices into the triggering action.
+Give the state a `pending: {seat, decision}[]` queue: effects push typed
+decisions, the reducer rejects every action except `choose` while the queue
+is non-empty, and only the head's owner may resolve it. Phones render the
+head as an explicit prompt; bots switch on `decision.kind`. This keeps every
+choice enforced and serializable, survives multi-seat cascades (Test of
+Humanity queues one decision per opponent), and makes combat-reward choices
+compose with everything else for free. Pair it with a live WS smoke driver
+(`dune-smoke.mjs` pattern: join one seat, random-legal actions, exit on
+ENDED, stall watchdog) — it exercises the server bot's decision handling,
+which unit playthroughs can't.
 
 ## 6.5 Working with the owner (process)
 

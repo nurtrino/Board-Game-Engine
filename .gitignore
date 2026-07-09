@@ -18,3 +18,4 @@ tools/verify/*.png
 
 # machine-specific Claude settings
 .claude/settings.local.json
+tools/verify/.dune-phone.json

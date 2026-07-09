@@ -139,16 +139,40 @@ Phone: hand fan (portrait), play-card → pick glowing legal space, reveal
 summary (persuasion/swords), buy row, intrigue hand, resource dial, End Turn.
 Leader card on device. GameIntro + rulebook.pdf.
 
-## 9. Open items (next sessions)
+## 9. Status (shipped July 2026)
 
-- [ ] Stage assets + scene.json (extract-dune.mjs): board art, card sheets,
-      agent/troop meshes, zone positions from Lua tables.
-- [ ] Read rulebook PDF (pymupdf) → exact space costs/rewards, combat/reveal
-      details, tie-breaks, starting VP by player count.
-- [ ] Contact sheets → card data (base first), conflict identities, starter
-      composition verify.
-- [ ] Engine + tests (bot playthroughs, conservation of cards/troops/
-      resources, directed rules), server registry + bots, client, smoke,
-      zoom-verify.
-- [ ] Lobby: per-game create options (expansion toggles) — new SelectGame
-      capability.
+Base game shipped end to end. Goldens: spaces.json (Board Space Guide from
+the rulebook PDF pages 17-18 + art-verified 4-influence bonuses and Sell
+Melange rates — Emperor's 4-bonus is 2 TROOPS, the rulebook text alone
+doesn't say), conflicts.json (18 cards read cell-by-cell; no nicknames in
+the mod), leaders.json (14 scans; the 6 Rise of Ix leaders transcribed and
+waiting), cards.json (44 imperium uniques + 34 intrigue + starters +
+reserve, copies from the mod deck contents).
+
+Engine shared/src/dune/: full enforcement (agent icons, occupancy, The
+Voice, costs, Sietch Tabr gate, once-per-game seats, reveal/persuasion,
+influence VP-at-2 / bonus+alliance-at-4 with steal-on-exceed, all intrigue,
+combat with printed tie rules + post-win window, makers, control flags,
+leader passives/signets, endgame tiebreaks). Multi-step card effects run
+through a pending-decision queue — every choice is an explicit action.
+dune-test.ts: 12 bot playthroughs + invariants + directed tests.
+
+Client: TV board = mod art + the mod's base-game overlay tiles at the Lua
+setup coordinates + agent pawn mesh + troop cubes, all through an affine
+art->world fit on three labelled tile anchors (Conspire / Stillsuits /
+Sell Melange). The mod's board is the Ix layout; sendAgentSetup(riseIX==0)
+in global.lua is the authority for base overlay placement. Combat X and
+the four garrison circles measured from the art. Phone: leader pick, hand
+-> space picker, reveal/acquire, intrigue drawer, choice prompts, End Turn.
+tools/verify/dune-smoke.mjs = live WS full-game driver.
+
+## 10. Open items
+
+- [ ] Rise of Ix option: content is staged (sheets, leaders, Ix deck GUIDs
+      in scene.json) — needs engine systems (dreadnoughts, tech tiles,
+      freighter track), the Ix board layout (no overlays), leader signet
+      icon confirmation, and a create-options protocol field.
+- [ ] Immortality option: Tleilaxu track + research + specimens.
+- [ ] Lobby create-options UI lands together with the first expansion.
+- [ ] Reveal-time retreat riders (Scout / Chani) are not offered — combat
+      troops can only be pulled back via Master Tactician's choice.
