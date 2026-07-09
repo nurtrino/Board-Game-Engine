@@ -229,14 +229,19 @@ export function DunePlay({ view, act, error }: {
     return (
       <div className="dn-wrap">
         <style>{CSS}</style>
-        <div className="dn-top">
-          <span className="dn-lab">{picking ? 'Choose your leader' : `${view.players[view.turn].name} is choosing`}</span>
-        </div>
-        <div className="dn-main">
-          <div className="dn-hand">
+        <div className="dn-main" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 14px' }}>
+          <div style={{ textAlign: 'center', maxWidth: 560 }}>
+            <div className="dn-lab">Dune: Imperium</div>
+            <h1 style={{ fontSize: 24, margin: '4px 0 6px' }}>{picking ? 'Choose your leader' : `${view.players[view.turn].name} is choosing`}</h1>
+            <p style={{ opacity: 0.6, fontSize: 13, margin: '0 0 20px', lineHeight: 1.5 }}>
+              {picking ? 'Each leader has a passive power and a signet-ring ability. Tap one to take it.' : 'Waiting for the other players to pick their leaders.'}
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, justifyContent: 'center', maxWidth: 780, margin: '0 auto' }}>
             {view.leaderPool.map((l) => (
               <button key={l} className="dn-card" disabled={!picking} onClick={() => send({ type: 'pick_leader', leader: l })}>
-                <img src={LEADER_BY_ID[l].image} alt={LEADER_BY_ID[l].name} style={{ width: 168, borderRadius: 8, opacity: picking ? 1 : 0.5 }} />
+                <img src={LEADER_BY_ID[l].image} alt={LEADER_BY_ID[l].name}
+                  style={{ width: 216, maxWidth: '44vw', borderRadius: 10, opacity: picking ? 1 : 0.45, boxShadow: '0 6px 20px rgba(0,0,0,0.5)' }} />
               </button>
             ))}
           </div>
@@ -252,8 +257,8 @@ export function DunePlay({ view, act, error }: {
     return (
       <div className="dn-wrap">
         <style>{CSS}</style>
-        <div className="dn-overlay" style={{ position: 'relative', flex: 1 }}>
-          <div className="dn-lab">{String(d.label ?? 'Choose')}</div>
+        <div className="dn-overlay" style={{ position: 'relative', flex: 1, alignSelf: 'center', width: '100%', maxWidth: 560 }}>
+          <div className="dn-lab" style={{ textAlign: 'center', fontSize: 13 }}>{String(d.label ?? 'Choose')}</div>
           {(d.kind === 'influenceAny' || d.kind === 'influenceWhereBehind' || d.kind === 'influencePick') && (
             <>
               {((d.kind === 'influencePick' ? d.options as Faction[] : FACTIONS)).map((f) => (
