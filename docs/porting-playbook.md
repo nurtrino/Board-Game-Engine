@@ -696,6 +696,404 @@ the *engine* can finish a game; neither gate below is covered by it.
 
 ---
 
+## 9. How everything was done — end to end, in plain terms
+
+The sections above are a working reference: terse, assuming you already know the
+shape of the thing. This section is the opposite. It is a long, plain-language
+walkthrough of how a game actually gets from a Tabletop Simulator mod to a
+finished, polished port on this engine, written for someone who has never
+touched the codebase. If a section above felt like shorthand, read the matching
+part here first.
+
+### 9.1 What we are building, and the one idea behind it
+
+The product is a website that lets a group play a physical-style board game
+across their own screens. One screen is the **TV** (or any shared display): it
+shows the board, the way the table looks from above, and it narrates what is
+happening out loud. Every other screen is a **player device** — a phone or, more
+usually, an iPad — and it holds that one player's private things (their hand of
+cards, their money, their pieces) and is where that player actually makes moves.
+Nobody plays "on the TV"; the TV is the board, the devices are the hands.
+
+The single idea that everything else follows from: **we do not invent these
+games, we re-host real ones.** Every game already exists as a Tabletop Simulator
+(TTS) mod — a community-made file that contains the game's board, its 3D pieces,
+its card images, and a script that automates some of its rules. Our job is to
+take that mod apart, learn exactly how it is built and how it plays, and
+reconstruct it faithfully as a web app — using the mod's *own* art, meshes,
+sounds and card faces, not stand-ins we drew ourselves. When we finish, it
+should feel like the real boxed game, not "a version of" it.
+
+Because we are re-hosting rather than inventing, the mod's own files are the
+source of truth at every step. Not our memory of the game, not a wiki, not a
+rules video — the actual bytes in the mod. Almost every mistake in this project
+traces back to trusting a memory of how a game works instead of reading what the
+mod does. So the discipline is: read the mod, write down what it says, build to
+that, and verify against it.
+
+### 9.2 The three pieces of the codebase
+
+The whole thing is one repository split into three parts that talk to each other:
+
+- **`shared/`** holds the *rules* of every game — the "engine." Given a game's
+  current situation and a move a player wants to make, the engine decides
+  whether the move is legal and, if so, what the new situation is. It is pure
+  logic: no graphics, no network. Each game has its own folder
+  (`shared/src/dune/`, `shared/src/brass/`, and so on) with three ideas inside:
+  the **state** (everything true about a game in progress), the **actions**
+  (every move a player can make), and the **view** (what one particular player
+  is allowed to see — your opponents' hands are hidden from you, so the engine
+  produces a per-player, censored copy of the state).
+- **`server/`** is the referee and the mailroom. It keeps the running games in
+  memory (and saves them so they survive a restart), it accepts moves over a
+  live connection from the devices, it hands each move to the right game's engine
+  in `shared/`, and it broadcasts the new view back out to everyone. It also runs
+  the computer players. It does not know or care how anything looks.
+- **`client/`** is everything you see: the TV board and the player devices, both
+  built with React and a 3D library (three.js, via react-three-fiber). It never
+  decides rules — it asks the server, receives a view, and draws it, and it sends
+  the player's taps back as actions.
+
+A game "in progress" is called a **room**. A room has an id (a short code), it
+remembers which game it is (`brass`, `ttr`, `trek`, `darktower`, `dune`,
+`kanban`…), and the server keeps a registry so the same server can run several
+different games at once. The client looks at the game id inside the view it
+receives and picks the matching board and device components to render.
+
+### 9.3 Getting the mod, and the dead-host trap
+
+The first concrete step is to find the mod on the local machine. TTS caches every
+subscribed mod as a big JSON file; inside it are two things we need: `LuaScript`
+(the mod's automation code) and `ObjectStates` (a list of every object on the
+table — every card, tile, mesh, token — with its exact position, rotation, and a
+link to its art or model).
+
+The catch that has bitten this project repeatedly: old mods point their art at
+`http://cloud-3.steamusercontent.com/...`, a host Valve **shut down**. The files
+still exist, but at a new address (`steamusercontent-a.akamaihd.net`). So before
+anything else we run `download-mod-assets.mjs`, which walks the mod, rewrites the
+dead host to the live one, and downloads every image, model, sound bundle and PDF
+into the local cache so the rest of the pipeline can run offline. Files land in a
+cache folder under a "munged" name (the URL with every non-alphanumeric character
+stripped). If a download fails, the fix is never to guess the filename — it is to
+copy the exact URL out of the mod and try again.
+
+### 9.4 Reading the Lua and writing the spec — before any code
+
+Before writing a single line of engine, we read the mod's Lua script all the way
+through and write a **spec** to `docs/specs/<game>.md`. This is not busywork; it
+is the durable record of how the game works, with a line reference into the mod
+for every rule, so that months later (or in a fresh session with no memory of the
+work) the reasoning can be re-verified against the mod instead of re-guessed.
+
+The Lua tells us most of the mechanical truth: the list of board spaces and where
+they sit, the setup procedure (how many cards each player draws, how many pieces
+they start with), and often the scoring. Two habits matter here. First, when you
+parse a big Lua table (like the list of "snap points" that define where pieces
+sit), match braces to find the end of the block — don't stop at the first `})`
+you see, because that truncates and silently drops data. Second, cross-check
+counts: if the mod says there are 452 snap points, your parser had better find
+452, and every reference to snap #237 had better resolve to a real point.
+
+### 9.5 What the Lua doesn't say — reading the printed art
+
+Not everything lives in the script. A card's cost, a route's colour, the exact
+graph of trails on the board — that data is often only *printed on the art*. So
+part of porting is transcription: reading values off images and writing them into
+our own data files. The lessons that made this reliable:
+
+- **Check the object names first — they are free data.** Trekking's trek cards
+  were literally named "Green 3" (colour + number) inside the mod, which handed
+  us the whole deck without reading a single card face.
+- **Rulebooks are gold, especially the back matter.** The mod ships the official
+  rulebook as a PDF; we stage it into the game and link it in-app, but we also
+  *read* it while porting. Dune's rulebook, for instance, has a complete "Board
+  Space Guide" listing every space's exact cost and reward, and an icon key that
+  decodes the card symbols — reading those pages eliminated whole passes of
+  squinting at card art. Where the text can't carry a value (Dune's rulebook
+  never states the Emperor's 4-influence bonus), the art settles it (it shows two
+  troop cubes, not money).
+- **Slice decks into contact sheets and read them in rows**, re-rendering any
+  ambiguous card on its own at full resolution.
+- **Verify by overlay, never by eyeball.** For a board's trail graph, we draw
+  every edge we think exists as a coloured line on top of the real board art and
+  check quadrant by quadrant that every line sits on a printed trail and every
+  printed trail has a line. Trekking's 73-edge graph shipped with zero errors
+  this way.
+- **Extractors must be idempotent.** Re-running the extraction must not wipe data
+  we fitted or corrected by hand (a map transform, a fixed-up colour tag). Carry
+  the previous values forward, or a routine re-extract silently destroys hours of
+  work.
+
+### 9.6 Extraction — turning the mod into our files
+
+With the mod understood, a per-game script (`tools/tts-extract/extract-<game>.mjs`)
+does the mechanical conversion. It reads the Lua tables and the object transforms
+and writes two kinds of output:
+
+- **Golden data** (`games/<game>/golden/*.json` and mirrored into
+  `shared/src/<game>/`): the rules-facing facts the engine needs — the list of
+  spaces, the cards and their costs, the setup numbers. This is what the engine
+  imports.
+- **A render manifest** (`scene.json` plus the actual asset files copied into
+  `client/public/<game>/`): the graphics-facing facts the client needs — which
+  mesh file is the pawn, what colour tint each seat is, where each board tile
+  sits, which image sheet holds which card.
+
+Some mods hide their art. Dark Tower's LCD screen, its rotating reel, and all its
+sound effects were packed inside a Unity "assetbundle" (`.unity3d`), which we
+crack open with a Python tool (UnityPy) to pull out the meshes, textures and audio
+clips. And sometimes the thing you assume is missing is just hidden in plain
+sight: Dark Tower's painted board turned out to be a giant image object
+(`Custom_Token`) sitting flat on the table, not a separate board asset — so the
+rule is to scan *all* textured objects before concluding an asset doesn't exist
+or, worse, drawing a placeholder. A fabricated board that later turns out to have
+existed in the mod is one of the fastest ways to get work sent back.
+
+### 9.7 Making the board line up — the map-fit problem
+
+The single most error-prone geometry problem is making the pieces land on the
+right spots on the board image. There are four situations, and you must diagnose
+which one you have:
+
+- **(A) The mod places pieces at 3D coordinates, but the board is a separately
+  photographed image** (Ticket to Ride). The photo has its own slight
+  perspective, so a straight scaling doesn't line up. We fit a *homography* (a
+  projective transform) that maps the 3D world onto the image pixels, by matching
+  each coloured route's 3D snap to the centre of its coloured paint on the photo,
+  and we render the board as a **warped mesh** so the art and the pieces ride the
+  exact same transform. Drawing the board on a flat rectangle instead silently
+  throws away the perspective and the pieces drift — that was a real bug.
+- **(B) The board's positions are already measured in the image's own pixels**
+  (Trekking). Here there is no gap between "world" and "photo," so **no fit is
+  needed** — adding one would only introduce error.
+- **(C) There is no positional board** (Dark Tower): pieces live in a quadrant,
+  not on a precise spot, so there's nothing to fit.
+- **(D) The board art is anchored by the mod's own labelled overlay tiles**
+  (Dune). The mod lays named tiles onto the board during setup at exact
+  coordinates; each tile is both a known 3D position and a printed slot on the
+  art, which makes it a free calibration anchor. We fit a simple transform on a
+  couple of those tiles and place everything else — including where each agent
+  pawn stands — from that same fit. The lesson learned here: derive each pawn's
+  spot from its tile's fitted centre, not a hand-nudged guess, because hand-tuned
+  offsets drift inconsistently and land pawns off their tiles.
+
+A subtle, recurring trap across all of these: even with a perfect flat alignment,
+3D pieces have height, so when the camera tilts, the *tops* of tall pieces appear
+to slide off their slots, worst at the screen edges. The fix is to keep pieces
+low and cap how far the camera can tilt — not to fiddle with the data, which is
+already correct.
+
+### 9.8 Building the engine — rules as pure logic
+
+Now the rules. Each game's engine in `shared/src/<game>/` is built around three
+functions: create the starting state, apply an action to produce the next state
+(or reject it), and project the state into a per-player view. Everything the game
+tracks lives in the state: each player's resources, pieces, hand, deck, discard,
+influence, score; the shared board; whose turn it is; which phase we're in.
+
+Two patterns make hard games tractable:
+
+- **The pending-decision queue.** Many card effects branch — "gain influence with
+  a faction of your choice," "trash a card," "pick one of three rewards." Instead
+  of trying to cram the choice into the action that triggered it, the state
+  carries a queue of pending decisions. An effect pushes a typed decision onto the
+  queue; while the queue is non-empty the engine rejects every action except
+  `choose`, and only the player who owns the head of the queue may answer it. The
+  device shows that decision as an explicit prompt. This keeps every choice
+  enforced and saveable, and it composes — an effect that makes each opponent
+  decide something just pushes one decision per opponent and they resolve in turn.
+- **A seeded random stream.** All randomness (shuffles, dice) comes from a counter
+  the engine advances and hashes, so a saved game replays move-for-move
+  identically and the tests are deterministic.
+
+How strictly to enforce rules is a judgment call the owner has been clear about:
+**enforce what the physical game enforces, and no more.** Brass is fully
+enforced — you cannot make an illegal build. Dark Tower is honor-system about
+where your pawn is, so we keep its exact original electronic "brain" and simply
+let the player move their own token, rather than inventing a movement graph the
+real game never had. But we always forbid the genuinely impossible: you can't
+"fight" when there is no fight, and — a rule the owner made explicit during the
+Dune work — you can't take an action you can't pay for. Anything you can't afford
+is greyed out on the device with the reason shown, so a tap never bounces back an
+error. The client's affordability check mirrors the engine's own cost check
+exactly (including leader discounts), so the two never disagree.
+
+Every engine gets a test file that plays full games with a simple bot at each
+player count, checks conservation invariants after every move (the total number
+of cards/pieces never changes — that catches duplication and loss bugs
+instantly), and asserts specific rules one by one against the mod's Lua line
+references. Give the bot a goal, or games with a long build-up (Dark Tower) loop
+forever without ever finishing.
+
+### 9.9 The server and the computer players
+
+The server keeps a registry mapping each game id to its engine's create/view/apply
+functions, plus the seat colours that game uses. When a device sends a move, the
+server routes it to the right engine, stores the new state, and pushes fresh views
+to everyone connected to that room. Rooms are saved continuously so a crash or a
+restart doesn't lose a game, and a player reconnects to their seat with a token
+stored in their browser.
+
+Computer players fill empty seats. They act on a deliberate delay — roughly one to
+three seconds — specifically so the TV can narrate each move out loud and a
+watching table can follow along; instant bot turns were tried and rejected as
+unreadable. One easy-to-miss detail: the person who created the room is also a
+spectator, so their connection receives both a neutral TV view and their own
+seat's view — automated test drivers have to filter for their own seat or they'll
+read the censored frame and wrongly conclude their own hand is hidden.
+
+### 9.10 The client — drawing the board and the devices
+
+The client has two faces per game. The **TV board** fills the screen with the
+3D board (through whichever map-fit applies), seats every piece flat on the
+surface, and overlays a heads-up display: whose turn it is, the score, the current
+card in play, a caption narrating the last action. The **device** shows the
+player's own board and hand and is where moves are made.
+
+A handful of 3D conventions apply to every renderer, because TTS and three.js
+disagree about handedness: we mirror the world's Z axis, give imported meshes a
+half-turn so they face the right way, and — importantly — **seat every piece on
+the board by its bounding box** so nothing floats. "The board is fine but
+everything is hovering above it" was the single most common rejection early on; a
+mod's piece heights are relative to *its* table, not our board, so each mesh must
+be dropped onto the surface explicitly. Related traps: some meshes are modelled
+upside-down (count the vertices above vs. below the middle to detect it and roll
+them over), and some have off-centre origins that need recentring.
+
+The look-and-feel rules are firm and come from the owner: full dark mode; the
+in-game HUD reuses the lobby's glass style; serious UPPERCASE labels with middot
+separators and **no em dashes, no emoji, no casual lowercase** anywhere — and that
+applies to error messages too, which we capitalise and de-dash in one place at the
+source. Seat colour is shown as an outline, never a coloured dot. Cards read
+upright in a portrait frame, never lying on their side, even though the mod's card
+sheets often store the art rotated inside each cell. Every game has an explicit
+**End Turn** button — the turn never advances silently — a **Show deck** reference,
+and a **view-whole-hand** button. Sound comes "through" the TV (it voices actions,
+turn changes and the win) while devices only click and blip, so a TV-plus-phones
+table doesn't double up. When a mod built its own control panel (Dark Tower's
+electronic console), we reproduce that faithfully rather than inventing a generic
+button list — the owner wants the authentic object.
+
+And the hard constraint that shapes the whole device layout: **it must fit an
+iPad in landscape with no scrolling.** The tightest real case is 768 pixels tall,
+and a layout that fits a wide desktop preview can still overflow there, so that's
+the height to verify against.
+
+### 9.11 Proving it works before the owner looks
+
+The owner checks the *visuals* himself because that's faster; our job is to prove
+the *data and geometry* are right and hand over a build that runs. That means the
+client build and typecheck pass; the parsed snap points match the live mod
+byte-for-byte; the map-fit's residual error is small and its inverse round-trips
+to zero; and an **overlay diagnostic** — projecting every snap through the
+transform onto the real board art — shows the dots sitting on the printed slots.
+That overlay is what separates "the data/transform is wrong" from "the 3D render
+looks off": if the dots are dead-on but the running board looks wrong, it's a
+render or camera-tilt issue, not the data.
+
+For seeing the actual 3D (the built-in screenshot tool often times out on a live
+WebGL canvas), there are puppeteer drivers under `tools/verify/` that launch
+Chrome with software-GL flags and reliably render: `shoot.mjs` screenshots any
+page and honours a `?cam=` query so you can fly the camera to a close-up;
+`phone-shot.mjs` screenshots a device by injecting a seat token; `page-errors.mjs`
+dumps console errors and failed requests, and is the first thing to run when
+something "isn't rendering," because it tells you in seconds whether it's a load
+failure or just a black void with no art. Live WebSocket "smoke" drivers create a
+real room and play a whole game through the real server, catching bugs that unit
+tests can't. And two runtime gotchas that cost real time: **restart the preview
+server after any change under `shared/`** (the runner doesn't hot-reload the
+engine, so a stale server serves the old rules and your fix looks broken), and
+detect that an action finished by watching the event counter in the state, not by
+sleeping.
+
+### 9.12 Ship gates — the two checks that make a port "done"
+
+A port isn't finished when the engine can complete a game. Two extra gates are
+mandatory:
+
+1. **A rulebook UI-coverage audit.** Re-read the whole rulebook, and for every
+   decision, optional cost, choice of amount, and piece of public information,
+   name exactly where it lives on the device or the TV. Then check the other
+   direction: look at the engine's list of possible actions for any value the
+   device auto-picks instead of asking the player (a sell amount, an optional
+   cost, a deploy count) — each of those is a gap, because the engine supports a
+   choice the player has no way to make.
+2. **A full game played entirely by clicking the real device UI** (a puppeteer
+   driver that opens one page per seat and presses actual buttons and cards, never
+   raw actions). If it gets stuck, the UI is missing something a human would also
+   get stuck on — that stall *is* the finding.
+
+### 9.13 A worked example — Dune from mod to shipped
+
+Tying it together with the game most recently worked on. Dune: Imperium started as
+mod `2354919205`, which bundles the base game plus two expansions. The owner's
+scope was base-game-first, expansions later as optional toggles. We staged the
+golden data — every board space with its exact cost and reward (read from the
+rulebook's Board Space Guide and verified against the art), the conflict cards
+(read cell by cell because the mod leaves them unnamed), the leaders, and the full
+imperium/intrigue/starter/reserve card sets. The engine got full enforcement:
+agent-placement legality, the pending-decision queue for every branching card
+effect, influence that scores at 2 and pays a bonus-and-alliance at 4 (with the
+alliance stealable when someone passes you), combat with the printed tie rules,
+and the endgame tiebreaks — all tested with bot playthroughs and invariants. The
+TV board is the mod's real art with its base-game overlay tiles placed by the
+affine fit on labelled anchor tiles, the mod's pawn mesh, and cube troops. The
+device does leader-pick, a hand that opens a space picker, reveal/acquire,
+intrigue, choice prompts, and End Turn. It passed both ship gates: a full
+20-page rulebook audit and a 4-seat game played entirely through the device DOM.
+
+Then came a run of UI-polish requests that shaped the device into its current
+form, and these are worth recording because they generalise:
+
+- The personal screen became a **single no-scroll page** for iPad landscape: a
+  header of colour resource chips and influence pip-tracks, then two columns — the
+  things you act on (status, the current conflict card, your leader's powers, your
+  upgrades and deck counts, and your hand) on the left, and a live 3D view of your
+  own player mat on the right.
+- That 3D player-mat view was deliberately made a **fixed, gently-angled,
+  non-interactive frame**. The shared TV board keeps its movable orbit camera, but
+  the owner didn't want to "fly around" his own small mat — so it's a clean
+  readout, not a toy.
+- The separate **"House" detail overlay was removed** once the mat and the stats
+  both lived on the main page — it just repeated what was already visible. The
+  freed-up empty space on the main page was filled with the leader's powers,
+  upgrades, and deck/discard counts. The general rule: surface information on the
+  one no-scroll page, don't hide it behind a popup that duplicates it.
+- When the enlarged conflict card started competing with the hand for vertical
+  room on a 768-tall iPad, the hand became a **single horizontal swipeable row**
+  instead of wrapping to two rows and pushing itself off the bottom of the screen.
+- **Unaffordable actions get greyed out with a reason** ("not enough water,"
+  "needs 2 Fremen influence") instead of letting a tap fail — the client mirrors
+  the engine's own cost check, including the Duke Leto leader discount, so the
+  greying and the engine never disagree.
+- Two **teaching aids** were added: a first-round walkthrough that puts coach-mark
+  spotlights on the *real* controls of the live device screen (not a slideshow),
+  opened from the intro popup; and a host-toggled "Explain the board" overlay on
+  the TV that labels every region of the board.
+- All the copy was tightened to the house style — serious, uppercase where it's a
+  label, no em dashes, no lowercase-first alerts — and the alert-capitalisation was
+  fixed once at the engine's error helper so every message is consistent.
+
+None of these were new mechanics; they were about making the real game legible on
+the actual screens people use. That is the last mile of every port, and the
+owner's feedback on it is terse and specific — "the conflict needs to be bigger,"
+"grey it out, don't let them do it," "there's still empty space, fill it." Each
+item is real, each has a concrete fix, and the right response is to make the
+change, verify it on the actual iPad-landscape size, and push it.
+
+### 9.14 If you are picking this up cold
+
+Read the mod before you write anything. Write the spec before the engine. Commit
+and push at every milestone, because sessions get interrupted and a pushed
+checkpoint is the only reliable place to resume from. When the owner says "go" or
+"finish up," it means keep working on your own without a recap. And prove every
+fix with a screenshot or a green test run in the same message — "should work now"
+without evidence gets sent back. Everything else is in sections 1–8 above; this
+section was just the story that ties them together.
+
+---
+
 *This doc is a living summary — update it when a convention changes. The
 `memory/` files (project, ui-copy-style, in-game UI, sound, per-game) hold the
 same facts in shorter form for quick recall.*
