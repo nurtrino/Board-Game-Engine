@@ -135,7 +135,7 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
   // so if most vertices sit BELOW the vertical mid the piece is upside down and
   // gets a 180 roll about Z. Then read the bounding box to seat its lowest point
   // exactly on the board.
-  const { clone, minY, midX } = useMemo(() => {
+  const { clone, midY, midX } = useMemo(() => {
     const c = obj.clone(true);
     let yMin = Infinity, yMax = -Infinity;
     c.traverse((o) => {
@@ -169,19 +169,24 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
     });
     c.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(c);
-    return { clone: c, minY: box.min.y, midX: (box.min.x + box.max.x) / 2 };
+    return { clone: c, midY: (box.min.y + box.max.y) / 2, midX: (box.min.x + box.max.x) / 2 };
   }, [obj, tint]);
   // The mod's meshes are chunky and tall; keep a slightly-trimmed footprint so
   // they nestle inside the printed slots, but flatten the height a lot so the
   // low pieces don't parallax off their slots when the camera tilts.
-  const FOOT = 0.9, TALL = 0.22;
+  const FOOT = 0.9, TALL = 0.34;
   const sx = def.scale[0] * scaleMul * FOOT;
   const sy = def.scale[1] * scaleMul * TALL;
   const sz = def.scale[2] * scaleMul * FOOT;
-  const BOARD_Y = 1.0;
+  // Seat the piece's vertical CENTRE on the map surface (the printed slots sit
+  // at y=0.98). Resting a piece on top of the board makes its body float above
+  // the slot when the camera tilts and the device zooms in — a parallax offset
+  // that reads as "the piece is off its slot". Centering on the surface cancels
+  // it: the mid-height sits on the slot at any angle, the lower half nestles in.
+  const MAP_Y = 0.98;
   const yaw = -((snap.rot[1] ?? 0) * Math.PI) / 180;
   return (
-    <group position={[snap.pos[0], BOARD_Y - minY * sy + lift, -snap.pos[2]]} rotation={[0, yaw, 0]} scale={[sx, sy, sz]}>
+    <group position={[snap.pos[0], MAP_Y - midY * sy + lift, -snap.pos[2]]} rotation={[0, yaw, 0]} scale={[sx, sy, sz]}>
       <primitive object={clone} position-x={-midX} />
     </group>
   );
