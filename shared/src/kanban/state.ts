@@ -150,7 +150,7 @@ export type KanbanDecision =
   | { kind: 'seedGoal'; label: string } // after a meeting: place 1 of 2 hand goals
   | { kind: 'upgradeSpace'; model: CarModel; label: string };
 
-export interface PendingDecision { seat: number; decision: KanbanDecision }
+export interface KanbanPending { seat: number; decision: KanbanDecision }
 
 // ---------- state ----------
 
@@ -221,7 +221,7 @@ export interface KanbanState {
   players: KanbanPlayer[];
   order: number[]; // seats in the current phase's acting order
   orderIdx: number;
-  pending: PendingDecision[];
+  pending: KanbanPending[];
   arrivalCounter: number;
   // board
   sandra: { dept: Dept | null; slot: number; desk: boolean }; // desk = Admin paperwork
@@ -544,7 +544,7 @@ export interface KanbanView {
   awardsLeft: Record<Dept, number>;
   meetingGoals: { guid: string; tokens: { seat: number; multIdx: number }[] }[];
   finalGoal: FinalGoalDef;
-  pending: PendingDecision | null;
+  pending: KanbanPending | null;
   winner: KanbanSeat | null;
   finalScores: KanbanState['finalScores'];
   lastEvent: KanbanState['lastEvent'];

@@ -14,10 +14,11 @@ import {
   distancesFrom, findPath, TREK_CATALOG, PARKS, MAJORS, TREK_RULES,
   createDarkTower, dtViewFor, applyDtAction, dtBotStep, DT_KEYS,
   createDune, duneViewFor, applyDuneAction,
+  createKanban, kanbanViewFor, applyKanbanAction, kanbanBotAction,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
   GAME_SEATS, RULES as TTR_RULES,
-  type BrassState, type TtrState, type TrekState, type DtState, type DuneState,
-  type BrassAction, type TtrAction, type TrekAction, type DtAction, type DuneAction,
+  type BrassState, type TtrState, type TrekState, type DtState, type DuneState, type KanbanState,
+  type BrassAction, type TtrAction, type TrekAction, type DtAction, type DuneAction, type KanbanAction, type KanbanSeat,
   type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat, type DuneSeat, type Faction,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo,
 } from '@bge/shared';
@@ -26,7 +27,7 @@ import { createStore, type SavedRoom } from './store.js';
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState | TrekState | DtState | DuneState;
+type GameState = BrassState | TtrState | TrekState | DtState | DuneState | KanbanState;
 
 const engines = {
   brass: {
@@ -62,6 +63,13 @@ const engines = {
       createDune(seated as { name: string; color: DuneSeat }[], seed),
     view: (state: GameState, viewer: number | null | 'dev') => duneViewFor(state as DuneState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyDuneAction(state as DuneState, seat, action as DuneAction),
+    soloSeats: 3,
+  },
+  kanban: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+      createKanban(seated as { name: string; color: KanbanSeat }[], seed),
+    view: (state: GameState, viewer: number | null | 'dev') => kanbanViewFor(state as KanbanState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyKanbanAction(state as KanbanState, seat, action as KanbanAction),
     soloSeats: 3,
   },
 } as const;
@@ -270,6 +278,33 @@ function scheduleBots(room: Room): void {
   if (room.game === 'trek') return scheduleTrekBots(room);
   if (room.game === 'darktower') return scheduleDtBots(room);
   if (room.game === 'dune') return scheduleDuneBots(room);
+  if (room.game === 'kanban') return scheduleKanbanBots(room);
+}
+
+function scheduleKanbanBots(room: Room): void {
+  const s = room.state as KanbanState;
+  if (s.phase === 'ended') return;
+  const seat = s.pending.length ? s.pending[0].seat : s.turn;
+  if (seat < room.players.length) return; // a human's turn/choice
+  if (botTimers.has(room.id)) return;
+  const delay = s.pending.length ? 900 : s.phase === 'meeting' ? 1400 : 1600;
+  botTimers.set(room.id, setTimeout(() => {
+    botTimers.delete(room.id);
+    try { kanbanBotAct(room, seat); } catch (err) { console.error('bot error:', err); }
+  }, delay));
+}
+
+function kanbanBotAct(room: Room, seat: number): void {
+  const s = room.state as KanbanState;
+  let acted = false;
+  // the shared random-legal bot supplies attempts; the reducer arbitrates
+  for (let i = 0; i < 40 && !acted; i++) {
+    const a = kanbanBotAction(s, seat, Math.random);
+    if (!a) break;
+    acted = applyKanbanAction(s, seat, a).ok;
+  }
+  if (acted) broadcast(room);
+  else console.warn(`kanban bot seat ${seat} in ${room.id} found no legal action`);
 }
 
 function scheduleDuneBots(room: Room): void {
