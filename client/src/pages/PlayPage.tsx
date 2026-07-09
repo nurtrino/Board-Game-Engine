@@ -426,7 +426,7 @@ function GameView({ scene, view, act, error }: {
     build: 'This card is played and discarded. Location cards build in their city; industry cards build inside your network.',
     network: 'This card is discarded, any card works. Then place a link.',
     develop: 'This card is discarded, any card works. Then remove a tile from your board (costs 1 iron).',
-    sell: 'This card is discarded — any card works. Then sell a connected industry; its tile turns face-up and scores VP.',
+    sell: 'This card is discarded · any card works. Then sell a connected industry; its tile turns face-up and scores VP.',
     loan: 'This card is discarded. You take £30 and your income falls 3 levels.',
     scout: 'Scout discards 3 cards total: 2 of your choice plus 1 for the action itself. You take the Wild Location and Wild Industry cards.',
     pass: 'This card is discarded and your action ends.',
@@ -525,7 +525,7 @@ function GameView({ scene, view, act, error }: {
             : isMyTurn && flow.step === 'idle'
               ? (totalActions === 1
                   ? 'Round 1 of the canal era gives one action. Every turn after this gives you two.'
-                  : `You get two actions each turn — this is action ${actionNo} of ${totalActions}. Each action plays or discards one card.`)
+                  : `You get two actions each turn · this is action ${actionNo} of ${totalActions}. Each action plays or discards one card.`)
               : ''}
         </div>
 
@@ -877,7 +877,7 @@ function GameView({ scene, view, act, error }: {
                     <dl style={{ margin: 0 }}>
                     <dt>Two actions per turn</dt>
                     <dd>Each turn you take two actions (Round 1 of the canal era gives only one). Every action plays or discards one card.</dd>
-                    <dt>VP — victory points</dt>
+                    <dt>VP · victory points</dt>
                     <dd>The score that decides the game. Whoever has the most VP at the end wins. Your cash is not the score.</dd>
                     <dt>Beer</dt>
                     <dd>A barrel you spend to sell cotton, goods and pottery. It comes from your own breweries or from a merchant on the board.</dd>

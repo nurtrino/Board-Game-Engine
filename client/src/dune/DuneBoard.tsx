@@ -50,7 +50,8 @@ function GuideNote({ style, title, text }: { style: CSSProperties; title: string
 
 export function DuneBoard({ view }: { view: DuneView }) {
   const scene = useDuneScene();
-  const [guide, setGuide] = useState(false); // host can overlay explanations on the board
+  // Default the teaching guide ON for the opening round so newcomers get it for free.
+  const [guide, setGuide] = useState(view.round <= 1 && view.phase !== 'ended');
 
   // the TV voices actions, turnovers and the win
   const lastSeq = useRef(0);
@@ -143,6 +144,12 @@ export function DuneBoard({ view }: { view: DuneView }) {
             </div>
           </div>
         ))}
+        {/* always-visible key so the abbreviated stat rows read from the couch */}
+        <div className="ig-glass" style={{ padding: '8px 11px', borderRadius: 12, minWidth: 230, fontSize: 10.5, opacity: 0.82, lineHeight: 1.6 }}>
+          <div className="ig-lab" style={{ fontSize: 9, marginBottom: 2 }}>Reading the panels</div>
+          <div><b>s</b> solari (money) · <b>sp</b> spice · <b>w</b> water · <b>g</b> garrison troops · <b>i</b> intrigue cards · <b>ag</b> agents left / total</div>
+          <div style={{ paddingTop: 2 }}><b>EMP</b> Emperor · <b>GLD</b> Spacing Guild · <b>BG</b> Bene Gesserit · <b>FRE</b> Fremen (bold = holds that alliance)</div>
+        </div>
       </div>
 
       {/* imperium row */}
@@ -179,6 +186,37 @@ export function DuneBoard({ view }: { view: DuneView }) {
           {ev.detail && <div style={{ opacity: 0.7, fontSize: 13 }}>{ev.detail}</div>}
         </div>
       )}
+
+      {/* combat: a big, readable callout of who is winning the conflict */}
+      {view.phase === 'combat' && (() => {
+        const order = view.players.filter((p) => p.inConflict > 0 || p.strength > 0).sort((a, b) => b.strength - a.strength);
+        if (!order.length) return null;
+        const lead = order[0];
+        const tied = order.length > 1 && order[1].strength === lead.strength;
+        const conflictName = view.conflict ? CONFLICT_BY_ID[view.conflict]?.name : 'the conflict';
+        return (
+          <div className="ig-glass" style={{
+            position: 'absolute', top: '32%', left: '50%', transform: 'translate(-50%,-50%)',
+            padding: '18px 30px', borderRadius: 18, textAlign: 'center', minWidth: 340, zIndex: 15,
+            border: '1px solid rgba(232,180,74,0.55)',
+          }}>
+            <div className="ig-lab" style={{ color: '#e8b450' }}>Combat for {conflictName}</div>
+            <div style={{ font: '800 26px Inter, sans-serif', textTransform: 'uppercase', letterSpacing: 0.5, padding: '4px 0', color: tied ? '#e8ebf0' : SEAT_HEX[lead.color] }}>
+              {tied ? 'Tied for the lead' : `${lead.name} leads the conflict`}
+            </div>
+            <div style={{ opacity: 0.7, fontSize: 12.5, paddingBottom: 8 }}>Highest strength wins. 1st and 2nd place claim the rewards.</div>
+            <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+              {order.map((p) => (
+                <span key={p.seat} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
+                  <b>{p.name}</b>
+                  <span style={{ opacity: 0.75 }}>{p.strength} strength</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* whose turn / pending */}
       {view.phase !== 'ended' && current && (

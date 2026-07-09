@@ -131,7 +131,7 @@ function TvBoard({ view }: { view: BrassView }) {
         </div>
       )}
 
-      {/* score chips — name + cash; tap one for full stats */}
+      {/* score chips — name + VP (the winning metric) then cash; tap for full stats */}
       <div className="ig-scores">
         {view.players.map((p) => (
           <button
@@ -141,6 +141,7 @@ function TvBoard({ view }: { view: BrassView }) {
             onClick={() => setStatsSeat(p.seat)}
           >
             <span className="nm">{p.name}</span>
+            <span className="vp" style={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{p.vp} VP</span>
             <span className="mn">£{p.money}</span>
           </button>
         ))}

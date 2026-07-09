@@ -787,9 +787,15 @@ export function DunePlay({ view, act, error }: {
 
       {/* actions */}
       <div className="dn-actions" data-tour="actions">
-        {view.phase === 'round' && myTurn && !me.revealed && me.actedThisTurn == null && (
-          <button className="dn-btn primary" onClick={() => send({ type: 'reveal' })}>Reveal</button>
-        )}
+        {view.phase === 'round' && myTurn && !me.revealed && me.actedThisTurn == null && (() => {
+          const mustReveal = me.agentsLeft + (me.mentat ? 1 : 0) <= 0; // out of agents: reveal is the only move
+          return (
+            <button className={`dn-btn primary stack${mustReveal ? ' pulse' : ''}`} onClick={() => { setNote('You revealed your hand. Spend persuasion to buy cards; your swords count toward combat.'); send({ type: 'reveal' }); }}>
+              <span>Reveal{mustReveal ? ' · no agents left' : ''}</span>
+              <span className="cap">Flip your hand to buy cards and add combat strength</span>
+            </button>
+          );
+        })()}
         {view.phase === 'round' && myTurn && (me.actedThisTurn != null) && (
           <button className="dn-btn primary" onClick={() => { setSelected(null); send({ type: 'end_turn' }); }}>End Turn</button>
         )}
@@ -852,6 +858,7 @@ export function DunePlay({ view, act, error }: {
         />
       )}
       {tour !== null && <DuneTour step={tour} setStep={setTour} onClose={() => setTour(null)} />}
+      {note && <div className="dn-note">{note}</div>}
       {error && <div className="dn-err">{error}</div>}
     </div>
   );

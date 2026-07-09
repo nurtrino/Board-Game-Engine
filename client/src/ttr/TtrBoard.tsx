@@ -114,7 +114,7 @@ export function TtrBoard({ view }: { view: TtrView }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ width: 52, height: 74, borderRadius: 6, background: '#12202b', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 13px Inter, sans-serif' }}>{view.shipDeckCount}</div>
-          <div className="ig-lab" style={{ paddingTop: 4 }}>Ships</div>
+          <div className="ig-lab" style={{ paddingTop: 4 }}>Ships left</div>
         </div>
         {view.market.map((c, i) => (
           <div key={i} style={{ width: 52, height: 74, borderRadius: 6, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.18)', background: '#0a0e12' }}>
@@ -133,7 +133,7 @@ export function TtrBoard({ view }: { view: TtrView }) {
       {/* caption */}
       {ev && view.phase !== 'setup' && (
         <div className="ig-glass" style={{
-          position: 'absolute', bottom: 110, left: '50%', transform: 'translateX(-50%)',
+          position: 'absolute', bottom: 148, left: '50%', transform: 'translateX(-50%)',
           padding: '12px 18px', borderRadius: 14, minWidth: 300, textAlign: 'center',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
@@ -153,6 +153,17 @@ export function TtrBoard({ view }: { view: TtrView }) {
           <div className="ig-lab">Winner</div>
           <div style={{ font: '800 30px Inter, sans-serif', color: SEAT_HEX[view.winner] }}>
             {view.players.find((p) => p.color === view.winner)?.name}
+          </div>
+          <div className="ig-lab" style={{ opacity: 0.6, padding: '14px 0 6px' }}>Final standings</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 220 }}>
+            {standings.map((p, i) => (
+              <div key={p.seat} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ opacity: 0.5, width: 18, textAlign: 'right' }}>{i + 1}.</span>
+                <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
+                <b style={{ flex: 1, textAlign: 'left' }}>{p.name}</b>
+                <span style={{ fontWeight: 800 }}>{p.score}<span style={{ fontSize: 11, fontWeight: 700, opacity: 0.55, marginLeft: 3 }}>PTS</span></span>
+              </div>
+            ))}
           </div>
         </div>
       )}
