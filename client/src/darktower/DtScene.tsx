@@ -182,11 +182,10 @@ function TowerLcd({ lcd }: { lcd: string }) {
 /** A player's token: rendered at its board `spot`, seated on the board, and —
  *  for the local player on their turn — free to pick up and drop anywhere
  *  (honor-system movement). A drag calls onPlace with the world position. */
-function Token({ def, tint, spot, draggable, ring, onPlace, onDragChange }: {
+function Token({ def, tint, spot, draggable, onPlace, onDragChange }: {
   def: DtModel; tint: number[] | null;
   spot: { x: number; z: number };
   draggable: boolean;
-  ring?: boolean; // your turn: the pawn is yours to move
   onPlace?: (x: number, z: number) => void;
   onDragChange?: (dragging: boolean) => void;
 }) {
@@ -242,10 +241,10 @@ function Token({ def, tint, spot, draggable, ring, onPlace, onDragChange }: {
         </mesh>
       )}
       <Model def={{ ...def, pos: [0, 0, 0], rot: [0, 0, 0] }} tint={tint} seatY={0} />
-      {(drag || ring) && (
-        <mesh position={[0, (drag ? -lift : 0) + 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      {drag && (
+        <mesh position={[0, -lift + 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.0, 1.3, 28]} />
-          <meshBasicMaterial color={drag ? '#7fe7ff' : '#ffd24a'} transparent opacity={drag ? 0.85 : 0.8} />
+          <meshBasicMaterial color="#7fe7ff" transparent opacity={0.85} />
         </mesh>
       )}
     </group>
@@ -317,7 +316,6 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canM
               tint={scene.tokenTints[t.color] ?? null}
               spot={t.spot ?? dtHomeSpot(t.color)}
               draggable={!!(you && canMove && interactive)}
-              ring={you && !!canMove}
               onPlace={(x, z) => onMoveToken?.(x, z)}
               onDragChange={(d) => { setDragging(d); onDragChange?.(d); }}
             />

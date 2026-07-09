@@ -214,7 +214,7 @@ export function DtPlay({ view, act, error }: {
 
   const statusLine = view.winner ? `${view.players.find((p) => p.color === view.winner)?.name} conquered the tower`
     : !myTurn ? `${view.players[view.turn]?.name} is playing`
-    : phase === 'playing' ? 'Your turn — drag your piece anywhere, then press an action'
+    : phase === 'playing' ? 'Your turn — move your piece one space, then press an action'
     : phase === 'battle' ? `${view.battle?.brigands} brigands — YES fights, NO retreats`
     : phase === 'bazaar' ? ((view.bazaar?.buying ?? 0) > 0
       ? `Buying ${view.bazaar!.buying} — YES adds one, NO pays`
@@ -249,7 +249,7 @@ export function DtPlay({ view, act, error }: {
           <div className="ig-glass" style={{
             position: 'absolute', top: 14, left: 14, padding: '8px 12px', borderRadius: 10,
             font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.85,
-          }}>Drag your piece freely, then press an action</div>
+          }}>Move your piece one space, then press an action</div>
         )}
       </div>
 
@@ -310,11 +310,13 @@ export function DtPlay({ view, act, error }: {
         <div className="tp-overlay" onClick={() => setShowRules(false)}>
           <div className="ig-glass" style={{ maxWidth: 380, padding: '20px 22px', borderRadius: 16 }} onClick={(e) => e.stopPropagation()}>
             <div style={{ font: '800 16px Inter, sans-serif', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>Moving your piece</div>
-            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.6, opacity: 0.9 }}>
-              <li>Drag your piece anywhere you like — position is on your honor.</li>
-              <li>Roam your current kingdom freely. To reach the next one, press <b>Frontier</b> — you need that kingdom&rsquo;s key to pass.</li>
-              <li>The kingdoms circle one way. Return home with all three keys, then press <b>Dark Tower</b> to storm it.</li>
-              <li>Dragging doesn&rsquo;t use your turn — press an action button (<b>Move</b>, <b>Tomb</b>, <b>Bazaar</b>, <b>Sanctuary</b>, <b>Frontier</b>, <b>Tower</b>) to act.</li>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.55, opacity: 0.9 }}>
+              <li>Each turn, move <b>one</b> territory to an adjacent space (one sharing a border) &mdash; or stay put.</li>
+              <li>Travel <b>counter-clockwise</b> from kingdom to kingdom. Within a kingdom, move any direction you like.</li>
+              <li>Cross into the next kingdom over its <b>Frontier</b>. You need that kingdom&rsquo;s key to leave, or the guard turns you back.</li>
+              <li>Find a key in each of the three foreign kingdoms &mdash; brass, then silver, then gold. There is no key in your home kingdom.</li>
+              <li>Never enter another kingdom&rsquo;s Citadel. Return home with all three keys, then storm your Dark Tower.</li>
+              <li>After moving, press the matching action button (<b>Move</b>, <b>Tomb</b>, <b>Bazaar</b>, <b>Sanctuary</b>, <b>Frontier</b>, <b>Tower</b>).</li>
             </ul>
             <button className="tp-act" style={{ marginTop: 16 }} onClick={() => setShowRules(false)}>Got it</button>
           </div>
