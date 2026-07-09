@@ -1,6 +1,11 @@
 // Start-of-game goal explainer, shared by games. Shows a concise "what you're
 // trying to do" with the key intricacies, and a rulebook link (the "?" in the
-// bottom-right corner) for the full rules.
+// bottom-right corner) for the full rules. A game can also supply a `walkthrough`
+// — a stepped, first-round teach that opens from the intro.
+
+import { useState } from 'react';
+
+export interface WalkStep { title: string; body: string } // body may contain blank-line paragraphs
 
 export interface Intro {
   title: string;
@@ -8,6 +13,7 @@ export interface Intro {
   goal: string;
   points: { label: string; detail: string }[];
   rulebook: string; // URL or bundled PDF path
+  walkthrough?: WalkStep[]; // optional first-round teach
 }
 
 export const TTR_INTRO: Intro = {
@@ -69,6 +75,10 @@ export const DT_INTRO: Intro = {
 };
 
 export function GameIntro({ intro, onClose }: { intro: Intro; onClose: () => void }) {
+  const [walk, setWalk] = useState<number | null>(null); // null = overview, else step index
+  const steps = intro.walkthrough ?? [];
+  const inWalk = walk !== null && steps.length > 0;
+
   return (
     <div
       style={{ position: 'absolute', inset: 0, background: 'rgba(3,6,9,0.86)', zIndex: 90, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
@@ -76,25 +86,34 @@ export function GameIntro({ intro, onClose }: { intro: Intro; onClose: () => voi
     >
       <div
         className="ig-glass"
-        style={{ position: 'relative', maxWidth: 560, width: '100%', maxHeight: '86vh', overflowY: 'auto', borderRadius: 20, padding: '26px 28px 64px' }}
+        style={{ position: 'relative', maxWidth: 580, width: '100%', maxHeight: '88vh', overflowY: 'auto', borderRadius: 20, padding: '26px 28px 64px' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="ig-lab">{intro.tagline}</div>
-        <h1 style={{ margin: '2px 0 12px', fontSize: 26 }}>{intro.title}</h1>
-        <p style={{ opacity: 0.88, lineHeight: 1.55, marginBottom: 16 }}>{intro.goal}</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {intro.points.map((pt) => (
-            <div key={pt.label}>
-              <div style={{ font: '700 13px Inter, sans-serif', letterSpacing: 0.3 }}>{pt.label}</div>
-              <div style={{ opacity: 0.72, fontSize: 13.5, lineHeight: 1.5 }}>{pt.detail}</div>
+        {inWalk ? (
+          <Walkthrough steps={steps} step={walk!} setStep={setWalk} title={intro.title} onDone={() => setWalk(null)} />
+        ) : (
+          <>
+            <div className="ig-lab">{intro.tagline}</div>
+            <h1 style={{ margin: '2px 0 12px', fontSize: 26 }}>{intro.title}</h1>
+            <p style={{ opacity: 0.88, lineHeight: 1.55, marginBottom: 16 }}>{intro.goal}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {intro.points.map((pt) => (
+                <div key={pt.label}>
+                  <div style={{ font: '700 13px Inter, sans-serif', letterSpacing: 0.3 }}>{pt.label}</div>
+                  <div style={{ opacity: 0.72, fontSize: 13.5, lineHeight: 1.5 }}>{pt.detail}</div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <button
-          onClick={onClose}
-          className="tp-act primary"
-          style={{ marginTop: 22, width: 'auto', padding: '11px 26px', display: 'inline-block' }}
-        >Got it</button>
+            <div style={{ display: 'flex', gap: 10, marginTop: 22, flexWrap: 'wrap' }}>
+              <button onClick={onClose} className="tp-act primary" style={{ width: 'auto', padding: '11px 26px' }}>Got it</button>
+              {steps.length > 0 && (
+                <button onClick={() => setWalk(0)} className="tp-act" style={{ width: 'auto', padding: '11px 22px' }}>
+                  Walk me through the first round
+                </button>
+              )}
+            </div>
+          </>
+        )}
 
         {/* rulebook link, bottom-right ? */}
         <a
@@ -111,5 +130,37 @@ export function GameIntro({ intro, onClose }: { intro: Intro; onClose: () => voi
         >?</a>
       </div>
     </div>
+  );
+}
+
+function Walkthrough({ steps, step, setStep, title, onDone }: {
+  steps: WalkStep[]; step: number; setStep: (n: number | null) => void; title: string; onDone: () => void;
+}) {
+  const s = steps[step];
+  const last = step === steps.length - 1;
+  return (
+    <>
+      <div className="ig-lab">{title} · walkthrough</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0 4px' }}>
+        {steps.map((_, i) => (
+          <span key={i} style={{ flex: 1, height: 4, borderRadius: 2, background: i <= step ? '#e8b450' : 'rgba(255,255,255,0.14)' }} />
+        ))}
+      </div>
+      <div className="ig-lab" style={{ opacity: 0.5 }}>Step {step + 1} of {steps.length}</div>
+      <h2 style={{ margin: '6px 0 12px', fontSize: 21 }}>{s.title}</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {s.body.split('\n\n').map((para, i) => (
+          <p key={i} style={{ opacity: 0.86, lineHeight: 1.6, margin: 0, fontSize: 14.5 }}>{para}</p>
+        ))}
+      </div>
+      <div style={{ display: 'flex', gap: 10, marginTop: 22, flexWrap: 'wrap' }}>
+        <button onClick={() => (step === 0 ? onDone() : setStep(step - 1))} className="tp-act" style={{ width: 'auto', padding: '11px 22px' }}>
+          {step === 0 ? 'Overview' : 'Back'}
+        </button>
+        {!last
+          ? <button onClick={() => setStep(step + 1)} className="tp-act primary" style={{ width: 'auto', padding: '11px 26px' }}>Next</button>
+          : <button onClick={onDone} className="tp-act primary" style={{ width: 'auto', padding: '11px 26px' }}>Finish</button>}
+      </div>
+    </>
   );
 }

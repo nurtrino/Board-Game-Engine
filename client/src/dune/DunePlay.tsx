@@ -35,6 +35,52 @@ const DUNE_INTRO: Intro = {
     { label: 'Game end', detail: 'The game ends after the 10th conflict, or immediately when someone reaches 10 VP. Highest VP wins; ties break on spice, then solari, then water, then garrison troops.' },
   ],
   rulebook: '/dune/rulebook.pdf',
+  walkthrough: [
+    {
+      title: 'What you are trying to do',
+      body: 'Dune: Imperium is a race to 10 victory points (VP). Whoever hits 10 wins immediately; otherwise the player with the most VP when the last conflict is fought takes it.\n\nVP come from a few reliable places: winning conflicts, reaching influence 2 and 4 with the factions, holding a faction alliance, controlling Arrakeen or Carthag, and a handful of powerful cards. You rarely win on one path — you stack two or three.\n\nEverything else in the game — sending agents, buying cards, gathering spice and water — is just fuel for those VP.',
+    },
+    {
+      title: 'Your house',
+      body: 'You start with a leader (two unique powers: a passive and a signet-ring ability — tap your leader name any time to read them), a 10-card starter deck, 2 agents, 3 troops in your garrison, and 1 water.\n\nEach round you shuffle and draw 5 cards. Those 5 cards ARE your options this round — each one lists the board spaces its agent may visit, plus a "reveal" value (persuasion and swords) for later.\n\nYour resources: solari (money), spice (the desert currency), and water (needed at several desert spaces). Spend them to reach the strongest spaces.',
+    },
+    {
+      title: 'A round, and whose turn it is',
+      body: 'Players take single turns, going around the table. On your turn you do exactly one of two things: an AGENT turn (place one agent) or your one REVEAL turn.\n\nYou keep taking agent turns — one per turn, alternating with everyone else — until your agents are used up or you choose to stop. Then you reveal.\n\nWhen everyone has revealed, the conflict is resolved, fresh spice appears on the desert, a new conflict is flipped, and the next round begins with a new first player.',
+    },
+    {
+      title: 'The agent turn — the heart of the game',
+      body: 'Pick one card from your hand and send an agent to one of the board spaces printed on that card. The space must be empty (most spaces hold one agent) and you must pay its cost — spice, water, or solari.\n\nYou then take that space\'s rewards AND the played card\'s "agent" box. So the card matters twice: which spaces it can reach, and the bonus it hands you for going there.\n\nSpaces come in families: city/CHOAM spaces give resources and let you buy or draw; faction spaces raise your influence; the Spice fields hand you spice that has piled up; and combat spaces let you commit troops to the fight.',
+    },
+    {
+      title: 'Combat spaces and troops',
+      body: 'Spaces marked with crossed blades are combat spaces. When you send an agent there you may also deploy up to 2 troops from your garrison — plus any troops that same turn just recruited — into this round\'s conflict.\n\nTroops in the conflict are your muscle: each one is worth 2 combat strength. Garrison troops sitting at home are safe but do nothing until deployed.\n\nDeciding how many to commit is a real choice: over-commit and you win a conflict you didn\'t need; hold back and a rival steals the prize.',
+    },
+    {
+      title: 'The reveal turn',
+      body: 'When you are out of agents (or simply want to stop placing), you REVEAL: flip the rest of your hand face-up. Two numbers matter — persuasion (buys cards) and swords (adds combat strength to any troops you already committed).\n\nSpend persuasion on the acquire strip: the face-up Imperium Row, or the reserve (Arrakis Liaison for 2, The Spice Must Flow for 9 — and it is worth a VP). Bought cards go to your DISCARD pile, not your hand.\n\nWhen your deck runs out it reshuffles the discard, so every card you buy comes back around, stronger each cycle. After you finish buying, everything you played this round is discarded and your turn ends.',
+    },
+    {
+      title: 'Influence and the four factions',
+      body: 'The Emperor, Spacing Guild, Bene Gesserit and Fremen each have a track. Faction spaces (and some cards) raise you on a track.\n\nReaching 2 on a track scores a VP. Reaching 4 pays that faction\'s bonus and — if you are strictly ahead of everyone on it — its ALLIANCE, worth another VP. An alliance can be stolen: if a rival passes your spot, the alliance flag moves to them.\n\nInfluence is one of the steadiest VP engines in the game. Two tracks to 4 with both alliances is 4 VP before you\'ve won a single fight.',
+    },
+    {
+      title: 'Resolving the conflict',
+      body: 'After everyone reveals, strengths are compared: each troop you have in the conflict is 2, each revealed sword is 1.\n\nThe round\'s conflict card pays 1st and 2nd place (and 3rd in a 4-player game) — troops, spice, VP, control of a city, whatever it shows. Ties all lose to the place below, so an exact tie for first can leave both players with second-place scraps or nothing.\n\nCombat intrigue cards can be played after strengths are shown to swing the result — so a fight is never truly over until the last card is down.',
+    },
+    {
+      title: 'Intrigue and one-time upgrades',
+      body: 'Intrigue cards are secret. There are three kinds: plots (play on your own turn), combat cards (play during the battle), and endgame cards (extra points scored when the game ends).\n\nThe Mentat space hires an extra agent for the round and draws you a card — a great tempo boost. Two upgrades change your whole game: High Council (+2 persuasion on every reveal, forever) and Swordmaster (a permanent third agent). They are expensive and one-per-player-per-game, so buy them before your rivals lock you out.',
+    },
+    {
+      title: 'Your first round, step by step',
+      body: 'Look at your five cards. Each shows which spaces it can reach. A common strong opening: use one card to grab money or spice and buy toward High Council or Swordmaster, and another to nudge an influence track toward 2.\n\nSend your first agent — pay the cost, take the rewards and the card\'s agent box. If it was a combat space and you like this round\'s conflict prize, deploy a troop or two. Then it is the next player\'s turn.\n\nOn your next turn send your second agent the same way. Then REVEAL: spend your persuasion on the best card you can afford (or save toward an upgrade), and see how the conflict shakes out. That is one full round — now you draw five fresh cards and do it again, a little stronger.',
+    },
+    {
+      title: 'Strategy — how games are won',
+      body: 'Tempo vs. engine: early spaces and cheap cards give you resources NOW; upgrades and expensive cards pay off over many rounds. Good players lean on tempo early and let their deck take over.\n\nDon\'t sleepwalk past combat. Even one troop can steal a second-place prize nobody contested — free VP and resources. But don\'t pour your whole garrison into a fight whose reward you don\'t want.\n\nPick two VP paths and commit: e.g. two alliances plus the odd conflict win, or a control-Arrakeen board game plus The Spice Must Flow. Watch rivals\' VP — when someone nears 10, deny their last point (pass an alliance, contest their conflict) rather than chasing your own.',
+    },
+  ],
 };
 
 const FACTION_NAME: Record<Faction, string> = {
@@ -58,7 +104,62 @@ const CSS = `
 .dn-overlay { position: absolute; inset: 0; background: rgba(3,6,9,0.92); z-index: 60; display: flex; flex-direction: column; padding: 16px; overflow-y: auto; gap: 8px; }
 .dn-lab { font: 700 11px Inter, sans-serif; letter-spacing: 1.6px; text-transform: uppercase; opacity: 0.6; }
 .dn-err { position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); background: #35131a; border: 1px solid rgba(255,90,90,0.4); color: #ffb3b3; padding: 8px 14px; border-radius: 10px; z-index: 70; font-size: 13px; }
+
+/* resource chips */
+.dn-chips { display: flex; gap: 7px; flex-wrap: wrap; }
+.dn-chip { display: flex; align-items: center; gap: 8px; padding: 6px 11px; border-radius: 11px; border: 1px solid rgba(255,255,255,0.11); background: rgba(255,255,255,0.05); }
+.dn-chip-dot { width: 13px; height: 13px; border-radius: 4px; flex: 0 0 auto; box-shadow: inset 0 -1px 2px rgba(0,0,0,0.35); }
+.dn-chip-v { font: 800 17px Inter, sans-serif; line-height: 1; }
+.dn-chip-l { font: 600 10px Inter, sans-serif; letter-spacing: 0.6px; text-transform: uppercase; opacity: 0.55; }
+.dn-chip.big { padding: 10px 15px; }
+.dn-chip.big .dn-chip-v { font-size: 24px; }
+.dn-chip.big .dn-chip-l { font-size: 11px; }
+
+/* influence tracks */
+.dn-inf-row { display: flex; gap: 7px 16px; flex-wrap: wrap; }
+.dn-inf { display: flex; align-items: center; gap: 8px; }
+.dn-inf-name { font: 700 12px Inter, sans-serif; min-width: 96px; opacity: 0.9; }
+.dn-inf-pips { display: flex; align-items: center; gap: 4px; }
+.dn-pip { width: 15px; height: 15px; border-radius: 4px; }
+.dn-pip.mark { box-shadow: 0 0 0 1.5px rgba(255,255,255,0.4); }
+.dn-inf-plus { font: 800 12px Inter, sans-serif; opacity: 0.8; margin-left: 3px; }
+
+/* section header inside overlays */
+.dn-sec { font: 700 11px Inter, sans-serif; letter-spacing: 1.4px; text-transform: uppercase; opacity: 0.55; margin: 14px 0 2px; }
+.dn-sec:first-of-type { margin-top: 2px; }
 `;
+
+const FACTION_COLOR: Record<Faction, string> = {
+  emperor: '#e05a5a', guild: '#e0a34a', beneGesserit: '#8a7fe0', fremen: '#6ac07a',
+};
+const RES_COLOR = { solari: '#e8b84a', spice: '#e08a3a', water: '#5aa9e0', persuasion: '#b07fd4', strength: '#d9534a', intrigue: '#47b8a8', vp: '#6bd08a' };
+
+function Chip({ color, value, label, big }: { color: string; value: string | number; label: string; big?: boolean }) {
+  return (
+    <div className={`dn-chip${big ? ' big' : ''}`}>
+      <span className="dn-chip-dot" style={{ background: color }} />
+      <span className="dn-chip-v">{value}</span>
+      <span className="dn-chip-l">{label}</span>
+    </div>
+  );
+}
+
+function InfluenceTrack({ faction, value, allied }: { faction: Faction; value: number; allied: boolean }) {
+  const c = FACTION_COLOR[faction];
+  return (
+    <div className="dn-inf">
+      <span className="dn-inf-name" style={{ color: allied ? c : undefined }}>{FACTION_NAME[faction]}{allied ? ' ★' : ''}</span>
+      <span className="dn-inf-pips">
+        {[1, 2, 3, 4].map((n) => (
+          <span key={n} className={`dn-pip${n === 2 || n === 4 ? ' mark' : ''}`}
+            title={n === 2 ? 'reaching 2 scores a VP' : n === 4 ? 'reaching 4 pays the bonus and alliance' : undefined}
+            style={{ background: value >= n ? c : 'rgba(255,255,255,0.09)' }} />
+        ))}
+        {value > 4 && <span className="dn-inf-plus" style={{ color: c }}>+{value - 4}</span>}
+      </span>
+    </div>
+  );
+}
 
 function rewardText(r: Record<string, unknown> | null | undefined): string {
   if (!r) return '';
@@ -349,30 +450,35 @@ export function DunePlay({ view, act, error }: {
         <span style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{me.vp} VP</span>
         <button className="dn-btn" style={{ padding: '6px 10px' }} onClick={() => setShowIntro(true)}>?</button>
       </div>
-      <div className="dn-top" style={{ paddingTop: 0 }}>
-        <div className="dn-res">
-          <span>{me.solari} solari</span>
-          <span>{me.spice} spice</span>
-          <span>{me.water} water</span>
-          <span>{me.garrison} garrison</span>
-          {me.inConflict > 0 && <span>{me.inConflict} in conflict</span>}
-          <span>{me.agentsLeft}{me.mentat ? '+M' : ''} agents</span>
-          <span style={{ opacity: 0.7 }}>deck {me.deckCount} · discard {me.discard.length}</span>
-          {revealing && <span style={{ fontWeight: 800 }}>{me.persuasion} persuasion</span>}
+      <div className="dn-top" style={{ paddingTop: 2 }}>
+        <div className="dn-chips">
+          <Chip color={RES_COLOR.solari} value={me.solari} label="Solari" />
+          <Chip color={RES_COLOR.spice} value={me.spice} label="Spice" />
+          <Chip color={RES_COLOR.water} value={me.water} label="Water" />
+          <Chip color={SEAT_HEX[me.color]} value={me.garrison} label="Garrison" />
+          {me.inConflict > 0 && <Chip color={RES_COLOR.strength} value={me.inConflict} label="In fight" />}
+          <Chip color={SEAT_HEX[me.color]} value={`${me.agentsLeft}${me.mentat ? '+1' : ''}`} label="Agents" />
+          {me.intrigueCount > 0 && <Chip color={RES_COLOR.intrigue} value={me.intrigueCount} label="Intrigue" />}
+          {revealing && <Chip color={RES_COLOR.persuasion} value={me.persuasion} label="Persuasion" />}
+          {view.phase === 'combat' && <Chip color={RES_COLOR.strength} value={me.strength} label="Strength" />}
         </div>
       </div>
-      <div className="dn-top" style={{ paddingTop: 0, fontSize: 12, opacity: 0.75 }}>
-        {FACTIONS.map((f) => (
-          <span key={f} style={{ fontWeight: me.alliances.includes(f) ? 800 : 400 }}>
-            {FACTION_NAME[f]} {me.influence[f]}{me.alliances.includes(f) ? '★' : ''}
-          </span>
-        ))}
+      <div className="dn-top" style={{ paddingTop: 2 }}>
+        <div className="dn-inf-row">
+          {FACTIONS.map((f) => (
+            <InfluenceTrack key={f} faction={f} value={me.influence[f]} allied={me.alliances.includes(f)} />
+          ))}
+        </div>
       </div>
 
       <div className="dn-main">
         {/* the player mat: leader card, agents, troops, resources as real objects */}
-        <div style={{ paddingTop: 6 }}>
-          <DuneMat scene={scene} view={view} me={me} height="32vh" />
+        <div style={{ paddingTop: 6, display: 'flex', alignItems: 'baseline', gap: 8 }}>
+          <span className="dn-lab">Your board</span>
+          <span style={{ fontSize: 11, opacity: 0.45 }}>drag to look around · tap House for the full detail</span>
+        </div>
+        <div style={{ border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, overflow: 'hidden' }}>
+          <DuneMat scene={scene} view={view} me={me} height="42vh" />
         </div>
 
         {/* status line */}
@@ -474,65 +580,91 @@ export function DunePlay({ view, act, error }: {
         <button className="dn-btn" onClick={() => setShowMat(true)}>House</button>
       </div>
 
-      {/* house mat: leader, pieces, piles */}
+      {/* house overlay: leader powers, resources, forces, influence, mat, deck */}
       {showMat && (
         <div className="dn-overlay">
-          <div className="dn-lab">Your house</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ width: 12, height: 12, borderRadius: '50%', background: SEAT_HEX[me.color] }} />
+            <b style={{ fontSize: 16 }}>{me.name}</b>
+            <Chip color={RES_COLOR.vp} value={me.vp} label="VP" />
+            <button className="dn-btn" style={{ marginLeft: 'auto', padding: '7px 14px' }} onClick={() => setShowMat(false)}>Close</button>
+          </div>
+
           {me.leader && (() => {
             const l = LEADER_BY_ID[me.leader!];
             return (
-              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-                <img src={l.image} alt={l.name} style={{ width: 148, borderRadius: 10, flexShrink: 0 }} />
+              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginTop: 6 }}>
+                <img src={l.image} alt={l.name} style={{ width: 156, borderRadius: 10, flexShrink: 0 }} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13 }}>
                   <b style={{ fontSize: 15 }}>{l.name}</b>
                   <div>
                     <div className="dn-lab" style={{ fontSize: 10 }}>{l.passive.title}</div>
-                    <div style={{ opacity: 0.75, lineHeight: 1.45 }}>{l.passive.text}</div>
+                    <div style={{ opacity: 0.78, lineHeight: 1.45 }}>{l.passive.text}</div>
                   </div>
                   <div>
                     <div className="dn-lab" style={{ fontSize: 10 }}>Signet ring · {l.signet.title}</div>
-                    <div style={{ opacity: 0.75, lineHeight: 1.45 }}>{l.signet.text}</div>
+                    <div style={{ opacity: 0.78, lineHeight: 1.45 }}>{l.signet.text}</div>
                   </div>
                 </div>
               </div>
             );
           })()}
-          <div className="dn-lab" style={{ paddingTop: 10 }}>Your mat</div>
-          <DuneMat scene={scene} view={view} me={me} height="44vh" />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 14px', fontSize: 13 }}>
-            <span>Agents: {me.agentsLeft} of {me.agentsTotal} left{me.mentat ? ' (incl. the Mentat)' : ''}</span>
-            <span>In conflict: {me.inConflict} troops</span>
-            <span>Supply: {DUNE_RULES.troopsTotal - me.garrison - me.inConflict} troops</span>
-            <span>Intrigue cards: {me.intrigue?.length ?? 0}</span>
-            {me.hasSwordmaster && <span>Swordmaster — third agent</span>}
-            {me.hasHighCouncil && <span>High Council seat — +2 persuasion</span>}
+
+          <div className="dn-sec">Resources</div>
+          <div className="dn-chips">
+            <Chip big color={RES_COLOR.solari} value={me.solari} label="Solari" />
+            <Chip big color={RES_COLOR.spice} value={me.spice} label="Spice" />
+            <Chip big color={RES_COLOR.water} value={me.water} label="Water" />
           </div>
-          <div className="dn-lab" style={{ paddingTop: 10 }}>Influence</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 14px', fontSize: 13 }}>
+
+          <div className="dn-sec">Forces & upgrades</div>
+          <div className="dn-chips">
+            <Chip color={SEAT_HEX[me.color]} value={me.garrison} label="Garrison" />
+            <Chip color={RES_COLOR.strength} value={me.inConflict} label="In fight" />
+            <Chip color="#8a94a6" value={DUNE_RULES.troopsTotal - me.garrison - me.inConflict} label="Supply" />
+            <Chip color={SEAT_HEX[me.color]} value={`${me.agentsLeft}/${me.agentsTotal}${me.mentat ? '+M' : ''}`} label="Agents" />
+            <Chip color={RES_COLOR.intrigue} value={me.intrigueCount} label="Intrigue" />
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 6, fontSize: 12.5, opacity: 0.85 }}>
+            {me.hasSwordmaster && <span className="dn-chip" style={{ padding: '5px 10px' }}>Swordmaster — permanent 3rd agent</span>}
+            {me.hasHighCouncil && <span className="dn-chip" style={{ padding: '5px 10px' }}>High Council seat — +2 persuasion each reveal</span>}
+            {!me.hasSwordmaster && !me.hasHighCouncil && <span style={{ opacity: 0.5 }}>No upgrades yet — High Council and Swordmaster are strong early buys.</span>}
+          </div>
+
+          <div className="dn-sec">Influence · 2 scores a VP, 4 pays the bonus and the alliance</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {FACTIONS.map((f) => (
-              <span key={f} style={{ fontWeight: me.alliances.includes(f) ? 800 : 400 }}>
-                {FACTION_NAME[f]}: {me.influence[f]}{me.alliances.includes(f) ? ' — alliance' : ''}
-              </span>
+              <InfluenceTrack key={f} faction={f} value={me.influence[f]} allied={me.alliances.includes(f)} />
             ))}
           </div>
-          <div className="dn-lab" style={{ paddingTop: 10 }}>Deck</div>
-          <div style={{ fontSize: 13, opacity: 0.85 }}>
-            {me.deckCount} in deck · {me.hand?.length ?? me.handCount} in hand · {me.discard.length} discarded
-            {me.deckTop !== undefined && <div style={{ paddingTop: 4 }}>Prescience — top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>}
+
+          <div className="dn-sec">Your player mat</div>
+          <div style={{ border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, overflow: 'hidden' }}>
+            <DuneMat scene={scene} view={view} me={me} height="52vh" />
           </div>
+
+          <div className="dn-sec">Deck</div>
+          <div className="dn-chips">
+            <Chip color="#8a94a6" value={me.deckCount} label="In deck" />
+            <Chip color="#8a94a6" value={me.hand?.length ?? me.handCount} label="In hand" />
+            <Chip color="#8a94a6" value={me.discard.length} label="Discard" />
+          </div>
+          {me.deckTop !== undefined && (
+            <div style={{ paddingTop: 8, fontSize: 13, opacity: 0.85 }}>Prescience — top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
+          )}
           {me.discard.length > 0 && (
             <>
-              <div className="dn-lab" style={{ paddingTop: 6 }}>Discard pile</div>
+              <div className="dn-sec">Discard pile</div>
               <div className="dn-hand">
                 {me.discard.map((c, i) => (
-                  <div key={`${c}-${i}`} style={{ opacity: 0.85 }}>
-                    <DuneCard scene={scene} id={c} w={82} h={122} />
+                  <div key={`${c}-${i}`} style={{ opacity: 0.9 }}>
+                    <DuneCard scene={scene} id={c} w={84} h={126} />
                   </div>
                 ))}
               </div>
             </>
           )}
-          <button className="dn-btn" style={{ marginTop: 8 }} onClick={() => setShowMat(false)}>Close</button>
+          <button className="dn-btn" style={{ margin: '14px 0 4px' }} onClick={() => setShowMat(false)}>Close</button>
         </div>
       )}
 
