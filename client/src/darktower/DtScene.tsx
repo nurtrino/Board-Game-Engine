@@ -12,7 +12,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import * as THREE from 'three';
-import { type DtSeat } from '@bge/shared';
+import { dtHomeSpot, type DtSeat } from '@bge/shared';
 
 export interface DtModel { mesh: string | null; diffuse: string | null; pos: number[]; rot: number[]; scale: number[] }
 export interface DtSceneDef {
@@ -315,7 +315,7 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canM
               key={`tok${t.seat}`}
               def={def}
               tint={scene.tokenTints[t.color] ?? null}
-              spot={t.spot}
+              spot={t.spot ?? dtHomeSpot(t.color)}
               draggable={!!(you && canMove && interactive)}
               ring={you && !!canMove}
               onPlace={(x, z) => onMoveToken?.(x, z)}
