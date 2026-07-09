@@ -194,9 +194,12 @@ function Token({ def, tint, spot, draggable, ring, onPlace, onDragChange }: {
   const { gl } = useThree();
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 1, 0), -(BOARD_Y + 0.02)), []);
   const active = useRef(false);
-  // render position: mirror world z (render z = -world z)
-  const rx = drag ? drag.x : spot.x;
-  const rz = drag ? -drag.z : -spot.z;
+  // render position: mirror world z (render z = -world z). Guard a missing spot
+  // (e.g. a stale server still sending the old node-based state) so a schema
+  // mismatch degrades to a centred pawn instead of crashing the whole canvas.
+  const sx = spot?.x ?? 0, sz = spot?.z ?? 0;
+  const rx = drag ? drag.x : sx;
+  const rz = drag ? -drag.z : -sz;
   const lift = drag ? 1.6 : 0;
   const toBoard = (e: ThreeEvent<PointerEvent>): { x: number; z: number } | null => {
     const hit = new THREE.Vector3();

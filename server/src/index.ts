@@ -12,7 +12,7 @@ import {
   claimableRoutes, bestCardsFor,
   createTrek, trekViewFor, applyTrekAction,
   distancesFrom, findPath, TREK_CATALOG, PARKS, MAJORS, TREK_RULES,
-  createDarkTower, dtViewFor, applyDtAction, dtBotAction, DT_KEYS,
+  createDarkTower, dtViewFor, applyDtAction, dtBotAction, dtNormalize, DT_KEYS,
   createDune, duneViewFor, applyDuneAction,
   createKanban, kanbanViewFor, applyKanbanAction, kanbanBotAction,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
@@ -177,6 +177,8 @@ function stale(r: { started: boolean; state: GameState | null; updatedAt: number
   let restored = 0;
   for (const r of saved) {
     if (stale(r)) { store.remove(r.id); continue; }
+    // migrate Dark Tower games saved under the old node-based movement model
+    if (r.game === 'darktower' && r.state) dtNormalize(r.state as never);
     rooms.set(r.id, {
       id: r.id,
       name: r.name ?? `Room ${r.id}`,
