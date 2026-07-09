@@ -25,6 +25,7 @@ const DUNE_INTRO: Intro = {
     { label: 'Your house', detail: 'You start with a leader (two unique powers — tap your leader name any time to see them), a 10-card starter deck, 2 agents, 3 troops in your garrison, 1 water. Draw 5 cards each round.' },
     { label: 'A round', detail: 'Players alternate single turns. Each turn is either an agent turn or your one reveal turn. When everyone has revealed, the conflict resolves, spice builds up on the desert, and the next round begins with a new first player.' },
     { label: 'Agent turn', detail: 'Play one card from your hand and send an agent to one of the board spaces shown on that card. The space must be free and you must pay its cost (spice, water or solari). Take the space rewards plus the played card\'s agent box.' },
+    { label: 'Your buttons', detail: 'Tap HAND at any time — even while choosing a space — to see your full hand (the card you are placing is flagged). HOUSE shows your resources, influence, upgrades and deck; INTRIGUE holds your secret cards.' },
     { label: 'Combat spaces', detail: 'Spaces with crossed blades also let you deploy up to 2 garrison troops — plus any troops that turn recruited — into the current conflict.' },
     { label: 'Reveal turn', detail: 'When you are out of agents (or choose to stop), reveal the rest of your hand. Its persuasion buys new cards; its swords are combat strength. Then everything you played this round goes to your discard pile.' },
     { label: 'Buying cards', detail: 'Spend persuasion on the imperium row (or the reserve: Arrakis Liaison for 2, The Spice Must Flow for 9 — worth a VP). Purchases land in your discard pile; when your deck runs out, the discard reshuffles, so every buy comes back stronger.' },
@@ -74,7 +75,7 @@ const DUNE_INTRO: Intro = {
     },
     {
       title: 'Your first round, step by step',
-      body: 'Look at your five cards. Each shows which spaces it can reach. A common strong opening: use one card to grab money or spice and buy toward High Council or Swordmaster, and another to nudge an influence track toward 2.\n\nSend your first agent — pay the cost, take the rewards and the card\'s agent box. If it was a combat space and you like this round\'s conflict prize, deploy a troop or two. Then it is the next player\'s turn.\n\nOn your next turn send your second agent the same way. Then REVEAL: spend your persuasion on the best card you can afford (or save toward an upgrade), and see how the conflict shakes out. That is one full round — now you draw five fresh cards and do it again, a little stronger.',
+      body: 'Look at your five cards. Each shows which spaces it can reach. A common strong opening: use one card to grab money or spice and buy toward High Council or Swordmaster, and another to nudge an influence track toward 2.\n\nSend your first agent — pay the cost, take the rewards and the card\'s agent box. If it was a combat space and you like this round\'s conflict prize, deploy a troop or two. Then it is the next player\'s turn.\n\nWhile choosing a space you can tap HAND at the top to review your whole hand — the card you\'re placing is flagged — and HOUSE to check your resources and influence.\n\nOn your next turn send your second agent the same way. Then REVEAL: spend your persuasion on the best card you can afford (or save toward an upgrade), and see how the conflict shakes out. That is one full round — now you draw five fresh cards and do it again, a little stronger.',
     },
     {
       title: 'Strategy — how games are won',
@@ -207,6 +208,7 @@ export function DunePlay({ view, act, error }: {
   const [showIntro, setShowIntro] = useState(true);
   const [showIntrigue, setShowIntrigue] = useState(false);
   const [showMat, setShowMat] = useState(false);
+  const [showHand, setShowHand] = useState(false); // peek at your full hand from any menu
   const me = view.you !== null ? view.players[view.you] : null;
   const myTurn = me !== null && view.turn === me.seat && !view.pending;
   const myPending = me !== null && view.pending?.seat === me.seat ? view.pending : null;
@@ -351,7 +353,8 @@ export function DunePlay({ view, act, error }: {
         <style>{CSS}</style>
         <div className="dn-top">
           <span className="dn-lab">Send an agent with {card?.name}</span>
-          <button className="dn-btn" style={{ marginLeft: 'auto' }} onClick={() => setSelected(null)}>Back</button>
+          <button className="dn-btn" style={{ marginLeft: 'auto', padding: '8px 12px' }} onClick={() => setShowHand(true)}>Hand</button>
+          <button className="dn-btn" style={{ padding: '8px 12px' }} onClick={() => setSelected(null)}>Back</button>
         </div>
         <div className="dn-main" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {boxCost && (
@@ -415,13 +418,17 @@ export function DunePlay({ view, act, error }: {
               </div>
             </>
           )}
-          <div className="dn-lab" style={{ paddingTop: 8 }}>Deploy to conflict (combat spaces)</div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {[0, 1, 2, 3, 4, 5].map((n) => (
-              <button key={n} className="dn-btn" style={n === deploy ? { outline: '2px solid #e8ebf0' } : undefined} onClick={() => setDeploy(n)}>{n}</button>
-            ))}
-          </div>
-          <div style={{ opacity: 0.55, fontSize: 12 }}>Up to 2 from your garrison plus any troops this turn recruits.</div>
+          {legalSpaces.some((sp) => sp.combat) && (
+            <>
+              <div className="dn-lab" style={{ paddingTop: 8 }}>Troops to deploy — only if you pick a combat space</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {[0, 1, 2, 3, 4, 5].map((n) => (
+                  <button key={n} className="dn-btn" style={n === deploy ? { outline: '2px solid #e8ebf0' } : undefined} onClick={() => setDeploy(n)}>{n}</button>
+                ))}
+              </div>
+              <div style={{ opacity: 0.55, fontSize: 12 }}>Up to 2 from your garrison plus any troops this turn recruits. Ignored for non-combat spaces.</div>
+            </>
+          )}
           {view.conflict && (
             <>
               <div className="dn-lab" style={{ paddingTop: 8 }}>This round's conflict</div>
@@ -429,6 +436,7 @@ export function DunePlay({ view, act, error }: {
             </>
           )}
         </div>
+        {showHand && <HandOverlay scene={scene} hand={me.hand ?? []} selected={selected} onClose={() => setShowHand(false)} />}
         {error && <div className="dn-err">{error}</div>}
       </div>
     );
@@ -582,6 +590,9 @@ export function DunePlay({ view, act, error }: {
         {(me.intrigue?.length ?? 0) > 0 && (
           <button className="dn-btn" onClick={() => setShowIntrigue(true)}>Intrigue ({me.intrigue!.length})</button>
         )}
+        {(me.hand?.length ?? 0) > 0 && (
+          <button className="dn-btn" onClick={() => setShowHand(true)}>Hand ({me.hand!.length})</button>
+        )}
         <button className="dn-btn" onClick={() => setShowMat(true)}>House</button>
       </div>
 
@@ -712,8 +723,35 @@ export function DunePlay({ view, act, error }: {
         </div>
       )}
 
+      {showHand && <HandOverlay scene={scene} hand={me.hand ?? []} selected={selected} onClose={() => setShowHand(false)} />}
       {showIntro && <GameIntro intro={DUNE_INTRO} onClose={() => setShowIntro(false)} />}
       {error && <div className="dn-err">{error}</div>}
+    </div>
+  );
+}
+
+/** Peek at your full hand from any menu (the space picker hides it otherwise).
+ *  The card you are currently sending an agent with is flagged. */
+function HandOverlay({ scene, hand, selected, onClose }: {
+  scene: DuneSceneDef; hand: string[]; selected: string | null; onClose: () => void;
+}) {
+  return (
+    <div className="dn-overlay" onClick={onClose}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="dn-lab">Your hand · {hand.length} card{hand.length === 1 ? '' : 's'}</div>
+        <button className="dn-btn" style={{ marginLeft: 'auto', padding: '7px 14px' }} onClick={onClose}>Close</button>
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', paddingTop: 6 }} onClick={(e) => e.stopPropagation()}>
+        {hand.length === 0 && <div style={{ opacity: 0.6, padding: 24 }}>No cards in hand right now.</div>}
+        {hand.map((c, i) => (
+          <div key={`${c}-${i}`} style={{ textAlign: 'center' }}>
+            <div style={{ borderRadius: 12, outline: selected === c ? '3px solid #e8b450' : 'none', outlineOffset: 2, display: 'inline-block' }}>
+              <DuneCard scene={scene} id={c} w={168} h={252} />
+            </div>
+            {selected === c && <div style={{ fontSize: 11, color: '#e8b450', fontWeight: 800, letterSpacing: 1, paddingTop: 4 }}>SENDING AGENT</div>}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
