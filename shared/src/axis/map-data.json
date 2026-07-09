@@ -1,0 +1,16 @@
+{
+  "stub": true,
+  "_note": "PLACEHOLDER mini-map so the engine/server/client wire up end to end. Replaced by games/axis-allies/golden/map.json (the transcribed board) when the zone pass lands. The lobby hides Axis & Allies while stub=true.",
+  "territories": [
+    { "id": "germany", "name": "Germany", "ipc": 10, "originalOwner": "germany", "isVictoryCity": true, "victoryCity": "Berlin", "isCapital": true, "center": [400, 300], "adj": ["poland"], "coastTo": ["sz-1"] },
+    { "id": "poland", "name": "Poland", "ipc": 2, "originalOwner": "germany", "center": [600, 300], "adj": ["germany", "russia"], "coastTo": ["sz-1"] },
+    { "id": "russia", "name": "Russia", "ipc": 8, "originalOwner": "ussr", "isVictoryCity": true, "victoryCity": "Moscow", "isCapital": true, "center": [800, 300], "adj": ["poland"], "coastTo": ["sz-1"] },
+    { "id": "uk-island", "name": "UK Island", "ipc": 6, "originalOwner": "uk", "isVictoryCity": true, "victoryCity": "London", "isCapital": true, "isIsland": true, "seaZone": "sz-2", "center": [300, 600], "adj": [], "coastTo": ["sz-2"] }
+  ],
+  "seaZones": [
+    { "id": "sz-1", "n": 1, "center": [600, 450], "adj": ["sz-2"], "coastTo": ["germany", "poland", "russia"] },
+    { "id": "sz-2", "n": 2, "center": [450, 600], "adj": ["sz-1"], "coastTo": ["uk-island"] }
+  ],
+  "canals": [],
+  "art": { "width": 1200, "height": 800 }
+}

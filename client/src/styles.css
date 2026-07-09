@@ -683,3 +683,15 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .ig-drawin-cards img:first-child { margin-left: 0; }
 @keyframes ig-deal { 0% { opacity: 0; transform: translateY(30px) rotate(-12deg) scale(.55); } 45% { opacity: 1; } 100% { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ig-drawin-cards img, .ig-banner, .ig-toact { animation: none; } }
+
+/* ---------- create-screen options (A&A scenario/variants) ---------- */
+.create-options { display: flex; flex-direction: column; gap: 10px; margin: 14px 0 4px; }
+.create-option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.create-option-label { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.65; white-space: nowrap; }
+.create-option-values { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.create-option .opt {
+  padding: 6px 12px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.04); color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 6px; cursor: pointer;
+}
+.create-option .opt.on { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.45); }

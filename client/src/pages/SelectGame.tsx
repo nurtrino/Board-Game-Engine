@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { socket } from '../net';
 import { FallingPieces } from '../three/FallingPieces';
 import { SEAT_HEX } from '../brass/TableScene';
-import type { SaveInfo } from '@bge/shared';
+import { AXIS_MAP_STUB } from '@bge/shared';
+import type { SaveInfo, GameOptions } from '@bge/shared';
 
 const GAMES = [
   {
@@ -35,7 +36,33 @@ const GAMES = [
     name: 'Dune: Imperium',
     logo: '/dune-logo.jpg',
   },
+  ...(AXIS_MAP_STUB ? [] : [{
+    id: 'axis',
+    name: 'Axis & Allies Anniversary',
+    logo: '/axis-logo.jpg',
+  }]),
 ];
+
+// Create-screen options per game (surfaced above the save name).
+const AXIS_OPTION_DEFS = [
+  { key: 'scenario', label: 'Scenario', values: [
+    { v: '1941', label: '1941' },
+    { v: '1942', label: '1942' },
+  ] },
+  { key: 'winCondition', label: 'Victory', values: [
+    { v: 'short', label: 'Short — 13 cities' },
+    { v: 'standard', label: 'Standard — 15 cities' },
+    { v: 'total', label: 'Total domination — 18' },
+  ] },
+  { key: 'rnd', label: 'Research & development', values: [
+    { v: false, label: 'Off' },
+    { v: true, label: 'On' },
+  ] },
+  { key: 'nationalObjectives', label: 'National objectives', values: [
+    { v: true, label: 'On' },
+    { v: false, label: 'Off' },
+  ] },
+] as const;
 
 const dateOf = (t: number) =>
   new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
@@ -53,6 +80,15 @@ export function SelectGame() {
   const [saves, setSaves] = useState<SaveInfo[] | null>(null);
   const [name, setName] = useState('');
   const [confirming, setConfirming] = useState<string | null>(null);
+  const [options, setOptions] = useState<GameOptions>({});
+
+  const createRoom = () => {
+    if (!game) return;
+    const opts = game.id === 'axis'
+      ? { scenario: '1941', winCondition: 'standard', rnd: false, nationalObjectives: true, ...options }
+      : undefined;
+    socket.send({ type: 'create_room', name: name.trim(), game: game.id, options: opts });
+  };
 
   const deleteSave = (roomId: string) => {
     setSaves((list) => (list ? list.filter((s) => s.roomId !== roomId) : list));
@@ -103,13 +139,35 @@ export function SelectGame() {
                 value={name}
                 maxLength={40}
                 onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') socket.send({ type: 'create_room', name: name.trim(), game: game.id }); }}
+                onKeyDown={(e) => { if (e.key === 'Enter') createRoom(); }}
               />
               <button
                 className="primary"
-                onClick={() => socket.send({ type: 'create_room', name: name.trim(), game: game.id })}
+                onClick={createRoom}
               >New save</button>
             </div>
+
+            {game.id === 'axis' && (
+              <div className="create-options">
+                {AXIS_OPTION_DEFS.map((def) => {
+                  const current = options[def.key] ?? def.values[0].v;
+                  return (
+                    <div key={def.key} className="create-option">
+                      <span className="create-option-label">{def.label}</span>
+                      <div className="create-option-values">
+                        {def.values.map((val) => (
+                          <button
+                            key={String(val.v)}
+                            className={current === val.v ? 'opt on' : 'opt'}
+                            onClick={() => setOptions((o) => ({ ...o, [def.key]: val.v }))}
+                          >{val.label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             {saves === null && <p className="dim">Loading saves</p>}
             {saves && saves.length === 0 && <p className="dim">No saved games yet</p>}

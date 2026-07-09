@@ -1,5 +1,11 @@
 {
  "source": "TTS mod 1961347286 (Axis & Allies Anniversary Edition 1941 and 1942)",
+ "map": {
+  "image": "/axis/map.jpg",
+  "full": "/axis/map-full.jpg",
+  "artWidth": 9500,
+  "artHeight": 4956
+ },
  "boards": [
   {
    "guid": "be20f5",

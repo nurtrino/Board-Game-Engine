@@ -19,6 +19,7 @@ import { TtrPlay } from '../ttr/TtrPlay';
 import { TrekPlay } from '../trek/TrekPlay';
 import { DtPlay } from '../darktower/DtPlay';
 import { DunePlay } from '../dune/DunePlay';
+import AxisPlay from '../axis/AxisPlay';
 import { GameIntro, BRASS_INTRO } from '../ttr/GameIntro';
 
 const ALL_COLORS: Color[] = ['Orange', 'Purple', 'Teal', 'Yellow'];
@@ -854,6 +855,7 @@ export function PlayPage() {
     if (view.game === 'trek') return <TrekPlay view={view} act={act} error={error} />;
     if (view.game === 'darktower') return <DtPlay view={view} act={act} error={error} />;
     if (view.game === 'dune') return <DunePlay view={view} act={act} error={error} />;
+    if (view.game === 'axis') return <AxisPlay view={view} act={act} error={error} />;
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }

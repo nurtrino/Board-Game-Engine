@@ -40,6 +40,20 @@ const stage = (url, kind = 'img') => {
   return null;
 };
 
+// The WORLD MAP is the mod's custom TABLE texture (9500x4956) — the two
+// Custom_Boards are the battle board (be20f5) and the production/R&D chart
+// (128d09). Stage the map at full size for transcription plus a lighter jpg
+// for the TV.
+const stageTable = async () => {
+  const url = save.TableURL;
+  const src = path.join(MODS, 'Images', munge(url) + '.png');
+  if (!fs.existsSync(src)) { console.warn('MISSING table texture', url); return; }
+  const sharp = (await import('sharp')).default;
+  await sharp(src).jpeg({ quality: 86 }).toFile(path.join(OUT, 'map-full.jpg'));
+  await sharp(src).resize(5000).jpeg({ quality: 82 }).toFile(path.join(OUT, 'map.jpg'));
+  console.log('table map staged (map-full.jpg + map.jpg)');
+};
+
 const round = (v, p = 3) => +v.toFixed(p);
 const xf = (t) => ({
   pos: [t.posX, t.posY, t.posZ].map((v) => round(v)),
@@ -192,8 +206,13 @@ for (const v of vesselBags) {
 }
 
 // ---- manifest ---------------------------------------------------------------
+await stageTable();
+
 const manifest = {
   source: 'TTS mod 1961347286 (Axis & Allies Anniversary Edition 1941 and 1942)',
+  map: { image: '/axis/map.jpg', full: '/axis/map-full.jpg', artWidth: 9500, artHeight: 4956 },
+  // boards[0] (be20f5) = the BATTLE BOARD art; boards[1] (128d09) = the
+  // National Production / R&D chart. Neither is the world map.
   boards,
   units: unitBags.filter((b) => b.parsed).map((b) => ({
     ...b.parsed, guid: b.guid, mesh: b.mesh, diffuse: b.diffuse, tint: b.tint, scale: b.itemScale,

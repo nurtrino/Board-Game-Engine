@@ -1,0 +1,48 @@
+{
+  "_note": "PLACEHOLDER setups matching the stub mini-map. Replaced by the zone-assigned packup goldens (games/axis-allies/golden/setup-{1941,1942}.raw.json joined against map.json) once the board transcription lands.",
+  "1941": {
+    "units": {
+      "germany": [
+        { "power": "germany", "key": "infantry", "count": 4 },
+        { "power": "germany", "key": "tank", "count": 2 },
+        { "power": "germany", "key": "factory", "count": 1 }
+      ],
+      "poland": [{ "power": "germany", "key": "infantry", "count": 1 }],
+      "russia": [
+        { "power": "ussr", "key": "infantry", "count": 3 },
+        { "power": "ussr", "key": "factory", "count": 1 },
+        { "power": "ussr", "key": "aaGun", "count": 1 }
+      ],
+      "uk-island": [
+        { "power": "uk", "key": "infantry", "count": 2 },
+        { "power": "uk", "key": "factory", "count": 1 },
+        { "power": "uk", "key": "fighter", "count": 1 }
+      ],
+      "sz-1": [{ "power": "germany", "key": "submarine", "count": 1 }],
+      "sz-2": [
+        { "power": "uk", "key": "destroyer", "count": 1 },
+        { "power": "uk", "key": "transport", "count": 1 }
+      ]
+    },
+    "control": { "germany": "germany", "poland": "germany", "russia": "ussr", "uk-island": "uk" }
+  },
+  "1942": {
+    "units": {
+      "germany": [
+        { "power": "germany", "key": "infantry", "count": 4 },
+        { "power": "germany", "key": "factory", "count": 1 }
+      ],
+      "poland": [{ "power": "germany", "key": "infantry", "count": 2 }],
+      "russia": [
+        { "power": "ussr", "key": "infantry", "count": 4 },
+        { "power": "ussr", "key": "factory", "count": 1 }
+      ],
+      "uk-island": [
+        { "power": "uk", "key": "infantry", "count": 2 },
+        { "power": "uk", "key": "factory", "count": 1 }
+      ],
+      "sz-2": [{ "power": "uk", "key": "destroyer", "count": 1 }]
+    },
+    "control": { "germany": "germany", "poland": "germany", "russia": "ussr", "uk-island": "uk" }
+  }
+}

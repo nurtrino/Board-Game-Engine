@@ -11,14 +11,16 @@ import type { DtView, DtSeat } from './darktower/state.js';
 import type { DtAction } from './darktower/actions.js';
 import type { DuneView, DuneSeat } from './dune/state.js';
 import type { DuneAction } from './dune/actions.js';
+import type { AxisView, AxisSeat, AxisAction } from './axis/game.js';
 import { SEAT_COLORS } from './brass/state.js';
 import { TTR_COLORS } from './ttr/state.js';
 import { TREK_SEATS } from './trek/state.js';
 import { DT_SEATS } from './darktower/state.js';
 import { DUNE_SEATS } from './dune/state.js';
+import { AXIS_SEATS } from './axis/state.js';
 
 /** Any seat color across games. */
-export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat;
+export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat | AxisSeat;
 
 /** Per-game lobby facts: seat colors in pick order + max players. */
 export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: number }> = {
@@ -27,10 +29,14 @@ export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: num
   trek: { colors: TREK_SEATS, max: 5 },
   darktower: { colors: DT_SEATS, max: 4 },
   dune: { colors: DUNE_SEATS, max: 4 },
+  axis: { colors: AXIS_SEATS, max: 6 },
 };
 
-export type GameView = BrassView | TtrView | TrekView | DtView | DuneView;
-export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction;
+export type GameView = BrassView | TtrView | TrekView | DtView | DuneView | AxisView;
+export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction | AxisAction;
+
+/** Per-game create options chosen on the create screen (scenario, variants). */
+export type GameOptions = Record<string, string | number | boolean>;
 
 export interface RoomInfo {
   roomId: string;
@@ -57,7 +63,7 @@ export interface SaveInfo {
 }
 
 export type ClientMsg =
-  | { type: 'create_room'; name?: string; game?: string }
+  | { type: 'create_room'; name?: string; game?: string; options?: GameOptions }
   | { type: 'join'; roomId: string; name: string; playerToken?: string }
   | { type: 'watch'; roomId: string } // TV board view
   | { type: 'start' } // host or TV starts the game

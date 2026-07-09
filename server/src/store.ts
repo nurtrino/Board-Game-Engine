@@ -9,7 +9,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import type { BrassState, TtrState, SeatColor } from '@bge/shared';
+import type { GameOptions, SeatColor } from '@bge/shared';
 
 export interface SavedPlayer { name: string; color: SeatColor; token: string; isBot?: boolean }
 export interface SavedRoom {
@@ -19,7 +19,8 @@ export interface SavedRoom {
   createdAt: number;
   players: SavedPlayer[];
   started: boolean;
-  state: BrassState | TtrState | null;
+  state: unknown | null; // the engine state, persisted as JSON
+  options?: GameOptions;
   updatedAt: number;
 }
 

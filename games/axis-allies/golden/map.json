@@ -1,0 +1,2998 @@
+{
+ "source": {
+  "workshopId": "1961347286",
+  "note": "Map art is the custom TABLE image (TableURL), not the two Custom_Boards. be20f5 = battle board, 128d09 = National Production/R&D chart.",
+  "tableImageURL": "http://cloud-3.steamusercontent.com/ugc/778493383644115837/C6B6428E7FF791B82A1C53642ED9FECF0CCE6450/",
+  "tableImageCache": "httpssteamusercontentaakamaihdnetugc778493383644115837C6B6428E7FF791B82A1C53642ED9FECF0CCE6450.png"
+ },
+ "art": {
+  "width": 9500,
+  "height": 4956,
+  "wrapsHorizontally": true,
+  "seam": "x=0 and x=9500 are the same meridian; the seam cuts through central Canada, the central USA, Mexico and the east Pacific. Seam adjacencies: western-canada~eastern-canada, central-united-states~eastern-united-states, eastern-united-states~mexico, western-canada~sz-1, sz-20~sz-55, sz-21~sz-44, sz-25~sz-43.",
+  "sideBoards": [
+   {
+    "guid": "be20f5",
+    "role": "battle-board",
+    "image": "httpssteamusercontentaakamaihdnetugc7784934896593646649100D1E4EC2E5855100AA2DFC120E98176DE3545.jpg"
+   },
+   {
+    "guid": "128d09",
+    "role": "research-chart",
+    "image": "httpssteamusercontentaakamaihdnetugc778493489659396932D30E43976E93E812D7FD57470AEA87373331A491.jpg"
+   }
+  ]
+ },
+ "worldFit": {
+  "note": "Affine TTS world (posX,posZ) -> table art px, least-squares fitted from 11 setup-golden anchor units (ICs + AA guns at known territories). Setup unit placement is hand-jittered (same IC differs up to ~3.5 world units between 1941/1942 saves) so expect ~100-300px residuals; zone-assign by nearest/containing region and review border cases.",
+  "px": [
+   "a*wx + b*wz + e",
+   "c*wx + d*wz + f"
+  ],
+  "a": 108.64153377271316,
+  "b": -12.42765197617519,
+  "e": 4855.83622419294,
+  "c": 1.2081452244650412,
+  "d": -89.99661541188438,
+  "f": 2653.0830320264017
+ },
+ "canals": [
+  {
+   "id": "panama-canal",
+   "sea": [
+    "sz-19",
+    "sz-20"
+   ],
+   "land": [
+    "panama"
+   ],
+   "rule": "Sea movement between sz-19 and sz-20 requires control of Panama."
+  },
+  {
+   "id": "suez-canal",
+   "sea": [
+    "sz-15",
+    "sz-34"
+   ],
+   "land": [
+    "egypt",
+    "trans-jordan"
+   ],
+   "rule": "Sea movement between sz-15 and sz-34 requires control of both Egypt and Trans-Jordan."
+  },
+  {
+   "id": "turkish-straits",
+   "sea": [
+    "sz-15",
+    "sz-16"
+   ],
+   "land": [
+    "turkey"
+   ],
+   "rule": "Passage runs through Turkey, a strict neutral: closed to all ships in the base game."
+  }
+ ],
+ "territories": [
+  {
+   "id": "alaska",
+   "name": "Alaska",
+   "ipc": 2,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 8770,
+    "py": 640
+   },
+   "adj": [
+    "sz-64",
+    "sz-65",
+    "western-canada"
+   ]
+  },
+  {
+   "id": "western-canada",
+   "name": "Western Canada",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 9300,
+    "py": 700
+   },
+   "adj": [
+    "alaska",
+    "central-united-states",
+    "eastern-canada",
+    "sz-1",
+    "sz-65",
+    "western-united-states"
+   ]
+  },
+  {
+   "id": "eastern-canada",
+   "name": "Eastern Canada",
+   "ipc": 3,
+   "originalOwner": "uk",
+   "isVictoryCity": true,
+   "victoryCityName": "Ottawa",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 775,
+    "py": 1235
+   },
+   "adj": [
+    "eastern-united-states",
+    "sz-1",
+    "sz-10",
+    "sz-9",
+    "western-canada"
+   ]
+  },
+  {
+   "id": "western-united-states",
+   "name": "Western United States",
+   "ipc": 10,
+   "originalOwner": "usa",
+   "isVictoryCity": true,
+   "victoryCityName": "San Francisco",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 9150,
+    "py": 1730
+   },
+   "adj": [
+    "central-united-states",
+    "mexico",
+    "sz-55",
+    "western-canada"
+   ]
+  },
+  {
+   "id": "central-united-states",
+   "name": "Central United States",
+   "ipc": 6,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 9385,
+    "py": 1700
+   },
+   "adj": [
+    "eastern-united-states",
+    "mexico",
+    "western-canada",
+    "western-united-states"
+   ]
+  },
+  {
+   "id": "eastern-united-states",
+   "name": "Eastern United States",
+   "ipc": 12,
+   "originalOwner": "usa",
+   "isVictoryCity": true,
+   "victoryCityName": "Washington",
+   "isCapital": true,
+   "isImpassable": false,
+   "center": {
+    "px": 350,
+    "py": 2050
+   },
+   "adj": [
+    "central-united-states",
+    "eastern-canada",
+    "mexico",
+    "sz-10",
+    "sz-19"
+   ]
+  },
+  {
+   "id": "mexico",
+   "name": "Mexico",
+   "ipc": 2,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 9345,
+    "py": 2160
+   },
+   "adj": [
+    "central-united-states",
+    "eastern-united-states",
+    "panama",
+    "sz-19",
+    "sz-55",
+    "western-united-states"
+   ]
+  },
+  {
+   "id": "panama",
+   "name": "Panama",
+   "ipc": 1,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 150,
+    "py": 2725
+   },
+   "adj": [
+    "mexico",
+    "northern-south-america",
+    "sz-19",
+    "sz-20"
+   ]
+  },
+  {
+   "id": "west-indies",
+   "name": "West Indies",
+   "ipc": 1,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 800,
+    "py": 2620
+   },
+   "adj": [
+    "sz-19"
+   ]
+  },
+  {
+   "id": "greenland",
+   "name": "Greenland",
+   "ipc": 0,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 910,
+    "py": 300
+   },
+   "adj": [
+    "sz-1",
+    "sz-2"
+   ]
+  },
+  {
+   "id": "hawaiian-islands",
+   "name": "Hawaiian Islands",
+   "ipc": 1,
+   "originalOwner": "usa",
+   "isVictoryCity": true,
+   "victoryCityName": "Honolulu",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 8420,
+    "py": 2810
+   },
+   "adj": [
+    "sz-53"
+   ]
+  },
+  {
+   "id": "midway",
+   "name": "Midway",
+   "ipc": 0,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 8300,
+    "py": 2145
+   },
+   "adj": [
+    "sz-56"
+   ]
+  },
+  {
+   "id": "wake-island",
+   "name": "Wake Island",
+   "ipc": 0,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 7750,
+    "py": 2840
+   },
+   "adj": [
+    "sz-52"
+   ]
+  },
+  {
+   "id": "northern-south-america",
+   "name": "Northern South America",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 455,
+    "py": 3060
+   },
+   "adj": [
+    "brazil",
+    "panama",
+    "peruvian-central",
+    "sz-19",
+    "sz-20"
+   ]
+  },
+  {
+   "id": "brazil",
+   "name": "Brazil",
+   "ipc": 3,
+   "originalOwner": "usa",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 900,
+    "py": 3430
+   },
+   "adj": [
+    "argentina-chile",
+    "northern-south-america",
+    "peruvian-central",
+    "sz-22"
+   ]
+  },
+  {
+   "id": "peruvian-central",
+   "name": "Peruvian Central",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 485,
+    "py": 3540
+   },
+   "adj": [
+    "argentina-chile",
+    "brazil",
+    "northern-south-america",
+    "sz-21"
+   ]
+  },
+  {
+   "id": "argentina-chile",
+   "name": "Argentina Chile",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 590,
+    "py": 3920
+   },
+   "adj": [
+    "brazil",
+    "peruvian-central",
+    "sz-21",
+    "sz-22",
+    "sz-25"
+   ]
+  },
+  {
+   "id": "united-kingdom",
+   "name": "United Kingdom",
+   "ipc": 8,
+   "originalOwner": "uk",
+   "isVictoryCity": true,
+   "victoryCityName": "London",
+   "isCapital": true,
+   "isImpassable": false,
+   "center": {
+    "px": 2020,
+    "py": 1170
+   },
+   "adj": [
+    "eire",
+    "sz-2",
+    "sz-6",
+    "sz-7"
+   ]
+  },
+  {
+   "id": "eire",
+   "name": "Eire",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 1630,
+    "py": 1230
+   },
+   "adj": [
+    "sz-2",
+    "sz-7",
+    "sz-8",
+    "united-kingdom"
+   ]
+  },
+  {
+   "id": "iceland",
+   "name": "Iceland",
+   "ipc": 0,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 1490,
+    "py": 520
+   },
+   "adj": [
+    "sz-2"
+   ]
+  },
+  {
+   "id": "gibraltar",
+   "name": "Gibraltar",
+   "ipc": 0,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 1730,
+    "py": 2520
+   },
+   "adj": [
+    "spain",
+    "sz-12",
+    "sz-13"
+   ]
+  },
+  {
+   "id": "norway",
+   "name": "Norway",
+   "ipc": 3,
+   "originalOwner": "germany",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2380,
+    "py": 900
+   },
+   "adj": [
+    "finland",
+    "sweden",
+    "sz-3",
+    "sz-5",
+    "sz-6"
+   ]
+  },
+  {
+   "id": "sweden",
+   "name": "Sweden",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 2645,
+    "py": 1000
+   },
+   "adj": [
+    "finland",
+    "norway",
+    "sz-5"
+   ]
+  },
+  {
+   "id": "finland",
+   "name": "Finland",
+   "ipc": 2,
+   "originalOwner": "germany",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3060,
+    "py": 640
+   },
+   "adj": [
+    "karelia",
+    "norway",
+    "sweden",
+    "sz-3",
+    "sz-5"
+   ]
+  },
+  {
+   "id": "northwestern-europe",
+   "name": "Northwestern Europe",
+   "ipc": 2,
+   "originalOwner": "germany",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2260,
+    "py": 1530
+   },
+   "adj": [
+    "france",
+    "germany",
+    "sz-5",
+    "sz-6"
+   ]
+  },
+  {
+   "id": "germany",
+   "name": "Germany",
+   "ipc": 10,
+   "originalOwner": "germany",
+   "isVictoryCity": true,
+   "victoryCityName": "Berlin",
+   "isCapital": true,
+   "isImpassable": false,
+   "center": {
+    "px": 2560,
+    "py": 1660
+   },
+   "adj": [
+    "balkans",
+    "czechoslovakia-hungary",
+    "france",
+    "italy",
+    "northwestern-europe",
+    "poland",
+    "switzerland",
+    "sz-5"
+   ]
+  },
+  {
+   "id": "france",
+   "name": "France",
+   "ipc": 6,
+   "originalOwner": "germany",
+   "isVictoryCity": true,
+   "victoryCityName": "Paris",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 1960,
+    "py": 1890
+   },
+   "adj": [
+    "germany",
+    "italy",
+    "northwestern-europe",
+    "spain",
+    "switzerland",
+    "sz-13",
+    "sz-7"
+   ]
+  },
+  {
+   "id": "switzerland",
+   "name": "Switzerland",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 2365,
+    "py": 1915
+   },
+   "adj": [
+    "france",
+    "germany",
+    "italy"
+   ]
+  },
+  {
+   "id": "italy",
+   "name": "Italy",
+   "ipc": 6,
+   "originalOwner": "italy",
+   "isVictoryCity": true,
+   "victoryCityName": "Rome",
+   "isCapital": true,
+   "isImpassable": false,
+   "center": {
+    "px": 2445,
+    "py": 2170
+   },
+   "adj": [
+    "balkans",
+    "france",
+    "germany",
+    "switzerland",
+    "sz-14"
+   ]
+  },
+  {
+   "id": "balkans",
+   "name": "Balkans",
+   "ipc": 3,
+   "originalOwner": "italy",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2810,
+    "py": 2190
+   },
+   "adj": [
+    "bulgaria-romania",
+    "czechoslovakia-hungary",
+    "germany",
+    "italy",
+    "sz-14",
+    "turkey"
+   ]
+  },
+  {
+   "id": "czechoslovakia-hungary",
+   "name": "Czechoslovakia Hungary",
+   "ipc": 2,
+   "originalOwner": "germany",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2905,
+    "py": 1930
+   },
+   "adj": [
+    "balkans",
+    "bulgaria-romania",
+    "east-poland",
+    "germany",
+    "poland",
+    "ukraine"
+   ]
+  },
+  {
+   "id": "poland",
+   "name": "Poland",
+   "ipc": 3,
+   "originalOwner": "germany",
+   "isVictoryCity": true,
+   "victoryCityName": "Warsaw",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3050,
+    "py": 1500
+   },
+   "adj": [
+    "baltic-states",
+    "czechoslovakia-hungary",
+    "east-poland",
+    "germany",
+    "sz-5"
+   ]
+  },
+  {
+   "id": "bulgaria-romania",
+   "name": "Bulgaria Romania",
+   "ipc": 2,
+   "originalOwner": "germany",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3050,
+    "py": 2190
+   },
+   "adj": [
+    "balkans",
+    "czechoslovakia-hungary",
+    "sz-14",
+    "sz-16",
+    "turkey",
+    "ukraine"
+   ]
+  },
+  {
+   "id": "spain",
+   "name": "Spain",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 1680,
+    "py": 2310
+   },
+   "adj": [
+    "france",
+    "gibraltar",
+    "sz-12",
+    "sz-13",
+    "sz-7"
+   ]
+  },
+  {
+   "id": "turkey",
+   "name": "Turkey",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 3460,
+    "py": 2560
+   },
+   "adj": [
+    "balkans",
+    "bulgaria-romania",
+    "caucasus",
+    "persia",
+    "sz-15",
+    "sz-16",
+    "trans-jordan"
+   ]
+  },
+  {
+   "id": "baltic-states",
+   "name": "Baltic States",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3315,
+    "py": 1085
+   },
+   "adj": [
+    "belorussia",
+    "east-poland",
+    "karelia",
+    "poland",
+    "sz-5"
+   ]
+  },
+  {
+   "id": "karelia",
+   "name": "Karelia S.S.R.",
+   "ipc": 2,
+   "originalOwner": "ussr",
+   "isVictoryCity": true,
+   "victoryCityName": "Leningrad",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3315,
+    "py": 620
+   },
+   "adj": [
+    "archangel",
+    "baltic-states",
+    "belorussia",
+    "finland",
+    "russia",
+    "sz-4",
+    "sz-5"
+   ]
+  },
+  {
+   "id": "archangel",
+   "name": "Archangel",
+   "ipc": 2,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 4222,
+    "py": 640
+   },
+   "adj": [
+    "karelia",
+    "russia",
+    "sz-4",
+    "urals"
+   ]
+  },
+  {
+   "id": "east-poland",
+   "name": "East Poland",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3380,
+    "py": 1490
+   },
+   "adj": [
+    "baltic-states",
+    "belorussia",
+    "czechoslovakia-hungary",
+    "poland",
+    "ukraine"
+   ]
+  },
+  {
+   "id": "belorussia",
+   "name": "Belorussia",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3660,
+    "py": 1215
+   },
+   "adj": [
+    "baltic-states",
+    "east-poland",
+    "eastern-ukraine",
+    "karelia",
+    "russia",
+    "ukraine"
+   ]
+  },
+  {
+   "id": "ukraine",
+   "name": "Ukraine",
+   "ipc": 2,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3555,
+    "py": 1935
+   },
+   "adj": [
+    "belorussia",
+    "bulgaria-romania",
+    "caucasus",
+    "czechoslovakia-hungary",
+    "east-poland",
+    "eastern-ukraine",
+    "sz-16"
+   ]
+  },
+  {
+   "id": "eastern-ukraine",
+   "name": "Eastern Ukraine",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3760,
+    "py": 1655
+   },
+   "adj": [
+    "belorussia",
+    "caucasus",
+    "kazakh",
+    "russia",
+    "ukraine"
+   ]
+  },
+  {
+   "id": "russia",
+   "name": "Russia",
+   "ipc": 6,
+   "originalOwner": "ussr",
+   "isVictoryCity": true,
+   "victoryCityName": "Moscow",
+   "isCapital": true,
+   "isImpassable": false,
+   "center": {
+    "px": 4270,
+    "py": 1265
+   },
+   "adj": [
+    "archangel",
+    "belorussia",
+    "caucasus",
+    "eastern-ukraine",
+    "karelia",
+    "kazakh",
+    "novosibirsk",
+    "urals"
+   ]
+  },
+  {
+   "id": "caucasus",
+   "name": "Caucasus",
+   "ipc": 4,
+   "originalOwner": "ussr",
+   "isVictoryCity": true,
+   "victoryCityName": "Stalingrad",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3910,
+    "py": 2130
+   },
+   "adj": [
+    "eastern-ukraine",
+    "kazakh",
+    "persia",
+    "russia",
+    "sz-16",
+    "turkey",
+    "ukraine"
+   ]
+  },
+  {
+   "id": "kazakh",
+   "name": "Kazakh S.S.R.",
+   "ipc": 2,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 4480,
+    "py": 2155
+   },
+   "adj": [
+    "afganistan",
+    "caucasus",
+    "chinghai",
+    "eastern-ukraine",
+    "novosibirsk",
+    "russia"
+   ]
+  },
+  {
+   "id": "novosibirsk",
+   "name": "Novosibirsk",
+   "ipc": 2,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 4780,
+    "py": 1425
+   },
+   "adj": [
+    "evenki-national-okrug",
+    "kazakh",
+    "mongolia",
+    "russia",
+    "urals"
+   ]
+  },
+  {
+   "id": "urals",
+   "name": "Urals",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 4900,
+    "py": 465
+   },
+   "adj": [
+    "archangel",
+    "evenki-national-okrug",
+    "novosibirsk",
+    "russia"
+   ]
+  },
+  {
+   "id": "evenki-national-okrug",
+   "name": "Evenki National Okrug",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5400,
+    "py": 690
+   },
+   "adj": [
+    "mongolia",
+    "novosibirsk",
+    "urals",
+    "yakut"
+   ]
+  },
+  {
+   "id": "yakut",
+   "name": "Yakut S.S.R.",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6050,
+    "py": 435
+   },
+   "adj": [
+    "evenki-national-okrug",
+    "soviet-far-east",
+    "stanovoj-chrebet"
+   ]
+  },
+  {
+   "id": "stanovoj-chrebet",
+   "name": "Stanovoj Chrebet",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6520,
+    "py": 865
+   },
+   "adj": [
+    "buryatia",
+    "soviet-far-east",
+    "yakut"
+   ]
+  },
+  {
+   "id": "buryatia",
+   "name": "Buryatia S.S.R.",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6885,
+    "py": 1060
+   },
+   "adj": [
+    "manchuria",
+    "mongolia",
+    "soviet-far-east",
+    "stanovoj-chrebet"
+   ]
+  },
+  {
+   "id": "soviet-far-east",
+   "name": "Soviet Far East",
+   "ipc": 1,
+   "originalOwner": "ussr",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 7222,
+    "py": 545
+   },
+   "adj": [
+    "buryatia",
+    "manchuria",
+    "stanovoj-chrebet",
+    "sz-62",
+    "sz-63",
+    "yakut"
+   ]
+  },
+  {
+   "id": "persia",
+   "name": "Persia",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 4183,
+    "py": 2810
+   },
+   "adj": [
+    "afganistan",
+    "caucasus",
+    "india",
+    "sz-34",
+    "trans-jordan",
+    "turkey"
+   ]
+  },
+  {
+   "id": "trans-jordan",
+   "name": "Trans-Jordan",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3620,
+    "py": 2765
+   },
+   "adj": [
+    "egypt",
+    "persia",
+    "saudi-arabia",
+    "sz-15",
+    "sz-34",
+    "turkey"
+   ]
+  },
+  {
+   "id": "saudi-arabia",
+   "name": "Saudi Arabia",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 3790,
+    "py": 3210
+   },
+   "adj": [
+    "sz-34",
+    "trans-jordan"
+   ]
+  },
+  {
+   "id": "afganistan",
+   "name": "Afganistan",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 4570,
+    "py": 2620
+   },
+   "adj": [
+    "chinghai",
+    "himalaya",
+    "india",
+    "kazakh",
+    "persia"
+   ]
+  },
+  {
+   "id": "himalaya",
+   "name": "Himalaya",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 4915,
+    "py": 2810
+   },
+   "adj": [
+    "afganistan",
+    "burma",
+    "chinghai",
+    "india",
+    "sikang"
+   ]
+  },
+  {
+   "id": "mongolia",
+   "name": "Mongolia",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 5720,
+    "py": 1390
+   },
+   "adj": [
+    "buryatia",
+    "chinghai",
+    "evenki-national-okrug",
+    "manchuria",
+    "ningxia",
+    "novosibirsk",
+    "suiyuan"
+   ]
+  },
+  {
+   "id": "morocco-algeria",
+   "name": "Morocco Algeria",
+   "ipc": 1,
+   "originalOwner": "germany",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2090,
+    "py": 2665
+   },
+   "adj": [
+    "libya",
+    "sahara",
+    "sz-12",
+    "sz-13"
+   ]
+  },
+  {
+   "id": "libya",
+   "name": "Libya",
+   "ipc": 1,
+   "originalOwner": "italy",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2550,
+    "py": 2900
+   },
+   "adj": [
+    "egypt",
+    "morocco-algeria",
+    "sahara",
+    "sz-14"
+   ]
+  },
+  {
+   "id": "egypt",
+   "name": "Egypt",
+   "ipc": 2,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3075,
+    "py": 3060
+   },
+   "adj": [
+    "anglo-egypt-sudan",
+    "libya",
+    "sahara",
+    "sz-15",
+    "sz-34",
+    "trans-jordan"
+   ]
+  },
+  {
+   "id": "anglo-egypt-sudan",
+   "name": "Anglo-Egypt Sudan",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3305,
+    "py": 3435
+   },
+   "adj": [
+    "belgian-congo",
+    "egypt",
+    "french-equatorial-africa",
+    "italian-africa",
+    "rhodesia",
+    "sahara",
+    "sz-34"
+   ]
+  },
+  {
+   "id": "sahara",
+   "name": "Sahara",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 2255,
+    "py": 3140
+   },
+   "adj": [
+    "anglo-egypt-sudan",
+    "egypt",
+    "french-equatorial-africa",
+    "french-west-africa",
+    "libya",
+    "morocco-algeria"
+   ]
+  },
+  {
+   "id": "french-west-africa",
+   "name": "French West Africa",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 1850,
+    "py": 3440
+   },
+   "adj": [
+    "french-equatorial-africa",
+    "sahara",
+    "sz-17",
+    "sz-23"
+   ]
+  },
+  {
+   "id": "french-equatorial-africa",
+   "name": "French Equatorial Africa",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2505,
+    "py": 3600
+   },
+   "adj": [
+    "anglo-egypt-sudan",
+    "belgian-congo",
+    "french-west-africa",
+    "sahara",
+    "sz-23"
+   ]
+  },
+  {
+   "id": "belgian-congo",
+   "name": "Belgian Congo",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2885,
+    "py": 3920
+   },
+   "adj": [
+    "anglo-egypt-sudan",
+    "angola",
+    "french-equatorial-africa",
+    "rhodesia",
+    "sz-23"
+   ]
+  },
+  {
+   "id": "italian-africa",
+   "name": "Italian Africa",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3500,
+    "py": 3760
+   },
+   "adj": [
+    "anglo-egypt-sudan",
+    "rhodesia",
+    "sz-33",
+    "sz-34"
+   ]
+  },
+  {
+   "id": "rhodesia",
+   "name": "Rhodesia",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3305,
+    "py": 4045
+   },
+   "adj": [
+    "anglo-egypt-sudan",
+    "angola",
+    "belgian-congo",
+    "italian-africa",
+    "mozambique",
+    "sz-33",
+    "union-of-south-africa"
+   ]
+  },
+  {
+   "id": "angola",
+   "name": "Angola",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 2722,
+    "py": 4330
+   },
+   "adj": [
+    "belgian-congo",
+    "rhodesia",
+    "sz-24",
+    "union-of-south-africa"
+   ]
+  },
+  {
+   "id": "mozambique",
+   "name": "Mozambique",
+   "ipc": 0,
+   "originalOwner": "neutral",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": true,
+   "center": {
+    "px": 3360,
+    "py": 4330
+   },
+   "adj": [
+    "rhodesia",
+    "sz-28",
+    "sz-33",
+    "union-of-south-africa"
+   ]
+  },
+  {
+   "id": "union-of-south-africa",
+   "name": "Union of South Africa",
+   "ipc": 2,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 2900,
+    "py": 4600
+   },
+   "adj": [
+    "angola",
+    "mozambique",
+    "rhodesia",
+    "sz-26",
+    "sz-27",
+    "sz-28"
+   ]
+  },
+  {
+   "id": "french-madagascar",
+   "name": "French Madagascar",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 3630,
+    "py": 4480
+   },
+   "adj": [
+    "sz-28",
+    "sz-29",
+    "sz-33"
+   ]
+  },
+  {
+   "id": "india",
+   "name": "India",
+   "ipc": 3,
+   "originalOwner": "uk",
+   "isVictoryCity": true,
+   "victoryCityName": "Calcutta",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 4775,
+    "py": 3140
+   },
+   "adj": [
+    "afganistan",
+    "burma",
+    "himalaya",
+    "persia",
+    "sz-35"
+   ]
+  },
+  {
+   "id": "burma",
+   "name": "Burma",
+   "ipc": 2,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5465,
+    "py": 3140
+   },
+   "adj": [
+    "french-indo-china-thailand",
+    "himalaya",
+    "india",
+    "sikang",
+    "sz-37",
+    "yunnan"
+   ]
+  },
+  {
+   "id": "french-indo-china-thailand",
+   "name": "French Indo-China Thailand",
+   "ipc": 2,
+   "originalOwner": "japan",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5800,
+    "py": 3250
+   },
+   "adj": [
+    "burma",
+    "kwangtung",
+    "sz-36",
+    "sz-37",
+    "yunnan"
+   ]
+  },
+  {
+   "id": "yunnan",
+   "name": "Yunnan",
+   "ipc": 1,
+   "originalOwner": "china",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5405,
+    "py": 2790
+   },
+   "adj": [
+    "burma",
+    "french-indo-china-thailand",
+    "fukien",
+    "hupeh",
+    "kwangtung",
+    "sikang"
+   ]
+  },
+  {
+   "id": "sikang",
+   "name": "Sikang",
+   "ipc": 1,
+   "originalOwner": "china",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5165,
+    "py": 2540
+   },
+   "adj": [
+    "burma",
+    "chinghai",
+    "himalaya",
+    "hupeh",
+    "ningxia",
+    "yunnan"
+   ]
+  },
+  {
+   "id": "chinghai",
+   "name": "Chinghai",
+   "ipc": 1,
+   "originalOwner": "china",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 4928,
+    "py": 1980
+   },
+   "adj": [
+    "afganistan",
+    "himalaya",
+    "kazakh",
+    "mongolia",
+    "ningxia",
+    "sikang"
+   ]
+  },
+  {
+   "id": "ningxia",
+   "name": "Ningxia",
+   "ipc": 1,
+   "originalOwner": "china",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5322,
+    "py": 1980
+   },
+   "adj": [
+    "chinghai",
+    "hupeh",
+    "mongolia",
+    "sikang",
+    "suiyuan"
+   ]
+  },
+  {
+   "id": "suiyuan",
+   "name": "Suiyuan",
+   "ipc": 1,
+   "originalOwner": "china",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5708,
+    "py": 1975
+   },
+   "adj": [
+    "hupeh",
+    "kiangsu",
+    "manchuria",
+    "mongolia",
+    "ningxia"
+   ]
+  },
+  {
+   "id": "hupeh",
+   "name": "Hupeh",
+   "ipc": 1,
+   "originalOwner": "china",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5580,
+    "py": 2405
+   },
+   "adj": [
+    "fukien",
+    "kiangsu",
+    "ningxia",
+    "sikang",
+    "suiyuan",
+    "yunnan"
+   ]
+  },
+  {
+   "id": "fukien",
+   "name": "Fukien",
+   "ipc": 1,
+   "originalOwner": "china",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5920,
+    "py": 2580
+   },
+   "adj": [
+    "hupeh",
+    "kiangsu",
+    "kwangtung",
+    "sz-61",
+    "yunnan"
+   ]
+  },
+  {
+   "id": "kwangtung",
+   "name": "Kwangtung",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": true,
+   "victoryCityName": "Hong Kong",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6022,
+    "py": 2880
+   },
+   "adj": [
+    "french-indo-china-thailand",
+    "fukien",
+    "sz-36",
+    "sz-61",
+    "yunnan"
+   ]
+  },
+  {
+   "id": "kiangsu",
+   "name": "Kiangsu",
+   "ipc": 2,
+   "originalOwner": "china",
+   "isVictoryCity": true,
+   "victoryCityName": "Shanghai",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6115,
+    "py": 2165
+   },
+   "adj": [
+    "fukien",
+    "hupeh",
+    "manchuria",
+    "suiyuan",
+    "sz-61"
+   ]
+  },
+  {
+   "id": "manchuria",
+   "name": "Manchuria",
+   "ipc": 3,
+   "originalOwner": "china",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6585,
+    "py": 1460
+   },
+   "adj": [
+    "buryatia",
+    "kiangsu",
+    "mongolia",
+    "soviet-far-east",
+    "suiyuan",
+    "sz-61",
+    "sz-62"
+   ]
+  },
+  {
+   "id": "japan",
+   "name": "Japan",
+   "ipc": 8,
+   "originalOwner": "japan",
+   "isVictoryCity": true,
+   "victoryCityName": "Tokyo",
+   "isCapital": true,
+   "isImpassable": false,
+   "center": {
+    "px": 7180,
+    "py": 1990
+   },
+   "adj": [
+    "sz-58",
+    "sz-62",
+    "sz-63"
+   ]
+  },
+  {
+   "id": "formosa",
+   "name": "Formosa",
+   "ipc": 1,
+   "originalOwner": "japan",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6450,
+    "py": 2870
+   },
+   "adj": [
+    "sz-50",
+    "sz-61"
+   ]
+  },
+  {
+   "id": "okinawa",
+   "name": "Okinawa",
+   "ipc": 1,
+   "originalOwner": "japan",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 7080,
+    "py": 2665
+   },
+   "adj": [
+    "sz-60"
+   ]
+  },
+  {
+   "id": "iwo-jima",
+   "name": "Iwo Jima",
+   "ipc": 0,
+   "originalOwner": "japan",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 7620,
+    "py": 2300
+   },
+   "adj": [
+    "sz-59"
+   ]
+  },
+  {
+   "id": "caroline-islands",
+   "name": "Caroline Islands",
+   "ipc": 0,
+   "originalOwner": "japan",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 7390,
+    "py": 3240
+   },
+   "adj": [
+    "sz-51"
+   ]
+  },
+  {
+   "id": "philippine-islands",
+   "name": "Philippine Islands",
+   "ipc": 2,
+   "originalOwner": "usa",
+   "isVictoryCity": true,
+   "victoryCityName": "Manila",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6820,
+    "py": 3400
+   },
+   "adj": [
+    "sz-50"
+   ]
+  },
+  {
+   "id": "borneo",
+   "name": "Borneo",
+   "ipc": 4,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 6228,
+    "py": 3790
+   },
+   "adj": [
+    "sz-36",
+    "sz-49"
+   ]
+  },
+  {
+   "id": "east-indies",
+   "name": "East Indies",
+   "ipc": 4,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 5820,
+    "py": 3960
+   },
+   "adj": [
+    "sz-36",
+    "sz-37",
+    "sz-38",
+    "sz-39",
+    "sz-49"
+   ]
+  },
+  {
+   "id": "new-guinea",
+   "name": "New Guinea",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 7250,
+    "py": 3960
+   },
+   "adj": [
+    "sz-47",
+    "sz-48",
+    "sz-49"
+   ]
+  },
+  {
+   "id": "solomon-islands",
+   "name": "Solomon Islands",
+   "ipc": 0,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 7985,
+    "py": 4060
+   },
+   "adj": [
+    "sz-46"
+   ]
+  },
+  {
+   "id": "australia",
+   "name": "Australia",
+   "ipc": 2,
+   "originalOwner": "uk",
+   "isVictoryCity": true,
+   "victoryCityName": "Sydney",
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 7100,
+    "py": 4460
+   },
+   "adj": [
+    "sz-40",
+    "sz-41",
+    "sz-47",
+    "sz-49"
+   ]
+  },
+  {
+   "id": "new-zealand",
+   "name": "New Zealand",
+   "ipc": 1,
+   "originalOwner": "uk",
+   "isVictoryCity": false,
+   "isCapital": false,
+   "isImpassable": false,
+   "center": {
+    "px": 8250,
+    "py": 4760
+   },
+   "adj": [
+    "sz-42"
+   ]
+  }
+ ],
+ "seaZones": [
+  {
+   "id": "sz-1",
+   "number": 1,
+   "center": {
+    "px": 677,
+    "py": 690
+   },
+   "adj": [
+    "eastern-canada",
+    "greenland",
+    "sz-2",
+    "sz-9",
+    "western-canada"
+   ]
+  },
+  {
+   "id": "sz-2",
+   "number": 2,
+   "center": {
+    "px": 1385,
+    "py": 745
+   },
+   "adj": [
+    "eire",
+    "greenland",
+    "iceland",
+    "sz-1",
+    "sz-3",
+    "sz-8",
+    "united-kingdom"
+   ]
+  },
+  {
+   "id": "sz-3",
+   "number": 3,
+   "center": {
+    "px": 2370,
+    "py": 383
+   },
+   "adj": [
+    "finland",
+    "norway",
+    "sz-2",
+    "sz-4",
+    "sz-6"
+   ]
+  },
+  {
+   "id": "sz-4",
+   "number": 4,
+   "center": {
+    "px": 3700,
+    "py": 260
+   },
+   "adj": [
+    "archangel",
+    "karelia",
+    "sz-3"
+   ]
+  },
+  {
+   "id": "sz-5",
+   "number": 5,
+   "center": {
+    "px": 2830,
+    "py": 1115
+   },
+   "adj": [
+    "baltic-states",
+    "finland",
+    "germany",
+    "karelia",
+    "northwestern-europe",
+    "norway",
+    "poland",
+    "sweden",
+    "sz-6"
+   ]
+  },
+  {
+   "id": "sz-6",
+   "number": 6,
+   "center": {
+    "px": 2210,
+    "py": 1115
+   },
+   "adj": [
+    "northwestern-europe",
+    "norway",
+    "sz-3",
+    "sz-5",
+    "sz-7",
+    "united-kingdom"
+   ]
+  },
+  {
+   "id": "sz-7",
+   "number": 7,
+   "center": {
+    "px": 1843,
+    "py": 1565
+   },
+   "adj": [
+    "eire",
+    "france",
+    "spain",
+    "sz-12",
+    "sz-6",
+    "sz-8",
+    "united-kingdom"
+   ]
+  },
+  {
+   "id": "sz-8",
+   "number": 8,
+   "center": {
+    "px": 1478,
+    "py": 1667
+   },
+   "adj": [
+    "eire",
+    "sz-11",
+    "sz-12",
+    "sz-2",
+    "sz-7",
+    "sz-9"
+   ]
+  },
+  {
+   "id": "sz-9",
+   "number": 9,
+   "center": {
+    "px": 1145,
+    "py": 1775
+   },
+   "adj": [
+    "eastern-canada",
+    "sz-1",
+    "sz-10",
+    "sz-11",
+    "sz-8"
+   ]
+  },
+  {
+   "id": "sz-10",
+   "number": 10,
+   "center": {
+    "px": 735,
+    "py": 2172
+   },
+   "adj": [
+    "eastern-canada",
+    "eastern-united-states",
+    "sz-11",
+    "sz-19",
+    "sz-9"
+   ]
+  },
+  {
+   "id": "sz-11",
+   "number": 11,
+   "center": {
+    "px": 1128,
+    "py": 2455
+   },
+   "adj": [
+    "sz-10",
+    "sz-12",
+    "sz-18",
+    "sz-19",
+    "sz-8",
+    "sz-9"
+   ]
+  },
+  {
+   "id": "sz-12",
+   "number": 12,
+   "center": {
+    "px": 1413,
+    "py": 2688
+   },
+   "adj": [
+    "gibraltar",
+    "morocco-algeria",
+    "spain",
+    "sz-11",
+    "sz-13",
+    "sz-18",
+    "sz-7",
+    "sz-8"
+   ]
+  },
+  {
+   "id": "sz-13",
+   "number": 13,
+   "center": {
+    "px": 2025,
+    "py": 2452
+   },
+   "adj": [
+    "france",
+    "gibraltar",
+    "morocco-algeria",
+    "spain",
+    "sz-12",
+    "sz-14"
+   ]
+  },
+  {
+   "id": "sz-14",
+   "number": 14,
+   "center": {
+    "px": 2700,
+    "py": 2645
+   },
+   "adj": [
+    "balkans",
+    "bulgaria-romania",
+    "italy",
+    "libya",
+    "sz-13",
+    "sz-15"
+   ]
+  },
+  {
+   "id": "sz-15",
+   "number": 15,
+   "center": {
+    "px": 3085,
+    "py": 2790
+   },
+   "adj": [
+    "egypt",
+    "sz-14",
+    "sz-16",
+    "sz-34",
+    "trans-jordan",
+    "turkey"
+   ]
+  },
+  {
+   "id": "sz-16",
+   "number": 16,
+   "center": {
+    "px": 3460,
+    "py": 2255
+   },
+   "adj": [
+    "bulgaria-romania",
+    "caucasus",
+    "sz-15",
+    "turkey",
+    "ukraine"
+   ]
+  },
+  {
+   "id": "sz-17",
+   "number": 17,
+   "center": {
+    "px": 1465,
+    "py": 3490
+   },
+   "adj": [
+    "french-west-africa",
+    "sz-18",
+    "sz-22",
+    "sz-23"
+   ]
+  },
+  {
+   "id": "sz-18",
+   "number": 18,
+   "center": {
+    "px": 1095,
+    "py": 3095
+   },
+   "adj": [
+    "sz-11",
+    "sz-12",
+    "sz-17",
+    "sz-22"
+   ]
+  },
+  {
+   "id": "sz-19",
+   "number": 19,
+   "center": {
+    "px": 425,
+    "py": 2690
+   },
+   "adj": [
+    "eastern-united-states",
+    "mexico",
+    "northern-south-america",
+    "panama",
+    "sz-10",
+    "sz-11",
+    "sz-20",
+    "west-indies"
+   ]
+  },
+  {
+   "id": "sz-20",
+   "number": 20,
+   "center": {
+    "px": 135,
+    "py": 2950
+   },
+   "adj": [
+    "northern-south-america",
+    "panama",
+    "sz-19",
+    "sz-21",
+    "sz-55"
+   ]
+  },
+  {
+   "id": "sz-21",
+   "number": 21,
+   "center": {
+    "px": 163,
+    "py": 3655
+   },
+   "adj": [
+    "argentina-chile",
+    "peruvian-central",
+    "sz-20",
+    "sz-25",
+    "sz-44"
+   ]
+  },
+  {
+   "id": "sz-22",
+   "number": 22,
+   "center": {
+    "px": 1222,
+    "py": 3812
+   },
+   "adj": [
+    "argentina-chile",
+    "brazil",
+    "sz-17",
+    "sz-18",
+    "sz-23",
+    "sz-24",
+    "sz-25"
+   ]
+  },
+  {
+   "id": "sz-23",
+   "number": 23,
+   "center": {
+    "px": 2135,
+    "py": 3935
+   },
+   "adj": [
+    "belgian-congo",
+    "french-equatorial-africa",
+    "french-west-africa",
+    "sz-17",
+    "sz-22",
+    "sz-24"
+   ]
+  },
+  {
+   "id": "sz-24",
+   "number": 24,
+   "center": {
+    "px": 1958,
+    "py": 4290
+   },
+   "adj": [
+    "angola",
+    "sz-22",
+    "sz-23",
+    "sz-25",
+    "sz-26"
+   ]
+  },
+  {
+   "id": "sz-25",
+   "number": 25,
+   "center": {
+    "px": 435,
+    "py": 4620
+   },
+   "adj": [
+    "argentina-chile",
+    "sz-21",
+    "sz-22",
+    "sz-24",
+    "sz-26",
+    "sz-43"
+   ]
+  },
+  {
+   "id": "sz-26",
+   "number": 26,
+   "center": {
+    "px": 1968,
+    "py": 4675
+   },
+   "adj": [
+    "sz-24",
+    "sz-25",
+    "sz-27",
+    "union-of-south-africa"
+   ]
+  },
+  {
+   "id": "sz-27",
+   "number": 27,
+   "center": {
+    "px": 2510,
+    "py": 4715
+   },
+   "adj": [
+    "sz-26",
+    "sz-28",
+    "union-of-south-africa"
+   ]
+  },
+  {
+   "id": "sz-28",
+   "number": 28,
+   "center": {
+    "px": 3335,
+    "py": 4712
+   },
+   "adj": [
+    "french-madagascar",
+    "mozambique",
+    "sz-27",
+    "sz-29",
+    "union-of-south-africa"
+   ]
+  },
+  {
+   "id": "sz-29",
+   "number": 29,
+   "center": {
+    "px": 3855,
+    "py": 4820
+   },
+   "adj": [
+    "french-madagascar",
+    "sz-28",
+    "sz-30",
+    "sz-32",
+    "sz-33"
+   ]
+  },
+  {
+   "id": "sz-30",
+   "number": 30,
+   "center": {
+    "px": 4960,
+    "py": 4858
+   },
+   "adj": [
+    "sz-29",
+    "sz-31",
+    "sz-40"
+   ]
+  },
+  {
+   "id": "sz-31",
+   "number": 31,
+   "center": {
+    "px": 5010,
+    "py": 3893
+   },
+   "adj": [
+    "sz-30",
+    "sz-32",
+    "sz-35",
+    "sz-38"
+   ]
+  },
+  {
+   "id": "sz-32",
+   "number": 32,
+   "center": {
+    "px": 4295,
+    "py": 3910
+   },
+   "adj": [
+    "sz-29",
+    "sz-31",
+    "sz-33",
+    "sz-34"
+   ]
+  },
+  {
+   "id": "sz-33",
+   "number": 33,
+   "center": {
+    "px": 3660,
+    "py": 4128
+   },
+   "adj": [
+    "french-madagascar",
+    "italian-africa",
+    "mozambique",
+    "rhodesia",
+    "sz-29",
+    "sz-32",
+    "sz-34"
+   ]
+  },
+  {
+   "id": "sz-34",
+   "number": 34,
+   "center": {
+    "px": 4130,
+    "py": 3568
+   },
+   "adj": [
+    "anglo-egypt-sudan",
+    "egypt",
+    "italian-africa",
+    "persia",
+    "saudi-arabia",
+    "sz-15",
+    "sz-32",
+    "sz-33",
+    "sz-35",
+    "trans-jordan"
+   ]
+  },
+  {
+   "id": "sz-35",
+   "number": 35,
+   "center": {
+    "px": 5045,
+    "py": 3455
+   },
+   "adj": [
+    "india",
+    "sz-31",
+    "sz-34",
+    "sz-37"
+   ]
+  },
+  {
+   "id": "sz-36",
+   "number": 36,
+   "center": {
+    "px": 6067,
+    "py": 3320
+   },
+   "adj": [
+    "borneo",
+    "east-indies",
+    "french-indo-china-thailand",
+    "kwangtung",
+    "sz-37",
+    "sz-49",
+    "sz-50",
+    "sz-61"
+   ]
+  },
+  {
+   "id": "sz-37",
+   "number": 37,
+   "center": {
+    "px": 5370,
+    "py": 3550
+   },
+   "adj": [
+    "burma",
+    "east-indies",
+    "french-indo-china-thailand",
+    "sz-35",
+    "sz-36",
+    "sz-38"
+   ]
+  },
+  {
+   "id": "sz-38",
+   "number": 38,
+   "center": {
+    "px": 5530,
+    "py": 4122
+   },
+   "adj": [
+    "east-indies",
+    "sz-31",
+    "sz-37",
+    "sz-39"
+   ]
+  },
+  {
+   "id": "sz-39",
+   "number": 39,
+   "center": {
+    "px": 5938,
+    "py": 4555
+   },
+   "adj": [
+    "east-indies",
+    "sz-38",
+    "sz-40",
+    "sz-49"
+   ]
+  },
+  {
+   "id": "sz-40",
+   "number": 40,
+   "center": {
+    "px": 5940,
+    "py": 4820
+   },
+   "adj": [
+    "australia",
+    "sz-30",
+    "sz-39",
+    "sz-41"
+   ]
+  },
+  {
+   "id": "sz-41",
+   "number": 41,
+   "center": {
+    "px": 7590,
+    "py": 4820
+   },
+   "adj": [
+    "australia",
+    "sz-40",
+    "sz-42",
+    "sz-47"
+   ]
+  },
+  {
+   "id": "sz-42",
+   "number": 42,
+   "center": {
+    "px": 7942,
+    "py": 4635
+   },
+   "adj": [
+    "new-zealand",
+    "sz-41",
+    "sz-43",
+    "sz-46",
+    "sz-47"
+   ]
+  },
+  {
+   "id": "sz-43",
+   "number": 43,
+   "center": {
+    "px": 8995,
+    "py": 4622
+   },
+   "adj": [
+    "sz-25",
+    "sz-42",
+    "sz-44",
+    "sz-45"
+   ]
+  },
+  {
+   "id": "sz-44",
+   "number": 44,
+   "center": {
+    "px": 9255,
+    "py": 3785
+   },
+   "adj": [
+    "sz-21",
+    "sz-43",
+    "sz-45",
+    "sz-54",
+    "sz-55"
+   ]
+  },
+  {
+   "id": "sz-45",
+   "number": 45,
+   "center": {
+    "px": 8635,
+    "py": 3908
+   },
+   "adj": [
+    "sz-43",
+    "sz-44",
+    "sz-46",
+    "sz-53",
+    "sz-54"
+   ]
+  },
+  {
+   "id": "sz-46",
+   "number": 46,
+   "center": {
+    "px": 7965,
+    "py": 3800
+   },
+   "adj": [
+    "solomon-islands",
+    "sz-42",
+    "sz-45",
+    "sz-47",
+    "sz-48",
+    "sz-51"
+   ]
+  },
+  {
+   "id": "sz-47",
+   "number": 47,
+   "center": {
+    "px": 7562,
+    "py": 4245
+   },
+   "adj": [
+    "australia",
+    "new-guinea",
+    "sz-41",
+    "sz-42",
+    "sz-46",
+    "sz-48",
+    "sz-49"
+   ]
+  },
+  {
+   "id": "sz-48",
+   "number": 48,
+   "center": {
+    "px": 7105,
+    "py": 3685
+   },
+   "adj": [
+    "new-guinea",
+    "sz-46",
+    "sz-47",
+    "sz-49",
+    "sz-50",
+    "sz-51"
+   ]
+  },
+  {
+   "id": "sz-49",
+   "number": 49,
+   "center": {
+    "px": 6668,
+    "py": 3855
+   },
+   "adj": [
+    "australia",
+    "borneo",
+    "east-indies",
+    "new-guinea",
+    "sz-36",
+    "sz-39",
+    "sz-47",
+    "sz-48",
+    "sz-50"
+   ]
+  },
+  {
+   "id": "sz-50",
+   "number": 50,
+   "center": {
+    "px": 6800,
+    "py": 3062
+   },
+   "adj": [
+    "formosa",
+    "philippine-islands",
+    "sz-36",
+    "sz-48",
+    "sz-49",
+    "sz-51",
+    "sz-60",
+    "sz-61"
+   ]
+  },
+  {
+   "id": "sz-51",
+   "number": 51,
+   "center": {
+    "px": 7680,
+    "py": 3395
+   },
+   "adj": [
+    "caroline-islands",
+    "sz-46",
+    "sz-48",
+    "sz-50",
+    "sz-52",
+    "sz-53"
+   ]
+  },
+  {
+   "id": "sz-52",
+   "number": 52,
+   "center": {
+    "px": 7675,
+    "py": 2615
+   },
+   "adj": [
+    "sz-51",
+    "sz-53",
+    "sz-59",
+    "sz-60",
+    "wake-island"
+   ]
+  },
+  {
+   "id": "sz-53",
+   "number": 53,
+   "center": {
+    "px": 8360,
+    "py": 3270
+   },
+   "adj": [
+    "hawaiian-islands",
+    "sz-45",
+    "sz-51",
+    "sz-52",
+    "sz-54",
+    "sz-56"
+   ]
+  },
+  {
+   "id": "sz-54",
+   "number": 54,
+   "center": {
+    "px": 8938,
+    "py": 3030
+   },
+   "adj": [
+    "sz-44",
+    "sz-45",
+    "sz-53",
+    "sz-55",
+    "sz-56"
+   ]
+  },
+  {
+   "id": "sz-55",
+   "number": 55,
+   "center": {
+    "px": 9305,
+    "py": 2610
+   },
+   "adj": [
+    "mexico",
+    "sz-20",
+    "sz-44",
+    "sz-54",
+    "sz-56",
+    "sz-65",
+    "western-united-states"
+   ]
+  },
+  {
+   "id": "sz-56",
+   "number": 56,
+   "center": {
+    "px": 8800,
+    "py": 2075
+   },
+   "adj": [
+    "midway",
+    "sz-53",
+    "sz-54",
+    "sz-55",
+    "sz-57"
+   ]
+  },
+  {
+   "id": "sz-57",
+   "number": 57,
+   "center": {
+    "px": 8290,
+    "py": 1675
+   },
+   "adj": [
+    "sz-56",
+    "sz-58",
+    "sz-63",
+    "sz-64"
+   ]
+  },
+  {
+   "id": "sz-58",
+   "number": 58,
+   "center": {
+    "px": 7828,
+    "py": 1450
+   },
+   "adj": [
+    "japan",
+    "sz-57",
+    "sz-59",
+    "sz-62",
+    "sz-63"
+   ]
+  },
+  {
+   "id": "sz-59",
+   "number": 59,
+   "center": {
+    "px": 7730,
+    "py": 2065
+   },
+   "adj": [
+    "iwo-jima",
+    "sz-52",
+    "sz-58",
+    "sz-60"
+   ]
+  },
+  {
+   "id": "sz-60",
+   "number": 60,
+   "center": {
+    "px": 7130,
+    "py": 2907
+   },
+   "adj": [
+    "okinawa",
+    "sz-50",
+    "sz-52",
+    "sz-59",
+    "sz-61",
+    "sz-62"
+   ]
+  },
+  {
+   "id": "sz-61",
+   "number": 61,
+   "center": {
+    "px": 6550,
+    "py": 2215
+   },
+   "adj": [
+    "formosa",
+    "fukien",
+    "kiangsu",
+    "kwangtung",
+    "manchuria",
+    "sz-36",
+    "sz-50",
+    "sz-60",
+    "sz-62"
+   ]
+  },
+  {
+   "id": "sz-62",
+   "number": 62,
+   "center": {
+    "px": 7072,
+    "py": 1675
+   },
+   "adj": [
+    "japan",
+    "manchuria",
+    "soviet-far-east",
+    "sz-58",
+    "sz-60",
+    "sz-61",
+    "sz-63"
+   ]
+  },
+  {
+   "id": "sz-63",
+   "number": 63,
+   "center": {
+    "px": 7855,
+    "py": 915
+   },
+   "adj": [
+    "japan",
+    "soviet-far-east",
+    "sz-57",
+    "sz-58",
+    "sz-62",
+    "sz-64"
+   ]
+  },
+  {
+   "id": "sz-64",
+   "number": 64,
+   "center": {
+    "px": 8218,
+    "py": 1150
+   },
+   "adj": [
+    "alaska",
+    "sz-57",
+    "sz-63",
+    "sz-65"
+   ]
+  },
+  {
+   "id": "sz-65",
+   "number": 65,
+   "center": {
+    "px": 8755,
+    "py": 1112
+   },
+   "adj": [
+    "alaska",
+    "sz-55",
+    "sz-64",
+    "western-canada"
+   ]
+  }
+ ]
+}

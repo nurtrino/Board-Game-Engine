@@ -14,55 +14,63 @@ import {
   distancesFrom, findPath, TREK_CATALOG, PARKS, MAJORS, TREK_RULES,
   createDarkTower, dtViewFor, applyDtAction, dtBotAction, dtNormalize, DT_KEYS,
   createDune, duneViewFor, applyDuneAction,
+  createAxisGame, axisGameViewFor, applyAxisGameAction,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
   GAME_SEATS, RULES as TTR_RULES,
-  type BrassState, type TtrState, type TrekState, type DtState, type DuneState,
-  type BrassAction, type TtrAction, type TrekAction, type DtAction, type DuneAction,
+  type BrassState, type TtrState, type TrekState, type DtState, type DuneState, type AxisState,
+  type BrassAction, type TtrAction, type TrekAction, type DtAction, type DuneAction, type AxisAction,
   type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat, type DuneSeat, type Faction,
-  type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo,
+  type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo, type GameOptions, type AxisSeat,
 } from '@bge/shared';
 import { createStore, type SavedRoom } from './store.js';
 
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState | TrekState | DtState | DuneState;
+type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState;
 
 const engines = {
   brass: {
-    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+    create: (seated: { name: string; color: SeatColor }[], seed: number, _options?: GameOptions): GameState =>
       createBrass(seated as { name: string; color: Color }[], seed),
     view: (state: GameState, viewer: number | null | 'dev') => viewFor(state as BrassState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyAction(state as BrassState, seat, action as BrassAction),
     soloSeats: 4, // dev convenience: pad an empty table to a full game
   },
   ttr: {
-    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+    create: (seated: { name: string; color: SeatColor }[], seed: number, _options?: GameOptions): GameState =>
       createTtr(seated as { name: string; color: TtrColor }[], seed),
     view: (state: GameState, viewer: number | null | 'dev') => ttrViewFor(state as TtrState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyTtrAction(state as TtrState, seat, action as TtrAction),
     soloSeats: 5,
   },
   trek: {
-    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+    create: (seated: { name: string; color: SeatColor }[], seed: number, _options?: GameOptions): GameState =>
       createTrek(seated as { name: string; color: TrekSeat }[], seed),
     view: (state: GameState, viewer: number | null | 'dev') => trekViewFor(state as TrekState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyTrekAction(state as TrekState, seat, action as TrekAction),
     soloSeats: 3,
   },
   darktower: {
-    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+    create: (seated: { name: string; color: SeatColor }[], seed: number, _options?: GameOptions): GameState =>
       createDarkTower(seated as { name: string; color: DtSeat }[], seed),
     view: (state: GameState, viewer: number | null | 'dev') => dtViewFor(state as DtState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyDtAction(state as DtState, seat, action as DtAction),
     soloSeats: 2,
   },
   dune: {
-    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+    create: (seated: { name: string; color: SeatColor }[], seed: number, _options?: GameOptions): GameState =>
       createDune(seated as { name: string; color: DuneSeat }[], seed),
     view: (state: GameState, viewer: number | null | 'dev') => duneViewFor(state as DuneState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyDuneAction(state as DuneState, seat, action as DuneAction),
     soloSeats: 3,
+  },
+  axis: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number, options?: GameOptions): GameState =>
+      createAxisGame(seated as { name: string; color: AxisSeat }[], seed, options ?? {}),
+    view: (state: GameState, viewer: number | null | 'dev') => axisGameViewFor(state as AxisState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyAxisGameAction(state as AxisState, seat, action as AxisAction),
+    soloSeats: 1, // one human may drive every power (owner: dev control-all)
   },
 } as const;
 
@@ -124,6 +132,7 @@ interface Room {
   watchers: Set<WebSocket>; // TV board views
   started: boolean;
   state: GameState | null;
+  options?: GameOptions; // create-screen choices (scenario, variants)
   updatedAt: number;
 }
 
@@ -146,6 +155,7 @@ function toSaved(room: Room): SavedRoom {
     players: room.players.map(({ name, color, token, isBot }) => ({ name, color, token, isBot })),
     started: room.started,
     state: room.state,
+    options: room.options,
     updatedAt: room.updatedAt,
   };
 }
@@ -157,9 +167,10 @@ function persist(room: Room): void {
 const DAY = 24 * 60 * 60 * 1000;
 
 /** Drop finished games after a week and anything untouched for 60 days. */
-function stale(r: { started: boolean; state: GameState | null; updatedAt: number }): boolean {
+function stale(r: { started: boolean; state: unknown; updatedAt: number }): boolean {
   const age = Date.now() - r.updatedAt;
-  if (r.state?.phase === 'ended') return age > 7 * DAY;
+  const phase = (r.state as { phase?: string } | null)?.phase;
+  if (phase === 'ended' || phase === 'gameOver') return age > 7 * DAY;
   if (!r.started) return age > 7 * DAY; // lobbies that never started
   return age > 60 * DAY;
 }
@@ -179,7 +190,8 @@ function stale(r: { started: boolean; state: GameState | null; updatedAt: number
       players: r.players.map((p) => ({ ...p, sockets: new Set<WebSocket>() })),
       watchers: new Set(),
       started: r.started,
-      state: r.state,
+      state: r.state as GameState | null,
+      options: r.options,
       updatedAt: r.updatedAt,
     });
     restored++;
@@ -744,7 +756,8 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
       const name = (msg.name || '').trim().slice(0, 40) || `Game ${id}`;
       const room: Room = {
         id, name, game: msg.game || 'brass', createdAt: Date.now(),
-        players: [], watchers: new Set(), started: false, state: null, updatedAt: Date.now(),
+        players: [], watchers: new Set(), started: false, state: null,
+        options: msg.options, updatedAt: Date.now(),
       };
       rooms.set(room.id, room);
       room.watchers.add(ws);
@@ -829,7 +842,7 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
         const c = seats.colors.find((cc) => !seated.some((s) => s.color === cc))!;
         seated.push({ name: `CPU ${seated.length + 1}`, color: c });
       }
-      room.state = engine.create(seated, seed);
+      room.state = engine.create(seated, seed, room.options);
       broadcast(room);
       return;
     }

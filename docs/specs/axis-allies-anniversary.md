@@ -2,10 +2,17 @@
 
 Source mod: TTS **1961347286** "Axis and Allies Anniversary Edition(1941 and
 1942)". The mod is a **dumb table** (320 chars of Lua, zero snap points, zero
-zones): it contributes the board art (two Custom_Boards, GUIDs `be20f5` +
-`128d09`), 453 unit meshes, 77 per-nation infinite unit bags, 141 cards
-(national reference cards, charts), and 4 assetbundles. ALL rules and map
-geometry come from elsewhere:
+zones). CORRECTED asset roles (July 9): the WORLD MAP is the mod's custom
+**TABLE texture** (TableURL, 9500x4956 PNG — printed IPC values, VC stars,
+numbered sea zones, mobilization chart; horizontal wraparound with the
+Americas split across the edges; staged as `client/public/axis/map-full.jpg`
++ `map.jpg`). The two Custom_Boards are NOT the map: `be20f5` = the BATTLE
+BOARD art (use behind the battle view), `128d09` = the National
+Production/R&D chart (use for the TV production screen). Also: 453 unit
+meshes, 77 per-nation infinite unit bags, two "Packup" memory bags whose
+contents carry the full 1941/1942 setups with saved transforms, 141 cards
+(IPC money only — no setup charts or reference cards exist in the mod).
+ALL rules and remaining geometry come from elsewhere:
 
 - **Rules golden**: the official Anniversary rulebook PDF (16pp) staged from
   the owner's assistant repo (`scratchpad/aaa/public/rulebook.pdf` → stage to
