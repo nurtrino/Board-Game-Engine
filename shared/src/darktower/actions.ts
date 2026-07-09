@@ -450,6 +450,7 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
         event(s, p, 'turned back at the frontier', p.quad >= 4 ? 'home is the last stop — the tower awaits' : 'the frontier guard demands the key', steps);
       } else {
         p.quad++;
+        p.spot = kingdomEntrySpot(currentKingdom(p.color, p.quad)); // carried into the new kingdom
         steps.push(step('', '  ', 'frontier', 2500));
         event(s, p, 'crossed the frontier', `kingdom ${p.quad} of 4`, steps);
       }
