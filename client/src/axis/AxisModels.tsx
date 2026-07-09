@@ -96,7 +96,7 @@ export default function AxisModels() {
   return (
     <div style={{ position: 'fixed', inset: 0, background: '#0a0d12' }}>
       <Canvas
-        camera={{ position: [w / 2 - CELL, 34, 16], fov: 40 }}
+        camera={{ position: only ? [w / 2 - CELL, 16, 9] : [w / 2 - CELL, 34, 16], fov: 40 }}
         dpr={[1, 2]}
         gl={{ antialias: true, preserveDrawingBuffer: true }}
         onCreated={({ scene }) => { (window as unknown as { __scene?: unknown }).__scene = scene; }}
@@ -106,12 +106,12 @@ export default function AxisModels() {
         <directionalLight position={[-15, 25, -20]} intensity={0.5} />
         <mesh position={[w / 2 - CELL, -0.01, -18]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[w * 2.2, 90]} />
-          <meshStandardMaterial color="#141920" roughness={1} />
+          <meshStandardMaterial color="#2a3038" roughness={1} />
         </mesh>
         <Suspense fallback={null}>
           <Grid manifest={manifest} only={only} clamp={clamp} />
         </Suspense>
-        <OrbitControls target={[w / 2 - CELL, 0, -18]} enableDamping dampingFactor={0.1} />
+        <OrbitControls target={[w / 2 - CELL, 0, only ? 0 : -18]} enableDamping dampingFactor={0.1} />
       </Canvas>
       <div style={{ position: 'absolute', top: 10, left: 12, color: '#9aa3ad', font: '12px Inter, sans-serif' }}>
         Axis & Allies model lineup · ?row=germany isolates a nation · ?scale=raw shows unclamped sizes

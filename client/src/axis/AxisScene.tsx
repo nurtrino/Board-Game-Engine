@@ -47,9 +47,9 @@ export function meshFor(manifest: AxisManifest, power: string | null, unit: stri
 // the board (owner call). USA green, Germany gray, UK tan, Japan orange,
 // USSR maroon, Italy brown, China light green; AA guns + ICs light gray.
 const PIECE_TINT: Record<string, [number, number, number]> = {
-  germany: [0.43, 0.43, 0.45],
-  ussr: [0.56, 0.19, 0.22],
-  japan: [0.85, 0.54, 0.17],
+  germany: [0.016, 0.016, 0.02], // black (charcoal so the shape still shades)
+  ussr: [0.3, 0.055, 0.075], // maroon (deep, not pink)
+  japan: [0.38, 0.08, 0.012], // dark ruddy orange
   uk: [0.79, 0.70, 0.49],
   italy: [0.48, 0.32, 0.19],
   usa: [0.31, 0.49, 0.23],
