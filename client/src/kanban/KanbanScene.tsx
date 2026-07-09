@@ -274,6 +274,23 @@ function Pieces({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
   );
 }
 
+export const DESIGN_SPOT = (i: number): { x: number; z: number } => ({ x: DESIGN_ROWS[Math.floor(i / 4)], z: DESIGN_COLS[i % 4] });
+export const STACK_SPOT = (k: 'central' | 'officeTop' | 'officeBottom'): { x: number; z: number } =>
+  k === 'central' ? CENTRAL_SPOT : k === 'officeTop' ? OFFICE_TOP_SPOT : OFFICE_BOTTOM_SPOT;
+export const LAYOUT_TABLES = LAYOUT;
+export const NODE_SPOT = (n: number): { x: number; z: number } => NODE_POS[n];
+export const CERT_SPOT = (section: number, space: number): { x: number; z: number } => ({
+  x: xAt(1855), z: zAt(210 + 304 * section + 63.5 * (3 - space)),
+});
+/** model bay centres in the R&D upgrade area, left to right on the art */
+export const BAY_SPOT = (m: CarModel): { x: number; z: number } => {
+  const i = ['City', 'SUV', 'Truck', 'Sport', 'Concept'].indexOf(m);
+  return { x: xAt(1050), z: zAt(700 + 285 * i) };
+};
+/** test-track queue spot for index i (matches the Pieces layout) */
+export const QUEUE_SPOT = (i: number): { x: number; z: number } => ({ x: 35.2, z: 26 - i * 3.1 });
+export const KANBAN_DECK_PICK = { x: 12.4, z: -33.0 };
+
 const DEMAND_GUID: Record<CarModel, string> = { City: '810ce7', Concept: 'daf296', Sport: 'ff09d4', SUV: 'aab3a8', Truck: '85ca8c' };
 
 // design display geometry from DESIGNS.Zones: central stack, two office
@@ -418,13 +435,61 @@ function AimCamera() {
   return <OrbitControls ref={ref} target={[15, 0, -0.5]} enableDamping dampingFactor={0.08} minDistance={8} maxDistance={110} maxPolarAngle={Math.PI * 0.47} />;
 }
 
-export function KanbanTable({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
+// ---------- pick targets (device tap-to-act, Brass pattern) ----------
+
+export interface KanbanPick { id: string; x: number; z: number; r?: number; w?: number; d?: number; label?: string }
+
+const PICK_FRAME_GEO = (() => {
+  const s = new THREE.Shape();
+  s.moveTo(-0.5, -0.5); s.lineTo(0.5, -0.5); s.lineTo(0.5, 0.5); s.lineTo(-0.5, 0.5); s.lineTo(-0.5, -0.5);
+  const hole = new THREE.Path();
+  const i = 0.38;
+  hole.moveTo(-i, -i); hole.lineTo(-i, i); hole.lineTo(i, i); hole.lineTo(i, -i); hole.lineTo(-i, -i);
+  s.holes.push(hole);
+  return new THREE.ShapeGeometry(s);
+})();
+
+function PickMark({ t, onPick }: { t: KanbanPick; onPick?: (id: string) => void }) {
+  const fill = useRef<THREE.MeshBasicMaterial>(null);
+  const frame = useRef<THREE.MeshBasicMaterial>(null);
+  const grp = useRef<THREE.Group>(null);
+  useFrame(({ clock }) => {
+    const k = 0.5 + 0.5 * Math.sin(clock.elapsedTime * 3.6);
+    if (fill.current) fill.current.opacity = 0.14 + 0.1 * k;
+    if (frame.current) frame.current.opacity = 0.85 + 0.15 * k;
+    if (grp.current) grp.current.scale.setScalar(1 + 0.03 * k);
+  });
+  const w = t.w ?? (t.r ?? 1.6) * 2;
+  const d = t.d ?? (t.r ?? 1.6) * 2;
+  return (
+    <group ref={grp} position={rp(t.x, t.z, BOARD_Y + 0.12)}>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        scale={[w, d, 1]}
+        onClick={(e) => { e.stopPropagation(); onPick?.(t.id); }}
+        onPointerOver={(e) => { document.body.style.cursor = 'pointer'; e.stopPropagation(); }}
+        onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+      >
+        <planeGeometry />
+        <meshBasicMaterial ref={fill} color="#aef7ff" transparent opacity={0.16} depthWrite={false} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} scale={[w * 1.16, d * 1.16, 1]} geometry={PICK_FRAME_GEO}>
+        <meshBasicMaterial ref={frame} color="#d8fbff" transparent opacity={0.9} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
+export function KanbanTable({ scene, view, pickTargets, onPick, embed = false }: {
+  scene: KanbanSceneDef; view: KanbanView;
+  pickTargets?: KanbanPick[]; onPick?: (id: string) => void; embed?: boolean;
+}) {
   return (
     <Canvas
       camera={{ position: [86, 62, -0.5], fov: 40 }}
       dpr={[1, 2]}
       gl={{ antialias: true }}
-      style={{ position: 'absolute', inset: 0, background: '#05070a' }}
+      style={embed ? { width: '100%', height: '100%', background: '#05070a' } : { position: 'absolute', inset: 0, background: '#05070a' }}
     >
       <ambientLight intensity={0.85} />
       <directionalLight position={[30, 55, 25]} intensity={1.4} />
@@ -434,6 +499,7 @@ export function KanbanTable({ scene, view }: { scene: KanbanSceneDef; view: Kanb
         <Pieces scene={scene} view={view} />
         <Tiles scene={scene} view={view} />
         <BoardTiles scene={scene} view={view} />
+        {pickTargets?.map((pt) => <PickMark key={pt.id} t={pt} onPick={onPick} />)}
       </Suspense>
       <AimCamera />
     </Canvas>
