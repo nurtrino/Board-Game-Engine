@@ -287,5 +287,25 @@
  "ppTrack": {
   "start": 15,
   "max": 99
+ },
+ "factoryGoalTiles": {
+  "cars": {
+   "2d636f": 2,
+   "c2437f": 3,
+   "0d4747": 4,
+   "b2df96": 5
+  },
+  "certifications": {
+   "ca07ca": 2,
+   "b5dac4": 3,
+   "4f885f": 4,
+   "e9dc50": 5
+  },
+  "upgrades": {
+   "3d9bc1": 2,
+   "fe311b": 3,
+   "120d18": 4,
+   "0e2a76": 5
+  }
  }
 }

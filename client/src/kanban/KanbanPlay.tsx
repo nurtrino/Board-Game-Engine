@@ -5,10 +5,11 @@
 
 import { useState } from 'react';
 import {
-  DEPTS, DESIGN_BY_GUID, GOAL_BY_GUID, KANBAN_RULES, MODELS, ORDER_BY_GUID, PARTS,
+  DEPTS, DESIGN_BY_GUID, GOAL_BY_GUID, KANBAN_RULES, MODELS, ORDER_BY_GUID, PARTS, UPGRADE_SPACES,
   type CarModel, type Dept, type KanbanAction, type KanbanView, type Part,
 } from '@bge/shared';
-import { SEAT_TINT } from './KanbanScene';
+import { SEAT_TINT, useKanbanScene } from './KanbanScene';
+import { KanbanMat } from './KanbanMat';
 import { GameIntro, type Intro } from '../ttr/GameIntro';
 import { playSfx } from '../sfx';
 
@@ -70,8 +71,9 @@ export function KanbanPlay({ view, act, error }: {
 }) {
   const [showIntro, setShowIntro] = useState(true);
   const [pickPart, setPickPart] = useState<Part | null>(null); // orientation picks
+  const scene = useKanbanScene();
   const me = view.you !== null ? view.players[view.you] : null;
-  if (!me) return <div className="page center"><h2>Clocking in</h2></div>;
+  if (!me || !scene) return <div className="page center"><h2>Clocking in</h2></div>;
 
   const send = (a: KanbanAction) => { playSfx('click'); act(a); };
   const myPending = view.pending?.seat === me.seat ? view.pending : null;
@@ -226,6 +228,10 @@ export function KanbanPlay({ view, act, error }: {
     <div className="kb-wrap">
       {head}
       <div className="kb-main">
+        {/* the player board: designs, parts, books, vouchers, cars as real objects */}
+        <div style={{ paddingTop: 6 }}>
+          <KanbanMat scene={scene} me={me} height="30vh" />
+        </div>
         <div className="kb-lab" style={{ padding: '6px 0' }}>
           {view.phase === 'ended' ? `${view.players.find((p) => p.color === view.winner)?.name} wins`
             : view.pending ? `${view.players[view.pending.seat].name} is deciding`
@@ -356,17 +362,25 @@ export function KanbanPlay({ view, act, error }: {
                     </span>
                   </div>
                 ))}
-                <div className="kb-lab" style={{ paddingTop: 8 }}>Upgrade a design · 1 shift, +2 PP</div>
+                <div className="kb-lab" style={{ paddingTop: 8 }}>Upgrade a design · 1 shift, +2 PP · pick the space for its benefit</div>
                 {(me.designs ?? []).filter((g) => DESIGN_BY_GUID[g].part).map((g) => {
                   const def = DESIGN_BY_GUID[g];
-                  const space = view.upgrades[def.model].findIndex((x) => x === null);
                   const havePart = me.parts.includes(def.part!);
+                  const canDouble = me.doubleUpgrade === 'ready' && !view.partDoubled[def.part!];
+                  const benefits = (UPGRADE_SPACES as Record<string, ({ pp?: number; bankedShifts?: number; books?: number } | null)[]>)[def.model];
+                  if (me.shiftsLeft <= 0 || (!havePart && me.vouchers <= 0)) return null;
                   return (
-                    <button key={g} className="kb-opt" disabled={me.shiftsLeft <= 0 || space < 0 || (!havePart && me.vouchers <= 0)}
-                      onClick={() => send({ type: 'upgrade_design', design: g, space, voucher: !havePart, double: me.doubleUpgrade === 'ready' && !view.partDoubled[def.part!] })}>
-                      <b>{def.model} · {def.part}</b>
-                      <span style={{ opacity: 0.6 }}>{havePart ? 'have part' : me.vouchers > 0 ? 'via voucher' : 'need part'}{me.doubleUpgrade === 'ready' && !view.partDoubled[def.part!] ? ' · double!' : ''}</span>
-                    </button>
+                    <div key={g} className="kb-opt" style={{ flexDirection: 'column', alignItems: 'stretch', display: 'flex', gap: 6, cursor: 'default' }}>
+                      <span><b>{def.model} · {def.part}</b> <span style={{ opacity: 0.6 }}>{havePart ? 'have part' : 'via voucher'}{canDouble ? ' · double!' : ''}</span></span>
+                      <span style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {view.upgrades[def.model].map((x, space) => x === null && (
+                          <button key={space} className="kb-btn"
+                            onClick={() => send({ type: 'upgrade_design', design: g, space, voucher: !havePart, double: canDouble })}>
+                            {benefits?.[space]?.pp ? `+${benefits[space]!.pp} PP` : benefits?.[space]?.bankedShifts ? 'bank 1' : benefits?.[space]?.books ? '+1 book' : 'plain'}
+                          </button>
+                        ))}
+                      </span>
+                    </div>
                   );
                 })}
               </>
