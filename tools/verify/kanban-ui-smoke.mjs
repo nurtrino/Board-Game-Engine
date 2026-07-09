@@ -62,8 +62,9 @@ function tickInPage() {
   const got = q('button').find((b) => b.textContent.trim() === 'Got it');
   if (got) { got.click(); return 'intro'; }
 
-  // all actionable controls except the help button
-  const opts = enabled(q('button.kb-opt'));
+  // all actionable controls except the help button and view toggles;
+  // kb-card buttons are image-only (goal cards, design chips)
+  const opts = enabled([...q('button.kb-opt'), ...q('button.kb-card')]);
   const btns = enabled(q('button.kb-btn')).filter((b) => !['?', 'FACTORY', 'MY MAT'].includes(b.textContent.trim().toUpperCase()));
   const endTurn = btns.find((b) => /END TURN/i.test(b.textContent));
   const pass = btns.find((b) => /^PASS$/i.test(b.textContent.trim()));
