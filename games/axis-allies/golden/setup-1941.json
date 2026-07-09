@@ -1,0 +1,1117 @@
+{
+ "units": {
+  "sz-53": [
+   {
+    "power": "usa",
+    "key": "battleship",
+    "count": 1
+   }
+  ],
+  "eastern-canada": [
+   {
+    "power": "uk",
+    "key": "tank",
+    "count": 1
+   }
+  ],
+  "burma": [
+   {
+    "power": "china",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "belorussia": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "sz-56": [
+   {
+    "power": "usa",
+    "key": "transport",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "destroyer",
+    "count": 1
+   }
+  ],
+  "libya": [
+   {
+    "power": "germany",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "italy",
+    "key": "infantry",
+    "count": 2
+   },
+   {
+    "power": "germany",
+    "key": "tank",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "sz-7": [
+   {
+    "power": "germany",
+    "key": "submarine",
+    "count": 2
+   }
+  ],
+  "karelia": [
+   {
+    "power": "ussr",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "ussr",
+    "key": "factory",
+    "count": 1
+   }
+  ],
+  "united-kingdom": [
+   {
+    "power": "uk",
+    "key": "factory",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 2
+   },
+   {
+    "power": "uk",
+    "key": "aaGun",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "fighter",
+    "count": 2
+   },
+   {
+    "power": "uk",
+    "key": "tank",
+    "count": 1
+   }
+  ],
+  "formosa": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "japan",
+    "key": "fighter",
+    "count": 1
+   }
+  ],
+  "italy": [
+   {
+    "power": "italy",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "fighter",
+    "count": 1
+   },
+   {
+    "power": "italy",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "italy",
+    "key": "tank",
+    "count": 1
+   }
+  ],
+  "hawaiian-islands": [
+   {
+    "power": "usa",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "fighter",
+    "count": 1
+   }
+  ],
+  "sz-35": [
+   {
+    "power": "uk",
+    "key": "destroyer",
+    "count": 1
+   }
+  ],
+  "japan": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 4
+   },
+   {
+    "power": "japan",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "japan",
+    "key": "tank",
+    "count": 1
+   },
+   {
+    "power": "japan",
+    "key": "fighter",
+    "count": 1
+   }
+  ],
+  "sz-50": [
+   {
+    "power": "japan",
+    "key": "transport",
+    "count": 1,
+    "cargo": [
+     {
+      "power": "japan",
+      "key": "infantry",
+      "count": 1
+     },
+     {
+      "power": "japan",
+      "key": "infantry",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "power": "japan",
+    "key": "transport",
+    "count": 1,
+    "cargo": [
+     {
+      "power": "japan",
+      "key": "artillery",
+      "count": 1
+     },
+     {
+      "power": "japan",
+      "key": "infantry",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "power": "japan",
+    "key": "carrier",
+    "count": 1,
+    "cargo": [
+     {
+      "power": "japan",
+      "key": "fighter",
+      "count": 1
+     },
+     {
+      "power": "japan",
+      "key": "fighter",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "power": "usa",
+    "key": "transport",
+    "count": 1
+   }
+  ],
+  "germany": [
+   {
+    "power": "germany",
+    "key": "aaGun",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 3
+   },
+   {
+    "power": "germany",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "factory",
+    "count": 1
+   }
+  ],
+  "philippine-islands": [
+   {
+    "power": "usa",
+    "key": "infantry",
+    "count": 2
+   }
+  ],
+  "eastern-united-states": [
+   {
+    "power": "usa",
+    "key": "factory",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "fighter",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "aaGun",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "artillery",
+    "count": 1
+   }
+  ],
+  "baltic-states": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 7
+   },
+   {
+    "power": "ussr",
+    "key": "aaGun",
+    "count": 1
+   }
+  ],
+  "balkans": [
+   {
+    "power": "italy",
+    "key": "infantry",
+    "count": 2
+   },
+   {
+    "power": "italy",
+    "key": "fighter",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "tank",
+    "count": 1
+   }
+  ],
+  "finland": [
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 2
+   }
+  ],
+  "sz-14": [
+   {
+    "power": "italy",
+    "key": "cruiser",
+    "count": 2
+   },
+   {
+    "power": "italy",
+    "key": "battleship",
+    "count": 1
+   },
+   {
+    "power": "italy",
+    "key": "transport",
+    "count": 1
+   }
+  ],
+  "czechoslovakia-hungary": [
+   {
+    "power": "germany",
+    "key": "tank",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 4
+   },
+   {
+    "power": "germany",
+    "key": "bomber",
+    "count": 1
+   }
+  ],
+  "sz-51": [
+   {
+    "power": "japan",
+    "key": "transport",
+    "count": 2
+   },
+   {
+    "power": "japan",
+    "key": "destroyer",
+    "count": 1
+   }
+  ],
+  "morocco-algeria": [
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "alaska": [
+   {
+    "power": "usa",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "sz-62": [
+   {
+    "power": "japan",
+    "key": "transport",
+    "count": 1
+   }
+  ],
+  "kazakh": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 3
+   }
+  ],
+  "ukraine": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 3
+   }
+  ],
+  "sz-5": [
+   {
+    "power": "germany",
+    "key": "cruiser",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "submarine",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "transport",
+    "count": 1
+   }
+  ],
+  "kiangsu": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 2
+   }
+  ],
+  "norway": [
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 2
+   },
+   {
+    "power": "germany",
+    "key": "fighter",
+    "count": 1
+   }
+  ],
+  "central-united-states": [
+   {
+    "power": "usa",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "novosibirsk": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 4
+   },
+   {
+    "power": "ussr",
+    "key": "aaGun",
+    "count": 1
+   }
+  ],
+  "anglo-egypt-sudan": [
+   {
+    "power": "uk",
+    "key": "fighter",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "tank",
+    "count": 1
+   }
+  ],
+  "france": [
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 2
+   },
+   {
+    "power": "germany",
+    "key": "tank",
+    "count": 1
+   }
+  ],
+  "east-poland": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "poland": [
+   {
+    "power": "germany",
+    "key": "fighter",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "tank",
+    "count": 2
+   }
+  ],
+  "french-madagascar": [
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "stanovoj-chrebet": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 2
+   }
+  ],
+  "kwangtung": [
+   {
+    "power": "china",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "evenki-national-okrug": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 2
+   }
+  ],
+  "sz-52": [
+   {
+    "power": "japan",
+    "key": "carrier",
+    "count": 1,
+    "cargo": [
+     {
+      "power": "japan",
+      "key": "fighter",
+      "count": 1
+     },
+     {
+      "power": "japan",
+      "key": "fighter",
+      "count": 1
+     }
+    ]
+   }
+  ],
+  "sz-13": [
+   {
+    "power": "germany",
+    "key": "transport",
+    "count": 1
+   }
+  ],
+  "okinawa": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "buryatia": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 5
+   }
+  ],
+  "sz-21": [
+   {
+    "power": "usa",
+    "key": "destroyer",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "carrier",
+    "count": 1,
+    "cargo": [
+     {
+      "power": "usa",
+      "key": "fighter",
+      "count": 1
+     }
+    ]
+   }
+  ],
+  "northwestern-europe": [
+   {
+    "power": "germany",
+    "key": "fighter",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "bomber",
+    "count": 1
+   }
+  ],
+  "russia": [
+   {
+    "power": "ussr",
+    "key": "factory",
+    "count": 1
+   },
+   {
+    "power": "ussr",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "ussr",
+    "key": "tank",
+    "count": 1
+   }
+  ],
+  "mexico": [
+   {
+    "power": "usa",
+    "key": "aaGun",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "fighter",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "bomber",
+    "count": 1
+   }
+  ],
+  "manchuria": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 2
+   },
+   {
+    "power": "japan",
+    "key": "fighter",
+    "count": 1
+   }
+  ],
+  "sz-12": [
+   {
+    "power": "uk",
+    "key": "destroyer",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "cruiser",
+    "count": 1
+   }
+  ],
+  "india": [
+   {
+    "power": "uk",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 3
+   }
+  ],
+  "caucasus": [
+   {
+    "power": "ussr",
+    "key": "factory",
+    "count": 1
+   },
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 5
+   },
+   {
+    "power": "ussr",
+    "key": "aaGun",
+    "count": 1
+   }
+  ],
+  "egypt": [
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 2
+   },
+   {
+    "power": "uk",
+    "key": "artillery",
+    "count": 1
+   }
+  ],
+  "sz-2": [
+   {
+    "power": "uk",
+    "key": "transport",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "battleship",
+    "count": 1
+   }
+  ],
+  "yunnan": [
+   {
+    "power": "usa",
+    "key": "fighter",
+    "count": 1
+   }
+  ],
+  "bulgaria-romania": [
+   {
+    "power": "italy",
+    "key": "tank",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "artillery",
+    "count": 1
+   },
+   {
+    "power": "germany",
+    "key": "tank",
+    "count": 2
+   },
+   {
+    "power": "germany",
+    "key": "infantry",
+    "count": 3
+   }
+  ],
+  "french-indo-china-thailand": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 3
+   }
+  ],
+  "sz-61": [
+   {
+    "power": "japan",
+    "key": "battleship",
+    "count": 1
+   },
+   {
+    "power": "japan",
+    "key": "cruiser",
+    "count": 1
+   }
+  ],
+  "sz-9": [
+   {
+    "power": "uk",
+    "key": "transport",
+    "count": 1
+   },
+   {
+    "power": "uk",
+    "key": "destroyer",
+    "count": 1
+   }
+  ],
+  "caroline-islands": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 3
+   }
+  ],
+  "western-united-states": [
+   {
+    "power": "usa",
+    "key": "bomber",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "factory",
+    "count": 1
+   }
+  ],
+  "western-canada": [
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "sz-37": [
+   {
+    "power": "uk",
+    "key": "transport",
+    "count": 1
+   }
+  ],
+  "sz-41": [
+   {
+    "power": "uk",
+    "key": "transport",
+    "count": 1
+   }
+  ],
+  "union-of-south-africa": [
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "sz-10": [
+   {
+    "power": "usa",
+    "key": "transport",
+    "count": 1
+   },
+   {
+    "power": "usa",
+    "key": "destroyer",
+    "count": 1
+   }
+  ],
+  "sz-42": [
+   {
+    "power": "uk",
+    "key": "destroyer",
+    "count": 1
+   }
+  ],
+  "sz-57": [
+   {
+    "power": "japan",
+    "key": "carrier",
+    "count": 1,
+    "cargo": [
+     {
+      "power": "japan",
+      "key": "fighter",
+      "count": 1
+     },
+     {
+      "power": "japan",
+      "key": "fighter",
+      "count": 1
+     }
+    ]
+   }
+  ],
+  "eastern-ukraine": [
+   {
+    "power": "ussr",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "trans-jordan": [
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 2
+   }
+  ],
+  "sz-4": [
+   {
+    "power": "ussr",
+    "key": "submarine",
+    "count": 1
+   }
+  ],
+  "iwo-jima": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "wake-island": [
+   {
+    "power": "usa",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "australia": [
+   {
+    "power": "uk",
+    "key": "infantry",
+    "count": 3
+   }
+  ],
+  "midway": [
+   {
+    "power": "usa",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "sz-6": [
+   {
+    "power": "uk",
+    "key": "destroyer",
+    "count": 1
+   }
+  ],
+  "suiyuan": [
+   {
+    "power": "china",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "fukien": [
+   {
+    "power": "japan",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "hupeh": [
+   {
+    "power": "china",
+    "key": "infantry",
+    "count": 1
+   }
+  ],
+  "sz-48": [
+   {
+    "power": "usa",
+    "key": "destroyer",
+    "count": 1
+   }
+  ]
+ },
+ "control": {
+  "alaska": "usa",
+  "western-canada": "uk",
+  "eastern-canada": "uk",
+  "western-united-states": "usa",
+  "central-united-states": "usa",
+  "eastern-united-states": "usa",
+  "mexico": "usa",
+  "panama": "usa",
+  "west-indies": "usa",
+  "greenland": "usa",
+  "hawaiian-islands": "usa",
+  "midway": "usa",
+  "wake-island": "usa",
+  "brazil": "usa",
+  "united-kingdom": "uk",
+  "iceland": "uk",
+  "gibraltar": "uk",
+  "norway": "germany",
+  "finland": "germany",
+  "northwestern-europe": "germany",
+  "germany": "germany",
+  "france": "germany",
+  "italy": "italy",
+  "balkans": "italy",
+  "czechoslovakia-hungary": "germany",
+  "poland": "germany",
+  "bulgaria-romania": "germany",
+  "baltic-states": "ussr",
+  "karelia": "ussr",
+  "archangel": "ussr",
+  "east-poland": "ussr",
+  "belorussia": "ussr",
+  "ukraine": "ussr",
+  "eastern-ukraine": "ussr",
+  "russia": "ussr",
+  "caucasus": "ussr",
+  "kazakh": "ussr",
+  "novosibirsk": "ussr",
+  "urals": "ussr",
+  "evenki-national-okrug": "ussr",
+  "yakut": "ussr",
+  "stanovoj-chrebet": "ussr",
+  "buryatia": "ussr",
+  "soviet-far-east": "ussr",
+  "persia": "uk",
+  "trans-jordan": "uk",
+  "morocco-algeria": "germany",
+  "libya": "italy",
+  "egypt": "uk",
+  "anglo-egypt-sudan": "uk",
+  "french-west-africa": "uk",
+  "french-equatorial-africa": "uk",
+  "belgian-congo": "uk",
+  "italian-africa": "uk",
+  "rhodesia": "uk",
+  "union-of-south-africa": "uk",
+  "french-madagascar": "uk",
+  "india": "uk",
+  "burma": "uk",
+  "french-indo-china-thailand": "japan",
+  "yunnan": "china",
+  "sikang": "china",
+  "chinghai": "china",
+  "ningxia": "china",
+  "suiyuan": "china",
+  "hupeh": "china",
+  "fukien": "china",
+  "kwangtung": "uk",
+  "kiangsu": "japan",
+  "manchuria": "japan",
+  "japan": "japan",
+  "formosa": "japan",
+  "okinawa": "japan",
+  "iwo-jima": "japan",
+  "caroline-islands": "japan",
+  "philippine-islands": "usa",
+  "borneo": "uk",
+  "east-indies": "uk",
+  "new-guinea": "uk",
+  "solomon-islands": "uk",
+  "australia": "uk",
+  "new-zealand": "uk"
+ },
+ "review": [
+  {
+   "nick": "GERMAN Cruiser",
+   "kind": "cruiser",
+   "space": "sz-5",
+   "dist": 453
+  },
+  {
+   "nick": "USSR Infantry",
+   "kind": "infantry",
+   "space": "stanovoj-chrebet",
+   "dist": 539
+  },
+  {
+   "nick": "Anti Air Gun",
+   "kind": "aaGun",
+   "space": "united-kingdom",
+   "dist": 503
+  },
+  {
+   "nick": "JPN Aircraft Carrier",
+   "kind": "carrier",
+   "space": "sz-52",
+   "dist": 578
+  },
+  {
+   "nick": "GERMAN Tank",
+   "kind": "tank",
+   "space": "libya",
+   "dist": 468
+  },
+  {
+   "nick": "UK Infantry",
+   "kind": "infantry",
+   "space": "australia",
+   "dist": 469
+  },
+  {
+   "note": "presence flip",
+   "space": "kiangsu",
+   "to": "japan"
+  },
+  {
+   "note": "presence flip",
+   "space": "manchuria",
+   "to": "japan"
+  }
+ ]
+}

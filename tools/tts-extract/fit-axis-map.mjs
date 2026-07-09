@@ -201,11 +201,11 @@ rhodesia/union-of-south-africa angola/union-of-south-africa mozambique/union-of-
 
 greenland/sz-1 greenland/sz-2 iceland/sz-2 alaska/sz-64 alaska/sz-65 western-canada/sz-1
 western-canada/sz-65 eastern-canada/sz-1 eastern-canada/sz-9 eastern-canada/sz-10
-western-united-states/sz-55 eastern-united-states/sz-10 eastern-united-states/sz-19
-mexico/sz-19 mexico/sz-55 panama/sz-19 panama/sz-20 west-indies/sz-19
+western-united-states/sz-56 eastern-united-states/sz-10 eastern-united-states/sz-19
+mexico/sz-19 mexico/sz-55 mexico/sz-56 panama/sz-19 panama/sz-20 west-indies/sz-19
 northern-south-america/sz-19 northern-south-america/sz-20 peruvian-central/sz-21
 brazil/sz-22 argentina-chile/sz-21 argentina-chile/sz-22 argentina-chile/sz-25
-hawaiian-islands/sz-53 midway/sz-56 wake-island/sz-52 united-kingdom/sz-2
+hawaiian-islands/sz-53 midway/sz-57 wake-island/sz-52 united-kingdom/sz-2
 united-kingdom/sz-6 united-kingdom/sz-7 eire/sz-2 eire/sz-7 eire/sz-8 norway/sz-3
 norway/sz-5 norway/sz-6 sweden/sz-5 finland/sz-3 finland/sz-5 karelia/sz-4 karelia/sz-5
 archangel/sz-4 northwestern-europe/sz-5 northwestern-europe/sz-6 germany/sz-5
@@ -222,14 +222,14 @@ french-madagascar/sz-29 french-madagascar/sz-33 india/sz-35 burma/sz-37
 french-indo-china-thailand/sz-36 french-indo-china-thailand/sz-37 kwangtung/sz-36
 kwangtung/sz-61 fukien/sz-61 kiangsu/sz-61 manchuria/sz-61 manchuria/sz-62
 soviet-far-east/sz-62 soviet-far-east/sz-63 japan/sz-58 japan/sz-62 japan/sz-63
-formosa/sz-50 formosa/sz-61 okinawa/sz-60 iwo-jima/sz-59 caroline-islands/sz-51
-philippine-islands/sz-50 borneo/sz-36 borneo/sz-49 east-indies/sz-36 east-indies/sz-37
+formosa/sz-61 okinawa/sz-60 iwo-jima/sz-59 caroline-islands/sz-51
+philippine-islands/sz-50 borneo/sz-49 east-indies/sz-37
 east-indies/sz-38 east-indies/sz-39 east-indies/sz-49 new-guinea/sz-47 new-guinea/sz-48
-new-guinea/sz-49 solomon-islands/sz-46 australia/sz-40 australia/sz-41 australia/sz-47
+new-guinea/sz-49 solomon-islands/sz-46 australia/sz-39 australia/sz-40 australia/sz-41 australia/sz-47
 australia/sz-49 new-zealand/sz-42
 
 sz-1/sz-2 sz-1/sz-9 sz-2/sz-3 sz-2/sz-8 sz-3/sz-4 sz-3/sz-6 sz-5/sz-6 sz-6/sz-7
-sz-7/sz-8 sz-7/sz-12 sz-8/sz-9 sz-8/sz-11 sz-8/sz-12 sz-9/sz-10 sz-9/sz-11 sz-10/sz-11
+sz-7/sz-8 sz-7/sz-12 sz-8/sz-9 sz-8/sz-12 sz-9/sz-10 sz-9/sz-11 sz-10/sz-11
 sz-10/sz-19 sz-11/sz-12 sz-11/sz-18 sz-11/sz-19 sz-12/sz-13 sz-12/sz-18 sz-13/sz-14
 sz-14/sz-15 sz-15/sz-16 sz-15/sz-34 sz-17/sz-18 sz-17/sz-22 sz-17/sz-23 sz-18/sz-22
 sz-19/sz-20 sz-20/sz-21 sz-20/sz-55 sz-21/sz-25 sz-21/sz-44 sz-22/sz-23 sz-22/sz-24
@@ -242,9 +242,9 @@ sz-42/sz-47 sz-43/sz-44 sz-43/sz-45 sz-44/sz-45 sz-44/sz-54 sz-44/sz-55 sz-45/sz
 sz-45/sz-53 sz-45/sz-54 sz-46/sz-47 sz-46/sz-48 sz-46/sz-51 sz-47/sz-48 sz-47/sz-49
 sz-48/sz-49 sz-48/sz-50 sz-48/sz-51 sz-49/sz-50 sz-50/sz-51 sz-50/sz-60 sz-50/sz-61
 sz-51/sz-52 sz-51/sz-53 sz-52/sz-53 sz-52/sz-59 sz-52/sz-60 sz-53/sz-54 sz-53/sz-56
-sz-54/sz-55 sz-54/sz-56 sz-55/sz-56 sz-55/sz-65 sz-56/sz-57 sz-57/sz-58 sz-57/sz-63
-sz-57/sz-64 sz-58/sz-59 sz-58/sz-62 sz-58/sz-63 sz-59/sz-60 sz-60/sz-61 sz-60/sz-62
-sz-61/sz-62 sz-62/sz-63 sz-63/sz-64 sz-64/sz-65
+sz-53/sz-57 sz-54/sz-55 sz-54/sz-56 sz-55/sz-56 sz-56/sz-57 sz-56/sz-64 sz-56/sz-65
+sz-57/sz-58 sz-57/sz-59 sz-57/sz-63 sz-57/sz-64 sz-58/sz-59 sz-58/sz-63 sz-59/sz-60
+sz-60/sz-61 sz-60/sz-62 sz-61/sz-62 sz-62/sz-63 sz-63/sz-64 sz-64/sz-65
 `.trim().split(/\s+/).map(s => s.split('/'));
 
 // Edges that cross the board seam (map wraps horizontally through North America

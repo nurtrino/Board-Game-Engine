@@ -250,5 +250,55 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
   ok(order.join(',') === 'germany,ussr,japan,uk,italy,usa', `1941 turn order (${order.join(',')})`);
 }
 
+// ---------- real goldens: the transcribed map + packup setups ----------
+import { AXIS_MAP, AXIS_INDEX, createAxisGame } from './game.js';
+import { validateMap } from './map.js';
+import { vcCount, productionOf } from './state.js';
+import { STARTING_IPCS, TURN_ORDER } from './config.js';
+
+{
+  const problems = validateMap(AXIS_MAP);
+  ok(problems.length === 0, `real map validates (${problems.slice(0, 3).join('; ')})`);
+  ok(AXIS_MAP.territories.length === 97 && AXIS_MAP.seaZones.length === 65, 'real map dimensions');
+
+  // 1941: production equals printed starting cash for every power
+  const s41 = createAxisGame([], 41, { scenario: '1941', rnd: true, nationalObjectives: true, winCondition: 'standard' });
+  for (const p of TURN_ORDER['1941']) {
+    ok(productionOf(s41, AXIS_INDEX, p) === STARTING_IPCS['1941'][p], `1941 ${p} production == printed cash`);
+    ok(s41.powers[p].ipcs === STARTING_IPCS['1941'][p], `1941 ${p} starting cash`);
+  }
+  // rulebook p3: 1941 starts Axis 6 VC / Allies 12
+  ok(vcCount(s41, AXIS_INDEX, 'axis') === 6, `1941 axis VCs = 6 (${vcCount(s41, AXIS_INDEX, 'axis')})`);
+  ok(vcCount(s41, AXIS_INDEX, 'allies') === 12, '1941 allies VCs = 12');
+
+  // 1942: Axis 8 VC (p4)
+  const s42 = createAxisGame([], 42, { scenario: '1942', rnd: false, nationalObjectives: true, winCondition: 'short' });
+  ok(vcCount(s42, AXIS_INDEX, 'axis') === 8, `1942 axis VCs = 8 (${vcCount(s42, AXIS_INDEX, 'axis')})`);
+  ok(vcCount(s42, AXIS_INDEX, 'allies') === 10, '1942 allies VCs = 10');
+
+  // boards are populated: every power fields units in both scenarios
+  for (const st of [s41, s42]) {
+    const byPower: Record<string, number> = {};
+    for (const stacks of Object.values(st.board)) {
+      for (const u of stacks) byPower[u.power] = (byPower[u.power] ?? 0) + u.count;
+    }
+    for (const p of TURN_ORDER[st.options.scenario]) {
+      ok((byPower[p] ?? 0) >= 10, `${st.options.scenario} ${p} fields units (${byPower[p] ?? 0})`);
+    }
+    ok((byPower.china ?? 0) >= 4, `${st.options.scenario} china fields infantry (${byPower.china ?? 0})`);
+  }
+
+  // a full seeded round on the real map completes and reaches round 2
+  const s = createAxisGame([], 777, { scenario: '1941', rnd: false, nationalObjectives: true, winCondition: 'standard' });
+  let guard = 0;
+  while (s.round === 1 && guard++ < 100 && !s.winner) {
+    const p = activePower(s);
+    const r = applyAxisAction(s, AXIS_INDEX, p, { type: 'endPhase' });
+    ok(r.ok, `real-map endPhase ${p}/${s.phase} (${r.error ?? ''})`);
+    if (!r.ok) break;
+  }
+  ok(s.round === 2, 'real-map full round completes');
+}
+
 console.log(`\naxis-test: ${pass} passed, ${fail} failed`);
 if (fail > 0) process.exit(1);

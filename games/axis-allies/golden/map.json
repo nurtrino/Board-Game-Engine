@@ -149,7 +149,7 @@
    "adj": [
     "central-united-states",
     "mexico",
-    "sz-55",
+    "sz-56",
     "western-canada"
    ]
   },
@@ -211,6 +211,7 @@
     "panama",
     "sz-19",
     "sz-55",
+    "sz-56",
     "western-united-states"
    ]
   },
@@ -296,7 +297,7 @@
     "py": 2145
    },
    "adj": [
-    "sz-56"
+    "sz-57"
    ]
   },
   {
@@ -1804,7 +1805,6 @@
     "py": 2870
    },
    "adj": [
-    "sz-50",
     "sz-61"
    ]
   },
@@ -1886,7 +1886,6 @@
     "py": 3790
    },
    "adj": [
-    "sz-36",
     "sz-49"
    ]
   },
@@ -1903,7 +1902,6 @@
     "py": 3960
    },
    "adj": [
-    "sz-36",
     "sz-37",
     "sz-38",
     "sz-39",
@@ -1958,6 +1956,7 @@
     "py": 4460
    },
    "adj": [
+    "sz-39",
     "sz-40",
     "sz-41",
     "sz-47",
@@ -2103,7 +2102,6 @@
    },
    "adj": [
     "eire",
-    "sz-11",
     "sz-12",
     "sz-2",
     "sz-7",
@@ -2152,7 +2150,6 @@
     "sz-12",
     "sz-18",
     "sz-19",
-    "sz-8",
     "sz-9"
    ]
   },
@@ -2534,8 +2531,6 @@
     "py": 3320
    },
    "adj": [
-    "borneo",
-    "east-indies",
     "french-indo-china-thailand",
     "kwangtung",
     "sz-37",
@@ -2582,6 +2577,7 @@
     "py": 4555
    },
    "adj": [
+    "australia",
     "east-indies",
     "sz-38",
     "sz-40",
@@ -2751,7 +2747,6 @@
     "py": 3062
    },
    "adj": [
-    "formosa",
     "philippine-islands",
     "sz-36",
     "sz-48",
@@ -2805,7 +2800,8 @@
     "sz-51",
     "sz-52",
     "sz-54",
-    "sz-56"
+    "sz-56",
+    "sz-57"
    ]
   },
   {
@@ -2835,9 +2831,7 @@
     "sz-20",
     "sz-44",
     "sz-54",
-    "sz-56",
-    "sz-65",
-    "western-united-states"
+    "sz-56"
    ]
   },
   {
@@ -2848,11 +2842,14 @@
     "py": 2075
    },
    "adj": [
-    "midway",
+    "mexico",
     "sz-53",
     "sz-54",
     "sz-55",
-    "sz-57"
+    "sz-57",
+    "sz-64",
+    "sz-65",
+    "western-united-states"
    ]
   },
   {
@@ -2863,8 +2860,11 @@
     "py": 1675
    },
    "adj": [
+    "midway",
+    "sz-53",
     "sz-56",
     "sz-58",
+    "sz-59",
     "sz-63",
     "sz-64"
    ]
@@ -2880,7 +2880,6 @@
     "japan",
     "sz-57",
     "sz-59",
-    "sz-62",
     "sz-63"
    ]
   },
@@ -2894,6 +2893,7 @@
    "adj": [
     "iwo-jima",
     "sz-52",
+    "sz-57",
     "sz-58",
     "sz-60"
    ]
@@ -2944,7 +2944,6 @@
     "japan",
     "manchuria",
     "soviet-far-east",
-    "sz-58",
     "sz-60",
     "sz-61",
     "sz-63"
@@ -2975,6 +2974,7 @@
    },
    "adj": [
     "alaska",
+    "sz-56",
     "sz-57",
     "sz-63",
     "sz-65"
@@ -2989,7 +2989,7 @@
    },
    "adj": [
     "alaska",
-    "sz-55",
+    "sz-56",
     "sz-64",
     "western-canada"
    ]
