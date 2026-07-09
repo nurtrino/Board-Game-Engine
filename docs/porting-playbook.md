@@ -334,6 +334,10 @@ doesn't double up.
 - In-game backgrounds are **black**.
 - The TV is the shared table (fills the screen with the board); the player
   **devices** hold hands + take actions.
+- Each device shows the player's **mat rendered as real 3D game objects** —
+  the mod's own player board, leader/reference card, pawns, troop pieces and
+  resource tokens laid out like the physical table (skip the storage bowls).
+  Text counts alone are not enough; the mat is a scene, not a stat sheet.
 
 **Copy**
 - Serious **UPPERCASE** labels, middot `·` separators, **no em dashes**, **no
@@ -552,6 +556,27 @@ compose with everything else for free. Pair it with a live WS smoke driver
 ENDED, stall watchdog) — it exercises the server bot's decision handling,
 which unit playthroughs can't.
 
+### 6.4b Ship gates: rulebook UI-coverage audit + UI-driven full game
+
+Two mandatory gates before a port counts as done. The WS smoke driver proves
+the *engine* can finish a game; neither gate below is covered by it.
+
+- **Rulebook UI-coverage audit.** After the client is built, re-read the
+  rulebook end to end (including the back-matter reference sheets) and, for
+  every player decision, optional cost, choice of amount, and piece of public
+  information, name where it lives on the device screen or the TV. Then audit
+  the other direction: grep the engine's action union for fields the device UI
+  never sends — any value the UI auto-picks instead of asking (a sell amount,
+  an optional cost, a deploy count) is a coverage gap, because the engine
+  supports a choice the player can't make. Write the findings into the spec
+  and fix them before shipping.
+- **UI-driven full game.** A puppeteer driver opens one page per seat (4 if
+  the game supports it) and plays a **full game by clicking the actual device
+  DOM** — buttons, cards, pickers — never raw WS actions. If the driver
+  stalls, the UI is missing an affordance a human would also get stuck on;
+  that's the finding, not a test bug. Keep it as
+  `tools/verify/<game>-ui-smoke.mjs` next to the WS driver.
+
 ## 6.5 Working with the owner (process)
 
 - **Scope before building.** Ask the clarifying questions up front — player
@@ -614,7 +639,9 @@ which unit playthroughs can't.
 9. Verify: engine tests green; `page-errors.mjs` clean; `shoot.mjs`/phone-shot
    zoom-checks that pieces sit right and spawns are correct; a live WS smoke
    test plays a full game (§6.1). Then hand the owner a running build.
-10. Commit your work; push to `origin main`.
+10. Ship gates (§6.4b): rulebook UI-coverage audit of both screens, and a
+    4-seat puppeteer game played entirely through the device DOM.
+11. Commit your work; push to `origin main`.
 
 ---
 

@@ -182,9 +182,31 @@ const pieces = {
   troopScale: 0.35,
 };
 
+// Player mat: each seat's Custom_Board plus the real resource tokens,
+// control flags, combat marker and councilor disc — the device renders
+// these as 3D objects (the physical player area, minus the bowls).
+const img = (guid) => stage(byGuid[guid].CustomImage.ImageURL);
+const mat = {
+  board: img('a0fa97'),
+  water: img('c2f7b5'),
+  spice1: img('940082'),
+  spice5: img('76a04b'),
+  solari1: img('b9b970'),
+  solari5: img('94e497'),
+  councilor: img('f19a48'),
+  control: { Red: img('e63aeb'), Blue: img('4a3230'), Orange: img('a3c6a3'), Green: img('9d9bef') },
+  combat: { Red: img('85d1f1'), Blue: img('a371fc'), Orange: img('f99579'), Green: img('fff6c4') },
+  // ColorDiffuse tints from the mod's token objects (white/gray art, tinted)
+  tokenTints: {
+    water: [0, 0.866, 1], spice: [0.956, 0.392, 0.113], solari: [0.72, 0.72, 0.72],
+    combat: { Red: [0.86, 0.1, 0.09], Blue: [0.04, 0.33, 0.66], Orange: [0.96, 0.39, 0.11], Green: [0.19, 0.7, 0.17] },
+  },
+};
+
 const scene = {
   source: 'TTS workshop 2354919205 — Dune Imperium (+Ix +Immortality) — extract-dune.mjs',
   board: boardOut,
+  mat,
   overlays,
   spaceSpots,
   pieces,

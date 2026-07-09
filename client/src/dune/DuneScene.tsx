@@ -19,6 +19,14 @@ import type { DuneSeat } from '@bge/shared';
 
 export interface DuneSceneDef {
   board: { image: string; pos: number[]; rot: number[]; scale: number };
+  mat: {
+    board: string;
+    water: string; spice1: string; spice5: string; solari1: string; solari5: string;
+    councilor: string;
+    control: Record<DuneSeat, string>;
+    combat: Record<DuneSeat, string>;
+    tokenTints: { water: number[]; spice: number[]; solari: number[]; combat: Record<DuneSeat, number[]> };
+  };
   overlays: Record<string, { image: string; pos: number[]; scale: number[] }>;
   spaceSpots: Record<string, number[]>;
   pieces: { agentMesh: string; tints: Record<DuneSeat, number[]>; troopScale: number };

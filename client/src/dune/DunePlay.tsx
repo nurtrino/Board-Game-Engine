@@ -12,6 +12,7 @@ import {
 } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { useDuneScene, type DuneSceneDef } from './DuneScene';
+import { DuneMat } from './DuneMat';
 import { DuneCard } from './DuneBoard';
 import { GameIntro, type Intro } from '../ttr/GameIntro';
 import { playSfx } from '../sfx';
@@ -329,6 +330,11 @@ export function DunePlay({ view, act, error }: {
       </div>
 
       <div className="dn-main">
+        {/* the player mat: leader card, agents, troops, resources as real objects */}
+        <div style={{ paddingTop: 6 }}>
+          <DuneMat scene={scene} view={view} me={me} height="32vh" />
+        </div>
+
         {/* status line */}
         <div className="dn-lab" style={{ padding: '6px 0' }}>
           {view.phase === 'ended' ? `${view.players.find((p) => p.color === view.winner)?.name} wins`
@@ -432,12 +438,11 @@ export function DunePlay({ view, act, error }: {
               </div>
             );
           })()}
-          <div className="dn-lab" style={{ paddingTop: 10 }}>Pieces</div>
+          <div className="dn-lab" style={{ paddingTop: 10 }}>Your mat</div>
+          <DuneMat scene={scene} view={view} me={me} height="44vh" />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 14px', fontSize: 13 }}>
             <span>Agents: {me.agentsLeft} of {me.agentsTotal} left{me.mentat ? ' (incl. the Mentat)' : ''}</span>
-            <span>Victory points: {me.vp}</span>
-            <span>Garrison: {me.garrison} troops</span>
-            <span>In conflict: {me.inConflict}</span>
+            <span>In conflict: {me.inConflict} troops</span>
             <span>Supply: {DUNE_RULES.troopsTotal - me.garrison - me.inConflict} troops</span>
             <span>Intrigue cards: {me.intrigue?.length ?? 0}</span>
             {me.hasSwordmaster && <span>Swordmaster — third agent</span>}

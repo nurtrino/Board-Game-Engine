@@ -14,6 +14,66 @@
   ],
   "scale": 6.64
  },
+ "mat": {
+  "board": "/dune/B0651993E2EC1630EBD44F65.png",
+  "water": "/dune/832AFA3AA116AB97D7C650B5.png",
+  "spice1": "/dune/EC56D0315813B94D1504C160.png",
+  "spice5": "/dune/B2354FD2BEAC6FD383C11A0E.png",
+  "solari1": "/dune/CE4A9B157EF9E70321ED1B5D.png",
+  "solari5": "/dune/95F11BDF1167006047180F3C.png",
+  "councilor": "/dune/6F3800194A608DEEE4415C4F.png",
+  "control": {
+   "Red": "/dune/693D4868FBD3ED4C06D9E388.png",
+   "Blue": "/dune/7C043D4AACDF9516D108A84E.png",
+   "Orange": "/dune/CD3C20772B8670B53B359F39.png",
+   "Green": "/dune/5BA070126EEAEA41030A6691.png"
+  },
+  "combat": {
+   "Red": "/dune/F31B8AF1D26A72D725CBCD4E.png",
+   "Blue": "/dune/476CEB0C60D4BB298B48D6B4.png",
+   "Orange": "/dune/8DC9E1C818F7270BB182EDA2.png",
+   "Green": "/dune/E3FA5921AAFA0B3F2F8D4ECC.png"
+  },
+  "tokenTints": {
+   "water": [
+    0,
+    0.866,
+    1
+   ],
+   "spice": [
+    0.956,
+    0.392,
+    0.113
+   ],
+   "solari": [
+    0.72,
+    0.72,
+    0.72
+   ],
+   "combat": {
+    "Red": [
+     0.86,
+     0.1,
+     0.09
+    ],
+    "Blue": [
+     0.04,
+     0.33,
+     0.66
+    ],
+    "Orange": [
+     0.96,
+     0.39,
+     0.11
+    ],
+    "Green": [
+     0.19,
+     0.7,
+     0.17
+    ]
+   }
+  }
+ },
  "overlays": {
   "highCouncil": {
    "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
