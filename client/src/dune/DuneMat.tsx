@@ -113,7 +113,7 @@ export function DuneMat({ scene, view, me, height }: {
 
   return (
     <div style={{ width: '100%', height, borderRadius: 14, overflow: 'hidden' }}>
-      <Canvas camera={{ position: [0, 12.4, 3.9], fov: 42 }} dpr={[1, 2]} gl={{ antialias: true }} style={{ background: '#05080b' }}>
+      <Canvas camera={{ position: [0, 13.9, 4.4], fov: 44 }} dpr={[1, 2]} gl={{ antialias: true }} style={{ background: '#05080b' }}>
         <ambientLight intensity={0.9} />
         <directionalLight position={[6, 14, 6]} intensity={1.35} />
         <directionalLight position={[-8, 10, -6]} intensity={0.4} />

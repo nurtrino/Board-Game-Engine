@@ -22,10 +22,10 @@ const DUNE_INTRO: Intro = {
   tagline: 'Deck-building meets worker placement on Arrakis.',
   goal: 'Reach 10 victory points, or lead when the last conflict is fought. Send agents to the board for resources, troops and influence. Reveal your hand to buy better cards and fight. Win conflicts for the biggest prizes.',
   points: [
-    { label: 'Your house', detail: 'You start with a leader (two unique powers: tap your leader name any time to see them), a 10-card starter deck, 2 agents, 3 troops in your garrison, and 1 water. Draw 5 cards each round.' },
+    { label: 'Your house', detail: 'You start with a leader (its two unique powers are written out on your screen beside the conflict card), a 10-card starter deck, 2 agents, 3 troops in your garrison, and 1 water. Draw 5 cards each round.' },
     { label: 'A round', detail: 'Players alternate single turns. Each turn is either an agent turn or your one reveal turn. When everyone has revealed, the conflict resolves, spice builds up on the desert, and the next round begins with a new first player.' },
     { label: 'Agent turn', detail: 'Play one card from your hand and send an agent to one of the board spaces shown on that card. The space must be free and you must pay its cost (spice, water or solari). Take the space rewards plus the played card\'s agent box.' },
-    { label: 'Your buttons', detail: 'Tap HAND at any time, even while choosing a space, to see your full hand (the card you are placing is flagged). HOUSE shows your resources, influence, upgrades and deck. INTRIGUE holds your secret cards.' },
+    { label: 'Your screen', detail: 'Your resources, faction influence, leader powers, upgrades and deck are all laid out on your screen, with a live 3D view of your player board. Tap HAND at any time, even while choosing a space, to see your full hand (the card you are placing is flagged). INTRIGUE holds your secret cards.' },
     { label: 'Combat spaces', detail: 'Spaces with crossed blades also let you deploy up to 2 garrison troops, plus any troops that turn recruited, into the current conflict.' },
     { label: 'Reveal turn', detail: 'When you are out of agents (or choose to stop), reveal the rest of your hand. Its persuasion buys new cards. Its swords are combat strength. Then everything you played this round goes to your discard pile.' },
     { label: 'Buying cards', detail: 'Spend persuasion on the imperium row, or the reserve: Arrakis Liaison for 2, The Spice Must Flow for 9 (worth a VP). Purchases land in your discard pile. When your deck runs out the discard reshuffles, so every buy comes back stronger.' },
@@ -47,12 +47,12 @@ const FACTION_NAME: Record<Faction, string> = {
 const DUNE_TOUR: { target?: string; title: string; body: string }[] = [
   { title: 'Welcome to Arrakis', body: 'This is your control screen. The TV shows the shared board; you make every move here. This tour points out each part of the interface. Tap NEXT to begin.' },
   { target: 'vp', title: 'Victory points', body: 'First to 10 victory points wins the game immediately. If nobody reaches 10, whoever leads when the last conflict is fought takes it.' },
-  { target: 'leader', title: 'Your leader', body: 'Your house leader sits here. Tap this name any time to read its two powers: a passive ability and a signet-ring ability.' },
+  { target: 'leader', title: 'Your leader', body: 'Your house leader sits here. Its two powers, a passive ability and a signet-ring ability, are written out beside the conflict card below.' },
   { target: 'resources', title: 'Your resources', body: 'Solari is money, spice is the desert currency, water is spent at several spaces. Garrison is your troops at home. Agents is how many workers you still have to place this round.' },
   { target: 'influence', title: 'Faction influence', body: 'Four faction tracks. Reaching 2 on a track scores a victory point. Reaching 4 pays the faction bonus and its alliance, worth another point. An alliance is stolen if a rival passes your spot.' },
-  { target: 'board', title: 'Your board', body: 'A live view of your player mat: your leader, the agents you can still send, your garrison troops and your resource tokens, all as real pieces. Tap HOUSE for the full breakdown.' },
+  { target: 'board', title: 'Your board', body: 'A live view of your player mat: your leader, the agents you can still send, your garrison troops and your resource tokens, all as real pieces.' },
   { target: 'hand', title: 'Your hand', body: 'Your five cards this round. Each card lists the board spaces its agent can reach, plus reveal values for later. Tap a card to send an agent with it.' },
-  { target: 'actions', title: 'Your buttons', body: 'REVEAL flips the rest of your hand to buy cards and add combat swords. HAND shows your cards from any menu. INTRIGUE holds your secret cards. HOUSE opens your full board and stats. END TURN passes to the next player.' },
+  { target: 'actions', title: 'Your buttons', body: 'REVEAL flips the rest of your hand to buy cards and add combat swords. HAND shows your cards from any menu. INTRIGUE holds your secret cards. END TURN passes to the next player.' },
   { target: 'conflict', title: 'This round\'s conflict', body: 'The prize everyone competes for this round. Deploy troops at combat spaces to fight for it. First and second place claim the rewards after all reveals.' },
   { title: 'A turn, start to finish', body: 'On your turn, tap a card and pick a board space, then pay the cost and take the rewards. When your agents run out, tap REVEAL, spend persuasion on new cards, and watch the conflict resolve. Then draw five fresh cards and go again, stronger each round.' },
   { title: 'How games are won', body: 'Lean on cheap early spaces for tempo, then let the cards you buy take over. Do not ignore combat: even one troop can steal an uncontested prize. Commit to two point paths, such as two alliances plus the odd conflict win, and deny rivals their tenth point when they get close.' },
@@ -239,7 +239,6 @@ export function DunePlay({ view, act, error }: {
   const [useBox, setUseBox] = useState(true); // pay the card's optional agent-box cost
   const [showIntro, setShowIntro] = useState(true);
   const [showIntrigue, setShowIntrigue] = useState(false);
-  const [showMat, setShowMat] = useState(false);
   const [showHand, setShowHand] = useState(false); // peek at your full hand from any menu
   const [tour, setTour] = useState<number | null>(null); // interface walkthrough step
   const me = view.you !== null ? view.players[view.you] : null;
@@ -488,11 +487,7 @@ export function DunePlay({ view, act, error }: {
         <span style={{ width: 12, height: 12, borderRadius: '50%', background: SEAT_HEX[me.color] }} />
         <b>{me.name}</b>
         {me.leader && (
-          <button
-            data-tour="leader"
-            style={{ background: 'none', border: 'none', color: '#e8ebf0', opacity: 0.75, fontSize: 12, cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3, padding: 0, font: 'inherit' }}
-            onClick={() => setShowMat(true)}
-          >{LEADER_BY_ID[me.leader]?.name}</button>
+          <span data-tour="leader" style={{ opacity: 0.75, fontSize: 12 }}>{LEADER_BY_ID[me.leader]?.name}</span>
         )}
         <span data-tour="vp" style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{me.vp} VP</span>
         <button className="dn-btn" style={{ padding: '6px 10px' }} onClick={() => setShowIntro(true)}>?</button>
@@ -541,11 +536,58 @@ export function DunePlay({ view, act, error }: {
             </div>
           )}
 
-          {/* current conflict */}
-          {view.conflict && view.phase !== 'ended' && (
-            <div data-tour="conflict" style={{ display: 'flex', gap: 12, alignItems: 'flex-end', paddingBottom: 6 }}>
-              <DuneCard scene={scene} id={view.conflict} w={150} h={230} />
-              <span className="dn-lab" style={{ paddingBottom: 6 }}>Conflict · round {view.round}</span>
+          {/* conflict card on the left, your house details filling the space beside it */}
+          <div style={{ display: 'flex', gap: 12, alignItems: 'stretch', paddingBottom: 4 }}>
+            {view.conflict && view.phase !== 'ended' && (
+              <div data-tour="conflict" style={{ flexShrink: 0 }}>
+                <div className="dn-lab" style={{ paddingBottom: 4 }}>Conflict · round {view.round}</div>
+                <DuneCard scene={scene} id={view.conflict} w={150} h={230} />
+              </div>
+            )}
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 9, fontSize: 12.5 }}>
+              {me.leader && (() => {
+                const l = LEADER_BY_ID[me.leader!];
+                return (
+                  <div>
+                    <div className="dn-lab">{l.name}</div>
+                    <div style={{ opacity: 0.82, lineHeight: 1.4, paddingTop: 2 }}><b>{l.passive.title}.</b> {l.passive.text}</div>
+                    <div style={{ opacity: 0.82, lineHeight: 1.4, paddingTop: 3 }}><b>Signet · {l.signet.title}.</b> {l.signet.text}</div>
+                  </div>
+                );
+              })()}
+              <div>
+                <div className="dn-lab">Upgrades</div>
+                <div style={{ opacity: 0.82, lineHeight: 1.4, paddingTop: 2 }}>
+                  {me.hasSwordmaster || me.hasHighCouncil
+                    ? [me.hasSwordmaster && 'Swordmaster · permanent 3rd agent', me.hasHighCouncil && 'High Council · +2 persuasion each reveal'].filter(Boolean).join(' · ')
+                    : 'None yet. High Council and Swordmaster are strong early buys.'}
+                </div>
+              </div>
+              <div>
+                <div className="dn-lab" style={{ paddingBottom: 4 }}>Deck</div>
+                <div className="dn-chips">
+                  <Chip color="#8a94a6" value={me.deckCount} label="Deck" />
+                  <Chip color="#8a94a6" value={me.discard.length} label="Discard" />
+                  <Chip color="#8a94a6" value={DUNE_RULES.troopsTotal - me.garrison - me.inConflict} label="Supply" />
+                </div>
+                {me.deckTop !== undefined && (
+                  <div style={{ opacity: 0.82, paddingTop: 5 }}>Prescience · top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* discard pile fills the middle */}
+          {me.discard.length > 0 && (
+            <div>
+              <div className="dn-lab" style={{ paddingBottom: 4 }}>Discard · {me.discard.length}</div>
+              <div className="dn-hand">
+                {me.discard.map((c, i) => (
+                  <div key={`${c}-${i}`} style={{ opacity: 0.9 }}>
+                    <DuneCard scene={scene} id={c} w={76} h={114} />
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -609,7 +651,7 @@ export function DunePlay({ view, act, error }: {
         <div className="dn-right" data-tour="board">
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingLeft: 2 }}>
             <span className="dn-lab">Your board</span>
-            <span style={{ fontSize: 11, opacity: 0.45 }}>House for the full detail</span>
+            <span style={{ fontSize: 11, opacity: 0.45 }}>your leader, agents, troops and resources in real time</span>
           </div>
           <div className="dn-mat-frame">
             <DuneMat scene={scene} view={view} me={me} height="100%" />
@@ -634,96 +676,7 @@ export function DunePlay({ view, act, error }: {
         {(me.hand?.length ?? 0) > 0 && (
           <button className="dn-btn" onClick={() => setShowHand(true)}>Hand ({me.hand!.length})</button>
         )}
-        <button className="dn-btn" onClick={() => setShowMat(true)}>House</button>
       </div>
-
-      {/* house overlay: leader powers, resources, forces, influence, mat, deck */}
-      {showMat && (
-        <div className="dn-overlay">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ width: 12, height: 12, borderRadius: '50%', background: SEAT_HEX[me.color] }} />
-            <b style={{ fontSize: 16 }}>{me.name}</b>
-            <Chip color={RES_COLOR.vp} value={me.vp} label="VP" />
-            <button className="dn-btn" style={{ marginLeft: 'auto', padding: '7px 14px' }} onClick={() => setShowMat(false)}>Close</button>
-          </div>
-
-          {me.leader && (() => {
-            const l = LEADER_BY_ID[me.leader!];
-            return (
-              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginTop: 6 }}>
-                <img src={l.image} alt={l.name} style={{ width: 156, borderRadius: 10, flexShrink: 0 }} />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13 }}>
-                  <b style={{ fontSize: 15 }}>{l.name}</b>
-                  <div>
-                    <div className="dn-lab" style={{ fontSize: 10 }}>{l.passive.title}</div>
-                    <div style={{ opacity: 0.78, lineHeight: 1.45 }}>{l.passive.text}</div>
-                  </div>
-                  <div>
-                    <div className="dn-lab" style={{ fontSize: 10 }}>Signet ring · {l.signet.title}</div>
-                    <div style={{ opacity: 0.78, lineHeight: 1.45 }}>{l.signet.text}</div>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-
-          <div className="dn-sec">Resources</div>
-          <div className="dn-chips">
-            <Chip big color={RES_COLOR.solari} value={me.solari} label="Solari" />
-            <Chip big color={RES_COLOR.spice} value={me.spice} label="Spice" />
-            <Chip big color={RES_COLOR.water} value={me.water} label="Water" />
-          </div>
-
-          <div className="dn-sec">Forces & upgrades</div>
-          <div className="dn-chips">
-            <Chip color={SEAT_HEX[me.color]} value={me.garrison} label="Garrison" />
-            <Chip color={RES_COLOR.strength} value={me.inConflict} label="In fight" />
-            <Chip color="#8a94a6" value={DUNE_RULES.troopsTotal - me.garrison - me.inConflict} label="Supply" />
-            <Chip color={SEAT_HEX[me.color]} value={`${me.agentsLeft}/${me.agentsTotal}${me.mentat ? '+M' : ''}`} label="Agents" />
-            <Chip color={RES_COLOR.intrigue} value={me.intrigueCount} label="Intrigue" />
-          </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 6, fontSize: 12.5, opacity: 0.85 }}>
-            {me.hasSwordmaster && <span className="dn-chip" style={{ padding: '5px 10px' }}>Swordmaster · permanent 3rd agent</span>}
-            {me.hasHighCouncil && <span className="dn-chip" style={{ padding: '5px 10px' }}>High Council seat · +2 persuasion each reveal</span>}
-            {!me.hasSwordmaster && !me.hasHighCouncil && <span style={{ opacity: 0.5 }}>No upgrades yet · High Council and Swordmaster are strong early buys.</span>}
-          </div>
-
-          <div className="dn-sec">Influence · 2 scores a VP, 4 pays the bonus and the alliance</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {FACTIONS.map((f) => (
-              <InfluenceTrack key={f} faction={f} value={me.influence[f]} allied={me.alliances.includes(f)} />
-            ))}
-          </div>
-
-          <div className="dn-sec">Your player mat</div>
-          <div style={{ border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, overflow: 'hidden' }}>
-            <DuneMat scene={scene} view={view} me={me} height="52vh" />
-          </div>
-
-          <div className="dn-sec">Deck</div>
-          <div className="dn-chips">
-            <Chip color="#8a94a6" value={me.deckCount} label="In deck" />
-            <Chip color="#8a94a6" value={me.hand?.length ?? me.handCount} label="In hand" />
-            <Chip color="#8a94a6" value={me.discard.length} label="Discard" />
-          </div>
-          {me.deckTop !== undefined && (
-            <div style={{ paddingTop: 8, fontSize: 13, opacity: 0.85 }}>Prescience · top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
-          )}
-          {me.discard.length > 0 && (
-            <>
-              <div className="dn-sec">Discard pile</div>
-              <div className="dn-hand">
-                {me.discard.map((c, i) => (
-                  <div key={`${c}-${i}`} style={{ opacity: 0.9 }}>
-                    <DuneCard scene={scene} id={c} w={84} h={126} />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-          <button className="dn-btn" style={{ margin: '14px 0 4px' }} onClick={() => setShowMat(false)}>Close</button>
-        </div>
-      )}
 
       {/* intrigue drawer */}
       {showIntrigue && (
@@ -769,7 +722,7 @@ export function DunePlay({ view, act, error }: {
         <GameIntro
           intro={DUNE_INTRO}
           onClose={() => setShowIntro(false)}
-          onWalkthrough={() => { setShowIntro(false); setShowHand(false); setShowMat(false); setShowIntrigue(false); setSelected(null); setTour(0); }}
+          onWalkthrough={() => { setShowIntro(false); setShowHand(false); setShowIntrigue(false); setSelected(null); setTour(0); }}
         />
       )}
       {tour !== null && <DuneTour step={tour} setStep={setTour} onClose={() => setTour(null)} />}
