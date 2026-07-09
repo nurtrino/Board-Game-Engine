@@ -52,7 +52,7 @@ const PIECE_TINT: Record<string, [number, number, number]> = {
   japan: [0.38, 0.08, 0.012], // dark ruddy orange
   uk: [0.79, 0.70, 0.49],
   italy: [0.08, 0.04, 0.02], // dark chocolate brown
-  usa: [0.31, 0.49, 0.23],
+  usa: [0.03, 0.085, 0.028], // dark forest green
   china: [0.66, 0.79, 0.50],
 };
 export function tintFor(power: string | null | undefined, unit?: string): [number, number, number] {
