@@ -137,13 +137,13 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
 /** Migrate a rehydrated state from the old node-based movement model to the free
  *  spot model, so games saved before that change still load. Idempotent. */
 export function dtNormalize(s: DtState): DtState {
-  const spotFor = (id: unknown): { x: number; z: number } => {
-    const n = typeof id === 'string' ? DT_NODE.get(id) : undefined;
-    return n ? { x: n.wx, z: n.wz } : { x: 0, z: 0 };
-  };
   for (const p of s.players) {
     const legacy = p as unknown as { node?: string; spot?: { x: number; z: number } };
-    if (!legacy.spot) p.spot = legacy.node ? spotFor(legacy.node) : dtHomeSpot(p.color);
+    if (legacy.spot) continue;
+    // old node ids came from a different territory graph; if one no longer
+    // resolves, fall back to the player's citadel rather than board center.
+    const n = legacy.node ? DT_NODE.get(legacy.node) : undefined;
+    p.spot = n ? { x: n.wx, z: n.wz } : dtHomeSpot(p.color);
   }
   const legacy = s as unknown as { turnNode?: string; turnSpot?: { x: number; z: number } };
   if (!legacy.turnSpot) s.turnSpot = { ...(s.players[s.turn]?.spot ?? { x: 0, z: 0 }) };
