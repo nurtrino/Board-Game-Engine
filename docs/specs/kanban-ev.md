@@ -264,5 +264,7 @@ secretly picks 1 remaining award tile (immediate benefit).
   workstationShifts; the seventh design tile "does not feature a Part,
   and cannot be used to upgrade" (rulebook p14) - engine already
   enforces both sides.
-- 4-seat device-DOM smoke: tools/verify/kanban-ui-smoke.mjs (see memory
-  for the latest run result).
+- 4-seat device-DOM smoke PASSED (July 2026): a complete game played by
+  four puppeteer seats clicking only the device DOM - 594 UI actions,
+  251s, no stalls, on the post-gate-fix engine (conveyor exit choices
+  included). tools/verify/kanban-ui-smoke.mjs.
