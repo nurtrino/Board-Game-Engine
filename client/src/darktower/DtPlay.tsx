@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { DT_KEYS, KINGDOMS, type DtView, type DtAction, type DtKey } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { DtTable, useDtScene, type DtSceneDef } from './DtScene';
-import { useTowerDisplay, TOWER_AIM } from './DtBoard';
+import { useTowerDisplay, TOWER_AIM, holdsTower } from './DtBoard';
 import { GameIntro, DT_INTRO } from '../ttr/GameIntro';
 
 const CSS = `
@@ -230,16 +230,16 @@ export function DtPlay({ view, act, error }: {
           pic={shownPic}
           lcd={shownLcd}
           wedgeMaps={scene.wedge}
-          aim={display.active ? TOWER_AIM : focusTower ? { x: 0, z: 1, h: 7, y: 6.5 } : null}
+          aim={holdsTower(phase, display.active) ? TOWER_AIM : focusTower ? { x: 0, z: 1, h: 7, y: 6.5 } : null}
           youSeat={mine.seat}
-          canMove={myTurn && !display.active && (phase === 'playing' || phase === 'turnDone')}
+          canMove={myTurn && !display.active && phase === 'playing'}
           onMoveToken={(x, z) => act({ type: 'move_token', x, z })}
         />
         <button className="ig-glass" onClick={() => setFocusTower((f) => !f)} style={{
           position: 'absolute', bottom: 14, left: 14, padding: '9px 13px', borderRadius: 11,
           font: '700 11px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer',
         }}>{focusTower ? 'Show board' : 'Focus the tower'}</button>
-        {myTurn && (phase === 'playing' || phase === 'turnDone') && (
+        {myTurn && phase === 'playing' && (
           <div className="ig-glass" style={{
             position: 'absolute', top: 14, left: 14, padding: '8px 12px', borderRadius: 10,
             font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.85,

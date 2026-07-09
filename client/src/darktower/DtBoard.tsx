@@ -50,6 +50,13 @@ export function useTowerDisplay(view: DtView, playSound: boolean) {
 // camera aim that frames the tower's screen (reel window at y~6.4, LCD at y~8)
 export const TOWER_AIM = { x: 0, z: 4, h: 7.5, y: 6.5 } as const;
 
+// Phases in which an action is under way. We hold the tower framed from the
+// first beat of an action until the turn actually ends, not just while the
+// display animation is playing — so the whole resolution stays in view.
+const ACTION_PHASES: DtView['phase'][] = ['battle', 'bazaar', 'riddle', 'cursePick', 'turnDone'];
+export const holdsTower = (phase: DtView['phase'], displayActive: boolean): boolean =>
+  displayActive || ACTION_PHASES.includes(phase);
+
 export function DtBoard({ view }: { view: DtView }) {
   const scene = useDtScene();
   const display = useTowerDisplay(view, true); // the TV voices the tower
@@ -68,7 +75,7 @@ export function DtBoard({ view }: { view: DtView }) {
           pic={display.pic}
           lcd={display.lcd}
           wedgeMaps={scene.wedge}
-          aim={display.active ? TOWER_AIM : null}
+          aim={holdsTower(view.phase, display.active) ? TOWER_AIM : null}
           interactive
         />
       </div>
