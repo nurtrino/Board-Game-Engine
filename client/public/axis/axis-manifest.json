@@ -1,0 +1,1061 @@
+{
+ "source": "TTS mod 1961347286 (Axis & Allies Anniversary Edition 1941 and 1942)",
+ "boards": [
+  {
+   "guid": "be20f5",
+   "image": "/axis/100AA2DFC120E98176DE3545.jpg",
+   "pos": [
+    -72.206,
+    5.529,
+    -0.307
+   ],
+   "rotY": 180,
+   "scale": 0.625
+  },
+  {
+   "guid": "128d09",
+   "image": "/axis/D7FD57470AEA87373331A491.jpg",
+   "pos": [
+    72.203,
+    5.524,
+    1.582
+   ],
+   "rotY": 270,
+   "scale": 0.475
+  }
+ ],
+ "units": [
+  {
+   "nation": null,
+   "unit": "factory",
+   "guid": "903271",
+   "mesh": "/axis/AE0303427ADF9A830DD7004D.obj",
+   "diffuse": "/axis/3D6C7BB17F03DD3F54E2455C.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1
+  },
+  {
+   "nation": null,
+   "unit": "aaGun",
+   "guid": "680daa",
+   "mesh": "/axis/5754B0ECF83CE94DE0A8947E.obj",
+   "diffuse": "/axis/1E325619D4A62FC6D9010CD1.png",
+   "tint": [
+    1,
+    1,
+    1
+   ],
+   "scale": 0.925
+  },
+  {
+   "nation": "japan",
+   "unit": "submarine",
+   "guid": "d98c74",
+   "mesh": "/axis/7245E98AAFFA3867AEE4E2B5.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "tank",
+   "guid": "7bd042",
+   "mesh": "/axis/15F20492C7213AF60313CEB9.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "fighter",
+   "guid": "54f993",
+   "mesh": "/axis/D210D8D378F185CB51C036DE.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "battleship",
+   "guid": "6b534f",
+   "mesh": "/axis/E548CD5AE0CAECC5DDE8B825.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "destroyer",
+   "guid": "83d259",
+   "mesh": "/axis/C70045CC6E3EE853AC678400.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "cruiser",
+   "guid": "951996",
+   "mesh": "/axis/62F5403819B7D87ADC7CC147.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "artillery",
+   "guid": "0d544c",
+   "mesh": "/axis/332A8FACEFFC145C2817E203.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "bomber",
+   "guid": "a1a4a2",
+   "mesh": "/axis/92277B4B4F9E90D5199A365E.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "infantry",
+   "guid": "a85722",
+   "mesh": "/axis/3C25D58E2EAF2A5C97A5964D.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "infantry",
+   "guid": "f9381e",
+   "mesh": "/axis/3C25D58E2EAF2A5C97A5964D.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "artillery",
+   "guid": "bb1620",
+   "mesh": "/axis/332A8FACEFFC145C2817E203.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "tank",
+   "guid": "764263",
+   "mesh": "/axis/15F20492C7213AF60313CEB9.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "fighter",
+   "guid": "55ed1f",
+   "mesh": "/axis/D210D8D378F185CB51C036DE.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "bomber",
+   "guid": "522f1e",
+   "mesh": "/axis/92277B4B4F9E90D5199A365E.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "destroyer",
+   "guid": "8aa922",
+   "mesh": "/axis/C70045CC6E3EE853AC678400.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "submarine",
+   "guid": "dab9e2",
+   "mesh": "/axis/7245E98AAFFA3867AEE4E2B5.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "cruiser",
+   "guid": "e0e0f5",
+   "mesh": "/axis/62F5403819B7D87ADC7CC147.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "battleship",
+   "guid": "d884f7",
+   "mesh": "/axis/E548CD5AE0CAECC5DDE8B825.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "italy",
+   "unit": "fighter",
+   "guid": "efb953",
+   "mesh": "/axis/5349EFC8315BEBF637241B61.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1.75
+  },
+  {
+   "nation": "italy",
+   "unit": "artillery",
+   "guid": "f94500",
+   "mesh": "/axis/7BF4CF4BB4FC39CFA14480E9.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1.25
+  },
+  {
+   "nation": "italy",
+   "unit": "cruiser",
+   "guid": "99cfd9",
+   "mesh": "/axis/0732E275AD8A074C6C89DDE5.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1.5
+  },
+  {
+   "nation": "italy",
+   "unit": "tank",
+   "guid": "ba245a",
+   "mesh": "/axis/110278DFE8CC681308C6C0E8.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1.25
+  },
+  {
+   "nation": "italy",
+   "unit": "bomber",
+   "guid": "c760dc",
+   "mesh": "/axis/993BEC101E727E9B76688E27.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1.7
+  },
+  {
+   "nation": "italy",
+   "unit": "battleship",
+   "guid": "290116",
+   "mesh": "/axis/00A26E0ACBC1F4546BF8FA44.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1.25
+  },
+  {
+   "nation": "italy",
+   "unit": "infantry",
+   "guid": "0def5b",
+   "mesh": "/axis/950305964EB14FDA5C45986A.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    1,
+    1
+   ],
+   "scale": 1.75
+  },
+  {
+   "nation": "italy",
+   "unit": "destroyer",
+   "guid": "9ea5dd",
+   "mesh": "/axis/2BA1DE25DCF0407341E77D01.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "italy",
+   "unit": "submarine",
+   "guid": "66b4cd",
+   "mesh": "/axis/971D4A8E25D05F48C04096D9.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    1,
+    1
+   ],
+   "scale": 1.25
+  },
+  {
+   "nation": "usa",
+   "unit": "infantry",
+   "guid": "3c5bb8",
+   "mesh": "/axis/3C25D58E2EAF2A5C97A5964D.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "battleship",
+   "guid": "2d2b93",
+   "mesh": "/axis/E548CD5AE0CAECC5DDE8B825.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "fighter",
+   "guid": "aafd54",
+   "mesh": "/axis/D210D8D378F185CB51C036DE.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "bomber",
+   "guid": "7ad0ed",
+   "mesh": "/axis/92277B4B4F9E90D5199A365E.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "submarine",
+   "guid": "692975",
+   "mesh": "/axis/7245E98AAFFA3867AEE4E2B5.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "artillery",
+   "guid": "e463d1",
+   "mesh": "/axis/332A8FACEFFC145C2817E203.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "destroyer",
+   "guid": "0e24d4",
+   "mesh": "/axis/C70045CC6E3EE853AC678400.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "tank",
+   "guid": "0d3e97",
+   "mesh": "/axis/15F20492C7213AF60313CEB9.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "cruiser",
+   "guid": "d9e2ad",
+   "mesh": "/axis/62F5403819B7D87ADC7CC147.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "china",
+   "unit": "infantry",
+   "guid": "78175f",
+   "mesh": "/axis/950305964EB14FDA5C45986A.obj",
+   "diffuse": "/axis/DED9C29A085D8A3732D68262.png",
+   "tint": [
+    1,
+    1,
+    1
+   ],
+   "scale": 1.75
+  },
+  {
+   "nation": "uk",
+   "unit": "battleship",
+   "guid": "79df95",
+   "mesh": "/axis/E548CD5AE0CAECC5DDE8B825.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "infantry",
+   "guid": "bf507d",
+   "mesh": "/axis/3C25D58E2EAF2A5C97A5964D.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "tank",
+   "guid": "847c1d",
+   "mesh": "/axis/15F20492C7213AF60313CEB9.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "bomber",
+   "guid": "1d69f4",
+   "mesh": "/axis/92277B4B4F9E90D5199A365E.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "submarine",
+   "guid": "580287",
+   "mesh": "/axis/7245E98AAFFA3867AEE4E2B5.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "artillery",
+   "guid": "61faac",
+   "mesh": "/axis/332A8FACEFFC145C2817E203.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "fighter",
+   "guid": "5b8889",
+   "mesh": "/axis/D210D8D378F185CB51C036DE.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "destroyer",
+   "guid": "41d754",
+   "mesh": "/axis/C70045CC6E3EE853AC678400.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "cruiser",
+   "guid": "fce9b3",
+   "mesh": "/axis/62F5403819B7D87ADC7CC147.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "carrier",
+   "guid": "ac95ed",
+   "mesh": "/axis/03E83BE78B738EDAFD99D8B6.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "japan",
+   "unit": "transport",
+   "guid": "c70bbc",
+   "mesh": "/axis/DA6A6FDAF2A71FA4DB47FFB5.obj",
+   "diffuse": null,
+   "tint": [
+    0.718,
+    0.463,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "carrier",
+   "guid": "d636ce",
+   "mesh": "/axis/03E83BE78B738EDAFD99D8B6.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "ussr",
+   "unit": "transport",
+   "guid": "e3c38a",
+   "mesh": "/axis/DA6A6FDAF2A71FA4DB47FFB5.obj",
+   "diffuse": null,
+   "tint": [
+    0.502,
+    0,
+    0
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "carrier",
+   "guid": "58a729",
+   "mesh": "/axis/03E83BE78B738EDAFD99D8B6.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "battleship",
+   "guid": "c4b1ad",
+   "mesh": "/axis/E548CD5AE0CAECC5DDE8B825.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "fighter",
+   "guid": "cb5049",
+   "mesh": "/axis/D210D8D378F185CB51C036DE.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "infantry",
+   "guid": "71bcbc",
+   "mesh": "/axis/3C25D58E2EAF2A5C97A5964D.obj",
+   "diffuse": null,
+   "tint": [
+    0.148,
+    0.147,
+    0.147
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "submarine",
+   "guid": "ebbf8d",
+   "mesh": "/axis/7245E98AAFFA3867AEE4E2B5.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "bomber",
+   "guid": "2223d0",
+   "mesh": "/axis/92277B4B4F9E90D5199A365E.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "artillery",
+   "guid": "5504a0",
+   "mesh": "/axis/332A8FACEFFC145C2817E203.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "carrier",
+   "guid": "863de0",
+   "mesh": "/axis/03E83BE78B738EDAFD99D8B6.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "cruiser",
+   "guid": "08748d",
+   "mesh": "/axis/62F5403819B7D87ADC7CC147.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "destroyer",
+   "guid": "a4cb5f",
+   "mesh": "/axis/C70045CC6E3EE853AC678400.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "transport",
+   "guid": "638a98",
+   "mesh": "/axis/DA6A6FDAF2A71FA4DB47FFB5.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "germany",
+   "unit": "tank",
+   "guid": "e18b42",
+   "mesh": "/axis/15F20492C7213AF60313CEB9.obj",
+   "diffuse": null,
+   "tint": [
+    0.145,
+    0.145,
+    0.145
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "italy",
+   "unit": "transport",
+   "guid": "77cf6b",
+   "mesh": "/axis/D78DF740DAD31174FBD3D993.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1.25
+  },
+  {
+   "nation": "italy",
+   "unit": "carrier",
+   "guid": "636b42",
+   "mesh": "/axis/D0B194F5AB22F1CD7D4B98D1.obj",
+   "diffuse": "/axis/60B039247A4D7EA1F132D227.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 1.5
+  },
+  {
+   "nation": "usa",
+   "unit": "carrier",
+   "guid": "0034ff",
+   "mesh": "/axis/03E83BE78B738EDAFD99D8B6.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "usa",
+   "unit": "transport",
+   "guid": "59326f",
+   "mesh": "/axis/DA6A6FDAF2A71FA4DB47FFB5.obj",
+   "diffuse": null,
+   "tint": [
+    0.306,
+    0.345,
+    0.129
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "transport",
+   "guid": "da5911",
+   "mesh": "/axis/DA6A6FDAF2A71FA4DB47FFB5.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  },
+  {
+   "nation": "uk",
+   "unit": "carrier",
+   "guid": "e393d2",
+   "mesh": "/axis/03E83BE78B738EDAFD99D8B6.obj",
+   "diffuse": null,
+   "tint": [
+    0.824,
+    0.706,
+    0.549
+   ],
+   "scale": 1
+  }
+ ],
+ "vessels": [],
+ "occupation": [
+  {
+   "guid": "fd1745",
+   "nick": "German Occupation",
+   "mesh": "/axis/httpspasteeer5IJcq.obj",
+   "diffuse": "/axis/400EB92E1387246628CBCD21.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 0.875
+  },
+  {
+   "guid": "e63215",
+   "nick": "Japanese Occupation",
+   "mesh": "/axis/httpspasteeer5IJcq.obj",
+   "diffuse": "/axis/95C05B635954D9F6E539E7D5.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 0.85
+  },
+  {
+   "guid": "33d626",
+   "nick": "Chinese Occupation",
+   "mesh": "/axis/httpspasteeer5IJcq.obj",
+   "diffuse": "/axis/126D928ABA4320CF73CF890B.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 0.875
+  },
+  {
+   "guid": "a0ed6a",
+   "nick": "British Occupation",
+   "mesh": "/axis/httpspasteeer5IJcq.obj",
+   "diffuse": "/axis/7DA9D91FA1FDB4B542BB145C.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 0.875
+  },
+  {
+   "guid": "90e1b5",
+   "nick": "American Occupation",
+   "mesh": "/axis/httpspasteeer5IJcq.obj",
+   "diffuse": "/axis/04011BACF835CBDCCF255342.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 0.875
+  },
+  {
+   "guid": "346e4b",
+   "nick": "Russian Occupation",
+   "mesh": "/axis/httpspasteeer5IJcq.obj",
+   "diffuse": "/axis/2D8A07F4751CC10C4E231243.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 0.875
+  },
+  {
+   "guid": "ff205a",
+   "nick": "Italian Occupation",
+   "mesh": "/axis/httpspasteeer5IJcq.obj",
+   "diffuse": "/axis/A9AAE3ACA07E4249F33BE818.png",
+   "tint": [
+    1,
+    0.992,
+    1
+   ],
+   "scale": 0.875
+  }
+ ],
+ "ipcDecks": [
+  {
+   "guid": "b969bc",
+   "nick": "ONE IPC DECK",
+   "cards": 50,
+   "face": "/axis/httpsiimgurcomOSukKE0png.png",
+   "back": "/axis/httpsiimgurcomOSukKE0png.png",
+   "grid": [
+    10,
+    3
+   ]
+  },
+  {
+   "guid": "532852",
+   "nick": "FIVE IPC DECK",
+   "cards": 42,
+   "face": "/axis/httpsiimgurcomGeZH53ypng.png",
+   "back": "/axis/httpsiimgurcomGeZH53ypng.png",
+   "grid": [
+    10,
+    3
+   ]
+  },
+  {
+   "guid": "0c2029",
+   "nick": "TEN IPC DECK",
+   "cards": 49,
+   "face": "/axis/httpsiimgurcomHP5141Dpng.png",
+   "back": "/axis/httpsiimgurcomHP5141Dpng.png",
+   "grid": [
+    10,
+    3
+   ]
+  }
+ ]
+}
