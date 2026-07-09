@@ -48,7 +48,7 @@ export function useTowerDisplay(view: DtView, playSound: boolean) {
 }
 
 // camera aim that frames the tower's screen (reel window at y~6.4, LCD at y~8)
-export const TOWER_AIM = { x: 0, z: 4, h: 7.5, y: 7 } as const;
+export const TOWER_AIM = { x: 0, z: 4, h: 7.5, y: 6.5 } as const;
 
 export function DtBoard({ view }: { view: DtView }) {
   const scene = useDtScene();

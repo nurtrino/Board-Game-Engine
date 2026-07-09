@@ -124,14 +124,16 @@ function TowerDisplay({ scene, pic, reelOf, rowOf }: {
   }, [tex, pic, rowOf]);
   // the tower's upper body front face sits at z ~= 1.85 (see mesh bands); place
   // the reel window just proud of it so it is never occluded by the body
+  // y tracks the tower body: the tower base is seated on the board (dropped
+  // ~0.46 from its raw mesh origin), so the window drops the same amount
   return (
     <group>
-      <mesh position={[0, 6.4, 1.92]}>
+      <mesh position={[0, 5.94, 1.92]}>
         <planeGeometry args={[1.75, 1.95]} />
         <meshBasicMaterial color="#050505" />
       </mesh>
       {reel !== null && (
-        <mesh position={[0, 6.4, 1.95]}>
+        <mesh position={[0, 5.94, 1.95]}>
           <planeGeometry args={[1.55, 1.75]} />
           <meshBasicMaterial map={mat} toneMapped={false} transparent />
         </mesh>
@@ -165,9 +167,9 @@ function TowerLcd({ lcd }: { lcd: string }) {
     c.fillText(chars, 128, 70);
     tex.needsUpdate = true;
   }, [lcd, tex]);
-  // just above the reel window on the tower body front (z face ~= 1.82 here)
+  // just above the reel window on the tower body front (dropped with the tower)
   return (
-    <mesh position={[0, 8.0, 1.9]} rotation={[-0.05, 0, 0]}>
+    <mesh position={[0, 7.54, 1.9]} rotation={[-0.05, 0, 0]}>
       <planeGeometry args={[1.4, 0.7]} />
       <meshBasicMaterial map={tex} toneMapped={false} />
     </mesh>
@@ -293,7 +295,8 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canM
       <Suspense fallback={null}>
         {/* the mod's painted board */}
         <BoardFace />
-        {scene.tower.mesh && <Model def={scene.tower} tint={null} centerXZ />}
+        {/* the tower sits dead center, base seated flush on the board (no float) */}
+        {scene.tower.mesh && <Model def={scene.tower} tint={null} centerXZ seatY={BOARD_Y} />}
         {/* buildings seated on the board surface (no floating) */}
         {scene.buildings.map((b, i) => b.mesh && (
           <Model key={i} def={b} tint={b.tint ?? null} seatY={BOARD_Y} />

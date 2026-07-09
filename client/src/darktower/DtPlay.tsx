@@ -230,7 +230,7 @@ export function DtPlay({ view, act, error }: {
           pic={shownPic}
           lcd={shownLcd}
           wedgeMaps={scene.wedge}
-          aim={display.active ? TOWER_AIM : focusTower ? { x: 0, z: 1, h: 7, y: 7 } : null}
+          aim={display.active ? TOWER_AIM : focusTower ? { x: 0, z: 1, h: 7, y: 6.5 } : null}
           youSeat={mine.seat}
           canMove={myTurn && !display.active && (phase === 'playing' || phase === 'turnDone')}
           onMoveToken={(x, z) => act({ type: 'move_token', x, z })}
