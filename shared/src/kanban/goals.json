@@ -1,0 +1,545 @@
+{
+ "performance": [
+  {
+   "guid": "d534d2",
+   "num": 1,
+   "cell": 31,
+   "per": "car",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "1f0e9c",
+   "num": 2,
+   "cell": 30,
+   "per": "carModelKind",
+   "pp": 3,
+   "max": 3
+  },
+  {
+   "guid": "185201",
+   "num": 3,
+   "cell": 29,
+   "per": "model:Truck",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "9368f3",
+   "num": 4,
+   "cell": 28,
+   "per": "model:City",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "d5f344",
+   "num": 5,
+   "cell": 27,
+   "per": "model:Concept",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "71c061",
+   "num": 6,
+   "cell": 26,
+   "per": "model:Sport",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "d35e4a",
+   "num": 7,
+   "cell": 25,
+   "per": "model:SUV",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "f73869",
+   "num": 8,
+   "cell": 24,
+   "per": "upgradedPart:Batteries",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "e60247",
+   "num": 9,
+   "cell": 23,
+   "per": "upgradedPart:Electronics",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "5dd55e",
+   "num": 10,
+   "cell": 22,
+   "per": "upgradedPart:Bodies",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "35d910",
+   "num": 11,
+   "cell": 21,
+   "per": "upgradedPart:Autopilots",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "e21345",
+   "num": 12,
+   "cell": 20,
+   "per": "upgradedPart:Drivetrains",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "800584",
+   "num": 13,
+   "cell": 19,
+   "per": "upgradedPart:Motors",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "ec5d87",
+   "num": 14,
+   "cell": 18,
+   "per": "upgradedDesign",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "c4d51f",
+   "num": 15,
+   "cell": 17,
+   "per": "testedDesign",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "a6ad2d",
+   "num": 16,
+   "cell": 16,
+   "per": "partOf:Batteries,Electronics",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "bb27da",
+   "num": 17,
+   "cell": 15,
+   "per": "partOf:Bodies,Autopilots",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "969f93",
+   "num": 18,
+   "cell": 14,
+   "per": "partOf:Motors,Drivetrains",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "a04efa",
+   "num": 19,
+   "cell": 13,
+   "per": "carInGarages:1,2",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "ad5d5e",
+   "num": 20,
+   "cell": 12,
+   "per": "carInGarages:2,3",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "971be4",
+   "num": 21,
+   "cell": 11,
+   "per": "carInGarages:4,5",
+   "pp": 4,
+   "max": 2
+  },
+  {
+   "guid": "acc4fc",
+   "num": 22,
+   "cell": 10,
+   "per": "certifiedIn:RnD",
+   "pp": 4,
+   "max": 1
+  },
+  {
+   "guid": "d73351",
+   "num": 23,
+   "cell": 9,
+   "per": "certifiedIn:Assembly",
+   "pp": 4,
+   "max": 1
+  },
+  {
+   "guid": "eea3dc",
+   "num": 24,
+   "cell": 8,
+   "per": "certifiedIn:Logistics",
+   "pp": 4,
+   "max": 1
+  },
+  {
+   "guid": "8d7419",
+   "num": 25,
+   "cell": 7,
+   "per": "certifiedIn:Design",
+   "pp": 4,
+   "max": 1
+  },
+  {
+   "guid": "705ce7",
+   "num": 26,
+   "cell": 6,
+   "per": "certifiedIn:Admin",
+   "pp": 4,
+   "max": 1
+  },
+  {
+   "guid": "1cf47e",
+   "num": 27,
+   "cell": 5,
+   "per": "design",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "19660a",
+   "num": 28,
+   "cell": 4,
+   "per": "book",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "f4074e",
+   "num": 29,
+   "cell": 3,
+   "per": "certification",
+   "pp": 3,
+   "max": 3
+  },
+  {
+   "guid": "5910bd",
+   "num": 30,
+   "cell": 2,
+   "per": "part",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "07ef50",
+   "num": 31,
+   "cell": 1,
+   "per": "bankedShift",
+   "pp": 2,
+   "max": 3
+  },
+  {
+   "guid": "b1c89f",
+   "num": 32,
+   "cell": 0,
+   "per": "speechOnBoard",
+   "pp": 3,
+   "max": 3
+  }
+ ],
+ "chargerPerformance": [
+  {
+   "guid": "a6aa7a",
+   "cell": 33
+  },
+  {
+   "guid": "06b57d",
+   "cell": 32
+  },
+  {
+   "guid": "e8bb56",
+   "cell": 34
+  },
+  {
+   "guid": "1cb996",
+   "cell": 35
+  },
+  {
+   "guid": "e62aab",
+   "cell": 36
+  },
+  {
+   "guid": "8adfed",
+   "cell": 37
+  }
+ ],
+ "final": [
+  {
+   "guid": "15e077",
+   "num": 1,
+   "achievements": [
+    {
+     "kind": "carsSameModel",
+     "n": 3,
+     "pp": 7
+    },
+    {
+     "kind": "upgradedDiffParts",
+     "n": 3,
+     "pp": 6
+    },
+    {
+     "kind": "certifications",
+     "n": 5,
+     "pp": 8
+    }
+   ]
+  },
+  {
+   "guid": "c4911d",
+   "num": 2,
+   "achievements": [
+    {
+     "kind": "cars",
+     "n": 5,
+     "pp": 8
+    },
+    {
+     "kind": "upgradedDesigns",
+     "n": 4,
+     "pp": 6
+    },
+    {
+     "kind": "certifications",
+     "n": 4,
+     "pp": 7
+    }
+   ]
+  },
+  {
+   "guid": "7da3ec",
+   "num": 3,
+   "achievements": [
+    {
+     "kind": "carsDiffModels",
+     "n": 4,
+     "pp": 8
+    },
+    {
+     "kind": "upgradedSamePart",
+     "n": 3,
+     "pp": 7
+    },
+    {
+     "kind": "certsIn",
+     "depts": [
+      "Logistics",
+      "Assembly"
+     ],
+     "pp": 6
+    }
+   ]
+  },
+  {
+   "guid": "754948",
+   "num": 4,
+   "achievements": [
+    {
+     "kind": "model",
+     "model": "Sport",
+     "n": 2,
+     "pp": 7
+    },
+    {
+     "kind": "upgradedDesigns",
+     "n": 5,
+     "pp": 8
+    },
+    {
+     "kind": "certsIn",
+     "depts": [
+      "Admin"
+     ],
+     "pp": 6
+    }
+   ]
+  },
+  {
+   "guid": "f90a07",
+   "num": 5,
+   "achievements": [
+    {
+     "kind": "model",
+     "model": "Concept",
+     "n": 2,
+     "pp": 8
+    },
+    {
+     "kind": "upgradedPart",
+     "part": "Bodies",
+     "n": 2,
+     "pp": 7
+    },
+    {
+     "kind": "certsIn",
+     "depts": [
+      "RnD",
+      "Design"
+     ],
+     "pp": 6
+    }
+   ]
+  },
+  {
+   "guid": "978a35",
+   "num": 6,
+   "achievements": [
+    {
+     "kind": "bankedShifts",
+     "n": 7,
+     "pp": 6
+    },
+    {
+     "kind": "books",
+     "n": 3,
+     "pp": 8
+    },
+    {
+     "kind": "expertDepts",
+     "n": 2,
+     "pp": 7
+    }
+   ]
+  },
+  {
+   "guid": "044094",
+   "num": 7,
+   "achievements": [
+    {
+     "kind": "model",
+     "model": "City",
+     "n": 2,
+     "pp": 8
+    },
+    {
+     "kind": "upgradedPart",
+     "part": "Batteries",
+     "n": 2,
+     "pp": 7
+    },
+    {
+     "kind": "certsIn",
+     "depts": [
+      "RnD",
+      "Assembly"
+     ],
+     "pp": 6
+    }
+   ]
+  },
+  {
+   "guid": "7dcffc",
+   "num": 8,
+   "achievements": [
+    {
+     "kind": "model",
+     "model": "SUV",
+     "n": 2,
+     "pp": 8
+    },
+    {
+     "kind": "upgradedPart",
+     "part": "Drivetrains",
+     "n": 2,
+     "pp": 7
+    },
+    {
+     "kind": "certsIn",
+     "depts": [
+      "Logistics",
+      "Design"
+     ],
+     "pp": 6
+    }
+   ]
+  },
+  {
+   "guid": "a2bcc3",
+   "num": 9,
+   "achievements": [
+    {
+     "kind": "model",
+     "model": "Truck",
+     "n": 2,
+     "pp": 8
+    },
+    {
+     "kind": "upgradedPart",
+     "part": "Electronics",
+     "n": 2,
+     "pp": 7
+    },
+    {
+     "kind": "certsIn",
+     "depts": [
+      "Assembly",
+      "Design"
+     ],
+     "pp": 6
+    }
+   ]
+  },
+  {
+   "guid": "f38486",
+   "num": 10,
+   "achievements": [
+    {
+     "kind": "carsSameModel",
+     "n": 3,
+     "pp": 7
+    },
+    {
+     "kind": "testedDesigns",
+     "n": 5,
+     "pp": 7
+    },
+    {
+     "kind": "certificationsAtMost",
+     "n": 3,
+     "pp": 7
+    }
+   ]
+  },
+  {
+   "guid": "bd823a",
+   "num": 11,
+   "achievements": [
+    {
+     "kind": "carsDiffModels",
+     "n": 5,
+     "pp": 8
+    },
+    {
+     "kind": "testedDiffParts",
+     "n": 5,
+     "pp": 8
+    },
+    {
+     "kind": "expertDeptsAtMost",
+     "n": 1,
+     "pp": 8
+    }
+   ]
+  }
+ ]
+}
