@@ -537,41 +537,41 @@ export function DunePlay({ view, act, error }: {
           )}
 
           {/* conflict card on the left, your house details filling the space beside it */}
-          <div style={{ display: 'flex', gap: 12, alignItems: 'stretch', paddingBottom: 4 }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', paddingBottom: 4 }}>
             {view.conflict && view.phase !== 'ended' && (
               <div data-tour="conflict" style={{ flexShrink: 0 }}>
-                <div className="dn-lab" style={{ paddingBottom: 4 }}>Conflict · round {view.round}</div>
-                <DuneCard scene={scene} id={view.conflict} w={150} h={230} />
+                <div className="dn-sec" style={{ marginTop: 0, marginBottom: 5, fontSize: 12 }}>Conflict · round {view.round}</div>
+                <DuneCard scene={scene} id={view.conflict} w={188} h={288} />
               </div>
             )}
-            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 9, fontSize: 12.5 }}>
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 14, fontSize: 15, lineHeight: 1.5 }}>
               {me.leader && (() => {
                 const l = LEADER_BY_ID[me.leader!];
                 return (
                   <div>
-                    <div className="dn-lab">{l.name}</div>
-                    <div style={{ opacity: 0.82, lineHeight: 1.4, paddingTop: 2 }}><b>{l.passive.title}.</b> {l.passive.text}</div>
-                    <div style={{ opacity: 0.82, lineHeight: 1.4, paddingTop: 3 }}><b>Signet · {l.signet.title}.</b> {l.signet.text}</div>
+                    <div className="dn-sec" style={{ marginTop: 0, fontSize: 12 }}>{l.name}</div>
+                    <div style={{ opacity: 0.9, paddingTop: 3 }}><b>{l.passive.title}.</b> {l.passive.text}</div>
+                    <div style={{ opacity: 0.9, paddingTop: 5 }}><b>Signet · {l.signet.title}.</b> {l.signet.text}</div>
                   </div>
                 );
               })()}
               <div>
-                <div className="dn-lab">Upgrades</div>
-                <div style={{ opacity: 0.82, lineHeight: 1.4, paddingTop: 2 }}>
+                <div className="dn-sec" style={{ marginTop: 0, fontSize: 12 }}>Upgrades</div>
+                <div style={{ opacity: 0.9, paddingTop: 3 }}>
                   {me.hasSwordmaster || me.hasHighCouncil
                     ? [me.hasSwordmaster && 'Swordmaster · permanent 3rd agent', me.hasHighCouncil && 'High Council · +2 persuasion each reveal'].filter(Boolean).join(' · ')
-                    : 'None yet. High Council and Swordmaster are strong early buys.'}
+                    : 'None yet.'}
                 </div>
               </div>
               <div>
-                <div className="dn-lab" style={{ paddingBottom: 4 }}>Deck</div>
+                <div className="dn-sec" style={{ marginTop: 0, marginBottom: 5, fontSize: 12 }}>Deck</div>
                 <div className="dn-chips">
-                  <Chip color="#8a94a6" value={me.deckCount} label="Deck" />
-                  <Chip color="#8a94a6" value={me.discard.length} label="Discard" />
-                  <Chip color="#8a94a6" value={DUNE_RULES.troopsTotal - me.garrison - me.inConflict} label="Supply" />
+                  <Chip big color="#8a94a6" value={me.deckCount} label="Deck" />
+                  <Chip big color="#8a94a6" value={me.discard.length} label="Discard" />
+                  <Chip big color="#8a94a6" value={DUNE_RULES.troopsTotal - me.garrison - me.inConflict} label="Supply" />
                 </div>
                 {me.deckTop !== undefined && (
-                  <div style={{ opacity: 0.82, paddingTop: 5 }}>Prescience · top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
+                  <div style={{ opacity: 0.9, paddingTop: 7 }}>Prescience · top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
                 )}
               </div>
             </div>
@@ -620,9 +620,9 @@ export function DunePlay({ view, act, error }: {
             {(me.hand?.length ?? 0) > 0 && (
               <>
                 <div className="dn-lab">Hand{canAgent ? ' · tap a card to send an agent' : ''}</div>
-                <div className="dn-hand" data-tour="hand">
+                <div className="dn-hand" data-tour="hand" style={{ flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: 4 }}>
                   {(me.hand ?? []).map((c, i) => (
-                    <button key={`${c}-${i}`} className={`dn-card${selected === c ? ' sel' : ''}`}
+                    <button key={`${c}-${i}`} className={`dn-card${selected === c ? ' sel' : ''}`} style={{ flex: '0 0 auto' }}
                       onClick={() => { if (canAgent) { setSelected(c); setUseBox(true); playSfx('click'); } }}>
                       <DuneCard scene={scene} id={c} w={138} h={207} />
                     </button>
