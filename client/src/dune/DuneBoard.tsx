@@ -1,0 +1,201 @@
+// TV view for Dune: Imperium — the main board in 3D (agents, garrisons,
+// conflict troops), with the current conflict card, the imperium row and
+// player chips as HUD. Phones hold hands and make every move.
+
+import { useEffect, useRef } from 'react';
+import {
+  CARD_BY_ID, CONFLICT_BY_ID, FACTIONS, LEADER_BY_ID,
+  type DuneView, type DuneSeat, type Faction,
+} from '@bge/shared';
+import { SEAT_HEX } from '../brass/TableScene';
+import { CardSprite } from '../trek/TrekBoard';
+import { DuneTable, useDuneScene, type DuneSceneDef } from './DuneScene';
+import { playSfx } from '../sfx';
+
+/** sheet/cell for any dune card id (imperium cell may be "sheet:cell"). */
+export function duneCardArt(id: string): { sheet: number; cell: number } | null {
+  const c = CARD_BY_ID[id] as { sheet?: number; cell?: number | string } | undefined;
+  const conflict = CONFLICT_BY_ID[id];
+  if (conflict) return { sheet: conflict.sheet, cell: conflict.cell };
+  if (!c) return null;
+  if (typeof c.cell === 'string') {
+    const [sh, ce] = c.cell.split(':').map(Number);
+    return { sheet: sh, cell: ce };
+  }
+  if (typeof c.sheet === 'number' && typeof c.cell === 'number') return { sheet: c.sheet, cell: c.cell };
+  return null;
+}
+
+export function DuneCard({ scene, id, w, h }: { scene: DuneSceneDef; id: string; w: number; h: number }) {
+  const art = duneCardArt(id);
+  if (!art) return null;
+  const sheet = scene.sheets[String(art.sheet)];
+  if (!sheet) return null;
+  return <CardSprite face={sheet.face} cols={sheet.cols} rows={sheet.rows} cell={art.cell} w={w} h={h} />;
+}
+
+const FACTION_LABEL: Record<Faction, string> = {
+  emperor: 'EMP', guild: 'GLD', beneGesserit: 'BG', fremen: 'FRE',
+};
+
+export function DuneBoard({ view }: { view: DuneView }) {
+  const scene = useDuneScene();
+
+  // the TV voices actions, turnovers and the win
+  const lastSeq = useRef(0);
+  useEffect(() => {
+    const e = view.lastEvent;
+    if (!e || e.seq <= lastSeq.current) return;
+    lastSeq.current = e.seq;
+    const t = e.title ?? '';
+    playSfx(/acquires/.test(t) ? 'coins' : /reveals/.test(t) ? 'cardDraw' : /1st|2nd|3rd/.test(t) ? 'win' : 'link');
+  }, [view.lastEvent?.seq]);
+  const prevTurn = useRef(view.turn);
+  useEffect(() => {
+    if (view.phase !== 'ended' && prevTurn.current !== view.turn) { prevTurn.current = view.turn; playSfx('turn'); }
+  }, [view.turn, view.phase]);
+  const ended = useRef(false);
+  useEffect(() => { if (view.winner && !ended.current) { ended.current = true; playSfx('win'); } }, [view.winner]);
+
+  if (!scene) return <div className="page center"><h2>Crossing the deep desert</h2></div>;
+
+  const ev = view.lastEvent;
+  const current = view.players[view.turn];
+  const agents = Object.entries(view.spaces).flatMap(([space, seats]) =>
+    seats.map((seat) => ({ color: view.players[seat].color as DuneSeat, space })));
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: '#05080b', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
+      <div style={{ position: 'absolute', inset: 0 }}>
+        <DuneTable
+          scene={scene}
+          pieces={{
+            agents,
+            garrisons: view.players.map((p) => ({ color: p.color, n: p.garrison })),
+            conflict: view.players.map((p) => ({ color: p.color, n: p.inConflict })),
+          }}
+        />
+      </div>
+
+      {/* title plate */}
+      <div className="ig-glass" style={{ position: 'absolute', top: 12, left: 12, padding: '10px 14px', borderRadius: 14 }}>
+        <div className="ig-lab">
+          {view.phase === 'leaders' ? 'Choosing leaders'
+            : view.phase === 'combat' ? `Round ${view.round} — Combat`
+            : view.phase === 'ended' ? 'Game over'
+            : `Round ${view.round} of ${view.rounds}`}
+        </div>
+        <div style={{ font: '700 16px Inter, sans-serif' }}>Dune: Imperium</div>
+      </div>
+
+      {/* current conflict */}
+      {view.conflict && view.phase !== 'ended' && (
+        <div className="ig-glass" style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', padding: 10, borderRadius: 14, textAlign: 'center' }}>
+          <div className="ig-lab" style={{ paddingBottom: 6 }}>Conflict</div>
+          <DuneCard scene={scene} id={view.conflict} w={118} h={180} />
+        </div>
+      )}
+
+      {/* player chips */}
+      <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {view.players.map((p) => (
+          <div key={p.seat} className="ig-glass" style={{
+            padding: '8px 12px', borderRadius: 14, minWidth: 230,
+            outline: view.turn === p.seat && view.phase !== 'ended' ? `2px solid ${SEAT_HEX[p.color]}` : 'none',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
+              <b>{p.name}</b>
+              <span style={{ opacity: 0.55, fontSize: 11 }}>{p.leader ? LEADER_BY_ID[p.leader]?.name : ''}</span>
+              <span style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{p.vp} VP</span>
+            </div>
+            <div style={{ display: 'flex', gap: 9, paddingTop: 4, fontSize: 12, opacity: 0.85 }}>
+              <span title="solari">{p.solari}s</span>
+              <span title="spice">{p.spice}sp</span>
+              <span title="water">{p.water}w</span>
+              <span title="garrison">{p.garrison}g</span>
+              {view.phase === 'combat' && <span title="strength">{p.strength} str</span>}
+              <span title="agents" style={{ marginLeft: 'auto' }}>{p.agentsLeft}/{p.agentsTotal} ag</span>
+            </div>
+            <div style={{ display: 'flex', gap: 9, paddingTop: 3, fontSize: 11, opacity: 0.7 }}>
+              {FACTIONS.map((f) => (
+                <span key={f} style={{ fontWeight: p.alliances.includes(f) ? 800 : 400 }}>
+                  {FACTION_LABEL[f]} {p.influence[f]}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* imperium row */}
+      {view.phase !== 'leaders' && view.phase !== 'ended' && (
+        <div className="ig-glass" style={{
+          position: 'absolute', bottom: 14, right: 14, padding: 10, borderRadius: 14,
+          display: 'flex', gap: 8, alignItems: 'flex-end',
+        }}>
+          {view.imperiumRow.map((c, i) => (
+            <div key={i} style={{ textAlign: 'center' }}>
+              {c ? <DuneCard scene={scene} id={c} w={86} h={128} /> : <div style={{ width: 86, height: 128, borderRadius: 6, border: '1px dashed rgba(255,255,255,0.2)' }} />}
+              {c && <div style={{ fontSize: 11, opacity: 0.7, paddingTop: 2 }}>{CARD_BY_ID[c]?.cost ?? 0}</div>}
+            </div>
+          ))}
+          <div style={{ fontSize: 11, opacity: 0.7, paddingLeft: 6, textAlign: 'left' }}>
+            <div>FOLDSPACE ×{view.reserve.foldspace}</div>
+            <div>LIAISON ×{view.reserve.arrakisLiaison}</div>
+            <div>SPICE MUST FLOW ×{view.reserve.theSpiceMustFlow}</div>
+          </div>
+        </div>
+      )}
+
+      {/* caption */}
+      {ev && view.phase !== 'ended' && (
+        <div className="ig-glass" style={{
+          position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)',
+          padding: '12px 18px', borderRadius: 14, minWidth: 320, maxWidth: 560, textAlign: 'center',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[ev.color] }} />
+            <span className="ig-lab">{ev.player}</span>
+          </div>
+          <div style={{ font: '700 18px Inter, sans-serif', textTransform: 'uppercase', letterSpacing: 0.4 }}>{ev.title}</div>
+          {ev.detail && <div style={{ opacity: 0.7, fontSize: 13 }}>{ev.detail}</div>}
+        </div>
+      )}
+
+      {/* whose turn / pending */}
+      {view.phase !== 'ended' && current && (
+        <div className="ig-glass" style={{
+          position: 'absolute', top: 92, left: 12, padding: '8px 12px', borderRadius: 999,
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[view.pending ? view.players[view.pending.seat].color : current.color] }} />
+          <b>{view.pending ? view.players[view.pending.seat].name : current.name}</b>
+          <span style={{ opacity: 0.6 }}>
+            {view.pending ? 'deciding' : view.phase === 'leaders' ? 'choosing a leader'
+              : view.phase === 'combat' ? 'in combat' : current.revealed ? 'buying' : 'to act'}
+          </span>
+        </div>
+      )}
+
+      {view.winner && (
+        <div className="ig-glass" style={{
+          position: 'absolute', top: '38%', left: '50%', transform: 'translate(-50%,-50%)',
+          padding: '26px 44px', borderRadius: 20, textAlign: 'center',
+        }}>
+          <div className="ig-lab">He who controls the spice</div>
+          <div style={{ font: '800 30px Inter, sans-serif', color: SEAT_HEX[view.winner] }}>
+            {view.players.find((p) => p.color === view.winner)?.name}
+          </div>
+          {view.finalScores && (
+            <div style={{ opacity: 0.8, paddingTop: 8, fontSize: 13 }}>
+              {view.finalScores.map((f) => (
+                <div key={f.seat}>{view.players[f.seat].name} — {f.vp} VP</div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

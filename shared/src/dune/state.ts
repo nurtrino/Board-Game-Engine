@@ -368,11 +368,14 @@ export interface DunePlayerView {
   vp: number;
   revealed: boolean;
   persuasion: number;
+  actedThisTurn: 'agent' | 'reveal' | null;
+  spiceMustFlowBonus: number;
   // private (own seat only)
   hand?: string[];
   intrigue?: string[];
   deckTop?: string | null; // Paul Atreides' Prescience
   baronFactions?: Faction[] | null;
+  helenaAside?: { card: string } | null;
 }
 
 export interface DuneView {
@@ -433,11 +436,13 @@ export function duneViewFor(s: DuneState, seat: number | null | 'dev'): DuneView
         strength: strengthOf(p),
         influence: p.influence, alliances: p.alliances, vp: p.vp,
         revealed: p.revealed, persuasion: p.persuasion,
+        actedThisTurn: p.actedThisTurn, spiceMustFlowBonus: p.spiceMustFlowBonus,
       };
       if (dev || p.seat === me) {
         v.hand = p.hand;
         v.intrigue = p.intrigue;
         v.baronFactions = p.baronFactions;
+        v.helenaAside = p.helenaAside;
         if (p.leader === 'paulAtreides') v.deckTop = p.deck[0] ?? null;
       }
       return v;

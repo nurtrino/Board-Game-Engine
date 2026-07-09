@@ -14,6 +14,344 @@
   ],
   "scale": 6.64
  },
+ "overlays": {
+  "highCouncil": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -2.19,
+    14.95
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "mentat": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -2.78,
+    12.82
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "rallyTroops": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    2.2,
+    12.78
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "swordmaster": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    5.76,
+    12.82
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "hallOfOratory": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    6.07,
+    14.95
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "secureContract": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    10.27,
+    12.82
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "sellMelange": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    9.84,
+    14.93
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "imperialBasin": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    8.76,
+    5.55
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "sietchTabr": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -1.85,
+    3.94
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "researchStation": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    1.09,
+    6.4
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "carthag": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    4.19,
+    8.52
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "arrakeen": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    8.69,
+    9.37
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "conspire": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -7.21,
+    14.1
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "wealth": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -7.38,
+    11.59
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "heighliner": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -7.06,
+    7.98
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "foldspace": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -7.08,
+    5.48
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "selectiveBreeding": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -6.17,
+    1.91
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "secrets": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -7.38,
+    -0.63
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "hardyWarriors": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -6.45,
+    -4.21
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  },
+  "stillsuits": {
+   "image": "/dune/15E5E67EB26ED749CD9A0A07.png",
+   "pos": [
+    -7.17,
+    -6.72
+   ],
+   "scale": [
+    0.13,
+    0.13
+   ]
+  }
+ },
+ "spaceSpots": {
+  "stillsuits": [
+   -7.73,
+   -7.9
+  ],
+  "hardyWarriors": [
+   -7.73,
+   -5.28
+  ],
+  "secrets": [
+   -7.73,
+   -1.75
+  ],
+  "selectiveBreeding": [
+   -7.73,
+   0.89
+  ],
+  "foldspace": [
+   -7.73,
+   4.39
+  ],
+  "heighliner": [
+   -7.72,
+   6.92
+  ],
+  "wealth": [
+   -7.72,
+   10.6
+  ],
+  "conspire": [
+   -7.72,
+   13.16
+  ],
+  "rallyTroops": [
+   1.16,
+   11.93
+  ],
+  "hallOfOratory": [
+   4.79,
+   14.06
+  ],
+  "carthag": [
+   3.73,
+   7.56
+  ],
+  "arrakeen": [
+   7.96,
+   8.36
+  ],
+  "researchStation": [
+   -0.37,
+   5.38
+  ],
+  "sietchTabr": [
+   -1.85,
+   3.94
+  ],
+  "greatFlat": [
+   -3.62,
+   0.17
+  ],
+  "haggaBasin": [
+   2.91,
+   3.04
+  ],
+  "imperialBasin": [
+   7.64,
+   4.5
+  ],
+  "highCouncil": [
+   -2.19,
+   14.95
+  ],
+  "mentat": [
+   -2.78,
+   12.82
+  ],
+  "swordmaster": [
+   5.76,
+   12.82
+  ],
+  "secureContract": [
+   10.27,
+   12.82
+  ],
+  "sellMelange": [
+   9.84,
+   14.93
+  ]
+ },
+ "pieces": {
+  "agentMesh": "/dune/AAEB5BF034CB5271CD03719E.obj",
+  "tints": {
+   "Red": [
+    1,
+    0.008,
+    0
+   ],
+   "Blue": [
+    0.12,
+    0.53,
+    1
+   ],
+   "Orange": [
+    0.89,
+    0.52,
+    0.08
+   ],
+   "Green": [
+    0.04,
+    1,
+    0
+   ]
+  },
+  "troopScale": 0.35
+ },
  "sheets": {
   "20": {
    "face": "/dune/AB1DE98A22D02F073229A843.png",

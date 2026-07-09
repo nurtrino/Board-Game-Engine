@@ -13,10 +13,12 @@ import {
   createTrek, trekViewFor, applyTrekAction,
   distancesFrom, findPath, TREK_CATALOG, PARKS, MAJORS, TREK_RULES,
   createDarkTower, dtViewFor, applyDtAction, DT_KEYS,
+  createDune, duneViewFor, applyDuneAction,
+  CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
   GAME_SEATS, RULES as TTR_RULES,
-  type BrassState, type TtrState, type TrekState, type DtState,
-  type BrassAction, type TtrAction, type TrekAction, type DtAction,
-  type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat,
+  type BrassState, type TtrState, type TrekState, type DtState, type DuneState,
+  type BrassAction, type TtrAction, type TrekAction, type DtAction, type DuneAction,
+  type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat, type DuneSeat, type Faction,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo,
 } from '@bge/shared';
 import { createStore, type SavedRoom } from './store.js';
@@ -24,7 +26,7 @@ import { createStore, type SavedRoom } from './store.js';
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState | TrekState | DtState;
+type GameState = BrassState | TtrState | TrekState | DtState | DuneState;
 
 const engines = {
   brass: {
@@ -54,6 +56,13 @@ const engines = {
     view: (state: GameState, viewer: number | null | 'dev') => dtViewFor(state as DtState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyDtAction(state as DtState, seat, action as DtAction),
     soloSeats: 2,
+  },
+  dune: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number): GameState =>
+      createDune(seated as { name: string; color: DuneSeat }[], seed),
+    view: (state: GameState, viewer: number | null | 'dev') => duneViewFor(state as DuneState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyDuneAction(state as DuneState, seat, action as DuneAction),
+    soloSeats: 3,
   },
 } as const;
 
@@ -260,6 +269,21 @@ function scheduleBots(room: Room): void {
   if (room.game === 'ttr') return scheduleTtrBots(room);
   if (room.game === 'trek') return scheduleTrekBots(room);
   if (room.game === 'darktower') return scheduleDtBots(room);
+  if (room.game === 'dune') return scheduleDuneBots(room);
+}
+
+function scheduleDuneBots(room: Room): void {
+  const s = room.state as DuneState;
+  if (s.phase === 'ended') return;
+  // a pending decision belongs to its owner, otherwise the turn seat acts
+  const seat = s.pending.length ? s.pending[0].seat : s.turn;
+  if (seat < room.players.length) return; // a human's turn/choice
+  if (botTimers.has(room.id)) return;
+  const delay = s.pending.length ? 900 : s.phase === 'combat' ? 1400 : 1700;
+  botTimers.set(room.id, setTimeout(() => {
+    botTimers.delete(room.id);
+    try { duneBotAct(room, seat); } catch (err) { console.error('bot error:', err); }
+  }, delay));
 }
 
 function scheduleDtBots(room: Room): void {
@@ -515,6 +539,110 @@ function dtBotAct(room: Room, seat: number): void {
 
   if (acted) broadcast(room);
   else console.warn(`dt bot seat ${seat} in ${room.id} found no legal action`);
+}
+
+// Dune bot: one action per tick. Resolves pending choices, picks leaders,
+// plays agent turns onto random legal spaces, reveals + buys, and bids
+// combat intrigue when it holds troops in the conflict.
+function duneBotAct(room: Room, seat: number): void {
+  const s = room.state as DuneState;
+  const rng = Math.random;
+  const pick = <T,>(arr: T[]): T => arr[Math.floor(rng() * arr.length)];
+  const attempt = (a: DuneAction) => applyDuneAction(s, seat, a).ok;
+  let acted = false;
+
+  if (s.pending.length && s.pending[0].seat === seat) {
+    const p = s.players[seat];
+    const d = s.pending[0].decision as { kind: string; pick?: number; options?: unknown[] };
+    const factions = [...DUNE_FACTIONS] as Faction[];
+    switch (d.kind) {
+      case 'influenceAny': acted = attempt({ type: 'choose', faction: pick(factions) }); break;
+      case 'influencePickTwo': case 'baronFactions':
+        acted = attempt({ type: 'choose', factions: factions.sort(() => rng() - 0.5).slice(0, 2) });
+        break;
+      case 'influenceWhereBehind': acted = attempt({ type: 'choose', accept: false }); break;
+      case 'influencePick': acted = attempt({ type: 'choose', faction: (d as { options: Faction[] }).options[0] }); break;
+      case 'voiceSpace': acted = attempt({ type: 'choose', space: pick(DUNE_SPACES).id }); break;
+      case 'trash': {
+        const cand = [...p.hand, ...p.discard].filter((c) => c === 'duneDesertPlanet' || c === 'convincingArgument');
+        acted = cand.length ? attempt({ type: 'choose', card: cand[0] }) : attempt({ type: 'choose', accept: false });
+        break;
+      }
+      case 'discardOrLoseTroop':
+        acted = p.hand.length ? attempt({ type: 'choose', card: pick(p.hand) }) : attempt({ type: 'choose' });
+        if (!acted) acted = attempt({ type: 'choose' });
+        break;
+      case 'helenaRow': case 'freeAcquire': {
+        const rows = s.imperiumRow.map((c, i) => (c ? i : -1)).filter((i) => i >= 0);
+        for (const i of rows.sort(() => rng() - 0.5)) { if (attempt({ type: 'choose', option: i })) { acted = true; break; } }
+        if (!acted) acted = attempt({ type: 'choose', accept: false });
+        break;
+      }
+      case 'recallAgent': {
+        const mine = Object.entries(s.spaces).find(([, v]) => v.includes(seat));
+        if (mine) acted = attempt({ type: 'choose', space: mine[0] });
+        break;
+      }
+      case 'pickOpponentInConflict': {
+        const t = s.players.filter((q) => q.seat !== seat && q.inConflict > 0)
+          .sort((a, b) => b.inConflict - a.inConflict)[0];
+        if (t) acted = attempt({ type: 'choose', seat: t.seat });
+        break;
+      }
+      case 'conflictChoice': {
+        const n = (d.options ?? []).length;
+        const order = Array.from({ length: n }, (_, i) => i).sort(() => rng() - 0.5);
+        if ((d.pick ?? 1) === 1) {
+          for (const o of order) { if (attempt({ type: 'choose', option: o })) { acted = true; break; } }
+        } else {
+          acted = attempt({ type: 'choose', options: order.slice(0, d.pick) });
+          if (!acted) acted = attempt({ type: 'choose', options: [0, 1] });
+        }
+        break;
+      }
+    }
+    if (acted) broadcast(room);
+    else console.warn(`dune bot seat ${seat} in ${room.id} stuck on ${d.kind}`);
+    return;
+  }
+
+  const p = s.players[seat];
+  if (!p || s.turn !== seat) return;
+
+  if (s.phase === 'leaders') {
+    acted = attempt({ type: 'pick_leader', leader: pick(s.leaderPool) });
+  } else if (s.phase === 'combat') {
+    const combat = p.intrigue.filter((c) => DUNE_INTRIGUE[c]?.kind.includes('combat'));
+    if (!s.postCombat && p.inConflict > 0 && combat.length && rng() < 0.5) acted = attempt({ type: 'intrigue', card: pick(combat) });
+    if (!acted) acted = attempt({ type: 'combat_pass' });
+  } else if (p.actedThisTurn === 'reveal') {
+    // buy the priciest affordable card, else finish
+    const buys: DuneAction[] = [];
+    s.imperiumRow.forEach((c, i) => { if (c && (DUNE_CARDS[c]?.cost ?? 99) <= p.persuasion) buys.push({ type: 'acquire', row: i }); });
+    if (p.persuasion >= 9 - p.spiceMustFlowBonus) buys.push({ type: 'acquire', reserve: 'theSpiceMustFlow' });
+    if (!buys.length && p.persuasion >= 2) buys.push({ type: 'acquire', reserve: 'arrakisLiaison' });
+    if (buys.length && rng() < 0.9) acted = attempt(pick(buys));
+    if (!acted) acted = attempt({ type: 'end_turn' });
+  } else if (p.actedThisTurn === 'agent') {
+    acted = attempt({ type: 'end_turn' });
+  } else {
+    // agent turn: try random card x space combos, prefer combat spaces with a deploy
+    if (p.agentsLeft + (p.mentat ? 1 : 0) > 0 && p.hand.length && rng() < 0.92) {
+      for (let i = 0; i < 16 && !acted; i++) {
+        const card = pick(p.hand);
+        const space = pick([...DUNE_SPACES]);
+        const a: DuneAction = { type: 'agent', card, space: space.id };
+        if (space.id === 'sellMelange') a.sell = 2;
+        if (space.combat) a.deploy = 2;
+        acted = attempt(a);
+      }
+    }
+    if (!acted && !p.revealed) acted = attempt({ type: 'reveal' });
+    if (!acted) acted = attempt({ type: 'end_turn' });
+  }
+
+  if (acted) broadcast(room);
+  else console.warn(`dune bot seat ${seat} in ${room.id} found no legal action`);
 }
 
 // ---------- http ----------

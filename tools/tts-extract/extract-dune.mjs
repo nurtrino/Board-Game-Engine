@@ -122,9 +122,72 @@ for (const [guid, name] of [['9ac7d6', 'rulebook'], ['9f549f', 'errata']]) {
   if (fs.existsSync(src)) fs.copyFileSync(src, path.join(OUT, name + '.pdf'));
 }
 
+// Base-game overlay tiles: the mod's board is the Rise of Ix layout; setup
+// (global.lua sendAgentSetup, riseIX == 0 branch) lays these tiles over it
+// for base play. Positions are the Lua's exact setPositionSmooth targets.
+const BASE_TILES = {
+  highCouncil: { guid: '3d34e0', pos: [-2.19, 14.95] },
+  mentat: { guid: '3d8ded', pos: [-2.78, 12.82] },
+  rallyTroops: { guid: '0227ac', pos: [2.20, 12.78] },
+  swordmaster: { guid: '278d1b', pos: [5.76, 12.82] },
+  hallOfOratory: { guid: 'bceb8c', pos: [6.07, 14.95] },
+  secureContract: { guid: '9375b7', pos: [10.27, 12.82] },
+  sellMelange: { guid: '410533', pos: [9.84, 14.93] },
+  imperialBasin: { guid: 'ca20ba', pos: [8.76, 5.55] },
+  sietchTabr: { guid: 'ea0cff', pos: [-1.85, 3.94] },
+  researchStation: { guid: '2a9190', pos: [1.09, 6.40] },
+  carthag: { guid: '1fb1b0', pos: [4.19, 8.52] },
+  arrakeen: { guid: '438a60', pos: [8.69, 9.37] },
+  conspire: { guid: '45df71', pos: [-7.21, 14.10] },
+  wealth: { guid: '70d8e5', pos: [-7.38, 11.59] },
+  heighliner: { guid: 'c16d62', pos: [-7.06, 7.98] },
+  foldspace: { guid: 'bddd6a', pos: [-7.08, 5.48] },
+  selectiveBreeding: { guid: 'aab325', pos: [-6.17, 1.91] },
+  secrets: { guid: '734fac', pos: [-7.38, -0.63] },
+  hardyWarriors: { guid: '355820', pos: [-6.45, -4.21] },
+  stillsuits: { guid: '5d0684', pos: [-7.17, -6.72] },
+};
+const overlays = {};
+for (const [id, t] of Object.entries(BASE_TILES)) {
+  const o = byGuid[t.guid];
+  if (!o) { console.warn('missing tile', id, t.guid); continue; }
+  overlays[id] = {
+    image: stage(o.CustomImage?.ImageURL),
+    pos: t.pos,
+    scale: [+o.Transform.scaleX.toFixed(2), +o.Transform.scaleZ.toFixed(2)],
+  };
+}
+
+// Agent spots per space: the mod's Hagal placement zones where it has them,
+// otherwise the overlay tile centres / maker harvest points.
+const spaceSpots = {
+  stillsuits: [-7.73, -7.90], hardyWarriors: [-7.73, -5.28], secrets: [-7.73, -1.75],
+  selectiveBreeding: [-7.73, 0.89], foldspace: [-7.73, 4.39], heighliner: [-7.72, 6.92],
+  wealth: [-7.72, 10.60], conspire: [-7.72, 13.16], rallyTroops: [1.16, 11.93],
+  hallOfOratory: [4.79, 14.06], carthag: [3.73, 7.56], arrakeen: [7.96, 8.36],
+  researchStation: [-0.37, 5.38], sietchTabr: [-1.85, 3.94],
+  greatFlat: [-3.62, 0.17], haggaBasin: [2.91, 3.04], imperialBasin: [7.64, 4.50],
+  highCouncil: [-2.19, 14.95], mentat: [-2.78, 12.82], swordmaster: [5.76, 12.82],
+  secureContract: [10.27, 12.82], sellMelange: [9.84, 14.93],
+};
+
+// agent pawns: one Custom_Model mesh, tinted per seat; troops are stock
+// 0.35-scale BlockSquare cubes in the same tints
+const agentObj = byGuid['7751c8'];
+const pieces = {
+  agentMesh: stage(agentObj.CustomMesh.MeshURL, 'model'),
+  tints: {
+    Red: [1, 0.008, 0], Blue: [0.12, 0.53, 1], Orange: [0.89, 0.52, 0.08], Green: [0.04, 1, 0],
+  },
+  troopScale: 0.35,
+};
+
 const scene = {
   source: 'TTS workshop 2354919205 — Dune Imperium (+Ix +Immortality) — extract-dune.mjs',
   board: boardOut,
+  overlays,
+  spaceSpots,
+  pieces,
   sheets,
   decks,
   leaders,

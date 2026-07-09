@@ -30,6 +30,11 @@ const GAMES = [
     name: 'Dark Tower',
     logo: '/darktower-logo.jpg',
   },
+  {
+    id: 'dune',
+    name: 'Dune: Imperium',
+    logo: '/dune-logo.jpg',
+  },
 ];
 
 const dateOf = (t: number) =>
