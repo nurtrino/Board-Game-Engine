@@ -44,6 +44,11 @@ const CSS = `
 .tp-act.primary { background: #dfe9ee; color: #06121a; border-color: transparent; }
 .tp-step { display: inline-flex; align-items: center; gap: 12px; }
 .tp-step button { width: 40px; height: 40px; border-radius: 10px; font: 700 18px Inter, sans-serif; }
+.tp-actrow { display: flex; flex-direction: column; gap: 3px; }
+.tp-why { font: 600 11px Inter, sans-serif; color: #e0b060; opacity: 0.85; padding: 0 4px; line-height: 1.35; letter-spacing: 0.2px; }
+.tp-cap { font: 600 11px Inter, sans-serif; opacity: 0.6; padding: 0 4px; line-height: 1.35; letter-spacing: 0.2px; }
+.tp-legend { font: 600 11px Inter, sans-serif; opacity: 0.6; text-align: center; line-height: 1.7; letter-spacing: 0.2px; padding: 2px 4px; }
+.tp-remind { font: 700 10px Inter, sans-serif; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; text-align: center; padding-bottom: 2px; }
 `;
 
 const RIGHT_W = 'min(34vw, 420px)';
@@ -94,14 +99,28 @@ export function TtrPlay({ view, act: rawAct, error }: {
   const mine = me;
   const shim = stateShim(view);
   const meShim = shim.players[mine.seat];
+  const turnName = view.players.find((p) => p.color === view.turnColor)?.name ?? view.turnColor;
+  const winnerName = view.winner ? (view.players.find((p) => p.color === view.winner)?.name ?? view.winner) : null;
+  const ev = view.lastEvent;
+
+  // Why is each action unavailable right now? (shown under the button, so a
+  // greyed control never reads as "broken".) Empty string = available.
+  const drewThisTurn = 'You already drew this turn';
+  const canHarbor = harborCities(shim, meShim).length > 0 && !!harborCardsFor(meShim);
+  const canExchange = mine.boxTrains + mine.boxShips > 0;
+  const drawWhy = !myTurn ? '' : view.turnDraws >= 2 ? 'You already drew twice this turn' : '';
+  const claimWhy = !myTurn ? '' : view.turnDraws > 0 ? drewThisTurn : claimable.length === 0 ? 'No route you can afford right now' : '';
+  const ticketsWhy = !myTurn ? '' : view.turnDraws > 0 ? drewThisTurn : view.ticketDeckCount === 0 ? 'No tickets left in the deck' : '';
+  const harborWhy = !myTurn ? '' : view.turnDraws > 0 ? drewThisTurn : !canHarbor ? 'No harbor you can build and afford yet' : '';
+  const exchangeWhy = !myTurn ? '' : view.turnDraws > 0 ? drewThisTurn : !canExchange ? 'No spare pieces set aside to swap' : '';
 
   // ---------- setup phase ----------
   if (view.phase === 'setup') {
     if (mine.ready) {
       return (
         <div className="page center" style={{ flexDirection: 'column', gap: 8 }}>
-          <h2>Fleet locked in</h2>
-          <p className="dim">Waiting for the other captains.</p>
+          <h2>Tickets and fleet locked in</h2>
+          <p className="dim">Your setup is saved. Waiting for the other players to finish choosing.</p>
         </div>
       );
     }
@@ -112,8 +131,14 @@ export function TtrPlay({ view, act: rawAct, error }: {
         <style>{CSS}</style>
         <div style={{ maxWidth: 1000, margin: '0 auto', padding: '26px 18px 100px' }}>
           <div className="ig-lab">Rails and Sails — setup</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '6px 0 2px' }}>
+            <span style={{ width: 11, height: 11, borderRadius: '50%', background: SEAT_HEX[mine.color] }} />
+            <b>You are {mine.name}</b>
+            <span style={{ opacity: 0.6 }}>· {mine.color}</span>
+          </div>
           <h1 style={{ margin: '2px 0 4px' }}>Choose your tickets</h1>
-          <p className="dim">Keep at least {RULES.setupKeepMin} of {mine.pendingTickets?.length ?? 0}. Unkept tickets go under the deck.</p>
+          <p className="dim">A ticket is a destination card: connect its two cities with your routes to score its points.</p>
+          <p className="dim">Keep at least {RULES.setupKeepMin} of {mine.pendingTickets?.length ?? 0}. Unkept tickets go under the deck. Every ticket you keep counts against you if you do not finish it, so keep only ones you can connect.</p>
           <div className="tp-tickets" style={{ justifyContent: 'flex-start', margin: '14px 0 26px' }}>
             {(mine.pendingTickets ?? []).map((t, i) => (
               <div key={i} className={`tp-ticket ${picked.includes(i) ? 'sel' : ''}`}
@@ -127,7 +152,7 @@ export function TtrPlay({ view, act: rawAct, error }: {
           </div>
 
           <h2 style={{ margin: '0 0 4px' }}>Split your fleet</h2>
-          <p className="dim">60 pieces total — up to {RULES.maxTrains} trains and {RULES.maxShips} ships. New captains do well with 20 trains, 40 ships.</p>
+          <p className="dim">You get {RULES.pieceTotal} playing pieces. Split them between trains and ships (at most {RULES.maxTrains} trains and at most {RULES.maxShips} ships). Trains claim rail routes, ships claim sea routes. New captains do well with 20 trains and 40 ships.</p>
           <div className="tp-step" style={{ margin: '12px 0 26px' }}>
             <button onClick={() => setTrains((t) => Math.max(RULES.pieceTotal - RULES.maxShips, t - 1))}>−</button>
             <div style={{ textAlign: 'center', minWidth: 160 }}>
@@ -172,7 +197,7 @@ export function TtrPlay({ view, act: rawAct, error }: {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingBottom: 8 }}>
             <span style={{ width: 11, height: 11, borderRadius: '50%', background: SEAT_HEX[mine.color] }} />
             <b>{mine.name}</b>
-            <span style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{mine.score}</span>
+            <span style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{mine.score}<span style={{ fontSize: 10, fontWeight: 700, opacity: 0.55, marginLeft: 3 }}>PTS</span></span>
           </div>
           <div className="ig-hold">
             <div><div className="ig-lab">Trains</div><div className="ig-stat-v ig-num">{mine.trains}</div></div>
@@ -183,42 +208,84 @@ export function TtrPlay({ view, act: rawAct, error }: {
         </div>
 
         <div className="ig-glass" style={{ padding: '10px 12px', borderRadius: 14, textAlign: 'center', font: '700 13px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase' }}>
-          {view.winner ? `${view.winner} wins` : myTurn ? (view.turnDraws > 0 ? 'Draw one more or end turn' : 'Your turn') : `${view.turnColor} is sailing`}
-          {view.finalTurns !== null && !view.winner && <div className="ig-lab" style={{ paddingTop: 3 }}>Final turns</div>}
+          {view.winner ? `${winnerName} wins` : myTurn ? (view.turnDraws > 0 ? 'Draw one more or end turn' : 'Your turn') : `Waiting for ${turnName}`}
+          {view.finalTurns !== null && !view.winner && (
+            <>
+              <div className="ig-lab" style={{ paddingTop: 5, color: '#e0b060' }}>Final turns</div>
+              <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7, textTransform: 'none', letterSpacing: 0.2, paddingTop: 2 }}>A fleet ran low · everyone gets a last turn, then the game ends.</div>
+            </>
+          )}
         </div>
 
+        {ev && !view.winner && (
+          <div className="ig-glass" style={{ padding: '8px 12px', borderRadius: 12 }}>
+            <div className="ig-lab" style={{ opacity: 0.6, paddingBottom: 2 }}>Last move</div>
+            <div style={{ fontSize: 12 }}>{ev.player} · {ev.title}{ev.detail ? ` · ${ev.detail}` : ''}</div>
+          </div>
+        )}
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button className="tp-act" disabled={!myTurn || view.turnDraws >= 2} onClick={() => setArm(arm === 'draw' ? 'idle' : 'draw')}>Draw cards</button>
-          <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || claimable.length === 0}
-            onClick={() => { if (claimable.length === 0) setNotice('No route you can afford right now'); setArm(arm === 'claim' ? 'idle' : 'claim'); }}>
-            Claim a route{claimable.length ? ` (${claimable.length})` : ''}
-          </button>
-          <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || view.ticketDeckCount === 0}
-            onClick={() => setArm('tickets')}>Draw tickets</button>
-          <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || harborCities(shim, meShim).length === 0 || !harborCardsFor(meShim)}
-            onClick={() => setArm(arm === 'harbor' ? 'idle' : 'harbor')}>Build a harbor</button>
-          <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || (mine.boxTrains + mine.boxShips === 0)}
-            onClick={() => { setExTrains(0); setExShips(0); setArm('exchange'); }}>Exchange pieces</button>
+          {myTurn && !view.winner && <div className="tp-remind">One action per turn</div>}
+
+          <div className="tp-actrow">
+            <button className="tp-act" disabled={!myTurn || view.turnDraws >= 2} onClick={() => setArm(arm === 'draw' ? 'idle' : 'draw')}>Draw cards</button>
+            {drawWhy ? <div className="tp-why">· {drawWhy}</div> : <div className="tp-cap">Take up to two travel cards</div>}
+          </div>
+
+          <div className="tp-actrow">
+            <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || claimable.length === 0}
+              onClick={() => setArm(arm === 'claim' ? 'idle' : 'claim')}>
+              Claim a route{claimable.length ? ` (${claimable.length})` : ''}
+            </button>
+            {claimWhy ? <div className="tp-why">· {claimWhy}</div>
+              : claimable.length ? <div className="tp-cap">{claimable.length} route{claimable.length === 1 ? '' : 's'} you can afford right now</div> : null}
+          </div>
+
+          <div className="tp-actrow">
+            <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || view.ticketDeckCount === 0}
+              onClick={() => setArm('tickets')}>Draw tickets</button>
+            {ticketsWhy ? <div className="tp-why">· {ticketsWhy}</div> : <div className="tp-cap">New destination goals · uses your whole turn</div>}
+          </div>
+
+          <div className="tp-actrow">
+            <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || !canHarbor}
+              onClick={() => setArm(arm === 'harbor' ? 'idle' : 'harbor')}>Build a harbor</button>
+            {harborWhy ? <div className="tp-why">· {harborWhy}</div> : <div className="tp-cap">Scores 20 / 30 / 40 for tickets naming that port</div>}
+          </div>
+
+          <div className="tp-actrow">
+            <button className="tp-act" disabled={!myTurn || view.turnDraws > 0 || !canExchange}
+              onClick={() => { setExTrains(0); setExShips(0); setArm('exchange'); }}>Exchange pieces</button>
+            {exchangeWhy ? <div className="tp-why">· {exchangeWhy}</div> : <div className="tp-cap">Swap spare trains for ships · costs points</div>}
+          </div>
+
           <button className="tp-act" onClick={() => setArm('mytickets')}>My tickets</button>
-          <button className="tp-act" onClick={() => setArm('deck')}>Show deck</button>
+          <button className="tp-act" onClick={() => setArm('deck')}>Card reference</button>
+
+          <div className="tp-legend">▭ Train route · ⬭ Ship route · Grey = any colour</div>
         </div>
 
         {/* End turn — shown whenever it's your turn so it's always clear how to
             conclude; enabled once ending is a legal move (drew a card, or stuck) */}
         {myTurn && !view.winner && (
-          <button
-            className="tp-act primary"
-            style={{ marginTop: 'auto' }}
-            disabled={view.turnDraws === 0 && claimable.length + harborCities(shim, meShim).length > 0}
-            onClick={() => { act({ type: 'end_turn' }); setArm('idle'); }}
-          >
-            End turn
-          </button>
+          <div className="tp-actrow" style={{ marginTop: 'auto' }}>
+            <button
+              className="tp-act primary"
+              disabled={view.turnDraws === 0 && claimable.length + harborCities(shim, meShim).length > 0}
+              onClick={() => { act({ type: 'end_turn' }); setArm('idle'); }}
+            >
+              End turn
+            </button>
+            {view.turnDraws === 0 && claimable.length + harborCities(shim, meShim).length > 0 && (
+              <div className="tp-why">· Take an action or draw a card first</div>
+            )}
+          </div>
         )}
 
         {arm === 'harbor' && (
           <div className="ig-glass" style={{ padding: 12, borderRadius: 14 }}>
-            <div className="ig-lab" style={{ paddingBottom: 8 }}>Build where</div>
+            <div className="ig-lab">Build a harbor</div>
+            <div style={{ opacity: 0.65, fontSize: 12, padding: '4px 0 8px' }}>A harbor in a port you have reached multiplies tickets that name that city (20 / 30 / 40). Pick a port:</div>
             {harborCities(shim, meShim).map((city) => (
               <button key={city} className="tp-act" style={{ marginBottom: 6 }}
                 onClick={() => { const cards = harborCardsFor(meShim); if (cards) act({ type: 'build_harbor', city, cards }); setArm('idle'); }}>
@@ -232,11 +299,12 @@ export function TtrPlay({ view, act: rawAct, error }: {
       {/* market overlay */}
       {arm === 'draw' && (
         <div className="tp-overlay" onClick={() => setArm('idle')}>
-          <div className="ig-lab">Take up to two cards — a faceup wild counts as both</div>
+          <div className="ig-lab">Take up to two travel cards</div>
+          <div style={{ opacity: 0.65, fontSize: 12, marginTop: -6 }}>Tap a face-up card, or draw blind from a pile. A face-up wild counts as both of your draws.</div>
           <div className="tp-market" onClick={(e) => e.stopPropagation()}>
-            <button className="tp-mcard" disabled={view.shipDeckCount === 0} style={{ background: '#12202b', color: '#e8ebf0', font: '700 15px Inter, sans-serif' }}
+            <button className="tp-mcard" disabled={view.shipDeckCount === 0} style={{ background: '#12202b', color: '#e8ebf0', font: '700 15px Inter, sans-serif', lineHeight: 1.3 }}
               onClick={() => { blindPending.current = true; act({ type: 'draw_card', source: 'ship' }); }}>
-              SHIPS<br />{view.shipDeckCount}
+              SHIPS<br />{view.shipDeckCount}<br /><span style={{ fontWeight: 400, fontSize: 10, opacity: 0.7 }}>cards left</span>
             </button>
             {view.market.map((c, i) => (
               <button key={i} className="tp-mcard" disabled={c === null || (view.turnDraws > 0 && c !== null && !!CATALOG[c]?.wild)}
@@ -244,9 +312,9 @@ export function TtrPlay({ view, act: rawAct, error }: {
                 {c !== null && cardFace(scene, c) && <img src={cardFace(scene, c)!} alt="" />}
               </button>
             ))}
-            <button className="tp-mcard" disabled={view.trainDeckCount === 0} style={{ background: '#1d1712', color: '#e8ebf0', font: '700 15px Inter, sans-serif' }}
+            <button className="tp-mcard" disabled={view.trainDeckCount === 0} style={{ background: '#1d1712', color: '#e8ebf0', font: '700 15px Inter, sans-serif', lineHeight: 1.3 }}
               onClick={() => { blindPending.current = true; act({ type: 'draw_card', source: 'train' }); }}>
-              TRAINS<br />{view.trainDeckCount}
+              TRAINS<br />{view.trainDeckCount}<br /><span style={{ fontWeight: 400, fontSize: 10, opacity: 0.7 }}>cards left</span>
             </button>
           </div>
           <div className="ig-lab">{view.turnDraws === 1 ? 'One taken — take another or end your turn' : view.turnDraws === 0 ? 'Your first card starts the turn' : ''}</div>
@@ -259,7 +327,8 @@ export function TtrPlay({ view, act: rawAct, error }: {
       {/* show deck — the full card sheets as a reference */}
       {arm === 'deck' && (
         <div className="tp-overlay" style={{ overflowY: 'auto', padding: '30px 16px' }} onClick={() => setArm('idle')}>
-          <div className="ig-lab">The decks</div>
+          <div className="ig-lab">Card reference</div>
+          <div className="tp-legend">▭ Train route · ⬭ Ship route · Grey route = any colour</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, justifyContent: 'center', alignItems: 'flex-start' }} onClick={(e) => e.stopPropagation()}>
             {(['train', 'ship', 'ticket'] as const).map((k) => {
               const sheet = Object.values(scene.decks[k].sheets)[0];
@@ -309,16 +378,22 @@ export function TtrPlay({ view, act: rawAct, error }: {
             <div className="ig-glass" style={{ padding: '22px 30px', borderRadius: 18, textAlign: 'center', maxWidth: 420 }} onClick={(e) => e.stopPropagation()}>
               <div className="ig-lab">Claim this route</div>
               <div style={{ font: '800 22px Inter, sans-serif', margin: '4px 0' }}>{r.a} — {r.b}</div>
-              <div style={{ opacity: 0.75, marginBottom: 12 }}>
-                {r.length} {r.kind === 'rail' ? 'train' : 'ship'} spaces · {r.color ?? 'any color'}{r.pair ? ' · pairs' : ''}
+              <div style={{ opacity: 0.85, marginBottom: 4 }}>
+                Costs {cards ? cards.length : r.length} {r.color ? r.color.toLowerCase() : 'any-colour'} {r.kind === 'rail' ? 'train' : 'ship'} card{(cards ? cards.length : r.length) === 1 ? '' : 's'}{r.pair ? ', matched in same-colour pairs' : ''}
+              </div>
+              <div style={{ opacity: 0.55, fontSize: 12, marginBottom: 12 }}>
+                Lays {r.length} of your {r.kind === 'rail' ? 'trains' : 'ships'} and scores you points.
               </div>
               {cards && (
-                <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginBottom: 16, flexWrap: 'wrap' }}>
-                  {cards.map((ci) => {
-                    const face = mine.hand ? cardFace(scene, mine.hand[ci]) : null;
-                    return face ? <img key={ci} src={face} alt="" style={{ width: 44, height: 62, borderRadius: 5, border: '1px solid rgba(255,255,255,0.2)' }} /> : null;
-                  })}
-                </div>
+                <>
+                  <div className="ig-lab" style={{ opacity: 0.6, paddingBottom: 4 }}>These cards will be spent</div>
+                  <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginBottom: 16, flexWrap: 'wrap' }}>
+                    {cards.map((ci) => {
+                      const face = mine.hand ? cardFace(scene, mine.hand[ci]) : null;
+                      return face ? <img key={ci} src={face} alt="" style={{ width: 44, height: 62, borderRadius: 5, border: '1px solid rgba(255,255,255,0.2)' }} /> : null;
+                    })}
+                  </div>
+                </>
               )}
               <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
                 <button className="tp-act primary" style={{ width: 'auto', padding: '12px 26px' }}
@@ -336,6 +411,9 @@ export function TtrPlay({ view, act: rawAct, error }: {
       {pending.length > 0 && (
         <div className="tp-overlay">
           <div className="ig-lab">Keep at least one ticket</div>
+          <div style={{ opacity: 0.7, fontSize: 12, maxWidth: 440, textAlign: 'center', marginTop: -4 }}>
+            Each ticket you keep scores its points if you connect its cities, and costs you those points if you do not.
+          </div>
           <div className="tp-tickets">
             {pending.map((t, i) => (
               <div key={i} className={`tp-ticket ${picked.includes(i) ? 'sel' : ''}`}
@@ -377,7 +455,8 @@ export function TtrPlay({ view, act: rawAct, error }: {
       {arm === 'exchange' && (
         <div className="tp-overlay" onClick={() => setArm('idle')}>
           <div className="ig-glass" style={{ padding: '22px 30px', borderRadius: 18, textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-            <div className="ig-lab">Exchange pieces — 1 point each</div>
+            <div className="ig-lab">Swap spare pieces · costs 1 point each</div>
+            <div style={{ opacity: 0.65, fontSize: 12, marginTop: 4 }}>Trade trains and ships you set aside at setup back and forth. This uses your whole turn.</div>
             <div style={{ display: 'flex', gap: 26, margin: '14px 0' }}>
               <div>
                 <div className="ig-lab">Take trains ({mine.boxTrains} boxed)</div>
@@ -398,7 +477,7 @@ export function TtrPlay({ view, act: rawAct, error }: {
             </div>
             <button className="tp-act primary" disabled={exTrains + exShips === 0}
               onClick={() => { act({ type: 'exchange', trains: exTrains, ships: exShips }); setArm('idle'); }}>
-              Exchange — costs {exTrains + exShips} point{exTrains + exShips === 1 ? '' : 's'}
+              Exchange · costs {exTrains + exShips} point{exTrains + exShips === 1 ? '' : 's'}
             </button>
           </div>
         </div>

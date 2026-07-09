@@ -51,6 +51,7 @@ export type AxisAction =
   | { type: 'offload'; zone: string; territory: string; units: { key: UnitKey; count: number }[] }
   // mobilize
   | { type: 'place'; space: string; key: UnitKey; count: number }
+  | { type: 'placeChina'; space: string } // US turn: China's infantry grant
   // phase control
   | { type: 'endPhase' };
 
@@ -97,6 +98,75 @@ function neighborsFor(s: AxisState, idx: MapIndex, space: string, domain: 'land'
   }
   if (domain !== 'land') for (const z of t.coastTo ?? []) out.push(z);
   return out;
+}
+
+// Can `key` legally attack `target` starting from `from`? Returns a blitzed
+// intermediate (empty hostile territory) when a tank passes through one.
+function attackReach(
+  s: AxisState, idx: MapIndex, power: PowerKey, key: UnitKey, from: string, target: string,
+): { ok: boolean; blitz?: string; error?: string } {
+  const prof = UNITS[key];
+  const domain = prof.domain;
+  if (domain === 'structure') return { ok: false, error: 'Industrial complexes cannot attack.' };
+
+  if (domain === 'land') {
+    const oneStep = neighborsFor(s, idx, from, 'land', power).includes(target);
+    if (oneStep) return { ok: true };
+    const mech = key === 'infantry' && techsOf(s, power).includes('mechanizedInfantry');
+    if (key !== 'tank' && !mech) return { ok: false, error: `${prof.name} moves one space.` };
+    // two-space: intermediate must be friendly, or hostile and EMPTY (blitz)
+    for (const mid of neighborsFor(s, idx, from, 'land', power)) {
+      if (!neighborsFor(s, idx, mid, 'land', power).includes(target)) continue;
+      const holder = s.control[mid];
+      const friendlyMid = holder != null && sameSide(holder, power);
+      const emptyHostile = !friendlyMid && enemyUnitsAt(s, mid, power).length === 0 && holder != null;
+      if (friendlyMid && enemyUnitsAt(s, mid, power).length === 0) return { ok: true };
+      if (emptyHostile) return { ok: true, blitz: mid };
+    }
+    return { ok: false, error: `No route for the ${prof.name}.` };
+  }
+
+  if (domain === 'sea') {
+    // BFS up to `move` zones; may not pass through hostile zones (subs may)
+    const range = prof.move;
+    let frontier = [from];
+    const seen = new Set(frontier);
+    for (let d = 1; d <= range; d++) {
+      const next: string[] = [];
+      for (const z of frontier) {
+        for (const n of neighborsFor(s, idx, z, 'sea', power)) {
+          if (seen.has(n)) continue;
+          if (n === target) return { ok: true };
+          // passing THROUGH requires the zone be non-hostile (subs ignore)
+          if (d < range && (key === 'submarine' || !seaZoneHostile(s, n, power))) {
+            seen.add(n);
+            next.push(n);
+          }
+        }
+      }
+      frontier = next;
+    }
+    return { ok: false, error: `The ${prof.name} cannot reach that zone.` };
+  }
+
+  // air: BFS through anything real, reserving one move to land afterward
+  const bonus = techsOf(s, power).includes('longRangeAircraft') ? 2 : 0;
+  const range = prof.move + bonus - 1;
+  let frontier = [from];
+  const seen = new Set(frontier);
+  for (let d = 1; d <= range; d++) {
+    const next: string[] = [];
+    for (const sp of frontier) {
+      for (const n of neighborsFor(s, idx, sp, 'air', power)) {
+        if (seen.has(n)) continue;
+        if (n === target) return { ok: true };
+        seen.add(n);
+        next.push(n);
+      }
+    }
+    frontier = next;
+  }
+  return { ok: false, error: `Out of range for the ${prof.name} (a landing move is reserved).` };
 }
 
 // ---------- rnd ----------
@@ -212,20 +282,29 @@ function actAttack(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: '
   const hostileControl = !targetSea && s.control[a.target] != null && !sameSide(s.control[a.target]!, power);
   if (enemies.length === 0 && !hostileControl) return err('Nothing to attack there.');
 
-  // collect and validate forces (adjacency only for now; multi-space moves
-  // use 'move' first — tanks/air arrive via their own moves in this MVP wave,
-  // refined during client integration)
+  // collect and validate forces: each unit must genuinely reach the target
+  // (land 1, tanks 2 with blitz, ships 2 through friendly water, air by
+  // range with one move reserved to land)
   const committed: { key: UnitKey; count: number }[] = [];
   const from: ActiveCombat['from'] = [];
+  const blitzThrough = new Set<string>(); // empty hostile intermediates tanks pass
   for (const f of a.forces) {
-    const legalAdj = neighborsFor(s, idx, f.from, targetSea ? 'sea' : 'land', power).includes(a.target)
-      || neighborsFor(s, idx, f.from, 'air', power).includes(a.target);
-    if (!legalAdj) return err(`${f.from} does not border the target.`);
     for (const u of f.units) {
       if (unitCount(s, f.from, power, u.key) < u.count) return err(`Not enough ${UNITS[u.key].name} in ${f.from}.`);
       const dom = UNITS[u.key].domain;
-      if (!targetSea && dom === 'sea') return err('Ships cannot enter territories.');
+      if (!targetSea && dom === 'sea') {
+        // accompanying warships may only bombard an amphibious assault from
+        // the offload zone itself
+        const bombardier = u.key === 'battleship' || u.key === 'cruiser';
+        if (!(bombardier && a.offloadFrom && f.from === a.offloadFrom)) {
+          return err('Ships cannot enter territories.');
+        }
+        continue;
+      }
       if (targetSea && dom === 'land') return err('Land units cannot attack sea zones.');
+      const reach = attackReach(s, idx, power, u.key, f.from, a.target);
+      if (!reach.ok) return err(reach.error ?? `${UNITS[u.key].name} cannot reach ${a.target} from ${f.from}.`);
+      if (reach.blitz) blitzThrough.add(reach.blitz);
     }
   }
   // amphibious offload
@@ -243,6 +322,12 @@ function actAttack(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: '
     for (const u of a.offloadUnits) {
       if ((aboard[u.key] ?? 0) < u.count) return err(`Not enough ${UNITS[u.key].name} aboard transports in ${a.offloadFrom}.`);
     }
+  }
+
+  // blitzed intermediates flip to the attacker as the tanks roll through
+  for (const mid of blitzThrough) {
+    captureTerritory(s, mid, power);
+    s.log.push({ round: s.round, power, space: mid, text: `${POWERS[power].name} blitzes through ${idx.territory[mid]?.name ?? mid}.` });
   }
 
   // move the units out of their origins into the battle
@@ -300,7 +385,7 @@ function actAttack(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: '
   };
   s.contested.push(a.target);
   s.phase = 'battle';
-  s.log.push({ round: s.round, power, text: `${POWERS[power].name} attacks ${targetSea ? idx.seaZone[a.target]?.id ?? a.target : targetTerr!.name}.` });
+  s.log.push({ round: s.round, power, space: a.target, text: `${POWERS[power].name} attacks ${targetSea ? `sea zone ${idx.seaZone[a.target]?.n ?? ''}` : targetTerr!.name}.` });
   syncBattle(s);
   return OK;
 }
@@ -377,27 +462,36 @@ function finishBattle(s: AxisState): void {
   const survivorsAtk = b.attacker.filter((u) => u.hp > 0);
   const survivorsDef = b.defender.filter((u) => u.hp > 0);
 
+  // in a land battle, accompanying warships (bombardiers) go back to the
+  // offload zone whatever happens — they were never IN the territory
+  const shipHome = c.offloadFrom ?? c.from.find((f) => isSeaZoneId(f.space))?.space ?? c.space;
+  const landBattle = !isSeaZoneId(c.space);
+  const placeAtk = (u: { key: UnitKey }, space: string) => {
+    if (landBattle && UNITS[u.key].domain === 'sea') addUnits(s, shipHome, power, u.key, 1);
+    else addUnits(s, space, power, u.key, 1);
+  };
+
   if (b.status === 'retreated' || b.status === 'defender_won' || b.status === 'standoff' || b.status === 'mutual') {
     // attacker survivors withdraw to the first origin space (rulebook: one
     // adjacent friendly space at least one unit came from)
     const home = c.from[0]?.space ?? c.space;
     for (const u of survivorsAtk) {
-      if (b.status === 'standoff' && UNITS[u.key].domain === 'sea') {
+      if (b.status === 'standoff' && UNITS[u.key].domain === 'sea' && !landBattle) {
         addUnits(s, c.space, power, u.key, 1); // may remain in the zone
       } else {
-        addUnits(s, home, power, u.key, 1);
+        placeAtk(u, home);
       }
     }
     // defender survivors return to the space
     for (const u of survivorsDef) addUnits(s, c.space, u.power as PowerKey | 'china', u.key, 1);
   } else {
     // attacker cleared or captured the space
-    for (const u of survivorsAtk) addUnits(s, c.space, power, u.key, 1);
+    for (const u of survivorsAtk) placeAtk(u, c.space);
     if (b.status === 'attacker_captured' && !isSeaZoneId(c.space)) {
       captureTerritory(s, c.space, power);
     }
   }
-  s.log.push({ round: s.round, power, text: battleOutcomeText(s, c) });
+  s.log.push({ round: s.round, power, space: c.space, text: battleOutcomeText(s, c) });
   s.combat = null;
   s.phase = 'combatMove';
 }
@@ -585,6 +679,24 @@ function actPlace(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: 'p
   return OK;
 }
 
+// China's grant placement: on Chinese territories (or the claimable pair)
+// held by the Allies, fewer than 3 units standing (rulebook p11).
+const CHINESE_CLAIMABLE = new Set(['kiangsu', 'manchuria']);
+function actPlaceChina(s: AxisState, idx: MapIndex, space: string): ActionResult {
+  if (s.phase !== 'mobilize') return err('Not the mobilize phase.');
+  if (activePower(s) !== 'usa') return err('China places during the US turn.');
+  if (s.chinaGrant < 1) return err('No Chinese infantry left to place.');
+  const t = idx.territory[space];
+  if (!t || (!t.isChinese && !CHINESE_CLAIMABLE.has(space))) return err('Chinese infantry stay inside China.');
+  const holder = s.control[space];
+  if (holder == null || coalitionOf(holder) !== 'allies') return err('That territory is Axis-held.');
+  const standing = stacksAt(s, space).reduce((n, st) => n + st.count, 0);
+  if (standing >= CHINA_RULES.maxUnitsPerPlacement) return err('Chinese placements go where fewer than 3 units stand.');
+  s.chinaGrant -= 1;
+  addUnits(s, space, 'china', 'infantry', 1);
+  return OK;
+}
+
 // ---------- income + turn advance ----------
 
 function objectiveMet(s: AxisState, idx: MapIndex, o: (typeof OBJECTIVES)[number]): boolean {
@@ -705,6 +817,12 @@ function actEndPhase(s: AxisState, idx: MapIndex): ActionResult {
     case 'noncombat':
       destroyStrandedAircraft(s, idx);
       s.phase = 'mobilize';
+      // China: 1 new infantry per 2 non-Axis Chinese territories, placed
+      // during the US mobilization (rulebook p11)
+      s.chinaGrant = power === 'usa' ? chinaInfantryGrant(s, idx) : 0;
+      if (s.chinaGrant > 0) {
+        s.log.push({ round: s.round, power, text: `China raises ${s.chinaGrant} new infantry.` });
+      }
       return OK;
     case 'mobilize': {
       // collect income and HOLD in the income phase: the TV shows the
@@ -766,6 +884,7 @@ export function applyAxisAction(s: AxisState, idx: MapIndex, seat: PowerKey, act
     case 'load': return actLoad(s, idx, action);
     case 'offload': return actOffload(s, idx, action);
     case 'place': return actPlace(s, idx, action);
+    case 'placeChina': return actPlaceChina(s, idx, action.space);
     case 'endPhase': return actEndPhase(s, idx);
     default: return err('Unknown action.');
   }

@@ -141,9 +141,17 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
   act(s, 'germany', { type: 'endPhase' });
   act(s, 'germany', { type: 'endPhase' });
   ok(s.phase === 'combatMove', 'combat move phase');
-  // overwhelm Russia from Poland+Germany? poland only borders russia; germany doesn't.
-  const bad = act(s, 'germany', { type: 'attack', target: 'russia', forces: [{ from: 'germany', units: [{ key: 'tank', count: 2 }] }] });
-  ok(!bad.ok, 'non-adjacent attack rejected');
+  // infantry cannot reach Russia from Germany (one-space movers)
+  const bad = act(s, 'germany', { type: 'attack', target: 'russia', forces: [{ from: 'germany', units: [{ key: 'infantry', count: 2 }] }] });
+  ok(!bad.ok, 'out-of-reach attack rejected');
+  // tanks CAN: two spaces through friendly Poland
+  {
+    const s2 = mkState(11);
+    act(s2, 'germany', { type: 'endPhase' });
+    act(s2, 'germany', { type: 'endPhase' });
+    const r2 = act(s2, 'germany', { type: 'attack', target: 'russia', forces: [{ from: 'germany', units: [{ key: 'tank', count: 1 }] }] });
+    ok(r2.ok, `tank attacks at distance 2 (${r2.error ?? ''})`);
+  }
   // move tanks up is not allowed in combatMove (move is for noncombat) except loading; attack from poland
   const r = act(s, 'germany', { type: 'attack', target: 'russia', forces: [{ from: 'poland', units: [{ key: 'infantry', count: 1 }] }] });
   ok(r.ok, `attack declared (${r.error ?? ''})`);
@@ -185,6 +193,44 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
   ok(r.ok, `sea attack (${r.error ?? ''})`);
   driveBattle(s, 'germany', 'uk');
   ok(['combatMove'].includes(s.phase), 'sea battle resolves');
+}
+
+// ---------- blitz flips an empty hostile intermediate ----------
+{
+  const s = mkState(29);
+  // empty Poland, hand it to the USSR: tanks must blitz through
+  s.board.poland = [];
+  s.control.poland = 'ussr';
+  act(s, 'germany', { type: 'endPhase' });
+  act(s, 'germany', { type: 'endPhase' });
+  const r = act(s, 'germany', { type: 'attack', target: 'russia', forces: [{ from: 'germany', units: [{ key: 'tank', count: 2 }] }] });
+  ok(r.ok, `blitz attack declared (${r.error ?? ''})`);
+  ok(s.control.poland === 'germany', 'blitzed territory flips to the attacker');
+  driveBattle(s, 'germany', 'ussr');
+}
+
+// ---------- amphibious assault: bombard ships never enter the territory ----------
+{
+  const s = mkState(37);
+  // clear sz-2 of UK ships; German assault fleet sits there
+  s.board['sz-2'] = [
+    { power: 'germany', key: 'battleship', count: 1 },
+    { power: 'germany', key: 'transport', count: 1, cargo: [{ power: 'germany', key: 'infantry', count: 2 }] },
+  ];
+  act(s, 'germany', { type: 'endPhase' });
+  act(s, 'germany', { type: 'endPhase' });
+  const r = act(s, 'germany', {
+    type: 'attack', target: 'uk-island',
+    forces: [{ from: 'sz-2', units: [{ key: 'battleship', count: 1 }] }],
+    offloadFrom: 'sz-2',
+    offloadUnits: [{ key: 'infantry', count: 2 }],
+  });
+  ok(r.ok, `amphibious assault declared (${r.error ?? ''})`);
+  ok(s.combat?.battle.ctx.amphibious === true, 'battle is amphibious');
+  driveBattle(s, 'germany', 'uk');
+  ok(unitCount(s, 'uk-island', 'germany', 'battleship') === 0, 'battleship never stands in the territory');
+  const bbAtSea = unitCount(s, 'sz-2', 'germany', 'battleship');
+  ok(bbAtSea === 1, `battleship returned to the offload zone (${bbAtSea})`);
 }
 
 // ---------- noncombat + mobilize + income ----------
@@ -287,6 +333,29 @@ import { STARTING_IPCS, TURN_ORDER } from './config.js';
       ok((byPower[p] ?? 0) >= 10, `${st.options.scenario} ${p} fields units (${byPower[p] ?? 0})`);
     }
     ok((byPower.china ?? 0) >= 4, `${st.options.scenario} china fields infantry (${byPower.china ?? 0})`);
+  }
+
+  // China placement during the US mobilize (real map: isChinese flags)
+  {
+    const s = createAxisGame([], 55, { scenario: '1941', rnd: false, nationalObjectives: false, winCondition: 'standard' });
+    s.turnIdx = TURN_ORDER['1941'].indexOf('usa');
+    s.phase = 'noncombat';
+    ok(applyAxisAction(s, AXIS_INDEX, 'usa', { type: 'endPhase' }).ok, 'US noncombat ends');
+    ok(s.phase === 'mobilize', 'US mobilize');
+    ok(s.chinaGrant >= 3, `China grant from 7+ free territories (${s.chinaGrant})`);
+    const before = s.chinaGrant;
+    // yunnan is Chinese, allies-held; find one with room
+    const spot = ['yunnan', 'sikang', 'chinghai', 'ningxia', 'suiyuan', 'hupeh', 'fukien'].find((t) => {
+      const n = (s.board[t] ?? []).reduce((m, st) => m + st.count, 0);
+      return n < 3;
+    })!;
+    ok(!!spot, 'a Chinese territory has room');
+    ok(applyAxisAction(s, AXIS_INDEX, 'usa', { type: 'placeChina', space: spot }).ok, 'china infantry placed');
+    ok(s.chinaGrant === before - 1, 'grant decrements');
+    const bad = applyAxisAction(s, AXIS_INDEX, 'usa', { type: 'placeChina', space: 'manchuria' });
+    ok(!bad.ok, 'no placement on Japanese-held Manchuria');
+    const badTerr = applyAxisAction(s, AXIS_INDEX, 'usa', { type: 'placeChina', space: 'india' });
+    ok(!badTerr.ok, 'china stays inside China');
   }
 
   // a full seeded round on the real map completes and reaches round 2

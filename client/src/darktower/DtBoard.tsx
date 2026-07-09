@@ -90,6 +90,7 @@ export function DtBoard({ view }: { view: DtView }) {
           font: '700 26px "Courier New", monospace', letterSpacing: 6, color: '#ff5a3c',
           textShadow: '0 0 12px rgba(255,90,60,0.8)', minWidth: 70, textAlign: 'center',
         }}>{display.lcd || '  '}</div>
+        <div className="ig-lab" style={{ marginTop: 4 }}>Tower readout</div>
       </div>
 
       {/* player chips */}
@@ -115,6 +116,13 @@ export function DtBoard({ view }: { view: DtView }) {
         ))}
       </div>
 
+      {/* always-visible legend for the abbreviated stat row */}
+      <div className="ig-glass" style={{ position: 'absolute', top: 84, right: 12, padding: '6px 11px', borderRadius: 12 }}>
+        <div className="ig-lab" style={{ fontSize: 10, lineHeight: 1.55, textAlign: 'right' }}>
+          W warriors · G gold · F food<br />/4 kingdoms crossed · keys held
+        </div>
+      </div>
+
       {/* caption */}
       {ev && (
         <div className="ig-glass" style={{
@@ -130,18 +138,20 @@ export function DtBoard({ view }: { view: DtView }) {
         </div>
       )}
 
-      {/* whose turn */}
+      {/* whose turn — big, from-the-couch banner */}
       {view.phase !== 'ended' && current && (
         <div className="ig-glass" style={{
-          position: 'absolute', top: 120, left: 12, padding: '8px 12px', borderRadius: 999,
-          display: 'flex', alignItems: 'center', gap: 8,
+          position: 'absolute', top: 120, left: 12, padding: '12px 18px', borderRadius: 16,
+          borderLeft: `5px solid ${SEAT_HEX[current.color]}`, display: 'flex', flexDirection: 'column', gap: 3,
         }}>
-          <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[current.color] }} />
-          <b>{current.name}</b>
-          <span style={{ opacity: 0.6 }}>
-            {view.phase === 'battle' ? 'in battle' : view.phase === 'bazaar' ? 'at the bazaar'
-              : view.phase === 'riddle' ? 'at the tower gates' : view.phase === 'cursePick' ? 'casting a curse'
-              : view.phase === 'turnDone' ? 'turn over' : 'to act'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ width: 14, height: 14, borderRadius: '50%', background: SEAT_HEX[current.color] }} />
+            <b style={{ font: '800 24px Inter, sans-serif', letterSpacing: 0.4, textTransform: 'uppercase' }}>{current.name}'S TURN</b>
+          </div>
+          <span className="ig-lab" style={{ fontSize: 12 }}>
+            {view.phase === 'battle' ? 'In battle' : view.phase === 'bazaar' ? 'At the bazaar'
+              : view.phase === 'riddle' ? 'At the tower gates' : view.phase === 'cursePick' ? 'Casting a curse'
+              : view.phase === 'turnDone' ? 'Turn over' : 'Move one space, then press an action'}
           </span>
         </div>
       )}

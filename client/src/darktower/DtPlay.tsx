@@ -36,6 +36,28 @@ const CSS = `
 }
 .dt-tile { position: absolute; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.45); transition: filter .15s ease; }
 .dt-tile.off { filter: grayscale(1) brightness(0.42); box-shadow: none; }
+/* the permanently-dead reset key: reads as a decorative, non-interactive part
+   of the panel rather than a broken button. */
+.dtp button.decor { filter: grayscale(1) brightness(0.5); border-style: dashed; cursor: default; }
+.dt-help {
+  position: absolute; top: 12px; left: 12px; z-index: 45; display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px 8px 10px; border-radius: 999px; cursor: pointer;
+  font: 700 12px Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase;
+}
+.dt-help .q { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 13px; }
+.dt-key { font-size: 11px; line-height: 1.5; }
+.dt-key .k { display: flex; gap: 8px; padding: 2px 0; }
+.dt-key .k b { color: #e8ebf0; letter-spacing: 0.4px; white-space: nowrap; min-width: 118px; }
+.dt-key .k span { opacity: 0.68; }
+.dt-hint { font-size: 12px; line-height: 1.45; padding: 3px 0; }
+.dt-hint.warn { color: #f2b34a; }
+.dt-hint.ready { color: #7fe0a0; }
+.dt-fly {
+  display: block; width: 100%; padding: 11px 12px; border-radius: 11px; border: 1px solid #7fe7ff;
+  background: rgba(127,231,255,0.14); color: #d8f6ff; cursor: pointer;
+  font: 700 12px Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase;
+}
+.dt-fly:hover { filter: brightness(1.12); }
 `;
 
 const RIGHT_W = 'min(36vw, 440px)';
@@ -160,6 +182,7 @@ export function DtPlay({ view, act, error }: {
   const [focusTower, setFocusTower] = useState(false);
   const [showInv, setShowInv] = useState(false);
   const [showRules, setShowRules] = useState(false); // movement-rules pop-up on first drag
+  const [confirmTower, setConfirmTower] = useState(false); // guard the endgame Dark Tower press
   const rulesSeen = useRef(false); // shown once per turn
   const [keyIdx, setKeyIdx] = useState(0); // riddle: shown key (NO cycles, YES locks in)
   const [curseIdx, setCurseIdx] = useState(0); // cursePick: shown victim
@@ -204,17 +227,42 @@ export function DtPlay({ view, act, error }: {
     bazaar: canAct ? () => act({ type: 'bazaar' }) : null,
     sanctuary: canAct ? () => act({ type: 'sanctuary' }) : null,
     frontier: canAct && mine.quad < 4 ? () => act({ type: 'frontier' }) : null,
-    tower: canAct && mine.quad >= 4 && mine.goldkey === 1 ? () => act({ type: 'tower' }) : null,
+    tower: canAct && mine.quad >= 4 && mine.goldkey === 1 ? () => setConfirmTower(true) : null,
     inventory: () => setShowInv(true),
   };
 
-  const P = ({ id, children }: { id: keyof typeof PANEL_HEX & keyof typeof press; children: React.ReactNode }) => (
-    <button style={{ background: PANEL_HEX[id] }} disabled={!press[id]} onClick={() => press[id]?.()}>{children}</button>
+  // can the player launch the hidden pegasus extra action right now?
+  const canFly = myTurn && phase === 'playing' && !display.active && mine.pegasus === 1;
+
+  // plain-language caption for the glowing tower readout (the LCD codes alone
+  // are undecodable to a newcomer).
+  const readoutCaption = view.winner ? 'Tower readout'
+    : myTurn && phase === 'riddle' ? `Tower readout · answer with the ${KEY_LABEL[KEY_CYCLE[keyIdx % 3]].toLowerCase()}`
+    : myTurn && phase === 'cursePick' && victim ? `Tower readout · curse ${victim.name} of the ${KINGDOMS[victim.color]} kingdom?`
+    : phase === 'battle' ? 'Tower readout · brigands are attacking'
+    : phase === 'bazaar' ? 'Tower readout · the bazaar is trading'
+    : 'Tower readout';
+
+  // touch-friendly "why is that greyed?" hints for the gated action buttons,
+  // shown only while it is your turn to act.
+  const hints: { text: string; kind?: 'warn' | 'ready' }[] = [];
+  if (myTurn && phase === 'playing' && !display.active) {
+    hints.push({ text: 'Drag your pawn one space on the board, then press one action button.' });
+    hints.push(mine.quad < 4
+      ? { text: 'FRONTIER · cross here into the next kingdom.' }
+      : { text: 'FRONTIER greyed · you are already in the final kingdom.', kind: 'warn' });
+    hints.push(mine.quad >= 4 && mine.goldkey === 1
+      ? { text: 'DARK · TOWER ready · storm the tower.', kind: 'ready' }
+      : { text: 'DARK · TOWER greyed · needs the gold key in kingdom 4 of 4.', kind: 'warn' });
+  }
+
+  const P = ({ id, decor, children }: { id: keyof typeof PANEL_HEX & keyof typeof press; decor?: boolean; children: React.ReactNode }) => (
+    <button className={decor ? 'decor' : undefined} style={{ background: PANEL_HEX[id] }} disabled={!press[id]} onClick={() => press[id]?.()}>{children}</button>
   );
 
   const statusLine = view.winner ? `${view.players.find((p) => p.color === view.winner)?.name} conquered the tower`
-    : !myTurn ? `${view.players[view.turn]?.name} is playing`
-    : phase === 'playing' ? 'Your turn — move your piece one space, then press an action'
+    : !myTurn ? `Waiting — ${view.players[view.turn]?.name} is playing`
+    : phase === 'playing' ? 'Your turn — drag your piece one space, then press an action'
     : phase === 'battle' ? `${view.battle?.brigands} brigands — YES fights, NO retreats`
     : phase === 'bazaar' ? ((view.bazaar?.buying ?? 0) > 0
       ? `Buying ${view.bazaar!.buying} — YES adds one, NO pays`
@@ -252,8 +300,16 @@ export function DtPlay({ view, act, error }: {
         {myTurn && phase === 'playing' && !display.active && (
           <div className="ig-glass" style={{
             position: 'absolute', top: 14, left: 14, padding: '8px 12px', borderRadius: 10,
-            font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.85,
-          }}>Move your piece one space, then press an action</div>
+            display: 'flex', alignItems: 'center', gap: 10,
+            font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase',
+          }}>
+            <span style={{ opacity: 0.9 }}>Drag your piece one space on the board, then press an action</span>
+            <button onClick={() => setShowRules(true)} style={{
+              border: '1px solid rgba(255,255,255,0.3)', borderRadius: 8, background: 'rgba(255,255,255,0.08)',
+              color: '#e8ebf0', cursor: 'pointer', padding: '4px 9px', font: '700 10px Inter, sans-serif',
+              letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap',
+            }}>How to move</button>
+          </div>
         )}
       </div>
 
@@ -270,9 +326,12 @@ export function DtPlay({ view, act, error }: {
               <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[mine.color] }} />
               <b style={{ fontSize: 13 }}>{mine.name}</b>
             </div>
-            <div className="ig-lab" style={{ paddingTop: 2 }}>{KINGDOMS[mine.color]} · {mine.quad}/4</div>
+            <div className="ig-lab" style={{ paddingTop: 2 }}>{KINGDOMS[mine.color]} · kingdom {mine.quad}/4</div>
           </div>
         </div>
+
+        {/* caption for the glowing readout, decoding the tower's LCD codes */}
+        <div className="ig-lab" style={{ textAlign: 'center', marginTop: -4 }}>{readoutCaption}</div>
 
         <div className="ig-glass" style={{ padding: '9px 12px', borderRadius: 12, textAlign: 'center', font: '700 12px Inter, sans-serif', letterSpacing: 0.8, textTransform: 'uppercase' }}>
           {statusLine}
@@ -285,13 +344,47 @@ export function DtPlay({ view, act, error }: {
           <P id="no"><span>No</span><span className="split">End</span></P>
           <P id="haggle">Haggle</P>
           <P id="bazaar">Bazaar</P>
-          <P id="clear">Clear</P>
+          <P id="clear" decor>Clear</P>
           <P id="tomb"><span>Tomb</span><span className="split">Ruin</span></P>
           <P id="move">Move</P>
           <P id="sanctuary"><span>Sanctuary</span><span className="split">Citadel</span></P>
           <P id="tower"><span>Dark</span><span className="split">Tower</span></P>
           <P id="frontier">Frontier</P>
           <P id="inventory">Inventory</P>
+        </div>
+
+        {/* touch-friendly hints: what to do now and why buttons are greyed */}
+        {hints.length > 0 && (
+          <div className="ig-glass" style={{ padding: '9px 12px', borderRadius: 12 }}>
+            {hints.map((h, i) => (
+              <div key={i} className={`dt-hint${h.kind ? ' ' + h.kind : ''}`}>{h.text}</div>
+            ))}
+          </div>
+        )}
+
+        {/* the hidden pegasus extra action, now a visible affordance */}
+        {canFly && (
+          <button className="dt-fly" onClick={() => act({ type: 'pegasus' })}>
+            Fly the pegasus · take another action
+          </button>
+        )}
+
+        {/* panel key: the stacked second words and the stat abbreviations */}
+        <div className="ig-glass dt-key" style={{ padding: '10px 12px', borderRadius: 12 }}>
+          <div className="ig-lab" style={{ marginBottom: 4 }}>Panel key</div>
+          <div className="k"><b>YES · BUY</b><span>say yes, or buy at the bazaar</span></div>
+          <div className="k"><b>NO · END</b><span>say no, or end your turn</span></div>
+          <div className="k"><b>TOMB · RUIN</b><span>search a tomb or ruin</span></div>
+          <div className="k"><b>SANCTUARY · CITADEL</b><span>enter a sanctuary or citadel</span></div>
+          <div className="k"><b>DARK · TOWER</b><span>storm the Dark Tower to win</span></div>
+          <div className="k"><b>REPEAT</b><span>replay the tower's last readout</span></div>
+          <div className="k"><b>MOVE</b><span>take your step with no other action</span></div>
+          <div className="k"><b>FRONTIER</b><span>cross into the next kingdom</span></div>
+          <div className="k"><b>CLEAR</b><span>tower reset key · not used in play</span></div>
+          <div className="k" style={{ borderTop: '1px solid rgba(255,255,255,0.12)', marginTop: 4, paddingTop: 6 }}>
+            <b>W · G · F</b><span>warriors · gold · food</span>
+          </div>
+          <div className="k"><b>· 4/4</b><span>kingdoms crossed · keys held</span></div>
         </div>
 
         {/* your kingdom scorecard */}
@@ -338,12 +431,24 @@ export function DtPlay({ view, act, error }: {
       )}
 
       {showIntro && <GameIntro intro={DT_INTRO} onClose={() => setShowIntro(false)} />}
-      <button
-        onClick={() => setShowIntro(true)}
-        title="How to play"
-        className="ig-glass"
-        style={{ position: 'absolute', top: 12, left: 12, zIndex: 45, width: 40, height: 40, borderRadius: '50%', font: '700 18px Inter, sans-serif', padding: 0 }}
-      >?</button>
+      <button onClick={() => setShowIntro(true)} className="ig-glass dt-help">
+        <span className="q">?</span>Help
+      </button>
+
+      {/* guard the endgame Dark Tower press */}
+      {confirmTower && (
+        <div className="tp-overlay" onClick={() => setConfirmTower(false)}>
+          <div className="ig-glass" style={{ maxWidth: 360, padding: '20px 22px', borderRadius: 16, textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ font: '800 16px Inter, sans-serif', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>Storm the Dark Tower</div>
+            <div style={{ fontSize: 13.5, lineHeight: 1.55, opacity: 0.9, marginBottom: 16 }}>
+              Storm the tower, fight the full brigade. This is the final battle. Are you ready?
+            </div>
+            <button className="tp-act" style={{ background: PANEL_HEX.tower, color: '#fff', borderColor: 'rgba(0,0,0,0.3)' }}
+              onClick={() => { setConfirmTower(false); act({ type: 'tower' }); }}>Storm the tower</button>
+            <button className="tp-act" style={{ marginTop: 8 }} onClick={() => setConfirmTower(false)}>Not yet</button>
+          </div>
+        </div>
+      )}
 
       {error && <div className="toast">{error}</div>}
     </div>

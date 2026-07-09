@@ -80,7 +80,17 @@ export const SEAT_HEX: Record<string, string> = {
   Green: '#4da84f', Red: '#d0483a', Blue: '#3f6fd0', Brown: '#4a4a4a',
   // Trekking adds a white seat
   White: '#e8e6df',
+  // Axis & Allies powers (rulebook piece colors)
+  germany: '#5a5a5a', ussr: '#7a1f1f', japan: '#d07c28',
+  uk: '#b5894e', italy: '#6b4a2b', usa: '#2e7d32',
 };
+
+/** Display label for a seat color key (A&A seats are power ids). */
+export const SEAT_LABEL: Record<string, string> = {
+  germany: 'Germany', ussr: 'Soviet Union', japan: 'Japan',
+  uk: 'United Kingdom', italy: 'Italy', usa: 'United States',
+};
+export const seatLabel = (c: string) => SEAT_LABEL[c] ?? c;
 
 function useColorTexture(url: string) {
   const tex = useLoader(THREE.TextureLoader, url);

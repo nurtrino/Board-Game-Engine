@@ -1,4 +1,4 @@
-// TV view for Axis & Allies Anniversary — the full world map in 3D with the
+// TV view for Axis & Allies Anniversary · the full world map in 3D with the
 // mod's unit meshes, camera flights onto every action, a battle panel while
 // combats resolve, and the production screen after every nation's turn.
 
@@ -32,7 +32,7 @@ function spaceName(id: string): string {
 
 // ---------- battle panel ----------
 
-function BattlePanel({ view }: { view: AxisView }) {
+function BattlePanel({ view, art }: { view: AxisView; art?: string }) {
   const c = view.combat!;
   const b = c.battle;
   const count = (side: 'attacker' | 'defender') => {
@@ -43,8 +43,17 @@ function BattlePanel({ view }: { view: AxisView }) {
   };
   const lastRolls = [...b.log].reverse().find((e) => e.rolls.length > 0);
   return (
-    <div className="ig-glass" style={{ position: 'absolute', right: '1rem', top: '4.6rem', width: 330, zIndex: 8, borderRadius: 14, padding: '0.9rem 1rem' }}>
-      <div className="ig-lab">Battle — {spaceName(c.space)}{b.ctx.amphibious ? ' — amphibious' : ''}</div>
+    <div
+      className="ig-glass"
+      style={{
+        position: 'absolute', right: '1rem', top: '4.6rem', width: 330, zIndex: 8, borderRadius: 14, padding: '0.9rem 1rem',
+        backgroundImage: art
+          ? `linear-gradient(rgba(6,8,12,.88), rgba(6,8,12,.94)), url(${art})`
+          : undefined,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+      }}
+    >
+      <div className="ig-lab">Battle · {spaceName(c.space)}{b.ctx.amphibious ? ' · amphibious' : ''}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', margin: '.55rem 0 .3rem' }}>
         <span style={{ color: powerHex(c.attacker), fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em' }}>{POWERS[c.attacker].short} attacks</span>
         <span className="ig-num" style={{ opacity: 0.7 }}>Round {b.round}</span>
@@ -132,20 +141,24 @@ export default function AxisBoard({ view }: { view: AxisView }) {
   const manifest = useAxisManifest();
   const [focus, setFocus] = useState<FocusTarget | null>(null);
 
-  // fly to battles as they open; widen back out when they end
+  // fly to battles as they open; otherwise follow the latest logged action
+  // (attack declarations, blitzes, captures); widen out on turn changes
   const combatSpace = view.combat?.space ?? null;
+  const lastSpaced = [...view.log].reverse().find((e) => e.space)?.space ?? null;
+  const lastLen = view.log.length;
   useEffect(() => {
-    if (combatSpace) {
-      const c = SPACE_CENTER[combatSpace];
-      if (c) {
-        const [x, z] = px2r(c[0], c[1]);
-        setFocus({ x, z, dist: 14 });
-        playSfx('link');
-      }
-    } else {
-      setFocus({ x: (9500 / 2) * 0.01, z: -(4956 / 2) * 0.01, dist: 62 });
+    const target = combatSpace ?? lastSpaced;
+    if (target && SPACE_CENTER[target]) {
+      const c = SPACE_CENTER[target];
+      const [x, z] = px2r(c[0], c[1]);
+      setFocus({ x, z, dist: combatSpace ? 14 : 20 });
+      if (combatSpace) playSfx('link');
     }
-  }, [combatSpace]);
+  }, [combatSpace, lastSpaced, lastLen]);
+  useEffect(() => {
+    // new power's turn: pull back to the whole map
+    setFocus({ x: (9500 / 2) * 0.01, z: -(4956 / 2) * 0.01, dist: 62 });
+  }, [view.active]);
 
   // voice turn changes and the win
   const prevActive = useRef(view.active);
@@ -159,7 +172,7 @@ export default function AxisBoard({ view }: { view: AxisView }) {
   const active = POWERS[view.active];
 
   const vcLine = useMemo(
-    () => `Axis ${view.vc.axis} — Allies ${view.vc.allies} of ${view.vc.goal}`,
+    () => `Axis ${view.vc.axis} · Allies ${view.vc.allies} of ${view.vc.goal}`,
     [view.vc.axis, view.vc.allies, view.vc.goal],
   );
 
@@ -173,7 +186,7 @@ export default function AxisBoard({ view }: { view: AxisView }) {
 
       {/* top-left: scenario + phase */}
       <div className="ig-glass ig-era">
-        <div className="ig-lab">Axis & Allies — {view.options.scenario} — Round {view.round}</div>
+        <div className="ig-lab">Axis & Allies · {view.options.scenario} · Round {view.round}</div>
         <div className="ig-era-v" style={{ color: active.color }}>{active.name}</div>
         <div className="ig-era-rule" />
         <div style={{ fontSize: 12.5, marginTop: 5, letterSpacing: '.08em', textTransform: 'uppercase', opacity: 0.8 }}>
@@ -208,7 +221,7 @@ export default function AxisBoard({ view }: { view: AxisView }) {
         </div>
       </div>
 
-      {view.combat && <BattlePanel view={view} />}
+      {view.combat && <BattlePanel view={view} art={(manifest as { boards?: { image?: string }[] }).boards?.[0]?.image ?? undefined} />}
       {view.phase === 'income' && !view.winner && <ProductionScreen view={view} />}
 
       {view.winner && (

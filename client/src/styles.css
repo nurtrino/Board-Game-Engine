@@ -729,3 +729,12 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .ax-big b { text-transform: uppercase; letter-spacing: .07em; }
 .ax-big span { font-size: .72rem; opacity: .7; line-height: 1.4; }
 .ax-map { position: relative; flex: 1; min-height: 240px; }
+
+/* A&A nation panel / reference card */
+.ax-nation { position: fixed; inset: 0; z-index: 40; background: rgba(2,4,8,.6); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.ax-nation-card { width: min(430px, 94vw); max-height: 90vh; overflow-y: auto; border-radius: 16px; padding: 1rem 1.1rem; border: 1px solid var(--brd-2); }
+.ax-ref { width: 100%; border-collapse: collapse; font-size: .8rem; margin-top: .35rem; }
+.ax-ref th { text-align: right; font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; opacity: .55; padding: .2rem .35rem; }
+.ax-ref th:first-child, .ax-ref td:first-child { text-align: left; }
+.ax-ref td { text-align: right; padding: .28rem .35rem; border-top: 1px solid var(--brd); }
+.ax-ref tr.dim { opacity: .42; }

@@ -101,7 +101,8 @@ export interface AxisState {
   // convenience caches for clients
   vcHolders: Record<string, PowerKey | 'china' | null>; // vc territory -> controller
   winner: 'axis' | 'allies' | null;
-  log: { round: number; power: PowerKey | null; text: string }[];
+  chinaGrant: number; // Chinese infantry the US may still place this turn
+  log: { round: number; power: PowerKey | null; text: string; space?: string }[];
 }
 
 export const AXIS_SEATS = Object.keys(POWERS) as PowerKey[];
@@ -170,6 +171,7 @@ export function createAxis(
     contested: [],
     vcHolders,
     winner: null,
+    chinaGrant: 0,
     log: [{ round: 1, power: null, text: `${scenario} scenario begins. ${TURN_ORDER[scenario].map((p) => POWERS[p].name).join(', ')}.` }],
   };
   void idx;
@@ -284,6 +286,7 @@ export interface AxisView {
   pendings: AxisPending[];
   vc: { axis: number; allies: number; goal: number };
   winner: 'axis' | 'allies' | null;
+  chinaGrant: number;
   log: AxisState['log'];
   researchCost: number;
 }
@@ -329,6 +332,7 @@ export function axisViewFor(s: AxisState, idx: MapIndex): AxisView {
       goal: WIN_CONDITIONS[s.options.winCondition].cities,
     },
     winner: s.winner,
+    chinaGrant: s.chinaGrant,
     log: s.log.slice(-80),
     researchCost: RESEARCH_DIE_COST,
   };

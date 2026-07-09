@@ -346,3 +346,74 @@ Surface warships = BB/CV/CA/DD (not TP; SS is a warship but not surface).
 - [ ] Engine hardening: air range/landing BFS, blitz UI, multi-origin
       attacks, China placement rules in mobilize UI.
 - [ ] Ship gates (§6.4b): rulebook UI audit + axis-ui-smoke.mjs.
+
+## Rulebook UI audit (§6.4b gate 1)
+
+Pass over every mechanic in the Anniversary rulebook against the engine and
+both screens. LEGEND: FULL = enforced + reachable in the UI; ENGINE = rule
+enforced, UI exposes the common path; SIMPLIFIED = deliberate deviation,
+noted; MISSING = not implemented.
+
+Turn structure
+- Per-scenario turn order, seven phases in order, income mandatory: FULL
+  (phase machine; the device walks the phases; income holds for the TV
+  production screen).
+- RND optional rule (5-IPC dice, persist on failure, chart choice, reroll
+  duplicates, all 12 advances applied): FULL. Advances with combat effect
+  (jets, super subs, radar, heavy bombers, advanced artillery) are wired into
+  the battle engine; rockets and paratroopers are ENGINE-ABSENT (no SBR yet,
+  see below) — the techs can be rolled and displayed but have no effect yet.
+- Purchase (costs, improved-shipyard prices, staging, repairs): FULL except
+  repairs UI (engine supports `repair`; no damage source exists yet without
+  SBR, so the button is deferred with it).
+
+Combat move + conduct combat
+- Attacks resolve immediately one at a time (owner decision, deviation from
+  the rulebook's collect-then-resolve): BY DESIGN.
+- Reach: infantry/artillery/AA 1 space; tanks 2 with blitz (empty hostile
+  intermediate flips control); ships 2 through non-hostile zones (subs
+  ignore); air by printed range minus a reserved landing move: FULL.
+- Amphibious assaults: offload from a non-hostile zone, accompanying BB/CA
+  bombard (once, round 1, casualties fire back) and never enter the
+  territory: FULL. Clearing a defended sea zone first is the player's job
+  (attack the zone, then assault) — matches the immediate-resolution model.
+- General combat: AA one gun/first round/one die per air unit, sub surprise
+  strike + submerge + destroyer cancellation, air-can't-hit-subs without a
+  destroyer, transports chosen last + defenseless sweep, BB two hits,
+  defender picks casualties live, attacker-only retreat to an origin space,
+  standoff detection: FULL (6.5k-assertion battle test).
+- Multinational defense: all co-located units defend together: FULL
+  (casualty picks routed to the majority defender seat: SIMPLIFIED — the
+  rulebook lets co-defenders negotiate; we route to the leading power).
+- Strategic bombing raids + factory damage + rockets: MISSING (no SBR
+  action yet; factoryDamage plumbing exists end to end). Next wave.
+- Air landing: noncombat must end somewhere landable; stranded aircraft die
+  (carrier capacity 2, no landing on just-captured territory): ENGINE
+  (enforced at end of noncombat; the UI shows moves but does not yet preview
+  landing spots).
+- Captures: control flip, production swing, capital loot + purchase/income
+  lockout of the captured power, VC tokens, win check at the end of a full
+  round: FULL. Liberation (revert to original owner unless their capital is
+  held): SIMPLIFIED — currently the capturer takes control outright; the
+  original-owner revert is queued for the next wave.
+
+Noncombat + mobilize + income
+- Moves into friendly spaces only, AA guns noncombat-only, transports
+  load/bridge/offload (capacity 1 land + 1 extra infantry), carriers ferry:
+  FULL for the common paths (load/offload/move UI); multi-leg pickup
+  (load, move, load again) SIMPLIFIED to load-then-move.
+- Mobilize: per-factory cap = territory IPC (+2 with tech, minus damage),
+  new factories on owned income territories (one per territory), sea units
+  into adjacent zones, unplaced units persist: FULL.
+- China: US-controlled, no income/purchases, 1 infantry per 2 free Chinese
+  territories placed on <3-unit Chinese territories during US mobilize,
+  confined to China (+Kiangsu/Manchuria claimable): FULL. Kwangtung
+  occupy-only-for-UK and the Flying Tigers named fighter: SIMPLIFIED (not
+  distinctly modeled).
+- Income: production + national objectives (exact territory lists and
+  bonuses from the rulebook render) + war bonds; capital-held = nothing:
+  FULL.
+
+Known deliberate gaps (owner-visible list): SBR/rockets/paratroopers,
+repairs UI, liberation revert, multi-leg transport bridging, Kwangtung/
+Flying Tigers nuances. All recorded here so nothing is silently dropped.

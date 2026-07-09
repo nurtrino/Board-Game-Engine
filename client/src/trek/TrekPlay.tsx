@@ -5,9 +5,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  TREK_CATALOG, PARKS, MAJORS, NODES, NEIGHBORS, TREK_RULES, STONE_COLORS,
+  TREK_CATALOG, PARKS, MAJORS, NODES, NEIGHBORS, TREK_RULES, STONE_COLORS, SCORING,
   findPath, nodeName,
   type TrekView, type TrekAction, type TrekSuit, type StoneColor, type TrekState, type TrekPlayer,
+  type MajorAbility,
 } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { TrekTable, useTrekScene } from './TrekScene';
@@ -35,9 +36,28 @@ const CSS = `
 .tp-act:hover:not(:disabled) { background: rgba(255,255,255,0.13); }
 .tp-act:disabled { opacity: 0.35; cursor: default; }
 .tp-act.primary { background: #dfe9ee; color: #06121a; border-color: transparent; }
+.tp-why { font: 400 11px Inter, sans-serif; opacity: 0.6; padding: 4px 4px 0; text-align: center; line-height: 1.4; }
 `;
 
 const RIGHT_W = 'min(34vw, 420px)';
+
+// Plain-language gloss for each major park's power, so we never just say "+ ability".
+const ABILITY_TEXT: Record<MajorAbility, string> = {
+  plusOneMove: 'Every move may stretch your card total by +1 trail.',
+  wildPairs: 'Any 2 trek cards together count as 1 wild card of any color.',
+  stoneSwap: 'When you occupy, swap one of your stones for a rival\'s.',
+  freeHop: 'After every claim, take a free 1-trail hop.',
+  drawTwo: 'When you occupy, draw 2 trek cards.',
+  drawOnClaim: 'After every claim, draw 1 trek card.',
+};
+
+// Running score you can see all game: park points + 5 per campsite + 1 per stone.
+// (End-game stone-majority awards are not known until scoring, so they are not counted here.)
+function runningScore(p: { parks: number[]; majors: number[]; stones: Record<StoneColor, number> }): number {
+  const stones = STONE_COLORS.reduce((t, c) => t + (p.stones[c] ?? 0), 0);
+  const parkPts = p.parks.reduce((t, id) => t + PARKS[id].vp, 0);
+  return parkPts + p.majors.length * SCORING.campsiteVp + stones * SCORING.stoneVp;
+}
 
 /** Hand indices + Acadia wild pairs paying a cost, or null. Greedy: suits first, wilds from low-value spares. */
 export function paymentFor(hand: number[], cost: TrekSuit[], acadia: boolean): { cards: number[]; wildPairs: number[][] } | null {
@@ -112,6 +132,21 @@ export function TrekPlay({ view, act: rawAct, error }: {
   const occupyMajor = occupyId !== null ? MAJORS[occupyId] : null;
   const occupyPay = occupyMajor && mine.campsites > 0 ? paymentFor(hand, occupyMajor.cost, acadia) : null;
 
+  // why a control is greyed out (shown only on your own turn, so it reads as guidance not clutter)
+  const moveReason = !myTurn ? null
+    : view.actionsLeft <= 0 ? 'No actions left this turn.'
+      : hand.length === 0 ? 'You need number cards in hand to move.' : null;
+  const claimReason = !myTurn ? null
+    : view.actionsLeft <= 0 ? 'No actions left this turn.'
+      : !claimPark ? 'Stand on a park to claim it.'
+        : !claimPay ? 'You need matching cards to claim this park.' : null;
+  const occupyReason = !myTurn ? null
+    : view.actionsLeft <= 0 ? 'No actions left this turn.'
+      : !occupyMajor ? 'Stand on a major park to occupy it.'
+        : mine.campsites <= 0 && !paymentFor(hand, occupyMajor.cost, acadia) ? 'Needs a campsite and matching cards.'
+          : mine.campsites <= 0 ? 'You have no campsites left to place.'
+            : !occupyPay ? 'You need matching cards to occupy.' : null;
+
   const doMove = (dest: number) => {
     const s = shimState(view);
     const p = s.players[mine.seat] as TrekPlayer;
@@ -146,13 +181,35 @@ export function TrekPlay({ view, act: rawAct, error }: {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingBottom: 8 }}>
             <span style={{ width: 11, height: 11, borderRadius: '50%', background: SEAT_HEX[mine.color] }} />
             <b>{mine.name}</b>
-            <span style={{ marginLeft: 'auto', font: '600 12px Inter, sans-serif', opacity: 0.8 }}>{nodeName(mine.node)}</span>
+            <span style={{ marginLeft: 'auto', font: '600 12px Inter, sans-serif', opacity: 0.8 }}>You're at: {nodeName(mine.node)}</span>
           </div>
           <div className="ig-hold">
+            <div><div className="ig-lab">Score</div><div className="ig-stat-v ig-num">{runningScore(mine)}</div></div>
             <div><div className="ig-lab">Parks</div><div className="ig-stat-v ig-num">{mine.parks.length}</div></div>
             <div><div className="ig-lab">Stones</div><div className="ig-stat-v ig-num">{myStoneTotal}</div></div>
             <div><div className="ig-lab">Campsites</div><div className="ig-stat-v ig-num">{mine.campsites}</div></div>
             <div><div className="ig-lab">Cards</div><div className="ig-stat-v ig-num">{hand.length}</div></div>
+          </div>
+          <div style={{ fontSize: 11, opacity: 0.6, paddingTop: 8, lineHeight: 1.55 }}>
+            SCORE is your running total: park points + 5 per campsite + 1 per stone.
+            CAMPSITES are the tents you place when you occupy a major park.
+            STONES are collected from parks you pass through.
+          </div>
+        </div>
+
+        {/* running standings — the winning number, visible the whole game */}
+        <div className="ig-glass" style={{ padding: '10px 12px', borderRadius: 14 }}>
+          <div className="ig-lab" style={{ paddingBottom: 6 }}>Score · everyone</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {[...view.players].sort((a, b) => runningScore(b) - runningScore(a)).map((p) => (
+              <div key={p.seat} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 9, height: 9, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
+                <span style={{ flex: 1, opacity: p.seat === mine.seat ? 1 : 0.8, fontWeight: p.seat === mine.seat ? 700 : 400 }}>
+                  {p.name}{p.seat === mine.seat ? ' (you)' : ''}
+                </span>
+                <b className="ig-num">{runningScore(p)}</b>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -187,14 +244,25 @@ export function TrekPlay({ view, act: rawAct, error }: {
 
         <div className="ig-glass" style={{ padding: '10px 12px', borderRadius: 14, textAlign: 'center', font: '700 13px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase' }}>
           {view.winners ? (view.winners.length > 1 ? 'Shared victory' : `${view.players.find((p) => p.color === view.winners![0])?.name} wins`)
-            : myTurn ? `Your turn — ${view.actionsLeft} action${view.actionsLeft === 1 ? '' : 's'} left`
-              : `${view.players[view.turn]?.name} is trekking`}
+            : myTurn ? `Your turn · ${view.actionsLeft} action${view.actionsLeft === 1 ? '' : 's'} left`
+              : `${view.players[view.turn]?.name}'s turn`}
+          {!myTurn && !view.winners && (
+            <div className="ig-lab" style={{ paddingTop: 3, textTransform: 'none', letterSpacing: 0 }}>
+              Waiting for {view.players[view.turn]?.name}...
+            </div>
+          )}
           {view.finalRound && !view.winners && <div className="ig-lab" style={{ paddingTop: 3 }}>Final round</div>}
+          {view.lastEvent && !view.winners && (
+            <div className="ig-lab" style={{ paddingTop: 6, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>
+              Last: {view.lastEvent.player} {view.lastEvent.title.toLowerCase()}
+              {view.lastEvent.detail ? ` · ${view.lastEvent.detail}` : ''}
+            </div>
+          )}
         </div>
 
         {/* the shared trek river: tap to take */}
         <div className="ig-glass" style={{ padding: 10, borderRadius: 14 }}>
-          <div className="ig-lab" style={{ paddingBottom: 6 }}>Trek river — tap to draw</div>
+          <div className="ig-lab" style={{ paddingBottom: 6 }}>Face-up trek cards · tap to take</div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {view.trekRiver.map((c, i) => (
               <button key={i} disabled={!myTurn || view.actionsLeft <= 0 || c === null}
@@ -212,20 +280,29 @@ export function TrekPlay({ view, act: rawAct, error }: {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button className="tp-act" disabled={!myTurn || view.actionsLeft <= 0 || hand.length === 0}
-            onClick={() => { setSel([]); setArm(arm === 'move' ? 'idle' : 'move'); }}>
-            {arm === 'move' ? 'Cancel move' : 'Move'}
-          </button>
-          <button className="tp-act" disabled={!myTurn || view.actionsLeft <= 0 || !claimPay}
-            onClick={() => { setHop(null); setConfirmClaim(claimSlot); }}>
-            {claimPark ? `Claim ${claimPark.name}` : 'Claim a park'}
-          </button>
-          <button className="tp-act" disabled={!myTurn || view.actionsLeft <= 0 || !occupyPay}
-            onClick={() => { setSwapGive(null); setSwapTake(null); setConfirmOccupy(occupyId); }}>
-            {occupyMajor ? `Occupy ${occupyMajor.name}` : 'Occupy a major park'}
-          </button>
+          <div>
+            <button className="tp-act" disabled={!myTurn || view.actionsLeft <= 0 || hand.length === 0}
+              onClick={() => { setSel([]); setArm(arm === 'move' ? 'idle' : 'move'); }}>
+              {arm === 'move' ? 'Cancel move' : 'Move'}
+            </button>
+            {arm !== 'move' && moveReason && <div className="tp-why">{moveReason}</div>}
+          </div>
+          <div>
+            <button className="tp-act" disabled={!myTurn || view.actionsLeft <= 0 || !claimPay}
+              onClick={() => { setHop(null); setConfirmClaim(claimSlot); }}>
+              {claimPark ? `Claim ${claimPark.name}` : 'Claim a park'}
+            </button>
+            {claimReason && <div className="tp-why">{claimReason}</div>}
+          </div>
+          <div>
+            <button className="tp-act" disabled={!myTurn || view.actionsLeft <= 0 || !occupyPay}
+              onClick={() => { setSwapGive(null); setSwapTake(null); setConfirmOccupy(occupyId); }}>
+              {occupyMajor ? `Occupy ${occupyMajor.name}` : 'Occupy a major park'}
+            </button>
+            {occupyReason && <div className="tp-why">{occupyReason}</div>}
+          </div>
           <button className="tp-act" onClick={() => setArm('parks')}>My parks</button>
-          <button className="tp-act" onClick={() => setArm('deck')}>Show deck</button>
+          <button className="tp-act" onClick={() => setArm('deck')}>Card reference</button>
         </div>
 
         {/* show deck — the card sheets as a reference */}
@@ -250,13 +327,18 @@ export function TrekPlay({ view, act: rawAct, error }: {
 
         {arm === 'move' && (
           <div className="ig-glass" style={{ padding: 12, borderRadius: 14 }}>
-            <div className="ig-lab">Select number cards below</div>
+            <div className="ig-lab">Tap number cards below to add them up</div>
             <div style={{ font: '800 20px Inter, sans-serif', padding: '4px 0' }}>
               {moveSum} trail{moveSum === 1 ? '' : 's'}{grandCanyon && moveSum > 0 ? ` (or ${moveSum + 1})` : ''}
             </div>
-            <div style={{ opacity: 0.7, fontSize: 12.5 }}>
+            <div style={{ opacity: 0.7, fontSize: 12.5, lineHeight: 1.5 }}>
+              Trails are the steps between spots on the map. Your cards must total the EXACT distance to a park.
+              {grandCanyon && ' Grand Canyon lets you stretch the total by +1, so either number works.'}
+            </div>
+            <div style={{ fontSize: 12.5, paddingTop: 6 }}>
               {moveSum === 0 ? 'Tap cards in your hand to add them up.'
-                : moveTargets.length ? 'Tap a glowing park on the map.' : 'No destination at that exact distance.'}
+                : moveTargets.length ? 'Tap a glowing park on the map.'
+                  : `No park sits exactly ${moveSum} trail${moveSum === 1 ? '' : 's'} away. Add or remove a card to change the total.`}
             </div>
           </div>
         )}
@@ -268,7 +350,7 @@ export function TrekPlay({ view, act: rawAct, error }: {
             <div style={{ fontSize: 13, opacity: 0.8, paddingBottom: 8 }}>Select {overLimit} card{overLimit === 1 ? '' : 's'} to discard.</div>
             <button className="tp-act primary" disabled={sel.length !== overLimit}
               onClick={() => { act({ type: 'discard', cards: sel }); setSel([]); setArm('idle'); }}>
-              Discard {sel.length}/{overLimit}
+              Discard {sel.length} of {overLimit}
             </button>
           </div>
         )}
@@ -280,7 +362,7 @@ export function TrekPlay({ view, act: rawAct, error }: {
             disabled={overLimit > 0}
             onClick={() => { act({ type: 'end_turn' }); setSel([]); setArm('idle'); }}
           >
-            End turn{view.actionsLeft > 0 ? ` (skip ${view.actionsLeft})` : ''}
+            End turn{view.actionsLeft > 0 ? ` (${view.actionsLeft} action${view.actionsLeft === 1 ? '' : 's'} unused)` : ''}
           </button>
         )}
       </div>
@@ -289,19 +371,22 @@ export function TrekPlay({ view, act: rawAct, error }: {
       {confirmClaim !== null && claimPark && claimPay && (
         <div className="tp-overlay" onClick={() => setConfirmClaim(null)}>
           <div className="ig-glass" style={{ padding: '22px 30px', borderRadius: 18, textAlign: 'center', maxWidth: 460 }} onClick={(e) => e.stopPropagation()}>
-            <div className="ig-lab">Claim this park — {claimPark.vp} points</div>
+            <div className="ig-lab">Claim this park · {claimPark.vp} points</div>
             <div style={{ font: '800 22px Inter, sans-serif', margin: '4px 0 10px' }}>{claimPark.name}</div>
-            <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
               {claimPay.cards.map((ci) => (
                 <div key={ci}>{trekFaceByCell(scene, 'trek', TREK_CATALOG[hand[ci]].cell, 46, 66)}</div>
               ))}
             </div>
+            <div style={{ fontSize: 12, opacity: 0.65, marginBottom: 12 }}>We picked the cheapest matching cards for you.</div>
             {claimPay.wildPairs.length > 0 && (
-              <div className="ig-lab" style={{ paddingBottom: 8 }}>{claimPay.wildPairs.length} Acadia wild pair{claimPay.wildPairs.length === 1 ? '' : 's'} included</div>
+              <div className="ig-lab" style={{ paddingBottom: 8, textTransform: 'none', letterSpacing: 0 }}>
+                {claimPay.wildPairs.length} Acadia wild pair{claimPay.wildPairs.length === 1 ? '' : 's'} included · any 2 cards stand in for 1 you're missing
+              </div>
             )}
             {hasAbility('freeHop') && (
               <div style={{ marginBottom: 12 }}>
-                <div className="ig-lab" style={{ paddingBottom: 6 }}>Hawai'i Volcanoes — free hop after claiming</div>
+                <div className="ig-lab" style={{ paddingBottom: 6, textTransform: 'none', letterSpacing: 0 }}>Hawai'i Volcanoes · take a free 1-trail hop after claiming</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
                   <button className="tp-act" style={{ width: 'auto', padding: '8px 12px', background: hop === null ? 'rgba(255,255,255,0.2)' : undefined }}
                     onClick={() => setHop(null)}>Stay</button>
@@ -327,13 +412,15 @@ export function TrekPlay({ view, act: rawAct, error }: {
       {confirmOccupy !== null && occupyMajor && occupyPay && (
         <div className="tp-overlay" onClick={() => setConfirmOccupy(null)}>
           <div className="ig-glass" style={{ padding: '22px 30px', borderRadius: 18, textAlign: 'center', maxWidth: 460 }} onClick={(e) => e.stopPropagation()}>
-            <div className="ig-lab">Occupy — 5 points + ability</div>
-            <div style={{ font: '800 22px Inter, sans-serif', margin: '4px 0 10px' }}>{occupyMajor.name}</div>
-            <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
+            <div className="ig-lab">Occupy · 5 points, a campsite, and this ability</div>
+            <div style={{ font: '800 22px Inter, sans-serif', margin: '4px 0 4px' }}>{occupyMajor.name}</div>
+            <div style={{ fontSize: 12.5, opacity: 0.85, marginBottom: 12, lineHeight: 1.45 }}>{ABILITY_TEXT[occupyMajor.ability]}</div>
+            <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
               {occupyPay.cards.map((ci) => (
                 <div key={ci}>{trekFaceByCell(scene, 'trek', TREK_CATALOG[hand[ci]].cell, 46, 66)}</div>
               ))}
             </div>
+            <div style={{ fontSize: 12, opacity: 0.65, marginBottom: 12 }}>We picked the cheapest matching cards for you.</div>
             {occupyMajor.ability === 'stoneSwap' && myStoneTotal > 0 && (
               <div style={{ marginBottom: 12, textAlign: 'left' }}>
                 <div className="ig-lab" style={{ paddingBottom: 6 }}>Swap a stone (optional): give one of yours, take one of theirs</div>

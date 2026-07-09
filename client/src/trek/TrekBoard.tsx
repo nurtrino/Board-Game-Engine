@@ -3,7 +3,7 @@
 // (public info), and a caption with camera fly-to on every action.
 
 import { useEffect, useRef } from 'react';
-import { PARKS, MAJORS, STONE_COLORS, TREK_CATALOG, type TrekView, type StoneColor } from '@bge/shared';
+import { PARKS, MAJORS, STONE_COLORS, SCORING, TREK_CATALOG, type TrekView, type StoneColor } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { TrekTable, useTrekScene, nodePos, type TrekSceneDef, type TrekFocus } from './TrekScene';
 import { playSfx } from '../sfx';
@@ -79,6 +79,9 @@ export function TrekBoard({ view }: { view: TrekView }) {
     : undefined;
 
   const stonesOf = (seat: number) => STONE_COLORS.reduce((t, c) => t + view.players[seat].stones[c], 0);
+  // running score (park points + 5 per campsite + 1 per stone); end-of-game stone awards not yet counted
+  const scoreOf = (p: TrekView['players'][number]) =>
+    p.parks.reduce((t, id) => t + PARKS[id].vp, 0) + p.majors.length * SCORING.campsiteVp + stonesOf(p.seat) * SCORING.stoneVp;
   const current = view.players[view.turn];
   const winners = view.winners;
   // who earns each colour's most / second-most stone award (endgame display)
@@ -115,15 +118,18 @@ export function TrekBoard({ view }: { view: TrekView }) {
           }}>
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
             <b>{p.name}</b>
-            <span style={{ opacity: 0.75 }} title="parks claimed">{p.parks.length} parks</span>
-            <span style={{ opacity: 0.5, fontSize: 12 }} title="stones · cards">{stonesOf(p.seat)}st · {p.handCount}c</span>
+            <span style={{ fontWeight: 700 }}>{scoreOf(p)} pts</span>
+            <span style={{ opacity: 0.6, fontSize: 12 }}>{p.parks.length} parks · {stonesOf(p.seat)} stones · {p.handCount} cards</span>
           </div>
         ))}
       </div>
 
       {/* PARKS — the claimable river, big down the left margin */}
       <div style={{ position: 'absolute', top: 0, bottom: 0, left: 16, zIndex: 5, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 14 }}>
-        <div className="ig-lab" style={{ fontSize: 13 }}>Parks</div>
+        <div>
+          <div className="ig-lab" style={{ fontSize: 13 }}>Parks</div>
+          <div className="ig-lab" style={{ fontSize: 10, opacity: 0.55, textTransform: 'none', letterSpacing: 0 }}>Stand on one to claim it</div>
+        </div>
         {view.parkRiver.map((c, i) => (c === null ? null : (
           <div key={`P${i}`}>
             {trekFaceByCell(scene, 'parks', PARKS[c].cell, 224, 158)}
@@ -146,19 +152,23 @@ export function TrekBoard({ view }: { view: TrekView }) {
         ))}
         <div style={{ width: 14 }} />
         <div style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', gap: 3 }}>
+          <div style={{ display: 'flex', gap: 4 }}>
             {STONE_COLORS.map((color) => {
               const m = scene.bonusCards.most[color];
-              return m ? <CardSprite key={color} face={m.face} cols={m.cols} rows={m.rows} cell={m.cell} w={22} h={34} radius={3} rotated /> : null;
+              return m ? <CardSprite key={color} face={m.face} cols={m.cols} rows={m.rows} cell={m.cell} w={34} h={50} radius={4} rotated /> : null;
             })}
           </div>
-          <div className="ig-lab" style={{ paddingTop: 3, fontSize: 9 }}>Awards</div>
+          <div className="ig-lab" style={{ paddingTop: 4, fontSize: 12 }}>Stone awards</div>
+          <div className="ig-lab" style={{ fontSize: 10, opacity: 0.55, textTransform: 'none', letterSpacing: 0 }}>Most of each color at game end</div>
         </div>
       </div>
 
       {/* MAJOR PARKS — big down the right margin */}
       <div style={{ position: 'absolute', top: 0, bottom: 0, right: 16, zIndex: 5, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 14, alignItems: 'flex-end' }}>
-        <div className="ig-lab" style={{ fontSize: 13 }}>Major parks</div>
+        <div style={{ textAlign: 'right' }}>
+          <div className="ig-lab" style={{ fontSize: 13 }}>Major parks</div>
+          <div className="ig-lab" style={{ fontSize: 10, opacity: 0.55, textTransform: 'none', letterSpacing: 0 }}>Occupy for a campsite and a power</div>
+        </div>
         {view.majors.map((id) => (
           <div key={`m${id}`} style={{ position: 'relative' }}>
             {trekFaceByCell(scene, 'majors', MAJORS[id].cell, 224, 158)}

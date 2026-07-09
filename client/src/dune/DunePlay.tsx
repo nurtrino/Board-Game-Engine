@@ -54,8 +54,7 @@ const DUNE_TOUR: { target?: string; title: string; body: string }[] = [
   { target: 'hand', title: 'Your hand', body: 'Your five cards this round. Each card lists the board spaces its agent can reach, plus reveal values for later. Tap a card to send an agent with it.' },
   { target: 'actions', title: 'Your buttons', body: 'REVEAL flips the rest of your hand to buy cards and add combat swords. HAND shows your cards from any menu. INTRIGUE holds your secret cards. END TURN passes to the next player.' },
   { target: 'conflict', title: 'This round\'s conflict', body: 'The prize everyone competes for this round. Deploy troops at combat spaces to fight for it. First and second place claim the rewards after all reveals.' },
-  { title: 'A turn, start to finish', body: 'On your turn, tap a card and pick a board space, then pay the cost and take the rewards. When your agents run out, tap REVEAL, spend persuasion on new cards, and watch the conflict resolve. Then draw five fresh cards and go again, stronger each round.' },
-  { title: 'How games are won', body: 'Lean on cheap early spaces for tempo, then let the cards you buy take over. Do not ignore combat: even one troop can steal an uncontested prize. Commit to two point paths, such as two alliances plus the odd conflict win, and deny rivals their tenth point when they get close.' },
+  { title: 'A turn, start to finish', body: 'On your turn, tap a card and pick a board space, then pay the cost and take the rewards. When your agents run out, tap REVEAL, spend persuasion on new cards, and watch the conflict resolve. Then draw five fresh cards and go again. That is the whole game. Tap DONE and take your first turn.' },
 ];
 
 /** Coach-marks tour over the live device screen: highlights the element named
@@ -160,6 +159,26 @@ const CSS = `
 /* section header inside overlays */
 .dn-sec { font: 700 11px Inter, sans-serif; letter-spacing: 1.4px; text-transform: uppercase; opacity: 0.55; margin: 14px 0 2px; }
 .dn-sec:first-of-type { margin-top: 2px; }
+
+/* loud whose-turn / what-to-do banner */
+.dn-banner { padding: 11px 14px; border-radius: 12px; font: 800 15px Inter, sans-serif; letter-spacing: 0.4px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; }
+.dn-banner .dot { width: 12px; height: 12px; border-radius: 50%; flex: 0 0 auto; }
+.dn-banner .sub { font: 600 12.5px Inter, sans-serif; letter-spacing: 0.2px; opacity: 0.9; text-transform: none; }
+.dn-banner.you { background: rgba(232,180,80,0.18); border-color: rgba(232,180,80,0.55); color: #f4d79a; }
+.dn-banner.wait { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: #cfd6e0; }
+
+/* plain-language legends (touch-friendly, no hover needed) */
+.dn-legend { font: 500 11px Inter, sans-serif; opacity: 0.5; line-height: 1.5; padding: 1px 0; }
+.dn-legend b { font-weight: 800; opacity: 0.85; }
+
+/* positive post-action confirmation toast */
+.dn-note { position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); background: #10261b; border: 1px solid rgba(107,208,138,0.45); color: #b7e8c6; padding: 8px 14px; border-radius: 10px; z-index: 70; font-size: 13px; max-width: 90vw; text-align: center; line-height: 1.4; }
+
+/* two-line button (label + plain caption) */
+.dn-btn.stack { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.dn-btn .cap { font: 600 10px Inter, sans-serif; letter-spacing: 0.2px; text-transform: none; opacity: 0.82; }
+.dn-btn.pulse { animation: dnpulse 1.5s ease-in-out infinite; }
+@keyframes dnpulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(232,180,80,0.45); } 50% { box-shadow: 0 0 0 7px rgba(232,180,80,0); } }
 `;
 
 const FACTION_COLOR: Record<Faction, string> = {
@@ -241,6 +260,8 @@ export function DunePlay({ view, act, error }: {
   const [showIntrigue, setShowIntrigue] = useState(false);
   const [showHand, setShowHand] = useState(false); // peek at your full hand from any menu
   const [tour, setTour] = useState<number | null>(null); // interface walkthrough step
+  const [note, setNote] = useState<string | null>(null); // device-side "you did X, got Y" confirmation
+  const [combatChoice, setCombatChoice] = useState<string | null>(null); // combat space chosen, awaiting troop count
   const me = view.you !== null ? view.players[view.you] : null;
   const myTurn = me !== null && view.turn === me.seat && !view.pending;
   const myPending = me !== null && view.pending?.seat === me.seat ? view.pending : null;
@@ -252,6 +273,13 @@ export function DunePlay({ view, act, error }: {
     const any = card.agents.includes('any');
     return SPACES.filter((sp) => any || card.agents.includes(sp.icon));
   }, [selected, me?.seat]);
+
+  // the post-action confirmation clears itself after a few seconds
+  useEffect(() => {
+    if (!note) return;
+    const t = setTimeout(() => setNote(null), 5000);
+    return () => clearTimeout(t);
+  }, [note]);
 
   if (!scene || !me) return <div className="page center"><h2>Crossing the deep desert</h2></div>;
 
@@ -380,13 +408,40 @@ export function DunePlay({ view, act, error }: {
   if (selected && myTurn && view.phase === 'round') {
     const card = CARD_BY_ID[selected];
     const boxCost = card?.agentBox?.cost as Record<string, number> | undefined;
+    // mandatory space cost, mirroring the reducer (Duke Leto pays 1 less solari on Landsraad).
+    const spaceCost = (sp: typeof SPACES[number]) => {
+      const cost = { ...(sp.cost ?? {}) };
+      if (me.leader === 'dukeLetoAtreides' && sp.icon === 'landsraad' && cost.solari) cost.solari = Math.max(0, cost.solari - 1);
+      return cost;
+    };
+    // Commit an agent placement and leave a plain-language "you paid X, got Y" note.
+    const placeAgent = (sp: typeof SPACES[number], deployN: number) => {
+      const cost = spaceCost(sp);
+      const a: DuneAction = { type: 'agent', card: selected, space: sp.id };
+      if (sp.id === 'sellMelange') a.sell = sell;
+      if (sp.combat) a.deploy = deployN;
+      if (boxCost) a.useOptional = useBox;
+      const paid = [costText(cost), boxCost && useBox ? costText(boxCost) : ''].filter(Boolean).join(', ');
+      const gained = [
+        sp.id === 'sellMelange' ? `${SELL_MELANGE[String(sell)]} solari` : rewardText(sp.rewards),
+        boxCost && useBox ? rewardText(card.agentBox) : '',
+        sp.influence ? `+1 ${FACTION_NAME[sp.influence]} influence` : '',
+        sp.combat && deployN > 0 ? `${deployN} troop${deployN > 1 ? 's' : ''} into the conflict` : '',
+      ].filter(Boolean).join(', ');
+      setNote(`Sent an agent to ${sp.name}.${paid ? ` Paid ${paid}.` : ' No cost.'}${gained ? ` Gained ${gained}.` : ''}`);
+      send(a);
+      setSelected(null);
+      setCombatChoice(null);
+    };
+    const chosen = combatChoice ? SPACE_BY_ID[combatChoice] : null;
+
     return (
       <div className="dn-wrap">
         <style>{CSS}</style>
         <div className="dn-top">
           <span className="dn-lab">Send an agent with {card?.name}</span>
           <button className="dn-btn" style={{ marginLeft: 'auto', padding: '8px 12px' }} onClick={() => setShowHand(true)}>Hand</button>
-          <button className="dn-btn" style={{ padding: '8px 12px' }} onClick={() => setSelected(null)}>Back</button>
+          <button className="dn-btn" style={{ padding: '8px 12px' }} onClick={() => { setCombatChoice(null); setSelected(null); }}>Back</button>
         </div>
         <div className="dn-main" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {boxCost && (
@@ -396,94 +451,108 @@ export function DunePlay({ view, act, error }: {
               onClick={() => setUseBox(!useBox)}
             >
               <span>
-                <b>Card effect · pay {costText(boxCost)}</b>
+                <b>Card bonus · pay {costText(boxCost)}</b>
                 <div style={{ opacity: 0.65, fontSize: 12 }}>
-                  {rewardText(card.agentBox)} · tap to {useBox ? 'skip (you are never forced to pay)' : 'pay it'}
+                  This card's extra effect. Gives {rewardText(card.agentBox)} · tap to {useBox ? 'skip it (you are never forced to pay)' : 'pay for it'}
                 </div>
               </span>
               <span style={{ opacity: 0.7 }}>{useBox ? 'PAYING' : 'SKIPPING'}</span>
             </button>
           )}
-          {legalSpaces.map((sp) => {
-            const occupied = (view.spaces[sp.id]?.length ?? 0) > 0 && sp.id !== 'highCouncil' && sp.id !== 'swordmaster';
-            const blocked = view.voiceBlock?.space === sp.id && view.voiceBlock.by !== me.seat;
-            const bonus = sp.maker ? view.makerSpice[sp.id as keyof typeof view.makerSpice] ?? 0 : 0;
-            // Affordability, mirroring the reducer (mandatory space cost only; the
-            // optional card box is toggled separately). Duke Leto pays 1 less
-            // solari on Landsraad spaces.
-            const cost = { ...(sp.cost ?? {}) };
-            if (me.leader === 'dukeLetoAtreides' && sp.icon === 'landsraad' && cost.solari) cost.solari = Math.max(0, cost.solari - 1);
-            const lack: string[] = [];
-            if ((cost.solari ?? 0) > me.solari) lack.push('solari');
-            if ((cost.spice ?? 0) > me.spice) lack.push('spice');
-            if ((cost.water ?? 0) > me.water) lack.push('water');
-            if (sp.id === 'sellMelange' && me.spice < 2 && !lack.includes('spice')) lack.push('spice');
-            const needFremen = sp.requires?.fremenInfluence != null && me.influence.fremen < sp.requires.fremenInfluence;
-            const owned = (sp.id === 'highCouncil' && me.hasHighCouncil) || (sp.id === 'swordmaster' && me.hasSwordmaster);
-            const cannotAfford = lack.length > 0;
-            return (
-              <button
-                key={sp.id}
-                className="dn-space"
-                disabled={(occupied && !card.agents.includes('any')) || blocked || cannotAfford || needFremen || owned}
-                onClick={() => {
-                  const a: DuneAction = { type: 'agent', card: selected, space: sp.id };
-                  if (sp.id === 'sellMelange') a.sell = sell;
-                  if (sp.combat) a.deploy = deploy;
-                  if (boxCost) a.useOptional = useBox;
-                  send(a);
-                  setSelected(null);
-                }}
-              >
+
+          {/* Combat space chosen: pick the troop count, then confirm. */}
+          {chosen ? (
+            <>
+              <div className="dn-space" style={{ cursor: 'default', flexDirection: 'column', alignItems: 'stretch', gap: 6, outline: '2px solid #e8b450' }}>
                 <span>
-                  <b>{sp.name}</b>
-                  {sp.combat && <span style={{ opacity: 0.6 }}> · combat</span>}
-                  {occupied && <span style={{ opacity: 0.6 }}> · occupied</span>}
-                  {blocked && <span style={{ opacity: 0.6 }}> · the Voice</span>}
-                  {cannotAfford && <span style={{ color: '#ff9a9a' }}> · not enough {lack.join(' and ')}</span>}
-                  {needFremen && <span style={{ opacity: 0.6 }}> · needs {sp.requires!.fremenInfluence} Fremen influence</span>}
-                  {owned && <span style={{ opacity: 0.6 }}> · already have it</span>}
+                  <b>{chosen.name}</b><span style={{ opacity: 0.6 }}> · combat space</span>
                   <div style={{ opacity: 0.65, fontSize: 12 }}>
-                    {sp.cost && `pay ${costText(sp.cost)} · `}
-                    {sp.id === 'sellMelange' ? `sell 2-5 spice (${Object.entries(SELL_MELANGE).map(([k, v]) => `${k}→${v}`).join(' ')})` : rewardText(sp.rewards)}
-                    {sp.influence && ` · +1 ${FACTION_NAME[sp.influence]}`}
-                    {bonus > 0 && ` · +${bonus} bonus spice waiting`}
+                    {chosen.cost && `pay ${costText(spaceCost(chosen))} · `}{rewardText(chosen.rewards)}
+                    {chosen.influence && ` · +1 ${FACTION_NAME[chosen.influence]}`}
                   </div>
                 </span>
-              </button>
-            );
-          })}
-          {legalSpaces.some((sp) => sp.id === 'sellMelange') && me.spice >= 2 && (
-            <>
-              <div className="dn-lab" style={{ paddingTop: 8 }}>Spice to sell (Sell Melange)</div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {[2, 3, 4, 5].map((n) => (
-                  <button key={n} className="dn-btn" disabled={n > me.spice}
-                    style={n === sell ? { outline: '2px solid #e8ebf0' } : undefined} onClick={() => setSell(n)}>
-                    {n} for {SELL_MELANGE[String(n)]}
-                  </button>
-                ))}
               </div>
-            </>
-          )}
-          {legalSpaces.some((sp) => sp.combat) && (
-            <>
-              <div className="dn-lab" style={{ paddingTop: 8 }}>Troops to deploy · only if you pick a combat space</div>
+              <div className="dn-lab" style={{ paddingTop: 6 }}>Troops to deploy into the conflict</div>
+              <div style={{ opacity: 0.6, fontSize: 12, paddingBottom: 2 }}>Every troop is 2 combat strength. Up to 2 come from your garrison, plus any troops this turn recruits.</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 {[0, 1, 2, 3, 4, 5].map((n) => (
                   <button key={n} className="dn-btn" style={n === deploy ? { outline: '2px solid #e8ebf0' } : undefined} onClick={() => setDeploy(n)}>{n}</button>
                 ))}
               </div>
-              <div style={{ opacity: 0.55, fontSize: 12 }}>Up to 2 from your garrison plus any troops this turn recruits. Ignored for non-combat spaces.</div>
+              <div style={{ display: 'flex', gap: 8, paddingTop: 8 }}>
+                <button className="dn-btn primary stack" onClick={() => placeAgent(chosen, deploy)}>
+                  <span>Send agent</span>
+                  <span className="cap">Deploy {deploy} troop{deploy === 1 ? '' : 's'} to the fight</span>
+                </button>
+                <button className="dn-btn" onClick={() => setCombatChoice(null)}>Pick another space</button>
+              </div>
+            </>
+          ) : (
+            <>
+              {legalSpaces.map((sp) => {
+                const occupied = (view.spaces[sp.id]?.length ?? 0) > 0 && sp.id !== 'highCouncil' && sp.id !== 'swordmaster';
+                const blocked = view.voiceBlock?.space === sp.id && view.voiceBlock.by !== me.seat;
+                const bonus = sp.maker ? view.makerSpice[sp.id as keyof typeof view.makerSpice] ?? 0 : 0;
+                const cost = spaceCost(sp);
+                const lack: string[] = [];
+                if ((cost.solari ?? 0) > me.solari) lack.push('solari');
+                if ((cost.spice ?? 0) > me.spice) lack.push('spice');
+                if ((cost.water ?? 0) > me.water) lack.push('water');
+                if (sp.id === 'sellMelange' && me.spice < 2 && !lack.includes('spice')) lack.push('spice');
+                const needFremen = sp.requires?.fremenInfluence != null && me.influence.fremen < sp.requires.fremenInfluence;
+                const owned = (sp.id === 'highCouncil' && me.hasHighCouncil) || (sp.id === 'swordmaster' && me.hasSwordmaster);
+                const cannotAfford = lack.length > 0;
+                return (
+                  <button
+                    key={sp.id}
+                    className="dn-space"
+                    disabled={(occupied && !card.agents.includes('any')) || blocked || cannotAfford || needFremen || owned}
+                    onClick={() => {
+                      if (sp.combat) { setDeploy(2); setCombatChoice(sp.id); return; }
+                      placeAgent(sp, 0);
+                    }}
+                  >
+                    <span>
+                      <b>{sp.name}</b>
+                      {sp.combat && <span style={{ opacity: 0.6 }}> · combat (fight for the conflict)</span>}
+                      {occupied && <span style={{ opacity: 0.6 }}> · occupied (an agent is already here)</span>}
+                      {blocked && <span style={{ opacity: 0.6 }}> · blocked by The Voice (an opponent's card banned this space this round)</span>}
+                      {cannotAfford && <span style={{ color: '#ff9a9a' }}> · not enough {lack.join(' and ')}</span>}
+                      {needFremen && <span style={{ opacity: 0.6 }}> · needs {sp.requires!.fremenInfluence} Fremen influence</span>}
+                      {owned && <span style={{ opacity: 0.6 }}> · already have it</span>}
+                      <div style={{ opacity: 0.65, fontSize: 12 }}>
+                        {sp.cost && `pay ${costText(sp.cost)} · `}
+                        {sp.id === 'sellMelange' ? `sell 2-5 spice for solari (${Object.entries(SELL_MELANGE).map(([k, v]) => `${k}→${v}`).join(' ')})` : rewardText(sp.rewards)}
+                        {sp.influence && ` · +1 ${FACTION_NAME[sp.influence]} influence`}
+                        {bonus > 0 && ` · +${bonus} bonus spice waiting`}
+                      </div>
+                    </span>
+                  </button>
+                );
+              })}
+              {legalSpaces.some((sp) => sp.id === 'sellMelange') && me.spice >= 2 && (
+                <>
+                  <div className="dn-lab" style={{ paddingTop: 8 }}>Spice to sell (Sell Melange turns spice into solari)</div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {[2, 3, 4, 5].map((n) => (
+                      <button key={n} className="dn-btn" disabled={n > me.spice}
+                        style={n === sell ? { outline: '2px solid #e8ebf0' } : undefined} onClick={() => setSell(n)}>
+                        {n} for {SELL_MELANGE[String(n)]}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </>
           )}
           {view.conflict && (
             <>
-              <div className="dn-lab" style={{ paddingTop: 8 }}>This round's conflict</div>
+              <div className="dn-lab" style={{ paddingTop: 8 }}>This round's conflict (the prize)</div>
               <DuneCard scene={scene} id={view.conflict} w={128} h={196} />
             </>
           )}
         </div>
+        {note && <div className="dn-note">{note}</div>}
         {showHand && <HandOverlay scene={scene} hand={me.hand ?? []} selected={selected} onClose={() => setShowHand(false)} />}
         {error && <div className="dn-err">{error}</div>}
       </div>
@@ -508,7 +577,7 @@ export function DunePlay({ view, act, error }: {
         <span data-tour="vp" style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{me.vp} VP</span>
         <button className="dn-btn" style={{ padding: '6px 10px' }} onClick={() => setShowIntro(true)}>?</button>
       </div>
-      <div className="dn-top" style={{ paddingTop: 2 }}>
+      <div className="dn-top" style={{ paddingTop: 2, flexDirection: 'column', alignItems: 'stretch', gap: 3 }}>
         <div className="dn-chips" data-tour="resources">
           <Chip color={RES_COLOR.solari} value={me.solari} label="Solari" />
           <Chip color={RES_COLOR.spice} value={me.spice} label="Spice" />
@@ -520,26 +589,60 @@ export function DunePlay({ view, act, error }: {
           {revealing && <Chip color={RES_COLOR.persuasion} value={me.persuasion} label="Persuasion" />}
           {view.phase === 'combat' && <Chip color={RES_COLOR.strength} value={me.strength} label="Strength" />}
         </div>
+        <div className="dn-legend">
+          <b>Solari</b> = money · <b>Spice</b> = desert currency · <b>Water</b> = spent at board spaces · <b>Garrison</b> = troops at home · <b>Agents</b> = workers left to place{me.mentat ? ' (+1 is an extra Mentat agent this round)' : ''}
+          {me.inConflict > 0 && <> · <b>In fight</b> = your troops in this round's conflict</>}
+          {me.intrigueCount > 0 && <> · <b>Intrigue</b> = your secret cards</>}
+          {revealing && <> · <b>Persuasion</b> = spend to buy cards</>}
+          {view.phase === 'combat' && <> · <b>Strength</b> = your combat power (troops x2 + swords)</>}
+        </div>
       </div>
-      <div className="dn-top" style={{ paddingTop: 2 }}>
+      <div className="dn-top" style={{ paddingTop: 2, flexDirection: 'column', alignItems: 'stretch', gap: 3 }}>
         <div className="dn-inf-row" data-tour="influence">
           {FACTIONS.map((f) => (
             <InfluenceTrack key={f} faction={f} value={me.influence[f]} allied={me.alliances.includes(f)} />
           ))}
+        </div>
+        <div className="dn-legend">
+          Faction influence. Each filled pip is one step up a track. Reach <b>2</b> = 1 VP · reach <b>4</b> = the faction bonus plus its alliance. <b>★</b> = you hold that alliance (worth a VP until a rival passes your spot).
         </div>
       </div>
 
       <div className="dn-body">
         {/* left column: everything you act on */}
         <div className="dn-left">
-          {/* status line */}
-          <div className="dn-lab" style={{ padding: '2px 0' }}>
-            {view.phase === 'ended' ? `${view.players.find((p) => p.color === view.winner)?.name} wins`
-              : waitingOn ? `${waitingOn.name} is deciding`
-              : view.phase === 'combat' ? (view.turn === me.seat ? 'Combat · play a card or pass' : `Combat · ${view.players[view.turn].name} bids`)
-              : myTurn ? (me.actedThisTurn != null ? (revealing ? 'Buy cards, then end your turn' : 'End your turn') : canAgent ? 'Play a card for an agent turn, or reveal' : 'Reveal your hand')
-              : `${view.players[view.turn].name} is acting`}
-          </div>
+          {/* loud, persistent whose-turn / what-to-do banner */}
+          {(() => {
+            const agentsLeftN = me.agentsLeft + (me.mentat ? 1 : 0);
+            const turnP = view.players[view.turn];
+            let cls: 'you' | 'wait' = 'wait';
+            let color = SEAT_HEX[turnP.color];
+            let head = '';
+            let sub = '';
+            if (view.phase === 'ended') {
+              const w = view.players.find((p) => p.color === view.winner);
+              head = `${w?.name ?? 'Someone'} wins`;
+              color = view.winner ? SEAT_HEX[view.winner] : color;
+            } else if (waitingOn) {
+              head = `Waiting for ${waitingOn.name}`; sub = 'They are making a choice.'; color = SEAT_HEX[waitingOn.color];
+            } else if (view.phase === 'combat') {
+              if (view.turn === me.seat) { cls = 'you'; color = SEAT_HEX[me.color]; head = 'Your turn · combat'; sub = 'Play a combat intrigue card, or PASS.'; }
+              else { head = `Waiting for ${turnP.name}`; sub = 'Combat is resolving.'; }
+            } else if (myTurn) {
+              cls = 'you'; color = SEAT_HEX[me.color]; head = 'Your turn';
+              if (me.actedThisTurn != null) sub = revealing ? 'Buy cards with persuasion, then END TURN.' : 'Take your rewards, then END TURN.';
+              else if (canAgent) sub = `Tap a card to place an agent (${agentsLeftN} left), or REVEAL.`;
+              else sub = 'No agents left. Tap REVEAL to flip your hand.';
+            } else {
+              head = `Waiting for ${turnP.name}`; sub = 'They are taking their turn.';
+            }
+            return (
+              <div className={`dn-banner ${cls}`}>
+                <span className="dot" style={{ background: color }} />
+                <span>{head}{sub && <span className="sub"> · {sub}</span>}</span>
+              </div>
+            );
+          })()}
 
           {/* combat: everyone's strength */}
           {view.phase === 'combat' && (
@@ -586,8 +689,11 @@ export function DunePlay({ view, act, error }: {
                   <Chip big color="#8a94a6" value={me.discard.length} label="Discard" />
                   <Chip big color="#8a94a6" value={DUNE_RULES.troopsTotal - me.garrison - me.inConflict} label="Supply" />
                 </div>
+                <div className="dn-legend" style={{ paddingTop: 4 }}>
+                  <b>Deck</b> and <b>Discard</b> are your two card piles · <b>Supply</b> = troops not yet on the board
+                </div>
                 {me.deckTop !== undefined && (
-                  <div style={{ opacity: 0.9, paddingTop: 7 }}>Prescience · top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
+                  <div style={{ opacity: 0.9, paddingTop: 7 }}>Prescience (peek at your top card) · top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
                 )}
               </div>
             </div>
@@ -609,24 +715,28 @@ export function DunePlay({ view, act, error }: {
 
           {/* reveal strip: acquire targets */}
           {revealing && (
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingBottom: 6 }}>
+            <div style={{ paddingBottom: 6 }}>
+              <div className="dn-lab" style={{ paddingBottom: 2 }}>Buy a card · you have {me.persuasion} persuasion</div>
+              <div className="dn-legend" style={{ paddingBottom: 6 }}>Tap a card to buy it (number = its persuasion cost). Bought cards go to your discard pile and come back stronger. Dimmed cards cost more than you can afford.</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {view.imperiumRow.map((c, i) => c && (
-                <button key={i} className="dn-card" onClick={() => send({ type: 'acquire', row: i })}
+                <button key={i} className="dn-card" onClick={() => { setNote(`Bought ${CARD_BY_ID[c]?.name} for ${CARD_BY_ID[c]?.cost} persuasion. It goes to your discard pile.`); send({ type: 'acquire', row: i }); }}
                   style={{ opacity: (CARD_BY_ID[c]?.cost ?? 99) <= me.persuasion ? 1 : 0.4 }}>
                   <DuneCard scene={scene} id={c} w={92} h={138} />
                   <div style={{ fontSize: 11, textAlign: 'center', opacity: 0.75 }}>{CARD_BY_ID[c]?.cost}</div>
                 </button>
               ))}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <button className="dn-btn" disabled={me.persuasion < 2 || view.reserve.arrakisLiaison <= 0} onClick={() => send({ type: 'acquire', reserve: 'arrakisLiaison' })}>Liaison (2)</button>
-                <button className="dn-btn" disabled={me.persuasion < 9 - me.spiceMustFlowBonus || view.reserve.theSpiceMustFlow <= 0} onClick={() => send({ type: 'acquire', reserve: 'theSpiceMustFlow' })}>
+                <button className="dn-btn" disabled={me.persuasion < 2 || view.reserve.arrakisLiaison <= 0} onClick={() => { setNote('Bought Arrakis Liaison for 2 persuasion. It goes to your discard pile.'); send({ type: 'acquire', reserve: 'arrakisLiaison' }); }}>Liaison (2)</button>
+                <button className="dn-btn" disabled={me.persuasion < 9 - me.spiceMustFlowBonus || view.reserve.theSpiceMustFlow <= 0} onClick={() => { setNote(`Bought The Spice Must Flow for ${9 - (me.spiceMustFlowBonus ?? 0)} persuasion. It is worth a victory point.`); send({ type: 'acquire', reserve: 'theSpiceMustFlow' }); }}>
                   Spice Must Flow ({9 - (me.spiceMustFlowBonus ?? 0)})
                 </button>
                 {me.helenaAside && (
-                  <button className="dn-btn" onClick={() => send({ type: 'acquire', helena: true })}>
+                  <button className="dn-btn" onClick={() => { setNote(`Bought ${CARD_BY_ID[me.helenaAside!.card]?.name}.`); send({ type: 'acquire', helena: true }); }}>
                     {CARD_BY_ID[me.helenaAside.card]?.name} ({Math.max(0, (CARD_BY_ID[me.helenaAside.card]?.cost ?? 0) - 1)})
                   </button>
                 )}
+              </div>
               </div>
             </div>
           )}

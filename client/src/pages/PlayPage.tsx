@@ -4,10 +4,10 @@
 // Your hand is splayed at the bottom: hover to lift a card, click to focus it
 // center-screen, X (or click away) to dismiss.
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { socket, useRoom } from '../net';
-import { TableScene, useBrassScene, SEAT_HEX, type SceneDef, type CardSheet, type PickTarget } from '../brass/TableScene';
+import { TableScene, useBrassScene, SEAT_HEX, seatLabel, type SceneDef, type CardSheet, type PickTarget } from '../brass/TableScene';
 import { gameSceneState } from './BoardPage';
 import { playSfx } from '../sfx';
 import {
@@ -98,16 +98,28 @@ const HAND_CSS = `
 .coin.g { background: radial-gradient(circle at 35% 30%, #ffe9a8 0%, #d4a943 55%, #9c7722 100%); }
 .coin.s { background: radial-gradient(circle at 35% 30%, #f3f4f6 0%, #b9bec7 55%, #7e858f 100%); }
 .coin.b { background: radial-gradient(circle at 35% 30%, #e8b98a 0%, #b07a45 55%, #7c4f28 100%); }
+
+/* two-line action buttons: theme word + always-visible plain description */
+.brass-acts .ig-act { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; line-height: 1.15; }
+.brass-acts .ba-sub { font-size: 9.5px; letter-spacing: .01em; text-transform: none; font-weight: 500; opacity: .62; }
+
+/* glossary panel inside the reference overlay */
+.brass-gloss { text-align: left; max-height: 84vh; overflow-y: auto; width: min(560px, 92vw);
+  background: rgba(14,17,22,0.97); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px;
+  padding: 22px 26px; box-shadow: 0 18px 60px rgba(0,0,0,0.85); }
+.brass-gloss h3 { font: 700 15px Inter, sans-serif; margin: 0 0 14px; letter-spacing: .02em; }
+.brass-gloss dt { font: 700 13px Inter, sans-serif; margin-top: 13px; }
+.brass-gloss dd { font: 13px/1.5 Inter, sans-serif; opacity: 0.78; margin: 3px 0 0; }
 `;
 
 const ACTIONS = [
-  { id: 'build', label: 'Build', hint: 'Play a card, then place an industry from your board' },
-  { id: 'network', label: 'Network', hint: 'Discard a card, place a canal or railway' },
-  { id: 'develop', label: 'Develop', hint: 'Discard a card, remove a tile from your board' },
-  { id: 'sell', label: 'Sell', hint: 'Discard a card, flip cotton, goods or pottery' },
-  { id: 'loan', label: 'Loan', hint: 'Discard a card, take £30 — income falls 3 levels' },
-  { id: 'scout', label: 'Scout', hint: 'Discard 2 cards + 1 for the action; take the two wilds' },
-  { id: 'pass', label: 'Pass', hint: 'Discard a card, do nothing' },
+  { id: 'build', label: 'Build', sub: 'Place an industry', hint: 'Play a card, then place an industry tile from your board onto the map.' },
+  { id: 'network', label: 'Network', sub: 'Build a canal or rail link', hint: 'Discard a card, then build a canal or rail link between two towns.' },
+  { id: 'develop', label: 'Develop', sub: 'Remove one of your tiles', hint: 'Discard a card, then remove a tile from your board so the stronger one underneath becomes buildable. Costs 1 iron.' },
+  { id: 'sell', label: 'Sell', sub: 'Sell goods for points', hint: 'Discard a card, then sell a connected cotton, goods or pottery. Its tile turns face-up and scores VP.' },
+  { id: 'loan', label: 'Loan', sub: 'Take £30 · income drops 3', hint: 'Discard a card, take £30 now. Your income falls 3 levels.' },
+  { id: 'scout', label: 'Scout', sub: 'Trade 3 cards for 2 wilds', hint: 'Discard 3 cards (2 you pick plus 1 for the action) and take the two wild cards.' },
+  { id: 'pass', label: 'Pass', sub: 'Skip · discard a card', hint: 'Discard a card and take no action.' },
 ] as const;
 
 function cardBg(sheet: CardSheet, cell: number) {
@@ -184,10 +196,12 @@ function GameView({ scene, view, act, error }: {
   const [tableIsMain, setTableIsMain] = useState(false);
   const [focus, setFocus] = useState<number | null>(null);
   const [flow, setFlow] = useState<Flow>({ step: 'idle' });
-  const [sheetTab, setSheetTab] = useState<'actions' | 'cards'>('actions');
+  const [sheetTab, setSheetTab] = useState<'actions' | 'cards' | 'glossary'>('actions');
   const [notice, setNotice] = useState<string | null>(null);
   const [drawn, setDrawn] = useState<{ cards: Card[]; seq: number } | null>(null);
   const [showIntro, setShowIntro] = useState(true);
+  const [confirmMsg, setConfirmMsg] = useState<string | null>(null);
+  const confirmSeq = useRef<number>(view.lastEvent?.seq ?? -1);
   const noticeFor = (msg: string) => {
     playSfx('error');
     setNotice(msg);
@@ -218,6 +232,21 @@ function GameView({ scene, view, act, error }: {
       setDrawn({ cards: mine.hand.slice(-ev.drew), seq: ev.seq });
       playSfx('cardDraw');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view.lastEvent?.seq]);
+
+  // brief device-side confirmation once YOUR action resolves, so a heads-down
+  // player knows the tap landed. End-of-turn draws already get their own reveal.
+  useEffect(() => {
+    const ev = view.lastEvent;
+    if (!ev || ev.color !== color || ev.seq === confirmSeq.current || ev.drew) return;
+    confirmSeq.current = ev.seq;
+    const lead = ev.title.charAt(0).toLowerCase() + ev.title.slice(1);
+    const where = ev.location ? ` in ${ev.location}` : '';
+    const money = ev.cost ? ` · ${ev.cost}` : '';
+    const msg = `You ${lead}${where}${money}`;
+    setConfirmMsg(msg);
+    window.setTimeout(() => setConfirmMsg((m) => (m === msg ? null : m)), 4200);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view.lastEvent?.seq]);
 
@@ -375,7 +404,7 @@ function GameView({ scene, view, act, error }: {
 
   const prompt = ((): string => {
     if (view.phase === 'ended') return `${view.players.find((p) => p.color === view.winner)?.name ?? ''} wins`;
-    if (!isMyTurn) return `${view.currentColor} is acting`;
+    if (!isMyTurn) return `${view.players.find((p) => p.color === view.currentColor)?.name ?? view.currentColor} is acting`;
     switch (flow.step) {
       case 'idle': return `Your turn · action ${actionNo} of ${totalActions}`;
       case 'pickCard': return 'Choose the card to play';
@@ -397,7 +426,7 @@ function GameView({ scene, view, act, error }: {
     build: 'This card is played and discarded. Location cards build in their city; industry cards build inside your network.',
     network: 'This card is discarded, any card works. Then place a link.',
     develop: 'This card is discarded, any card works. Then remove a tile from your board (costs 1 iron).',
-    sell: 'This card is discarded, any card works. Then flip a connected industry.',
+    sell: 'This card is discarded — any card works. Then sell a connected industry; its tile turns face-up and scores VP.',
     loan: 'This card is discarded. You take £30 and your income falls 3 levels.',
     scout: 'Scout discards 3 cards total: 2 of your choice plus 1 for the action itself. You take the Wild Location and Wild Industry cards.',
     pass: 'This card is discarded and your action ends.',
@@ -474,7 +503,7 @@ function GameView({ scene, view, act, error }: {
           )}
         </div>
 
-        <div className="ig-acts" style={{ alignContent: 'start' }}>
+        <div className="ig-acts brass-acts" style={{ alignContent: 'start' }}>
           {ACTIONS.map((a) => (
             <button
               key={a.id}
@@ -482,7 +511,8 @@ function GameView({ scene, view, act, error }: {
               disabled={!isMyTurn}
               onClick={() => armAction(a.id)}
             >
-              {a.label}
+              <span className="ba-lab">{a.label}</span>
+              <span className="ba-sub">{a.sub}</span>
             </button>
           ))}
         </div>
@@ -490,7 +520,13 @@ function GameView({ scene, view, act, error }: {
           flex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', textAlign: 'center',
           color: 'var(--ink-3)', font: '12px/1.5 Inter, sans-serif', padding: '9px 6px 0',
         }}>
-          {armedAction ? ACTIONS.find((a) => a.id === armedAction)?.hint : ''}
+          {armedAction
+            ? ACTIONS.find((a) => a.id === armedAction)?.hint
+            : isMyTurn && flow.step === 'idle'
+              ? (totalActions === 1
+                  ? 'Round 1 of the canal era gives one action. Every turn after this gives you two.'
+                  : `You get two actions each turn — this is action ${actionNo} of ${totalActions}. Each action plays or discards one card.`)
+              : ''}
         </div>
 
         {/* your portrait with this round's spending on it */}
@@ -499,8 +535,12 @@ function GameView({ scene, view, act, error }: {
             <div style={{ font: '600 11px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase', opacity: 0.6 }}>
               Spent this round
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end', paddingTop: 4 }}>
               <CoinRow amount={mine.spent} coins={scene.coins} compact />
+              <span className="ig-num" style={{ font: '700 15px Inter, sans-serif' }}>£{mine.spent}</span>
+            </div>
+            <div style={{ font: '10px Inter, sans-serif', opacity: 0.5, paddingTop: 3 }}>
+              Gold £15 · Silver £5 · Bronze £1
             </div>
           </div>
           {scene.turnTokens[color] && (
@@ -611,6 +651,11 @@ function GameView({ scene, view, act, error }: {
               {flow.action === 'scout' && ` — ${flow.picked.length}/3 selected`}
             </div>
             <div style={{ font: '13.5px/1.55 Inter, sans-serif', opacity: 0.78 }}>{pickerCopy[flow.action]}</div>
+            {flow.action === 'build' && hand.some((c) => !cardUsable(c, 'build')) && (
+              <div style={{ font: '12px/1.5 Inter, sans-serif', opacity: 0.6, marginTop: 8 }}>
+                Greyed cards can't build anywhere you can afford right now.
+              </div>
+            )}
           </div>
           <div className="picker-cards" onClick={(e) => e.stopPropagation()}>
             {hand.map((c, i) => {
@@ -778,6 +823,18 @@ function GameView({ scene, view, act, error }: {
         </div>
       )}
 
+      {/* device-side "the tap worked" confirmation */}
+      {confirmMsg && !drawn && (
+        <div style={{
+          position: 'absolute', left: '50%', bottom: 262, transform: 'translateX(-50%)', zIndex: 79,
+          maxWidth: 520, textAlign: 'center', padding: '10px 18px', borderRadius: 10,
+          background: 'rgba(18,38,26,0.95)', border: '1px solid rgba(120,220,150,0.4)',
+          font: '600 13px/1.5 Inter, sans-serif', boxShadow: '0 8px 26px rgba(0,0,0,0.6)',
+        }}>
+          {confirmMsg}
+        </div>
+      )}
+
       {/* focused card (focus === -1 reference sheets, -2 the deck) */}
       {focus !== null && (focus === -1 ? (scene.actionsSheet ?? scene.cheatSheet) : focus === -2 ? scene.cardSheet : hand[focus]) && (
         <div className="card-focus-backdrop" onClick={() => setFocus(null)}>
@@ -794,7 +851,7 @@ function GameView({ scene, view, act, error }: {
             ) : focus === -1 ? (
               <div style={{ textAlign: 'center' }}>
                 <div style={{ display: 'inline-flex', gap: 6, padding: 5, borderRadius: 10, background: 'rgba(20,24,30,0.95)', marginBottom: 10, alignItems: 'center' }}>
-                  {([['actions', 'How the actions work'], ['cards', 'Card distribution']] as const).map(([id, label]) => (
+                  {([['actions', 'How the actions work'], ['cards', 'Card distribution'], ['glossary', 'Glossary']] as const).map(([id, label]) => (
                     <button
                       key={id}
                       onClick={() => setSheetTab(id)}
@@ -814,11 +871,39 @@ function GameView({ scene, view, act, error }: {
                     style={{ padding: '7px 16px', borderRadius: 7, color: '#8fd0ff', font: '600 13px Inter, sans-serif', textDecoration: 'none' }}
                   >Rulebook ↗</a>
                 </div>
-                <img
-                  src={sheetTab === 'actions' ? (scene.actionsSheet?.image ?? scene.cheatSheet!.image) : scene.cheatSheet!.image}
-                  alt="Reference sheet"
-                  style={{ display: 'block', height: '84vh', width: 'auto', borderRadius: 12, boxShadow: '0 18px 60px rgba(0,0,0,0.85)', margin: '0 auto' }}
-                />
+                {sheetTab === 'glossary' ? (
+                  <div className="brass-gloss">
+                    <h3>THE THINGS THE BOARD DOESN'T SPELL OUT</h3>
+                    <dl style={{ margin: 0 }}>
+                    <dt>Two actions per turn</dt>
+                    <dd>Each turn you take two actions (Round 1 of the canal era gives only one). Every action plays or discards one card.</dd>
+                    <dt>VP — victory points</dt>
+                    <dd>The score that decides the game. Whoever has the most VP at the end wins. Your cash is not the score.</dd>
+                    <dt>Beer</dt>
+                    <dd>A barrel you spend to sell cotton, goods and pottery. It comes from your own breweries or from a merchant on the board.</dd>
+                    <dt>Coal and iron</dt>
+                    <dd>Building costs. Coal comes free from a connected mine, iron free from a connected iron works; otherwise you buy from the market (the top of the track is cheapest). The build screen shows exactly where each cube comes from.</dd>
+                    <dt>Connected mine / market / iron works</dt>
+                    <dd>"Connected" means linked to your build spot by canals or rails. Connected sources are free; unconnected demand means buying from the market.</dd>
+                    <dt>Income</dt>
+                    <dd>The £ you collect at the end of every round. Selling and flipping tiles raises it; a Loan drops it three levels.</dd>
+                    <dt>Links</dt>
+                    <dd>The canal or rail connections you have left to build with the Network action.</dd>
+                    <dt>Sell / flip / sold</dt>
+                    <dd>Selling a built industry turns its tile face-up ("flipped"). A sold tile scores its VP and often raises your income.</dd>
+                    <dt>Wild cards</dt>
+                    <dd>The two cards Scout hands you: a Wild Location and a Wild Industry. Each can stand in for any card when you build.</dd>
+                    <dt>Coins</dt>
+                    <dd>Gold £15 · Silver £5 · Bronze £1.</dd>
+                    </dl>
+                  </div>
+                ) : (
+                  <img
+                    src={sheetTab === 'actions' ? (scene.actionsSheet?.image ?? scene.cheatSheet!.image) : scene.cheatSheet!.image}
+                    alt="Reference sheet"
+                    style={{ display: 'block', height: '84vh', width: 'auto', borderRadius: 12, boxShadow: '0 18px 60px rgba(0,0,0,0.85)', margin: '0 auto' }}
+                  />
+                )}
               </div>
             ) : (
               <>
@@ -895,7 +980,7 @@ export function PlayPage() {
                 key={c}
                 disabled={taken}
                 onClick={() => socket.send({ type: 'pick_color', color: c })}
-                title={taken ? `${room.players[owner].name} has ${c}` : c}
+                title={taken ? `${room.players[owner].name} has ${seatLabel(c)}` : seatLabel(c)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                   padding: 8, borderRadius: 12, cursor: taken ? 'default' : 'pointer',
@@ -915,7 +1000,7 @@ export function PlayPage() {
                 ) : (
                   <span style={{ width: 56, height: 56, borderRadius: '50%', background: SEAT_HEX[c] }} />
                 )}
-                <span style={{ font: '600 12px Inter, sans-serif', color: '#e8ebf0' }}>{c}</span>
+                <span style={{ font: '600 12px Inter, sans-serif', color: '#e8ebf0' }}>{seatLabel(c)}</span>
               </button>
             );
           })}

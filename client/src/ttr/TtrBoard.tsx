@@ -43,6 +43,9 @@ export function TtrBoard({ view }: { view: TtrView }) {
   const focus: TtrFocus | undefined = ev?.route
     ? { seq: ev.seq, ...routeCenter(scene, ev.route) }
     : undefined;
+  const turnName = view.players.find((p) => p.color === view.turnColor)?.name ?? view.turnColor;
+  const turnHex = SEAT_HEX[view.turnColor];
+  const standings = [...view.players].sort((a, b) => b.score - a.score);
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: '#05080b', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
@@ -64,26 +67,51 @@ export function TtrBoard({ view }: { view: TtrView }) {
         <div style={{ font: '700 16px Inter, sans-serif' }}>The World</div>
       </div>
 
+      {/* big whose-turn banner, readable from the couch */}
+      {view.phase === 'playing' && !view.winner && (
+        <div className="ig-glass" style={{
+          position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
+          padding: '10px 22px', borderRadius: 16, textAlign: 'center',
+          borderBottom: `3px solid ${turnHex}`,
+        }}>
+          <div className="ig-lab" style={{ opacity: 0.6 }}>Now playing</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+            <span style={{ width: 16, height: 16, borderRadius: '50%', background: turnHex }} />
+            <span style={{ font: '800 26px Inter, sans-serif' }}>{turnName}</span>
+          </div>
+          {view.finalTurns !== null && (
+            <div style={{ marginTop: 4, color: '#e0b060', font: '700 12px Inter, sans-serif', letterSpacing: 0.4 }}>
+              FINAL TURNS · A FLEET RAN LOW, THE GAME IS ENDING
+            </div>
+          )}
+        </div>
+      )}
+
       {/* player chips */}
-      <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 8 }}>
+      <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 8, flexDirection: 'column', alignItems: 'flex-end' }}>
         {view.players.map((p) => (
           <div key={p.seat} className="ig-glass" style={{
-            display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 999,
+            display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px', borderRadius: 14, minWidth: 200,
             outline: view.turnColor === p.color && view.phase === 'playing' ? `2px solid ${SEAT_HEX[p.color]}` : 'none',
           }}>
-            <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
-            <b>{p.name}</b>
-            <span style={{ opacity: 0.75 }}>{p.score}</span>
-            <span style={{ opacity: 0.5, fontSize: 12 }}>{p.trains}·{p.ships}</span>
+            <span style={{ width: 12, height: 12, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
+            <b style={{ flex: 1 }}>{p.name}</b>
+            <span style={{ font: '800 22px Inter, sans-serif' }}>{p.score}<span style={{ fontSize: 11, fontWeight: 700, opacity: 0.55, marginLeft: 3 }}>PTS</span></span>
+            <span style={{ opacity: 0.55, fontSize: 12, textAlign: 'right', lineHeight: 1.2 }}>
+              {p.trains} trains<br />{p.ships} ships
+            </span>
           </div>
         ))}
+        <div className="ig-lab" style={{ opacity: 0.5, paddingRight: 4 }}>Score · pieces left</div>
       </div>
 
       {/* market: 6 faceup + decks */}
       <div className="ig-glass" style={{
         position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
-        display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 16,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '8px 14px 10px', borderRadius: 16,
       }}>
+        <div className="ig-lab" style={{ opacity: 0.6 }}>Shared travel cards · anyone may draw these</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ width: 52, height: 74, borderRadius: 6, background: '#12202b', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 13px Inter, sans-serif' }}>{view.shipDeckCount}</div>
           <div className="ig-lab" style={{ paddingTop: 4 }}>Ships</div>
@@ -97,7 +125,8 @@ export function TtrBoard({ view }: { view: TtrView }) {
         ))}
         <div style={{ textAlign: 'center' }}>
           <div style={{ width: 52, height: 74, borderRadius: 6, background: '#1d1712', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 13px Inter, sans-serif' }}>{view.trainDeckCount}</div>
-          <div className="ig-lab" style={{ paddingTop: 4 }}>Trains</div>
+          <div className="ig-lab" style={{ paddingTop: 4 }}>Trains left</div>
+        </div>
         </div>
       </div>
 
