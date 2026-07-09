@@ -10,7 +10,7 @@ import { OrbitControls } from '@react-three/drei';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import * as THREE from 'three';
-import { useAxisManifest, useAxisObj, type AxisManifest } from './AxisScene';
+import { useAxisManifest, useAxisObj, tintFor, type AxisManifest } from './AxisScene';
 
 const NATIONS = ['germany', 'ussr', 'japan', 'uk', 'italy', 'usa', 'china', null] as const; // null = shared AA/IC row
 const UNITS_ORDER = ['infantry', 'artillery', 'tank', 'aaGun', 'factory', 'fighter', 'bomber', 'battleship', 'carrier', 'cruiser', 'destroyer', 'submarine', 'transport'];
@@ -74,7 +74,7 @@ function Grid({ manifest, only, clamp }: { manifest: AxisManifest; only: string 
               const x = c * CELL;
               return (
                 <group key={unit}>
-                  <LineupMesh url={def.mesh} tint={def.tint} x={x} z={-z} scale={def.scale ?? 1} clamp={clamp} />
+                  <LineupMesh url={def.mesh} tint={tintFor(nation, unit)} x={x} z={-z} scale={def.scale ?? 1} clamp={clamp} />
                   <Plate text={unit} x={x} z={-z + 1.7} w={3.2} />
                 </group>
               );
@@ -95,7 +95,12 @@ export default function AxisModels() {
   const w = UNITS_ORDER.length * CELL;
   return (
     <div style={{ position: 'fixed', inset: 0, background: '#0a0d12' }}>
-      <Canvas camera={{ position: [w / 2 - CELL, 34, 16], fov: 40 }} dpr={[1, 2]} gl={{ antialias: true, preserveDrawingBuffer: true }}>
+      <Canvas
+        camera={{ position: [w / 2 - CELL, 34, 16], fov: 40 }}
+        dpr={[1, 2]}
+        gl={{ antialias: true, preserveDrawingBuffer: true }}
+        onCreated={({ scene }) => { (window as unknown as { __scene?: unknown }).__scene = scene; }}
+      >
         <ambientLight intensity={0.95} />
         <directionalLight position={[18, 40, 20]} intensity={1.5} />
         <directionalLight position={[-15, 25, -20]} intensity={0.5} />

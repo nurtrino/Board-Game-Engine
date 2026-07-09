@@ -29,7 +29,15 @@ const stage = (url, kind = 'img') => {
     const src = path.join(MODS, dir, base + ext);
     if (fs.existsSync(src)) {
       const name = base.slice(-24) + ext;
-      fs.copyFileSync(src, path.join(OUT, name));
+      if (ext === '.obj') {
+        // the mod's sculpts carry thousands of stray line records ('l ...')
+        // that render as white wireframe shells in three.js — strip them
+        const txt = fs.readFileSync(src, 'utf8');
+        const cleaned = txt.split('\n').filter((ln) => !ln.startsWith('l ') && !ln.startsWith('p ')).join('\n');
+        fs.writeFileSync(path.join(OUT, name), cleaned);
+      } else {
+        fs.copyFileSync(src, path.join(OUT, name));
+      }
       const rel = `/axis/${name}`;
       staged.set(url, rel);
       return rel;

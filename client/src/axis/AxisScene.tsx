@@ -42,6 +42,26 @@ export function meshFor(manifest: AxisManifest, power: string | null, unit: stri
     ?? manifest.units.find((u) => u.unit === unit);
 }
 
+// Piece colors follow the RULEBOOK (p9), not the mod's tints — the mod paints
+// Italy and China the same white as the shared pieces, which is unreadable on
+// the board (owner call). USA green, Germany gray, UK tan, Japan orange,
+// USSR maroon, Italy brown, China light green; AA guns + ICs light gray.
+const PIECE_TINT: Record<string, [number, number, number]> = {
+  germany: [0.43, 0.43, 0.45],
+  ussr: [0.56, 0.19, 0.22],
+  japan: [0.85, 0.54, 0.17],
+  uk: [0.79, 0.70, 0.49],
+  italy: [0.48, 0.32, 0.19],
+  usa: [0.31, 0.49, 0.23],
+  china: [0.66, 0.79, 0.50],
+};
+export function tintFor(power: string | null | undefined, unit?: string): [number, number, number] {
+  // AA guns and industrial complexes are light gray and change hands
+  // (rulebook p9) — never nation-colored
+  if (unit === 'aaGun' || unit === 'factory') return [0.76, 0.76, 0.76];
+  return PIECE_TINT[power ?? ''] ?? [0.76, 0.76, 0.76];
+}
+
 const SPACE_CENTER: Record<string, [number, number]> = {};
 for (const t of AXIS_MAP.territories) SPACE_CENTER[t.id] = t.center as [number, number];
 for (const z of AXIS_MAP.seaZones) SPACE_CENTER[z.id] = z.center as [number, number];
@@ -75,7 +95,11 @@ export function useAxisObj(url: string, tint: number[] | null) {
   return useMemo(() => {
     const c = obj.clone(true);
     const color = tint ? new THREE.Color(tint[0], tint[1], tint[2]) : new THREE.Color('#b9b9b9');
+    const junk: THREE.Object3D[] = [];
     c.traverse((o) => {
+      // stray line/point primitives in the sculpt OBJs render as white
+      // wireframe shells — drop them
+      if ((o as THREE.Line).isLine || (o as THREE.Points).isPoints) { junk.push(o); return; }
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
       if (m.geometry) {
@@ -85,6 +109,7 @@ export function useAxisObj(url: string, tint: number[] | null) {
       }
       m.material = new THREE.MeshStandardMaterial({ color, roughness: 0.55, metalness: 0.12 });
     });
+    for (const o of junk) o.parent?.remove(o);
     c.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(c);
     const xSpan = box.max.x - box.min.x;
@@ -191,7 +216,7 @@ export function SpacePieces({ manifest, spaceId, stacks }: {
               <UnitMesh
                 key={k}
                 url={def.mesh}
-                tint={def.tint}
+                tint={tintFor(st.power, st.key)}
                 x={x + k * 0.42}
                 z={z - k * 0.18}
                 scale={def.scale ?? 1}
