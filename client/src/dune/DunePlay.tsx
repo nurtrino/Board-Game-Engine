@@ -408,11 +408,24 @@ export function DunePlay({ view, act, error }: {
             const occupied = (view.spaces[sp.id]?.length ?? 0) > 0 && sp.id !== 'highCouncil' && sp.id !== 'swordmaster';
             const blocked = view.voiceBlock?.space === sp.id && view.voiceBlock.by !== me.seat;
             const bonus = sp.maker ? view.makerSpice[sp.id as keyof typeof view.makerSpice] ?? 0 : 0;
+            // Affordability, mirroring the reducer (mandatory space cost only; the
+            // optional card box is toggled separately). Duke Leto pays 1 less
+            // solari on Landsraad spaces.
+            const cost = { ...(sp.cost ?? {}) };
+            if (me.leader === 'dukeLetoAtreides' && sp.icon === 'landsraad' && cost.solari) cost.solari = Math.max(0, cost.solari - 1);
+            const lack: string[] = [];
+            if ((cost.solari ?? 0) > me.solari) lack.push('solari');
+            if ((cost.spice ?? 0) > me.spice) lack.push('spice');
+            if ((cost.water ?? 0) > me.water) lack.push('water');
+            if (sp.id === 'sellMelange' && me.spice < 2 && !lack.includes('spice')) lack.push('spice');
+            const needFremen = sp.requires?.fremenInfluence != null && me.influence.fremen < sp.requires.fremenInfluence;
+            const owned = (sp.id === 'highCouncil' && me.hasHighCouncil) || (sp.id === 'swordmaster' && me.hasSwordmaster);
+            const cannotAfford = lack.length > 0;
             return (
               <button
                 key={sp.id}
                 className="dn-space"
-                disabled={(occupied && !card.agents.includes('any')) || blocked}
+                disabled={(occupied && !card.agents.includes('any')) || blocked || cannotAfford || needFremen || owned}
                 onClick={() => {
                   const a: DuneAction = { type: 'agent', card: selected, space: sp.id };
                   if (sp.id === 'sellMelange') a.sell = sell;
@@ -427,6 +440,9 @@ export function DunePlay({ view, act, error }: {
                   {sp.combat && <span style={{ opacity: 0.6 }}> · combat</span>}
                   {occupied && <span style={{ opacity: 0.6 }}> · occupied</span>}
                   {blocked && <span style={{ opacity: 0.6 }}> · the Voice</span>}
+                  {cannotAfford && <span style={{ color: '#ff9a9a' }}> · not enough {lack.join(' and ')}</span>}
+                  {needFremen && <span style={{ opacity: 0.6 }}> · needs {sp.requires!.fremenInfluence} Fremen influence</span>}
+                  {owned && <span style={{ opacity: 0.6 }}> · already have it</span>}
                   <div style={{ opacity: 0.65, fontSize: 12 }}>
                     {sp.cost && `pay ${costText(sp.cost)} · `}
                     {sp.id === 'sellMelange' ? `sell 2-5 spice (${Object.entries(SELL_MELANGE).map(([k, v]) => `${k}→${v}`).join(' ')})` : rewardText(sp.rewards)}
