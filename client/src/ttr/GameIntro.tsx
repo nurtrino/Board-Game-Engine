@@ -74,7 +74,10 @@ export const DT_INTRO: Intro = {
   rulebook: '/darktower/rulebook.pdf',
 };
 
-export function GameIntro({ intro, onClose }: { intro: Intro; onClose: () => void }) {
+export function GameIntro({ intro, onClose, onWalkthrough }: {
+  intro: Intro; onClose: () => void;
+  onWalkthrough?: () => void; // if set, "Walk me through" hands off to a live interface tour instead of the text steps
+}) {
   const [walk, setWalk] = useState<number | null>(null); // null = overview, else step index
   const steps = intro.walkthrough ?? [];
   const inWalk = walk !== null && steps.length > 0;
@@ -106,9 +109,9 @@ export function GameIntro({ intro, onClose }: { intro: Intro; onClose: () => voi
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 22, flexWrap: 'wrap' }}>
               <button onClick={onClose} className="tp-act primary" style={{ width: 'auto', padding: '11px 26px' }}>Got it</button>
-              {steps.length > 0 && (
-                <button onClick={() => setWalk(0)} className="tp-act" style={{ width: 'auto', padding: '11px 22px' }}>
-                  Walk me through the first round
+              {(onWalkthrough || steps.length > 0) && (
+                <button onClick={() => (onWalkthrough ? onWalkthrough() : setWalk(0))} className="tp-act" style={{ width: 'auto', padding: '11px 22px' }}>
+                  Walk me through the interface
                 </button>
               )}
             </div>

@@ -5,7 +5,7 @@
 // choice run through explicit prompts. All moves are made here; the TV is
 // the board.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   CARD_BY_ID, DUNE_RULES, FACTIONS, INTRIGUE_BY_ID, LEADER_BY_ID, LEADERS, SELL_MELANGE, SPACES, SPACE_BY_ID,
   type DuneAction, type DuneView, type Faction,
@@ -20,73 +20,92 @@ import { playSfx } from '../sfx';
 const DUNE_INTRO: Intro = {
   title: 'Dune: Imperium',
   tagline: 'Deck-building meets worker placement on Arrakis.',
-  goal: 'Reach 10 victory points — or lead when the last conflict is fought. Send agents to the board for resources, troops and influence; reveal your hand to buy better cards and fight; win conflicts for the biggest prizes.',
+  goal: 'Reach 10 victory points, or lead when the last conflict is fought. Send agents to the board for resources, troops and influence. Reveal your hand to buy better cards and fight. Win conflicts for the biggest prizes.',
   points: [
-    { label: 'Your house', detail: 'You start with a leader (two unique powers — tap your leader name any time to see them), a 10-card starter deck, 2 agents, 3 troops in your garrison, 1 water. Draw 5 cards each round.' },
+    { label: 'Your house', detail: 'You start with a leader (two unique powers: tap your leader name any time to see them), a 10-card starter deck, 2 agents, 3 troops in your garrison, and 1 water. Draw 5 cards each round.' },
     { label: 'A round', detail: 'Players alternate single turns. Each turn is either an agent turn or your one reveal turn. When everyone has revealed, the conflict resolves, spice builds up on the desert, and the next round begins with a new first player.' },
     { label: 'Agent turn', detail: 'Play one card from your hand and send an agent to one of the board spaces shown on that card. The space must be free and you must pay its cost (spice, water or solari). Take the space rewards plus the played card\'s agent box.' },
-    { label: 'Your buttons', detail: 'Tap HAND at any time — even while choosing a space — to see your full hand (the card you are placing is flagged). HOUSE shows your resources, influence, upgrades and deck; INTRIGUE holds your secret cards.' },
-    { label: 'Combat spaces', detail: 'Spaces with crossed blades also let you deploy up to 2 garrison troops — plus any troops that turn recruited — into the current conflict.' },
-    { label: 'Reveal turn', detail: 'When you are out of agents (or choose to stop), reveal the rest of your hand. Its persuasion buys new cards; its swords are combat strength. Then everything you played this round goes to your discard pile.' },
-    { label: 'Buying cards', detail: 'Spend persuasion on the imperium row (or the reserve: Arrakis Liaison for 2, The Spice Must Flow for 9 — worth a VP). Purchases land in your discard pile; when your deck runs out, the discard reshuffles, so every buy comes back stronger.' },
-    { label: 'Influence', detail: 'Faction spaces raise you on that faction\'s track. Reaching 2 is worth a VP. Reaching 4 pays that faction\'s bonus and, if you are ahead of everyone, its alliance — a VP another player can steal by passing you.' },
-    { label: 'Combat', detail: 'After all reveals, compare strength: each troop in the conflict is 2, each revealed sword 1. The conflict card pays 1st and 2nd place (and 3rd with 4 players). Combat intrigue cards can swing it after strengths are shown; tied players all lose to the place below.' },
+    { label: 'Your buttons', detail: 'Tap HAND at any time, even while choosing a space, to see your full hand (the card you are placing is flagged). HOUSE shows your resources, influence, upgrades and deck. INTRIGUE holds your secret cards.' },
+    { label: 'Combat spaces', detail: 'Spaces with crossed blades also let you deploy up to 2 garrison troops, plus any troops that turn recruited, into the current conflict.' },
+    { label: 'Reveal turn', detail: 'When you are out of agents (or choose to stop), reveal the rest of your hand. Its persuasion buys new cards. Its swords are combat strength. Then everything you played this round goes to your discard pile.' },
+    { label: 'Buying cards', detail: 'Spend persuasion on the imperium row, or the reserve: Arrakis Liaison for 2, The Spice Must Flow for 9 (worth a VP). Purchases land in your discard pile. When your deck runs out the discard reshuffles, so every buy comes back stronger.' },
+    { label: 'Influence', detail: 'Faction spaces raise you on that faction\'s track. Reaching 2 is worth a VP. Reaching 4 pays that faction\'s bonus and, if you are ahead of everyone, its alliance, a VP another player can steal by passing you.' },
+    { label: 'Combat', detail: 'After all reveals, compare strength: each troop in the conflict is 2, each revealed sword 1. The conflict card pays 1st and 2nd place (and 3rd with 4 players). Combat intrigue cards can swing it after strengths are shown. Tied players all lose to the place below.' },
     { label: 'Intrigue', detail: 'Intrigue cards are secret. Plots play during your turn, combat cards during the battle, endgame cards add points when the game ends.' },
-    { label: 'Mentat and upgrades', detail: 'The Mentat space hires an extra agent for the round plus a card draw. High Council (+2 persuasion every reveal) and Swordmaster (a permanent third agent) are one-time upgrades — buy them before your rivals.' },
-    { label: 'Game end', detail: 'The game ends after the 10th conflict, or immediately when someone reaches 10 VP. Highest VP wins; ties break on spice, then solari, then water, then garrison troops.' },
+    { label: 'Mentat and upgrades', detail: 'The Mentat space hires an extra agent for the round plus a card draw. High Council (+2 persuasion every reveal) and Swordmaster (a permanent third agent) are one-time upgrades. Buy them before your rivals.' },
+    { label: 'Game end', detail: 'The game ends after the 10th conflict, or immediately when someone reaches 10 VP. Highest VP wins. Ties break on spice, then solari, then water, then garrison troops.' },
   ],
   rulebook: '/dune/rulebook.pdf',
-  walkthrough: [
-    {
-      title: 'What you are trying to do',
-      body: 'Dune: Imperium is a race to 10 victory points (VP). Whoever hits 10 wins immediately; otherwise the player with the most VP when the last conflict is fought takes it.\n\nVP come from a few reliable places: winning conflicts, reaching influence 2 and 4 with the factions, holding a faction alliance, controlling Arrakeen or Carthag, and a handful of powerful cards. You rarely win on one path — you stack two or three.\n\nEverything else in the game — sending agents, buying cards, gathering spice and water — is just fuel for those VP.',
-    },
-    {
-      title: 'Your house',
-      body: 'You start with a leader (two unique powers: a passive and a signet-ring ability — tap your leader name any time to read them), a 10-card starter deck, 2 agents, 3 troops in your garrison, and 1 water.\n\nEach round you shuffle and draw 5 cards. Those 5 cards ARE your options this round — each one lists the board spaces its agent may visit, plus a "reveal" value (persuasion and swords) for later.\n\nYour resources: solari (money), spice (the desert currency), and water (needed at several desert spaces). Spend them to reach the strongest spaces.',
-    },
-    {
-      title: 'A round, and whose turn it is',
-      body: 'Players take single turns, going around the table. On your turn you do exactly one of two things: an AGENT turn (place one agent) or your one REVEAL turn.\n\nYou keep taking agent turns — one per turn, alternating with everyone else — until your agents are used up or you choose to stop. Then you reveal.\n\nWhen everyone has revealed, the conflict is resolved, fresh spice appears on the desert, a new conflict is flipped, and the next round begins with a new first player.',
-    },
-    {
-      title: 'The agent turn — the heart of the game',
-      body: 'Pick one card from your hand and send an agent to one of the board spaces printed on that card. The space must be empty (most spaces hold one agent) and you must pay its cost — spice, water, or solari.\n\nYou then take that space\'s rewards AND the played card\'s "agent" box. So the card matters twice: which spaces it can reach, and the bonus it hands you for going there.\n\nSpaces come in families: city/CHOAM spaces give resources and let you buy or draw; faction spaces raise your influence; the Spice fields hand you spice that has piled up; and combat spaces let you commit troops to the fight.',
-    },
-    {
-      title: 'Combat spaces and troops',
-      body: 'Spaces marked with crossed blades are combat spaces. When you send an agent there you may also deploy up to 2 troops from your garrison — plus any troops that same turn just recruited — into this round\'s conflict.\n\nTroops in the conflict are your muscle: each one is worth 2 combat strength. Garrison troops sitting at home are safe but do nothing until deployed.\n\nDeciding how many to commit is a real choice: over-commit and you win a conflict you didn\'t need; hold back and a rival steals the prize.',
-    },
-    {
-      title: 'The reveal turn',
-      body: 'When you are out of agents (or simply want to stop placing), you REVEAL: flip the rest of your hand face-up. Two numbers matter — persuasion (buys cards) and swords (adds combat strength to any troops you already committed).\n\nSpend persuasion on the acquire strip: the face-up Imperium Row, or the reserve (Arrakis Liaison for 2, The Spice Must Flow for 9 — and it is worth a VP). Bought cards go to your DISCARD pile, not your hand.\n\nWhen your deck runs out it reshuffles the discard, so every card you buy comes back around, stronger each cycle. After you finish buying, everything you played this round is discarded and your turn ends.',
-    },
-    {
-      title: 'Influence and the four factions',
-      body: 'The Emperor, Spacing Guild, Bene Gesserit and Fremen each have a track. Faction spaces (and some cards) raise you on a track.\n\nReaching 2 on a track scores a VP. Reaching 4 pays that faction\'s bonus and — if you are strictly ahead of everyone on it — its ALLIANCE, worth another VP. An alliance can be stolen: if a rival passes your spot, the alliance flag moves to them.\n\nInfluence is one of the steadiest VP engines in the game. Two tracks to 4 with both alliances is 4 VP before you\'ve won a single fight.',
-    },
-    {
-      title: 'Resolving the conflict',
-      body: 'After everyone reveals, strengths are compared: each troop you have in the conflict is 2, each revealed sword is 1.\n\nThe round\'s conflict card pays 1st and 2nd place (and 3rd in a 4-player game) — troops, spice, VP, control of a city, whatever it shows. Ties all lose to the place below, so an exact tie for first can leave both players with second-place scraps or nothing.\n\nCombat intrigue cards can be played after strengths are shown to swing the result — so a fight is never truly over until the last card is down.',
-    },
-    {
-      title: 'Intrigue and one-time upgrades',
-      body: 'Intrigue cards are secret. There are three kinds: plots (play on your own turn), combat cards (play during the battle), and endgame cards (extra points scored when the game ends).\n\nThe Mentat space hires an extra agent for the round and draws you a card — a great tempo boost. Two upgrades change your whole game: High Council (+2 persuasion on every reveal, forever) and Swordmaster (a permanent third agent). They are expensive and one-per-player-per-game, so buy them before your rivals lock you out.',
-    },
-    {
-      title: 'Your first round, step by step',
-      body: 'Look at your five cards. Each shows which spaces it can reach. A common strong opening: use one card to grab money or spice and buy toward High Council or Swordmaster, and another to nudge an influence track toward 2.\n\nSend your first agent — pay the cost, take the rewards and the card\'s agent box. If it was a combat space and you like this round\'s conflict prize, deploy a troop or two. Then it is the next player\'s turn.\n\nWhile choosing a space you can tap HAND at the top to review your whole hand — the card you\'re placing is flagged — and HOUSE to check your resources and influence.\n\nOn your next turn send your second agent the same way. Then REVEAL: spend your persuasion on the best card you can afford (or save toward an upgrade), and see how the conflict shakes out. That is one full round — now you draw five fresh cards and do it again, a little stronger.',
-    },
-    {
-      title: 'Strategy — how games are won',
-      body: 'Tempo vs. engine: early spaces and cheap cards give you resources NOW; upgrades and expensive cards pay off over many rounds. Good players lean on tempo early and let their deck take over.\n\nDon\'t sleepwalk past combat. Even one troop can steal a second-place prize nobody contested — free VP and resources. But don\'t pour your whole garrison into a fight whose reward you don\'t want.\n\nPick two VP paths and commit: e.g. two alliances plus the odd conflict win, or a control-Arrakeen board game plus The Spice Must Flow. Watch rivals\' VP — when someone nears 10, deny their last point (pass an alliance, contest their conflict) rather than chasing your own.',
-    },
-  ],
 };
 
 const FACTION_NAME: Record<Faction, string> = {
   emperor: 'Emperor', guild: 'Spacing Guild', beneGesserit: 'Bene Gesserit', fremen: 'Fremen',
 };
+
+// A guided tour that runs ON the live interface: each step highlights a real UI
+// element (data-tour="...") and explains what it does. No em dashes.
+const DUNE_TOUR: { target?: string; title: string; body: string }[] = [
+  { title: 'Welcome to Arrakis', body: 'This is your control screen. The TV shows the shared board; you make every move here. This tour points out each part of the interface. Tap NEXT to begin.' },
+  { target: 'vp', title: 'Victory points', body: 'First to 10 victory points wins the game immediately. If nobody reaches 10, whoever leads when the last conflict is fought takes it.' },
+  { target: 'leader', title: 'Your leader', body: 'Your house leader sits here. Tap this name any time to read its two powers: a passive ability and a signet-ring ability.' },
+  { target: 'resources', title: 'Your resources', body: 'Solari is money, spice is the desert currency, water is spent at several spaces. Garrison is your troops at home. Agents is how many workers you still have to place this round.' },
+  { target: 'influence', title: 'Faction influence', body: 'Four faction tracks. Reaching 2 on a track scores a victory point. Reaching 4 pays the faction bonus and its alliance, worth another point. An alliance is stolen if a rival passes your spot.' },
+  { target: 'board', title: 'Your board', body: 'A live view of your player mat: agents, troops, resources and leader as real pieces. Drag to look around. Tap HOUSE for the full breakdown.' },
+  { target: 'hand', title: 'Your hand', body: 'Your five cards this round. Each card lists the board spaces its agent can reach, plus reveal values for later. Tap a card to send an agent with it.' },
+  { target: 'actions', title: 'Your buttons', body: 'REVEAL flips the rest of your hand to buy cards and add combat swords. HAND shows your cards from any menu. INTRIGUE holds your secret cards. HOUSE opens your full board and stats. END TURN passes to the next player.' },
+  { target: 'conflict', title: 'This round\'s conflict', body: 'The prize everyone competes for this round. Deploy troops at combat spaces to fight for it. First and second place claim the rewards after all reveals.' },
+  { title: 'A turn, start to finish', body: 'On your turn, tap a card and pick a board space, then pay the cost and take the rewards. When your agents run out, tap REVEAL, spend persuasion on new cards, and watch the conflict resolve. Then draw five fresh cards and go again, stronger each round.' },
+  { title: 'How games are won', body: 'Lean on cheap early spaces for tempo, then let the cards you buy take over. Do not ignore combat: even one troop can steal an uncontested prize. Commit to two point paths, such as two alliances plus the odd conflict win, and deny rivals their tenth point when they get close.' },
+];
+
+/** Coach-marks tour over the live device screen: highlights the element named
+ *  by each step's `target` (data-tour attribute) and explains it. */
+function DuneTour({ step, setStep, onClose }: { step: number; setStep: (n: number) => void; onClose: () => void }) {
+  const [rect, setRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+  const s = DUNE_TOUR[step];
+  const last = step === DUNE_TOUR.length - 1;
+  useEffect(() => {
+    if (!s.target) { setRect(null); return; }
+    const el = document.querySelector(`[data-tour="${s.target}"]`) as HTMLElement | null;
+    if (!el) { setRect(null); return; }
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const t = setTimeout(() => {
+      const r = el.getBoundingClientRect(); const pad = 6;
+      setRect({ top: r.top - pad, left: r.left - pad, width: r.width + pad * 2, height: r.height + pad * 2 });
+    }, 300);
+    return () => clearTimeout(t);
+  }, [step, s.target]);
+
+  const topHalf = rect ? rect.top + rect.height / 2 < window.innerHeight / 2 : false;
+  const calloutPos = rect
+    ? (topHalf ? { left: '50%', bottom: 20, transform: 'translateX(-50%)' } : { left: '50%', top: 20, transform: 'translateX(-50%)' })
+    : { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 95 }}>
+      {rect ? (
+        <div style={{ position: 'fixed', top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: 12, boxShadow: '0 0 0 9999px rgba(3,6,9,0.85)', outline: '2px solid #e8b450', pointerEvents: 'none' }} />
+      ) : (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(3,6,9,0.9)' }} />
+      )}
+      <div style={{ position: 'fixed', width: 'min(520px, 92vw)', background: '#0c1219', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 16, padding: '16px 20px', boxShadow: '0 18px 50px rgba(0,0,0,0.7)', ...calloutPos }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+          {DUNE_TOUR.map((_, i) => <span key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? '#e8b450' : 'rgba(255,255,255,0.14)' }} />)}
+        </div>
+        <div className="dn-lab" style={{ opacity: 0.5, fontSize: 11 }}>Step {step + 1} of {DUNE_TOUR.length}</div>
+        <h2 style={{ margin: '4px 0 8px', fontSize: 18 }}>{s.title}</h2>
+        <p style={{ opacity: 0.86, lineHeight: 1.55, margin: 0, fontSize: 14 }}>{s.body}</p>
+        <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+          <button className="dn-btn" onClick={() => (step === 0 ? onClose() : setStep(step - 1))}>{step === 0 ? 'Close' : 'Back'}</button>
+          {!last
+            ? <button className="dn-btn primary" onClick={() => setStep(step + 1)}>Next</button>
+            : <button className="dn-btn primary" onClick={onClose}>Done</button>}
+          <button className="dn-btn" style={{ marginLeft: 'auto' }} onClick={onClose}>Skip</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const CSS = `
 .dn-wrap { position: fixed; inset: 0; background: #05080b; color: #e8ebf0; font: 14px Inter, sans-serif; overflow: hidden; display: flex; flex-direction: column; }
@@ -100,7 +119,7 @@ const CSS = `
 .dn-btn { padding: 12px 16px; border-radius: 11px; border: 1px solid rgba(255,255,255,0.14); cursor: pointer; background: rgba(255,255,255,0.06); color: #e8ebf0; font: 700 13px Inter, sans-serif; letter-spacing: 1px; text-transform: uppercase; }
 .dn-btn.primary { background: rgba(232,180,80,0.16); border-color: rgba(232,180,80,0.5); }
 .dn-btn:disabled { opacity: 0.35; cursor: default; }
-.dn-space { display: flex; justify-content: space-between; gap: 8px; width: 100%; text-align: left; padding: 11px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #e8ebf0; cursor: pointer; font: 13px Inter, sans-serif; }
+.dn-space { display: flex; justify-content: space-between; gap: 8px; width: 100%; text-align: left; padding: 11px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #e8ebf0; cursor: pointer; font: 13px Inter, sans-serif; text-transform: uppercase; letter-spacing: 0.3px; }
 .dn-space:disabled { opacity: 0.4; cursor: default; }
 .dn-overlay { position: absolute; inset: 0; background: rgba(3,6,9,0.92); z-index: 60; display: flex; flex-direction: column; padding: 16px; overflow-y: auto; gap: 8px; }
 .dn-lab { font: 700 11px Inter, sans-serif; letter-spacing: 1.6px; text-transform: uppercase; opacity: 0.6; }
@@ -209,6 +228,7 @@ export function DunePlay({ view, act, error }: {
   const [showIntrigue, setShowIntrigue] = useState(false);
   const [showMat, setShowMat] = useState(false);
   const [showHand, setShowHand] = useState(false); // peek at your full hand from any menu
+  const [tour, setTour] = useState<number | null>(null); // interface walkthrough step
   const me = view.you !== null ? view.players[view.you] : null;
   const myTurn = me !== null && view.turn === me.seat && !view.pending;
   const myPending = me !== null && view.pending?.seat === me.seat ? view.pending : null;
@@ -420,7 +440,7 @@ export function DunePlay({ view, act, error }: {
           )}
           {legalSpaces.some((sp) => sp.combat) && (
             <>
-              <div className="dn-lab" style={{ paddingTop: 8 }}>Troops to deploy — only if you pick a combat space</div>
+              <div className="dn-lab" style={{ paddingTop: 8 }}>Troops to deploy · only if you pick a combat space</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 {[0, 1, 2, 3, 4, 5].map((n) => (
                   <button key={n} className="dn-btn" style={n === deploy ? { outline: '2px solid #e8ebf0' } : undefined} onClick={() => setDeploy(n)}>{n}</button>
@@ -456,15 +476,16 @@ export function DunePlay({ view, act, error }: {
         <b>{me.name}</b>
         {me.leader && (
           <button
+            data-tour="leader"
             style={{ background: 'none', border: 'none', color: '#e8ebf0', opacity: 0.75, fontSize: 12, cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3, padding: 0, font: 'inherit' }}
             onClick={() => setShowMat(true)}
           >{LEADER_BY_ID[me.leader]?.name}</button>
         )}
-        <span style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{me.vp} VP</span>
+        <span data-tour="vp" style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{me.vp} VP</span>
         <button className="dn-btn" style={{ padding: '6px 10px' }} onClick={() => setShowIntro(true)}>?</button>
       </div>
       <div className="dn-top" style={{ paddingTop: 2 }}>
-        <div className="dn-chips">
+        <div className="dn-chips" data-tour="resources">
           <Chip color={RES_COLOR.solari} value={me.solari} label="Solari" />
           <Chip color={RES_COLOR.spice} value={me.spice} label="Spice" />
           <Chip color={RES_COLOR.water} value={me.water} label="Water" />
@@ -477,7 +498,7 @@ export function DunePlay({ view, act, error }: {
         </div>
       </div>
       <div className="dn-top" style={{ paddingTop: 2 }}>
-        <div className="dn-inf-row">
+        <div className="dn-inf-row" data-tour="influence">
           {FACTIONS.map((f) => (
             <InfluenceTrack key={f} faction={f} value={me.influence[f]} allied={me.alliances.includes(f)} />
           ))}
@@ -490,7 +511,7 @@ export function DunePlay({ view, act, error }: {
           <span className="dn-lab">Your board</span>
           <span style={{ fontSize: 11, opacity: 0.45 }}>drag to look around · tap House for the full detail</span>
         </div>
-        <div style={{ border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, overflow: 'hidden' }}>
+        <div data-tour="board" style={{ border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, overflow: 'hidden' }}>
           <DuneMat scene={scene} view={view} me={me} height="42vh" />
         </div>
 
@@ -516,7 +537,7 @@ export function DunePlay({ view, act, error }: {
 
         {/* current conflict, always in reach on the device */}
         {view.conflict && view.phase !== 'ended' && (
-          <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', paddingBottom: 8 }}>
+          <div data-tour="conflict" style={{ display: 'flex', gap: 10, alignItems: 'flex-end', paddingBottom: 8 }}>
             <DuneCard scene={scene} id={view.conflict} w={86} h={132} />
             <span className="dn-lab">Conflict · round {view.round}</span>
           </div>
@@ -550,7 +571,7 @@ export function DunePlay({ view, act, error }: {
         {(me.hand?.length ?? 0) > 0 && (
           <>
             <div className="dn-lab">Hand</div>
-            <div className="dn-hand">
+            <div className="dn-hand" data-tour="hand">
               {(me.hand ?? []).map((c, i) => (
                 <button key={`${c}-${i}`} className={`dn-card${selected === c ? ' sel' : ''}`}
                   onClick={() => { if (canAgent) { setSelected(c); setUseBox(true); playSfx('click'); } }}>
@@ -577,7 +598,7 @@ export function DunePlay({ view, act, error }: {
       </div>
 
       {/* actions */}
-      <div className="dn-actions">
+      <div className="dn-actions" data-tour="actions">
         {view.phase === 'round' && myTurn && !me.revealed && me.actedThisTurn == null && (
           <button className="dn-btn primary" onClick={() => send({ type: 'reveal' })}>Reveal</button>
         )}
@@ -642,9 +663,9 @@ export function DunePlay({ view, act, error }: {
             <Chip color={RES_COLOR.intrigue} value={me.intrigueCount} label="Intrigue" />
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 6, fontSize: 12.5, opacity: 0.85 }}>
-            {me.hasSwordmaster && <span className="dn-chip" style={{ padding: '5px 10px' }}>Swordmaster — permanent 3rd agent</span>}
-            {me.hasHighCouncil && <span className="dn-chip" style={{ padding: '5px 10px' }}>High Council seat — +2 persuasion each reveal</span>}
-            {!me.hasSwordmaster && !me.hasHighCouncil && <span style={{ opacity: 0.5 }}>No upgrades yet — High Council and Swordmaster are strong early buys.</span>}
+            {me.hasSwordmaster && <span className="dn-chip" style={{ padding: '5px 10px' }}>Swordmaster · permanent 3rd agent</span>}
+            {me.hasHighCouncil && <span className="dn-chip" style={{ padding: '5px 10px' }}>High Council seat · +2 persuasion each reveal</span>}
+            {!me.hasSwordmaster && !me.hasHighCouncil && <span style={{ opacity: 0.5 }}>No upgrades yet · High Council and Swordmaster are strong early buys.</span>}
           </div>
 
           <div className="dn-sec">Influence · 2 scores a VP, 4 pays the bonus and the alliance</div>
@@ -666,7 +687,7 @@ export function DunePlay({ view, act, error }: {
             <Chip color="#8a94a6" value={me.discard.length} label="Discard" />
           </div>
           {me.deckTop !== undefined && (
-            <div style={{ paddingTop: 8, fontSize: 13, opacity: 0.85 }}>Prescience — top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
+            <div style={{ paddingTop: 8, fontSize: 13, opacity: 0.85 }}>Prescience · top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>
           )}
           {me.discard.length > 0 && (
             <>
@@ -687,7 +708,7 @@ export function DunePlay({ view, act, error }: {
       {/* intrigue drawer */}
       {showIntrigue && (
         <div className="dn-overlay">
-          <div className="dn-lab">Intrigue — {view.phase === 'combat' ? 'combat cards' : 'plots on your turn'}</div>
+          <div className="dn-lab">Intrigue · {view.phase === 'combat' ? 'combat cards' : 'plots on your turn'}</div>
           {(me.intrigue ?? []).map((c, i) => {
             const def = INTRIGUE_BY_ID[c];
             const playable = view.phase === 'combat'
@@ -724,7 +745,14 @@ export function DunePlay({ view, act, error }: {
       )}
 
       {showHand && <HandOverlay scene={scene} hand={me.hand ?? []} selected={selected} onClose={() => setShowHand(false)} />}
-      {showIntro && <GameIntro intro={DUNE_INTRO} onClose={() => setShowIntro(false)} />}
+      {showIntro && (
+        <GameIntro
+          intro={DUNE_INTRO}
+          onClose={() => setShowIntro(false)}
+          onWalkthrough={() => { setShowIntro(false); setShowHand(false); setShowMat(false); setShowIntrigue(false); setSelected(null); setTour(0); }}
+        />
+      )}
+      {tour !== null && <DuneTour step={tour} setStep={setTour} onClose={() => setTour(null)} />}
       {error && <div className="dn-err">{error}</div>}
     </div>
   );
@@ -766,7 +794,7 @@ function PickTwoFactions({ onPick }: { onPick: (fs: Faction[]) => void }) {
             if (!first) setFirst(f);
             else if (first !== f) onPick([first, f]);
           }}>
-          {FACTION_NAME[f]}{first === f ? ' — pick a second' : ''}
+          {FACTION_NAME[f]}{first === f ? ' · pick a second' : ''}
         </button>
       ))}
     </>
