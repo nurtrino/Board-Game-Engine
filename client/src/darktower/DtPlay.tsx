@@ -4,7 +4,7 @@
 // built from the mod's card art. Riddle keys and curse victims cycle with NO
 // and confirm with YES, exactly like the 1981 tower.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DT_KEYS, KINGDOMS, type DtView, type DtAction, type DtKey } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { DtTable, useDtScene, type DtSceneDef } from './DtScene';
@@ -159,12 +159,15 @@ export function DtPlay({ view, act, error }: {
   const [showIntro, setShowIntro] = useState(true);
   const [focusTower, setFocusTower] = useState(false);
   const [showInv, setShowInv] = useState(false);
+  const [showRules, setShowRules] = useState(false); // movement-rules pop-up on first drag
+  const rulesSeen = useRef(false); // shown once per turn
   const [keyIdx, setKeyIdx] = useState(0); // riddle: shown key (NO cycles, YES locks in)
   const [curseIdx, setCurseIdx] = useState(0); // cursePick: shown victim
 
   const phase = view.phase;
   useEffect(() => { if (phase === 'riddle') setKeyIdx(0); }, [phase, view.riddlePhase]);
   useEffect(() => { if (phase === 'cursePick') setCurseIdx(0); }, [phase]);
+  useEffect(() => { rulesSeen.current = false; }, [view.turn]); // reset the drag hint each turn
 
   if (!scene || !me) return <div className="page center"><h2>Raising the tower</h2></div>;
   const mine = me;
@@ -177,9 +180,10 @@ export function DtPlay({ view, act, error }: {
   const shownLcd = myTurn && phase === 'riddle' ? `${view.riddlePhase} `
     : myTurn && phase === 'cursePick' ? `C${victim?.color[0] ?? ' '}` : display.lcd;
 
-  // the panel: YES/NO/REPEAT/HAGGLE drive the sub-phases. The six action buttons
-  // are no longer pressed directly — an action happens when you move your pawn
-  // onto the matching space on the board (they stay lit as a legend/reference).
+  // the panel: YES/NO/REPEAT/HAGGLE drive the sub-phases; the six action buttons
+  // ARE the turn — you press one to act (your pawn's board position is on your
+  // honor). They light only while it is your turn in the playing phase.
+  const canAct = myTurn && phase === 'playing' && !display.active;
   const press = {
     yes: myTurn && phase === 'bazaar' ? () => act({ type: 'bazaar_yes' })
       : myTurn && phase === 'battle' ? () => act({ type: 'battle_continue' })
@@ -195,9 +199,12 @@ export function DtPlay({ view, act, error }: {
     haggle: myTurn && phase === 'bazaar' && (view.bazaar?.buying ?? 0) === 0 ? () => act({ type: 'bazaar_haggle' }) : null,
     repeat: view.lastEvent ? () => display.replay() : null,
     clear: null,
-    move: null as (() => void) | null, tomb: null as (() => void) | null,
-    bazaar: null as (() => void) | null, sanctuary: null as (() => void) | null,
-    frontier: null as (() => void) | null, tower: null as (() => void) | null,
+    move: canAct ? () => act({ type: 'move' }) : null,
+    tomb: canAct ? () => act({ type: 'tomb' }) : null,
+    bazaar: canAct ? () => act({ type: 'bazaar' }) : null,
+    sanctuary: canAct ? () => act({ type: 'sanctuary' }) : null,
+    frontier: canAct && mine.quad < 4 ? () => act({ type: 'frontier' }) : null,
+    tower: canAct && mine.quad >= 4 && mine.goldkey === 1 ? () => act({ type: 'tower' }) : null,
     inventory: () => setShowInv(true),
   };
 
@@ -207,7 +214,7 @@ export function DtPlay({ view, act, error }: {
 
   const statusLine = view.winner ? `${view.players.find((p) => p.color === view.winner)?.name} conquered the tower`
     : !myTurn ? `${view.players[view.turn]?.name} is playing`
-    : phase === 'playing' ? 'Your turn — tap your piece to see where you can move'
+    : phase === 'playing' ? 'Your turn — drag your piece anywhere, then press an action'
     : phase === 'battle' ? `${view.battle?.brigands} brigands — YES fights, NO retreats`
     : phase === 'bazaar' ? ((view.bazaar?.buying ?? 0) > 0
       ? `Buying ${view.bazaar!.buying} — YES adds one, NO pays`
@@ -224,14 +231,15 @@ export function DtPlay({ view, act, error }: {
       <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: RIGHT_W }}>
         <DtTable
           scene={scene}
-          tokens={view.players.map((p) => ({ seat: p.seat, color: p.color, node: p.node }))}
+          tokens={view.players.map((p) => ({ seat: p.seat, color: p.color, spot: p.spot }))}
           pic={shownPic}
           lcd={shownLcd}
           wedgeMaps={scene.wedge}
           aim={holdsTower(phase, display.active) ? TOWER_AIM : focusTower ? { x: 0, z: 1, h: 7, y: 6.5 } : null}
           youSeat={mine.seat}
-          legalSteps={display.active ? [] : view.legalSteps}
-          onStep={(id) => act({ type: 'step', to: id })}
+          canMove={myTurn && phase === 'playing' && !display.active}
+          onMoveToken={(x, z) => act({ type: 'move_token', x, z })}
+          onDragChange={(d) => { if (d && !rulesSeen.current) { rulesSeen.current = true; setShowRules(true); } }}
         />
         <button className="ig-glass" onClick={() => setFocusTower((f) => !f)} style={{
           position: 'absolute', bottom: 14, left: 14, padding: '9px 13px', borderRadius: 11,
@@ -241,7 +249,7 @@ export function DtPlay({ view, act, error }: {
           <div className="ig-glass" style={{
             position: 'absolute', top: 14, left: 14, padding: '8px 12px', borderRadius: 10,
             font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase', opacity: 0.85,
-          }}>Tap your piece to see where you can move</div>
+          }}>Drag your piece freely, then press an action</div>
         )}
       </div>
 
@@ -296,6 +304,22 @@ export function DtPlay({ view, act, error }: {
           ))}
         </div>
       </div>
+
+      {/* movement rules — pops up the first time you pick up your piece each turn */}
+      {showRules && (
+        <div className="tp-overlay" onClick={() => setShowRules(false)}>
+          <div className="ig-glass" style={{ maxWidth: 380, padding: '20px 22px', borderRadius: 16 }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ font: '800 16px Inter, sans-serif', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>Moving your piece</div>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.6, opacity: 0.9 }}>
+              <li>Drag your piece anywhere you like — position is on your honor.</li>
+              <li>Roam your current kingdom freely. To reach the next one, press <b>Frontier</b> — you need that kingdom&rsquo;s key to pass.</li>
+              <li>The kingdoms circle one way. Return home with all three keys, then press <b>Dark Tower</b> to storm it.</li>
+              <li>Dragging doesn&rsquo;t use your turn — press an action button (<b>Move</b>, <b>Tomb</b>, <b>Bazaar</b>, <b>Sanctuary</b>, <b>Frontier</b>, <b>Tower</b>) to act.</li>
+            </ul>
+            <button className="tp-act" style={{ marginTop: 16 }} onClick={() => setShowRules(false)}>Got it</button>
+          </div>
+        </div>
+      )}
 
       {/* enlarged scorecard */}
       {showInv && (

@@ -12,7 +12,7 @@ import {
   claimableRoutes, bestCardsFor,
   createTrek, trekViewFor, applyTrekAction,
   distancesFrom, findPath, TREK_CATALOG, PARKS, MAJORS, TREK_RULES,
-  createDarkTower, dtViewFor, applyDtAction, dtBotStep, DT_KEYS,
+  createDarkTower, dtViewFor, applyDtAction, dtBotAction, DT_KEYS,
   createDune, duneViewFor, applyDuneAction,
   createKanban, kanbanViewFor, applyKanbanAction, kanbanBotAction,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
@@ -561,8 +561,8 @@ function dtBotAct(room: Room, seat: number): void {
     else if (rand() < 0.3) acted = attempt({ type: 'bazaar_haggle' });
     else acted = attempt({ type: 'bazaar_no' });
   } else {
-    // move the pawn one territory; the space it lands on drives the action
-    acted = attempt({ type: 'step', to: dtBotStep(s, seat) });
+    // press an action button (the pawn's board position is honor-system)
+    acted = attempt(dtBotAction(s, seat));
   }
 
   if (acted) broadcast(room);

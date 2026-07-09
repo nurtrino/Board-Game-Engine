@@ -9,10 +9,17 @@
 
 import { mulberry32 } from '../brass/rng.js';
 import { DT_RULES, type DtKey, type DtPlayer, type DtState, type DtStep } from './state.js';
-import { DT_NODE, dtAdjacent, DT_FORWARD_FRONTIER, DT_FRONTIER_DIR, dtKingdomAt } from './territories.js';
+import { DT_FORWARD_FRONTIER, dtKingdomAt } from './territories.js';
 
 export type DtAction =
-  | { type: 'step'; to: string } // move the pawn to an adjacent territory (or stay: to === your node)
+  // the tower's printed action buttons — the player presses one per turn
+  | { type: 'move' }
+  | { type: 'tomb' }
+  | { type: 'bazaar' }
+  | { type: 'sanctuary' }
+  | { type: 'frontier' }
+  | { type: 'tower' }
+  | { type: 'move_token'; x: number; z: number } // free (honor-system) pawn placement
   | { type: 'pegasus' }
   | { type: 'battle_continue' }
   | { type: 'battle_bail' }
@@ -64,7 +71,7 @@ function upkeep(s: DtState, p: DtPlayer, steps: DtStep[]): void {
     capGold(p);
     p.cursed = 0;
     s.curse = null;
-    p.node = s.turnNode; // the curse holds the pawn where it stood (L906)
+    p.spot = { ...s.turnSpot }; // the curse holds the pawn where it stood (L906)
     steps.push(step('cursed', '  ', 'die', 2200), step('warriors', lcdN(p.warriors), 'beep'), step('gold', lcdN(p.gold), 'beep'));
   }
   const eats = Math.ceil(p.warriors / DT_RULES.eatPer);
@@ -157,7 +164,7 @@ function resolveMove(s: DtState, p: DtPlayer, steps: DtStep[]): void {
       s.phase = 'playing';
       p.fed = true; // no second food charge (L556)
     } else {
-      p.node = s.turnNode; // the pawn returns whence it came (L1669)
+      p.spot = { ...s.turnSpot }; // the pawn returns whence it came (L1669)
       steps.push(step('lost', '  ', 'failure', 2200));
       event(s, p, 'got lost', 'back where they started', steps);
       toTurnDone(s);
@@ -265,16 +272,15 @@ function resolveSanctuary(s: DtState, p: DtPlayer, steps: DtStep[]): void {
   toTurnDone(s);
 }
 
-/** Frontier space: cross to the next kingdom (key-gated). On success the pawn
- *  moves onto the frontier and quad advances; on a missing key it marches back. */
-function resolveFrontier(s: DtState, p: DtPlayer, steps: DtStep[], frontierId: string): void {
+/** Frontier: cross to the next kingdom (key-gated). On a missing key the guard
+ *  turns you back. The pawn's board position is honor-system (players drag it). */
+function resolveFrontier(s: DtState, p: DtPlayer, steps: DtStep[]): void {
   const needKey = (p.quad === 1 && !p.brasskey) || (p.quad === 2 && !p.silverkey) || (p.quad === 3 && !p.goldkey);
   if (needKey) {
-    steps.push(step('missing', '  ', 'failure', 2500)); // pawn stays where it was (keyMissing L1972)
+    steps.push(step('missing', '  ', 'failure', 2500)); // keyMissing L1972
     event(s, p, 'turned back at the frontier', 'the frontier guard demands the key', steps);
   } else {
     p.quad++;
-    p.node = frontierId; // carried onto the frontier, entering the next kingdom
     steps.push(step('', '  ', 'frontier', 2500));
     event(s, p, 'crossed the frontier', `kingdom ${p.quad} of 4`, steps);
   }
@@ -308,43 +314,36 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
       const q = s.players[s.turn];
       q.fed = false;
       s.phase = 'playing';
-      s.turnNode = q.node; // lost/cursed snap back here
+      s.turnSpot = { ...q.spot }; // lost/cursed snap back here
       event(s, q, 'to act', '', [step('', ' ' + q.color[0], 'done', 800)]);
       return { ok: true };
     }
 
-    case 'step': {
-      if (s.phase !== 'playing') return err('not now');
-      const from = DT_NODE.get(p.node), to = DT_NODE.get(a.to);
-      if (!from || !to) return err('bad territory');
-      const stay = a.to === p.node;
-      if (!stay && !dtAdjacent(p.node).includes(a.to)) return err('that territory is not adjacent');
-      const home = p.color; // a player's home kingdom is their colour
-      const kNow = dtKingdomAt(p.color, p.quad); // authoritative current kingdom
+    // free (honor-system) pawn placement: allowed on your turn before or after
+    // your action; never counts as the action and never ends the turn.
+    case 'move_token': {
+      if (s.phase !== 'playing' && s.phase !== 'turnDone') return err('not now');
+      const r = Math.hypot(a.x, a.z), R = 12.4; // clamp inside the board disc
+      const k = r > R ? R / r : 1;
+      p.spot = { x: a.x * k, z: a.z * k };
+      return { ok: true };
+    }
 
-      // legality by destination + direction of travel
-      if (to.kind === 'citadel' && to.kingdom !== home) return err('you may never enter a foreign citadel');
-      if (to.kind === 'darktower' && !(to.kingdom === home && p.quad >= 4 && p.goldkey)) return err('the Dark Tower is sealed until you return home with all three keys');
-      if (to.kind === 'frontier' && (DT_FORWARD_FRONTIER.get(kNow) !== a.to || p.quad >= 4)) return err('you may only cross the frontier that lies ahead');
-      if (from.kind === 'frontier') {
-        // stepping off a frontier: only into the kingdom you are entering
-        const dir = DT_FRONTIER_DIR.get(p.node)!;
-        if (to.kind !== 'frontier' && to.kingdom !== dir.to) return err('step forward into the new kingdom');
-      } else if (to.kind !== 'frontier' && to.kingdom && to.kingdom !== kNow) {
-        return err('kingdoms are crossed only through a frontier');
-      }
-
-      beginAction(s, p, steps); // moves++ and turn-start upkeep
-
-      if (to.kind === 'frontier') {
-        resolveFrontier(s, p, steps, a.to);
-      } else {
-        p.node = a.to; // the pawn moves onto the chosen space
-        if (to.kind === 'tomb' || to.kind === 'ruin') resolveTomb(s, p, steps);
-        else if (to.kind === 'bazaar') resolveBazaar(s, p, steps);
-        else if (to.kind === 'sanctuary' || to.kind === 'citadel') resolveSanctuary(s, p, steps);
-        else if (to.kind === 'darktower') resolveTower(s, p, steps);
-        else resolveMove(s, p, steps); // empty
+    // the tower's action buttons — one per turn, resolved by the electronic brain.
+    // The board pawn is honor-system, so an action just runs its resolver; the
+    // frontier and tower stay key/quad-gated exactly as the 1981 tower enforces.
+    case 'move': case 'tomb': case 'bazaar': case 'sanctuary': case 'frontier': case 'tower': {
+      if (s.phase !== 'playing') return err('finish what you started first');
+      if (a.type === 'frontier' && p.quad >= 4) return err('you have crossed every frontier — storm the tower');
+      if (a.type === 'tower' && !(p.quad >= 4 && p.goldkey)) return err('the Dark Tower is sealed until you return home with all three keys');
+      beginAction(s, p, steps); // moves++ and turn-start upkeep (curse + eat)
+      switch (a.type) {
+        case 'move': resolveMove(s, p, steps); break;
+        case 'tomb': resolveTomb(s, p, steps); break;
+        case 'bazaar': resolveBazaar(s, p, steps); break;
+        case 'sanctuary': resolveSanctuary(s, p, steps); break;
+        case 'frontier': resolveFrontier(s, p, steps); break;
+        case 'tower': resolveTower(s, p, steps); break;
       }
       return { ok: true };
     }
@@ -509,78 +508,24 @@ function closeShop(s: DtState, p: DtPlayer, steps: DtStep[], why: string): DtRes
   return { ok: true };
 }
 
-// --- helpers for clients: the legal destinations from a pawn's node ---------
+// --- CPU bot: which action button to press this turn ------------------------
 
-/** The territories a player may step to this turn (adjacent + rules), excluding
- *  illegal ones. Staying put (their own node) is legal too but not listed. */
-export function dtLegalSteps(s: DtState, seat: number): string[] {
+/** A CPU player's chosen action on the `playing` phase: rest when low, build a
+ *  garrison at the bazaar, raid tombs for this kingdom's key, cross the forward
+ *  frontier once it is held, and storm the Dark Tower back home with all keys.
+ *  Used by the server bot and the test playthroughs. */
+export function dtBotAction(s: DtState, seat: number): DtAction {
   const p = s.players[seat];
-  if (!p || s.turn !== seat || s.phase !== 'playing') return [];
-  const from = DT_NODE.get(p.node);
-  if (!from) return [];
-  const home = p.color, kNow = dtKingdomAt(p.color, p.quad);
-  const out: string[] = [];
-  for (const id of dtAdjacent(p.node)) {
-    const to = DT_NODE.get(id)!;
-    if (to.kind === 'citadel' && to.kingdom !== home) continue;
-    if (to.kind === 'darktower' && !(to.kingdom === home && p.quad >= 4 && p.goldkey)) continue;
-    if (to.kind === 'frontier') { if (DT_FORWARD_FRONTIER.get(kNow) !== id || p.quad >= 4) continue; }
-    else if (from.kind === 'frontier') { const dir = DT_FRONTIER_DIR.get(p.node)!; if (to.kingdom !== dir.to) continue; }
-    else if (to.kingdom && to.kingdom !== kNow) continue;
-    out.push(id);
-  }
-  return out;
-}
-
-// BFS the graph (through same-kingdom territories) to the nearest goal; return
-// the first hop if it is a legal step this turn.
-function navHop(start: string, isGoal: (id: string) => boolean, legal: string[], kNow: string): string | null {
-  const prev = new Map<string, string | null>([[start, null]]);
-  const q = [start]; let goal: string | null = null;
-  while (q.length) {
-    const c = q.shift()!;
-    if (c !== start && isGoal(c)) { goal = c; break; }
-    for (const nb of dtAdjacent(c)) {
-      if (prev.has(nb)) continue;
-      const n = DT_NODE.get(nb)!;
-      if (isGoal(nb) || (n.kingdom === kNow && n.kind !== 'frontier' && n.kind !== 'darktower')) { prev.set(nb, c); q.push(nb); }
-    }
-  }
-  if (!goal) return null;
-  let cur = goal, hop = goal;
-  while (prev.get(cur) !== start && prev.get(cur) != null) { cur = prev.get(cur)!; hop = cur; }
-  return legal.includes(hop) ? hop : null;
-}
-
-/** A CPU player's chosen destination on the `playing` phase: find this kingdom's
- *  key at the tombs, cross the forward frontier, and once home with all keys
- *  build the garrison and step onto the Dark Tower. Used by the server bot. */
-export function dtBotStep(s: DtState, seat: number): string {
-  const p = s.players[seat];
-  const legal = dtLegalSteps(s, seat);
-  if (!legal.length) return p.node;
-  const kindOf = (id: string) => DT_NODE.get(id)!.kind;
-  const kNow = dtKingdomAt(p.color, p.quad);
   const haveKey = p.quad === 0 || (p.quad === 1 && !!p.brasskey) || (p.quad === 2 && !!p.silverkey) || (p.quad === 3 && !!p.goldkey);
   const armyReady = p.warriors >= Math.min(44, s.dtBrigands);
-  const goTo = (g: (id: string) => boolean): string | null => legal.find(g) ?? navHop(p.node, g, legal, kNow);
-  const isTomb = (id: string) => kindOf(id) === 'tomb' || kindOf(id) === 'ruin';
-  const isRest = (id: string) => kindOf(id) === 'sanctuary' || kindOf(id) === 'citadel';
-  const isBazaar = (id: string) => kindOf(id) === 'bazaar';
-  const wander = () => legal.find((id) => kindOf(id) === 'empty') ?? legal[0];
-
-  if (p.warriors <= 4 || p.food <= 4) { const h = goTo(isRest); if (h) return h; if (p.gold >= 3) { const hb = goTo(isBazaar); if (hb) return hb; } }
+  if (p.warriors <= 4 || p.food <= 4) return { type: 'sanctuary' };
   if (p.quad >= 4 && p.goldkey) {
-    if (armyReady) { const h = goTo((id) => kindOf(id) === 'darktower'); if (h) return h; }
-    if (p.gold >= 8) { const h = goTo(isBazaar); if (h) return h; }
-    if (p.warriors <= 6 || p.food <= 6) { const h = goTo(isRest); if (h) return h; }
-    if (isTomb(p.node)) return p.node;
-    return goTo(isTomb) ?? wander();
+    if (armyReady) return { type: 'tower' };
+    if (p.gold >= 8) return { type: 'bazaar' };
+    if (p.warriors <= 6 || p.food <= 6) return { type: 'sanctuary' };
+    return { type: 'tomb' };
   }
-  if (haveKey) { const h = goTo((id) => id === DT_FORWARD_FRONTIER.get(kNow)); if (h) return h; }
-  if (p.warriors < 12 && p.gold >= 12) { const h = goTo(isBazaar); if (h) return h; }
-  if (isTomb(p.node)) return p.node;
-  { const h = goTo(isTomb); if (h) return h; }
-  if (p.gold >= 20) { const h = goTo(isBazaar); if (h) return h; }
-  return wander();
+  if (haveKey) return { type: 'frontier' }; // quad 0 is free; 1-3 need the held key
+  if (p.warriors < 12 && p.gold >= 12) return { type: 'bazaar' };
+  return { type: 'tomb' }; // fight for this kingdom's key
 }

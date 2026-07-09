@@ -5,8 +5,7 @@
 // hidden (the original's scorecards are public).
 
 import { mulberry32 } from '../brass/rng.js';
-import { DT_CITADEL_NODE } from './territories.js';
-import { dtLegalSteps } from './actions.js';
+import { DT_CITADEL_NODE, DT_NODE } from './territories.js';
 
 export type DtSeat = 'Red' | 'Blue' | 'Yellow' | 'Green';
 export const DT_SEATS: DtSeat[] = ['Red', 'Blue', 'Yellow', 'Green'];
@@ -40,11 +39,14 @@ export interface DtPlayer {
   citadelUsed: 0 | 1; // the once-only quad-4 warrior doubling
   moves: number;
   fed: boolean; // this turn's food check already ran
-  node: string; // the territory the pawn stands on (see territories.ts)
+  spot: { x: number; z: number }; // free board position (honor-system; players drag it)
 }
 
-/** Each player begins on their home kingdom's citadel (home kingdom = colour). */
-export const dtHomeNode = (color: DtSeat): string => DT_CITADEL_NODE.get(color)!;
+/** Each player's pawn starts on their home kingdom's citadel (home = colour). */
+export const dtHomeSpot = (color: DtSeat): { x: number; z: number } => {
+  const n = DT_NODE.get(DT_CITADEL_NODE.get(color)!)!;
+  return { x: n.wx, z: n.wz };
+};
 
 export interface DtEvent {
   seq: number;
@@ -84,7 +86,7 @@ export interface DtState {
   } | null;
   riddlePhase: 0 | 1 | 2; // which position is being guessed
   curse: { warriors: number; gold: number } | null; // stored amounts awaiting the victim's turn
-  turnNode: string; // the current player's node at turn start (lost/cursed snap back here)
+  turnSpot: { x: number; z: number }; // the current player's spot at turn start (lost/cursed snap back here)
   totalMoves: number;
   rolls: number; // draws taken from the seeded rng stream (persistence-safe)
   winner: DtSeat | null;
@@ -117,7 +119,7 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
     beast: 0, scout: 0, healer: 0, sword: 0, pegasus: 0,
     brasskey: 0, silverkey: 0, goldkey: 0,
     quad: 0, cursed: 0, citadelUsed: 0, moves: 0, fed: false,
-    node: dtHomeNode(s.color),
+    spot: dtHomeSpot(s.color),
   }));
   const first = Math.floor(rng() * players.length);
   return {
@@ -126,7 +128,7 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
     dragon: { warriors: 2, gold: 6 },
     turn: first, first, players,
     battle: null, bazaar: null, riddlePhase: 0, curse: null,
-    turnNode: players[first].node,
+    turnSpot: { ...players[first].spot },
     totalMoves: 0, rolls: 0, winner: null, score: null,
     lastEvent: null, log: [],
   };
@@ -151,7 +153,6 @@ export interface DtView {
   totalMoves: number;
   winner: DtSeat | null;
   score: number | null;
-  legalSteps: string[]; // territories the local player may step to this turn
   lastEvent: DtEvent | null;
   log: string[];
 }
@@ -168,7 +169,6 @@ export function dtViewFor(s: DtState, seat: number | null | 'dev'): DtView {
     dtBrigands: s.battle?.tower || over || seat === 'dev' ? s.dtBrigands : null,
     riddle: over || seat === 'dev' ? s.riddle : null,
     totalMoves: s.totalMoves, winner: s.winner, score: s.score,
-    legalSteps: typeof seat === 'number' ? dtLegalSteps(s, seat) : [],
     lastEvent: s.lastEvent, log: s.log.slice(-40),
   };
 }

@@ -71,7 +71,7 @@ export function DtBoard({ view }: { view: DtView }) {
       <div style={{ position: 'absolute', inset: 0 }}>
         <DtTable
           scene={scene}
-          tokens={view.players.map((p) => ({ seat: p.seat, color: p.color, node: p.node }))}
+          tokens={view.players.map((p) => ({ seat: p.seat, color: p.color, spot: p.spot }))}
           pic={display.pic}
           lcd={display.lcd}
           wedgeMaps={scene.wedge}
