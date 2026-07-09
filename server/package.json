@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/index.ts",
-    "watch": "tsx watch src/index.ts"
+    "watch": "tsx watch src/index.ts",
+    "dev:alt": "set PORT=8899&& tsx src/index.ts"
   },
   "dependencies": {
     "@bge/shared": "*",

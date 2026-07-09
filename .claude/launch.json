@@ -4,16 +4,48 @@
     {
       "name": "server",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "-w", "server"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "-w",
+        "server"
+      ],
       "port": 8787,
       "autoPort": true
     },
     {
       "name": "client",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "-w", "client"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "-w",
+        "client"
+      ],
       "port": 5173,
       "autoPort": true
+    },
+    {
+      "name": "server-alt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:alt",
+        "-w",
+        "server"
+      ],
+      "port": 8899
+    },
+    {
+      "name": "client-alt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:alt",
+        "-w",
+        "client"
+      ],
+      "port": 5273
     }
   ]
 }

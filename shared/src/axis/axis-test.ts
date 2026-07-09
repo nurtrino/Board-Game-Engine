@@ -109,8 +109,7 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
   ok(r.ok, 'buy research');
   ok(s.powers.germany.ipcs === ipcs0 - 10, 'research dice cost 5 each');
   // seed 3: whatever the outcome, the machine must be in a legal follow-up
-  const flag = s as AxisState & { awaitingChart?: boolean };
-  if (flag.awaitingChart) {
+  if (s.awaitingChart) {
     ok(s.phase === 'rnd', 'breakthrough waits for chart choice');
     ok(act(s, 'germany', { type: 'chooseChart', chart: 2 }).ok, 'choose chart');
     ok(s.powers.germany.techs.length === 1, 'tech granted');
@@ -211,6 +210,8 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
   act(s, 'germany', { type: 'endPhase' });
   ok(s.powers.germany.ipcs === ipcsBefore + 12, 'income = production (10 + 2)');
   ok(s.powers.germany.lastIncome === 12, 'income recorded for production screen');
+  ok(s.phase === 'income', 'income phase holds for the production screen');
+  act(s, 'germany', { type: 'endPhase' });
   ok(activePower(s) === 'ussr', 'next power is USSR (1941 order)');
 }
 

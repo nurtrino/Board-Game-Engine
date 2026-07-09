@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "dev:alt": "set BGE_SERVER=localhost:8899&& vite --port 5273"
   },
   "dependencies": {
     "@bge/shared": "*",

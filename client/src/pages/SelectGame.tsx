@@ -50,9 +50,9 @@ const AXIS_OPTION_DEFS = [
     { v: '1942', label: '1942' },
   ] },
   { key: 'winCondition', label: 'Victory', values: [
-    { v: 'short', label: 'Short — 13 cities' },
-    { v: 'standard', label: 'Standard — 15 cities' },
-    { v: 'total', label: 'Total domination — 18' },
+    { v: 'short', label: 'Short, 13 cities' },
+    { v: 'standard', label: 'Standard, 15 cities' },
+    { v: 'total', label: 'Total domination, 18' },
   ] },
   { key: 'rnd', label: 'Research & development', values: [
     { v: false, label: 'Off' },

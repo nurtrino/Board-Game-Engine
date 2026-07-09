@@ -116,7 +116,7 @@ function actBuyResearch(s: AxisState, idx: MapIndex, dice: number): ActionResult
   s.log.push({ round: s.round, power, text: `${POWERS[power].name} rolls research: ${rolls.join(', ')}${success ? ' — breakthrough!' : ' — no breakthrough (researchers stay).'}` });
   if (success) {
     p.researchTokens = 0;
-    (s as AxisState & { awaitingChart?: boolean }).awaitingChart = true;
+    s.awaitingChart = true;
   } else {
     s.phase = 'purchase';
   }
@@ -127,8 +127,7 @@ function actBuyResearch(s: AxisState, idx: MapIndex, dice: number): ActionResult
 function actChooseChart(s: AxisState, chart: 1 | 2): ActionResult {
   const power = activePower(s);
   const p = s.powers[power];
-  const flag = s as AxisState & { awaitingChart?: boolean };
-  if (s.phase !== 'rnd' || !flag.awaitingChart) return err('No breakthrough waiting.');
+  if (s.phase !== 'rnd' || !s.awaitingChart) return err('No breakthrough waiting.');
   const chartTechs = TECHS.filter((t) => t.chart === chart);
   const remaining = chartTechs.filter((t) => !p.techs.includes(t.key));
   if (remaining.length === 0) return err('Every advance on that chart is already yours.');
@@ -141,7 +140,7 @@ function actChooseChart(s: AxisState, chart: 1 | 2): ActionResult {
   }
   tech ??= remaining[0];
   p.techs.push(tech.key);
-  flag.awaitingChart = false;
+  s.awaitingChart = false;
   s.phase = 'purchase';
   s.log.push({ round: s.round, power, text: `${POWERS[power].name} develops ${tech.name}.` });
   return OK;
@@ -690,12 +689,10 @@ function destroyStrandedAircraft(s: AxisState, idx: MapIndex): void {
 function actEndPhase(s: AxisState, idx: MapIndex): ActionResult {
   const power = activePower(s);
   switch (s.phase) {
-    case 'rnd': {
-      const flag = s as AxisState & { awaitingChart?: boolean };
-      if (flag.awaitingChart) return err('Choose a breakthrough chart first.');
+    case 'rnd':
+      if (s.awaitingChart) return err('Choose a breakthrough chart first.');
       s.phase = 'purchase';
       return OK;
-    }
     case 'purchase':
       s.phase = 'combatMove';
       return OK;
@@ -710,9 +707,14 @@ function actEndPhase(s: AxisState, idx: MapIndex): ActionResult {
       s.phase = 'mobilize';
       return OK;
     case 'mobilize': {
+      // collect income and HOLD in the income phase: the TV shows the
+      // production screen after every turn (owner directive); the next
+      // endPhase advances to the following power.
       s.phase = 'income';
       collectIncome(s, idx);
-      // advance to the next power
+      return OK;
+    }
+    case 'income': {
       const order = TURN_ORDER[s.options.scenario];
       s.powers[power].factoriesUsed = {};
       s.contested = [];
@@ -730,8 +732,6 @@ function actEndPhase(s: AxisState, idx: MapIndex): ActionResult {
       s.log.push({ round: s.round, power: activePower(s), text: `${POWERS[activePower(s)].name} is up.` });
       return OK;
     }
-    case 'income':
-      return OK;
     default:
       return err('Game over.');
   }

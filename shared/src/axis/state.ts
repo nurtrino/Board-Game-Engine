@@ -93,6 +93,7 @@ export interface AxisState {
   factoryDamage: Record<string, number>;
   combat: ActiveCombat | null;
   combatSeq: number;
+  awaitingChart?: boolean; // RND breakthrough rolled; chart choice pending
   pendings: AxisPending[];
   pendingSeq: number;
   // combat-move legality: spaces that had combat declared (for noncombat bans)
@@ -269,6 +270,7 @@ export interface AxisView {
   options: AxisCreateOptions;
   round: number;
   phase: Phase;
+  awaitingChart: boolean;
   active: PowerKey;
   turnOrder: PowerKey[];
   powers: Record<PowerKey, Omit<PowerState, 'factoriesUsed'> & { production: number }>;
@@ -298,6 +300,7 @@ export function axisViewFor(s: AxisState, idx: MapIndex): AxisView {
     options: s.options,
     round: s.round,
     phase: s.phase,
+    awaitingChart: Boolean(s.awaitingChart),
     active: activePower(s),
     turnOrder: TURN_ORDER[s.options.scenario],
     powers,
