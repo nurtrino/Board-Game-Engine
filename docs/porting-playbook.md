@@ -114,6 +114,44 @@ The mod's `CustomPDF` is the official rulebook — stage it to
 `Read` tool needs poppler which isn't installed. Wrap stdout in a utf-8
 `TextIOWrapper` or cp1252 will throw on box-drawing glyphs.
 
+### 2.4 Transcribing what the Lua doesn't encode (card costs, graphs, colours)
+
+Some rules data only exists as printed art. The workflow that held up:
+
+- **Check object nicknames first — they're free data.** Trekking's 96 trek
+  cards carried names like `"Green 3"` (suit + value), which killed the whole
+  transcription job. Cross-check the `names[i] ↔ cards[i].cell` mapping is
+  consistent before trusting it.
+- **Contact sheets for visual transcription.** Slice the deck sheet into
+  labelled rows with `sharp` (5 cells per image, `cell N` captions), read them,
+  and transcribe. Re-render any ambiguous cell solo at full res.
+- **Cross-check against independent facts** before accepting a transcription:
+  the rulebook's worked example (Lassen Volcanic = canoe+mountain+boot matched
+  my icon reading exactly) and distribution counts (13×VP5 / 16×VP7 / 10×VP10,
+  icon count follows VP tier). If those line up, the reading is right.
+- **Board graphs: verify by line overlay.** Draw every transcribed edge as a
+  cyan line over the full-res board art, then inspect quadrant-by-quadrant:
+  every line must lie on a printed trail and every printed trail must have a
+  line. Resolve ambiguities with targeted zooms centred on node coordinates
+  (`trek-zoom.mjs` pattern). Trekking's 73-edge graph shipped with zero errors
+  this way.
+- **Card sheets may store art rotated inside the cell — and it varies per
+  sheet.** Trekking's park/major sheets are portrait cells with the art turned
+  90°; the trek sheet's cells are upright. Give the sprite component a
+  `rotated` flag per deck and verify empirically with a screenshot (backs can
+  be rotated differently from faces).
+- **Colour classification from art** (TTR route colours): sample the map at the
+  snaps, classify by hue/value with explicit thresholds, but **mod-authored
+  tags always take precedence** over detection.
+- **Extractors must be idempotent.** A re-run must preserve previously fitted
+  data — the map transform, manually corrected tags — or it will silently wipe
+  them (a re-extract once reset TTR's colour tags). Carry `prevTransform`/tags
+  forward into both golden and `scene.json`.
+- **Trust the mod's own provenance comments.** Good mods annotate constants
+  ("CONFIRMED BY DISASSEMBLY OF ROM DUMP") and fence tweakables ("USER
+  SERVICABLE PARTS") — those markers tell you which numbers are authoritative
+  vs. house-ruleable. Quote the line refs in the spec.
+
 ---
 
 ## 3. Map fit — the important, non-obvious part
@@ -174,6 +212,21 @@ verifies correct (see §6), it's this, not the data.
 - Flat art (tiles/tokens/decks) needs a negative-Z scale + `DoubleSide`.
 - Seat a mesh on the board by its bounding box (`BOARD_Y - minY*scale`), and
   centre it in X (`-midX`) — but note that offset rotates with the piece's yaw.
+- **Per-mesh auto-flip for upside-down OBJs.** Mods author piece meshes
+  inconsistently (TTR's train sat roof-down, the ship roof-up). Don't blanket-
+  rotate: the detailed side carries more vertices, so count vertices below vs
+  above the vertical mid — if most sit below, the piece is upside down; roll it
+  180° about Z. Then re-seat by the flipped bounding box.
+- **Size unknown objects by aligning printed landmarks with placed models.**
+  TTS token base sizes are unreliable; the mod's *object layout* is the ruler.
+  Dark Tower's board plane was sized so the printed citadel badge (at 90.5% of
+  the art's half-size) lands exactly under the citadel model the mod placed at
+  world r 11.51 → half-size 12.72. Everything else then aligns for free.
+- **Staged-art prep:** check `hasAlpha` + a corner pixel before assuming a
+  baked background (board art is often transparent outside the disc — render
+  with `alphaTest`); recompress multi-MB PNGs to ~2048px webp (~8 MB → 1 MB).
+  Game tile logos are composed **from mod art** with `sharp` (a card back, a
+  reel frame + an SVG title bar), never stock images.
 
 ### 4.1 Black-background board (masking)
 
@@ -285,6 +338,16 @@ doesn't double up.
 
 **Show deck** — every card game's device has a button to view the full card
 sheets as a reference.
+
+**Every game has an explicit End Turn button** (owner directive): pressing it
+is how you know your own turn is over — never auto-advance the turn silently.
+Style it primary when it's the only remaining legal act.
+
+**View the whole hand** — a button beside the hand fan brings the full hand to
+the foreground, grouped into stacks by type/colour with counts.
+
+**AI pace** — CPU seats act on a deliberate delay (~1.1s setup, ~1.8–2.6s in
+play) so the TV can narrate each move; instant bot turns were rejected.
 
 **Authenticity over convenience** — use the mod's *real* meshes, textures,
 sounds, card art, and board; reproduce the physical object (down to a game's
@@ -401,15 +464,31 @@ This is how you actually see the 3D board and prove a full game plays:
   existed in both TTR and Trekking; rename per-game (`TREK_RULES`,
   `TTR_RULES as RULES`). Grep for duplicate exported names before wiring a new
   engine into `shared/src/index.ts`.
-- **Writing files via PowerShell mangles UTF-8** (em dash → `â€"`, BOM prepended).
-  Use the `Write` tool or a node script for any file with non-ASCII, and grep
-  for mojibake afterward.
+- **Writing files via PowerShell mangles UTF-8** (em dash → `â€"`, BOM prepended),
+  and its `-replace` is **case-insensitive by default** (renaming `RULES` also
+  rewrote the word "Rules" in comments). Use the `Write` tool or a node script
+  for any file with non-ASCII, and grep for mojibake afterward.
 - Driver scripts must live under `tools/verify/` (which has `ws`/`puppeteer`
   installed); a script in `/tmp` or the scratchpad can't resolve those modules.
   Ad-hoc `sharp` scripts can't resolve `sharp` from outside the repo either —
   run them from the repo root or `createRequire` the repo's copy.
 - `sharp` can't write to `/tmp` on Windows — write to the session scratchpad dir.
 - Use the dedicated file/search tools, not shell `find`/`grep`, per repo rules.
+- Typecheck the client **from `client/`** (`cd client && npx tsc --noEmit`);
+  there's no root tsconfig and the server has none (it's `tsx`-only — engine
+  correctness comes from the test suites). `npm test` at the root is a stub;
+  run the suites individually with `npx tsx shared/src/<game>/<game>-test.ts`.
+
+### 6.2b When the owner says it's broken on the live site
+
+Reproduce against **boardgamesengine.com itself** before touching code:
+`curl` the asset (`/darktower/scene.json` etc. — expect 200), then run
+`page-errors.mjs` against a fresh room created over `wss://` on the deployed
+server. If that renders clean, the code is fine and the complaint is either a
+**stale cached bundle** (hard refresh, Ctrl+Shift+R — Render deploys on push
+but browsers hold the old index) or a *perception* issue ("not rendering" =
+looks like a black void because there's no art, §4.2). Diagnose which before
+"fixing" anything.
 
 ### 6.3 Engine test pattern (`shared/src/<game>/<game>-test.ts`)
 
@@ -427,6 +506,28 @@ Every engine gets a test file that runs three things and `process.exit(fail?1:0)
 
 Use a **seeded RNG stream** in the engine (advance a `rolls` counter, hash
 `seed ^ rolls`) so saves replay identically and tests are deterministic.
+
+---
+
+## 6.5 Working with the owner (process)
+
+- **Scope before building.** Ask the clarifying questions up front — player
+  counts, screen layout ("board main-left, tower top-right, switchable"), and
+  hard requirements ("block on extracting the real tower mesh"). He answers
+  fast and precisely; guessing instead costs a rework round.
+- **Plan per game, then execute.** Write the rules spec to
+  `docs/specs/<game>.md` *before* the engine — it's the durable artifact that
+  survives context loss, and every mechanic gets a Lua line ref to verify
+  against later.
+- **Checkpoint commits.** Commit + push at each milestone (golden, engine,
+  server, client, each fix batch) — sessions get interrupted mid-stream and a
+  pushed checkpoint is the only reliable resume point. Same reason: keep
+  progress notes in `memory/` as you go, not at the end.
+- **"Go" / "Finish up" means keep working autonomously** — resume exactly where
+  you stopped, no recap, no questions that the code can answer.
+- **Prove it before replying.** Every fix ends with a fresh screenshot or a
+  green suite run in the message; "should work now" without evidence gets sent
+  back.
 
 ---
 
