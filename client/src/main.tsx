@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AxisModels from './axis/AxisModels';
 import { Home } from './pages/Home';
 import { SelectGame } from './pages/SelectGame';
 import { Join } from './pages/Join';
@@ -23,6 +24,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/board/:roomId" element={<BoardPage />} />
         <Route path="/play/:roomId" element={<PlayPage />} />
         <Route path="/dev/brass" element={<BrassDev />} />
+        <Route path="/dev/axis-models" element={<AxisModels />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

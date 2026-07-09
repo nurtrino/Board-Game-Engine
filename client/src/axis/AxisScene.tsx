@@ -70,11 +70,9 @@ function MapPlane() {
 }
 
 // One OBJ per (mesh URL, tint) — geometry cached by useLoader, materials per tint.
-function UnitMesh({ url, tint, x, z, scale, rotY = 0 }: {
-  url: string; tint: number[] | null; x: number; z: number; scale: number; rotY?: number;
-}) {
+export function useAxisObj(url: string, tint: number[] | null) {
   const obj = useLoader(OBJLoader, url);
-  const { clone, minY, midX, midZ, span } = useMemo(() => {
+  return useMemo(() => {
     const c = obj.clone(true);
     const color = tint ? new THREE.Color(tint[0], tint[1], tint[2]) : new THREE.Color('#b9b9b9');
     c.traverse((o) => {
@@ -89,18 +87,29 @@ function UnitMesh({ url, tint, x, z, scale, rotY = 0 }: {
     });
     c.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(c);
+    const xSpan = box.max.x - box.min.x;
+    const zSpan = box.max.z - box.min.z;
     return {
       clone: c,
       minY: box.min.y,
       midX: (box.min.x + box.max.x) / 2,
       midZ: (box.min.z + box.max.z) / 2,
-      span: Math.max(box.max.x - box.min.x, box.max.z - box.min.z),
+      span: Math.max(xSpan, zSpan),
+      // long-hulled sculpts (ships) are authored bow-along-Z; presenting them
+      // broadside reads correctly from the high board camera
+      broadside: zSpan > xSpan * 1.4,
     };
   }, [obj, tint]);
+}
+
+function UnitMesh({ url, tint, x, z, scale, rotY = 0 }: {
+  url: string; tint: number[] | null; x: number; z: number; scale: number; rotY?: number;
+}) {
+  const { clone, minY, midX, midZ, span, broadside } = useAxisObj(url, tint);
   // guard against out-of-family meshes: clamp footprint to ~2.4 render units
   const s = Math.min(scale, span > 0 ? 2.4 / span : scale);
   return (
-    <group position={[x, BOARD_Y - minY * s, z]} rotation={[0, rotY, 0]} scale={[s, s, s]}>
+    <group position={[x, BOARD_Y - minY * s, z]} rotation={[0, rotY + (broadside ? Math.PI / 2 : 0), 0]} scale={[s, s, s]}>
       <primitive object={clone} position-x={-midX} position-z={-midZ} />
     </group>
   );

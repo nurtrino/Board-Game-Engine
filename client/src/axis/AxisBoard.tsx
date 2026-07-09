@@ -99,12 +99,19 @@ function BattlePanel({ view, art }: { view: AxisView; art?: string }) {
 
 // ---------- production screen (after every turn) ----------
 
-function ProductionScreen({ view }: { view: AxisView }) {
+function ProductionScreen({ view, art }: { view: AxisView; art?: string }) {
   const order = view.turnOrder;
   const active = view.active;
   return (
     <div className="ig-modal" style={{ zIndex: 25 }}>
-      <div className="ig-glass ig-modal-card" style={{ width: 'min(640px, 94vw)' }}>
+      <div
+        className="ig-glass ig-modal-card"
+        style={{
+          width: 'min(640px, 94vw)',
+          backgroundImage: art ? `linear-gradient(rgba(6,8,12,.9), rgba(6,8,12,.95)), url(${art})` : undefined,
+          backgroundSize: 'cover', backgroundPosition: 'center',
+        }}
+      >
         <div className="ig-modal-head">
           <b>National Production</b>
           <span style={{ color: powerHex(active), textTransform: 'uppercase', letterSpacing: '.08em', fontSize: 13 }}>
@@ -222,7 +229,9 @@ export default function AxisBoard({ view }: { view: AxisView }) {
       </div>
 
       {view.combat && <BattlePanel view={view} art={(manifest as { boards?: { image?: string }[] }).boards?.[0]?.image ?? undefined} />}
-      {view.phase === 'income' && !view.winner && <ProductionScreen view={view} />}
+      {view.phase === 'income' && !view.winner && (
+        <ProductionScreen view={view} art={(manifest as { boards?: { image?: string }[] }).boards?.[1]?.image ?? undefined} />
+      )}
 
       {view.winner && (
         <div className="ig-modal" style={{ zIndex: 30 }}>
