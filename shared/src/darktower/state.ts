@@ -56,6 +56,50 @@ export const CITADEL_SPOTS: Record<DtSeat, { x: number; z: number }> = {
   Green: { x: -11.34, z: -0.77 }, // Zenon
 };
 
+// The disc is four 90-degree wedges, each centred on a citadel. Going CCW by
+// board bearing the order is Blue(+X) -> Yellow(+Z) -> Green(-X) -> Red(-Z).
+// A player starts in their own (home) kingdom and advances one wedge in this
+// order on every frontier crossing; quad 4 wraps back to home.
+export const KINGDOM_ORDER: DtSeat[] = ['Blue', 'Yellow', 'Green', 'Red'];
+
+/** Which kingdom a player physically occupies, from home + crossings. */
+export function currentKingdom(home: DtSeat, quad: number): DtSeat {
+  const i = KINGDOM_ORDER.indexOf(home);
+  return KINGDOM_ORDER[(i + Math.min(Math.max(quad, 0), 4)) % 4];
+}
+
+/** The centre bearing (world atan2(z,x), radians) of a kingdom's wedge. */
+export function kingdomAngle(k: DtSeat): number {
+  const c = CITADEL_SPOTS[k];
+  return Math.atan2(c.z, c.x);
+}
+
+// A token stays within +-HALF_WEDGE of its kingdom's bearing and between these
+// radii (off the tower base, on the board). It can never slide into another
+// kingdom by dragging — only FRONTIER carries it across.
+export const TOKEN_MIN_R = 4.5;
+export const TOKEN_MAX_R = 12.4;
+export const HALF_WEDGE = (43 * Math.PI) / 180; // ~90-deg wedge, small guard band
+
+/** Clamp a desired (x,z) into a kingdom's wedge and ring. */
+export function clampToKingdom(k: DtSeat, x: number, z: number): { x: number; z: number } {
+  const center = kingdomAngle(k);
+  const r = Math.min(TOKEN_MAX_R, Math.max(TOKEN_MIN_R, Math.hypot(x, z) || 1));
+  let d = Math.atan2(z, x) - center;
+  while (d > Math.PI) d -= 2 * Math.PI;
+  while (d < -Math.PI) d += 2 * Math.PI;
+  d = Math.max(-HALF_WEDGE, Math.min(HALF_WEDGE, d));
+  const a = center + d;
+  return { x: +(r * Math.cos(a)).toFixed(2), z: +(r * Math.sin(a)).toFixed(2) };
+}
+
+/** Where a token lands when it enters a kingdom: mid-wedge, mid-ring. */
+export function kingdomEntrySpot(k: DtSeat): { x: number; z: number } {
+  const a = kingdomAngle(k);
+  const r = 8.5;
+  return { x: +(r * Math.cos(a)).toFixed(2), z: +(r * Math.sin(a)).toFixed(2) };
+}
+
 export interface DtEvent {
   seq: number;
   color: DtSeat;

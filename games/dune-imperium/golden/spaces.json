@@ -1,0 +1,314 @@
+{
+ "source": "Board Space Guide, mod rulebook PDF pages 17-18 (verbatim). Verified from board art crops: sellMelange 2>6 3>8 4>10 5>12; 4-influence bonuses Emperor=2 troops, Guild=3 solari, BG=intrigue, Fremen=1 water.",
+ "spaces": [
+  {
+   "id": "arrakeen",
+   "name": "Arrakeen",
+   "icon": "city",
+   "combat": true,
+   "rewards": {
+    "troops": 1,
+    "draw": 1
+   },
+   "control": "solari"
+  },
+  {
+   "id": "carthag",
+   "name": "Carthag",
+   "icon": "city",
+   "combat": true,
+   "rewards": {
+    "troops": 1,
+    "intrigue": 1
+   },
+   "control": "solari"
+  },
+  {
+   "id": "conspire",
+   "name": "Conspire",
+   "icon": "emperor",
+   "influence": "emperor",
+   "cost": {
+    "spice": 4
+   },
+   "rewards": {
+    "solari": 5,
+    "troops": 2,
+    "intrigue": 1
+   }
+  },
+  {
+   "id": "wealth",
+   "name": "Wealth",
+   "icon": "emperor",
+   "influence": "emperor",
+   "rewards": {
+    "solari": 2
+   }
+  },
+  {
+   "id": "foldspace",
+   "name": "Foldspace",
+   "icon": "guild",
+   "influence": "guild",
+   "rewards": {
+    "acquireFoldspace": 1
+   }
+  },
+  {
+   "id": "heighliner",
+   "name": "Heighliner",
+   "icon": "guild",
+   "influence": "guild",
+   "combat": true,
+   "cost": {
+    "spice": 6
+   },
+   "rewards": {
+    "troops": 5,
+    "water": 2
+   }
+  },
+  {
+   "id": "secrets",
+   "name": "Secrets",
+   "icon": "beneGesserit",
+   "influence": "beneGesserit",
+   "rewards": {
+    "intrigue": 1,
+    "stealIntrigue": true
+   }
+  },
+  {
+   "id": "selectiveBreeding",
+   "name": "Selective Breeding",
+   "icon": "beneGesserit",
+   "influence": "beneGesserit",
+   "cost": {
+    "spice": 2
+   },
+   "rewards": {
+    "trashToDraw2": true
+   }
+  },
+  {
+   "id": "stillsuits",
+   "name": "Stillsuits",
+   "icon": "fremen",
+   "influence": "fremen",
+   "combat": true,
+   "rewards": {
+    "water": 1
+   }
+  },
+  {
+   "id": "hardyWarriors",
+   "name": "Hardy Warriors",
+   "icon": "fremen",
+   "influence": "fremen",
+   "combat": true,
+   "cost": {
+    "water": 1
+   },
+   "rewards": {
+    "troops": 2
+   }
+  },
+  {
+   "id": "highCouncil",
+   "name": "High Council",
+   "icon": "landsraad",
+   "cost": {
+    "solari": 5
+   },
+   "oncePerGame": true,
+   "rewards": {
+    "highCouncil": true
+   }
+  },
+  {
+   "id": "mentat",
+   "name": "Mentat",
+   "icon": "landsraad",
+   "cost": {
+    "solari": 2
+   },
+   "rewards": {
+    "draw": 1,
+    "mentat": true
+   }
+  },
+  {
+   "id": "swordmaster",
+   "name": "Swordmaster",
+   "icon": "landsraad",
+   "cost": {
+    "solari": 8
+   },
+   "oncePerGame": true,
+   "rewards": {
+    "swordmaster": true
+   }
+  },
+  {
+   "id": "rallyTroops",
+   "name": "Rally Troops",
+   "icon": "landsraad",
+   "cost": {
+    "solari": 4
+   },
+   "rewards": {
+    "troops": 4
+   }
+  },
+  {
+   "id": "hallOfOratory",
+   "name": "Hall of Oratory",
+   "icon": "landsraad",
+   "rewards": {
+    "troops": 1,
+    "revealPersuasion": 1
+   }
+  },
+  {
+   "id": "secureContract",
+   "name": "Secure Contract",
+   "icon": "spiceTrade",
+   "rewards": {
+    "solari": 3
+   }
+  },
+  {
+   "id": "sellMelange",
+   "name": "Sell Melange",
+   "icon": "spiceTrade",
+   "sellMelange": {
+    "2": 6,
+    "3": 8,
+    "4": 10,
+    "5": 12
+   }
+  },
+  {
+   "id": "greatFlat",
+   "name": "The Great Flat",
+   "icon": "spiceTrade",
+   "combat": true,
+   "cost": {
+    "water": 2
+   },
+   "maker": true,
+   "rewards": {
+    "spice": 3
+   }
+  },
+  {
+   "id": "haggaBasin",
+   "name": "Hagga Basin",
+   "icon": "spiceTrade",
+   "combat": true,
+   "cost": {
+    "water": 1
+   },
+   "maker": true,
+   "rewards": {
+    "spice": 2
+   }
+  },
+  {
+   "id": "imperialBasin",
+   "name": "Imperial Basin",
+   "icon": "spiceTrade",
+   "combat": true,
+   "maker": true,
+   "rewards": {
+    "spice": 1
+   },
+   "control": "spice"
+  },
+  {
+   "id": "researchStation",
+   "name": "Research Station",
+   "icon": "city",
+   "combat": true,
+   "cost": {
+    "water": 2
+   },
+   "rewards": {
+    "draw": 3
+   }
+  },
+  {
+   "id": "sietchTabr",
+   "name": "Sietch Tabr",
+   "icon": "city",
+   "combat": true,
+   "requires": {
+    "fremenInfluence": 2
+   },
+   "rewards": {
+    "troops": 1,
+    "water": 1
+   }
+  }
+ ],
+ "influenceTracks": {
+  "vpAt2": 1,
+  "allianceAt4": 1,
+  "bonusAt4": {
+   "emperor": {
+    "troops": 2
+   },
+   "guild": {
+    "solari": 3
+   },
+   "beneGesserit": {
+    "intrigue": 1
+   },
+   "fremen": {
+    "water": 1
+   }
+  }
+ },
+ "combat": {
+  "troopStrength": 2,
+  "swordStrength": 1,
+  "garrisonDeployMax": 2,
+  "thirdRewardPlayers": 4
+ },
+ "round": {
+  "rounds": 10,
+  "winVp": 10,
+  "handSize": 5
+ },
+ "setup": {
+  "starterDeck": {
+   "Convincing Argument": 2,
+   "Dagger": 2,
+   "Diplomacy": 1,
+   "Dune, the Desert Planet": 2,
+   "Reconnaissance": 1,
+   "Seek Allies": 1,
+   "Signet Ring": 1
+  },
+  "startWater": 1,
+  "startTroopsGarrison": 3,
+  "startVp4p": 1,
+  "startVpOther": 0,
+  "conflictStack": {
+   "III": 4,
+   "II": 5,
+   "I": 1
+  },
+  "agents": 2,
+  "imperiumRow": 5
+ },
+ "endgame": {
+  "tiebreak": [
+   "spice",
+   "solari",
+   "water",
+   "garrisonTroops"
+  ]
+ }
+}

@@ -4,7 +4,7 @@
 // display steps (reel pic / LCD / sound) so clients replay the real tower.
 
 import { mulberry32 } from '../brass/rng.js';
-import { DT_RULES, type DtKey, type DtPlayer, type DtState, type DtStep } from './state.js';
+import { DT_RULES, clampToKingdom, currentKingdom, kingdomEntrySpot, type DtKey, type DtPlayer, type DtState, type DtStep } from './state.js';
 
 export type DtAction =
   | { type: 'move' }
@@ -171,15 +171,12 @@ export function applyDtAction(s: DtState, seat: number, a: DtAction): DtResult {
     }
 
     case 'move_token': {
-      // place your own token on the playable ring (the mod's free movement);
-      // only on your turn, and never mid-battle or mid-riddle
+      // slide your token within the kingdom you are actually in — you cannot
+      // cross into another kingdom this way (only FRONTIER does that). Clamped
+      // to the current kingdom's wedge and ring. Only on your turn.
       if (s.phase !== 'playing' && s.phase !== 'turnDone') return err('not now');
       if (!Number.isFinite(a.x) || !Number.isFinite(a.z)) return err('bad spot');
-      const r = Math.hypot(a.x, a.z) || 1;
-      const MIN_R = 4.5; // stay off the tower base
-      const MAX_R = 12.4; // stay on the board
-      const k = r > MAX_R ? MAX_R / r : r < MIN_R ? MIN_R / r : 1;
-      p.spot = { x: +(a.x * k).toFixed(2), z: +(a.z * k).toFixed(2) };
+      p.spot = clampToKingdom(currentKingdom(p.color, p.quad), a.x, a.z);
       return { ok: true }; // silent: no tower event, just a position sync
     }
 
