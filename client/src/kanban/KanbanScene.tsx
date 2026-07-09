@@ -65,14 +65,17 @@ const LAYOUT = layout as unknown as {
   CARS: { Zones: { Assembly: { Number: number; Position: { x: number; z: number } }[] } };
   DESIGNS: { Zones: { Guid: string; Position: { x: number; z: number } }[] };
   GOALS: { Cards: { Positions: { x: number; z: number }[] }; Certifications: { Elements: { Position: { x: number; z: number } }[] } };
-  AWARDS: { Positions: { x: number; z: number }[] };
+  AWARDS: { Elements: string[]; Positions: { x: number; z: number }[] };
   PLAYERS: Record<string, { Meeple: string; Markers: { Training: string[]; Certification: string } }>;
-  ELEMENTS: { Sandra: { Meeple: string }; Markers: { Week: string; Meeting: string; Calendar: string } };
+  ELEMENTS: { Sandra: { Meeple: string; Reference: string }; Markers: { Week: string; Meeting: string; Calendar: string } };
   PACE: { Element: string };
 };
 
 const NODE_POS: Record<number, { x: number; z: number }> = Object.fromEntries(
   LAYOUT.CARS.Zones.Assembly.map((n) => [n.Number, n.Position]));
+const NODE_ROT: Record<number, number> = Object.fromEntries(
+  (LAYOUT.CARS.Zones.Assembly as unknown as { Number: number; Rotation?: { y: number } }[])
+    .map((n) => [n.Number, n.Rotation?.y ?? 270]));
 
 // representative mesh guids (first of each family in the layout tables)
 const CAR_GUID: Record<CarModel, string> = { City: 'a833f7', Concept: 'd50ba1', Sport: '440298', SUV: '727265', Truck: '089407' };
@@ -157,11 +160,11 @@ function Pieces({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
   const deptIdx = (d: Dept) => DEPTS.indexOf(d);
   return (
     <group>
-      {/* worker meeples at workstations */}
+      {/* worker meeples: at workstations, or parked at the alley top (save: 29.25..32.25, -3.55) */}
       {view.players.map((p) => {
-        if (!p.workstation) return null;
-        const row = S.Departments[deptIdx(p.workstation.dept)];
-        const spot = row[Math.min(p.workstation.slot, row.length - 1)];
+        const spot = p.workstation
+          ? S.Departments[deptIdx(p.workstation.dept)][Math.min(p.workstation.slot, S.Departments[deptIdx(p.workstation.dept)].length - 1)]
+          : { x: 29.25 + p.seat, z: -3.55 };
         return <ModObj key={`m-${p.seat}`} scene={scene} guid={LAYOUT.PLAYERS[p.color].Meeple} x={spot.x} z={spot.z}
           yaw={p.done ? Math.PI / 2 : 0} />;
       })}
@@ -172,20 +175,30 @@ function Pieces({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
           : S.Departments[deptIdx(view.sandra.dept!)][Math.min(view.sandra.slot, 1)];
         return <ModObj scene={scene} guid={LAYOUT.ELEMENTS.Sandra.Meeple} x={spot.x} z={spot.z} />;
       })()}
-      {/* training discs */}
+      {/* training discs: space 0 is the printed start (setup save) */}
       {view.players.map((p) => DEPTS.map((d) => {
-        const lvl = p.training[d];
-        if (lvl <= 0) return null;
-        const spot = S.Trainings[deptIdx(d)][Math.min(lvl - 1, 5)];
-        const stack = view.players.filter((q) => q.seat < p.seat && q.training[d] === lvl).length;
+        const lvl = Math.min(p.training[d], 5);
+        const spot = S.Trainings[deptIdx(d)][lvl];
+        const stack = view.players.filter((q) => q.seat < p.seat && Math.min(q.training[d], 5) === lvl).length;
         return <Disc key={`t-${p.seat}-${d}`} x={spot.x} z={spot.z} tint={SEAT_TINT[p.color]} lift={stack * 0.24} r={0.5} />;
       }))}
       {/* certification track markers (sections measured on the art) */}
       {view.players.map((p) => {
         if (p.cert.space < 0) return null;
-        const px = 330 + 304 * p.cert.section + 45 + 70 * (3 - p.cert.space);
-        const x = xAt(1950), z = zAt(px);
+        const px = 210 + 304 * p.cert.section + 63.5 * (3 - p.cert.space);
+        const x = xAt(1855), z = zAt(px);
         return <Disc key={`cert-${p.seat}`} x={x} z={z} tint={SEAT_TINT[p.color]} r={0.45} />;
+      })}
+      {/* score markers on the PP border track */}
+      {view.players.map((p) => {
+        const pp = Math.min(p.pp, 99);
+        let px: number, py: number;
+        if (pp <= 30) { px = 160 + pp * 124.4; py = 44; }
+        else if (pp <= 50) { px = 3955; py = 44 + (pp - 30) * 107; }
+        else if (pp <= 80) { px = 3955 - (pp - 50) * 124.4; py = 2188; }
+        else { px = 160; py = 2188 - (pp - 80) * 107; }
+        const stack = view.players.filter((q) => q.seat < p.seat && Math.min(q.pp, 99) === pp).length;
+        return <Disc key={`pp-${p.seat}`} x={xAt(py)} z={zAt(px)} tint={SEAT_TINT[p.color]} lift={stack * 0.24} r={0.5} />;
       })}
       {/* shift bank + week markers */}
       {view.players.map((p) => (
@@ -193,12 +206,23 @@ function Pieces({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
           z={S.Shifts.Positions[Math.min(p.bankedShifts, 10)].z} tint={SEAT_TINT[p.color]} lift={p.seat * 0.24} r={0.42} />
       ))}
       <Disc x={S.Week.Positions[Math.min(view.week, 3)].x} z={S.Week.Positions[Math.min(view.week, 3)].z} tint={[0.9, 0.2, 0.15]} r={0.5} />
-      <Disc x={S.Meeting.Positions[Math.min(view.cycle, 3)].x} z={S.Meeting.Positions[Math.min(view.cycle, 3)].z} tint={[0.15, 0.5, 0.9]} r={0.5} />
-      {/* conveyor cars */}
+      {(() => { // production cycle marker: calendar cell at 0, strip cells 1-3
+        const cal = (S as unknown as { Calendar: { Positions: { x: number; z: number }[] } }).Calendar.Positions;
+        const spot = view.cycle === 0 ? cal[0] : S.Meeting.Positions[Math.min(view.cycle, 3)];
+        return <Disc x={spot.x} z={spot.z} tint={[0.15, 0.5, 0.9]} r={0.5} />;
+      })()}
+      {(() => { // meeting marker: reload cell, or the admin spot when triggered
+        const cal = (S as unknown as { Calendar: { Positions: { x: number; z: number }[] } }).Calendar.Positions;
+        const spot = view.meetingTriggered ? cal[1] : S.Meeting.Positions[0];
+        return <Disc x={spot.x} z={spot.z} tint={[0.95, 0.55, 0.1]} r={0.5} lift={0.26} />;
+      })()}
+      {/* conveyor cars: the setup save shows rotY 270 along the belts,
+          turntable nodes deviate (210/240/300/330) */}
       {Object.entries(view.conveyor).map(([n, car]) => {
         if (!car) return null;
         const pos = NODE_POS[+n];
-        return <ModObj key={`c-${n}`} scene={scene} guid={CAR_GUID[car]} x={pos.x} z={pos.z} yaw={Math.PI / 2} />;
+        const yaw = Math.PI / 2 - (NODE_ROT[+n] - 270) * Math.PI / 180;
+        return <ModObj key={`c-${n}`} scene={scene} guid={CAR_GUID[car]} x={pos.x} z={pos.z} yaw={yaw} />;
       })}
       {/* test track queue behind the pace car (pace oval drawn on the art; park the queue along the top straight) */}
       {view.testTrack.map((car, i) => car && (
@@ -220,7 +244,7 @@ function Pieces({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
         const key = part === 'Autopilots' ? 'Autopilot' : part === 'Batteries' ? 'Battery' : part === 'Bodies' ? 'Body'
           : part === 'Drivetrains' ? 'Drivetrain' : part === 'Electronics' ? 'Electronics' : 'Motor';
         const base = S.Upgrades[key].Positions[0];
-        const step = (view.partValues[part] - 2) * 2.42; // value columns 2..6 run along z
+        const step = (view.partValues[part] - 2) * 5.03; // value columns 2..6, one column per step (art fit)
         return <ModObj key={`v-${part}`} scene={scene} guid={PART_GUID[part]} x={base.x} z={base.z - step} s={0.8} />;
       })}
       {/* assembly parts provided per model, beside the model's entry node */}
@@ -242,7 +266,7 @@ function Pieces({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
         return <group key={`d-${i}`}>
           <ModObj scene={scene} guid={DEMAND_GUID[d.model]} x={spot.x} z={spot.z} />
           {Array.from({ length: d.speech }, (_, j) => (
-            <Disc key={j} x={spot.x - 2.6} z={spot.z - 1 + j * 1.1} tint={[0.92, 0.92, 0.9]} r={0.4} />
+            <Disc key={j} x={spot.x} z={spot.z - 2.9} tint={[0.92, 0.92, 0.9]} lift={j * 0.24} r={0.55} />
           ))}
         </group>;
       })}
@@ -275,23 +299,105 @@ function Tiles({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
   );
 }
 
-function FlatTex({ scene, guid, spot }: { scene: KanbanSceneDef; guid: string; spot: { x: number; z: number } }) {
+function FlatTex({ scene, guid, spot, back = false }: { scene: KanbanSceneDef; guid: string; spot: { x: number; z: number }; back?: boolean }) {
   const def = scene.objects[guid];
   const tex = useLoader(THREE.TextureLoader, def?.tex ?? def?.img ?? '/kanban/EA5B540BE2C2867BD679A01A.png');
   const t = useMemo(() => {
     const c = tex.clone();
     c.colorSpace = THREE.SRGBColorSpace;
     c.repeat.set(0.5, 0.5);
-    c.offset.set(0, 0);
+    c.offset.set(back ? 0.5 : 0, 0);
     c.needsUpdate = true;
     return c;
-  }, [tex]);
+  }, [tex, back]);
   if (!def) return null;
   return (
     <mesh position={rp(spot.x, spot.z, BOARD_Y + 0.06)} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
       <planeGeometry args={[3.6, 3.6]} />
       <meshStandardMaterial map={t} roughness={0.85} />
     </mesh>
+  );
+}
+
+/** a card drawn from a sheet cell, lying flat on the board */
+function SheetCard({ scene, guid, x, z, w = 3.4, h = 5.2, back = false }: {
+  scene: KanbanSceneDef; guid: string; x: number; z: number; w?: number; h?: number; back?: boolean;
+}) {
+  const def = scene.objects[guid];
+  const sheet = (def?.sheet !== undefined ? scene.sheets[String(def.sheet)] : undefined) ?? scene.sheets['118'];
+  const tex = useLoader(THREE.TextureLoader, back ? sheet.back : sheet.face);
+  const t = useMemo(() => {
+    const c = tex.clone();
+    c.colorSpace = THREE.SRGBColorSpace;
+    if (!back && def?.cell !== undefined) {
+      c.repeat.set(1 / sheet.cols, 1 / sheet.rows);
+      c.offset.set((def.cell % sheet.cols) / sheet.cols, 1 - (Math.floor(def.cell / sheet.cols) + 1) / sheet.rows);
+    }
+    c.needsUpdate = true;
+    return c;
+  }, [tex, back, def?.cell, sheet]);
+  return (
+    <mesh position={rp(x, z, BOARD_Y + 0.05)} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+      <planeGeometry args={[w, h]} />
+      <meshStandardMaterial map={t} roughness={0.85} />
+    </mesh>
+  );
+}
+
+const FACTORY_TILE_GUID: Record<string, string> = {
+  'cars-2': '2d636f', 'cars-3': 'c2437f', 'cars-4': '0d4747', 'cars-5': 'b2df96',
+  'certifications-2': 'ca07ca', 'certifications-3': 'b5dac4', 'certifications-4': '4f885f', 'certifications-5': 'e9dc50',
+  'upgrades-2': '3d9bc1', 'upgrades-3': 'fe311b', 'upgrades-4': '120d18', 'upgrades-5': '0e2a76',
+};
+const KANBAN_DECK_SPOT = { x: 12.4, z: -33.0 };
+
+/** award stacks, factory + final goal tiles, kanban deck, meeting cards */
+function BoardTiles({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
+  const G = LAYOUT.GOALS as unknown as {
+    Certifications: { Elements: { Position: { x: number; z: number } }[] };
+    Cars: { Positions: { x: number; z: number }[] };
+    Upgrades: { Elements: string[]; Positions: { x: number; z: number }[] };
+    Cards: { Positions: { x: number; z: number }[] };
+    Final: { Position: { x: number; z: number } };
+  };
+  const byKindIdx: Record<string, number> = {};
+  return (
+    <group>
+      {view.factoryGoals.map((g) => {
+        const guid = FACTORY_TILE_GUID[g.id];
+        if (!guid) return null;
+        const idx = byKindIdx[g.kind] ?? 0;
+        byKindIdx[g.kind] = idx + 1;
+        const spot = g.kind === 'certifications' ? G.Certifications.Elements[g.need - 2].Position
+          : g.kind === 'cars' ? G.Cars.Positions[Math.min(idx, 1)] : G.Upgrades.Positions[Math.min(idx, 1)];
+        return (
+          <group key={g.id}>
+            <FlatTex scene={scene} guid={guid} spot={spot} />
+            {Array.from({ length: g.speech }, (_, j) => (
+              <Disc key={j} x={spot.x} z={spot.z} tint={[0.92, 0.92, 0.9]} lift={0.1 + j * 0.24} r={0.5} />
+            ))}
+          </group>
+        );
+      })}
+      <FlatTex scene={scene} guid={view.finalGoal.guid} spot={G.Final.Position} />
+      {DEPTS.map((d, i) => {
+        const left = view.awardsLeft[d];
+        if (left <= 0) return null;
+        const spot = LAYOUT.AWARDS.Positions[[0, 1, 2, 4, 3][i]];
+        return (
+          <group key={d}>
+            <FlatTex scene={scene} guid={LAYOUT.AWARDS.Elements[0]} spot={spot} back />
+            {view.awardSpeech[d] > 0 && <Disc x={spot.x} z={spot.z} tint={[0.92, 0.92, 0.9]} lift={0.12} r={0.5} />}
+          </group>
+        );
+      })}
+      <ModObj scene={scene} guid={LAYOUT.ELEMENTS.Sandra.Reference} x={30.97} z={-10.22} />
+      <SheetCard scene={scene} guid={'1c4dfd'} x={KANBAN_DECK_SPOT.x} z={KANBAN_DECK_SPOT.z} w={3.2} h={4.9} back />
+      {view.meetingGoals.map((g, i) => {
+        const spot = G.Cards.Positions[Math.min(i, 3)];
+        return <SheetCard key={g.guid + i} scene={scene} guid={g.guid} x={spot.x} z={spot.z} />;
+      })}
+    </group>
   );
 }
 
@@ -327,6 +433,7 @@ export function KanbanTable({ scene, view }: { scene: KanbanSceneDef; view: Kanb
         <BoardPlane scene={scene} />
         <Pieces scene={scene} view={view} />
         <Tiles scene={scene} view={view} />
+        <BoardTiles scene={scene} view={view} />
       </Suspense>
       <AimCamera />
     </Canvas>

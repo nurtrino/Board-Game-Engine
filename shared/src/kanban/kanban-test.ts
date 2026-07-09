@@ -123,7 +123,7 @@ for (const seed of [11, 42, 77]) {
   check(s.players.every((p) => p.orders.length === 2 && p.goals.length === 3), 'setup: hands dealt');
   check(Object.values(s.warehouses).reduce((a, b) => a + b, 0) <= 6, 'setup: starter kanban stocked');
   check(s.recycling.length === 3 && new Set(s.recycling).size === 3, 'setup: recycling 3 different');
-  check(MODELS.every((m) => Object.values(s.conveyor).filter((c) => c === m).length === 1), 'setup: one car per model on the line');
+  check(MODELS.every((m) => Object.values(s.conveyor).filter((c) => c === m).length === 2), 'setup: two cars per model on the line (entry + yellow plate)');
   check(s.factoryGoals.length === 6, 'setup: 6 factory goals');
   invariants(s, 'setup');
 }

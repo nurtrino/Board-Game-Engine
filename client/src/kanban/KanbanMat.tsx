@@ -19,6 +19,7 @@ const L = layout as unknown as {
     Boards: { Main: string };
     Meeple: string;
     Speechs: string[];
+    Bonuses?: { Basic: string[] };
     Positions: Record<'Books' | 'Designs' | 'Parts' | 'Vouchers', { x: number; y: number; z: number }[]>;
   }>;
   BOOKS: { Elements: string[] };
@@ -63,6 +64,25 @@ function Obj({ scene, guid, x, z, s = 1, yaw = 0, tint }: {
     <group position={[x, -minY * sc, z]} scale={[sc, sc, sc]} rotation={[0, yaw, 0]}>
       <primitive object={clone} position-x={-midX} position-z={-midZ} />
     </group>
+  );
+}
+
+function GarageTileTex({ scene, guid, x, z, flipped }: { scene: KanbanSceneDef; guid: string; x: number; z: number; flipped: boolean }) {
+  const def = scene.objects[guid];
+  const tex = useLoader(THREE.TextureLoader, def?.tex ?? '/kanban/EA5B540BE2C2867BD679A01A.png');
+  const t = useMemo(() => {
+    const c = tex.clone();
+    c.colorSpace = THREE.SRGBColorSpace;
+    c.repeat.set(0.5, 0.5);
+    c.offset.set(flipped ? 0.5 : 0, 0.5);
+    c.needsUpdate = true;
+    return c;
+  }, [tex, flipped]);
+  return (
+    <mesh position={[x, 0.03, z]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+      <planeGeometry args={[3.6, 3.6]} />
+      <meshStandardMaterial map={t} roughness={0.85} />
+    </mesh>
   );
 }
 
@@ -134,13 +154,17 @@ export function KanbanMat({ scene, me, height }: {
             const [x, z] = local(P.Positions.Vouchers[i]);
             return <Obj key={`v-${i}`} scene={scene} guid={L.VOUCHERS.Elements[0]} x={x} z={z} />;
           })}
-          {/* speech tokens on the board */}
+          {/* speech tokens slotted on the board (save: dx -0.4, dz +9.2) */}
           {Array.from({ length: me.speechOnBoard }, (_, i) => (
-            <Obj key={`s-${i}`} scene={scene} guid={P.Speechs[0]} x={-8.5 + i * 1.6} z={4.4} tint={tint} />
+            <Obj key={`s-${i}`} scene={scene} guid={P.Speechs[0]} x={-9.2 + i * 1.7} z={0.4} tint={tint} />
           ))}
-          {/* garaged cars along the garage strip */}
+          {/* garage bonus tiles beside the board (save: dx +3.6, dz +9.1..-7.9) */}
+          {me.garageTiles.map((gt, i) => (
+            <GarageTileTex key={`gt-${i}`} scene={scene} guid={(P.Bonuses?.Basic ?? [])[i] ?? ''} x={-9.1 + i * 4.23} z={3.6} flipped={gt.flipped} />
+          ))}
+          {/* garaged cars in the printed garages */}
           {me.garages.map((car, i) => car && (
-            <Obj key={`g-${i}`} scene={scene} guid={CAR_GUID[car]} x={-8 + i * 4} z={1.4} yaw={Math.PI} s={0.9} />
+            <Obj key={`g-${i}`} scene={scene} guid={CAR_GUID[car]} x={-9.1 + i * 4.23} z={0.8} yaw={Math.PI} s={0.9} />
           ))}
         </Suspense>
         <OrbitControls target={[0, 0, 0]} enablePan={false} enableDamping dampingFactor={0.09} minDistance={6} maxDistance={34} maxPolarAngle={Math.PI * 0.46} />

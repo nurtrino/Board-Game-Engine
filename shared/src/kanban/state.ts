@@ -40,8 +40,10 @@ export const KANBAN_RULES = {
   bookSlots: 6,
   voucherSlots: 6,
   garages: 5, // 5th unlocks with Assembly certification
-  trainingTrack: 6, // spaces; certified past 3 (the arrow), expert at 6
-  certifiedAt: 3, // crossing the arrow = space index >= 3
+  // six printed track spaces, indices 0-5: markers START on space 0, the
+  // arrow sits between 2 and 3, the last space is Expert (setup save)
+  trainingTrack: 5,
+  certifiedAt: 3,
   handGoals: 3,
   handOrders: 2,
   testTrackSpaces: 8,
@@ -357,14 +359,16 @@ export function createKanban(
   for (const p of s.recycling) s.partsSupply[p]--;
   s.warehouses = { Autopilots: 0, Batteries: 0, Bodies: 0, Drivetrains: 0, Electronics: 0, Motors: 0 };
 
-  // cars: one per model on its entry node, one on the yellow plate behind
-  // it (we model the plate as the stock; entry node holds the active car)
+  // cars: rulebook setup 12-13 — one per model on its entry node AND one
+  // on the yellow plate ahead of it (row-2 node), confirmed by the setup
+  // save (nodes 11-15 and 21-25 all occupied)
   s.carsSupply = { City: 8, SUV: 8, Truck: 8, Sport: 8, Concept: 8 };
   s.conveyor = {};
   for (const n of Object.keys(CONVEYOR)) s.conveyor[+n] = null;
   for (const m of MODELS) {
     s.conveyor[ENTRY_NODE[m]] = m;
-    s.carsSupply[m] -= 1;
+    s.conveyor[ENTRY_NODE[m] + 10] = m;
+    s.carsSupply[m] -= 2;
   }
   s.assemblyParts = { City: [], SUV: [], Truck: [], Sport: [], Concept: [] };
   s.testTrack = [];
