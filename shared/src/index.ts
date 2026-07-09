@@ -8,3 +8,5 @@ export * from './trek/state.js';
 export * from './trek/actions.js';
 export * from './darktower/state.js';
 export * from './darktower/actions.js';
+export * from './dune/state.js';
+export * from './dune/actions.js';

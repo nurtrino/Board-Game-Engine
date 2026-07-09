@@ -9,13 +9,16 @@ import type { TrekView, TrekSeat } from './trek/state.js';
 import type { TrekAction } from './trek/actions.js';
 import type { DtView, DtSeat } from './darktower/state.js';
 import type { DtAction } from './darktower/actions.js';
+import type { DuneView, DuneSeat } from './dune/state.js';
+import type { DuneAction } from './dune/actions.js';
 import { SEAT_COLORS } from './brass/state.js';
 import { TTR_COLORS } from './ttr/state.js';
 import { TREK_SEATS } from './trek/state.js';
 import { DT_SEATS } from './darktower/state.js';
+import { DUNE_SEATS } from './dune/state.js';
 
 /** Any seat color across games. */
-export type SeatColor = Color | TtrColor | TrekSeat | DtSeat;
+export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat;
 
 /** Per-game lobby facts: seat colors in pick order + max players. */
 export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: number }> = {
@@ -23,10 +26,11 @@ export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: num
   ttr: { colors: TTR_COLORS, max: 5 },
   trek: { colors: TREK_SEATS, max: 5 },
   darktower: { colors: DT_SEATS, max: 4 },
+  dune: { colors: DUNE_SEATS, max: 4 },
 };
 
-export type GameView = BrassView | TtrView | TrekView | DtView;
-export type GameAction = BrassAction | TtrAction | TrekAction | DtAction;
+export type GameView = BrassView | TtrView | TrekView | DtView | DuneView;
+export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction;
 
 export interface RoomInfo {
   roomId: string;

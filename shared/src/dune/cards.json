@@ -1,0 +1,1461 @@
+{
+ "source": "Transcribed card-by-card from the mod sheets (imperium sheet 24 + promos 27/29, intrigue sheet 28, starters sheet 23, reserve sheet 24). Copies from the mod deck contents (68 imperium cards, 40 intrigue - Poison Snooper/Windfall/etc duplicated per the mod). Icon meanings per the rulebook Icon Guide.",
+ "notes": "agents: which board-space icon groups the card can send to (emperor, guild, beneGesserit, fremen, landsraad, city, spiceTrade). agentBox / revealBox transcribed; persuasion/swords from reveal box. faction = synergy banner. cost = persuasion cost (imperium/reserve).",
+ "starter": [
+  {
+   "id": "duneDesertPlanet",
+   "name": "Dune, the Desert Planet",
+   "sheet": 23,
+   "cell": 0,
+   "copies": 2,
+   "agents": [
+    "spiceTrade"
+   ],
+   "reveal": {
+    "persuasion": 1
+   }
+  },
+  {
+   "id": "dagger",
+   "name": "Dagger",
+   "sheet": 23,
+   "cell": 1,
+   "copies": 2,
+   "agents": [
+    "landsraad"
+   ],
+   "reveal": {
+    "swords": 1
+   }
+  },
+  {
+   "id": "reconnaissance",
+   "name": "Reconnaissance",
+   "sheet": 23,
+   "cell": 2,
+   "copies": 1,
+   "agents": [
+    "city"
+   ],
+   "reveal": {
+    "persuasion": 1
+   }
+  },
+  {
+   "id": "convincingArgument",
+   "name": "Convincing Argument",
+   "sheet": 23,
+   "cell": 3,
+   "copies": 2,
+   "agents": [],
+   "reveal": {
+    "persuasion": 2
+   }
+  },
+  {
+   "id": "seekAllies",
+   "name": "Seek Allies",
+   "sheet": 23,
+   "cell": 4,
+   "copies": 1,
+   "agents": [
+    "emperor",
+    "guild",
+    "beneGesserit",
+    "fremen"
+   ],
+   "agentBox": "Trash this card.",
+   "reveal": null
+  },
+  {
+   "id": "signetRing",
+   "name": "Signet Ring",
+   "sheet": 23,
+   "cell": 5,
+   "copies": 1,
+   "agents": [
+    "landsraad",
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": "Signet Ring ability.",
+   "reveal": {
+    "persuasion": 1
+   }
+  },
+  {
+   "id": "diplomacy",
+   "name": "Diplomacy",
+   "sheet": 23,
+   "cell": 6,
+   "copies": 1,
+   "agents": [
+    "emperor",
+    "guild",
+    "beneGesserit",
+    "fremen"
+   ],
+   "reveal": {
+    "persuasion": 1
+   }
+  }
+ ],
+ "reserve": [
+  {
+   "id": "foldspace",
+   "name": "Foldspace",
+   "sheet": 24,
+   "cell": 4,
+   "copies": 6,
+   "cost": 0,
+   "agents": [
+    "emperor",
+    "guild",
+    "beneGesserit",
+    "fremen",
+    "landsraad",
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": "Draw a card. Trash this card.",
+   "reveal": null
+  },
+  {
+   "id": "arrakisLiaison",
+   "name": "Arrakis Liaison",
+   "sheet": 24,
+   "cell": 5,
+   "copies": 8,
+   "cost": 2,
+   "faction": "fremen",
+   "agents": [
+    "landsraad",
+    "city"
+   ],
+   "reveal": {
+    "persuasion": 2
+   }
+  },
+  {
+   "id": "theSpiceMustFlow",
+   "name": "The Spice Must Flow",
+   "sheet": 24,
+   "cell": 6,
+   "copies": 10,
+   "cost": 9,
+   "acquireBox": {
+    "vp": 1
+   },
+   "agents": [],
+   "reveal": {
+    "spice": 1
+   }
+  }
+ ],
+ "imperium": [
+  {
+   "id": "sardaukarLegion",
+   "name": "Sardaukar Legion",
+   "cell": "24:0",
+   "cost": 5,
+   "faction": "emperor",
+   "agents": [
+    "emperor",
+    "landsraad"
+   ],
+   "agentBox": {
+    "troops": 2
+   },
+   "reveal": {
+    "persuasion": 1,
+    "text": "Deploy up to three troops from your garrison to the Conflict."
+   },
+   "copies": 2
+  },
+  {
+   "id": "drYueh",
+   "name": "Dr. Yueh",
+   "cell": "24:1",
+   "cost": 1,
+   "agents": [
+    "city"
+   ],
+   "agentBox": {
+    "draw": 1
+   },
+   "reveal": {
+    "persuasion": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "assassinationMission",
+   "name": "Assassination Mission",
+   "cell": "24:2",
+   "cost": 1,
+   "agents": [],
+   "trashTrigger": {
+    "solari": 4
+   },
+   "reveal": {
+    "solari": 1,
+    "swords": 1
+   },
+   "copies": 2
+  },
+  {
+   "id": "sardaukarInfantry",
+   "name": "Sardauker Infantry",
+   "cell": "24:3",
+   "cost": 1,
+   "faction": "emperor",
+   "agents": [],
+   "reveal": {
+    "persuasion": 1,
+    "swords": 2
+   },
+   "copies": 2
+  },
+  {
+   "id": "beneGesseritInitiate",
+   "name": "Bene Gesserit Initiate",
+   "cell": "24:7",
+   "cost": 3,
+   "faction": "beneGesserit",
+   "agents": [
+    "landsraad",
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "draw": 1
+   },
+   "reveal": {
+    "persuasion": 1
+   },
+   "copies": 2
+  },
+  {
+   "id": "guildAdministrator",
+   "name": "Guild Administrator",
+   "cell": "24:8",
+   "cost": 2,
+   "faction": "guild",
+   "agents": [
+    "guild",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "trash": 1
+   },
+   "reveal": {
+    "persuasion": 1
+   },
+   "copies": 2
+  },
+  {
+   "id": "theVoice",
+   "name": "The Voice",
+   "cell": "24:9",
+   "cost": 2,
+   "faction": "beneGesserit",
+   "agents": [
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "text": "Choose any board space. Opponents can't send their next Agents there this round."
+   },
+   "reveal": {
+    "persuasion": 2
+   },
+   "copies": 2
+  },
+  {
+   "id": "scout",
+   "name": "Scout",
+   "cell": "24:10",
+   "cost": 1,
+   "agents": [
+    "city",
+    "spiceTrade"
+   ],
+   "reveal": {
+    "persuasion": 1,
+    "swords": 1,
+    "text": "Retreat up to two of your troops."
+   },
+   "copies": 2
+  },
+  {
+   "id": "imperialSpy",
+   "name": "Imperial Spy",
+   "cell": "24:11",
+   "cost": 2,
+   "faction": "emperor",
+   "agents": [
+    "emperor"
+   ],
+   "agentBox": {
+    "text": "Trash this card: draw an Intrigue card."
+   },
+   "reveal": {
+    "persuasion": 1,
+    "swords": 1
+   },
+   "copies": 2
+  },
+  {
+   "id": "beneGesseritSister",
+   "name": "Bene Gesserit Sister",
+   "cell": "24:12",
+   "cost": 3,
+   "faction": "beneGesserit",
+   "agents": [
+    "beneGesserit",
+    "landsraad"
+   ],
+   "reveal": {
+    "choice": [
+     {
+      "persuasion": 2
+     },
+     {
+      "swords": 2
+     }
+    ]
+   },
+   "copies": 3
+  },
+  {
+   "id": "spiceHunter",
+   "name": "Spice Hunter",
+   "cell": "24:14",
+   "cost": 2,
+   "faction": "fremen",
+   "agents": [
+    "fremen",
+    "spiceTrade"
+   ],
+   "reveal": {
+    "persuasion": 1,
+    "swords": 1,
+    "fremenBond": {
+     "spice": 1
+    }
+   },
+   "copies": 2
+  },
+  {
+   "id": "spiceSmugglers",
+   "name": "Spice Smugglers",
+   "cell": "24:15",
+   "cost": 2,
+   "faction": "guild",
+   "agents": [
+    "city"
+   ],
+   "agentBox": {
+    "cost": {
+     "spice": 2
+    },
+    "influence": {
+     "guild": 1
+    },
+    "solari": 3
+   },
+   "reveal": {
+    "persuasion": 1,
+    "swords": 1
+   },
+   "copies": 2
+  },
+  {
+   "id": "fedaykinDeathCommando",
+   "name": "Fedaykin Death Commando",
+   "cell": "24:16",
+   "cost": 3,
+   "faction": "fremen",
+   "agents": [
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "trash": 1
+   },
+   "reveal": {
+    "persuasion": 1,
+    "fremenBond": {
+     "swords": 3
+    }
+   },
+   "copies": 2
+  },
+  {
+   "id": "geneManipulation",
+   "name": "Gene Manipulation",
+   "cell": "24:17",
+   "cost": 3,
+   "faction": "beneGesserit",
+   "agents": [
+    "landsraad",
+    "city"
+   ],
+   "agentBox": {
+    "trash": 1,
+    "text": "AND if you have another Bene Gesserit card in play: 2 spice."
+   },
+   "reveal": {
+    "persuasion": 2
+   },
+   "copies": 2
+  },
+  {
+   "id": "guildBankers",
+   "name": "Guild Bankers",
+   "cell": "24:18",
+   "cost": 3,
+   "faction": "guild",
+   "agents": [
+    "emperor",
+    "guild",
+    "landsraad"
+   ],
+   "reveal": {
+    "text": "The Spice Must Flow costs 3 less to acquire this turn."
+   },
+   "copies": 1
+  },
+  {
+   "id": "choamDirectorship",
+   "name": "CHOAM Directorship",
+   "cell": "24:19",
+   "cost": 8,
+   "acquireBox": {
+    "influence": {
+     "emperor": 1,
+     "guild": 1,
+     "beneGesserit": 1,
+     "fremen": 1
+    }
+   },
+   "agents": [],
+   "reveal": {
+    "solari": 3
+   },
+   "copies": 1
+  },
+  {
+   "id": "crysknife",
+   "name": "Crysknife",
+   "cell": "24:20",
+   "cost": 3,
+   "faction": "fremen",
+   "agents": [
+    "fremen",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "solari": 1
+   },
+   "reveal": {
+    "swords": 1,
+    "fremenBond": {
+     "influence": {
+      "fremen": 1
+     }
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "chani",
+   "name": "Chani",
+   "cell": "24:21",
+   "cost": 5,
+   "faction": "fremen",
+   "acquireBox": {
+    "water": 1
+   },
+   "agents": [
+    "fremen",
+    "city",
+    "spiceTrade"
+   ],
+   "reveal": {
+    "persuasion": 2,
+    "text": "Retreat any number of your troops."
+   },
+   "copies": 1
+  },
+  {
+   "id": "spaceTravel",
+   "name": "Space Travel",
+   "cell": "24:22",
+   "cost": 3,
+   "faction": "guild",
+   "agents": [
+    "guild"
+   ],
+   "agentBox": {
+    "draw": 1
+   },
+   "reveal": {
+    "persuasion": 2
+   },
+   "copies": 2
+  },
+  {
+   "id": "duncanIdaho",
+   "name": "Duncan Idaho",
+   "cell": "24:23",
+   "cost": 4,
+   "agents": [
+    "city"
+   ],
+   "agentBox": {
+    "cost": {
+     "water": 1
+    },
+    "troops": 1,
+    "draw": 1
+   },
+   "reveal": {
+    "water": 1,
+    "swords": 2
+   },
+   "copies": 1
+  },
+  {
+   "id": "shiftingAllegiances",
+   "name": "Shifting Allegiances",
+   "cell": "24:24",
+   "cost": 3,
+   "agents": [
+    "landsraad",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "cost": {
+     "loseInfluenceAny": 1,
+     "spice": 2
+    },
+    "influenceAny": 2
+   },
+   "reveal": {
+    "persuasion": 2
+   },
+   "copies": 2
+  },
+  {
+   "id": "kwisatzHaderach",
+   "name": "Kwisatz Haderach",
+   "cell": "24:25",
+   "cost": 8,
+   "faction": "beneGesserit",
+   "agents": [
+    "any"
+   ],
+   "agentBox": {
+    "text": "Send one of your Agents from anywhere to ANY board space (even if occupied).",
+    "draw": 1
+   },
+   "reveal": null,
+   "copies": 1
+  },
+  {
+   "id": "sietchReverendMother",
+   "name": "Sietch Reverend Mother",
+   "cell": "24:26",
+   "cost": 4,
+   "faction": [
+    "beneGesserit",
+    "fremen"
+   ],
+   "agents": [
+    "beneGesserit",
+    "fremen"
+   ],
+   "agentBox": {
+    "trash": 1
+   },
+   "reveal": {
+    "fremenBond": {
+     "persuasion": 3,
+     "spice": 1
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "arrakisRecruiter",
+   "name": "Arrakis Recruiter",
+   "cell": "24:27",
+   "cost": 2,
+   "agents": [
+    "city"
+   ],
+   "agentBox": {
+    "troops": 1
+   },
+   "reveal": {
+    "persuasion": 1,
+    "swords": 1
+   },
+   "copies": 2
+  },
+  {
+   "id": "firmGrip",
+   "name": "Firm Grip",
+   "cell": "24:28",
+   "cost": 4,
+   "faction": "emperor",
+   "agents": [
+    "emperor",
+    "landsraad"
+   ],
+   "agentBox": {
+    "cost": {
+     "solari": 2
+    },
+    "text": "Choose one: gain 1 Influence with Guild, Bene Gesserit, or Fremen."
+   },
+   "reveal": {
+    "emperorAlliance": {
+     "persuasion": 4
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "smugglersThopter",
+   "name": "Smuggler's Thopter",
+   "cell": "24:29",
+   "cost": 4,
+   "faction": "guild",
+   "agents": [
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "requires": {
+     "guildInfluence": 2
+    },
+    "draw": 2
+   },
+   "reveal": {
+    "persuasion": 1,
+    "spice": 1
+   },
+   "copies": 2
+  },
+  {
+   "id": "carryall",
+   "name": "Carryall",
+   "cell": "24:30",
+   "cost": 5,
+   "agents": [
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "text": "Double the base (not bonus) spice you harvest with this Agent."
+   },
+   "reveal": {
+    "persuasion": 1,
+    "spice": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "gunThopter",
+   "name": "Gun Thopter",
+   "cell": "24:31",
+   "cost": 4,
+   "agents": [
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "text": "Each opponent loses one garrisoned troop."
+   },
+   "reveal": {
+    "swords": 3,
+    "text": "You may deploy a troop from your garrison to the Conflict."
+   },
+   "copies": 2
+  },
+  {
+   "id": "guildAmbassador",
+   "name": "Guild Ambassador",
+   "cell": "24:32",
+   "cost": 4,
+   "faction": "guild",
+   "agents": [
+    "landsraad"
+   ],
+   "agentBox": {
+    "choice": [
+     {
+      "influence": {
+       "guild": 1
+      }
+     },
+     {
+      "spice": 2
+     }
+    ]
+   },
+   "reveal": {
+    "guildAlliance": {
+     "cost": {
+      "spice": 3
+     },
+     "vp": 1
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "testOfHumanity",
+   "name": "Test of Humanity",
+   "cell": "24:33",
+   "cost": 3,
+   "faction": "beneGesserit",
+   "agents": [
+    "beneGesserit",
+    "landsraad",
+    "city"
+   ],
+   "agentBox": {
+    "text": "Each opponent chooses: discard a card OR lose a deployed troop."
+   },
+   "reveal": {
+    "persuasion": 2
+   },
+   "copies": 1
+  },
+  {
+   "id": "fremenCamp",
+   "name": "Fremen Camp",
+   "cell": "24:34",
+   "cost": 4,
+   "faction": "fremen",
+   "agents": [
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "cost": {
+     "spice": 2
+    },
+    "troops": 3
+   },
+   "reveal": {
+    "persuasion": 2,
+    "swords": 1
+   },
+   "copies": 2
+  },
+  {
+   "id": "opulence",
+   "name": "Opulence",
+   "cell": "24:35",
+   "cost": 6,
+   "faction": "emperor",
+   "agents": [
+    "emperor"
+   ],
+   "agentBox": {
+    "solari": 3
+   },
+   "reveal": {
+    "persuasion": 1,
+    "and": {
+     "cost": {
+      "solari": 6
+     },
+     "vp": 1
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "ladyJessica",
+   "name": "Lady Jessica",
+   "cell": "24:36",
+   "cost": 7,
+   "faction": "beneGesserit",
+   "acquireBox": {
+    "influenceAny": 1
+   },
+   "agents": [
+    "beneGesserit",
+    "landsraad",
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "draw": 2
+   },
+   "reveal": {
+    "persuasion": 3,
+    "swords": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "stilgar",
+   "name": "Stilgar",
+   "cell": "24:37",
+   "cost": 5,
+   "faction": "fremen",
+   "agents": [
+    "fremen",
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "water": 1
+   },
+   "reveal": {
+    "persuasion": 2,
+    "swords": 3
+   },
+   "copies": 1
+  },
+  {
+   "id": "piterDeVries",
+   "name": "Piter De Vries",
+   "cell": "24:38",
+   "cost": 5,
+   "agents": [
+    "landsraad",
+    "city"
+   ],
+   "agentBox": {
+    "intrigue": 1
+   },
+   "reveal": {
+    "persuasion": 3,
+    "swords": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "gurneyHalleck",
+   "name": "Gurney Halleck",
+   "cell": "24:39",
+   "cost": 6,
+   "agents": [
+    "city"
+   ],
+   "agentBox": {
+    "troops": 2,
+    "draw": 1
+   },
+   "reveal": {
+    "persuasion": 2,
+    "and": {
+     "cost": {
+      "solari": 3
+     },
+     "troops": 2,
+     "text": "You may deploy these troops to the Conflict."
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "thufirHawat",
+   "name": "Thufir Hawat",
+   "cell": "24:40",
+   "cost": 5,
+   "agents": [
+    "emperor",
+    "guild",
+    "beneGesserit",
+    "fremen",
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "draw": 1
+   },
+   "reveal": {
+    "persuasion": 1,
+    "intrigue": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "otherMemory",
+   "name": "Other Memory",
+   "cell": "24:41",
+   "cost": 4,
+   "faction": "beneGesserit",
+   "agents": [
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "choice": [
+     {
+      "draw": 1
+     },
+     {
+      "text": "Draw a Bene Gesserit card from your discard pile."
+     }
+    ]
+   },
+   "reveal": {
+    "persuasion": 2
+   },
+   "copies": 1
+  },
+  {
+   "id": "lietKynes",
+   "name": "Liet Kynes",
+   "cell": "24:42",
+   "cost": 5,
+   "faction": [
+    "emperor",
+    "fremen"
+   ],
+   "acquireBox": {
+    "influence": {
+     "emperor": 1
+    }
+   },
+   "agents": [
+    "fremen",
+    "city"
+   ],
+   "reveal": {
+    "text": "2 persuasion for each Fremen card you have in play (including this one)."
+   },
+   "copies": 1
+  },
+  {
+   "id": "wormRiders",
+   "name": "Worm Riders",
+   "cell": "24:43",
+   "cost": 6,
+   "faction": "fremen",
+   "agents": [
+    "city",
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "spice": 2
+   },
+   "reveal": {
+    "fremenInfluence2": {
+     "swords": 4
+    },
+    "fremenAlliance": {
+     "swords": 2
+    }
+   },
+   "copies": 2
+  },
+  {
+   "id": "reverendMotherMohiam",
+   "name": "Reverend Mother Mohiam",
+   "cell": "24:44",
+   "cost": 6,
+   "faction": [
+    "emperor",
+    "beneGesserit"
+   ],
+   "agents": [
+    "emperor",
+    "beneGesserit"
+   ],
+   "agentBox": {
+    "text": "If you have another Bene Gesserit card in play, each opponent discards two cards."
+   },
+   "reveal": {
+    "persuasion": 2,
+    "spice": 2
+   },
+   "copies": 1
+  },
+  {
+   "id": "powerPlay",
+   "name": "Power Play",
+   "cell": "24:45",
+   "cost": 5,
+   "agents": [
+    "emperor",
+    "guild",
+    "beneGesserit",
+    "fremen"
+   ],
+   "agentBox": {
+    "text": "Gain two Influence instead of one. Trash this card."
+   },
+   "reveal": null,
+   "copies": 3
+  },
+  {
+   "id": "jessicaOfArrakis",
+   "name": "Jessica of Arrakis",
+   "cell": "27:0",
+   "cost": 3,
+   "faction": "beneGesserit",
+   "agents": [
+    "spiceTrade"
+   ],
+   "agentBox": {
+    "text": "If you have another Bene Gesserit card in play: draw 2 cards."
+   },
+   "reveal": {
+    "persuasion": 1,
+    "swords": 2
+   },
+   "copies": 1
+  },
+  {
+   "id": "missionariaProtectiva",
+   "name": "Missionaria Protectiva",
+   "cell": "29:0",
+   "cost": 1,
+   "faction": "beneGesserit",
+   "agents": [
+    "city"
+   ],
+   "agentBox": {
+    "text": "If you have another Bene Gesserit card in play: gain 1 Influence with any one Faction."
+   },
+   "reveal": {
+    "persuasion": 1
+   },
+   "copies": 2
+  }
+ ],
+ "intrigue": [
+  {
+   "id": "bribery",
+   "name": "Bribery",
+   "cell": "28:0",
+   "kind": "plot",
+   "effect": {
+    "cost": {
+     "solari": 2
+    },
+    "influenceAny": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "refocus",
+   "name": "Refocus",
+   "cell": "28:1",
+   "kind": "plot",
+   "effect": {
+    "text": "Shuffle your discard pile into your deck, then:",
+    "draw": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "ambush",
+   "name": "Ambush",
+   "cell": "28:2",
+   "kind": "combat",
+   "effect": {
+    "swords": 4
+   },
+   "copies": 2
+  },
+  {
+   "id": "alliedArmada",
+   "name": "Allied Armada",
+   "cell": "28:3",
+   "kind": "combat",
+   "effect": {
+    "requires": "faction alliance",
+    "cost": {
+     "spice": 2
+    },
+    "swords": 7
+   },
+   "copies": 1
+  },
+  {
+   "id": "favoredSubject",
+   "name": "Favored Subject",
+   "cell": "28:4",
+   "kind": "plot",
+   "effect": {
+    "influence": {
+     "emperor": 1
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "demandRespect",
+   "name": "Demand Respect",
+   "cell": "28:5",
+   "kind": "combat",
+   "effect": {
+    "trigger": "when you win a Conflict",
+    "choice": [
+     {
+      "influenceAny": 1
+     },
+     {
+      "cost": {
+       "spice": 2
+      },
+      "influenceAny": 2
+     }
+    ]
+   },
+   "copies": 1
+  },
+  {
+   "id": "poisonSnooper",
+   "name": "Poison Snooper",
+   "cell": "28:6",
+   "kind": "plot",
+   "effect": {
+    "text": "Look at the top card of your deck. Draw or trash it."
+   },
+   "copies": 2
+  },
+  {
+   "id": "guildAuthorization",
+   "name": "Guild Authorization",
+   "cell": "28:7",
+   "kind": "plot",
+   "effect": {
+    "influence": {
+     "guild": 1
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "dispatchAnEnvoy",
+   "name": "Dispatch an Envoy",
+   "cell": "28:8",
+   "kind": "plot",
+   "effect": {
+    "text": "The card you play this turn has the following icons: Emperor, Spacing Guild, Bene Gesserit, Fremen."
+   },
+   "copies": 2
+  },
+  {
+   "id": "infiltrate",
+   "name": "Infiltrate",
+   "cell": "28:9",
+   "kind": "plot",
+   "effect": {
+    "text": "Enemy Agents don't block your next Agent at board spaces this turn."
+   },
+   "copies": 1
+  },
+  {
+   "id": "knowTheirWays",
+   "name": "Know Their Ways",
+   "cell": "28:10",
+   "kind": "plot",
+   "effect": {
+    "influence": {
+     "fremen": 1
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "masterTactician",
+   "name": "Master Tactician",
+   "cell": "28:11",
+   "kind": "combat",
+   "effect": {
+    "choice": [
+     {
+      "swords": 3
+     },
+     {
+      "text": "Retreat up to three of your troops."
+     }
+    ]
+   },
+   "copies": 3
+  },
+  {
+   "id": "plansWithinPlans",
+   "name": "Plans Within Plans",
+   "cell": "28:12",
+   "kind": "endgame",
+   "effect": {
+    "text": "3 Influence (or more) on three Faction tracks: 1 VP - OR - 3 Influence (or more) on four Faction tracks: 2 VP."
+   },
+   "copies": 1
+  },
+  {
+   "id": "privateArmy",
+   "name": "Private Army",
+   "cell": "28:13",
+   "kind": "combat",
+   "effect": {
+    "cost": {
+     "spice": 2
+    },
+    "swords": 5
+   },
+   "copies": 2
+  },
+  {
+   "id": "doubleCross",
+   "name": "Double Cross",
+   "cell": "28:14",
+   "kind": "plot",
+   "effect": {
+    "cost": {
+     "solari": 1
+    },
+    "text": "An opponent of your choice loses one troop in the Conflict and you deploy one troop from your supply to the Conflict."
+   },
+   "copies": 1
+  },
+  {
+   "id": "councilorsDispensation",
+   "name": "Councilor's Dispensation",
+   "cell": "28:15",
+   "kind": "plot",
+   "effect": {
+    "requires": "high council seat",
+    "spice": 2
+   },
+   "copies": 1
+  },
+  {
+   "id": "cornerTheMarket",
+   "name": "Corner the Market",
+   "cell": "28:16",
+   "kind": "endgame",
+   "effect": {
+    "text": "If you have at least two The Spice Must Flow: 1 VP. If you have more The Spice Must Flow than each opponent: 1 more VP."
+   },
+   "copies": 1
+  },
+  {
+   "id": "charisma",
+   "name": "Charisma",
+   "cell": "28:17",
+   "kind": "plot",
+   "effect": {
+    "text": "Gain 2 persuasion during your Reveal turn this round."
+   },
+   "copies": 1
+  },
+  {
+   "id": "calculatedHire",
+   "name": "Calculated Hire",
+   "cell": "28:18",
+   "kind": "plot",
+   "effect": {
+    "cost": {
+     "spice": 1
+    },
+    "text": "Take the Mentat from its designated space in the Landsraad."
+   },
+   "copies": 1
+  },
+  {
+   "id": "choamShares",
+   "name": "CHOAM Shares",
+   "cell": "28:19",
+   "kind": "plot",
+   "effect": {
+    "cost": {
+     "solari": 7
+    },
+    "vp": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "bypassProtocol",
+   "name": "Bypass Protocol",
+   "cell": "28:20",
+   "kind": "plot",
+   "effect": {
+    "choice": [
+     {
+      "text": "Acquire a card that costs 3 or less."
+     },
+     {
+      "cost": {
+       "spice": 2
+      },
+      "text": "Acquire a card that costs 5 or less to the top of your deck."
+     }
+    ]
+   },
+   "copies": 1
+  },
+  {
+   "id": "recruitmentMission",
+   "name": "Recruitment Mission",
+   "cell": "28:21",
+   "kind": "plot",
+   "effect": {
+    "text": "Gain 1 persuasion during your Reveal turn this round. You may put cards you acquire on top of your deck."
+   },
+   "copies": 1
+  },
+  {
+   "id": "reinforcements",
+   "name": "Reinforcements",
+   "cell": "28:22",
+   "kind": "plot",
+   "effect": {
+    "cost": {
+     "solari": 3
+    },
+    "troops": 3,
+    "text": "If it's your Reveal turn, you may deploy any of these troops to the Conflict."
+   },
+   "copies": 1
+  },
+  {
+   "id": "binduSuspension",
+   "name": "Bindu Suspension",
+   "cell": "28:23",
+   "kind": "plot",
+   "effect": {
+    "trigger": "at the start of your turn",
+    "draw": 1,
+    "text": "You may pass your turn. (Instead of taking an Agent or Reveal turn.)"
+   },
+   "copies": 1
+  },
+  {
+   "id": "secretOfTheSisterhood",
+   "name": "Secret of the Sisterhood",
+   "cell": "28:24",
+   "kind": "plot",
+   "effect": {
+    "influence": {
+     "beneGesserit": 1
+    }
+   },
+   "copies": 1
+  },
+  {
+   "id": "rapidMobilization",
+   "name": "Rapid Mobilization",
+   "cell": "28:25",
+   "kind": "plot",
+   "effect": {
+    "text": "Deploy any number of your garrisoned troops to the Conflict."
+   },
+   "copies": 1
+  },
+  {
+   "id": "stagedIncident",
+   "name": "Staged Incident",
+   "cell": "28:26",
+   "kind": "combat",
+   "effect": {
+    "cost": {
+     "troopsInConflict": 3
+    },
+    "vp": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "theSleeperMustAwaken",
+   "name": "The Sleeper Must Awaken",
+   "cell": "28:27",
+   "kind": "plot",
+   "effect": {
+    "cost": {
+     "spice": 4
+    },
+    "vp": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "tiebreaker",
+   "name": "Tiebreaker",
+   "cell": "28:28",
+   "kind": "combat-endgame",
+   "effect": {
+    "choice": [
+     {
+      "swords": 2
+     },
+     {
+      "cost": {
+       "spice": 10
+      },
+      "vp": 1
+     }
+    ],
+    "text": "Combat: 2 swords - OR - Endgame: 10 spice -> 1 VP."
+   },
+   "copies": 1
+  },
+  {
+   "id": "toTheVictor",
+   "name": "To The Victor...",
+   "cell": "28:29",
+   "kind": "combat",
+   "effect": {
+    "trigger": "when you win a Conflict",
+    "spice": 3
+   },
+   "copies": 1
+  },
+  {
+   "id": "waterPeddlersUnion",
+   "name": "Water Peddlers Union",
+   "cell": "28:30",
+   "kind": "plot",
+   "effect": {
+    "water": 1
+   },
+   "copies": 1
+  },
+  {
+   "id": "windfall",
+   "name": "Windfall",
+   "cell": "28:31",
+   "kind": "plot",
+   "effect": {
+    "solari": 2
+   },
+   "copies": 1
+  },
+  {
+   "id": "waterOfLife",
+   "name": "Water of Life",
+   "cell": "28:32",
+   "kind": "plot",
+   "effect": {
+    "cost": {
+     "water": 1,
+     "spice": 1
+    },
+    "draw": 3
+   },
+   "copies": 1
+  },
+  {
+   "id": "urgentMission",
+   "name": "Urgent Mission",
+   "cell": "28:33",
+   "kind": "plot",
+   "effect": {
+    "text": "Recall one of your Agents."
+   },
+   "copies": 1
+  }
+ ]
+}
