@@ -7,7 +7,7 @@
 
 import { useMemo, useState } from 'react';
 import {
-  CARD_BY_ID, FACTIONS, INTRIGUE_BY_ID, LEADER_BY_ID, LEADERS, SELL_MELANGE, SPACES, SPACE_BY_ID,
+  CARD_BY_ID, DUNE_RULES, FACTIONS, INTRIGUE_BY_ID, LEADER_BY_ID, LEADERS, SELL_MELANGE, SPACES, SPACE_BY_ID,
   type DuneAction, type DuneView, type Faction,
 } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
@@ -19,12 +19,19 @@ import { playSfx } from '../sfx';
 const DUNE_INTRO: Intro = {
   title: 'Dune: Imperium',
   tagline: 'Deck-building meets worker placement on Arrakis.',
-  goal: 'Reach 10 victory points — or lead when the 10th conflict ends. Influence the four factions, win combat, and build your deck.',
+  goal: 'Reach 10 victory points — or lead when the last conflict is fought. Send agents to the board for resources, troops and influence; reveal your hand to buy better cards and fight; win conflicts for the biggest prizes.',
   points: [
-    { label: 'Agent turns', detail: 'Play a card and send an agent to one of its board spaces. Pay its costs, take its rewards, deploy troops on combat spaces.' },
-    { label: 'Reveal turn', detail: 'Out of agents (or done early)? Reveal your hand for persuasion to buy cards, and swords for the conflict.' },
-    { label: 'Influence', detail: '2 on a faction track is a VP. 4 earns its bonus and can take the faction alliance — another VP.' },
-    { label: 'Combat', detail: 'Troops are 2 strength each, swords add 1. The conflict card pays 1st, 2nd, and (with 4 players) 3rd.' },
+    { label: 'Your house', detail: 'You start with a leader (two unique powers — tap your leader name any time to see them), a 10-card starter deck, 2 agents, 3 troops in your garrison, 1 water. Draw 5 cards each round.' },
+    { label: 'A round', detail: 'Players alternate single turns. Each turn is either an agent turn or your one reveal turn. When everyone has revealed, the conflict resolves, spice builds up on the desert, and the next round begins with a new first player.' },
+    { label: 'Agent turn', detail: 'Play one card from your hand and send an agent to one of the board spaces shown on that card. The space must be free and you must pay its cost (spice, water or solari). Take the space rewards plus the played card\'s agent box.' },
+    { label: 'Combat spaces', detail: 'Spaces with crossed blades also let you deploy up to 2 garrison troops — plus any troops that turn recruited — into the current conflict.' },
+    { label: 'Reveal turn', detail: 'When you are out of agents (or choose to stop), reveal the rest of your hand. Its persuasion buys new cards; its swords are combat strength. Then everything you played this round goes to your discard pile.' },
+    { label: 'Buying cards', detail: 'Spend persuasion on the imperium row (or the reserve: Arrakis Liaison for 2, The Spice Must Flow for 9 — worth a VP). Purchases land in your discard pile; when your deck runs out, the discard reshuffles, so every buy comes back stronger.' },
+    { label: 'Influence', detail: 'Faction spaces raise you on that faction\'s track. Reaching 2 is worth a VP. Reaching 4 pays that faction\'s bonus and, if you are ahead of everyone, its alliance — a VP another player can steal by passing you.' },
+    { label: 'Combat', detail: 'After all reveals, compare strength: each troop in the conflict is 2, each revealed sword 1. The conflict card pays 1st and 2nd place (and 3rd with 4 players). Combat intrigue cards can swing it after strengths are shown; tied players all lose to the place below.' },
+    { label: 'Intrigue', detail: 'Intrigue cards are secret. Plots play during your turn, combat cards during the battle, endgame cards add points when the game ends.' },
+    { label: 'Mentat and upgrades', detail: 'The Mentat space hires an extra agent for the round plus a card draw. High Council (+2 persuasion every reveal) and Swordmaster (a permanent third agent) are one-time upgrades — buy them before your rivals.' },
+    { label: 'Game end', detail: 'The game ends after the 10th conflict, or immediately when someone reaches 10 VP. Highest VP wins; ties break on spice, then solari, then water, then garrison troops.' },
   ],
   rulebook: '/dune/rulebook.pdf',
 };
@@ -93,8 +100,9 @@ export function DunePlay({ view, act, error }: {
   const scene = useDuneScene();
   const [selected, setSelected] = useState<string | null>(null); // hand card picked for an agent turn
   const [deploy, setDeploy] = useState(2);
-  const [showIntro, setShowIntro] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const [showIntrigue, setShowIntrigue] = useState(false);
+  const [showMat, setShowMat] = useState(false);
   const me = view.you !== null ? view.players[view.you] : null;
   const myTurn = me !== null && view.turn === me.seat && !view.pending;
   const myPending = me !== null && view.pending?.seat === me.seat ? view.pending : null;
@@ -291,7 +299,12 @@ export function DunePlay({ view, act, error }: {
       <div className="dn-top">
         <span style={{ width: 12, height: 12, borderRadius: '50%', background: SEAT_HEX[me.color] }} />
         <b>{me.name}</b>
-        <span style={{ opacity: 0.55, fontSize: 12 }}>{me.leader ? LEADER_BY_ID[me.leader]?.name : ''}</span>
+        {me.leader && (
+          <button
+            style={{ background: 'none', border: 'none', color: '#e8ebf0', opacity: 0.75, fontSize: 12, cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3, padding: 0, font: 'inherit' }}
+            onClick={() => setShowMat(true)}
+          >{LEADER_BY_ID[me.leader]?.name}</button>
+        )}
         <span style={{ marginLeft: 'auto', font: '800 16px Inter, sans-serif' }}>{me.vp} VP</span>
         <button className="dn-btn" style={{ padding: '6px 10px' }} onClick={() => setShowIntro(true)}>?</button>
       </div>
@@ -303,6 +316,7 @@ export function DunePlay({ view, act, error }: {
           <span>{me.garrison} garrison</span>
           {me.inConflict > 0 && <span>{me.inConflict} in conflict</span>}
           <span>{me.agentsLeft}{me.mentat ? '+M' : ''} agents</span>
+          <span style={{ opacity: 0.7 }}>deck {me.deckCount} · discard {me.discard.length}</span>
           {revealing && <span style={{ fontWeight: 800 }}>{me.persuasion} persuasion</span>}
         </div>
       </div>
@@ -392,7 +406,71 @@ export function DunePlay({ view, act, error }: {
         {(me.intrigue?.length ?? 0) > 0 && (
           <button className="dn-btn" onClick={() => setShowIntrigue(true)}>Intrigue ({me.intrigue!.length})</button>
         )}
+        <button className="dn-btn" onClick={() => setShowMat(true)}>House</button>
       </div>
+
+      {/* house mat: leader, pieces, piles */}
+      {showMat && (
+        <div className="dn-overlay">
+          <div className="dn-lab">Your house</div>
+          {me.leader && (() => {
+            const l = LEADER_BY_ID[me.leader!];
+            return (
+              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                <img src={l.image} alt={l.name} style={{ width: 148, borderRadius: 10, flexShrink: 0 }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13 }}>
+                  <b style={{ fontSize: 15 }}>{l.name}</b>
+                  <div>
+                    <div className="dn-lab" style={{ fontSize: 10 }}>{l.passive.title}</div>
+                    <div style={{ opacity: 0.75, lineHeight: 1.45 }}>{l.passive.text}</div>
+                  </div>
+                  <div>
+                    <div className="dn-lab" style={{ fontSize: 10 }}>Signet ring — {l.signet.title}</div>
+                    <div style={{ opacity: 0.75, lineHeight: 1.45 }}>{l.signet.text}</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+          <div className="dn-lab" style={{ paddingTop: 10 }}>Pieces</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 14px', fontSize: 13 }}>
+            <span>Agents: {me.agentsLeft} of {me.agentsTotal} left{me.mentat ? ' (incl. the Mentat)' : ''}</span>
+            <span>Victory points: {me.vp}</span>
+            <span>Garrison: {me.garrison} troops</span>
+            <span>In conflict: {me.inConflict}</span>
+            <span>Supply: {DUNE_RULES.troopsTotal - me.garrison - me.inConflict} troops</span>
+            <span>Intrigue cards: {me.intrigue?.length ?? 0}</span>
+            {me.hasSwordmaster && <span>Swordmaster — third agent</span>}
+            {me.hasHighCouncil && <span>High Council seat — +2 persuasion</span>}
+          </div>
+          <div className="dn-lab" style={{ paddingTop: 10 }}>Influence</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 14px', fontSize: 13 }}>
+            {FACTIONS.map((f) => (
+              <span key={f} style={{ fontWeight: me.alliances.includes(f) ? 800 : 400 }}>
+                {FACTION_NAME[f]}: {me.influence[f]}{me.alliances.includes(f) ? ' — alliance' : ''}
+              </span>
+            ))}
+          </div>
+          <div className="dn-lab" style={{ paddingTop: 10 }}>Deck</div>
+          <div style={{ fontSize: 13, opacity: 0.85 }}>
+            {me.deckCount} in deck · {me.hand?.length ?? me.handCount} in hand · {me.discard.length} discarded
+            {me.deckTop !== undefined && <div style={{ paddingTop: 4 }}>Prescience — top of deck: <b>{me.deckTop ? CARD_BY_ID[me.deckTop]?.name : 'empty'}</b></div>}
+          </div>
+          {me.discard.length > 0 && (
+            <>
+              <div className="dn-lab" style={{ paddingTop: 6 }}>Discard pile</div>
+              <div className="dn-hand">
+                {me.discard.map((c, i) => (
+                  <div key={`${c}-${i}`} style={{ opacity: 0.85 }}>
+                    <DuneCard scene={scene} id={c} w={82} h={122} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          <button className="dn-btn" style={{ marginTop: 8 }} onClick={() => setShowMat(false)}>Close</button>
+        </div>
+      )}
 
       {/* intrigue drawer */}
       {showIntrigue && (
