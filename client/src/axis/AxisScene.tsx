@@ -51,7 +51,7 @@ const PIECE_TINT: Record<string, [number, number, number]> = {
   ussr: [0.3, 0.055, 0.075], // maroon (deep, not pink)
   japan: [0.38, 0.08, 0.012], // dark ruddy orange
   uk: [0.79, 0.70, 0.49],
-  italy: [0.48, 0.32, 0.19],
+  italy: [0.08, 0.04, 0.02], // dark chocolate brown
   usa: [0.31, 0.49, 0.23],
   china: [0.66, 0.79, 0.50],
 };
