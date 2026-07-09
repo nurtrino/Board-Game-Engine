@@ -139,9 +139,14 @@ lift).
 - [x] Rulebook secured (16pp official PDF from the assistant repo).
 - [x] Assistant repo cloned; lift list identified.
 - [ ] Map zone golden (subagent in flight).
-- [x] Rulebook read in full (digests below). One gap: NO bonus IPC amounts
-      are dropped by the PDF's font encoding — recover exact numbers from the
-      mod's National Setup Chart card BACKS during extraction.
+- [x] Rulebook read in full (digests below). NO bonus amounts recovered by
+      rendering p23 as an image (the PDF font drops digits in text extraction).
+- [x] Setup golden source found: the mod's 1941/1942 "Packup" memory bags
+      hold every setup piece WITH its saved board transform — zone-assign
+      against map.json for exact per-territory starting units. The mod has
+      NO setup-chart or reference cards (its 141 cards are just IPC money);
+      the phone's "personal card" will be built from our own layout +
+      rulebook data instead.
 - [ ] Setup counts per power per scenario: from the mod's National Setup
       Charts cards (SETUP side); National Objectives printed on the BACK of
       those same charts — both goldens come from the mod's 141 cards.
@@ -278,22 +283,28 @@ stay in staging for later.
 
 **Phase 7 — Collect Income**: national production value + bonus income.
 Capital enemy-held = collect nothing. No lending between powers.
-National Objectives (optional, per power, printed on setup-chart backs;
-bonus IPC AMOUNTS must be read from the mod's card backs — the PDF font
-drops the digits): USA "Arsenal of Democracy" (all 3 US territories;
-Philippines; France; 3+ of Midway/Wake/Hawaii/Solomons — each a separate
-bonus, Allied control), UK "British Empire" (all of E+W Canada, Gibraltar,
-Egypt, Australia, S. Africa; any originally-Japanese territory; France
-and/or Balkans), USSR "Great Patriotic War" (3+ of Norway/Finland/Poland/
-Bulgaria-Romania/Czech-Hungary/Balkans; no other Allied forces in
-Soviet-controlled territory AND control Archangel), Germany "Lebensraum"
-(all of France/NW Europe/Germany/Czech-Hungary/Bulgaria-Romania/Poland; 3+
-of Baltic States/East Poland/Ukraine/E. Ukraine/Belorussia; Karelia and/or
-Caucasus), Japan "Co-Prosperity Sphere" (all of Manchuria/Kiangsu/
-French Indo-China-Thailand; 4+ of Kwangtung/East Indies/Borneo/Philippines/
-New Guinea/Solomons; Hawaii/Australia/India any), Italy "Mare Nostrum"
-(all of Italy/Balkans/Morocco-Algeria/Libya AND no enemy surface warships
-in SZ 13/14/15; 3+ of Egypt/Trans-Jordan/France/Gibraltar).
+National Objectives (optional, per power; bonus values read from rendered
+rulebook p23 — EVERY objective pays 5 IPC except USSR's first which pays 10):
+- USA "Arsenal of Democracy": +5 all of W/C/E United States; +5 Philippines;
+  +5 France; +5 if 3+ of Midway/Wake/Hawaiian Is./Solomons (Allied control).
+- UK "British Empire": +5 all of E Canada/W Canada/Gibraltar/Egypt/
+  Australia/Union of South Africa; +5 any originally-Japanese territory;
+  +5 France and/or Balkans.
+- USSR "Great Patriotic War": +10 if 3+ of Norway/Finland/Poland/
+  Bulgaria-Romania/Czechoslovakia-Hungary/Balkans; +5 if no other Allied
+  forces in any Soviet-controlled territory AND Soviets control Archangel.
+- Germany "Lebensraum": +5 all of France/NW Europe/Germany/
+  Czechoslovakia-Hungary/Bulgaria-Romania/Poland; +5 if 3+ of Baltic
+  States/East Poland/Ukraine/Eastern Ukraine/Belorussia; +5 Karelia S.S.R.
+  and/or Caucasus.
+- Japan "Co-Prosperity Sphere": +5 all of Manchuria/Kiangsu/French
+  Indo-China-Thailand; +5 if 4+ of Kwangtung/East Indies/Borneo/
+  Philippines/New Guinea/Solomons; +5 Hawaiian Is./Australia/India any.
+- Italy "Mare Nostrum": +5 all of Italy/Balkans/Morocco-Algeria/Libya AND
+  no enemy surface warships in SZ 13/14/15; +5 if 3+ of Egypt/Trans-Jordan/
+  France/Gibraltar.
+All conditions are side-control ("Allied/Axis powers control") except
+USSR's second, which is Soviet-specific.
 
 **Unit profiles** (confirms assistant config): inf 3 IPC 1/2/1 (att 2 when
 paired 1:1 with artillery, attack only); art 4 2/2/1; tank 5 3/3/2 blitz;
