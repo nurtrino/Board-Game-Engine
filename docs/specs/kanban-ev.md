@@ -248,3 +248,21 @@ secretly picks 1 remaining award tile (immediate benefit).
       to those numbers via their sheet cells.
 - [ ] The 1 assetbundle — what mesh is inside (extract via UnityPy §2.2).
 - [ ] PP track geometry (ELEMENTS.Track 234f29) for score rendering.
+
+## 9. Ship gates (playbook 6.4b)
+
+- Rulebook UI-coverage audit RUN (July 2026). Every action-union field is
+  reachable from the device; fixes applied during the audit: the
+  upgrade-space benefit choice, double-upgrade as an explicit button,
+  vouchers offering every missing part, certification-space benefits
+  shown on the picker, and the final goal + factory goals listed on the
+  device. Known accepted simplifications: collect_parts always takes as
+  many as fit (leaving warehouse parts behind on purpose is exotic);
+  occupied workstations reject with an error toast instead of disabling.
+- Art verifications: factory-goal tiles need 2/3/4/5 per group (guid map
+  in board.json); workstation shifts print +2/+3 (+1/+2 Admin) matching
+  workstationShifts; the seventh design tile "does not feature a Part,
+  and cannot be used to upgrade" (rulebook p14) - engine already
+  enforces both sides.
+- 4-seat device-DOM smoke: tools/verify/kanban-ui-smoke.mjs (see memory
+  for the latest run result).
