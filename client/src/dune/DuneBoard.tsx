@@ -2,7 +2,7 @@
 // conflict troops), with the current conflict card, the imperium row and
 // player chips as HUD. Phones hold hands and make every move.
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   CARD_BY_ID, CONFLICT_BY_ID, FACTIONS, LEADER_BY_ID,
   type DuneView, type DuneSeat, type Faction,
@@ -38,8 +38,19 @@ const FACTION_LABEL: Record<Faction, string> = {
   emperor: 'EMP', guild: 'GLD', beneGesserit: 'BG', fremen: 'FRE',
 };
 
+/** A gold-outlined explanation note the host can toggle onto the board. */
+function GuideNote({ style, title, text }: { style: CSSProperties; title: string; text: string }) {
+  return (
+    <div className="ig-glass" style={{ position: 'absolute', padding: '10px 13px', borderRadius: 12, maxWidth: 250, border: '1px solid rgba(232,180,74,0.55)', zIndex: 20, ...style }}>
+      <div className="ig-lab" style={{ color: '#e8b450' }}>{title}</div>
+      <div style={{ fontSize: 12.5, opacity: 0.88, lineHeight: 1.45, paddingTop: 3 }}>{text}</div>
+    </div>
+  );
+}
+
 export function DuneBoard({ view }: { view: DuneView }) {
   const scene = useDuneScene();
+  const [guide, setGuide] = useState(false); // host can overlay explanations on the board
 
   // the TV voices actions, turnovers and the win
   const lastSeq = useRef(0);
@@ -201,6 +212,34 @@ export function DuneBoard({ view }: { view: DuneView }) {
             </div>
           )}
         </div>
+      )}
+
+      {/* host guide toggle: overlays plain-language explanations on the board */}
+      <button
+        className="ig-glass"
+        onClick={() => setGuide((g) => !g)}
+        style={{
+          position: 'absolute', bottom: 14, left: 14, padding: '9px 14px', borderRadius: 999, cursor: 'pointer', zIndex: 25,
+          font: '700 12px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase',
+          border: guide ? '1px solid rgba(232,180,74,0.6)' : undefined, color: guide ? '#e8b450' : '#e8ebf0',
+        }}
+      >{guide ? 'Hide guide' : 'Explain the board'}</button>
+
+      {guide && view.phase !== 'ended' && (
+        <>
+          <GuideNote style={{ top: '43%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 300, textAlign: 'center' }}
+            title="The board"
+            text="Players send agents to these spaces for resources, faction influence and to join the fight. First house to 10 victory points wins." />
+          <GuideNote style={{ top: 208, left: '50%', transform: 'translateX(-50%)' }}
+            title="This round's conflict"
+            text="The prize being fought over. Agents at combat spaces deploy troops; after everyone reveals, 1st and 2nd place (3rd with 4 players) claim the rewards." />
+          <GuideNote style={{ top: 92, right: 258 }}
+            title="The players"
+            text="Each panel: victory points, resources (solari, spice, water), garrison troops, intrigue cards, agents left, and the four faction influence tracks (EMP / GLD / BG / FRE)." />
+          <GuideNote style={{ bottom: 168, right: 14, maxWidth: 260 }}
+            title="Imperium row & reserve"
+            text="Cards to buy with persuasion on a reveal turn. The reserve piles (Foldspace, Liaison, The Spice Must Flow) are always available too." />
+        </>
       )}
     </div>
   );

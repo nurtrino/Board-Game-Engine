@@ -112,6 +112,19 @@ const CSS = `
 .dn-top { display: flex; gap: 8px; align-items: center; padding: 10px 12px 6px; flex-wrap: wrap; }
 .dn-res { display: flex; gap: 10px; font-size: 13px; opacity: 0.9; }
 .dn-main { flex: 1; overflow-y: auto; padding: 0 12px 12px; }
+
+/* main-screen two-column body: interactive left, the player board on the right.
+   The page itself never scrolls; the left column scrolls internally if needed. */
+.dn-body { flex: 1; min-height: 0; display: flex; gap: 12px; padding: 4px 12px 0; }
+.dn-left { flex: 1 1 54%; min-width: 0; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.dn-right { flex: 1 1 46%; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 4px; }
+.dn-mat-frame { flex: 1; min-height: 0; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; overflow: hidden; }
+@media (max-width: 720px) {
+  .dn-body { flex-direction: column; overflow-y: auto; }
+  .dn-left { overflow: visible; }
+  .dn-right { flex: none; }
+  .dn-mat-frame { flex: none; height: 42vh; }
+}
 .dn-hand { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 8px; }
 .dn-card { border: none; background: none; padding: 0; cursor: pointer; position: relative; border-radius: 8px; }
 .dn-card.sel { outline: 3px solid #e8ebf0; outline-offset: 2px; }
@@ -505,96 +518,101 @@ export function DunePlay({ view, act, error }: {
         </div>
       </div>
 
-      <div className="dn-main">
-        {/* the player mat: leader card, agents, troops, resources as real objects */}
-        <div style={{ paddingTop: 6, display: 'flex', alignItems: 'baseline', gap: 8 }}>
-          <span className="dn-lab">Your board</span>
-          <span style={{ fontSize: 11, opacity: 0.45 }}>drag to look around · tap House for the full detail</span>
-        </div>
-        <div data-tour="board" style={{ border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, overflow: 'hidden' }}>
-          <DuneMat scene={scene} view={view} me={me} height="42vh" />
-        </div>
-
-        {/* status line */}
-        <div className="dn-lab" style={{ padding: '6px 0' }}>
-          {view.phase === 'ended' ? `${view.players.find((p) => p.color === view.winner)?.name} wins`
-            : waitingOn ? `${waitingOn.name} is deciding`
-            : view.phase === 'combat' ? (view.turn === me.seat ? 'Combat · play a card or pass' : `Combat · ${view.players[view.turn].name} bids`)
-            : myTurn ? (me.actedThisTurn != null ? (revealing ? 'Buy cards, then end your turn' : 'End your turn') : canAgent ? 'Play a card for an agent turn, or reveal' : 'Reveal your hand')
-            : `${view.players[view.turn].name} is acting`}
-        </div>
-
-        {/* combat: everyone's strength */}
-        {view.phase === 'combat' && (
-          <div style={{ display: 'flex', gap: 12, fontSize: 13, paddingBottom: 6, flexWrap: 'wrap' }}>
-            {view.players.filter((p) => p.inConflict > 0 || p.strength > 0).map((p) => (
-              <span key={p.seat} style={{ fontWeight: p.seat === me.seat ? 800 : 400 }}>
-                {p.name}: {p.strength} strength
-              </span>
-            ))}
+      <div className="dn-body">
+        {/* left column: everything you act on */}
+        <div className="dn-left">
+          {/* status line */}
+          <div className="dn-lab" style={{ padding: '2px 0' }}>
+            {view.phase === 'ended' ? `${view.players.find((p) => p.color === view.winner)?.name} wins`
+              : waitingOn ? `${waitingOn.name} is deciding`
+              : view.phase === 'combat' ? (view.turn === me.seat ? 'Combat · play a card or pass' : `Combat · ${view.players[view.turn].name} bids`)
+              : myTurn ? (me.actedThisTurn != null ? (revealing ? 'Buy cards, then end your turn' : 'End your turn') : canAgent ? 'Play a card for an agent turn, or reveal' : 'Reveal your hand')
+              : `${view.players[view.turn].name} is acting`}
           </div>
-        )}
 
-        {/* current conflict, always in reach on the device */}
-        {view.conflict && view.phase !== 'ended' && (
-          <div data-tour="conflict" style={{ display: 'flex', gap: 12, alignItems: 'flex-end', paddingBottom: 8 }}>
-            <DuneCard scene={scene} id={view.conflict} w={170} h={260} />
-            <span className="dn-lab" style={{ paddingBottom: 6 }}>Conflict · round {view.round}</span>
-          </div>
-        )}
-
-        {/* reveal strip: acquire targets */}
-        {revealing && (
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingBottom: 8 }}>
-            {view.imperiumRow.map((c, i) => c && (
-              <button key={i} className="dn-card" onClick={() => send({ type: 'acquire', row: i })}
-                style={{ opacity: (CARD_BY_ID[c]?.cost ?? 99) <= me.persuasion ? 1 : 0.4 }}>
-                <DuneCard scene={scene} id={c} w={92} h={138} />
-                <div style={{ fontSize: 11, textAlign: 'center', opacity: 0.75 }}>{CARD_BY_ID[c]?.cost}</div>
-              </button>
-            ))}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <button className="dn-btn" disabled={me.persuasion < 2 || view.reserve.arrakisLiaison <= 0} onClick={() => send({ type: 'acquire', reserve: 'arrakisLiaison' })}>Liaison (2)</button>
-              <button className="dn-btn" disabled={me.persuasion < 9 - me.spiceMustFlowBonus || view.reserve.theSpiceMustFlow <= 0} onClick={() => send({ type: 'acquire', reserve: 'theSpiceMustFlow' })}>
-                Spice Must Flow ({9 - (me.spiceMustFlowBonus ?? 0)})
-              </button>
-              {me.helenaAside && (
-                <button className="dn-btn" onClick={() => send({ type: 'acquire', helena: true })}>
-                  {CARD_BY_ID[me.helenaAside.card]?.name} ({Math.max(0, (CARD_BY_ID[me.helenaAside.card]?.cost ?? 0) - 1)})
-                </button>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* hand */}
-        {(me.hand?.length ?? 0) > 0 && (
-          <>
-            <div className="dn-lab">Hand</div>
-            <div className="dn-hand" data-tour="hand">
-              {(me.hand ?? []).map((c, i) => (
-                <button key={`${c}-${i}`} className={`dn-card${selected === c ? ' sel' : ''}`}
-                  onClick={() => { if (canAgent) { setSelected(c); setUseBox(true); playSfx('click'); } }}>
-                  <DuneCard scene={scene} id={c} w={104} h={156} />
-                </button>
+          {/* combat: everyone's strength */}
+          {view.phase === 'combat' && (
+            <div style={{ display: 'flex', gap: 12, fontSize: 13, paddingBottom: 4, flexWrap: 'wrap' }}>
+              {view.players.filter((p) => p.inConflict > 0 || p.strength > 0).map((p) => (
+                <span key={p.seat} style={{ fontWeight: p.seat === me.seat ? 800 : 400 }}>
+                  {p.name}: {p.strength} strength
+                </span>
               ))}
             </div>
-          </>
-        )}
+          )}
 
-        {/* in play */}
-        {me.inPlay.length > 0 && (
-          <>
-            <div className="dn-lab" style={{ paddingTop: 10 }}>In play</div>
-            <div className="dn-hand">
-              {me.inPlay.map((c, i) => (
-                <div key={`${c}-${i}`} style={{ opacity: 0.8 }}>
-                  <DuneCard scene={scene} id={c} w={82} h={122} />
-                </div>
-              ))}
+          {/* current conflict */}
+          {view.conflict && view.phase !== 'ended' && (
+            <div data-tour="conflict" style={{ display: 'flex', gap: 12, alignItems: 'flex-end', paddingBottom: 6 }}>
+              <DuneCard scene={scene} id={view.conflict} w={150} h={230} />
+              <span className="dn-lab" style={{ paddingBottom: 6 }}>Conflict · round {view.round}</span>
             </div>
-          </>
-        )}
+          )}
+
+          {/* reveal strip: acquire targets */}
+          {revealing && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingBottom: 6 }}>
+              {view.imperiumRow.map((c, i) => c && (
+                <button key={i} className="dn-card" onClick={() => send({ type: 'acquire', row: i })}
+                  style={{ opacity: (CARD_BY_ID[c]?.cost ?? 99) <= me.persuasion ? 1 : 0.4 }}>
+                  <DuneCard scene={scene} id={c} w={92} h={138} />
+                  <div style={{ fontSize: 11, textAlign: 'center', opacity: 0.75 }}>{CARD_BY_ID[c]?.cost}</div>
+                </button>
+              ))}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <button className="dn-btn" disabled={me.persuasion < 2 || view.reserve.arrakisLiaison <= 0} onClick={() => send({ type: 'acquire', reserve: 'arrakisLiaison' })}>Liaison (2)</button>
+                <button className="dn-btn" disabled={me.persuasion < 9 - me.spiceMustFlowBonus || view.reserve.theSpiceMustFlow <= 0} onClick={() => send({ type: 'acquire', reserve: 'theSpiceMustFlow' })}>
+                  Spice Must Flow ({9 - (me.spiceMustFlowBonus ?? 0)})
+                </button>
+                {me.helenaAside && (
+                  <button className="dn-btn" onClick={() => send({ type: 'acquire', helena: true })}>
+                    {CARD_BY_ID[me.helenaAside.card]?.name} ({Math.max(0, (CARD_BY_ID[me.helenaAside.card]?.cost ?? 0) - 1)})
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* hand */}
+          {(me.hand?.length ?? 0) > 0 && (
+            <>
+              <div className="dn-lab">Hand</div>
+              <div className="dn-hand" data-tour="hand">
+                {(me.hand ?? []).map((c, i) => (
+                  <button key={`${c}-${i}`} className={`dn-card${selected === c ? ' sel' : ''}`}
+                    onClick={() => { if (canAgent) { setSelected(c); setUseBox(true); playSfx('click'); } }}>
+                    <DuneCard scene={scene} id={c} w={104} h={156} />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* in play */}
+          {me.inPlay.length > 0 && (
+            <>
+              <div className="dn-lab" style={{ paddingTop: 8 }}>In play</div>
+              <div className="dn-hand">
+                {me.inPlay.map((c, i) => (
+                  <div key={`${c}-${i}`} style={{ opacity: 0.8 }}>
+                    <DuneCard scene={scene} id={c} w={82} h={122} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* right column: the player board, expanded to fill the height */}
+        <div className="dn-right" data-tour="board">
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, paddingLeft: 2 }}>
+            <span className="dn-lab">Your board</span>
+            <span style={{ fontSize: 11, opacity: 0.45 }}>drag to look around · House for the full detail</span>
+          </div>
+          <div className="dn-mat-frame">
+            <DuneMat scene={scene} view={view} me={me} height="100%" />
+          </div>
+        </div>
       </div>
 
       {/* actions */}
