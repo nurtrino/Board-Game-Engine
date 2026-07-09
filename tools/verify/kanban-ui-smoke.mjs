@@ -64,7 +64,7 @@ function tickInPage() {
 
   // all actionable controls except the help button
   const opts = enabled(q('button.kb-opt'));
-  const btns = enabled(q('button.kb-btn')).filter((b) => b.textContent.trim() !== '?');
+  const btns = enabled(q('button.kb-btn')).filter((b) => !['?', 'FACTORY', 'MY MAT'].includes(b.textContent.trim().toUpperCase()));
   const endTurn = btns.find((b) => /END TURN/i.test(b.textContent));
   const pass = btns.find((b) => /^PASS$/i.test(b.textContent.trim()));
   const tasks = btns.filter((b) => b !== endTurn && b !== pass);

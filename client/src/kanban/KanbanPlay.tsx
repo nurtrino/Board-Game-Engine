@@ -399,7 +399,7 @@ export function KanbanPlay({ view, act, error }: {
 
       {/* the completion strip */}
       <div className="kb-strip">
-        {picks.length > 0 && !armed && (
+        {picks.length > 0 && (
           <div className="kb-row" style={{ opacity: 0.9 }}>
             {picks.map((pt) => (
               <button key={pt.id} className="kb-btn" style={{ padding: '7px 10px', fontSize: 11 }} onClick={() => onPick(pt.id)}>
