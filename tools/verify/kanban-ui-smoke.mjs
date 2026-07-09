@@ -117,8 +117,7 @@ try {
       }
       if (did) { acts++; lastAct = Date.now(); }
     }
-    const d = await pages[0].evaluate(() => document.body.textContent.match(/Day (\d+)/)?.[1] ?? '').catch(() => '');
-    if (d && d !== day) { day = d; console.log(`day ${d} · ${acts} acts`); }
+    if (acts > 0 && acts % 200 === 0 && day !== String(acts)) { day = String(acts); console.log(`${acts} acts · ${Math.round((Date.now() - started) / 1000)}s`); }
     if (Date.now() - lastAct > STALL_MS) {
       for (let i = 0; i < SEATS; i++) {
         const state = await pages[i].evaluate(() => ({
@@ -132,7 +131,7 @@ try {
       process.exit(1);
     }
     if (Date.now() - started > HARD_MS) { console.error('UI SMOKE TIMEOUT'); process.exit(1); }
-    await new Promise((r) => setTimeout(r, 300));
+    await new Promise((r) => setTimeout(r, 140));
   }
 } finally {
   await browser.close();

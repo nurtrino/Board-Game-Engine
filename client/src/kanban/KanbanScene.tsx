@@ -180,6 +180,13 @@ function Pieces({ scene, view }: { scene: KanbanSceneDef; view: KanbanView }) {
         const stack = view.players.filter((q) => q.seat < p.seat && q.training[d] === lvl).length;
         return <Disc key={`t-${p.seat}-${d}`} x={spot.x} z={spot.z} tint={SEAT_TINT[p.color]} lift={stack * 0.24} r={0.5} />;
       }))}
+      {/* certification track markers (sections measured on the art) */}
+      {view.players.map((p) => {
+        if (p.cert.space < 0) return null;
+        const px = 330 + 304 * p.cert.section + 45 + 70 * (3 - p.cert.space);
+        const x = xAt(1950), z = zAt(px);
+        return <Disc key={`cert-${p.seat}`} x={x} z={z} tint={SEAT_TINT[p.color]} r={0.45} />;
+      })}
       {/* shift bank + week markers */}
       {view.players.map((p) => (
         <Disc key={`sb-${p.seat}`} x={S.Shifts.Positions[Math.min(p.bankedShifts, 10)].x}
