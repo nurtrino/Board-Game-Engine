@@ -166,18 +166,49 @@ secretly picks 1 remaining award tile (immediate benefit).
 - Sandra is engine-automated (not a bot seat): moves, evaluates,
   departmental tasks, exactly per pp17-18.
 
-## 7. Open questions / to verify during extraction
+## 7. Scout findings (July 2026)
 
-- [ ] What "All Expansions" adds in this mod vs the retail base box —
-      diff the object list against the base-game mod (2582375670 /
-      2814175574) and stage extras as future create-options.
-- [ ] Warehouse/assembly/test-track spot coordinates from SPOTS/Zones
-      tables; board fit method (§3) — likely the mod's own labelled
-      zones (method D) since ScriptingTriggers abound (59).
-- [ ] Award tile effects, garage bonus tiles (basic + expert), upgrade
-      space benefits, certification space benefits, performance goal
-      cards (32), final goal tiles (11), kanban order cards (12), factory
-      goals (12) — transcribe each from art + Lua + reference book PDF
-      (the mod carries rulebook + reference/solo book).
-- [ ] Demand tiles (5), design tile distribution (7 per model × 5).
+- "All Expansions" = the mod's `GAME.Expansions` pair: **Speed Charger**
+  (charging boards, 5 special abilities, 6 extra performance goals, 4
+  extra final goals) and **Special Garage Bonuses** (drafted 5th-garage
+  tiles). Variants: Nice Sandra / The Planner / Expert Tuning / Delayed
+  Tuning. All six become create-options later; base launch has none.
+- The reference book PDF (with the solo rules) lists ALL 32 base
+  performance goals, all 11 base final goals, both expansions, and the
+  certification benefits as text — no card-art transcription needed for
+  those. Solo colleagues (Mr Lacerda / Mr Turczi) out of scope.
+- The global Lua carries exact world geometry for everything: department
+  workstations (SPOTS.Departments, 2 per dept + 3 admin), training tracks
+  (6 spots × 5 depts), meeting room, shift bank (11), week track (4),
+  calendar, pace/demand/upgrade-value spots, warehouse part grids
+  (PARTS.Positions.Logistics 6×6), recycling (6), design row zones (12),
+  and the assembly conveyor as an explicit displacement graph
+  (CARS.Zones.Assembly: Number 11..33 with Targets arrows; Stocks maps
+  line→model: 1=Concept 2=SUV 3=City 4=Truck 5=Sport).
+- The 12 kanban order cards' contents are data (PARTS.Cards.Elements
+  .Parts arrays, 1-indexed into PARTS.Names: Autopilots, Batteries,
+  Bodies, Drivetrains, Electronics, Motors). Demand tiles are data
+  (DEMANDS.Elements: City 3, Concept 1, Sport 1, SUV 3, Truck 2 speechs).
+- Car models by Lua index: 1=City 2=Concept 3=Sport 4=SUV 5=Truck
+  (CARS.Names); note Stocks' Car index uses the same list.
+- Per-player Lua blocks (PLAYERS.<Color>): board GUIDs (Main +
+  Expansion), 5 basic + 5 expert garage bonus tiles, markers
+  (certification/score/shifts/5 training), meeple, speech tokens, and
+  player-board slot positions (books/designs/parts/vouchers) for the mat.
+- ELEMENTS: board b0e080, table dcceeb, Sandra meeple 68325b + reference
+  77b01c, week/meeting/calendar markers, 6 upgrade-value markers, turn
+  sound 948558. GOALS: 38 goal cards (32 base + 6 charger), factory goal
+  tiles (cars/certifications/upgrades pairs), final goals (11 basic +
+  4 expansion).
+
+## 8. Still to transcribe during extraction
+
+- [ ] Award tile effects (20) and garage bonus tiles (basic/expert ×5
+      per player) — icon combos on tile art; read the staged tile faces.
+- [ ] Certification-track space benefits and upgrade-space printed
+      benefits — read from the board art.
+- [ ] Performance goal card→effect mapping: the reference book gives 32
+      numbered descriptions; map card GUIDs (GOALS.Cards.Elements order)
+      to those numbers via their sheet cells.
 - [ ] The 1 assetbundle — what mesh is inside (extract via UnityPy §2.2).
+- [ ] PP track geometry (ELEMENTS.Track 234f29) for score rendering.
