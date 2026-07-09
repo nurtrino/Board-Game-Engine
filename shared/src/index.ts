@@ -11,6 +11,3 @@ export * from './darktower/actions.js';
 export * from './darktower/territories.js';
 export * from './dune/state.js';
 export * from './dune/actions.js';
-export * from './kanban/state.js';
-export * from './kanban/actions.js';
-export * from './kanban/bot.js';

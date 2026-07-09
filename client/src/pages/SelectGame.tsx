@@ -35,11 +35,6 @@ const GAMES = [
     name: 'Dune: Imperium',
     logo: '/dune-logo.jpg',
   },
-  {
-    id: 'kanban',
-    name: 'Kanban EV',
-    logo: '/kanban-logo.jpg',
-  },
 ];
 
 const dateOf = (t: number) =>

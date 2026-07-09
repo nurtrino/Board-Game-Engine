@@ -14,7 +14,6 @@ import { TtrBoard } from '../ttr/TtrBoard';
 import { TrekBoard } from '../trek/TrekBoard';
 import { DtBoard } from '../darktower/DtBoard';
 import { DuneBoard } from '../dune/DuneBoard';
-import { KanbanBoard } from '../kanban/KanbanBoard';
 
 export function gameSceneState(view: BrassView): GameSceneState {
   return {
@@ -247,7 +246,6 @@ export function BoardPage() {
     if (view.game === 'trek') return <TrekBoard view={view} />;
     if (view.game === 'darktower') return <DtBoard view={view} />;
     if (view.game === 'dune') return <DuneBoard view={view} />;
-    if (view.game === 'kanban') return <KanbanBoard view={view} />;
     return <TvBoard view={view} />;
   }
 
