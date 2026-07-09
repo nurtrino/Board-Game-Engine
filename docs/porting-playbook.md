@@ -69,6 +69,51 @@ not `indexOf('})')` (which can truncate). Cross-check the count (e.g. TTR is 452
 snaps — an old comment said 468; it's stale) and that every referenced index
 resolves.
 
+### 2.1 Getting the assets (the dead-host trap)
+
+Old mods reference `http://cloud-3.steamusercontent.com/...` which is **dead**.
+Valve migrated the same paths to `https://steamusercontent-a.akamaihd.net`.
+`tools/tts-extract/download-mod-assets.mjs <workshopId>` walks the save, rewrites
+that host, and downloads every referenced asset into the TTS cache so the
+extractors can run offline. The cache layout is:
+
+```
+Mods/{Images,Models,PDF,Assetbundles}/<munged-url>.<ext>
+```
+
+where `munge = url.replace(/[^A-Za-z0-9]/g, '')`. Images are `.png`/`.jpg`
+(sniff the first byte: `0x89` → png), models `.obj`, bundles `.unity3d`, PDFs
+`.PDF`. If a download 404s, the URL hash is wrong — don't invent the tail; copy
+it verbatim from the save.
+
+### 2.2 Meshes, textures and audio inside Unity assetbundles
+
+Some mods ship a `Custom_Assetbundle` (`.unity3d`) instead of plain OBJs — Dark
+Tower's LCD, rotating reel, and all its sounds live in bundles. Extract with
+**UnityPy** (`pip install UnityPy`):
+
+- `tools/tts-extract/inspect-bundles.py` lists every object (Mesh / Texture2D /
+  AudioClip / GameObject) with sizes so you can identify what's inside.
+- `tools/tts-extract/extract-darktower.py` is the template: iterate
+  `env.objects`, `obj.read()`, save `d.image` (Texture2D) / `d.samples` (AudioClip
+  `.wav`) / mesh verts. **Trigger/effect order matters** for TTS assetbundles —
+  the sound index the Lua plays (`playTriggerEffect(n)`) maps to the bundle's
+  `m_Container` order (alphabetical asset path), *not* object-enumeration order.
+  Read the container to get the right index→name map.
+
+Not everything is in a bundle: Dark Tower's 13.6k-vert tower is a **plain OBJ**
+in `Models/`, and its **painted board is a hidden `Custom_Token`** (a giant
+scale-7 image object, GUID `706f42`) — see §4.2. Always scan *all* textured
+objects before concluding an asset is missing or fabricating a placeholder.
+
+### 2.3 Rulebooks
+
+The mod's `CustomPDF` is the official rulebook — stage it to
+`client/public/<game>/rulebook.pdf` and link it from the game's `GameIntro`. To
+*read* a PDF while porting, use **pymupdf** (`fitz`) to render/`get_text`; the
+`Read` tool needs poppler which isn't installed. Wrap stdout in a utf-8
+`TextIOWrapper` or cp1252 will throw on box-drawing glyphs.
+
 ---
 
 ## 3. Map fit — the important, non-obvious part
@@ -130,7 +175,7 @@ verifies correct (see §6), it's this, not the data.
 - Seat a mesh on the board by its bounding box (`BOARD_Y - minY*scale`), and
   centre it in X (`-midX`) — but note that offset rotates with the piece's yaw.
 
-### Black-background board (masking)
+### 4.1 Black-background board (masking)
 
 To replace a mod's green felt table art with black while keeping alignment:
 mask the board diffuse to the **framed map only**, black everywhere else, at the
@@ -138,6 +183,64 @@ mask the board diffuse to the **framed map only**, black everywhere else, at the
 map rectangle by scanning inward for the felt colour (e.g. green) from the
 centre outward. Then frame the camera on the map rect so it fills the view with
 black bands top/bottom/sides for the HUD. Brass and Trekking both do this.
+
+### 4.2 Piece placement pitfalls (every one of these got sent back at least once)
+
+- **Seat pieces on the board surface — nothing floats.** A mod's object Y is
+  relative to *its* table, not your board plane, so rendering pieces at the raw
+  `def.pos[1]` leaves them hovering. Seat every mesh by its bounding box:
+  `y = BOARD_Y - bbox.min.y * scale` (a `seatY` prop on the shared `Model`).
+  Buildings, tokens, stones — all of them. "Everything is floating above it" is
+  the #1 rejection.
+- **`centerXZ` for offset OBJ origins.** Some meshes (Dark Tower's tower) have
+  their origin off-centre, so even at `[0,y,0]` they sit off the board middle.
+  Recenter by the bbox mid. Gotcha: the primitive's position applies **after**
+  its local 180° Y turn, which maps `(mx,mz)→(-mx,-mz)` — so cancel with
+  `+mid`, not `-mid`.
+- **Screen/billboard planes must be proud of the *actual* mesh face.** Dark
+  Tower's reel window + LCD kept clipping inside the tower because I guessed
+  their Z. Measure the mesh's front-face Z **per height band** (sample verts,
+  bucket by world-Y) — the tower is ~2.5 deep at the base but only ~1.85 up
+  high. Place the plane just proud of the face at the right height, or it
+  disappears inside the body.
+- **The real board art may be a hidden object.** Don't fabricate a placeholder
+  board (I did, then found the mod's painted board was a scale-7 `Custom_Token`).
+  If the surface "isn't rendering," it's usually a black void because you have
+  no art, not a load failure — dump *all* textured objects and use the mod's.
+  Board art often has transparency outside the disc → render with `alphaTest`.
+
+### 4.3 State-driven, pick-up-and-drag pieces
+
+For games where players physically move a pawn (Dark Tower), make the token a
+piece of **engine state**, not a cosmetic derived from `quad`:
+
+- Add `spot: {x,z}` to the player, a `move_token` action, and validate it
+  (own turn, right phase, clamp to the playable ring). It's a silent position
+  sync — no tower event.
+- Client: raycast a horizontal plane at board height for the drop point, lift
+  the mesh while held, and **disable `OrbitControls` while dragging** (a
+  `dragging` flag) or the camera fights the drag.
+- **Z-sign is the subtle bug.** Tokens render at `render z = -spot.z`; the mod's
+  building models render at `render z = -world.z` (`pos3`). So a token's `spot`
+  must equal the *world* coords of the thing it should sit on — **not** the
+  negated value. I negated the citadel z's and every player spawned one kingdom
+  away (Red on Durnin's badge instead of Arisilon's). Verify spawns with a
+  4-player game and read the printed labels.
+- Snap-backs: capture `turnSpot` at turn start; lost / cursed / blocked-frontier
+  return the token there (mirrors the mod's `tokenX/tokenZ`).
+
+### 4.4 Reproduce the mod's own device UI when it has one
+
+If the mod author built a control surface (Dark Tower's electronic panel with
+its 12 coloured buttons, LCD, and rotating reel), **reproduce it faithfully**
+rather than inventing a generic action list — the owner wants the authentic
+object. Crop the printed panel, keep its colours/labels, make the real buttons
+pressable and phase-aware, and drive the LCD/reel from the engine's step list.
+When an action resolves, **fly the camera to the tower and voice it there** (the
+engine emits `{pic,lcd,sfx,ms}` steps; a `useTowerDisplay` hook exposes an
+`active` flag the view uses to set the camera aim and play the sound). Sound
+comes "through" the focused board; keep the phones silent so a TV+phones table
+doesn't double up.
 
 ---
 
@@ -183,6 +286,47 @@ black bands top/bottom/sides for the HUD. Brass and Trekking both do this.
 **Show deck** — every card game's device has a button to view the full card
 sheets as a reference.
 
+**Authenticity over convenience** — use the mod's *real* meshes, textures,
+sounds, card art, and board; reproduce the physical object (down to a game's
+electronic panel). Fabricated/placeholder art is only ever a stopgap and will be
+replaced the moment the real asset is found. Real 3D with an orbit camera, never
+2D sprites.
+
+**Respect the mod's design, don't over-engineer rules** — Dark Tower is
+honor-system on board position, so we keep its exact electronic brain and expose
+every action every turn instead of inventing a movement graph. Enforce what the
+game enforces (Brass is fully enforced); don't add constraints the physical game
+doesn't have. But **do** disallow actions that are simply illegal in the current
+state (you can't "fight" when there's no fight) — reject sub-phase actions
+outside their phase and grey out the buttons.
+
+**Cards read upright** — portrait, not lying on their side. Mod card sheets
+often store art rotated inside the cell; render it upright in a portrait frame.
+The personal hand fans vertically.
+
+**It must fit — no scrolling the personal board.** Size the device rail so the
+readout, controls, and the player's card all fit an iPad without scrolling; crop
+decorative header art if needed.
+
+### 5.1 Dislikes — the things that come back (fix before showing)
+
+- **Floating pieces.** Anything not seated flat on the board (§4.2).
+- **Wrong / mirrored placement.** Pieces upside-down, on the wrong slot, or
+  spawns in the wrong kingdom (§4.3 z-sign).
+- **Fabricated art when the real asset exists** in the mod — a black-void board,
+  a made-up board face, a placeholder logo.
+- **A game's own screen not working** — a floating/blank LCD, a reel that shows
+  nothing, sound that doesn't play "through" the tower.
+- **Illegal actions offered** — buttons live when the action can't legally fire.
+- **Cards sideways**, hands horizontal, art rotated wrong.
+- **Scrolling** to see your own board/card.
+- **Emoji, em dashes, a hardcoded game name** in the lobby, a dot instead of an
+  outline for seat colour — the copy/HUD rules in §5 are hard rules.
+
+Expect terse, punch-list feedback ("the board is fixed, everything is floating
+above it", "red is spawning in the wrong place", "make the hand vertical"). Each
+item is real; fix all of them, then re-verify with a screenshot before replying.
+
 ---
 
 ## 6. Verification (how to prove it before the owner looks)
@@ -205,18 +349,84 @@ the *data and geometry* are right and hand him a working build.
   "3D render wrong": if the overlay is dead-on but the running board looks off,
   it's a render/parallax issue (§3), not the data.
 - **DOM checks** — for HTML/HUD, `preview_snapshot`/`preview_eval` confirm
-  structure and that images load. **Screenshots frequently time out on WebGL
-  canvases** — don't rely on `preview_screenshot` for 3D scenes.
+  structure and that images load. The MCP `preview_screenshot` often times out
+  on a live WebGL canvas — use the puppeteer drivers below instead, which
+  render 3D reliably (they launch Chrome with swiftshader GL flags).
 - Golden ↔ `scene.json` ↔ `shared/board-data.json` must agree (snaps, route
   groupings, transform).
 
-### Gotchas that cost time here
+### 6.1 Runtime & visual verification tooling (`tools/verify/`)
 
-- `sharp` can't write to `/tmp` on Windows — use the session scratchpad dir.
-- Run dedicated file/search tools, not shell `find`/`grep`, per repo rules.
-- A **parallel session** may be editing the repo. `git status` before
-  committing; **add only your own files** and leave the other session's
-  (e.g. Dark Tower files) untouched.
+This is how you actually see the 3D board and prove a full game plays:
+
+- **`shoot.mjs <url> <out.png> [waitMs]`** — screenshots any page (TV board
+  included) at 1280×800. Every renderer honours a **`?cam=x,z,h[,y]`** query
+  override so you can aim the camera at a specific spot/height for a close-up
+  (e.g. frame a tower window, a citadel, a piece cluster). This is the primary
+  way to zoom-verify placement.
+- **`phone-shot.mjs` / `dtphone-shot.mjs <base> <room> <token> <out> [waitMs]`**
+  — screenshots a device (`/play/:room`) by injecting the seat token into
+  `localStorage` so it reconnects into that seat. Use the token the server
+  returns on `join`.
+- **`page-errors.mjs <url> <out> [waitMs]`** — loads a page and dumps console
+  errors/warnings, failed requests, and 4xx/5xx responses, then screenshots.
+  First thing to run when something "isn't rendering" — it tells you load
+  failure vs. black-void-with-no-art in seconds.
+- **Live WS smoke tests** (`trek-smoke.mjs`, `dt-smoke.mjs <port>`) — a headless
+  driver creates a room, joins N players, and plays a **full game through the
+  real server**, asserting redaction and turn flow. This catches
+  engine↔server↔protocol bugs that unit tests can't.
+- To set up a room to screenshot: a tiny `ws` script (create_room → join →
+  start; the server pads with CPU seats). Grab `roomId` + `playerToken` from the
+  messages.
+
+### 6.2 Runtime gotchas that cost real time
+
+- **Restart the preview server after any `shared/` (engine or protocol) change.**
+  `tsx` does not hot-reload the workspace dep — a stale server silently serves
+  the old engine and your "fix" looks broken.
+- **The room creator's socket is also a watcher**, so it receives a
+  neutral/TV-redacted state *and* its seat's state. Smoke drivers must filter on
+  `view.you === mySeat`, or they read the redacted frame and think their own
+  hand is hidden.
+- **Detect action completion by watching `lastEvent.seq`** (or a small state
+  hash), not by sleeping. Actions with multi-step tower playback finish
+  server-side immediately but animate on the client.
+- **`sharp` applies `resize`/`rotate` BEFORE `composite`/`extract` within one
+  pipeline.** For a contact sheet or crop-then-rotate, do `extract().toBuffer()`
+  first, then a **second** `sharp(buf).rotate().resize()` pass — otherwise it
+  rotates the whole source and your crop lands in the wrong place, or composite
+  throws "image to composite must have same dimensions or smaller."
+- **`export *` name collisions** across engines silently drop symbols — `RULES`
+  existed in both TTR and Trekking; rename per-game (`TREK_RULES`,
+  `TTR_RULES as RULES`). Grep for duplicate exported names before wiring a new
+  engine into `shared/src/index.ts`.
+- **Writing files via PowerShell mangles UTF-8** (em dash → `â€"`, BOM prepended).
+  Use the `Write` tool or a node script for any file with non-ASCII, and grep
+  for mojibake afterward.
+- Driver scripts must live under `tools/verify/` (which has `ws`/`puppeteer`
+  installed); a script in `/tmp` or the scratchpad can't resolve those modules.
+  Ad-hoc `sharp` scripts can't resolve `sharp` from outside the repo either —
+  run them from the repo root or `createRequire` the repo's copy.
+- `sharp` can't write to `/tmp` on Windows — write to the session scratchpad dir.
+- Use the dedicated file/search tools, not shell `find`/`grep`, per repo rules.
+
+### 6.3 Engine test pattern (`shared/src/<game>/<game>-test.ts`)
+
+Every engine gets a test file that runs three things and `process.exit(fail?1:0)`:
+
+1. **Bot playthroughs at each player count** — a greedy/random policy plays full
+   games. **Give the bot a goal or the game stalls** (Dark Tower bots must build
+   ~55 warriors before storming the tower, or they loop forever losing).
+2. **Conservation invariants after every action** — cards/pieces/stones summed
+   across deck+discard+hands+board must equal the constant total; catches
+   dupe/loss bugs instantly.
+3. **Directed rules tests** — one assertion per rule/edge case (tie-break cancels,
+   out-of-phase action rejected, curse-then-eat order, etc.), cross-checked
+   against the mod Lua's line refs.
+
+Use a **seeded RNG stream** in the engine (advance a `rolls` counter, hash
+`seed ^ rolls`) so saves replay identically and tests are deterministic.
 
 ---
 
@@ -236,21 +446,31 @@ the *data and geometry* are right and hand him a working build.
 ## 8. Checklist for a new game
 
 1. Find the mod cache JSON; confirm `LuaScript` + `ObjectStates` are present.
-2. Write `extract-<game>.mjs`: parse the Lua tables (brace-match blocks) →
-   golden (routes/snaps/zones/cards/setup) + stage assets + `scene.json`.
-   Assert counts and full index coverage.
-3. Decide the map situation (§3 A/B/C). If A, write `fit-<game>-map.mjs`
+   `download-mod-assets.mjs <id>` to fetch assets (rewrites the dead host, §2.1).
+2. Read the Lua **fully** and write a spec in `docs/specs/<game>.md` with line
+   refs for every rule before coding — it's the golden source, not memory/web.
+3. Write `extract-<game>.mjs`: parse the Lua tables (brace-match blocks) →
+   golden + stage assets + `scene.json`. Extract Unity bundles with UnityPy if
+   present (§2.2); stage the rulebook PDF (§2.3). Assert counts and full index
+   coverage. Scan **all** textured objects for the real board/pieces.
+4. Decide the map situation (§3 A/B/C). If A, write `fit-<game>-map.mjs`
    (homography) and render the map as a warped mesh; if B, use the art's own
    pixel↔world mapping; if C, no fit.
-4. Build the engine in `shared/src/<game>/` (state + actions + view) and add it
-   to the server `engines` registry and `GAME_SEATS`.
-5. Build the TV board + device components, reusing the `ig-*` HUD, the sound
-   hooks (action/turn/win on TV, click/error on device), the whose-turn
-   indicator, and a Show-deck button.
-6. Add the game tile to `SelectGame`, and make sure the lobby is game-aware.
-7. Verify per §6 (snap match, fit residual, round-trip, overlay, build) and
-   hand the owner a running build to eyeball.
-8. Commit only your files; push to `origin main`.
+5. Build the engine in `shared/src/<game>/` (state + actions + view + a seeded
+   RNG stream). Write `<game>-test.ts` (bot playthroughs + invariants + directed
+   rules, §6.3). Export from `shared/src/index.ts` — grep for `export *` name
+   collisions first (§6.2).
+6. Register in the server `engines` registry + `GAME_SEATS`; add a
+   `<game>BotAct` and wire it into `scheduleBots` (~1.8–2.6s pace).
+7. Build the TV board + device components: reuse the `ig-*` HUD, sound hooks
+   (action/turn/win on TV, click/error on device), the whose-turn indicator,
+   Show-deck, and `GameIntro` + rulebook. Seat every piece on the board (§4.2).
+   If the mod has its own control surface, reproduce it (§4.4).
+8. Add the game tile to `SelectGame`; make sure the lobby is game-aware.
+9. Verify: engine tests green; `page-errors.mjs` clean; `shoot.mjs`/phone-shot
+   zoom-checks that pieces sit right and spawns are correct; a live WS smoke
+   test plays a full game (§6.1). Then hand the owner a running build.
+10. Commit your work; push to `origin main`.
 
 ---
 
