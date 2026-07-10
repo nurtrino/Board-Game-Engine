@@ -128,8 +128,8 @@ function tickInPage() {
     if (done) { done.click(); return 'done-purchasing'; }
   }
 
-  if (/Combat move/i.test(labs) || /Noncombat move/i.test(labs)) {
-    const combat = /Combat move/i.test(labs);
+  if (/Combat move\./i.test(labs) || /Noncombat move\./i.test(labs)) {
+    const combat = /Noncombat move\./i.test(labs) ? false : true;
     // an armed order? the big HOI4 button executes it
     const orderGo = q('button.ax-order-go').find((b) => !b.disabled);
     if (orderGo) { orderGo.click(); return 'order-go'; }
@@ -159,11 +159,11 @@ function tickInPage() {
     if (choice) { choice.click(); return 'sbr-choice'; }
   }
 
-  if (/^Mobilize/i.test(labs)) {
+  if (/Mobilize ·/i.test(labs)) {
     const placeAt = chips.filter((b) => /^Place at /.test(text(b)));
     if (placeAt.length) { pick(placeAt).click(); return 'place'; }
-    const staged = chips.filter((b) => / × \d+$/.test(text(b)));
-    if (staged.length && Math.random() < 0.8) { pick(staged).click(); return 'pick-staged'; }
+    const plus = q('.ax-step button').filter((b) => text(b) === '+' && !b.disabled);
+    if (plus.length && Math.random() < 0.75) { pick(plus).click(); return 'pick-staged'; }
     const income = by(/^Collect income$/i);
     if (income) { income.click(); return 'collect-income'; }
   }
@@ -213,6 +213,7 @@ try {
       process.exit(0);
     }
     if (did) { acts++; lastAct = Date.now(); }
+    if (did && process.env.SMOKE_VERBOSE) console.log(`act ${acts} seat${i}: ${did}`);
     if (acts % 200 === 0 && did) console.log(`heartbeat · ${acts} acts · round ${round} · ${Math.round((Date.now() - started) / 1000)}s`);
 
     const r = pass % 8 === 0
