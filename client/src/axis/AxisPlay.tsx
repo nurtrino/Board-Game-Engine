@@ -6,6 +6,7 @@
 // shows the actual note pieces, and income makes the bills fly in.
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { createPortal } from 'react-dom';
 import {
   AXIS_MAP, POWERS, UNITS, TECHS, TECH_BY_KEY, RESEARCH_DIE_COST, CHINA_COLOR, WIN_CONDITIONS,
   type AxisView, type AxisAction, type PowerKey, type UnitKey, type UnitStack, type TechKey,
@@ -156,7 +157,7 @@ function PurchaseSheet({ view, act, map }: { view: AxisView; act: Act; map: Publ
           <Chip label="Done purchasing" onTap={() => act({ type: 'endPhase' })} />
         </div>
       </div>
-      {open && (
+      {open && createPortal(
         <div className="ax-modal dark" onClick={() => setOpen(false)}>
           <div className="ax-buy ig-glass" onClick={(e) => e.stopPropagation()}>
             <header className="ax-buy-head">
@@ -219,7 +220,8 @@ function PurchaseSheet({ view, act, map }: { view: AxisView; act: Act; map: Publ
               <button className="ax-order-go" onClick={() => act({ type: 'endPhase' })}>DONE PURCHASING</button>
             </footer>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
@@ -596,7 +598,7 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
           </div>
         </>
       )}
-      {(origin || pickedSpaces.length > 0) && (
+      {(origin || pickedSpaces.length > 0) && createPortal(
         <div className="ax-order center">
           {pending ? (
             <>
@@ -608,10 +610,11 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
           ) : (
             <button className="ax-order-back" onClick={reset}>Back</button>
           )}
-        </div>
+        </div>,
+        document.body,
       )}
-      {sbrAsk && (
-        <div className="ax-modal">
+      {sbrAsk && createPortal(
+        <div className="ax-modal dark">
           <div className="ig-glass ax-modal-card">
             <div className="ig-lab">Bombers over {spaceName(sbrAsk)}</div>
             <p style={{ fontSize: 13.5, opacity: 0.85, margin: '6px 0 12px' }}>
@@ -623,7 +626,8 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
               <Chip label="Never mind" onTap={() => setSbrAsk(null)} />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
@@ -664,7 +668,7 @@ function BattleSheet({ view, act, map }: { view: AxisView; act: Act; map: Publis
         <div className="ig-lab">Battle · {spaceName(c.space)} · round {b.round}</div>
         <div style={{ fontSize: 13, opacity: 0.75 }}>The battle plays on the TV. Your orders are center screen.</div>
       </div>
-      <div className="ax-battle-center">
+      {createPortal(<div className="ax-battle-center">
         {over && c.confirmed && (
           <div className="ax-battle-cas ig-glass">
             <div className="ax-battle-verdict">{winnerLine}</div>
@@ -728,7 +732,7 @@ function BattleSheet({ view, act, map }: { view: AxisView; act: Act; map: Publis
             </button>
           </div>
         )}
-      </div>
+      </div>, document.body)}
     </>
   );
 }
