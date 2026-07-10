@@ -19,7 +19,11 @@ import { ROUTES, ROUTE_BY_ID, type TtrColor } from '@bge/shared';
 
 export interface TtrSceneDef {
   map: { image: string; px: [number, number] };
-  mapTransform: { ax: number; bx: number; cx: number; ay: number; by: number; cy: number; h?: number[]; px: [number, number] };
+  mapTransform: { ax: number; bx: number; cx: number; ay: number; by: number; cy: number; h?: number[]; px: [number, number];
+    // second-stage warp: a regularized thin-plate correction that removes the
+    // homography's edge residual so printed slots land exactly on the pieces
+    // (fit-ttr-warp.mjs). Applied on top of the homography-inverse in MapPlane.
+    warp?: { ctrl: number[][]; wx: number[]; wz: number[] } };
   rulesPdf: string;
   meshes: Record<'train' | 'ship' | 'harbor' | 'marker', { mesh: string; diffuse: string | null; scale: number[] }>;
   tints: Record<string, { train?: number[]; ship?: number[] }>;
@@ -192,25 +196,20 @@ function PieceMesh({ scene, kind, tint, snap, lift = 0, scaleMul = 1 }: {
   );
 }
 
-/** A point on the perimeter scoring track for a given score (TTS-world x,z).
- *  Score 0 sits at the top-left; increasing score runs clockwise around the
- *  board, wrapping every 100 (a second lap). Approximate — reads as "the token
- *  travels around the board" rather than mapping every printed number cell. */
+// Insets from the map-image edge to the printed score cells (world units).
+const TRACK_PAD_X = 2.6; // in from the left/right edge to score 0 / score 50
+const TRACK_PAD_Z = 2.45; // down from the top/bottom edge onto the number row
+
+/** A point on the printed perimeter scoring track for a given score (world x,z).
+ *  The printed track runs 0-50 along the TOP edge (left to right) and 50-100
+ *  along the BOTTOM edge (right to left); the left and right edges are just
+ *  corners with no numbered cells. Scores wrap every 100 (a second lap). */
 export function scoreTrackPos(rect: { tl: number[]; br: number[] }, score: number): [number, number] {
-  const inset = 1.4;
-  const xMin = rect.tl[0] + inset, xMax = rect.br[0] - inset;
-  const zMax = rect.tl[1] - inset, zMin = rect.br[1] + inset; // tl.z is the high (top) edge
-  const w = xMax - xMin, d = zMax - zMin;
-  const per = 2 * (w + d);
-  let t = ((score % 100) + 100) % 100 / 100 * per; // distance clockwise from top-left
-  // top edge L->R
-  if (t < w) return [xMin + t, zMax];
-  t -= w;
-  if (t < d) return [xMax, zMax - t]; // right edge top->bottom
-  t -= d;
-  if (t < w) return [xMax - t, zMin]; // bottom edge R->L
-  t -= w;
-  return [xMin, zMin + t]; // left edge bottom->top
+  const xL = rect.tl[0] + TRACK_PAD_X, xR = rect.br[0] - TRACK_PAD_X;
+  const zTop = rect.tl[1] - TRACK_PAD_Z, zBot = rect.br[1] + TRACK_PAD_Z; // tl.z is the top edge
+  const s = ((score % 100) + 100) % 100;
+  if (s <= 50) return [xL + (s / 50) * (xR - xL), zTop];   // top edge, left to right
+  return [xR - ((s - 50) / 50) * (xR - xL), zBot];         // bottom edge, right to left
 }
 
 /** Player scoring markers riding the perimeter track. */
@@ -218,18 +217,30 @@ export function ScoreMarkers({ scene, markers }: {
   scene: TtrSceneDef; markers: { color: TtrColor; score: number }[];
 }) {
   const rect = mapRect(scene.mapTransform);
+  const cz = (rect.tl[1] + rect.br[1]) / 2;
+  // group markers that share a score so ONLY tied players fan out (distinct
+  // scores each sit on their own printed cell), and stack ties perpendicular to
+  // the track (outward from the board centre), never along it.
+  const byScore = new Map<number, typeof markers>();
+  for (const m of markers) {
+    const k = ((m.score % 100) + 100) % 100;
+    if (!byScore.has(k)) byScore.set(k, []);
+    byScore.get(k)!.push(m);
+  }
   return (
     <group>
-      {markers.map((m, i) => {
-        const [x, z] = scoreTrackPos(rect, m.score);
-        // fan overlapping markers slightly outward so all are visible
-        const off = (i - (markers.length - 1) / 2) * 0.9;
-        const tint = scene.tints[m.color]?.train ?? null;
-        return (
-          <Suspense key={m.color} fallback={null}>
-            <PieceMesh scene={scene} kind="marker" tint={tint} snap={{ pos: [x + off, 1.05, z], rot: [0, 0, 0] }} lift={0.4} scaleMul={1.8} />
-          </Suspense>
-        );
+      {[...byScore.values()].flatMap((group) => {
+        const [x, z] = scoreTrackPos(rect, group[0].score);
+        const outward = z >= cz ? 1 : -1;
+        return group.map((m, j) => {
+          const off = (j - (group.length - 1) / 2) * 0.95 * outward;
+          const tint = scene.tints[m.color]?.train ?? null;
+          return (
+            <Suspense key={m.color} fallback={null}>
+              <PieceMesh scene={scene} kind="marker" tint={tint} snap={{ pos: [x, 1.05, z + off], rot: [0, 0, 0] }} lift={0.4} scaleMul={1.8} />
+            </Suspense>
+          );
+        });
       })}
     </group>
   );
