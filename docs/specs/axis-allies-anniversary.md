@@ -355,6 +355,30 @@ Surface warships = BB/CV/CA/DD (not TP; SS is a warship but not surface).
       server-alt after engine changes or the gate exercises a stale
       engine.
 
+## Owner UX directives wave 2 (July 10, binding — all delivered)
+
+1. Region highlights: NO glowing pulse or circles — a subtle fill plus a
+   crisp traced border that breathes gently. Sea zones highlight whole and
+   are tappable anywhere.
+2. Higher-quality procedural arrows (outlined, smooth, merging).
+3. Europe borders audited and retraced by a dedicated agent pass.
+4. Every unit stands physically inside its region; stacks (count chips)
+   only when the region truly cannot fit them (cap 40/region).
+5. Purchasing is a refined center-screen popup over darker glass — the
+   "armory": unit silhouette icons (recovered from the assistant repo's
+   UnitIcon.tsx), name, A/D/M line, price, +/- with owned counts, no
+   clipping. Left panel keeps compact controls.
+6. Combat move: tapping ANY part of the map zooms onto it.
+7. Battle stage must be fully loaded before the battle shows (preload
+   curtain + dice physics warmed at TV boot); battle sounds on; cleaner
+   dice tray; a running KILL LOG (battle record); battle end shows who won
+   plus remaining units per side, and BOTH attacker and defender must press
+   CONTINUE before play moves on (engine holds via battle-continue
+   pendings; walk-ins skip the hold).
+8. Mobilize and collect income are ONE stage: camera sits on the
+   mobilization zone, pick units, legal destinations light up, End turn
+   places + collects + advances. TV production screen is a timed overlay.
+
 ## Owner UX directives (July 9, binding)
 
 1. LOADING: the game waits behind a loading screen until the map/meshes are
