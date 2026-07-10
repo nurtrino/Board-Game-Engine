@@ -12,7 +12,8 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import * as THREE from 'three';
-import { AXIS_MAP, POWERS, CHINA_COLOR, type UnitStack, type PowerKey } from '@bge/shared';
+import { useProgress } from '@react-three/drei';
+import { AXIS_MAP, POWERS, CHINA_COLOR, type UnitStack, type PowerKey, type UnitKey } from '@bge/shared';
 
 const S = 0.01;
 export const ART_W = 9500;
@@ -72,7 +73,21 @@ for (const z of AXIS_MAP.seaZones) SPACE_CENTER[z.id] = z.center as [number, num
 // the two long archipelagos (same values as the extraction tool)
 SPACE_CENTER['new-guinea'] = [7500, 4050];
 SPACE_CENTER['solomon-islands'] = [8290, 4230];
+// the printed MOBILIZATION ZONE chart: purchases stage here for all to see
+export const MOB_ZONE = { x0: 930, y0: 4160, x1: 1570, y1: 4790 };
+SPACE_CENTER['mobilization'] = [(MOB_ZONE.x0 + MOB_ZONE.x1) / 2, (MOB_ZONE.y0 + MOB_ZONE.y1) / 2];
 export { SPACE_CENTER };
+
+/** Loading gate: true until every pending loader (map texture, unit meshes)
+ * has finished at least once — the game waits behind a loading screen. */
+export function useSceneReady(): boolean {
+  const { active, progress } = useProgress();
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if (!ready && !active && progress === 100) setReady(true);
+  }, [active, progress, ready]);
+  return ready;
+}
 
 function MapPlane() {
   const tex = useLoader(THREE.TextureLoader, '/axis/map.jpg');
@@ -271,6 +286,33 @@ function PickRing({ x, z, color = '#e8b450', onTap }: { x: number; z: number; co
 
 export interface SpacePick { id: string; color?: string }
 
+export interface StagedStack { power: PowerKey; key: UnitKey; count: number }
+
+/** Purchased units standing in the printed mobilization zone. */
+function StagingPieces({ manifest, staged }: { manifest: AxisManifest; staged: StagedStack[] }) {
+  const cols = 4;
+  const stepX = (MOB_ZONE.x1 - MOB_ZONE.x0) / cols;
+  return (
+    <group>
+      {staged.map((st, i) => {
+        const def = meshFor(manifest, st.power, st.key);
+        if (!def?.mesh) return null;
+        const c = i % cols;
+        const r = Math.floor(i / cols);
+        const px = MOB_ZONE.x0 + stepX * (c + 0.5);
+        const py = MOB_ZONE.y0 + 150 + r * 160;
+        const [x, z] = px2r(px, py);
+        return (
+          <group key={`${st.power}-${st.key}`}>
+            <UnitMesh url={def.mesh} tint={tintFor(st.power, st.key)} x={x} z={z} scale={def.scale ?? 1} />
+            {st.count > 1 && <CountChip n={st.count} x={x + 0.62} z={z + 0.4} />}
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
 export interface FocusTarget { x: number; z: number; dist: number }
 
 /** Orbit camera with a drivable focus: set `focus` to fly the camera there. */
@@ -304,13 +346,14 @@ function Rig({ focus }: { focus: FocusTarget | null }) {
   );
 }
 
-export function AxisTable({ manifest, board, control, focus, picks, onPick, children }: {
+export function AxisTable({ manifest, board, control, focus, picks, onPick, staged, children }: {
   manifest: AxisManifest;
   board: Record<string, UnitStack[]>;
   control: Record<string, PowerKey | 'china' | null>;
   focus: FocusTarget | null;
   picks?: SpacePick[];
   onPick?: (id: string) => void;
+  staged?: StagedStack[];
   children?: React.ReactNode;
 }) {
   const occupied = useMemo(() => {
@@ -343,6 +386,7 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, chil
         {Object.entries(board).map(([spaceId, stacks]) =>
           stacks.length ? <SpacePieces key={spaceId} manifest={manifest} spaceId={spaceId} stacks={stacks} /> : null,
         )}
+        {staged && staged.length > 0 && <StagingPieces manifest={manifest} staged={staged} />}
         {(picks ?? []).map((p) => {
           const c = SPACE_CENTER[p.id];
           if (!c) return null;

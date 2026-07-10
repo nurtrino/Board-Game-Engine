@@ -7,7 +7,7 @@ import {
   AXIS_MAP, POWERS, UNITS, WIN_CONDITIONS, CHINA_COLOR,
   type AxisView, type PowerKey, type UnitKey,
 } from '@bge/shared';
-import { AxisTable, useAxisManifest, SPACE_CENTER, px2r, type FocusTarget } from './AxisScene';
+import { AxisTable, useAxisManifest, useSceneReady, SPACE_CENTER, px2r, type FocusTarget, type StagedStack } from './AxisScene';
 import { playSfx } from '../sfx';
 
 const PHASE_LABEL: Record<string, string> = {
@@ -142,6 +142,50 @@ function ProductionScreen({ view, art }: { view: AxisView; art?: string }) {
   );
 }
 
+// ---------- center-screen announcements ----------
+
+function Announcements({ view }: { view: AxisView }) {
+  const [current, setCurrent] = useState<{ text: string; power: PowerKey | null } | null>(null);
+  const queue = useRef<{ text: string; power: PowerKey | null }[]>([]);
+  const seen = useRef(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const fresh = view.log.slice(seen.current === 0 ? -1 : Math.max(0, view.log.length - (view.log.length - seen.current)));
+    if (seen.current === 0) { seen.current = view.log.length; return; } // skip history on join
+    if (view.log.length > seen.current) {
+      for (const e of view.log.slice(view.log.length - (view.log.length - seen.current))) {
+        queue.current.push({ text: e.text, power: e.power });
+      }
+      seen.current = view.log.length;
+    }
+    void fresh;
+    const pump = () => {
+      if (timer.current || queue.current.length === 0) return;
+      const next = queue.current.shift()!;
+      setCurrent(next);
+      timer.current = setTimeout(() => {
+        timer.current = null;
+        setCurrent(null);
+        setTimeout(pump, 250);
+      }, 3800);
+    };
+    pump();
+  }, [view.log.length]);
+
+  if (!current) return null;
+  return (
+    <div className="ax-announce">
+      <div className="ig-glass ax-announce-card" style={{ borderColor: current.power ? powerHex(current.power) : 'var(--brd-2)' }}>
+        {current.power && (
+          <div className="ig-lab" style={{ color: powerHex(current.power) }}>{POWERS[current.power].name}</div>
+        )}
+        <div className="ax-announce-text">{current.text}</div>
+      </div>
+    </div>
+  );
+}
+
 // ---------- main board ----------
 
 export default function AxisBoard({ view }: { view: AxisView }) {
@@ -195,13 +239,25 @@ export default function AxisBoard({ view }: { view: AxisView }) {
     [view.vc.axis, view.vc.allies, view.vc.goal],
   );
 
-  if (!manifest) return <div className="page center"><h2>Unfolding the map</h2></div>;
+  const staged: StagedStack[] = useMemo(() => {
+    const out: StagedStack[] = [];
+    for (const p of view.turnOrder) {
+      for (const [key, count] of Object.entries(view.powers[p].staging)) {
+        if (count) out.push({ power: p, key: key as never, count: count as number });
+      }
+    }
+    return out;
+  }, [view.powers]);
+
+  if (!manifest) return <AxisLoading label="Reading the mod" />;
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: '#04060a', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
       <div style={{ position: 'absolute', inset: 0 }}>
-        <AxisTable manifest={manifest} board={view.board} control={view.control} focus={focus} />
+        <AxisTable manifest={manifest} board={view.board} control={view.control} focus={focus} staged={staged} />
       </div>
+      <LoadingCurtain />
+      <Announcements view={view} />
 
       {/* top-left: scenario + phase */}
       <div className="ig-glass ig-era">
@@ -254,6 +310,30 @@ export default function AxisBoard({ view }: { view: AxisView }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+
+// full-screen loading screen until the map texture and unit meshes are in
+export function AxisLoading({ label, overlay }: { label: string; overlay?: boolean }) {
+  return (
+    <div className="ax-loading" style={overlay ? { position: 'absolute', inset: 0, zIndex: 60 } : undefined}>
+      <div className="ig-lab">Axis & Allies Anniversary</div>
+      <h2>{label}</h2>
+      <div className="ax-loading-bar"><span /></div>
+    </div>
+  );
+}
+
+function LoadingCurtain() {
+  const ready = useSceneReady();
+  if (ready) return null;
+  return (
+    <div className="ax-loading" style={{ position: 'absolute', inset: 0, zIndex: 60 }}>
+      <div className="ig-lab">Axis & Allies Anniversary</div>
+      <h2>Setting up the table</h2>
+      <div className="ax-loading-bar"><span /></div>
     </div>
   );
 }

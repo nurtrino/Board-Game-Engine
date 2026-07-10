@@ -743,3 +743,66 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .ax-ref th:first-child, .ax-ref td:first-child { text-align: left; }
 .ax-ref td { text-align: right; padding: .28rem .35rem; border-top: 1px solid var(--brd); }
 .ax-ref tr.dim { opacity: .42; }
+
+/* ---------- A&A: persistent map + left glass panel layout ---------- */
+.ax-page2 { position: fixed; inset: 0; background: #05070b; color: #e8ebf0; overflow: hidden; }
+.ax-map-bg { position: absolute; inset: 0; }
+.ax-left { position: absolute; top: 0; left: 0; bottom: 0; width: min(340px, 86vw); z-index: 10;
+  border-radius: 0 16px 16px 0; border-right: 1px solid var(--brd-2);
+  display: flex; flex-direction: column; overflow-y: auto;
+  transition: transform .28s ease; }
+.ax-left.collapsed { transform: translateX(-102%); }
+.ax-left-head { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: .75rem .9rem .6rem; border-bottom: 1px solid var(--brd); position: sticky; top: 0; }
+.ax-left-tab { position: absolute; left: min(340px, 86vw); top: 14px; z-index: 11;
+  width: 30px; height: 46px; border-radius: 0 10px 10px 0; border: 1px solid var(--brd-2); border-left: none;
+  color: inherit; font-size: 1.1rem; cursor: pointer; transition: left .28s ease; }
+.ax-left.collapsed + .ax-left-tab { left: 0; }
+.ax-sheet-body { padding: .7rem .9rem 1rem; display: flex; flex-direction: column; gap: .55rem; }
+.ax-col { display: flex; flex-direction: column; gap: .5rem; }
+.ax-list { display: flex; flex-direction: column; border: 1px solid var(--brd); border-radius: 10px; overflow: hidden; }
+.ax-list-row { display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+  padding: .55rem .8rem; background: rgba(255,255,255,.03); color: inherit; border: none;
+  border-bottom: 1px solid var(--brd); font-size: .86rem; cursor: pointer; text-align: left; }
+.ax-list-row:last-child { border-bottom: none; }
+.ax-list-row:hover:not(:disabled) { background: rgba(255,255,255,.07); }
+.ax-list-row:disabled { opacity: .38; cursor: default; }
+.ax-have { color: #e8b450; font-style: normal; font-size: .78rem; }
+.ax-mega { padding: .9rem 1rem; border-radius: 12px; font-weight: 800; letter-spacing: .1em; font-size: .95rem;
+  background: rgba(232,180,74,.14); color: #e8b450; border: 1px solid rgba(232,180,74,.6); cursor: pointer; }
+.ax-mega.danger { background: rgba(224,85,85,.12); color: #e88; border-color: rgba(224,85,85,.55); }
+.ax-mega:disabled { opacity: .38; cursor: default; }
+.ax-modal { position: fixed; inset: 0; z-index: 45; background: rgba(2,4,8,.6); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.ax-modal-card { width: min(360px, 92vw); border-radius: 16px; padding: 1rem 1.1rem; }
+
+/* the IPC bank bottom-right */
+.ax-bank { position: absolute; right: 14px; bottom: 14px; z-index: 12; display: flex; align-items: baseline; gap: .5rem;
+  padding: .55rem .95rem; border-radius: 999px; border: 1px solid var(--brd-2); color: inherit; cursor: pointer; }
+.ax-bank b { font-size: 1.15rem; }
+.ax-bills { display: flex; flex-direction: column; gap: 1.1rem; margin-top: .8rem; }
+.ax-bill-stack { position: relative; height: 74px; }
+.ax-bill { position: absolute; width: 120px; height: 62px; border-radius: 6px; border: 1px solid rgba(0,0,0,.5);
+  background-color: #cfc7a6; background-size: 1000% 700%; background-position: 0 0; box-shadow: 0 3px 8px rgba(0,0,0,.5); }
+.ax-bill-label { position: absolute; left: 205px; top: 22px; font-size: .95rem; }
+.ax-bill-fly { position: absolute; right: 40px; bottom: 40px; width: 84px; height: 44px; border-radius: 5px; z-index: 13;
+  background-color: #cfc7a6; background-size: 1000% 700%; background-position: 0 0; border: 1px solid rgba(0,0,0,.5);
+  animation: ax-fly 1.4s cubic-bezier(.2,.7,.3,1) both; pointer-events: none; }
+@keyframes ax-fly {
+  0% { transform: translate(-46vw, -46vh) rotate(-24deg) scale(1.25); opacity: 0; }
+  18% { opacity: 1; }
+  100% { transform: translate(0, 0) rotate(6deg) scale(.6); opacity: .9; }
+}
+
+/* TV center announcements + loading */
+.ax-announce { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); z-index: 22; pointer-events: none; }
+.ax-announce-card { padding: 1rem 1.6rem; border-radius: 16px; border: 1px solid var(--brd-2); text-align: center;
+  animation: ax-announce-in .45s ease both; max-width: min(720px, 80vw); }
+.ax-announce-text { font-size: 1.35rem; font-weight: 650; letter-spacing: .01em; margin-top: .25rem; }
+@keyframes ax-announce-in { 0% { opacity: 0; transform: translateY(18px) scale(.96); } 100% { opacity: 1; transform: none; } }
+.ax-loading { position: fixed; inset: 0; z-index: 60; background: #05070b; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .6rem; color: #e8ebf0; }
+.ax-loading h2 { font-weight: 650; letter-spacing: .02em; }
+.ax-loading-bar { width: min(320px, 70vw); height: 4px; border-radius: 2px; background: rgba(255,255,255,.08); overflow: hidden; }
+.ax-loading-bar span { display: block; height: 100%; width: 40%; border-radius: 2px; background: #e8b450;
+  animation: ax-load-slide 1.2s ease-in-out infinite alternate; }
+@keyframes ax-load-slide { 0% { margin-left: 0; } 100% { margin-left: 60%; } }

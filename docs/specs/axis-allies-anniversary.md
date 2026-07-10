@@ -347,6 +347,37 @@ Surface warships = BB/CV/CA/DD (not TP; SS is a warship but not surface).
       attacks, China placement rules in mobilize UI.
 - [ ] Ship gates (§6.4b): rulebook UI audit + axis-ui-smoke.mjs.
 
+## Owner UX directives (July 9, binding)
+
+1. LOADING: the game waits behind a loading screen until the map/meshes are
+   ready — never show a half-loaded board.
+2. PURCHASE MENU: buy menus live in a LEFT-side glass panel (GitHub-style
+   list: item + price per row), collapsible so the whole map is visible.
+3. MOBILIZATION ZONE: purchases physically appear in the map's printed
+   MOBILIZATION ZONE box; the TV announces the purchase with a detailed
+   center-screen announcement and flies the camera to the zone.
+4. HOI4 MOVEMENT CONTROLS (phone): tap a region -> zoom to it; tap pieces ->
+   they GLOW selected; tap a destination region -> a procedural arrow draws
+   from the pieces to the target, and arrows MERGE when multiple units are
+   selected. Zoomed view has a Back button; once units are selected with a
+   command, that button grows into a prominent ATTACK button.
+5. BATTLES: launching an attack opens the battle screen + dice from the
+   assistant repo's battle sim (full teardown commissioned). Announcement
+   "X attacks Y" on movement/initiation. TV: the battle sim + dice expand to
+   cover the middle of the screen. Devices: LARGE action buttons (Press the
+   attack / Submerge / Strike / big ROLL). Battle end: clearly show losses
+   per side, remove them from the board, flip the territory, place a control
+   piece.
+6. NONCOMBAT: same controls as combat moves; must NOT pass into or through
+   hostile or neutral territory.
+7. MOBILIZE: select one or MULTIPLE staged units then tap a zone; mirrored
+   on the TV. The TV follows every movement of the game.
+8. INCOME: IPC note pieces fly onto the device and into the bank; an IPC
+   counter sits bottom-right; tapping it shows the actual bills.
+9. Movement limits enforced everywhere; STRATEGIC BOMBING RAIDS coded in
+   (popup when selecting bombers to choose SBR; results shown); amphibious
+   assaults fully worked out.
+
 ## Rulebook UI audit (§6.4b gate 1)
 
 Pass over every mechanic in the Anniversary rulebook against the engine and

@@ -39,6 +39,9 @@ export type AxisAction =
       offloadFrom?: string;
       offloadUnits?: { key: UnitKey; count: number }[];
     }
+  // strategic bombing raid: bombers strike an enemy industrial complex;
+  // AA fires first, survivors deal 1d6 damage each (2d6 with heavy bombers)
+  | { type: 'sbr'; target: string; forces: { from: string; bombers: number }[] }
   // battle interaction (routed by pending decisions)
   | { type: 'battleRoll' }
   | { type: 'battleCasualties'; uids: number[] }
@@ -390,6 +393,69 @@ function actAttack(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: '
   return OK;
 }
 
+// ---------- strategic bombing raids ----------
+
+function actSbr(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: 'sbr' }>): ActionResult {
+  if (s.phase !== 'combatMove') return err('Raids launch during the combat move.');
+  if (s.combat) return err('Resolve the current battle first.');
+  const power = activePower(s);
+  const t = idx.territory[a.target];
+  if (!t) return err('Raids target territories.');
+  const holder = s.control[a.target];
+  if (holder == null || sameSide(holder, power)) return err('Raid an enemy industrial complex.');
+  if (unitCount(s, a.target, null, 'factory') === 0) return err('No industrial complex there.');
+
+  let bombers = 0;
+  for (const f of a.forces) {
+    if (f.bombers < 1) continue;
+    if (unitCount(s, f.from, power, 'bomber') < f.bombers) return err(`Not enough bombers in ${f.from}.`);
+    const reach = attackReach(s, idx, power, 'bomber', f.from, a.target);
+    if (!reach.ok) return err(reach.error ?? 'Bombers out of range.');
+    bombers += f.bombers;
+  }
+  if (bombers === 0) return err('Send at least one bomber.');
+
+  // AA fire: one die per bomber (radar hits on 2)
+  const hasAA = unitCount(s, a.target, null, 'aaGun') > 0;
+  const defTechs = holder !== 'china' ? s.powers[holder as PowerKey].techs : [];
+  const aaHit = defTechs.includes('radar') ? 2 : 1;
+  let shot = 0;
+  const aaRolls: number[] = [];
+  if (hasAA) {
+    for (let i = 0; i < bombers; i++) {
+      const r = d6(s);
+      aaRolls.push(r);
+      if (r <= aaHit) shot++;
+    }
+  }
+  // remove shot-down bombers from their origins (front-loaded)
+  let toRemove = shot;
+  for (const f of a.forces) {
+    const take = Math.min(f.bombers, toRemove);
+    if (take > 0) { removeUnits(s, f.from, power, 'bomber', take); toRemove -= take; }
+  }
+
+  // survivors bomb: 1d6 each (2d6 heavy bombers), capped at 2x territory IPC
+  const heavy = techsOf(s, power).includes('heavyBombers');
+  const survivors = bombers - shot;
+  const dmgRolls: number[] = [];
+  let dmg = 0;
+  for (let i = 0; i < survivors; i++) {
+    const n = heavy ? 2 : 1;
+    for (let k = 0; k < n; k++) { const r = d6(s); dmgRolls.push(r); dmg += r; }
+  }
+  const cap = t.ipc * 2;
+  const before = s.factoryDamage[a.target] ?? 0;
+  const applied = Math.min(dmg, Math.max(0, cap - before));
+  s.factoryDamage[a.target] = before + applied;
+
+  s.log.push({
+    round: s.round, power, space: a.target,
+    text: `${POWERS[power].name} bombs the ${t.name} industrial complex: ${shot ? `${shot} bomber${shot === 1 ? '' : 's'} shot down by AA, ` : hasAA ? 'AA misses, ' : ''}${survivors} through, ${applied} damage${applied < dmg ? ' (complex saturated)' : ''}. Damage now ${s.factoryDamage[a.target]}/${cap}.`,
+  });
+  return OK;
+}
+
 // ---------- battle progression ----------
 
 function syncBattle(s: AxisState): void {
@@ -592,6 +658,10 @@ function actMove(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: 'mo
     removeUnits(s, a.from, power, u.key, u.count);
     addUnits(s, a.to, power, u.key, u.count);
   }
+  if (s.phase === 'noncombat') {
+    const what = a.units.map((u) => `${u.count} ${UNITS[u.key].name}${u.count === 1 ? '' : 's'}`).join(', ');
+    s.log.push({ round: s.round, power, space: a.to, text: `${POWERS[power].name} moves ${what} to ${idx.territory[a.to]?.name ?? idx.seaZone[a.to] ? `sea zone ${idx.seaZone[a.to]?.n}` : a.to}.` });
+  }
   return OK;
 }
 
@@ -689,6 +759,7 @@ function actPlace(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: 'p
   p.staging[a.key]! -= a.count;
   if (p.staging[a.key] === 0) delete p.staging[a.key];
   addUnits(s, a.space, power, a.key, a.count);
+  s.log.push({ round: s.round, power, space: a.space, text: `${POWERS[power].name} mobilizes ${a.count} ${UNITS[a.key].name}${a.count === 1 ? '' : 's'} to ${idx.territory[a.space]?.name ?? `sea zone ${idx.seaZone[a.space]?.n ?? ''}`}.` });
   return OK;
 }
 
@@ -818,9 +889,15 @@ function actEndPhase(s: AxisState, idx: MapIndex): ActionResult {
       if (s.awaitingChart) return err('Choose a breakthrough chart first.');
       s.phase = 'purchase';
       return OK;
-    case 'purchase':
+    case 'purchase': {
+      const staged = Object.entries(s.powers[power].staging) as [UnitKey, number][];
+      if (staged.length) {
+        const list = staged.map(([k, n]) => `${n} ${UNITS[k].name}${n === 1 ? '' : 's'}`).join(', ');
+        s.log.push({ round: s.round, power, space: 'mobilization', text: `${POWERS[power].name} purchases ${list} — staged in the mobilization zone.` });
+      }
       s.phase = 'combatMove';
       return OK;
+    }
     case 'combatMove':
       if (s.combat) return err('Resolve the battle first.');
       s.phase = 'noncombat';
@@ -889,6 +966,7 @@ export function applyAxisAction(s: AxisState, idx: MapIndex, seat: PowerKey, act
     case 'unbuy': return actUnbuy(s, action.key, action.count);
     case 'repair': return actRepair(s, idx, action.territory, action.count);
     case 'attack': return actAttack(s, idx, action);
+    case 'sbr': return actSbr(s, idx, action);
     case 'battleRoll': return actBattleRoll(s);
     case 'battleCasualties': return actBattleCasualties(s, action.uids);
     case 'battleSubmerge': return actBattleSubmerge(s, action.uids);

@@ -268,6 +268,35 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
   }
 }
 
+// ---------- strategic bombing raid ----------
+{
+  const s = mkState(47);
+  s.board.poland.push({ power: 'germany', key: 'bomber', count: 2 });
+  act(s, 'germany', { type: 'endPhase' });
+  act(s, 'germany', { type: 'endPhase' });
+  const bad = act(s, 'germany', { type: 'sbr', target: 'poland', forces: [{ from: 'poland', bombers: 1 }] });
+  ok(!bad.ok, 'no raiding your own complex');
+  const r = act(s, 'germany', { type: 'sbr', target: 'russia', forces: [{ from: 'poland', bombers: 2 }] });
+  ok(r.ok, `raid launched (${r.error ?? ''})`);
+  const dmg = s.factoryDamage.russia ?? 0;
+  const shot = 2 - unitCount(s, 'poland', 'germany', 'bomber');
+  ok(dmg >= 0 && dmg <= 16, `damage within cap (${dmg}, cap 16)`);
+  ok(shot >= 0 && shot <= 2, 'AA losses sane');
+  ok(s.phase === 'combatMove', 'raid resolves inline');
+  // damaged complex mobilizes less
+  s.factoryDamage.russia = 7;
+  s.turnIdx = 1; // ussr turn
+  s.phase = 'mobilize';
+  s.powers.ussr.staging.infantry = 8;
+  ok(act(s, 'ussr', { type: 'place', space: 'russia', key: 'infantry', count: 1 }).ok, 'can still place 1 (8 ipc - 7 dmg)');
+  const over = act(s, 'ussr', { type: 'place', space: 'russia', key: 'infantry', count: 1 });
+  ok(!over.ok, 'damage caps mobilization');
+  // repairs restore capacity
+  s.phase = 'purchase';
+  ok(act(s, 'ussr', { type: 'repair', territory: 'russia', count: 4 }).ok, 'repair 4 damage');
+  ok((s.factoryDamage.russia ?? 0) === 3, 'damage reduced');
+}
+
 // ---------- noncombat + mobilize + income ----------
 {
   const s = mkState(19);
