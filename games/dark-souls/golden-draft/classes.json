@@ -1,0 +1,305 @@
+{
+  "_meta": {
+    "source": "TTS mod 1210887127 class boards, pixel-transcribed from the 10 board tile images (scale-9.25 Custom_Tiles). Board GUID -> class mapped by table position against the named '<Class> Moveable Healthbar' tiles and named class minis (rows z=-53.3 and z=-73.8).",
+    "calibration": "Herald tier table matches the core rulebook p.15 photo exactly (STR 12/19/28/37, DEX 11/17/26/34, INT 8/12/20/29, FAI 13/22/31/40). Taunt values across the 10 classes form a complete 1..10 permutation.",
+    "statTiers": "Per stat: [Base, Tier 1, Tier 2, Tier 3] as printed. Campaign-only Tier 4 = 40 for every stat (core p.33), not printed on boards.",
+    "enduranceBoxes": "Counted 10 on every board (sharp crops verified on Warrior, Herald, Sorcerer, Cleric; visual count on the rest). Matches core p.20.",
+    "tokens": "Boards carry one slot each for Estus Flask, Luck, Heroic Action, Ember. No class varies any token count; estus = 1 charge per rest, luck = 1 reroll token. No luck-dice or dodge-dice value is printed on any board; dodge dice come entirely from equipment (core p.25).",
+    "heroicAction": "Text verbatim from the board. Inline printed icons are rendered as [bracketed] glosses: [node] = node-AoE attack icon (filled dot in ring), [range 1]/[range inf] = attack-range icon with value, [1 blue die]/[1 black die] = die icons. 'Once per spark' = once until the party rests (heroic token flips ready on rest, core p.11/p.15).",
+    "startingEquipment": "Cross-referenced to treasures.json starting-<class> deck ids; not re-transcribed here. Core 4 classes total 13 cards (matches core p.6), expansion 6 total 23.",
+    "boardImage": "Cache-munged filename under C:/Users/chase/Documents/My Games/Tabletop Simulator/Mods/Images/ (strip non-alphanumerics from the URL). Warrior/Knight/Herald/Assassin boards are Drive-hosted 2815x2134; the rest are Steam-CDN scans.",
+    "minis": "Only 7 class figures exist in the save: 5 named Custom_Models (Warrior, Knight, Herald, Assassin, Sorcerer) plus 2 unnamed Custom_Models at the row-2 mini offsets, identified BY POSITION as Deprived (b38e43) and Mercenary (045693). Thief, Cleric, and Pyromancer have no mini or standee anywhere in the mod (miniMesh null).",
+    "levelUpCosts": "Not printed on boards; rulebook constants: standard 2/4/8 souls (core p.15), campaign 4/8/16/20 with Tier 4 (core p.33). No class stat/reference cards or level-up card decks exist in the mod; the tier table on each board is the only level-up data.",
+    "flags": [
+      "MISSING MINI: thief, cleric, pyromancer - no model or standee in the save; engine needs substitutes.",
+      "POSITION-INFERRED: deprived and mercenary mini identity read from table layout (unnamed objects); deprived diffuse is 'custom_1', mercenary diffuse is 'bandit'. Confirm by mesh render during extraction."
+    ]
+  },
+  "classes": [
+    {
+      "id": "warrior",
+      "name": "Warrior",
+      "taunt": 9,
+      "statTiers": {
+        "str": [16, 23, 32, 40],
+        "dex": [9, 16, 25, 35],
+        "int": [8, 15, 23, 30],
+        "fai": [9, 16, 25, 35]
+      },
+      "startingStats": { "str": 16, "dex": 9, "int": 8, "fai": 9 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Berserk Charge",
+        "text": "Once per spark during his activation, the Warrior may move one node without spending stamina. The next range 0 attack he makes costs 0 stamina and gains [node]."
+      },
+      "startingEquipment": ["northern-armour", "round-shield", "battle-axe"],
+      "boardGuid": "9fd155",
+      "boardImage": "httpsdrivegooglecomucexportdownloadid0ByVbWgFcEZ1JUVNrU1RvbG94clU.jpg",
+      "healthbarGuid": "f0da63",
+      "miniGuid": "ca6c3b",
+      "miniMesh": "http://pastebin.com/raw/fRuE9BVd",
+      "miniTexture": "http://orig11.deviantart.net/609b/f/2016/291/f/0/wanderer1_by_itchydani3l-dalhxa3.png",
+      "miniCollider": "http://pastebin.com/raw/bZ60qPPP"
+    },
+    {
+      "id": "knight",
+      "name": "Knight",
+      "taunt": 10,
+      "statTiers": {
+        "str": [13, 21, 30, 40],
+        "dex": [12, 19, 29, 38],
+        "int": [9, 15, 23, 31],
+        "fai": [9, 15, 23, 31]
+      },
+      "startingStats": { "str": 13, "dex": 12, "int": 9, "fai": 9 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Stand Fast",
+        "text": "Once per spark after making a block roll, the Knight may roll an additional blue die [1 blue die] and add it to the roll."
+      },
+      "startingEquipment": ["knight-armour", "kite-shield-2", "long-sword"],
+      "boardGuid": "c7fd54",
+      "boardImage": "httpsdrivegooglecomucexportdownloadid0ByVbWgFcEZ1Jb0Ntbkt1bG1hUnM.jpg",
+      "healthbarGuid": "ac79ea",
+      "miniGuid": "971fed",
+      "miniMesh": "http://pastebin.com/raw/tdP8ghug",
+      "miniTexture": "http://orig09.deviantart.net/940e/f/2016/291/0/d/knight1_2_by_itchydani3l-dalhjd9.png",
+      "miniCollider": "http://pastebin.com/raw/bZ60qPPP"
+    },
+    {
+      "id": "herald",
+      "name": "Herald",
+      "taunt": 4,
+      "statTiers": {
+        "str": [12, 19, 28, 37],
+        "dex": [11, 17, 26, 34],
+        "int": [8, 12, 20, 29],
+        "fai": [13, 22, 31, 40]
+      },
+      "startingStats": { "str": 12, "dex": 11, "int": 8, "fai": 13 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Perseverance",
+        "text": "Once per spark during his activation, the Herald may use Perseverance. When he does, each character gains 2 stamina."
+      },
+      "startingEquipment": ["herald-armour", "kite-shield", "spear", "talisman"],
+      "boardGuid": "393658",
+      "boardImage": "httpsdrivegooglecomucexportdownloadid0ByVbWgFcEZ1JRVZ1QjBPZVJCVnc.jpg",
+      "healthbarGuid": "04c287",
+      "miniGuid": "45c75b",
+      "miniMesh": "http://pastebin.com/raw/235LqZv2",
+      "miniTexture": "http://orig14.deviantart.net/46f1/f/2016/267/6/a/warrior_idle_by_itchydani3l-daiqfw7.png",
+      "miniCollider": "http://pastebin.com/raw/bZ60qPPP"
+    },
+    {
+      "id": "assassin",
+      "name": "Assassin",
+      "taunt": 8,
+      "statTiers": {
+        "str": [10, 16, 25, 34],
+        "dex": [14, 22, 31, 40],
+        "int": [11, 18, 27, 36],
+        "fai": [9, 14, 22, 30]
+      },
+      "startingStats": { "str": 10, "dex": 14, "int": 11, "fai": 9 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Backstab",
+        "text": "Once per spark after making a successful dodge, the Assassin may attack the enemy he dodged. The attack does not cost stamina but must have range to the enemy."
+      },
+      "startingEquipment": ["assassin-armour", "target-shield", "estoc"],
+      "boardGuid": "1db4a7",
+      "boardImage": "httpsdrivegooglecomucexportdownloadid0ByVbWgFcEZ1JWjR3MENxRUNVbVk.jpg",
+      "healthbarGuid": "bd7433",
+      "miniGuid": "17c68f",
+      "miniMesh": "http://pastebin.com/raw/BERsYQzs",
+      "miniTexture": "http://orig12.deviantart.net/f0e5/f/2016/266/f/7/thief_idle_by_itchydani3l-daio99y.png",
+      "miniCollider": "http://pastebin.com/raw/bZ60qPPP"
+    },
+    {
+      "id": "sorcerer",
+      "name": "Sorcerer",
+      "taunt": 5,
+      "statTiers": {
+        "str": [7, 14, 22, 31],
+        "dex": [12, 18, 27, 36],
+        "int": [16, 23, 32, 40],
+        "fai": [7, 15, 24, 33]
+      },
+      "startingStats": { "str": 7, "dex": 12, "int": 16, "fai": 7 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Spell Fury",
+        "text": "Once per spark when the Sorcerer makes a magic attack, it gains [range inf] and its Stamina cost is reduced by 3."
+      },
+      "startingEquipment": ["mail-breaker", "leather-shield", "sorcerer-robes", "sorcerers-catalyst"],
+      "boardGuid": "9dd448",
+      "boardImage": "httpcloud3steamusercontentcomugc87637525689061448495975BCAB5EA444635BABA476B088804C62E6168.png",
+      "healthbarGuid": "e1f9e5",
+      "miniGuid": "e136d5",
+      "miniMesh": "http://pastebin.com/raw/28duU17a",
+      "miniTexture": "http://orig14.deviantart.net/a785/f/2016/267/3/b/sorceror_idle_by_itchydani3l-daiqltc.png",
+      "miniCollider": "http://pastebin.com/raw/bZ60qPPP"
+    },
+    {
+      "id": "thief",
+      "name": "Thief",
+      "taunt": 2,
+      "statTiers": {
+        "str": [9, 16, 24, 33],
+        "dex": [13, 21, 31, 40],
+        "int": [10, 18, 27, 36],
+        "fai": [8, 15, 23, 31]
+      },
+      "startingStats": { "str": 9, "dex": 13, "int": 10, "fai": 8 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Lucky Break",
+        "text": "Once per spark during his activation, the Thief may use Lucky Break. When he does, he removes 2 black and 2 red cubes from his endurance bar and flips his Luck token to the ready side."
+      },
+      "startingEquipment": ["bandit-knife", "deserter-armour", "shortbow", "iron-round-shield"],
+      "boardGuid": "9c57c3",
+      "boardImage": "httpcloud3steamusercontentcomugc1192839008796256668FF41E108F33D120AE10EA0DCD55F46E756D3A7B6.jpg",
+      "healthbarGuid": "13b7a8",
+      "miniGuid": null,
+      "miniMesh": null,
+      "miniTexture": null,
+      "miniCollider": null,
+      "miniNote": "NO MINI IN MOD"
+    },
+    {
+      "id": "deprived",
+      "name": "Deprived",
+      "taunt": 1,
+      "statTiers": {
+        "str": [10, 20, 30, 40],
+        "dex": [10, 20, 30, 40],
+        "int": [10, 20, 30, 40],
+        "fai": [10, 20, 30, 40]
+      },
+      "startingStats": { "str": 10, "dex": 10, "int": 10, "fai": 10 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Combat Versatility",
+        "text": "Once per spark at the start of his activation, the Deprived may change equipment as if he had visited Blacksmith Andre."
+      },
+      "startingEquipment": ["loincloth", "plank-shield", "club"],
+      "boardGuid": "086407",
+      "boardImage": "httpcloud3steamusercontentcomugc1192839008796264806D84472FB6183543BA4DFF4C11E8A70668CC02808.jpg",
+      "healthbarGuid": "a4904a",
+      "miniGuid": "b38e43",
+      "miniMesh": "http://pastebin.com/raw/vQvxherN",
+      "miniTexture": "http://orig09.deviantart.net/48fb/f/2016/273/e/2/custom_1_by_itchydani3l-dajeleb.png",
+      "miniCollider": "http://pastebin.com/raw/bZ60qPPP",
+      "miniNote": "identity inferred from table position (unnamed object)"
+    },
+    {
+      "id": "cleric",
+      "name": "Cleric",
+      "taunt": 3,
+      "statTiers": {
+        "str": [12, 18, 27, 37],
+        "dex": [8, 15, 24, 33],
+        "int": [7, 14, 22, 30],
+        "fai": [16, 23, 32, 40]
+      },
+      "startingStats": { "str": 12, "dex": 8, "int": 7, "fai": 16 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Keep the Faith",
+        "text": "Once per spark during her activation, the Cleric may use Keep the Faith. When she does, each character within [range 1] removes 2 red cubes from their endurance bar."
+      },
+      "startingEquipment": ["cleric-robes", "blue-wooden-shield", "mace", "sacred-chime"],
+      "boardGuid": "c7da62",
+      "boardImage": "httpcloud3steamusercontentcomugc11928390087962186439CDCE06FB2EC24D75F8B2B47434EEF83473ADD60.jpg",
+      "healthbarGuid": "7a7534",
+      "miniGuid": null,
+      "miniMesh": null,
+      "miniTexture": null,
+      "miniCollider": null,
+      "miniNote": "NO MINI IN MOD"
+    },
+    {
+      "id": "mercenary",
+      "name": "Mercenary",
+      "taunt": 7,
+      "statTiers": {
+        "str": [10, 17, 26, 35],
+        "dex": [16, 22, 32, 40],
+        "int": [10, 17, 26, 35],
+        "fai": [8, 14, 21, 30]
+      },
+      "startingStats": { "str": 10, "dex": 16, "int": 10, "fai": 8 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Rapid Strike",
+        "text": "Once per spark during their activation, the Mercenary may make an attack that costs 0 Stamina even if they already used that Weapon during their activation."
+      },
+      "startingEquipment": ["sellsword-twinblade", "sellsword-twinblade-2", "wooden-shield", "sellsword-armour"],
+      "boardGuid": "72e21a",
+      "boardImage": "httpcloud3steamusercontentcomugc1192839008796232695357D58580CAD6F4B48C3ED74B23B6C9042F408A7.jpg",
+      "healthbarGuid": "c17224",
+      "miniGuid": "045693",
+      "miniMesh": "http://pastebin.com/raw/1BydWBcs",
+      "miniTexture": "http://orig08.deviantart.net/6145/f/2016/265/1/7/bandit_by_itchydani3l-daikm6a.png",
+      "miniCollider": "http://pastebin.com/raw/bZ60qPPP",
+      "miniNote": "identity inferred from table position (unnamed object)"
+    },
+    {
+      "id": "pyromancer",
+      "name": "Pyromancer",
+      "taunt": 6,
+      "statTiers": {
+        "str": [12, 17, 26, 35],
+        "dex": [9, 13, 20, 27],
+        "int": [14, 21, 31, 40],
+        "fai": [14, 19, 28, 38]
+      },
+      "startingStats": { "str": 12, "dex": 9, "int": 14, "fai": 14 },
+      "enduranceBoxes": 10,
+      "estusCharges": 1,
+      "luckTokens": 1,
+      "dodgeDice": null,
+      "heroicAction": {
+        "name": "Explosive Firepower",
+        "text": "Once per spark when the Pyromancer makes a magic attack, it gains [1 black die]."
+      },
+      "startingEquipment": ["hand-axe", "caduceus-round-shield", "pyromancer-garb", "pyromancy-flame"],
+      "boardGuid": "e8d958",
+      "boardImage": "httpcloud3steamusercontentcomugc1192839008796243520B3775811C83142BA628228C697B0C508E071E6A4.jpg",
+      "healthbarGuid": "f6ae99",
+      "miniGuid": null,
+      "miniMesh": null,
+      "miniTexture": null,
+      "miniCollider": null,
+      "miniNote": "NO MINI IN MOD"
+    }
+  ]
+}
