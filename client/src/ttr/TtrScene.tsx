@@ -90,13 +90,16 @@ function warpCorrection(warp: NonNullable<TtrSceneDef['mapTransform']['warp']>, 
   const denom = sw + bias;
   return [sx / denom, sz / denom];
 }
-/** Map an image pixel to a world (x,z): homography-inverse plus the warp
- *  correction (if present) so the printed slots deform onto the pieces. */
-function pixelToWorld(t: TtrSceneDef['mapTransform'], inv: number[][], px: number, py: number): [number, number] {
-  const [wx, wz] = applyH(inv, px, py);
-  if (!t.warp) return [wx, wz];
+/** A snap with its world position nudged onto its printed slot. The homography
+ *  leaves a smooth residual that grows toward the map edges, so a piece placed
+ *  at the raw world snap sits slightly off its slot there; subtract the fitted
+ *  correction (evaluated at the snap's projected pixel) to seat it on the slot.
+ *  The map itself is left un-warped, so only the pieces move — not the board. */
+function warpedSnap(t: TtrSceneDef['mapTransform'], snap: { pos: number[]; rot: number[] }): { pos: number[]; rot: number[] } {
+  if (!t.warp) return snap;
+  const [px, py] = applyH(hmat(t), snap.pos[0], snap.pos[2]);
   const [dx, dz] = warpCorrection(t.warp, px, py);
-  return [wx + dx, wz + dz];
+  return { pos: [snap.pos[0] - dx, snap.pos[1], snap.pos[2] - dz], rot: snap.rot };
 }
 
 export function mapRect(t: TtrSceneDef['mapTransform']) {
@@ -115,11 +118,13 @@ function MapPlane({ scene }: { scene: TtrSceneDef }) {
     const t = scene.mapTransform;
     const [W, H] = t.px;
     const inv = inv3(hmat(t));
-    // finer than before so the smooth warp correction renders without faceting
-    const NX = 72, NZ = 44;
+    // The map renders through the plain homography-inverse so the printed art
+    // stays pristine (no warping of the board). Piece positions are corrected
+    // instead (warpedSnap) so they land on their slots.
+    const NX = 48, NZ = 28;
     const pos: number[] = [], uv: number[] = [], idx: number[] = [];
     for (let j = 0; j <= NZ; j++) for (let i = 0; i <= NX; i++) {
-      const [wx, wz] = pixelToWorld(t, inv, (i / NX) * W, (j / NZ) * H);
+      const [wx, wz] = applyH(inv, (i / NX) * W, (j / NZ) * H);
       pos.push(wx, 0.98, -wz);
       uv.push(i / NX, 1 - j / NZ);
     }
@@ -287,7 +292,7 @@ export function PlacedPieces({ scene, routeOwners, harborOwners, harborSnapOf }:
         const tint = scene.tints[color]?.[kind] ?? null;
         return r.snaps.map((si) => (
           <Suspense key={`${id}:${si}`} fallback={null}>
-            <PieceMesh scene={scene} kind={kind} tint={tint} snap={scene.snaps[si - 1]} />
+            <PieceMesh scene={scene} kind={kind} tint={tint} snap={warpedSnap(scene.mapTransform, scene.snaps[si - 1])} />
           </Suspense>
         ));
       })}
@@ -297,7 +302,7 @@ export function PlacedPieces({ scene, routeOwners, harborOwners, harborSnapOf }:
         const tint = scene.tints[color]?.train ?? null;
         return (
           <Suspense key={`h:${city}`} fallback={null}>
-            <PieceMesh scene={scene} kind="harbor" tint={tint} snap={scene.snaps[si - 1]} />
+            <PieceMesh scene={scene} kind="harbor" tint={tint} snap={warpedSnap(scene.mapTransform, scene.snaps[si - 1])} />
           </Suspense>
         );
       })}
@@ -325,7 +330,7 @@ function RouteGlow({ scene, routeId, onPick, dim }: {
   return (
     <group>
       {r.snaps.map((si) => {
-        const s = scene.snaps[si - 1];
+        const s = warpedSnap(scene.mapTransform, scene.snaps[si - 1]);
         return (
           <mesh
             key={si}
