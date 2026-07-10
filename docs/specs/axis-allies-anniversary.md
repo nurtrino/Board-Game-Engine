@@ -339,13 +339,21 @@ Surface warships = BB/CV/CA/DD (not TP; SS is a warship but not surface).
       camera flight to battles) + phone turn portal v1 (board-first taps +
       chips; research/purchase/combat/noncombat/mobilize/income). Verified
       live: full purchase -> attack -> battle -> capture loop.
-- [ ] Phone: transports (load/offload/amphibious UI), 2-space moves (via),
+- [x] Phone: transports (load/offload/amphibious UI), 2-space moves (via),
       assets lineup + reference card panel, walkthrough intro.
-- [ ] TV: FocusFly on non-battle actions; battle view on the battle-board
+- [x] TV: FocusFly on non-battle actions; battle view on the battle-board
       art; RND/production chart art use.
-- [ ] Engine hardening: air range/landing BFS, blitz UI, multi-origin
+- [x] Engine hardening: air range/landing BFS, blitz UI, multi-origin
       attacks, China placement rules in mobilize UI.
-- [ ] Ship gates (§6.4b): rulebook UI audit + axis-ui-smoke.mjs.
+- [x] Ship gates (§6.4b): rulebook UI audit (see gaps below) +
+      axis-ui-smoke.mjs PASSED July 9 2026 — 4 seats drove one complete
+      round (all 6 powers x 7 phases) through the DOM and rolled into
+      round 2 in 99s / 96 actions; an earlier unmonitored run reached
+      round 8+ with zero stalls. Gate-debug notes: /Combat move/i also
+      matches "Noncombat move" (anchor with \.), driver selectors must
+      track UI refactors, and tsx does NOT hot-reload shared/ — restart
+      server-alt after engine changes or the gate exercises a stale
+      engine.
 
 ## Owner UX directives (July 9, binding)
 
