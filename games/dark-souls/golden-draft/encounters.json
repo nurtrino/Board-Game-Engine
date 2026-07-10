@@ -1,0 +1,1416 @@
+[
+  {
+    "id": "ashen-hollow",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Ashen Hollow",
+    "cardId": 1941,
+    "sheetCell": 41,
+    "tile": null,
+    "tileNote": "Core/Darkroot encounter cards do not name a tile; the card is placed face down on any exploration tile at setup (core rulebook p.9). Spawn/terrain rows map to the tile's printed node types.",
+    "trapped": true,
+    "spawns": [
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "ash-gardens",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Ash Gardens",
+    "cardId": 1942,
+    "sheetCell": 42,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "forsaken-depths",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Forsaken Depths",
+    "cardId": 1943,
+    "sheetCell": 43,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "dark-hollow",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Dark Hollow",
+    "cardId": 1944,
+    "sheetCell": 44,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "gravestone", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "broken-passageway",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Broken Passageway",
+    "cardId": 1945,
+    "sheetCell": 45,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "the-forgotten",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "The Forgotten",
+    "cardId": 1946,
+    "sheetCell": 46,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" },
+    "notes": "Matches the setup example on core rulebook p.18 (2 Hollow Soldiers, Silver Knight Greatbowman, barrel, trapped)."
+  },
+  {
+    "id": "the-deeps",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "The Deeps",
+    "cardId": 1947,
+    "sheetCell": 47,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "hollow-cave",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Hollow Cave",
+    "cardId": 1948,
+    "sheetCell": 48,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "shattered-dungeon",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Shattered Dungeon",
+    "cardId": 1949,
+    "sheetCell": 49,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "unlighted-chamber",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Unlighted Chamber",
+    "cardId": 1950,
+    "sheetCell": 50,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "ruined-keep",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Ruined Keep",
+    "cardId": 1951,
+    "sheetCell": 51,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "ghostly-keep",
+    "deck": "Level 1 Encounter",
+    "level": 1,
+    "name": "Ghostly Keep",
+    "cardId": 1952,
+    "sheetCell": 52,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+
+  {
+    "id": "demon-ruins",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Demon Ruins",
+    "cardId": 1953,
+    "sheetCell": 53,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "forgotten-gorge",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Forgotten Gorge",
+    "cardId": 1954,
+    "sheetCell": 54,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "sunrise-pass",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Sunrise Pass",
+    "cardId": 1955,
+    "sheetCell": 55,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "temple-of-the-deeps",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Temple of the Deeps",
+    "cardId": 1956,
+    "sheetCell": 56,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "prison-tower",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Prison Tower",
+    "cardId": 1957,
+    "sheetCell": 57,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" }
+    ],
+    "terrain": [],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "burned-gardens",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Burned Gardens",
+    "cardId": 1958,
+    "sheetCell": 58,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "sentinels-wrath",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Sentinel's Wrath",
+    "cardId": 1959,
+    "sheetCell": 59,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "sentinel", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" },
+    "notes": "Primary spawn row is printed empty; the lone Sentinel spawns on the secondary spawn node."
+  },
+  {
+    "id": "lightless-passage",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Lightless Passage",
+    "cardId": 1960,
+    "sheetCell": 60,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "weathered-peak",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Weathered Peak",
+    "cardId": 1961,
+    "sheetCell": 61,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "high-wall-of-lothric",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "High Wall of Lothric",
+    "cardId": 1962,
+    "sheetCell": 62,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "black-dungeon",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Black Dungeon",
+    "cardId": 1963,
+    "sheetCell": 63,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "lost-labyrinth",
+    "deck": "Level 2 Encounter",
+    "level": 2,
+    "name": "Lost Labyrinth",
+    "cardId": 1964,
+    "sheetCell": 64,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+
+  {
+    "id": "pit-of-the-dead",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Pit of the Dead",
+    "cardId": 2000,
+    "sheetCell": 0,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "sentinel", "node": "primarySpawn" },
+      { "enemy": "sentinel", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "dilapidated-bridge",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Dilapidated Bridge",
+    "cardId": 2001,
+    "sheetCell": 1,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "profane-shrine",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Profane Shrine",
+    "cardId": 2002,
+    "sheetCell": 2,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "desecrated-church",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Desecrated Church",
+    "cardId": 2003,
+    "sheetCell": 3,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "gravestone", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "central-irithyll",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Central Irithyll",
+    "cardId": 2004,
+    "sheetCell": 4,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "sentinel", "node": "secondarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "perished-depths",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Perished Depths",
+    "cardId": 2005,
+    "sheetCell": 5,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "sentinel", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" }
+    ],
+    "terrain": [],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "cemetary-of-ash",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Cemetary of Ash",
+    "cardId": 2006,
+    "sheetCell": 6,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" },
+    "notes": "Card spells the name 'Cemetary of Ash' (sic, as printed)."
+  },
+  {
+    "id": "untended-graves",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Untended Graves",
+    "cardId": 2007,
+    "sheetCell": 7,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "sentinel", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "wretched-gardens",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Wretched Gardens",
+    "cardId": 2008,
+    "sheetCell": 8,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "sentinel", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "lost-shrine",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Lost Shrine",
+    "cardId": 2009,
+    "sheetCell": 9,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "silent-tombs",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Silent Tombs",
+    "cardId": 2010,
+    "sheetCell": 10,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "empty-crypt",
+    "deck": "Level 3 Encounter",
+    "level": 3,
+    "name": "Empty Crypt",
+    "cardId": 2011,
+    "sheetCell": 11,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "sentinel", "node": "primarySpawn" },
+      { "enemy": "sentinel", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+
+  {
+    "id": "fearful-woods",
+    "deck": "Level 1 Darkroot Encounter",
+    "level": 1,
+    "name": "Fearful Woods",
+    "cardId": 46421,
+    "sheetCell": 21,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "plow-scarecrow", "node": "primarySpawn" },
+      { "enemy": "shears-scarecrow", "node": "secondarySpawn" },
+      { "enemy": "mushroom-child", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "overgrown-caves",
+    "deck": "Level 1 Darkroot Encounter",
+    "level": 1,
+    "name": "Overgrown Caves",
+    "cardId": 46422,
+    "sheetCell": 22,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "mushroom-child", "node": "primarySpawn" },
+      { "enemy": "demonic-foliage", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "misty-woods",
+    "deck": "Level 1 Darkroot Encounter",
+    "level": 1,
+    "name": "Misty Woods",
+    "cardId": 46423,
+    "sheetCell": 23,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "shears-scarecrow", "node": "primarySpawn" },
+      { "enemy": "shears-scarecrow", "node": "secondarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "leafy-grotto",
+    "deck": "Level 1 Darkroot Encounter",
+    "level": 1,
+    "name": "Leafy Grotto",
+    "cardId": 46424,
+    "sheetCell": 24,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "shears-scarecrow", "node": "primarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" },
+      { "enemy": "demonic-foliage", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "blackroot-well",
+    "deck": "Level 1 Darkroot Encounter",
+    "level": 1,
+    "name": "Blackroot Well",
+    "cardId": 46425,
+    "sheetCell": 25,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "demonic-foliage", "node": "primarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "wild-glades",
+    "deck": "Level 1 Darkroot Encounter",
+    "level": 1,
+    "name": "Wild Glades",
+    "cardId": 46426,
+    "sheetCell": 26,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "plow-scarecrow", "node": "primarySpawn" },
+      { "enemy": "shears-scarecrow", "node": "primarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+
+  {
+    "id": "stone-hollow",
+    "deck": "Level 2 Darkroot Encounter",
+    "level": 2,
+    "name": "Stone Hollow",
+    "cardId": 46527,
+    "sheetCell": 27,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "plow-scarecrow", "node": "primarySpawn" },
+      { "enemy": "shears-scarecrow", "node": "primarySpawn" },
+      { "enemy": "stone-guardian", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "black-bog",
+    "deck": "Level 2 Darkroot Encounter",
+    "level": 2,
+    "name": "Black Bog",
+    "cardId": 46528,
+    "sheetCell": 28,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "demonic-foliage", "node": "primarySpawn" },
+      { "enemy": "shears-scarecrow", "node": "primarySpawn" },
+      { "enemy": "demonic-foliage", "node": "secondarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "haunted-ruins",
+    "deck": "Level 2 Darkroot Encounter",
+    "level": 2,
+    "name": "Haunted Ruins",
+    "cardId": 46529,
+    "sheetCell": 29,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "stone-knight", "node": "primarySpawn" },
+      { "enemy": "demonic-foliage", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "withered-thicket",
+    "deck": "Level 2 Darkroot Encounter",
+    "level": 2,
+    "name": "Withered Thicket",
+    "cardId": 46530,
+    "sheetCell": 30,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "mushroom-parent", "node": "primarySpawn" },
+      { "enemy": "mushroom-child", "node": "secondarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "murky-roots",
+    "deck": "Level 2 Darkroot Encounter",
+    "level": 2,
+    "name": "Murky Roots",
+    "cardId": 46531,
+    "sheetCell": 31,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "mushroom-parent", "node": "primarySpawn" },
+      { "enemy": "mushroom-child", "node": "primarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "boggy-hollow",
+    "deck": "Level 2 Darkroot Encounter",
+    "level": 2,
+    "name": "Boggy Hollow",
+    "cardId": 46532,
+    "sheetCell": 32,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "stone-guardian", "node": "primarySpawn" },
+      { "enemy": "mushroom-child", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+
+  {
+    "id": "dark-woods",
+    "deck": "Level 3 Darkroot Encounter",
+    "level": 3,
+    "name": "Dark Woods",
+    "cardId": 46333,
+    "sheetCell": 33,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "stone-guardian", "node": "primarySpawn" },
+      { "enemy": "stone-guardian", "node": "secondarySpawn" },
+      { "enemy": "stone-knight", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "hydra-lake",
+    "deck": "Level 3 Darkroot Encounter",
+    "level": 3,
+    "name": "Hydra Lake",
+    "cardId": 46334,
+    "sheetCell": 34,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "mushroom-parent", "node": "primarySpawn" },
+      { "enemy": "demonic-foliage", "node": "primarySpawn" },
+      { "enemy": "mushroom-child", "node": "secondarySpawn" },
+      { "enemy": "stone-knight", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" },
+    "notes": "Named encounter used as the fixed final Level 3 of Section 1 in the Darkroot campaign scenario 'Facing the Abyss' (darkroot-digest.md)."
+  },
+  {
+    "id": "corpselight-fens",
+    "deck": "Level 3 Darkroot Encounter",
+    "level": 3,
+    "name": "Corpselight Fens",
+    "cardId": 46335,
+    "sheetCell": 35,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "stone-knight", "node": "primarySpawn" },
+      { "enemy": "demonic-foliage", "node": "primarySpawn" },
+      { "enemy": "stone-guardian", "node": "secondarySpawn" },
+      { "enemy": "demonic-foliage", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "abandoned-tower",
+    "deck": "Level 3 Darkroot Encounter",
+    "level": 3,
+    "name": "Abandoned Tower",
+    "cardId": 46336,
+    "sheetCell": 36,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "demonic-foliage", "node": "primarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "primarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "primarySpawn" },
+      { "enemy": "stone-knight", "node": "secondarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "secondaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "desolate-hinterland",
+    "deck": "Level 3 Darkroot Encounter",
+    "level": 3,
+    "name": "Desolate Hinterland",
+    "cardId": 46337,
+    "sheetCell": 37,
+    "tile": null,
+    "trapped": false,
+    "spawns": [
+      { "enemy": "stone-knight", "node": "primarySpawn" },
+      { "enemy": "mushroom-parent", "node": "secondarySpawn" },
+      { "enemy": "mushroom-child", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+  {
+    "id": "sodden-mire",
+    "deck": "Level 3 Darkroot Encounter",
+    "level": 3,
+    "name": "Sodden Mire",
+    "cardId": 46338,
+    "sheetCell": 38,
+    "tile": null,
+    "trapped": true,
+    "spawns": [
+      { "enemy": "demonic-foliage", "node": "primarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "primarySpawn" },
+      { "enemy": "demonic-foliage", "node": "secondarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" },
+      { "enemy": "stone-knight", "node": "secondarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 2, "source": "core rulebook p.19 rule; not printed on card" }
+  },
+
+  {
+    "id": "cursed-cavern",
+    "deck": "Level 4 Four Kings Encounter",
+    "level": 4,
+    "name": "Cursed Cavern",
+    "cardId": 47823,
+    "sheetCell": 23,
+    "tile": "mega-boss-board-encounter-side",
+    "tileNote": "Level 4 cards are placed on the double-sided Mega Boss game board, encounter side up (four spawn node types and four terrain node types; all four wall nodes beside the doorway are entry nodes).",
+    "trapped": false,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" },
+      { "enemy": "sentinel", "node": "tertiarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "tertiarySpawn" },
+      { "enemy": "sentinel", "node": "quaternarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "gravestone", "node": "quaternaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true, "note": "Level 4 encounters never reset on bonfire rest and can never be replayed once defeated." }
+  },
+  {
+    "id": "edge-of-the-abyss",
+    "deck": "Level 4 Four Kings Encounter",
+    "level": 4,
+    "name": "Edge of the Abyss",
+    "cardId": 47824,
+    "sheetCell": 24,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": true,
+    "spawns": [
+      { "enemy": "sentinel", "node": "primarySpawn" },
+      { "enemy": "hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "tertiarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "tertiarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "quaternarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "chest", "node": "tertiaryTerrain" },
+      { "piece": "gravestone", "node": "secondaryTerrain" },
+      { "piece": "barrel", "node": "quaternaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  },
+  {
+    "id": "hall-of-wraiths",
+    "deck": "Level 4 Four Kings Encounter",
+    "level": 4,
+    "name": "Hall of Wraiths",
+    "cardId": 47825,
+    "sheetCell": 25,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": false,
+    "spawns": [
+      { "enemy": "stone-knight", "node": "primarySpawn" },
+      { "enemy": "stone-knight", "node": "secondarySpawn" },
+      { "enemy": "UNKNOWN", "node": "secondarySpawn", "icon": "hollow-style open-mouthed head with a small cleaver/axe at the left shoulder", "note": "Not in this mod's enemy roster (core + Darkroot); enemy from another DS:TBG expansion set. Identity UNREADABLE from the mod's assets." },
+      { "enemy": "silver-knight-swordsman", "node": "tertiarySpawn" },
+      { "enemy": "mushroom-parent", "node": "quaternarySpawn" },
+      { "enemy": "mushroom-child", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "chest", "node": "tertiaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" },
+      { "piece": "barrel", "node": "quaternaryTerrain" }
+    ],
+    "requiredSetIcons": [
+      { "icon": "horned figure on a throne", "identifiedAs": "UNREADABLE" },
+      { "icon": "gravestone with a sword thrust into it", "identifiedAs": "UNREADABLE", "note": "Appears on every L4 card that spawns Darkroot enemies; almost certainly the Darkroot expansion symbol." },
+      { "icon": "crossed axes with a sword", "identifiedAs": "UNREADABLE" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  },
+  {
+    "id": "new-londo-ruins",
+    "deck": "Level 4 Four Kings Encounter",
+    "level": 4,
+    "name": "New Londo Ruins",
+    "cardId": 47826,
+    "sheetCell": 26,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": true,
+    "spawns": [
+      { "enemy": "UNKNOWN", "node": "primarySpawn", "icon": "tall twin-spired mitre helm with grated face mask and a vertical staff/spear at the left", "note": "Not in this mod's enemy roster; expansion enemy. Identity UNREADABLE from the mod's assets." },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "UNKNOWN", "node": "secondarySpawn", "icon": "flat-topped greathelm with cross-shaped visor slits and a horizontal mace/club below", "note": "Not in this mod's enemy roster; expansion enemy. Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "tertiarySpawn", "icon": "flat-topped greathelm with cross-shaped visor slits and a horizontal mace/club below (same icon as secondary spawn)", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "quaternarySpawn", "icon": "masked helm with two hanging braids/tassels and a vertical spear at the left", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "quaternarySpawn", "icon": "masked helm with two hanging braids/tassels and a curved bow at the left", "note": "Identity UNREADABLE." }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" },
+      { "piece": "mimic-chest", "node": "tertiaryTerrain", "note": "Chest silhouette with legs/tongue: a chest placed with the mod's 'Mimic?' tokens rather than a plain chest." },
+      { "piece": "mimic-chest", "node": "secondaryTerrain" },
+      { "piece": "chest", "node": "quaternaryTerrain" }
+    ],
+    "requiredSetIcons": [
+      { "icon": "horned figure on a throne", "identifiedAs": "UNREADABLE" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  },
+
+  {
+    "id": "lava-path",
+    "deck": "Level 4 Old Iron King Encounter",
+    "level": 4,
+    "name": "Lava Path",
+    "cardId": 47921,
+    "sheetCell": 21,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": true,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "tertiarySpawn" },
+      { "enemy": "sentinel", "node": "quaternarySpawn" },
+      { "enemy": "sentinel", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" },
+      { "piece": "gravestone", "node": "tertiaryTerrain" },
+      { "piece": "chest", "node": "quaternaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  },
+  {
+    "id": "fortress-gates",
+    "deck": "Level 4 Old Iron King Encounter",
+    "level": 4,
+    "name": "Fortress Gates",
+    "cardId": 47922,
+    "sheetCell": 22,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": true,
+    "spawns": [
+      { "enemy": "UNKNOWN", "node": "primarySpawn", "icon": "helmet with two wing-like protrusions over a skull face", "note": "Not in this mod's enemy roster; expansion enemy. Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "secondarySpawn", "icon": "masked helm with two hanging braids/tassels and a curved bow at the left", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "tertiarySpawn", "icon": "tall twin-spired mitre helm with grated face mask and vertical staff", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "tertiarySpawn", "icon": "masked helm with two hanging braids/tassels and a vertical spear", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "quaternarySpawn", "icon": "crested (mohawk) spartan-style helm with a horizontal blade below", "note": "Identity UNREADABLE." }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "chest", "node": "tertiaryTerrain" },
+      { "piece": "gravestone", "node": "secondaryTerrain" },
+      { "piece": "barrel", "node": "quaternaryTerrain" }
+    ],
+    "requiredSetIcons": [
+      { "icon": "large eye in a dark circle", "identifiedAs": "UNREADABLE" },
+      { "icon": "horned figure on a throne", "identifiedAs": "UNREADABLE" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true },
+    "notes": "Named as a prescribed L4 encounter in Section 3 of the OIK campaign 'Go Beyond Death' (old-iron-king-digest.md)."
+  },
+  {
+    "id": "blazing-furnace",
+    "deck": "Level 4 Old Iron King Encounter",
+    "level": 4,
+    "name": "Blazing Furnace",
+    "cardId": 47923,
+    "sheetCell": 23,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": false,
+    "spawns": [
+      { "enemy": "UNKNOWN", "node": "primarySpawn", "icon": "tall twin-spired mitre helm with grated face mask and vertical staff", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "primarySpawn", "icon": "masked helm with two hanging braids/tassels and a vertical spear", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "secondarySpawn", "icon": "hollow-style open-mouthed head with a small cleaver/axe at the left shoulder", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "secondarySpawn", "icon": "hollow-style open-mouthed head with a small cleaver/axe at the left shoulder", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "tertiarySpawn", "icon": "crested (mohawk) spartan-style helm with a horizontal blade below", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "quaternarySpawn", "icon": "winged silhouette with paired axe-like blades", "note": "Identity UNREADABLE." }
+    ],
+    "terrain": [
+      { "piece": "mimic-chest", "node": "primaryTerrain" },
+      { "piece": "mimic-chest", "node": "tertiaryTerrain" }
+    ],
+    "requiredSetIcons": [
+      { "icon": "large eye in a dark circle", "identifiedAs": "UNREADABLE" },
+      { "icon": "crossed axes with a sword", "identifiedAs": "UNREADABLE" },
+      { "icon": "horned figure on a throne", "identifiedAs": "UNREADABLE" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true },
+    "notes": "Named as a prescribed L4 encounter in Section 4 of the OIK campaign 'Go Beyond Death' (old-iron-king-digest.md)."
+  },
+  {
+    "id": "ironhearth-hall",
+    "deck": "Level 4 Old Iron King Encounter",
+    "level": 4,
+    "name": "Ironhearth Hall",
+    "cardId": 47924,
+    "sheetCell": 24,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": false,
+    "spawns": [
+      { "enemy": "silver-knight-swordsman", "node": "primarySpawn" },
+      { "enemy": "sentinel", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "tertiarySpawn" },
+      { "enemy": "hollow-soldier", "node": "tertiarySpawn" },
+      { "enemy": "hollow-soldier", "node": "tertiarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "quaternarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "quaternarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "barrel", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "tertiaryTerrain" },
+      { "piece": "chest", "node": "secondaryTerrain" },
+      { "piece": "barrel", "node": "quaternaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  },
+
+  {
+    "id": "royal-woods-passage",
+    "deck": "Level 4 Black Dragon Kalameet Encounter",
+    "level": 4,
+    "name": "Royal Woods Passage",
+    "cardId": 48024,
+    "sheetCell": 24,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": false,
+    "spawns": [
+      { "enemy": "stone-guardian", "node": "primarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "primarySpawn" },
+      { "enemy": "UNKNOWN", "node": "secondarySpawn", "icon": "tall twin-spired mitre helm with grated face mask and vertical staff", "note": "Identity UNREADABLE." },
+      { "enemy": "UNKNOWN", "node": "secondarySpawn", "icon": "masked helm with two hanging braids/tassels and a curved bow at the left", "note": "Identity UNREADABLE." },
+      { "enemy": "stone-guardian", "node": "tertiarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "tertiarySpawn" },
+      { "enemy": "UNKNOWN", "node": "quaternarySpawn", "icon": "masked helm with two hanging braids/tassels and a curved bow at the left", "note": "Identity UNREADABLE." },
+      { "enemy": "plow-scarecrow", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" },
+      { "piece": "gravestone", "node": "tertiaryTerrain" },
+      { "piece": "mimic-chest", "node": "secondaryTerrain" },
+      { "piece": "mimic-chest", "node": "quaternaryTerrain" }
+    ],
+    "requiredSetIcons": [
+      { "icon": "horned figure on a throne", "identifiedAs": "UNREADABLE" },
+      { "icon": "gravestone with a sword thrust into it", "identifiedAs": "UNREADABLE", "note": "Appears on every L4 card that spawns Darkroot enemies; almost certainly the Darkroot expansion symbol." }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  },
+  {
+    "id": "perilous-crossing",
+    "deck": "Level 4 Black Dragon Kalameet Encounter",
+    "level": 4,
+    "name": "Perilous Crossing",
+    "cardId": 48025,
+    "sheetCell": 25,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": true,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "secondarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "tertiarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "tertiarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "quaternarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "quaternarySpawn" },
+      { "enemy": "silver-knight-greatbowman", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "tertiaryTerrain" },
+      { "piece": "gravestone", "node": "secondaryTerrain" },
+      { "piece": "barrel", "node": "quaternaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  },
+  {
+    "id": "great-stone-bridge",
+    "deck": "Level 4 Black Dragon Kalameet Encounter",
+    "level": 4,
+    "name": "Great Stone Bridge",
+    "cardId": 48026,
+    "sheetCell": 26,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": false,
+    "spawns": [
+      { "enemy": "sentinel", "node": "primarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "secondarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "secondarySpawn" },
+      { "enemy": "silver-knight-swordsman", "node": "tertiarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "tertiarySpawn" },
+      { "enemy": "sentinel", "node": "quaternarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "gravestone", "node": "primaryTerrain" },
+      { "piece": "chest", "node": "quaternaryTerrain" }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  },
+  {
+    "id": "goughs-perch",
+    "deck": "Level 4 Black Dragon Kalameet Encounter",
+    "level": 4,
+    "name": "Gough's Perch",
+    "cardId": 48027,
+    "sheetCell": 27,
+    "tile": "mega-boss-board-encounter-side",
+    "trapped": true,
+    "spawns": [
+      { "enemy": "large-hollow-soldier", "node": "primarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "primarySpawn" },
+      { "enemy": "stone-knight", "node": "secondarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "secondarySpawn" },
+      { "enemy": "stone-knight", "node": "tertiarySpawn" },
+      { "enemy": "crossbow-hollow", "node": "tertiarySpawn" },
+      { "enemy": "large-hollow-soldier", "node": "quaternarySpawn" },
+      { "enemy": "plow-scarecrow", "node": "quaternarySpawn" }
+    ],
+    "terrain": [
+      { "piece": "chest", "node": "primaryTerrain" },
+      { "piece": "barrel", "node": "tertiaryTerrain" },
+      { "piece": "barrel", "node": "secondaryTerrain" },
+      { "piece": "barrel", "node": "quaternaryTerrain" }
+    ],
+    "requiredSetIcons": [
+      { "icon": "gravestone with a sword thrust into it", "identifiedAs": "UNREADABLE", "note": "Appears on every L4 card that spawns Darkroot enemies; almost certainly the Darkroot expansion symbol." }
+    ],
+    "rewards": { "soulsPerCharacter": 8, "source": "mega-boss rules insert p.8; not printed on card", "oneShot": true }
+  }
+]
