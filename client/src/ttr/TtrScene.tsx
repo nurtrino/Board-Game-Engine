@@ -75,6 +75,25 @@ const applyH = (m: number[][], x: number, y: number): [number, number] => {
   return [(m[0][0] * x + m[0][1] * y + m[0][2]) / w, (m[1][0] * x + m[1][1] * y + m[1][2]) / w];
 };
 
+// Thin-plate RBF: evaluate the fitted pixel->world-displacement at a map pixel.
+// weights w are [per-control-point ..., a0, a_x, a_y]; U(r)=r^2 ln r.
+function rbfEval(w: number[], ctrl: number[][], x: number, y: number): number {
+  const n = ctrl.length;
+  let s = w[n] + w[n + 1] * x + w[n + 2] * y;
+  for (let i = 0; i < n; i++) {
+    const dx = x - ctrl[i][0], dy = y - ctrl[i][1], r = Math.hypot(dx, dy);
+    if (r > 1e-9) s += w[i] * (r * r * Math.log(r));
+  }
+  return s;
+}
+/** Map an image pixel to a world (x,z): homography-inverse plus the warp
+ *  correction (if present) so the printed slots deform onto the pieces. */
+function pixelToWorld(t: TtrSceneDef['mapTransform'], inv: number[][], px: number, py: number): [number, number] {
+  const [wx, wz] = applyH(inv, px, py);
+  if (!t.warp) return [wx, wz];
+  return [wx + rbfEval(t.warp.wx, t.warp.ctrl, px, py), wz + rbfEval(t.warp.wz, t.warp.ctrl, px, py)];
+}
+
 export function mapRect(t: TtrSceneDef['mapTransform']) {
   const inv = inv3(hmat(t));
   const [W, H] = t.px;
@@ -91,10 +110,11 @@ function MapPlane({ scene }: { scene: TtrSceneDef }) {
     const t = scene.mapTransform;
     const [W, H] = t.px;
     const inv = inv3(hmat(t));
-    const NX = 48, NZ = 28;
+    // finer than before so the smooth warp correction renders without faceting
+    const NX = 72, NZ = 44;
     const pos: number[] = [], uv: number[] = [], idx: number[] = [];
     for (let j = 0; j <= NZ; j++) for (let i = 0; i <= NX; i++) {
-      const [wx, wz] = applyH(inv, (i / NX) * W, (j / NZ) * H);
+      const [wx, wz] = pixelToWorld(t, inv, (i / NX) * W, (j / NZ) * H);
       pos.push(wx, 0.98, -wz);
       uv.push(i / NX, 1 - j / NZ);
     }
