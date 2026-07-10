@@ -71,11 +71,11 @@ const N = { C4: 261.6, D4: 293.7, E4: 329.6, G4: 392.0, A4: 440.0, C5: 523.3, D5
 // --- click: a soft rounded "tok" -----------------------------------------
 { const o = buf(0.14); voice(o, 470, 0, 0.13, { gain: 0.5, attackMs: 6, tau: 0.04, parts: [[1, 1], [2, 0.18]] }); warm(o, 3200); norm(o, 0.5); writeWav('click', o); }
 
-// --- cardPlay: soft felt place (muted low thud + paper) -------------------
-{ const o = buf(0.2); voice(o, 150, 0, 0.14, { gain: 0.5, attackMs: 5, tau: 0.05, parts: [[1, 1], [2, 0.15]] }); noise(o, 0.004, 0.09, { gain: 0.22, cut: 1500, tau: 0.045 }); warm(o, 3000); norm(o, 0.58); writeWav('card-play', o); }
+// --- cardPlay: a soft-but-present wooden tap (a piece set on the board) ----
+{ const o = buf(0.17); voice(o, 300, 0, 0.09, { gain: 0.5, attackMs: 3, tau: 0.035, parts: [[1, 1], [2, 0.3], [3, 0.12]] }); voice(o, 140, 0, 0.06, { gain: 0.3, attackMs: 3, tau: 0.03, parts: [[1, 1]] }); noise(o, 0.001, 0.04, { gain: 0.3, cut: 2400, tau: 0.028, attackMs: 2 }); warm(o, 4400); norm(o, 0.66); writeWav('card-play', o); }
 
-// --- cardDraw: gentle slide/whoosh ---------------------------------------
-{ const o = buf(0.24); noise(o, 0, 0.2, { gain: 0.5, cut: 900, rise: 1.6, tau: 0.09, attackMs: 20 }); voice(o, 320, 0.02, 0.14, { gain: 0.12, tau: 0.06, parts: [[1, 1]] }); warm(o, 3600); norm(o, 0.5); writeWav('card-draw', o); }
+// --- cardDraw: a soft card slide "fwip" (clear, falling noise sweep) -------
+{ const o = buf(0.2); noise(o, 0, 0.16, { gain: 0.55, cut: 2900, rise: -0.55, tau: 0.08, attackMs: 8 }); warm(o, 5200); norm(o, 0.6); writeWav('card-draw', o); }
 
 // --- shuffle: soft riffle of muffled ticks -------------------------------
 { const o = buf(0.62); for (let i = 0; i < 7; i++) noise(o, 0.02 + i * 0.075 + Math.random() * 0.012, 0.05, { gain: 0.34 - i * 0.02, cut: 1300, tau: 0.03, attackMs: 3 }); warm(o, 2600); norm(o, 0.5); writeWav('shuffle', o); }
@@ -89,8 +89,8 @@ const N = { C4: 261.6, D4: 293.7, E4: 329.6, G4: 392.0, A4: 440.0, C5: 523.3, D5
 // --- coins: mellow chime cluster (pentatonic), soft ----------------------
 { const o = buf(0.5); const seq = [N.C5, N.E5, N.G5]; seq.forEach((f, i) => voice(o, f, i * 0.05, 0.4, { gain: 0.4, tau: 0.2, bell: 0.06, parts: [[1, 1], [2, 0.22], [3, 0.1]] })); echo(o, 90, 0.2); warm(o, 5200); norm(o, 0.6); writeWav('coins', o); }
 
-// --- turn: a single calm "your turn" chime -------------------------------
-{ const o = buf(0.55); voice(o, N.C5, 0, 0.5, { gain: 0.5, attackMs: 10, tau: 0.26, bell: 0.05, parts: [[1, 1], [2, 0.25], [3, 0.1]] }); voice(o, N.G5, 0.005, 0.4, { gain: 0.16, tau: 0.22 }); echo(o, 110, 0.22); warm(o, 5000); norm(o, 0.58); writeWav('turn', o); }
+// --- turn: a clear, calm two-note rising bell ("it's your turn") ----------
+{ const o = buf(0.6); const p = [[1, 1], [2, 0.3], [3, 0.13]]; voice(o, N.A4, 0, 0.32, { gain: 0.5, attackMs: 5, tau: 0.15, bell: 0.05, parts: p }); voice(o, N.E5, 0.11, 0.4, { gain: 0.54, attackMs: 5, tau: 0.2, bell: 0.06, parts: p }); echo(o, 85, 0.13); warm(o, 6000); norm(o, 0.68); writeWav('turn', o); }
 
 // --- error: soft low descending pair (gentle "no", not buzzy) ------------
 { const o = buf(0.4); voice(o, N.E4, 0, 0.24, { gain: 0.45, attackMs: 8, tau: 0.13, parts: [[1, 1], [2, 0.12]] }); voice(o, N.C4, 0.13, 0.28, { gain: 0.45, attackMs: 8, tau: 0.16, parts: [[1, 1], [2, 0.12]] }); warm(o, 2600); norm(o, 0.55); writeWav('error', o); }
