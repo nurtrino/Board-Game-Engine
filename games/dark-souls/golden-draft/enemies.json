@@ -1,0 +1,386 @@
+{
+  "_meta": {
+    "source": "TTS mod 1210887127 card sheets (cell = CardID % 100); transcribed from cached sheet images 2026-07-10",
+    "sheets": {
+      "core16": "httpsdrivegooglecomucexportdownloadid0ByVbWgFcEZ1JZ2xBakt1ajR0dWs.jpg (10x7, core data cards)",
+      "darkroot": "httpcloud3steamusercontentcomugc960859055065641673D7C8A375B9E7413D8D6B173DF83CA0725D98E91B.png (10x7 mega-sheet, enemy data = cells 41-47)",
+      "addons25": "httpcloud3steamusercontentcomugc876375256891247482BCD9EA7DB9E558300D2D8AAB92E3BD5EE42EF2D6.jpg (10x7, invaders = cells 43-54)"
+    },
+    "iconKey": {
+      "note": "calibrated against core rulebook p.40 icon reference",
+      "ornateRing": "target/move toward NEAREST character",
+      "skull": "target/move toward AGGRO-token character",
+      "spikedShield": "push; a number inside = damage dealt while pushing",
+      "nodeDot": "(o) damage all characters on target node",
+      "sword": "physical damage",
+      "spikedStar": "magical damage",
+      "crescentInCross": "leap to specified character",
+      "circleArrows": "repeat entire behaviour xN",
+      "redSplat": "inflict Bleed"
+    },
+    "rules": {
+      "regularEnemies": "behaviour is printed on the data card (no per-enemy behaviour decks exist in the mod); icons resolve left to right each activation (core p.24)",
+      "invaders": "boss-style data card + behaviour deck; draw deckSize random cards of the 5 at encounter start; heat up shuffles in 1 random unused card; no arc markings; discard recycled unshuffled when deck empties; kill reward = invader treasure card + 3 souls immediately (add-ons digest)"
+    },
+    "movementSchema": "movement: { nodes, toward: nearest|aggro, leap?, push?, pushDamage?, when: beforeAttack|afterAttack|only }",
+    "unreadables": []
+  },
+
+  "enemies": [
+    {
+      "data": {
+        "id": "sentinel", "name": "Sentinel", "expansion": "core",
+        "health": 10, "block": 2, "resist": 1, "threat": 9,
+        "attackRange": 1, "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "core16/00"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "nearest", "push": true, "when": "beforeAttack" },
+          "attackType": "physical", "range": 1, "damage": 6, "dodgeDifficulty": 1,
+          "nodeAoE": true, "target": "nearest",
+          "push": false, "shift": null, "repeat": null, "conditions": [], "special": null
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "silver-knight-greatbowman", "name": "Silver Knight Greatbowman", "expansion": "core",
+        "health": 1, "block": 2, "resist": 0, "threat": 3,
+        "attackRange": "infinite", "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "core16/01"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "aggro", "push": false, "when": "afterAttack" },
+          "attackType": "physical", "range": "infinite", "damage": 4, "dodgeDifficulty": 1,
+          "nodeAoE": true, "target": "aggro",
+          "push": false, "shift": null, "repeat": null, "conditions": [],
+          "special": "attack resolves BEFORE the move (attack icon is left of the movement icon)"
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "silver-knight-swordsman", "name": "Silver Knight Swordsman", "expansion": "core",
+        "health": 1, "block": 2, "resist": 1, "threat": 7,
+        "attackRange": 0, "dodgeDifficulty": 2,
+        "special": null, "sheetCell": "core16/02"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 2, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 5, "dodgeDifficulty": 2,
+          "nodeAoE": true, "target": "nearest",
+          "push": true, "shift": null, "repeat": null, "conditions": [], "special": null
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "large-hollow-soldier", "name": "Large Hollow Soldier", "expansion": "core",
+        "health": 5, "block": 1, "resist": 0, "threat": 6,
+        "attackRange": 1, "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "core16/03"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "nearest", "push": true, "pushDamage": 5, "when": "only" },
+          "attackType": null, "range": null, "damage": null, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": null,
+          "push": true, "shift": null, "repeat": null, "conditions": [],
+          "special": "no attack icon; entire behaviour is the pushing move (5 damage dealt while pushing, dodged vs difficulty 1)"
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "crossbow-hollow", "name": "Crossbow Hollow", "expansion": "core",
+        "health": 1, "block": 1, "resist": 0, "threat": 2,
+        "attackRange": "infinite", "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "core16/04"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "aggro", "push": false, "when": "beforeAttack" },
+          "attackType": "magic", "range": "infinite", "damage": 3, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": "aggro",
+          "push": false, "shift": null, "repeat": null, "conditions": [],
+          "special": "attack glyph is the spiked-star MAGIC icon (resist, not block, reduces it)"
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "hollow-soldier", "name": "Hollow Soldier", "expansion": "core",
+        "health": 1, "block": 1, "resist": 1, "threat": 5,
+        "attackRange": 0, "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "core16/05"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 4, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": "nearest",
+          "push": false, "shift": null, "repeat": null, "conditions": [], "special": null
+        }
+      ]
+    },
+
+    {
+      "data": {
+        "id": "mushroom-parent", "name": "Mushroom Parent", "expansion": "darkroot",
+        "health": 10, "block": 1, "resist": 2, "threat": 1,
+        "attackRange": null, "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "darkroot/41",
+        "notes": "attack range printed as a dash (no ranged attack); digest-flagged block value resolved: block 1"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "nearest", "push": true, "pushDamage": 6, "when": "only" },
+          "attackType": null, "range": null, "damage": null, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": null,
+          "push": true, "shift": null, "repeat": null, "conditions": [],
+          "special": "no attack icon; the digest's 'attack 6' is actually 6 damage dealt while pushing on the move"
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "mushroom-child", "name": "Mushroom Child", "expansion": "darkroot",
+        "health": 5, "block": 1, "resist": 2, "threat": 2,
+        "attackRange": 0, "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "darkroot/42"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 5, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": "nearest",
+          "push": false, "shift": null, "repeat": null, "conditions": [], "special": null
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "demonic-foliage", "name": "Demonic Foliage", "expansion": "darkroot",
+        "health": 1, "block": 2, "resist": 1, "threat": 3,
+        "attackRange": 1, "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "darkroot/43"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "nearest", "push": true, "when": "beforeAttack" },
+          "attackType": "physical", "range": 1, "damage": 5, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": "nearest",
+          "push": false, "shift": null, "repeat": null, "conditions": [], "special": null
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "plow-scarecrow", "name": "Plow Scarecrow", "expansion": "darkroot",
+        "health": 1, "block": 1, "resist": 1, "threat": 4,
+        "attackRange": 1, "dodgeDifficulty": 2,
+        "special": null, "sheetCell": "darkroot/44",
+        "notes": "digest-flagged obscured damage resolved: 4; skull glyphs = AGGRO targeting (digest mislabelled skull as 'Node icon')"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 2, "toward": "aggro", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 1, "damage": 4, "dodgeDifficulty": 2,
+          "nodeAoE": false, "target": "aggro",
+          "push": false, "shift": null, "repeat": null, "conditions": [], "special": null
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "stone-guardian", "name": "Stone Guardian", "expansion": "darkroot",
+        "health": 5, "block": 2, "resist": 3, "threat": 6,
+        "attackRange": 1, "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "darkroot/45"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "aggro", "push": true, "pushDamage": 4, "when": "beforeAttack" },
+          "attackType": "physical", "range": 1, "damage": 5, "dodgeDifficulty": 1,
+          "nodeAoE": true, "target": "aggro",
+          "push": true, "shift": null, "repeat": null, "conditions": [], "special": null
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "stone-knight", "name": "Stone Knight", "expansion": "darkroot",
+        "health": 5, "block": 3, "resist": 2, "threat": 7,
+        "attackRange": 0, "dodgeDifficulty": 1,
+        "special": null, "sheetCell": "darkroot/46",
+        "notes": "digest-flagged obscured icons resolved: attack is MAGIC 5 with push, target nearest"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "magic", "range": 0, "damage": 5, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": "nearest",
+          "push": true, "shift": null, "repeat": null, "conditions": [], "special": null
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "shears-scarecrow", "name": "Shears Scarecrow", "expansion": "darkroot",
+        "health": 1, "block": 1, "resist": 1, "threat": 8,
+        "attackRange": 0, "dodgeDifficulty": 2,
+        "special": null, "sheetCell": "darkroot/47",
+        "notes": "digest-flagged obscured block/resist resolved: 1/1"
+      },
+      "behaviors": [
+        {
+          "name": "printed behaviour",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 3, "dodgeDifficulty": 2,
+          "nodeAoE": true, "target": "nearest",
+          "push": false, "shift": null, "repeat": 2, "conditions": [],
+          "special": "repeat icon (x2) printed beside the attack; per core p.29 repeat applies to the ENTIRE behaviour (move+attack twice) - engine decision noted"
+        }
+      ]
+    }
+  ],
+
+  "invaders": [
+    {
+      "data": {
+        "id": "kirk-knight-of-thorns", "name": "Kirk, Knight of Thorns", "expansion": "add-ons",
+        "class": "standard", "phaseIcon": "black orb (mini-boss phase)",
+        "health": 12, "block": 1, "resist": 1, "threat": 10,
+        "behaviourDeckSize": 3, "heatUpPoint": 7,
+        "soulsValue": 3,
+        "special": "Iron Spikes - any character Kirk pushes suffers Bleed",
+        "treasureCard": "Spiked Shield (addons25/41)",
+        "sheetCell": "addons25/43"
+      },
+      "behaviors": [
+        {
+          "name": "Forward Roll",
+          "movement": { "nodes": 2, "toward": "aggro", "push": true, "pushDamage": 3, "when": "only" },
+          "attackType": null, "range": null, "damage": null, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": null,
+          "push": true, "shift": null, "repeat": null, "conditions": [],
+          "special": "attack range printed as a dash; pure pushing move (Iron Spikes: pushed characters bleed)",
+          "sheetCell": "addons25/44"
+        },
+        {
+          "name": "Shield Bash",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 4, "dodgeDifficulty": 2,
+          "nodeAoE": false, "target": "nearest",
+          "push": true, "shift": null, "repeat": null, "conditions": [],
+          "special": null, "sheetCell": "addons25/45"
+        },
+        {
+          "name": "Shield Charge",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 4, "dodgeDifficulty": 1,
+          "nodeAoE": true, "target": "nearest",
+          "push": true, "shift": null, "repeat": null, "conditions": [],
+          "special": null, "sheetCell": "addons25/46"
+        },
+        {
+          "name": "Overhead Chop",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 4, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": "nearest",
+          "push": false, "shift": null, "repeat": null, "conditions": ["bleed"],
+          "special": null, "sheetCell": "addons25/47"
+        },
+        {
+          "name": "Barbed Sword Thrust",
+          "movement": null,
+          "attackType": "physical", "range": 1, "damage": 5, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": "nearest",
+          "push": true, "shift": null, "repeat": null, "conditions": [],
+          "special": "no movement", "sheetCell": "addons25/48"
+        }
+      ]
+    },
+    {
+      "data": {
+        "id": "longfinger-kirk", "name": "Longfinger Kirk", "expansion": "add-ons",
+        "class": "advanced", "phaseIcon": "red orb (main-boss phase)",
+        "health": 14, "block": 2, "resist": 2, "threat": 10,
+        "behaviourDeckSize": 3, "heatUpPoint": 8,
+        "soulsValue": 3,
+        "special": "Thorns - a character who attacks Kirk while on Kirk's node suffers Bleed",
+        "treasureCard": "Armour of Thorns (addons25/42)",
+        "sheetCell": "addons25/49"
+      },
+      "behaviors": [
+        {
+          "name": "Rolling Barbs",
+          "movement": { "nodes": 2, "toward": "aggro", "push": true, "pushDamage": 4, "when": "only" },
+          "attackType": null, "range": null, "damage": null, "dodgeDifficulty": 1,
+          "nodeAoE": false, "target": null,
+          "push": true, "shift": null, "repeat": null, "conditions": ["bleed"],
+          "special": "attack range printed as a dash; pushing move; Bleed splat printed on the card (push damage inflicts Bleed)",
+          "sheetCell": "addons25/50"
+        },
+        {
+          "name": "Lunging Stab",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 5, "dodgeDifficulty": 3,
+          "nodeAoE": false, "target": "nearest",
+          "push": false, "shift": null, "repeat": null, "conditions": ["bleed"],
+          "special": null, "sheetCell": "addons25/51"
+        },
+        {
+          "name": "Cleave",
+          "movement": { "nodes": 1, "toward": "nearest", "push": false, "when": "beforeAttack" },
+          "attackType": "physical", "range": 0, "damage": 6, "dodgeDifficulty": 2,
+          "nodeAoE": true, "target": "nearest",
+          "push": true, "shift": null, "repeat": null, "conditions": [],
+          "special": null, "sheetCell": "addons25/52"
+        },
+        {
+          "name": "Crushing Blow",
+          "movement": { "leap": true, "toward": "aggro", "push": true, "when": "beforeAttack" },
+          "attackType": "physical", "range": 1, "damage": 5, "dodgeDifficulty": 3,
+          "nodeAoE": false, "target": "aggro",
+          "push": true, "shift": null, "repeat": null, "conditions": ["bleed"],
+          "special": "leap glyph (crescent) in the movement cross: place on aggro character's node, pushing",
+          "sheetCell": "addons25/53"
+        },
+        {
+          "name": "Barbed Sword Strikes",
+          "movement": null,
+          "attackType": "physical", "range": 1, "damage": 5, "dodgeDifficulty": 2,
+          "nodeAoE": false, "target": "nearest",
+          "push": true, "shift": null, "repeat": 2, "conditions": [],
+          "special": "repeat x2 printed in the header row: perform the entire behaviour twice",
+          "sheetCell": "addons25/54"
+        }
+      ]
+    }
+  ],
+
+  "_missingFromMod": {
+    "invaders": [
+      "Melinda the Butcher", "Maldron the Assassin", "Maneater Mildred", "Oliver the Collector",
+      "Xanthous King Jeremiah", "Armorer Dennis", "Marvelous Chester", "Invader Brylex",
+      "Paladin Leeroy", "Fencer Sharron"
+    ],
+    "note": "add-ons digest names 12 invaders (6 standard + 6 advanced); this save contains only Kirk (standard) and Longfinger Kirk (advanced) - no minis, data cards, or behaviour decks exist for the other 10. Verified against every bag, deck, and loose card in inventory.json."
+  }
+}
