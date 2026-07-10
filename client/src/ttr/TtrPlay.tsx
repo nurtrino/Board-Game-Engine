@@ -26,8 +26,10 @@ const CSS = `
 .tp-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 40px)) rotate(0deg) scale(1.25) !important; z-index: 40 !important; }
 .tp-overlay { position: absolute; inset: 0; background: rgba(3,6,9,0.82); z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
 .tp-tickets { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 86vw; }
-.tp-ticket { width: 200px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 3px solid rgba(255,255,255,0.12); transition: border-color .12s ease, transform .12s ease; background: #0a0e12; }
-.tp-ticket img { display: block; width: 100%; }
+/* tickets read landscape: the art is stored portrait (banner up the side), so
+   rotate it 90deg and give the card a matching landscape box (--tw wide). */
+.tp-ticket { --tw: 300px; width: var(--tw); height: calc(var(--tw) * 434 / 703); position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; border: 3px solid rgba(255,255,255,0.12); transition: border-color .12s ease, transform .12s ease; background: #0a0e12; }
+.tp-ticket img { position: absolute; top: 50%; left: 50%; height: var(--tw); width: auto; transform: translate(-50%, -50%) rotate(-90deg); display: block; }
 .tp-ticket.sel { border-color: #6fd3e8; transform: translateY(-6px); }
 .tp-market { display: flex; gap: 10px; align-items: center; }
 .tp-mcard { width: 92px; height: 130px; border-radius: 8px; overflow: hidden; border: 2px solid rgba(255,255,255,0.16); cursor: pointer; background: #0a0e12; transition: transform .12s ease, border-color .12s ease; padding: 0; }
