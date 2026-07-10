@@ -16,13 +16,16 @@ import { GameIntro, TTR_INTRO } from './GameIntro';
 import { playSfx } from '../sfx';
 
 const CSS = `
-.tp-hand { position: absolute; left: 50%; bottom: -30px; height: 170px; pointer-events: none; z-index: 30; }
+/* every travel-card display reads landscape: the art is stored portrait, so we
+   rotate it -90deg inside a landscape box (--cw wide, ~0.64 aspect). */
+.tp-hand { position: absolute; left: 50%; bottom: -14px; height: 128px; pointer-events: none; z-index: 30; }
 .tp-card {
-  position: absolute; bottom: 0; left: 0; width: 86px; height: 122px; margin-left: -43px;
-  border-radius: 7px; transform-origin: 50% 130%; pointer-events: auto;
+  position: absolute; bottom: 0; left: 0; width: 132px; height: 84px; margin-left: -66px;
+  border-radius: 7px; transform-origin: 50% 300%; pointer-events: auto; overflow: hidden;
   box-shadow: 0 3px 10px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.14);
-  transition: transform 0.15s ease; background-size: cover; background-position: center;
+  transition: transform 0.15s ease; background: #0a0e12;
 }
+.tp-card img { position: absolute; top: 50%; left: 50%; height: 132px; width: auto; transform: translate(-50%, -50%) rotate(-90deg); display: block; }
 .tp-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 40px)) rotate(0deg) scale(1.25) !important; z-index: 40 !important; }
 .tp-overlay { position: absolute; inset: 0; background: rgba(3,6,9,0.82); z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
 .tp-tickets { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 86vw; }
@@ -32,9 +35,9 @@ const CSS = `
 .tp-ticket img { position: absolute; top: 50%; left: 50%; height: var(--tw); width: auto; transform: translate(-50%, -50%) rotate(-90deg); display: block; }
 .tp-ticket.sel { border-color: #6fd3e8; transform: translateY(-6px); }
 .tp-market { display: flex; gap: 10px; align-items: center; }
-.tp-mcard { width: 92px; height: 130px; border-radius: 8px; overflow: hidden; border: 2px solid rgba(255,255,255,0.16); cursor: pointer; background: #0a0e12; transition: transform .12s ease, border-color .12s ease; padding: 0; }
+.tp-mcard { width: 138px; height: calc(138px * 428 / 668); position: relative; border-radius: 8px; overflow: hidden; border: 2px solid rgba(255,255,255,0.16); cursor: pointer; background: #0a0e12; transition: transform .12s ease, border-color .12s ease; padding: 0; display: flex; align-items: center; justify-content: center; }
 .tp-mcard:hover:not(:disabled) { transform: translateY(-6px); border-color: #6fd3e8; }
-.tp-mcard img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tp-mcard img { position: absolute; top: 50%; left: 50%; height: 138px; width: auto; transform: translate(-50%, -50%) rotate(-90deg); display: block; }
 .tp-act {
   display: block; width: 100%; text-align: center; padding: 12px 14px; border-radius: 11px;
   border: 1px solid rgba(255,255,255,0.14); cursor: pointer; background: rgba(255,255,255,0.06);
@@ -366,7 +369,9 @@ export function TtrPlay({ view, act: rawAct, error }: {
       {reveal !== null && cardFace(scene, reveal) && (
         <div className="tp-overlay" style={{ zIndex: 60 }} onClick={() => setReveal(null)}>
           <div className="ig-lab">You drew</div>
-          <img src={cardFace(scene, reveal)!} alt="" style={{ width: 150, height: 210, borderRadius: 12, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 14px 44px rgba(0,0,0,0.75)' }} />
+          <div style={{ position: 'relative', width: 320, height: Math.round(320 * 428 / 668), borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 14px 44px rgba(0,0,0,0.75)' }}>
+            <img src={cardFace(scene, reveal)!} alt="" style={{ position: 'absolute', top: '50%', left: '50%', height: 320, width: 'auto', transform: 'translate(-50%, -50%) rotate(-90deg)' }} />
+          </div>
           <button className="tp-act" style={{ maxWidth: 160 }} onClick={() => setReveal(null)}>OK</button>
         </div>
       )}
@@ -392,7 +397,11 @@ export function TtrPlay({ view, act: rawAct, error }: {
                   <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginBottom: 16, flexWrap: 'wrap' }}>
                     {cards.map((ci) => {
                       const face = mine.hand ? cardFace(scene, mine.hand[ci]) : null;
-                      return face ? <img key={ci} src={face} alt="" style={{ width: 44, height: 62, borderRadius: 5, border: '1px solid rgba(255,255,255,0.2)' }} /> : null;
+                      return face ? (
+                        <div key={ci} style={{ position: 'relative', width: 66, height: Math.round(66 * 428 / 668), borderRadius: 5, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)' }}>
+                          <img src={face} alt="" style={{ position: 'absolute', top: '50%', left: '50%', height: 66, width: 'auto', transform: 'translate(-50%, -50%) rotate(-90deg)' }} />
+                        </div>
+                      ) : null;
                     })}
                   </div>
                 </>
@@ -496,11 +505,10 @@ export function TtrPlay({ view, act: rawAct, error }: {
           const face = cardFace(scene, c);
           return (
             <div key={i} className="tp-card" style={{
-              backgroundImage: face ? `url(${face})` : undefined,
               transform: `translateX(${tx}px) translateY(${ty}px) rotate(${rot}deg)`,
               ['--tx' as string]: `${tx}px`, ['--ty' as string]: `${ty}px`,
               zIndex: 10 + i,
-            }} />
+            }}>{face && <img src={face} alt="" />}</div>
           );
         })}
       </div>
@@ -521,25 +529,31 @@ export function TtrPlay({ view, act: rawAct, error }: {
       {/* whole hand in the foreground, grouped by color + type with counts */}
       {arm === 'hand' && (
         <div className="tp-overlay" onClick={() => setArm('idle')}>
-          <div className="ig-lab">Your hand — {(mine.hand ?? []).length} cards</div>
+          <div className="ig-lab">Your hand · {(mine.hand ?? []).length} cards</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, justifyContent: 'center', maxWidth: '90vw' }} onClick={(e) => e.stopPropagation()}>
-            {handGroups(mine.hand ?? []).map((grp) => (
-              <div key={grp.key} style={{ position: 'relative', width: 128, height: 182 }}>
-                {grp.cards.map((c, j) => (
-                  <div key={j} style={{
-                    position: 'absolute', top: 0, left: j * 15, width: 128, height: 182,
-                    borderRadius: 10, border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 6px 18px rgba(0,0,0,0.6)',
-                    backgroundImage: cardFace(scene, c) ? `url(${cardFace(scene, c)})` : undefined,
-                    backgroundSize: 'cover', backgroundPosition: 'center',
-                  }} />
-                ))}
-                <span style={{
-                  position: 'absolute', bottom: -10, left: grp.cards.length * 15 + 40, transform: 'translateX(-50%)',
-                  background: '#0c1116', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 999,
-                  padding: '3px 10px', font: '800 13px Inter, sans-serif', zIndex: 30,
-                }}>×{grp.cards.length}</span>
-              </div>
-            ))}
+            {handGroups(mine.hand ?? []).map((grp) => {
+              const stackW = (grp.cards.length - 1) * 15 + 182;
+              return (
+                <div key={grp.key} style={{ position: 'relative', width: stackW, height: 117 }}>
+                  {grp.cards.map((c, j) => {
+                    const f = cardFace(scene, c);
+                    return (
+                      <div key={j} style={{
+                        position: 'absolute', top: 0, left: j * 15, width: 182, height: 117,
+                        borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 6px 18px rgba(0,0,0,0.6)', background: '#0a0e12',
+                      }}>
+                        {f && <img src={f} alt="" style={{ position: 'absolute', top: '50%', left: '50%', height: 182, width: 'auto', transform: 'translate(-50%, -50%) rotate(-90deg)' }} />}
+                      </div>
+                    );
+                  })}
+                  <span style={{
+                    position: 'absolute', bottom: -10, left: stackW / 2, transform: 'translateX(-50%)',
+                    background: '#0c1116', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 999,
+                    padding: '3px 10px', font: '800 13px Inter, sans-serif', zIndex: 30,
+                  }}>×{grp.cards.length}</span>
+                </div>
+              );
+            })}
             {(mine.hand ?? []).length === 0 && <p className="dim">Empty hand.</p>}
           </div>
           <button className="tp-act" style={{ maxWidth: 200, marginTop: 18 }} onClick={() => setArm('idle')}>Close</button>

@@ -97,12 +97,9 @@ export function TtrBoard({ view }: { view: TtrView }) {
             <span style={{ width: 12, height: 12, borderRadius: '50%', background: SEAT_HEX[p.color] }} />
             <b style={{ flex: 1 }}>{p.name}</b>
             <span style={{ font: '800 22px Inter, sans-serif' }}>{p.score}<span style={{ fontSize: 11, fontWeight: 700, opacity: 0.55, marginLeft: 3 }}>PTS</span></span>
-            <span style={{ opacity: 0.55, fontSize: 12, textAlign: 'right', lineHeight: 1.2 }}>
-              {p.trains} trains<br />{p.ships} ships
-            </span>
           </div>
         ))}
-        <div className="ig-lab" style={{ opacity: 0.5, paddingRight: 4 }}>Score · pieces left</div>
+        <div className="ig-lab" style={{ opacity: 0.5, paddingRight: 4 }}>Score</div>
       </div>
 
       {/* market: 6 faceup + decks */}
