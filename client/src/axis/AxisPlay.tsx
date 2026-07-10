@@ -24,6 +24,7 @@ export interface MapCtl {
   arrows?: OrderArrow[];
   selectedKeys?: Record<string, Set<string>>;
   onStackTap?: (spaceId: string, power: string, key: string) => void;
+  onRegionTap?: (id: string) => void;
 }
 type PublishMap = (ctl: MapCtl) => void;
 const MAP_IDLE: MapCtl = { picks: [], onPick: () => {}, focusSpace: null };
@@ -395,6 +396,13 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
       selectedKeys: origin
         ? { [origin]: new Set(Object.entries(take).filter(([, n]) => n > 0).map(([k]) => isCargoKey(k) ? `${me}:transport` : `${me}:${k}`)) }
         : {},
+      onRegionTap: (id) => {
+        if (!origin) { if (origins.includes(id)) setOrigin(id); return; }
+        if (id === origin) return;
+        const t = targets.find((x) => x.id === id);
+        if (t) { setPending(t); return; }
+        if (origins.includes(id)) { setOrigin(id); setTake({}); setPending(null); }
+      },
       onStackTap: (spaceId, power, key) => {
         const mine = power === me || (me === 'usa' && power === 'china');
         if (!mine) return;
@@ -836,6 +844,7 @@ export default function AxisPlay({ view, act, error }: {
           arrows={mapCtl.arrows}
           selectedKeys={mapCtl.selectedKeys}
           onStackTap={mapCtl.onStackTap}
+          onRegionTap={mapCtl.onRegionTap}
         />
       </div>
       {!ready && <AxisLoading label="Setting up the table" overlay />}

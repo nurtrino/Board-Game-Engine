@@ -120,3 +120,70 @@ Overlay colour code: green = land-land, yellow = land-sea, cyan = sea-sea; red d
 land centers, blue = sea; seam-crossing edges are drawn as two segments running out of
 the map edges. Overlays are written to the session scratchpad (`overlay/` subdir), not
 into the repo.
+
+## Region border polygons (regions.json)
+
+`regions.json` holds ROUGH multipolygon rings (one or more rings per id, 4-24
+vertices each, full-res art px) for all 97 territories + 65 sea zones. They are
+unit-layout bounds, not cartography: every ring errs INWARD (land ~30 px, sea
+~50 px inside the printed border, adaptively less for narrow regions like Italy
+or sz-6) so stacks laid out inside a ring never cross a printed line. Every
+ring set contains its map.json center (new-guinea / solomon-islands: the
+briefed roundel points [7700,4120] / [8290,4230] instead).
+
+Method (playbook §2.4 — no eyeballing without overlay proof): half-res raster
+segmentation of the table art. Water = blue-dominance classification + opening
+(kills rivers) + despeckle of <1000 px² blobs (zone-number glyphs, tiny island
+dots); printed borders detected as thin bright/red/yellow ridge lines;
+multi-source Dijkstra flood from all 162 map.json centers (land regions flood
+land, zones flood water; crossing a border ridge costs extra; x wraps, but sea
+flooding only wraps north of y=2300 because the seam IS the printed 20/55,
+21/44, 25/43 border); per region wrap-aware erosion -> connected components ->
+pixel-exact outline -> Douglas-Peucker. Erosion radius auto-retries (larger to
+escape island annuli, smaller for narrow zones) scored by
+center-containment + sampled border violations. Verified on a full-map overlay
+plus 8 quadrant crops (all inspected) and an automated check: 162/162 ids
+present, all containment points inside, ring-interior samples pure.
+
+Judgment calls / known roughness:
+
+1. **Center pads.** 8 land regions print their center/roundel over water
+   (finland's lake label, french-indo-china-thailand, formosa, panama,
+   caroline-islands, east-indies, new-guinea, solomon-islands): they get a
+   170 px square pad ring at the anchor in addition to the traced ring(s), so
+   the containment contract holds. Midway is a single 180 px square (its two
+   dots are sub-despeckle size).
+2. **Small islands inside sea zones.** sz-51/52/53/57/59 (Caroline, Wake,
+   Hawaii, Midway, Iwo Jima) keep their big open-water ring; the tiny printed
+   islands sit inside it (escaping would need ~600 px erosion). The islands'
+   own rings overlap those zones by design.
+3. **Decorative art.** The mid-Atlantic Mobilization Zone panel is avoided
+   (sz-22/24/25 rings route around it) but the semi-transparent portrait/plane
+   watermarks and the logo under sz-30/31/32/45 are unavoidable — they are
+   open water in game terms.
+4. **Seam reality vs brief.** western-canada, central-united-states and mexico
+   split across x=0/9500 and get two rings. eastern-united-states does NOT
+   cross: CUS's left fragment (x 0-638) sits between EUS and the edge, so EUS
+   has one ring; its seam adjacencies run through the CUS/mexico left
+   fragments. sz-1 has both rings on the LEFT side (arctic strip + Hudson/
+   Labrador water) — there is no bay water at the right map edge; the
+   wc~sz-1 adjacency wraps from wc's right-edge land. sz-20/55, 21/44, 25/43
+   each stay on their own side (one ring each).
+5. **Arctic icecap.** North of Canada/Greenland the art is one continuous
+   white mass with no printed border; western-canada's left component,
+   greenland and alaska partition it along flood boundaries. Rings do not
+   overlap each other, but their exact split across the ice is arbitrary.
+6. **Java omitted.** east-indies' Java strip is a <25 px-wide sliver at half
+   res and never survives even minimal erosion; East Indies keeps the Sumatra
+   ring + center pad. Philippine-islands' ring encloses inter-island channels
+   (outer contour), fine for stack layout.
+7. The white ~44-55 px scan frame around the art edges is treated as a
+   continuation of the adjacent interior pixel class (it otherwise reads as a
+   land strip — panama once flooded down the whole left edge).
+
+Regeneration: built by `trace-regions.mjs` (session scratchpad tool, not in
+repo; ~450 lines, sharp + typed-array rasters as described above) with a small
+overrides map: midway {square:180}, formosa {seed on the island}, east-indies
+{seeds Sumatra+Java, erode 20}, sz-20 {seeds away from the "20" glyph halo,
+which otherwise imprisons the flood}. Overlay proofs (proof-full.jpg,
+proof-q00..q13.jpg) were written to the session scratchpad.

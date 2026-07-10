@@ -14,6 +14,11 @@ import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import * as THREE from 'three';
 import { useProgress } from '@react-three/drei';
 import { AXIS_MAP, POWERS, CHINA_COLOR, type UnitStack, type PowerKey, type UnitKey } from '@bge/shared';
+// region polygon helpers are imported lazily inside components (regions.ts
+// imports SPACE_CENTER from this module — a static import would be a cycle)
+type RegionsMod = typeof import('./regions');
+let regionsMod: RegionsMod | null = null;
+import('./regions').then((m) => { regionsMod = m; });
 
 const S = 0.01;
 export const ART_W = 9500;
@@ -89,13 +94,23 @@ export function useSceneReady(): boolean {
   return ready;
 }
 
-function MapPlane() {
+function MapPlane({ onRegionTap }: { onRegionTap?: (id: string) => void }) {
   const tex = useLoader(THREE.TextureLoader, '/axis/map.jpg');
   useMemo(() => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 16; }, [tex]);
   const w = ART_W * S, h = ART_H * S;
   return (
     <group>
-      <mesh position={[w / 2, BOARD_Y, -h / 2]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh
+        position={[w / 2, BOARD_Y, -h / 2]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        onClick={onRegionTap ? (e) => {
+          // world -> art px (inverse of px2r)
+          const px = e.point.x / S;
+          const py = e.point.z / S + ART_H;
+          const id = regionsMod?.regionAt(px, py);
+          if (id) { e.stopPropagation(); onRegionTap(id); }
+        } : undefined}
+      >
         <planeGeometry args={[w, h]} />
         <meshStandardMaterial map={tex} roughness={0.92} />
       </mesh>
@@ -241,15 +256,23 @@ export function SpacePieces({ manifest, spaceId, stacks, selectedKeys, onStackTa
   const ordered = [...stacks].sort((a, b) => UNIT_ORDER.indexOf(a.key) - UNIT_ORDER.indexOf(b.key));
   const cols = Math.max(2, Math.ceil(Math.sqrt(ordered.length)));
   const step = 0.95;
+  // polygon layout keeps every stack inside its printed borders, no overlap
+  const polyPts = regionsMod ? regionsMod.layoutPoints(spaceId, ordered.length, 128) : [];
   return (
     <group>
       {ordered.map((st, i) => {
         const def = meshFor(manifest, st.power, st.key);
         if (!def?.mesh) return null;
-        const r = Math.floor(i / cols);
-        const c = i % cols;
-        const x = cx + (c - (cols - 1) / 2) * step;
-        const z = cz + (r - Math.floor((ordered.length - 1) / cols) / 2) * step;
+        let x: number;
+        let z: number;
+        if (polyPts[i]) {
+          [x, z] = px2r(polyPts[i][0], polyPts[i][1]);
+        } else {
+          const r = Math.floor(i / cols);
+          const c = i % cols;
+          x = cx + (c - (cols - 1) / 2) * step;
+          z = cz + (r - Math.floor((ordered.length - 1) / cols) / 2) * step;
+        }
         const shown = 1; // one sculpt per stack; the count chip carries the number
         const stackKey = `${st.power}:${st.key}`;
         return (
@@ -420,7 +443,7 @@ function Rig({ focus }: { focus: FocusTarget | null }) {
   );
 }
 
-export function AxisTable({ manifest, board, control, focus, picks, onPick, staged, arrows, selectedKeys, onStackTap, children }: {
+export function AxisTable({ manifest, board, control, focus, picks, onPick, staged, arrows, selectedKeys, onStackTap, onRegionTap, children }: {
   manifest: AxisManifest;
   board: Record<string, UnitStack[]>;
   control: Record<string, PowerKey | 'china' | null>;
@@ -431,6 +454,7 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
   arrows?: OrderArrow[];
   selectedKeys?: Record<string, Set<string>>; // spaceId -> stack keys glowing
   onStackTap?: (spaceId: string, power: string, key: string) => void;
+  onRegionTap?: (id: string) => void; // tap anywhere inside a region
   children?: React.ReactNode;
 }) {
   const occupied = useMemo(() => {
@@ -453,7 +477,7 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
       <directionalLight position={[30, 70, 25]} intensity={1.4} />
       <directionalLight position={[-25, 50, -30]} intensity={0.45} />
       <Suspense fallback={null}>
-        <MapPlane />
+        <MapPlane onRegionTap={onRegionTap} />
         {occupied.map(({ id, power }) => {
           const c = SPACE_CENTER[id];
           if (!c) return null;
