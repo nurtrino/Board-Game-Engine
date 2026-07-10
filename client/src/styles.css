@@ -843,3 +843,17 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .ax-afteraction-status { font-size: 1.25rem; font-weight: 750; margin: .3rem 0 .55rem; }
 .ax-afteraction-row { display: flex; gap: .6rem; font-size: .92rem; padding: .18rem 0; }
 .ax-afteraction-row span:first-child { min-width: 120px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: .8rem; }
+
+/* HOI4-style floating order button: Back grows into ATTACK when armed */
+.ax-order { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 14;
+  display: flex; align-items: center; gap: 8px; }
+.ax-order-back { padding: .6rem 1.5rem; border-radius: 999px; font-size: .85rem; letter-spacing: .08em;
+  text-transform: uppercase; background: var(--glass); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  color: inherit; border: 1px solid var(--brd-2); cursor: pointer; }
+.ax-order-go { padding: .95rem 2.2rem; border-radius: 999px; font-weight: 900; letter-spacing: .12em; font-size: 1.05rem;
+  background: rgba(224,85,85,.2); color: #ff9a9a; border: 2px solid rgba(224,85,85,.85); cursor: pointer;
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  box-shadow: 0 0 32px -6px rgba(224,85,85,.7); animation: ax-order-pulse 1.6s ease-in-out infinite; }
+.ax-order-cancel { width: 42px; height: 42px; border-radius: 50%; background: var(--glass); color: inherit;
+  border: 1px solid var(--brd-2); cursor: pointer; font-size: 1rem; }
+@keyframes ax-order-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }

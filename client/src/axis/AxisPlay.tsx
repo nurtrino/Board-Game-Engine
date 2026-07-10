@@ -10,7 +10,7 @@ import {
   AXIS_MAP, POWERS, UNITS, TECHS, TECH_BY_KEY, RESEARCH_DIE_COST, CHINA_COLOR, WIN_CONDITIONS,
   type AxisView, type AxisAction, type PowerKey, type UnitKey, type UnitStack, type TechKey,
 } from '@bge/shared';
-import { AxisTable, useAxisManifest, useSceneReady, SPACE_CENTER, px2r, type FocusTarget, type SpacePick, type StagedStack, type AxisManifest } from './AxisScene';
+import { AxisTable, useAxisManifest, useSceneReady, SPACE_CENTER, px2r, type FocusTarget, type SpacePick, type StagedStack, type AxisManifest, type OrderArrow } from './AxisScene';
 import { AxisLoading } from './AxisBoard';
 import { GameIntro, type Intro } from '../ttr/GameIntro';
 
@@ -21,6 +21,9 @@ export interface MapCtl {
   picks: SpacePick[];
   onPick: (id: string) => void;
   focusSpace: string | null;
+  arrows?: OrderArrow[];
+  selectedKeys?: Record<string, Set<string>>;
+  onStackTap?: (spaceId: string, power: string, key: string) => void;
 }
 type PublishMap = (ctl: MapCtl) => void;
 const MAP_IDLE: MapCtl = { picks: [], onPick: () => {}, focusSpace: null };
@@ -343,7 +346,8 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
       (view.board[z] ?? []).some((st) => st.power === me && st.key === 'transport'));
   }, [origin, take, mode, view.board]);
 
-  const reset = () => { setOrigin(null); setTake({}); setSbrAsk(null); };
+  const [pending, setPending] = useState<Target | null>(null);
+  const reset = () => { setOrigin(null); setTake({}); setSbrAsk(null); setPending(null); };
 
   const commit = (t: Target, forceSbr?: boolean) => {
     const own = picked.filter(([k]) => !isCargoKey(k)).map(([key, count]) => ({ key: baseKey(key), count }));
@@ -380,11 +384,28 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
       onPick: (id) => {
         if (!origin) { if (origins.includes(id)) setOrigin(id); return; }
         const t = targets.find((x) => x.id === id);
-        if (t) commit(t);
+        if (t) setPending(t); // draw the arrow; the big button executes
       },
       focusSpace: origin,
+      arrows: pending && origin ? [{
+        from: [SPACE_CENTER[origin] ?? [0, 0]],
+        to: SPACE_CENTER[pending.id] ?? [0, 0],
+        color: mode === 'combat' ? '#e05555' : '#7be0a3',
+      }] : [],
+      selectedKeys: origin
+        ? { [origin]: new Set(Object.entries(take).filter(([, n]) => n > 0).map(([k]) => isCargoKey(k) ? `${me}:transport` : `${me}:${k}`)) }
+        : {},
+      onStackTap: (spaceId, power, key) => {
+        const mine = power === me || (me === 'usa' && power === 'china');
+        if (!mine) return;
+        if (origin && origin !== spaceId) { setOrigin(spaceId); setTake({ [key]: 1 }); setPending(null); return; }
+        if (!origin) setOrigin(spaceId);
+        const stack = (view.board[spaceId] ?? []).find((st) => st.power === power && st.key === key);
+        const max = stack?.count ?? 0;
+        setTake((t) => ({ ...t, [key]: Math.min(max, (t[key] ?? 0) + 1) }));
+      },
     });
-  }, [origin, targets, origins, mode]);
+  }, [origin, targets, origins, mode, pending, take]);
 
   return (
     <div className="ax-sheet-body">
@@ -425,9 +446,9 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
             {targets.map((t) => (
               <Chip
                 key={`${t.id}-${t.via ?? ''}`}
-                label={`${mode === 'combat' ? (t.amphibious ? 'Assault' : 'Attack') : isSz(origin) && !isSz(t.id) ? 'Offload to' : 'To'} ${spaceName(t.id)}${t.via ? ` via ${spaceName(t.via)}` : ''}`}
+                label={`${pending?.id === t.id ? '● ' : ''}${mode === 'combat' ? (t.amphibious ? 'Assault' : 'Attack') : isSz(origin) && !isSz(t.id) ? 'Offload to' : 'To'} ${spaceName(t.id)}${t.via ? ` via ${spaceName(t.via)}` : ''}`}
                 tone={mode === 'combat' ? 'danger' : 'gold'}
-                onTap={() => commit(t)}
+                onTap={() => setPending(t)}
               />
             ))}
             {loadZones.map((z) => (
@@ -448,6 +469,20 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
             )}
           </div>
         </>
+      )}
+      {origin && (
+        <div className="ax-order">
+          {pending ? (
+            <>
+              <button className="ax-order-go" onClick={() => commit(pending)}>
+                {mode === 'combat' ? (pending.sbr ? 'STRIKE' : pending.amphibious ? 'ASSAULT' : 'ATTACK') : 'MOVE'} · {spaceName(pending.id)}
+              </button>
+              <button className="ax-order-cancel" onClick={() => setPending(null)}>✕</button>
+            </>
+          ) : (
+            <button className="ax-order-back" onClick={reset}>Back</button>
+          )}
+        </div>
       )}
       {sbrAsk && (
         <div className="ax-modal">
@@ -798,6 +833,9 @@ export default function AxisPlay({ view, act, error }: {
           picks={mapCtl.picks}
           onPick={mapCtl.onPick}
           staged={staged}
+          arrows={mapCtl.arrows}
+          selectedKeys={mapCtl.selectedKeys}
+          onStackTap={mapCtl.onStackTap}
         />
       </div>
       {!ready && <AxisLoading label="Setting up the table" overlay />}

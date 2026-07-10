@@ -145,14 +145,34 @@ export function useAxisObj(url: string, tint: number[] | null) {
   }, [obj, tint]);
 }
 
-function UnitMesh({ url, tint, x, z, scale, rotY = 0 }: {
+function UnitMesh({ url, tint, x, z, scale, rotY = 0, selected = false, onTap }: {
   url: string; tint: number[] | null; x: number; z: number; scale: number; rotY?: number;
+  selected?: boolean; onTap?: () => void;
 }) {
   const { clone, minY, midX, midZ, span, broadside } = useAxisObj(url, tint);
+  const ref = useRef<THREE.Group>(null);
+  // selection glow: pulse the emissive channel of every material (HOI4 pick)
+  useFrame(({ clock }) => {
+    const g = ref.current;
+    if (!g) return;
+    const k = selected ? 0.45 + Math.sin(clock.elapsedTime * 5) * 0.25 : 0;
+    g.traverse((o) => {
+      const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
+      if (m && m.emissive) {
+        m.emissive.setRGB(k, k * 0.82, k * 0.3);
+      }
+    });
+  });
   // clamp footprint so stacks stay inside their territories at close zoom
   const s = Math.min(scale, span > 0 ? 1.7 / span : scale);
   return (
-    <group position={[x, BOARD_Y - minY * s, z]} rotation={[0, rotY + (broadside ? Math.PI / 2 : 0), 0]} scale={[s, s, s]}>
+    <group
+      ref={ref}
+      position={[x, BOARD_Y - minY * s, z]}
+      rotation={[0, rotY + (broadside ? Math.PI / 2 : 0), 0]}
+      scale={[s, s, s]}
+      onClick={onTap ? (e) => { e.stopPropagation(); onTap(); } : undefined}
+    >
       <primitive object={clone} position-x={-midX} position-z={-midZ} />
     </group>
   );
@@ -209,8 +229,11 @@ function ControlDisc({ power, x, z }: { power: string; x: number; z: number }) {
 // stack with a count chip beside them when count > shown
 const UNIT_ORDER = ['factory', 'aaGun', 'infantry', 'artillery', 'tank', 'fighter', 'bomber', 'battleship', 'carrier', 'cruiser', 'destroyer', 'submarine', 'transport'];
 
-export function SpacePieces({ manifest, spaceId, stacks }: {
+export function SpacePieces({ manifest, spaceId, stacks, selectedKeys, onStackTap }: {
   manifest: AxisManifest; spaceId: string; stacks: UnitStack[];
+  // selection: set of `${power}:${key}` stack keys that glow
+  selectedKeys?: Set<string>;
+  onStackTap?: (spaceId: string, power: string, key: string) => void;
 }) {
   const center = SPACE_CENTER[spaceId];
   if (!center) return null;
@@ -228,6 +251,7 @@ export function SpacePieces({ manifest, spaceId, stacks }: {
         const x = cx + (c - (cols - 1) / 2) * step;
         const z = cz + (r - Math.floor((ordered.length - 1) / cols) / 2) * step;
         const shown = 1; // one sculpt per stack; the count chip carries the number
+        const stackKey = `${st.power}:${st.key}`;
         return (
           <group key={`${st.power}-${st.key}-${i}`}>
             {Array.from({ length: shown }, (_, k) => (
@@ -238,6 +262,8 @@ export function SpacePieces({ manifest, spaceId, stacks }: {
                 x={x + k * 0.42}
                 z={z - k * 0.18}
                 scale={def.scale ?? 1}
+                selected={selectedKeys?.has(stackKey) ?? false}
+                onTap={onStackTap ? () => onStackTap(spaceId, st.power, st.key) : undefined}
               />
             ))}
             {st.count > shown && <CountChip n={st.count} x={x + 0.62} z={z + 0.5} />}
@@ -313,6 +339,54 @@ function StagingPieces({ manifest, staged }: { manifest: AxisManifest; staged: S
   );
 }
 
+// HOI4-style order arrows: one per (origins -> target); branches from each
+// origin merge into a trunk that flies to the target and ends in a head.
+export interface OrderArrow { from: [number, number][]; to: [number, number]; color?: string } // art px points
+
+function ArrowMesh({ arrow }: { arrow: OrderArrow }) {
+  const color = arrow.color ?? '#e05555';
+  const parts = useMemo(() => {
+    const toR = (p: [number, number]) => { const [x, z] = px2r(p[0], p[1]); return new THREE.Vector3(x, 0.35, z); };
+    const target = toR(arrow.to);
+    const origins = arrow.from.map(toR);
+    if (origins.length === 0) return null;
+    const centroid = origins.reduce((a, b) => a.clone().add(b), new THREE.Vector3()).multiplyScalar(1 / origins.length);
+    const joint = centroid.clone().lerp(target, 0.35).setY(0.55);
+    const lift = (v: THREE.Vector3, h: number) => v.clone().setY(h);
+    const tubes: THREE.TubeGeometry[] = [];
+    for (const o of origins) {
+      const mid = o.clone().lerp(joint, 0.5).setY(0.9);
+      const curve = new THREE.CatmullRomCurve3([lift(o, 0.25), mid, joint]);
+      tubes.push(new THREE.TubeGeometry(curve, 18, 0.16, 8, false));
+    }
+    const headBase = joint.clone().lerp(lift(target, 0.3), 0.86);
+    const trunkMid = joint.clone().lerp(headBase, 0.5).setY(1.1);
+    const trunk = new THREE.CatmullRomCurve3([joint, trunkMid, headBase]);
+    tubes.push(new THREE.TubeGeometry(trunk, 22, origins.length > 1 ? 0.26 : 0.2, 8, false));
+    const dir = lift(target, 0.3).clone().sub(headBase).normalize();
+    return { tubes, headBase, dir };
+  }, [JSON.stringify(arrow)]);
+  const matRef = useRef<THREE.MeshStandardMaterial>(null);
+  useFrame(({ clock }) => {
+    if (matRef.current) matRef.current.opacity = 0.75 + Math.sin(clock.elapsedTime * 3.4) * 0.2;
+  });
+  if (!parts) return null;
+  const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), parts.dir);
+  return (
+    <group renderOrder={5}>
+      {parts.tubes.map((g, i) => (
+        <mesh key={i} geometry={g}>
+          <meshStandardMaterial ref={i === 0 ? matRef : undefined} color={color} emissive={color} emissiveIntensity={0.55} transparent opacity={0.85} depthWrite={false} />
+        </mesh>
+      ))}
+      <mesh position={parts.headBase} quaternion={quat}>
+        <coneGeometry args={[0.55, 1.2, 12]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} transparent opacity={0.92} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
 export interface FocusTarget { x: number; z: number; dist: number }
 
 /** Orbit camera with a drivable focus: set `focus` to fly the camera there. */
@@ -346,7 +420,7 @@ function Rig({ focus }: { focus: FocusTarget | null }) {
   );
 }
 
-export function AxisTable({ manifest, board, control, focus, picks, onPick, staged, children }: {
+export function AxisTable({ manifest, board, control, focus, picks, onPick, staged, arrows, selectedKeys, onStackTap, children }: {
   manifest: AxisManifest;
   board: Record<string, UnitStack[]>;
   control: Record<string, PowerKey | 'china' | null>;
@@ -354,6 +428,9 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
   picks?: SpacePick[];
   onPick?: (id: string) => void;
   staged?: StagedStack[];
+  arrows?: OrderArrow[];
+  selectedKeys?: Record<string, Set<string>>; // spaceId -> stack keys glowing
+  onStackTap?: (spaceId: string, power: string, key: string) => void;
   children?: React.ReactNode;
 }) {
   const occupied = useMemo(() => {
@@ -384,8 +461,18 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
           return <ControlDisc key={id} power={power} x={x} z={z} />;
         })}
         {Object.entries(board).map(([spaceId, stacks]) =>
-          stacks.length ? <SpacePieces key={spaceId} manifest={manifest} spaceId={spaceId} stacks={stacks} /> : null,
+          stacks.length ? (
+            <SpacePieces
+              key={spaceId}
+              manifest={manifest}
+              spaceId={spaceId}
+              stacks={stacks}
+              selectedKeys={selectedKeys?.[spaceId]}
+              onStackTap={onStackTap}
+            />
+          ) : null,
         )}
+        {(arrows ?? []).map((a, i) => <ArrowMesh key={i} arrow={a} />)}
         {staged && staged.length > 0 && <StagingPieces manifest={manifest} staged={staged} />}
         {(picks ?? []).map((p) => {
           const c = SPACE_CENTER[p.id];
