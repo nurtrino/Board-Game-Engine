@@ -5,7 +5,7 @@
 // printed mobilization zone. The IPC bank sits bottom-right; tapping it
 // shows the actual note pieces, and income makes the bills fly in.
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import {
   AXIS_MAP, POWERS, UNITS, TECHS, TECH_BY_KEY, RESEARCH_DIE_COST, CHINA_COLOR, WIN_CONDITIONS,
   type AxisView, type AxisAction, type PowerKey, type UnitKey, type UnitStack, type TechKey,
@@ -193,16 +193,21 @@ function PurchaseSheet({ view, act, map }: { view: AxisView; act: Act; map: Publ
   );
 }
 
-// unit selection key: own units by unit key, transported cargo as cargo:<key>
+// unit selection: keys are `${space}|${unit}` (or `${space}|cargo:${unit}`),
+// so a force can be gathered from SEVERAL regions and sent as one order —
+// the HOI4 arrows merge the origins into a single strike.
 type TakeKey = string;
-const isCargoKey = (k: TakeKey) => k.startsWith('cargo:');
-const baseKey = (k: TakeKey): UnitKey => (isCargoKey(k) ? k.slice(6) : k) as UnitKey;
+const keySpace = (k: TakeKey) => k.slice(0, k.indexOf('|'));
+const keyUnitPart = (k: TakeKey) => k.slice(k.indexOf('|') + 1);
+const isCargoPart = (part: string) => part.startsWith('cargo:');
+const partUnit = (part: string): UnitKey => (isCargoPart(part) ? part.slice(6) : part) as UnitKey;
 
 function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'combat' | 'noncombat'; map: PublishMap }) {
   const me = view.active;
-  const [origin, setOrigin] = useState<string | null>(null);
+  const [origin, setOrigin] = useState<string | null>(null); // the focused region
   const [take, setTake] = useState<Record<TakeKey, number>>({});
-  const [sbrAsk, setSbrAsk] = useState<string | null>(null); // target awaiting raid-vs-assault choice
+  const [pending, setPending] = useState<Target | null>(null);
+  const [sbrAsk, setSbrAsk] = useState<string | null>(null);
 
   const side = (p: string) => (p === 'china' ? 'allies' : POWERS[p as PowerKey].coalition);
   const mySide = POWERS[me].coalition;
@@ -238,14 +243,11 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
   const passable = (id: string) => !TERR[id]?.isImpassable && (isSz(id) || TERR[id]?.originalOwner != null || view.control[id] != null);
 
   const picked = Object.entries(take).filter(([, n]) => n > 0);
-  const pickedKeys = picked.map(([k]) => k);
-  const anyCargo = pickedKeys.some(isCargoKey);
-  const ownKeys = pickedKeys.filter((k) => !isCargoKey(k)).map(baseKey);
-  const allTanks = ownKeys.length > 0 && ownKeys.every((k) => k === 'tank') && !anyCargo;
-  const allShips = ownKeys.length > 0 && ownKeys.every((k) => SEA_KEYS.includes(k)) && !anyCargo;
-  const allAir = ownKeys.length > 0 && ownKeys.every((k) => AIR_KEYS.includes(k)) && !anyCargo;
-  const onlyBombers = ownKeys.length > 0 && ownKeys.every((k) => k === 'bomber') && !anyCargo;
-  const hasLand = ownKeys.some((k) => !SEA_KEYS.includes(k) && !AIR_KEYS.includes(k));
+  const pickedSpaces = [...new Set(picked.map(([k]) => keySpace(k)))];
+  const allUnitParts = picked.map(([k]) => keyUnitPart(k));
+  const anyCargo = allUnitParts.some(isCargoPart);
+  const ownUnits = allUnitParts.filter((p) => !isCargoPart(p)).map(partUnit);
+  const onlyBombers = ownUnits.length > 0 && ownUnits.every((k) => k === 'bomber') && !anyCargo;
 
   const ring2 = (id: string, domain: 'land' | 'sea'): { id: string; via: string }[] => {
     const out: { id: string; via: string }[] = [];
@@ -266,51 +268,60 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
   };
 
   interface Target { id: string; via?: string; amphibious?: boolean; sbr?: boolean }
-  const targets = useMemo((): Target[] => {
-    if (!origin || picked.length === 0) return [];
+
+  // legal destinations for ONE origin's picked units
+  const targetsFor = (space: string): Target[] => {
+    const parts = picked.filter(([k]) => keySpace(k) === space).map(([k]) => keyUnitPart(k));
+    if (parts.length === 0) return [];
+    const cargoHere = parts.some(isCargoPart);
+    const own = parts.filter((p) => !isCargoPart(p)).map(partUnit);
+    const tanksOnly = own.length > 0 && own.every((k) => k === 'tank') && !cargoHere;
+    const shipsOnly = own.length > 0 && own.every((k) => SEA_KEYS.includes(k)) && !cargoHere;
+    const airOnly = own.length > 0 && own.every((k) => AIR_KEYS.includes(k)) && !cargoHere;
+    const landHere = own.some((k) => !SEA_KEYS.includes(k) && !AIR_KEYS.includes(k));
+    const seaOrigin = isSz(space);
     const out: Target[] = [];
-    const seaOrigin = isSz(origin);
     const enemyFactory = (id: string) => !isSz(id) && hostileControl(id) && (view.board[id] ?? []).some((s) => s.key === 'factory');
 
     if (mode === 'combat') {
       const want = (id: string) => (isSz(id) ? enemyAt(id) : enemyAt(id) || hostileControl(id));
       if (seaOrigin) {
-        if (anyCargo) {
-          for (const t of ZONE[origin]?.coastTo ?? []) {
+        if (cargoHere) {
+          for (const t of ZONE[space]?.coastTo ?? []) {
             if (want(t) && passable(t)) out.push({ id: t, amphibious: true });
           }
         }
-        if (allShips) {
-          for (const z of neighborsOf(origin).filter(isSz)) if (want(z)) out.push({ id: z });
-          for (const { id, via } of ring2(origin, 'sea')) if (want(id)) out.push({ id, via });
+        if (shipsOnly || (own.length > 0 && !cargoHere)) {
+          for (const z of neighborsOf(space).filter(isSz)) if (want(z)) out.push({ id: z });
+          for (const { id, via } of ring2(space, 'sea')) if (want(id)) out.push({ id, via });
         }
-      } else {
-        for (const n of neighborsOf(origin)) {
-          if (isSz(n) && hasLand) continue;
-          if (!isSz(n) && !passable(n)) continue;
-          if (want(n)) out.push({ id: n, sbr: onlyBombers && enemyFactory(n) });
-        }
-        if (allTanks) {
-          for (const { id } of ring2(origin, 'land')) if (want(id) && passable(id)) out.push({ id });
-        }
-        if (allAir) {
-          const range = Math.min(...ownKeys.map((k) => UNITS[k].move)) - 1;
-          let frontier = [origin];
-          const seen = new Set(frontier);
-          for (let d = 1; d <= range; d++) {
-            const next: string[] = [];
-            for (const sp of frontier) {
-              for (const n of neighborsOf(sp)) {
-                if (seen.has(n)) continue;
-                seen.add(n);
-                if (want(n) && (isSz(n) || passable(n)) && !out.some((t) => t.id === n)) {
-                  out.push({ id: n, sbr: onlyBombers && enemyFactory(n) });
-                }
-                next.push(n);
+        return out;
+      }
+      for (const n of neighborsOf(space)) {
+        if (isSz(n) && landHere) continue;
+        if (!isSz(n) && !passable(n)) continue;
+        if (want(n)) out.push({ id: n, sbr: onlyBombers && enemyFactory(n) });
+      }
+      if (tanksOnly) {
+        for (const { id } of ring2(space, 'land')) if (want(id) && passable(id)) out.push({ id });
+      }
+      if (airOnly) {
+        const range = Math.min(...own.map((k) => UNITS[k].move)) - 1;
+        let frontier = [space];
+        const seen = new Set(frontier);
+        for (let d = 1; d <= range; d++) {
+          const next: string[] = [];
+          for (const sp of frontier) {
+            for (const n of neighborsOf(sp)) {
+              if (seen.has(n)) continue;
+              seen.add(n);
+              if (want(n) && (isSz(n) || passable(n)) && !out.some((t) => t.id === n)) {
+                out.push({ id: n, sbr: onlyBombers && enemyFactory(n) });
               }
+              next.push(n);
             }
-            frontier = next;
           }
+          frontier = next;
         }
       }
       return out;
@@ -318,111 +329,169 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
 
     // noncombat: never into or through hostile or neutral ground
     if (seaOrigin) {
-      if (anyCargo) {
-        for (const t of ZONE[origin]?.coastTo ?? []) {
+      if (cargoHere) {
+        for (const t of ZONE[space]?.coastTo ?? []) {
           if (!isSz(t) && friendly(t) && !enemyAt(t)) out.push({ id: t });
         }
       }
-      if (allShips) {
-        for (const z of neighborsOf(origin).filter(isSz)) if (friendly(z)) out.push({ id: z });
-        for (const { id, via } of ring2(origin, 'sea')) if (friendly(id)) out.push({ id, via });
+      if (shipsOnly || (own.length > 0 && !cargoHere)) {
+        for (const z of neighborsOf(space).filter(isSz)) if (friendly(z)) out.push({ id: z });
+        for (const { id, via } of ring2(space, 'sea')) if (friendly(id)) out.push({ id, via });
       }
       return out;
     }
-    for (const n of neighborsOf(origin)) {
+    for (const n of neighborsOf(space)) {
       if (isSz(n)) continue;
       if (friendly(n) && !enemyAt(n) && passable(n)) out.push({ id: n });
     }
-    if (allTanks || allAir) {
-      for (const { id, via } of ring2(origin, 'land')) {
+    if (tanksOnly || airOnly) {
+      for (const { id, via } of ring2(space, 'land')) {
         if (friendly(id) && !enemyAt(id) && passable(id)) out.push({ id, via });
       }
     }
     return out;
-  }, [origin, take, mode, view.board, view.control]);
+  };
+
+  // merged order: a target must be reachable by EVERY origin in the force
+  const targets = useMemo((): Target[] => {
+    if (pickedSpaces.length === 0) return [];
+    let acc: Target[] | null = null;
+    for (const space of pickedSpaces) {
+      const ts = targetsFor(space);
+      if (acc == null) { acc = ts; continue; }
+      acc = acc
+        .filter((t) => ts.some((x) => x.id === t.id))
+        .map((t) => {
+          const other = ts.find((x) => x.id === t.id)!;
+          return { ...t, amphibious: t.amphibious || other.amphibious, sbr: (t.sbr ?? false) && (other.sbr ?? false) };
+        });
+    }
+    return acc ?? [];
+  }, [take, mode, view.board, view.control]);
 
   const loadZones = useMemo(() => {
-    if (mode !== 'noncombat' || !origin || isSz(origin) || !hasLand) return [];
+    if (mode !== 'noncombat' || !origin || isSz(origin)) return [];
+    const landPicked = picked.some(([k]) => keySpace(k) === origin && !isCargoPart(keyUnitPart(k)) && !SEA_KEYS.includes(partUnit(keyUnitPart(k))) && !AIR_KEYS.includes(partUnit(keyUnitPart(k))));
+    if (!landPicked) return [];
     return (TERR[origin]?.coastTo ?? []).filter((z) =>
       (view.board[z] ?? []).some((st) => st.power === me && st.key === 'transport'));
   }, [origin, take, mode, view.board]);
 
-  const [pending, setPending] = useState<Target | null>(null);
   const reset = () => { setOrigin(null); setTake({}); setSbrAsk(null); setPending(null); };
 
   const commit = (t: Target, forceSbr?: boolean) => {
-    const own = picked.filter(([k]) => !isCargoKey(k)).map(([key, count]) => ({ key: baseKey(key), count }));
-    const cargo = picked.filter(([k]) => isCargoKey(k)).map(([key, count]) => ({ key: baseKey(key), count }));
     if (mode === 'combat') {
-      if (t.sbr && forceSbr === undefined) { setSbrAsk(t.id); return; } // popup: raid or assault?
+      if (t.sbr && forceSbr === undefined) { setSbrAsk(t.id); return; }
       if (forceSbr) {
-        const bombers = own.find((u) => u.key === 'bomber')?.count ?? 0;
-        act({ type: 'sbr', target: t.id, forces: [{ from: origin!, bombers }] });
-      } else if (t.amphibious) {
-        act({
-          type: 'attack', target: t.id,
-          forces: own.length ? [{ from: origin!, units: own }] : [],
-          offloadFrom: origin!, offloadUnits: cargo,
-        });
+        const forces = pickedSpaces.map((space) => ({
+          from: space,
+          bombers: picked.filter(([k]) => keySpace(k) === space && partUnit(keyUnitPart(k)) === 'bomber')
+            .reduce((n, [, c]) => n + c, 0),
+        })).filter((f) => f.bombers > 0);
+        act({ type: 'sbr', target: t.id, forces });
       } else {
-        act({ type: 'attack', target: t.id, forces: [{ from: origin!, units: own }] });
+        const forces: { from: string; units: { key: UnitKey; count: number }[] }[] = [];
+        let offloadFrom: string | undefined;
+        let offloadUnits: { key: UnitKey; count: number }[] = [];
+        for (const space of pickedSpaces) {
+          const own = picked.filter(([k]) => keySpace(k) === space && !isCargoPart(keyUnitPart(k)))
+            .map(([k, count]) => ({ key: partUnit(keyUnitPart(k)), count }));
+          const cargo = picked.filter(([k]) => keySpace(k) === space && isCargoPart(keyUnitPart(k)))
+            .map(([k, count]) => ({ key: partUnit(keyUnitPart(k)), count }));
+          if (own.length) forces.push({ from: space, units: own });
+          if (cargo.length && isSz(space)) { offloadFrom = space; offloadUnits = cargo; }
+        }
+        act({ type: 'attack', target: t.id, forces, ...(offloadFrom ? { offloadFrom, offloadUnits } : {}) });
       }
-    } else if (isSz(origin!) && !isSz(t.id) && cargo.length) {
-      act({ type: 'offload', zone: origin!, territory: t.id, units: cargo });
     } else {
-      act({ type: 'move', from: origin!, to: t.id, units: own, ...(t.via ? { via: t.via } : {}) });
+      // noncombat: one move (or offload) per origin, same destination
+      for (const space of pickedSpaces) {
+        const own = picked.filter(([k]) => keySpace(k) === space && !isCargoPart(keyUnitPart(k)))
+          .map(([k, count]) => ({ key: partUnit(keyUnitPart(k)), count }));
+        const cargo = picked.filter(([k]) => keySpace(k) === space && isCargoPart(keyUnitPart(k)))
+          .map(([k, count]) => ({ key: partUnit(keyUnitPart(k)), count }));
+        if (cargo.length && isSz(space) && !isSz(t.id)) {
+          act({ type: 'offload', zone: space, territory: t.id, units: cargo });
+        }
+        if (own.length) {
+          const perOrigin = targetsFor(space).find((x) => x.id === t.id);
+          act({ type: 'move', from: space, to: t.id, units: own, ...(perOrigin?.via ? { via: perOrigin.via } : {}) });
+        }
+      }
     }
     reset();
   };
 
-  // publish the tap targets onto the shared map
+  // publish the interactive layer onto the shared map
   useEffect(() => {
-    const picks: SpacePick[] = origin
+    const picks: SpacePick[] = origin || pickedSpaces.length
       ? targets.map((t) => ({ id: t.id, color: mode === 'combat' ? '#e05555' : '#7be0a3' }))
       : origins.map((id) => ({ id }));
+    const selectedKeys: Record<string, Set<string>> = {};
+    for (const [k, n] of picked) {
+      if (n <= 0) continue;
+      const space = keySpace(k);
+      const part = keyUnitPart(k);
+      (selectedKeys[space] ??= new Set()).add(isCargoPart(part) ? `${me}:transport` : `${me}:${partUnit(part)}`);
+    }
     map({
       picks,
       onPick: (id) => {
-        if (!origin) { if (origins.includes(id)) setOrigin(id); return; }
+        if (!origin && !pickedSpaces.length) { if (origins.includes(id)) setOrigin(id); return; }
         const t = targets.find((x) => x.id === id);
-        if (t) setPending(t); // draw the arrow; the big button executes
+        if (t) setPending(t);
       },
       focusSpace: origin,
-      arrows: pending && origin ? [{
-        from: [SPACE_CENTER[origin] ?? [0, 0]],
+      arrows: pending && pickedSpaces.length ? [{
+        from: pickedSpaces.map((sp) => SPACE_CENTER[sp] ?? [0, 0]),
         to: SPACE_CENTER[pending.id] ?? [0, 0],
         color: mode === 'combat' ? '#e05555' : '#7be0a3',
       }] : [],
-      selectedKeys: origin
-        ? { [origin]: new Set(Object.entries(take).filter(([, n]) => n > 0).map(([k]) => isCargoKey(k) ? `${me}:transport` : `${me}:${k}`)) }
-        : {},
+      selectedKeys,
       onRegionTap: (id) => {
-        if (!origin) { if (origins.includes(id)) setOrigin(id); return; }
+        if (!origin && !pickedSpaces.length) { if (origins.includes(id)) setOrigin(id); return; }
         if (id === origin) return;
         const t = targets.find((x) => x.id === id);
         if (t) { setPending(t); return; }
-        if (origins.includes(id)) { setOrigin(id); setTake({}); setPending(null); }
+        if (origins.includes(id)) { setOrigin(id); setPending(null); } // focus another origin, keep picks
       },
       onStackTap: (spaceId, power, key) => {
         const mine = power === me || (me === 'usa' && power === 'china');
         if (!mine) return;
-        if (origin && origin !== spaceId) { setOrigin(spaceId); setTake({ [key]: 1 }); setPending(null); return; }
-        if (!origin) setOrigin(spaceId);
+        setOrigin(spaceId); // focus follows the tap; picks accumulate across regions
         const stack = (view.board[spaceId] ?? []).find((st) => st.power === power && st.key === key);
         const max = stack?.count ?? 0;
-        setTake((t) => ({ ...t, [key]: Math.min(max, (t[key] ?? 0) + 1) }));
+        const tk = `${spaceId}|${key}`;
+        setTake((t) => {
+          const next = { ...t, [tk]: Math.min(max, (t[tk] ?? 0) + 1) };
+          for (const k of Object.keys(next)) if (!next[k]) delete next[k];
+          return next;
+        });
+        setPending(null);
       },
     });
   }, [origin, targets, origins, mode, pending, take]);
+
+  const stepperFor = (space: string, part: string, max: number) => (
+    <Stepper
+      value={take[`${space}|${part}`] ?? 0}
+      max={max}
+      onChange={(n) => setTake((t) => {
+        const next = { ...t, [`${space}|${part}`]: n };
+        if (!n) delete next[`${space}|${part}`];
+        return next;
+      })}
+    />
+  );
 
   return (
     <div className="ax-sheet-body">
       <div className="ig-lab">
         {mode === 'combat'
-          ? 'Combat move. Pick units, then the space to attack. Each attack resolves at once.'
+          ? 'Combat move. Tap pieces to gather a force (several regions is fine), then the region to attack.'
           : 'Noncombat move. Reposition, land aircraft, load and offload transports. No hostile or neutral ground.'}
       </div>
-      {!origin && (
+      {!origin && pickedSpaces.length === 0 && (
         <div className="ax-row ax-wrap">
           {origins.map((id) => (
             <Chip key={id} label={spaceName(id)} onTap={() => setOrigin(id)} />
@@ -430,32 +499,41 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
           <Chip label={mode === 'combat' ? 'No more attacks' : 'Done moving'} tone="gold" onTap={() => act({ type: 'endPhase' })} />
         </div>
       )}
-      {origin && (
+      {(origin || pickedSpaces.length > 0) && (
         <>
           <div className="ax-row" style={{ alignItems: 'center' }}>
-            <b style={{ fontSize: 14 }}>{spaceName(origin)}</b>
+            <b style={{ fontSize: 14 }}>{origin ? spaceName(origin) : 'Force'}</b>
             <Chip label="Back" onTap={reset} />
           </div>
-          <div className="ax-units">
-            {myStacksAt(origin).filter((s) => s.key !== 'factory').map((s, i) => (
-              <div key={`${s.key}-${i}`} className="ax-unit-row">
-                <span>{UNITS[s.key].name}{s.power === 'china' ? ' (China)' : ''} × {s.count}</span>
-                <Stepper value={take[s.key] ?? 0} max={s.count} onChange={(n) => setTake((t) => ({ ...t, [s.key]: n }))} />
-              </div>
-            ))}
-            {Object.entries(cargoAt(origin)).map(([k, n]) => (
-              <div key={`cargo-${k}`} className="ax-unit-row">
-                <span>{UNITS[k as UnitKey].name} aboard × {n}</span>
-                <Stepper value={take[`cargo:${k}`] ?? 0} max={n ?? 0} onChange={(v) => setTake((t) => ({ ...t, [`cargo:${k}`]: v }))} />
-              </div>
-            ))}
-          </div>
+          {origin && (
+            <div className="ax-units">
+              {myStacksAt(origin).filter((s) => s.key !== 'factory').map((s, i) => (
+                <div key={`${s.key}-${i}`} className="ax-unit-row">
+                  <span>{UNITS[s.key].name}{s.power === 'china' ? ' (China)' : ''} × {s.count}</span>
+                  {stepperFor(origin, s.key, s.count)}
+                </div>
+              ))}
+              {Object.entries(cargoAt(origin)).map(([k, n]) => (
+                <div key={`cargo-${k}`} className="ax-unit-row">
+                  <span>{UNITS[k as UnitKey].name} aboard × {n}</span>
+                  {stepperFor(origin, `cargo:${k}`, n ?? 0)}
+                </div>
+              ))}
+            </div>
+          )}
+          {pickedSpaces.filter((sp) => sp !== origin).length > 0 && (
+            <div className="ax-row ax-wrap" style={{ fontSize: 12, opacity: 0.8 }}>
+              {pickedSpaces.filter((sp) => sp !== origin).map((sp) => (
+                <Chip key={sp} label={`+ ${spaceName(sp)}`} onTap={() => setOrigin(sp)} />
+              ))}
+            </div>
+          )}
           <div className="ax-row ax-wrap">
             {targets.map((t) => (
               <Chip
                 key={`${t.id}-${t.via ?? ''}`}
-                label={`${pending?.id === t.id ? '● ' : ''}${mode === 'combat' ? (t.amphibious ? 'Assault' : 'Attack') : isSz(origin) && !isSz(t.id) ? 'Offload to' : 'To'} ${spaceName(t.id)}${t.via ? ` via ${spaceName(t.via)}` : ''}`}
-                tone={mode === 'combat' ? 'danger' : 'gold'}
+                label={`${mode === 'combat' ? (t.amphibious ? 'Assault' : 'Attack') : isSz(t.id) ? 'To' : anyCargo ? 'Offload to' : 'To'} ${spaceName(t.id)}${t.via ? ` via ${spaceName(t.via)}` : ''}`}
+                tone={pending?.id === t.id ? 'gold' : mode === 'combat' ? 'danger' : 'gold'}
                 onTap={() => setPending(t)}
               />
             ))}
@@ -465,21 +543,22 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
                 label={`Load into ${spaceName(z)}`}
                 tone="gold"
                 onTap={() => {
-                  const own = picked.filter(([k]) => !isCargoKey(k) && !SEA_KEYS.includes(baseKey(k)) && !AIR_KEYS.includes(baseKey(k)))
-                    .map(([key, count]) => ({ key: baseKey(key), count }));
+                  const own = picked.filter(([k]) => keySpace(k) === origin && !isCargoPart(keyUnitPart(k)))
+                    .filter(([k]) => !SEA_KEYS.includes(partUnit(keyUnitPart(k))) && !AIR_KEYS.includes(partUnit(keyUnitPart(k))))
+                    .map(([k, count]) => ({ key: partUnit(keyUnitPart(k)), count }));
                   act({ type: 'load', zone: z, territory: origin!, units: own });
                   reset();
                 }}
               />
             ))}
             {targets.length === 0 && loadZones.length === 0 && (
-              <span style={{ fontSize: 12.5, opacity: 0.6 }}>Set unit counts to see destinations.</span>
+              <span style={{ fontSize: 12.5, opacity: 0.6 }}>Tap pieces to gather the force, then pick a destination.</span>
             )}
           </div>
         </>
       )}
-      {origin && (
-        <div className="ax-order">
+      {(origin || pickedSpaces.length > 0) && (
+        <div className="ax-order center">
           {pending ? (
             <>
               <button className="ax-order-go" onClick={() => commit(pending)}>
@@ -511,6 +590,8 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
   );
 }
 
+// Battle actions live front and center mid-screen (owner: big buttons in the
+// middle), while the left panel just narrates.
 function BattleSheet({ view, act, map }: { view: AxisView; act: Act; map: PublishMap }) {
   const c = view.combat!;
   const b = c.battle;
@@ -521,49 +602,54 @@ function BattleSheet({ view, act, map }: { view: AxisView; act: Act; map: Publis
   const deciderIsDefender = d && d.type !== 'retreat' && (d as { side?: string }).side === 'defender';
   useEffect(() => { map({ ...MAP_IDLE, focusSpace: c.space }); }, [c.space]);
   return (
-    <div className="ax-sheet-body">
-      <div className="ig-lab">Battle · {spaceName(c.space)} · round {b.round}</div>
-      {!d && (
-        <button className="ax-mega" onClick={() => act({ type: 'battleRoll' })}>ROLL THE DICE</button>
-      )}
-      {d?.type === 'retreat' && (
-        <div className="ax-col">
-          <button className="ax-mega" onClick={() => act({ type: 'battleRetreat', retreat: false })}>PRESS THE ATTACK</button>
-          <button className="ax-mega danger" onClick={() => act({ type: 'battleRetreat', retreat: true })}>RETREAT</button>
-        </div>
-      )}
-      {d?.type === 'submerge' && (
-        <div className="ax-col">
-          <button className="ax-mega" onClick={() => act({ type: 'battleSubmerge', uids: [] })}>STRIKE</button>
-          <button className="ax-mega" onClick={() => act({ type: 'battleSubmerge', uids: d.subs })}>SUBMERGE</button>
-        </div>
-      )}
-      {d?.type === 'casualties' && (
-        <>
-          <div style={{ fontSize: 13, opacity: 0.85 }}>
-            {deciderIsDefender ? 'Defender picks' : 'Attacker picks'} {needed} {needed === 1 ? 'casualty' : 'casualties'}{picked.length ? `, ${picked.length} picked` : ''}
+    <>
+      <div className="ax-sheet-body">
+        <div className="ig-lab">Battle · {spaceName(c.space)} · round {b.round}</div>
+        <div style={{ fontSize: 13, opacity: 0.75 }}>The battle plays on the TV. Your orders are center screen.</div>
+      </div>
+      <div className="ax-battle-center">
+        {!d && (
+          <button className="ax-mega xl" onClick={() => act({ type: 'battleRoll' })}>ROLL THE DICE</button>
+        )}
+        {d?.type === 'retreat' && (
+          <>
+            <button className="ax-mega xl" onClick={() => act({ type: 'battleRetreat', retreat: false })}>PRESS THE ATTACK</button>
+            <button className="ax-mega xl danger" onClick={() => act({ type: 'battleRetreat', retreat: true })}>RETREAT</button>
+          </>
+        )}
+        {d?.type === 'submerge' && (
+          <>
+            <button className="ax-mega xl" onClick={() => act({ type: 'battleSubmerge', uids: [] })}>STRIKE</button>
+            <button className="ax-mega xl" onClick={() => act({ type: 'battleSubmerge', uids: d.subs })}>SUBMERGE</button>
+          </>
+        )}
+        {d?.type === 'casualties' && (
+          <div className="ax-battle-cas ig-glass">
+            <div className="ig-lab">
+              {deciderIsDefender ? 'Defender picks' : 'Attacker picks'} {needed} {needed === 1 ? 'casualty' : 'casualties'}{picked.length ? `, ${picked.length} picked` : ''}
+            </div>
+            <div className="ax-row ax-wrap" style={{ justifyContent: 'center' }}>
+              {d.buckets.flatMap((bk) => bk.eligible).map((uid) => {
+                const u = byUid.get(uid);
+                if (!u) return null;
+                const on = picked.includes(uid);
+                return (
+                  <Chip
+                    key={uid}
+                    label={`${UNITS[u.key].name}${u.hp > 1 ? ' (damage)' : ''}${on ? ' ✓' : ''}`}
+                    tone={on ? 'danger' : 'plain'}
+                    onTap={() => setPicked((p) => (on ? p.filter((x) => x !== uid) : p.length < needed ? [...p, uid] : p))}
+                  />
+                );
+              })}
+            </div>
+            <button className="ax-mega xl" disabled={picked.length < needed} onClick={() => { act({ type: 'battleCasualties', uids: picked }); setPicked([]); }}>
+              CONFIRM CASUALTIES
+            </button>
           </div>
-          <div className="ax-row ax-wrap">
-            {d.buckets.flatMap((bk) => bk.eligible).map((uid) => {
-              const u = byUid.get(uid);
-              if (!u) return null;
-              const on = picked.includes(uid);
-              return (
-                <Chip
-                  key={uid}
-                  label={`${UNITS[u.key].name}${u.hp > 1 ? ' (damage)' : ''}${on ? ' ✓' : ''}`}
-                  tone={on ? 'danger' : 'plain'}
-                  onTap={() => setPicked((p) => (on ? p.filter((x) => x !== uid) : p.length < needed ? [...p, uid] : p))}
-                />
-              );
-            })}
-          </div>
-          <button className="ax-mega" disabled={picked.length < needed} onClick={() => { act({ type: 'battleCasualties', uids: picked }); setPicked([]); }}>
-            CONFIRM CASUALTIES
-          </button>
-        </>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -720,10 +806,20 @@ function NationPanel({ view, onClose }: { view: AxisView; onClose: () => void })
 
 // ---------- the IPC bank: counter, bills, income fly-in ----------
 
-function billArt(manifest: AxisManifest | null, denom: 1 | 5 | 10): string | null {
+interface DeckInfo { face: string | null; grid: [number, number] | null }
+function billDeck(manifest: AxisManifest | null, denom: 1 | 5 | 10): DeckInfo | null {
   const nick = denom === 1 ? /ONE/ : denom === 5 ? /FIVE/ : /TEN/;
-  const deck = (manifest as unknown as { ipcDecks?: { nick: string; face: string | null }[] })?.ipcDecks?.find((d) => nick.test(d.nick ?? ''));
-  return deck?.face ?? null;
+  const deck = (manifest as unknown as { ipcDecks?: { nick: string; face: string | null; grid: [number, number] | null }[] })?.ipcDecks?.find((d) => nick.test(d.nick ?? ''));
+  return deck ? { face: deck.face, grid: deck.grid } : null;
+}
+function billStyle(deck: DeckInfo | null): CSSProperties {
+  if (!deck?.face) return {};
+  const [cols, rows] = deck.grid ?? [10, 7];
+  return {
+    backgroundImage: `url(${deck.face})`,
+    backgroundSize: `${cols * 100}% ${rows * 100}%`,
+    backgroundPosition: '0% 0%',
+  };
 }
 
 function IpcBank({ view, manifest }: { view: AxisView; manifest: AxisManifest | null }) {
@@ -747,9 +843,9 @@ function IpcBank({ view, manifest }: { view: AxisView; manifest: AxisManifest | 
   const tens = Math.floor(ipcs / 10);
   const fives = Math.floor((ipcs % 10) / 5);
   const ones = ipcs % 5;
-  const oneArt = billArt(manifest, 1);
-  const fiveArt = billArt(manifest, 5);
-  const tenArt = billArt(manifest, 10);
+  const oneDeck = billDeck(manifest, 1);
+  const fiveDeck = billDeck(manifest, 5);
+  const tenDeck = billDeck(manifest, 10);
 
   return (
     <>
@@ -758,25 +854,25 @@ function IpcBank({ view, manifest }: { view: AxisView; manifest: AxisManifest | 
         <b className="ig-num">{ipcs}</b>
       </button>
       {flying > 0 && Array.from({ length: flying }, (_, i) => (
-        <span key={i} className="ax-bill-fly" style={{ animationDelay: `${i * 0.14}s`, backgroundImage: oneArt ? `url(${oneArt})` : undefined }} />
+        <span key={i} className="ax-bill-fly" style={{ animationDelay: `${i * 0.14}s`, ...billStyle(oneDeck) }} />
       ))}
       {open && (
         <div className="ax-nation" onClick={() => setOpen(false)}>
           <div className="ax-nation-card ig-glass" onClick={(e) => e.stopPropagation()}>
             <div className="ax-row" style={{ justifyContent: 'space-between' }}>
-              <b>The bank · {ipcs} IPCs</b>
+              <b>Treasury · {ipcs} IPCs</b>
               <button className="ax-chip" onClick={() => setOpen(false)}>Close</button>
             </div>
             <div className="ax-bills">
               {[
-                { n: tens, denom: 10, art: tenArt },
-                { n: fives, denom: 5, art: fiveArt },
-                { n: ones, denom: 1, art: oneArt },
-              ].map(({ n, denom, art }) => (
+                { n: tens, denom: 10, deck: tenDeck },
+                { n: fives, denom: 5, deck: fiveDeck },
+                { n: ones, denom: 1, deck: oneDeck },
+              ].map(({ n, denom, deck }) => (
                 n > 0 && (
                   <div key={denom} className="ax-bill-stack">
                     {Array.from({ length: Math.min(n, 8) }, (_, i) => (
-                      <span key={i} className="ax-bill" style={{ left: i * 9, top: -i * 2, backgroundImage: art ? `url(${art})` : undefined }} />
+                      <span key={i} className="ax-bill" style={{ left: i * 9, top: -i * 2, ...billStyle(deck) }} />
                     ))}
                     <span className="ax-bill-label ig-num">{n} × {denom}</span>
                   </div>

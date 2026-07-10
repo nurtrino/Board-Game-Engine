@@ -333,6 +333,46 @@ function PickRing({ x, z, color = '#e8b450', onTap }: { x: number; z: number; co
   );
 }
 
+// Light translucent fill over a whole region (owner: highlight the zone,
+// no circles). Clicking the fill picks the region directly.
+function RegionFill({ id, color = '#e8b450', onTap }: { id: string; color?: string; onTap?: () => void }) {
+  const geoms = useMemo(() => {
+    const rings = regionsMod?.ringsOf(id);
+    if (!rings || rings.length === 0) return null;
+    return rings.map((ring) => {
+      const shape = new THREE.Shape();
+      ring.forEach(([px, py]: [number, number], i: number) => {
+        const [x, z] = px2r(px, py);
+        // ShapeGeometry lives in XY; we rotate -90 about X so shape Y maps to -Z
+        if (i === 0) shape.moveTo(x, -z);
+        else shape.lineTo(x, -z);
+      });
+      shape.closePath();
+      return new THREE.ShapeGeometry(shape);
+    });
+  }, [id]);
+  const mat = useRef<THREE.MeshBasicMaterial>(null);
+  useFrame(({ clock }) => {
+    if (mat.current) mat.current.opacity = 0.22 + Math.sin(clock.elapsedTime * 2.6) * 0.08;
+  });
+  if (!geoms) return null;
+  return (
+    <group>
+      {geoms.map((g, i) => (
+        <mesh
+          key={i}
+          geometry={g}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, BOARD_Y + 0.03, 0]}
+          onClick={onTap ? (e) => { e.stopPropagation(); onTap(); } : undefined}
+        >
+          <meshBasicMaterial ref={i === 0 ? mat : undefined} color={color} transparent opacity={0.26} depthWrite={false} side={THREE.DoubleSide} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 export interface SpacePick { id: string; color?: string }
 
 export interface StagedStack { power: PowerKey; key: UnitKey; count: number }
@@ -499,6 +539,9 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
         {(arrows ?? []).map((a, i) => <ArrowMesh key={i} arrow={a} />)}
         {staged && staged.length > 0 && <StagingPieces manifest={manifest} staged={staged} />}
         {(picks ?? []).map((p) => {
+          if (regionsMod?.ringsOf(p.id)?.length) {
+            return <RegionFill key={p.id} id={p.id} color={p.color} onTap={() => onPick?.(p.id)} />;
+          }
           const c = SPACE_CENTER[p.id];
           if (!c) return null;
           const [x, z] = px2r(c[0], c[1]);

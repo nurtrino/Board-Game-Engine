@@ -19,6 +19,10 @@ function inRing(px: number, py: number, ring: Ring): boolean {
   return inside;
 }
 
+export function ringsOf(id: string): Ring[] | null {
+  return REGIONS[id] ?? null;
+}
+
 export function inRegion(id: string, px: number, py: number): boolean {
   const rings = REGIONS[id];
   if (!rings) return false;

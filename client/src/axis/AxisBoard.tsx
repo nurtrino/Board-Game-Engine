@@ -175,13 +175,14 @@ function Announcements({ view }: { view: AxisView }) {
   }, [view.log.length]);
 
   if (!current) return null;
+  const tint = current.power ? powerHex(current.power) : '#e8b450';
   return (
     <div className="ax-announce">
-      <div className="ig-glass ax-announce-card" style={{ borderColor: current.power ? powerHex(current.power) : 'var(--brd-2)' }}>
-        {current.power && (
-          <div className="ig-lab" style={{ color: powerHex(current.power) }}>{POWERS[current.power].name}</div>
-        )}
+      <div className="ax-announce-card" style={{ ['--tint' as never]: tint }}>
+        <span className="ax-announce-rule" />
+        {current.power && <div className="ax-announce-power">{POWERS[current.power].name}</div>}
         <div className="ax-announce-text">{current.text}</div>
+        <span className="ax-announce-rule" />
       </div>
     </div>
   );

@@ -72,7 +72,7 @@ function tickInPage() {
   const text = (b) => b.textContent.trim();
   const by = (re) => chips.find((b) => re.test(text(b)));
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
-  const labs = q('.ax-sheet .ig-lab').map((e) => e.textContent).join(' | ');
+  const labs = q('.ax-left .ig-lab, .ax-sheet-body .ig-lab').map((e) => e.textContent).join(' | ');
 
   // game over?
   if (/Game over/i.test(labs)) return 'ENDED:' + (document.body.textContent.match(/The (Axis|Allies) win/)?.[0] ?? 'won');
@@ -85,27 +85,29 @@ function tickInPage() {
   const close = chips.find((b) => text(b) === 'Close');
   if (close) { close.click(); return 'close-panel'; }
 
-  // battle sheet first: it blocks everything else
-  if (/^Battle/.test(labs)) {
-    const confirm = by(/^Confirm casualties/i);
+  // battle first: the big center buttons block everything else
+  const megas = q('button.ax-mega').filter((b) => !b.disabled);
+  const mega = (re) => megas.find((b) => re.test(text(b)));
+  if (/Battle ·/.test(labs) || megas.length) {
+    const confirm = mega(/^CONFIRM CASUALTIES/i);
     if (confirm) { confirm.click(); return 'confirm-casualties'; }
-    // casualty picking: chips that toggle units (not the control chips)
-    if (/picks \d+ casualt/i.test(document.body.textContent)) {
-      const controls = /^(Confirm|Press|Retreat|Fight on|Submerge|Roll)/i;
-      const unitChips = chips.filter((b) => !controls.test(text(b)));
-      // confirm may be disabled until enough picks
-      const disabledConfirm = q('button.ax-chip').find((b) => /^Confirm/i.test(text(b)) && b.disabled);
-      if (disabledConfirm && unitChips.length) { pick(unitChips).click(); return 'pick-casualty'; }
-    }
-    const roll = by(/^Roll the dice$/i);
+    const roll = mega(/^ROLL THE DICE$/i);
     if (roll) { roll.click(); return 'battle-roll'; }
-    const press = by(/^Press the attack$/i);
-    const retreat = by(/^Retreat$/i);
+    const press = mega(/^PRESS THE ATTACK$/i);
+    const retreat = mega(/^RETREAT$/i);
     if (press && (Math.random() < 0.85 || !retreat)) { press.click(); return 'press'; }
     if (retreat) { retreat.click(); return 'retreat'; }
-    const fight = by(/^Fight on$/i);
-    if (fight) { fight.click(); return 'fight-on'; }
-    return null;
+    const strike = mega(/^STRIKE$/i);
+    if (strike) { strike.click(); return 'strike'; }
+    const sub = mega(/^SUBMERGE$/i);
+    if (sub) { sub.click(); return 'submerge'; }
+    if (/Battle ·/.test(labs)) {
+      // casualty picking: chips inside the centered card
+      const disabledConfirm = q('button.ax-mega').find((b) => /^CONFIRM/i.test(text(b)) && b.disabled);
+      const unitChips = q('.ax-battle-cas button.ax-chip').filter((b) => !b.disabled);
+      if (disabledConfirm && unitChips.length) { pick(unitChips).click(); return 'pick-casualty'; }
+      return null;
+    }
   }
 
   if (/Research & Development/i.test(labs)) {
@@ -128,15 +130,18 @@ function tickInPage() {
 
   if (/Combat move/i.test(labs) || /Noncombat move/i.test(labs)) {
     const combat = /Combat move/i.test(labs);
+    // an armed order? the big HOI4 button executes it
+    const orderGo = q('button.ax-order-go').find((b) => !b.disabled);
+    if (orderGo) { orderGo.click(); return 'order-go'; }
     // in a picked-origin state?
-    const changeOrigin = by(/^Change origin$/i);
+    const changeOrigin = by(/^Back$/i);
     if (changeOrigin) {
       // bump some steppers so targets appear
-      const targetChips = chips.filter((b) => /^(Attack|Assault|To|Offload to|Load into) /.test(text(b)));
-      if (targetChips.length) { pick(targetChips).click(); return combat ? 'attack' : 'move'; }
+      const targetChips = chips.filter((b) => /^●? ?(Attack|Assault|To|Offload to|Load into) /.test(text(b)));
+      if (targetChips.length) { pick(targetChips).click(); return combat ? 'arm-order' : 'arm-move'; }
       const plus = q('.ax-step button').filter((b) => text(b) === '+' && !b.disabled);
       if (plus.length) { pick(plus).click(); return 'stepper'; }
-      changeOrigin.click(); return 'change-origin';
+      changeOrigin.click(); return 'back';
     }
     const endChip = by(combat ? /^No more attacks$/i : /^Done moving$/i);
     const headerChips = /^(Nation|\?|Close)$/;
@@ -144,6 +149,14 @@ function tickInPage() {
     const wantAct = Math.random() < (combat ? 0.4 : 0.18);
     if (wantAct && origins.length) { pick(origins).click(); return 'origin'; }
     if (endChip) { endChip.click(); return combat ? 'end-combat' : 'end-noncombat'; }
+  }
+
+  // strategic bombing raid popup
+  if (/Bombers over/i.test(document.body.textContent)) {
+    const raid = by(/^Strategic bombing raid$/i);
+    const assault = by(/^Attack the defenders$/i);
+    const choice = Math.random() < 0.5 ? raid : assault;
+    if (choice) { choice.click(); return 'sbr-choice'; }
   }
 
   if (/^Mobilize/i.test(labs)) {
@@ -179,7 +192,8 @@ try {
     await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
     await page.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.evaluate(([r, t]) => localStorage.setItem('bge-token-' + r, t), [roomId, tokens[i]]);
-    await page.goto(`${BASE}/play/${roomId}`, { waitUntil: 'networkidle2', timeout: 45000 });
+    await page.goto(`${BASE}/play/${roomId}`, { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await new Promise((r) => setTimeout(r, 12000)); // let the map + meshes stream in
     pages.push(page);
   }
 

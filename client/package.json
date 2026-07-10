@@ -8,6 +8,7 @@
     "dev:alt": "set BGE_SERVER=localhost:8899&& vite --port 5273"
   },
   "dependencies": {
+    "@3d-dice/dice-box": "^1.1.4",
     "@bge/shared": "*",
     "@fontsource-variable/inter": "^5.2.8",
     "@react-three/drei": "^9.122.0",
