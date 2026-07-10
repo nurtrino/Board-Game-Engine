@@ -1,0 +1,35 @@
+{
+  "comment": "Dark Souls TBG dice face distributions, transcribed pixel-by-pixel from the TTS mod's Custom_Dice face-sheet images (rulebooks never print these). Each sheet is a 302x302 square in a 3x3 grid: top row unused, six faces read row 2 then row 3, left to right. Verified two ways: visual read of 4x cell crops, plus bright-pixel counts (~190 px per single sword, ~620 for 2, ~1025 for 3, ~1315 for 4, ~1700 for the dodge icon, 0 for blanks/unused row). Source images (TTS cache, munged Google Drive URLs): black = die guid f82a35, drive id 0ByVbWgFcEZ1JWXRQZE1pX1RQaVE (black background); blue = guid 25a9ad, drive id 0ByVbWgFcEZ1JdlFrR0ZMYzROa1U (blue background); orange = guid 217a7d, drive id 0ByVbWgFcEZ1JOERaYjhwV0FBNGM (orange background); dodge = guid 3e4967, drive id 0ByVbWgFcEZ1JUDdRcnFZMHFZSGs (green background, rolling-figure dodge icon). Distributions match community-known values for black/blue/orange; dodge reads as exactly 3 dodge faces and 3 blanks (50% per die) straight from the pixels.",
+  "black": [
+    { "symbols": 1 },
+    { "symbols": 1 },
+    { "symbols": 1 },
+    { "symbols": 2 },
+    { "symbols": 2 },
+    { "symbols": 0, "special": "blank" }
+  ],
+  "blue": [
+    { "symbols": 1 },
+    { "symbols": 1 },
+    { "symbols": 2 },
+    { "symbols": 2 },
+    { "symbols": 2 },
+    { "symbols": 3 }
+  ],
+  "orange": [
+    { "symbols": 1 },
+    { "symbols": 2 },
+    { "symbols": 2 },
+    { "symbols": 3 },
+    { "symbols": 3 },
+    { "symbols": 4 }
+  ],
+  "dodge": [
+    { "symbols": 1, "special": "dodge" },
+    { "symbols": 1, "special": "dodge" },
+    { "symbols": 1, "special": "dodge" },
+    { "symbols": 0, "special": "blank" },
+    { "symbols": 0, "special": "blank" },
+    { "symbols": 0, "special": "blank" }
+  ]
+}
