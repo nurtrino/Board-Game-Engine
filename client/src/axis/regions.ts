@@ -60,8 +60,8 @@ export function layoutPoints(id: string, n: number, spacing = 130): [number, num
     }
     // ring-by-ring spiral out from the anchor, row-major within each ring so
     // stacks read as ranks
-    const MAX_R = 14;
-    for (let r = 0; r < MAX_R && pts.length < 80; r++) {
+    const MAX_R = 20;
+    for (let r = 0; r < MAX_R && pts.length < 160; r++) {
       for (let gy = -r; gy <= r; gy++) {
         for (let gx = -r; gx <= r; gx++) {
           if (Math.max(Math.abs(gx), Math.abs(gy)) !== r) continue; // ring shell only

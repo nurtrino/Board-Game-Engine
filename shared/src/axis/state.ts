@@ -60,7 +60,7 @@ export interface PowerState {
 export interface AxisPending {
   id: number;
   power: PowerKey | 'china';
-  kind: 'battle-casualties' | 'battle-submerge' | 'battle-retreat';
+  kind: 'battle-casualties' | 'battle-submerge' | 'battle-retreat' | 'battle-continue';
   data: Record<string, unknown>;
 }
 
@@ -74,6 +74,8 @@ export interface ActiveCombat {
   battle: BattleState;
   // snapshot for applying results back to the board
   attackerCommitted: { key: UnitKey; count: number }[];
+  // battle over: both commanders confirm the report before play continues
+  confirmed?: { attacker: boolean; defender: boolean };
 }
 
 export interface AxisState {

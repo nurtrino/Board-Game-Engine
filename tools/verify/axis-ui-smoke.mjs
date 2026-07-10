@@ -89,6 +89,9 @@ function tickInPage() {
   const megas = q('button.ax-mega').filter((b) => !b.disabled);
   const mega = (re) => megas.find((b) => re.test(text(b)));
   if (/Battle ·/.test(labs) || megas.length) {
+    // battle over: both commanders confirm the report
+    const cont = mega(/^CONTINUE ·/i);
+    if (cont) { cont.click(); return 'battle-continue'; }
     const confirm = mega(/^CONFIRM CASUALTIES/i);
     if (confirm) { confirm.click(); return 'confirm-casualties'; }
     const roll = mega(/^ROLL THE DICE$/i);
@@ -122,8 +125,13 @@ function tickInPage() {
   }
 
   if (/Purchase units/i.test(labs)) {
-    const buys = q('button.ax-buy').filter((b) => !b.disabled);
+    // the armory popup: + buttons buy, DONE PURCHASING closes out
+    const buys = q('.ax-buy button.ax-buy-btn.buy').filter((b) => !b.disabled);
     if (buys.length && Math.random() < 0.55) { pick(buys).click(); return 'buy'; }
+    const doneBig = q('.ax-buy button.ax-order-go').find((b) => !b.disabled);
+    if (doneBig) { doneBig.click(); return 'done-purchasing'; }
+    const openArmory = by(/^Open the armory$/i);
+    if (openArmory) { openArmory.click(); return 'open-armory'; }
     const done = by(/^Done purchasing$/i);
     if (done) { done.click(); return 'done-purchasing'; }
   }
@@ -164,11 +172,7 @@ function tickInPage() {
     if (placeAt.length) { pick(placeAt).click(); return 'place'; }
     const plus = q('.ax-step button').filter((b) => text(b) === '+' && !b.disabled);
     if (plus.length && Math.random() < 0.75) { pick(plus).click(); return 'pick-staged'; }
-    const income = by(/^Collect income$/i);
-    if (income) { income.click(); return 'collect-income'; }
-  }
-
-  if (/Income collected/i.test(labs)) {
+    // mobilize + collect income are one merged stage: End turn does both
     const end = by(/^End turn$/i);
     if (end) { end.click(); return 'end-turn'; }
   }

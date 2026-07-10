@@ -47,6 +47,9 @@ export type AxisAction =
   | { type: 'battleCasualties'; uids: number[] }
   | { type: 'battleSubmerge'; uids: number[] }
   | { type: 'battleRetreat'; retreat: boolean }
+  // battle over: each commander confirms the after-action report; the board
+  // only updates once both have pressed continue
+  | { type: 'battleContinue' }
   // movement (combatMove phase for repositioning INTO friendly spaces is not
   // a thing — all non-attack moves happen in noncombat; loading transports is)
   | { type: 'move'; from: string; to: string; units: { key: UnitKey; count: number }[]; via?: string }
@@ -284,6 +287,9 @@ function actAttack(s: AxisState, idx: MapIndex, a: Extract<AxisAction, { type: '
   if (!targetSea && isNeutral(targetTerr!) && !s.control[a.target]) return err('Neutral territories are impassable.');
   const hostileControl = !targetSea && s.control[a.target] != null && !sameSide(s.control[a.target]!, power);
   if (enemies.length === 0 && !hostileControl) return err('Nothing to attack there.');
+  const totalForce = a.forces.reduce((n, f) => n + f.units.reduce((m, u) => m + u.count, 0), 0)
+    + (a.offloadUnits?.reduce((n, u) => n + u.count, 0) ?? 0);
+  if (totalForce < 1) return err('Send at least one unit.');
 
   // collect and validate forces: each unit must genuinely reach the target
   // (land 1, tanks 2 with blitz, ships 2 through friendly water, air by
@@ -464,7 +470,20 @@ function syncBattle(s: AxisState): void {
   s.pendings = s.pendings.filter((p) => !p.kind.startsWith('battle-'));
   const b = c.battle;
   if (b.status !== 'ongoing') {
-    finishBattle(s);
+    // a walk-in (no defenders ever) applies immediately; a fought battle
+    // holds its report on screen until BOTH commanders press continue
+    if (b.defender.length === 0) {
+      finishBattle(s);
+      return;
+    }
+    c.confirmed ??= { attacker: false, defender: false };
+    if (!c.confirmed.attacker) {
+      s.pendings.push({ id: s.pendingSeq++, power: c.attacker, kind: 'battle-continue', data: { side: 'attacker' } });
+    }
+    if (!c.confirmed.defender) {
+      s.pendings.push({ id: s.pendingSeq++, power: defenderPowerOf(s, c), kind: 'battle-continue', data: { side: 'defender' } });
+    }
+    if (c.confirmed.attacker && c.confirmed.defender) finishBattle(s);
     return;
   }
   if (b.decision) {
@@ -481,8 +500,21 @@ function syncBattle(s: AxisState): void {
 }
 
 function defenderPowerOf(s: AxisState, c: ActiveCombat): PowerKey | 'china' {
-  const powers = [...new Set(c.battle.defender.filter((u) => u.hp > 0).map((u) => u.power))];
-  return (powers[0] ?? 'china') as PowerKey | 'china';
+  const alive = [...new Set(c.battle.defender.filter((u) => u.hp > 0).map((u) => u.power))];
+  const any = [...new Set(c.battle.defender.map((u) => u.power))];
+  return (alive[0] ?? any[0] ?? 'china') as PowerKey | 'china';
+}
+
+function actBattleContinue(s: AxisState, power: PowerKey | 'china'): ActionResult {
+  const c = s.combat;
+  if (!c || !c.confirmed) return err('No battle report waiting.');
+  const mine = s.pendings.find((p) => p.kind === 'battle-continue'
+    && (p.power === power || (p.power === 'china' && coalitionOf(power) === 'allies')));
+  if (!mine) return err('You have already continued.');
+  if (mine.data.side === 'attacker') c.confirmed.attacker = true;
+  else c.confirmed.defender = true;
+  syncBattle(s);
+  return OK;
 }
 
 function actBattleRoll(s: AxisState): ActionResult {
@@ -934,14 +966,10 @@ function actEndPhase(s: AxisState, idx: MapIndex): ActionResult {
       }
       return OK;
     case 'mobilize': {
-      // collect income and HOLD in the income phase: the TV shows the
-      // production screen after every turn (owner directive); the next
-      // endPhase advances to the following power.
-      s.phase = 'income';
+      // mobilize and collect income are ONE stage (owner directive): ending
+      // the turn collects income and hands play to the next power. The TV
+      // shows the production screen as a timed overlay.
       collectIncome(s, idx);
-      return OK;
-    }
-    case 'income': {
       const order = TURN_ORDER[s.options.scenario];
       s.powers[power].factoriesUsed = {};
       s.contested = [];
@@ -959,6 +987,8 @@ function actEndPhase(s: AxisState, idx: MapIndex): ActionResult {
       s.log.push({ round: s.round, power: activePower(s), text: `${POWERS[activePower(s)].name} is up.` });
       return OK;
     }
+    case 'income': // legacy: mobilize now collects income itself
+      return err('Income is collected when mobilization ends.');
     default:
       return err('Game over.');
   }
@@ -970,8 +1000,11 @@ export function applyAxisAction(s: AxisState, idx: MapIndex, seat: PowerKey, act
   if (s.phase === 'gameOver') return err('The game is over.');
   const active = activePower(s);
   // battle decisions may belong to the defender; everything else to the active power
-  const battleDecisionSeat = s.pendings.find((p) => p.kind.startsWith('battle-'))?.power;
+  const battleDecisionSeat = s.pendings.find((p) => p.kind.startsWith('battle-') && p.kind !== 'battle-continue')?.power;
   const isBattleDecision = action.type === 'battleCasualties' || action.type === 'battleSubmerge' || action.type === 'battleRetreat';
+  if (action.type === 'battleContinue') {
+    return actBattleContinue(s, seat);
+  }
   if (isBattleDecision) {
     if (seat !== battleDecisionSeat && battleDecisionSeat !== 'china') return err('Not your decision.');
   } else if (seat !== active) {

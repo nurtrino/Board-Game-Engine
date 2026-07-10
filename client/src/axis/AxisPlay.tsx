@@ -12,6 +12,7 @@ import {
 } from '@bge/shared';
 import { AxisTable, useAxisManifest, useSceneReady, SPACE_CENTER, px2r, type FocusTarget, type SpacePick, type StagedStack, type AxisManifest, type OrderArrow } from './AxisScene';
 import { AxisLoading } from './AxisBoard';
+import UnitIcon from './UnitIcon';
 import { GameIntro, type Intro } from '../ttr/GameIntro';
 
 type Act = (a: AxisAction & { asPower?: PowerKey }) => void;
@@ -129,67 +130,98 @@ function ResearchSheet({ view, act, map }: { view: AxisView; act: Act; map: Publ
   );
 }
 
+// Purchasing lives in a refined center-screen popup over darker glass
+// (owner directive): unit silhouette, name, combat line, price; buy on tap,
+// return staged units with the small counter.
 function PurchaseSheet({ view, act, map }: { view: AxisView; act: Act; map: PublishMap }) {
   const p = view.powers[view.active];
+  const [open, setOpen] = useState(true);
   const shipyards = p.techs.includes('improvedShipyards');
   const costOf = (k: UnitKey) => (shipyards && { battleship: 17, carrier: 11, cruiser: 10, destroyer: 7, transport: 6, submarine: 5 }[k as string]) || UNITS[k].cost;
-  const staged = Object.entries(p.staging) as [UnitKey, number][];
+  const stagedTotal = Object.values(p.staging).reduce((n, c) => n + (c ?? 0), 0);
   useEffect(() => { map({ ...MAP_IDLE, focusSpace: 'mobilization' }); }, []);
   // repairable factories
   const damaged = AXIS_MAP.territories.filter((t) =>
     view.control[t.id] === view.active && (view.factoryDamage[t.id] ?? 0) > 0
     && (view.board[t.id] ?? []).some((s) => s.key === 'factory'));
   return (
-    <div className="ax-sheet-body">
-      <div className="ig-lab">Purchase units · {p.ipcs} IPCs</div>
-      <div className="ax-list">
-        {BUYABLE.map((k) => {
-          const cost = costOf(k);
-          const afford = p.ipcs >= cost;
-          const have = p.staging[k] ?? 0;
-          return (
-            <button
-              key={k}
-              className="ax-list-row"
-              disabled={!afford}
-              title={afford ? undefined : `Costs ${cost} IPCs, you have ${p.ipcs}`}
-              onClick={() => act({ type: 'buy', key: k, count: 1 })}
-            >
-              <span>{UNITS[k].name}{have > 0 ? <em className="ax-have"> ×{have}</em> : null}</span>
-              <span className="ig-num">{cost}</span>
-            </button>
-          );
-        })}
+    <>
+      <div className="ax-sheet-body">
+        <div className="ig-lab">Purchase units · {p.ipcs} IPCs</div>
+        <div style={{ fontSize: 13, opacity: 0.75 }}>
+          {stagedTotal > 0 ? `${stagedTotal} unit${stagedTotal === 1 ? '' : 's'} staged in the mobilization zone.` : 'Nothing bought yet.'}
+        </div>
+        <div className="ax-row ax-wrap">
+          <Chip label="Open the armory" tone="gold" onTap={() => setOpen(true)} />
+          <Chip label="Done purchasing" onTap={() => act({ type: 'endPhase' })} />
+        </div>
       </div>
-      {staged.length > 0 && (
-        <div>
-          <div className="ig-lab" style={{ margin: '8px 0 4px' }}>In the mobilization zone · tap to return</div>
-          <div className="ax-row ax-wrap">
-            {staged.map(([k, n]) => (
-              <Chip key={k} label={`${n} ${UNITS[k].name}`} onTap={() => act({ type: 'unbuy', key: k, count: 1 })} />
-            ))}
+      {open && (
+        <div className="ax-modal dark" onClick={() => setOpen(false)}>
+          <div className="ax-buy ig-glass" onClick={(e) => e.stopPropagation()}>
+            <header className="ax-buy-head">
+              <div>
+                <div className="ig-lab">Purchase units</div>
+                <b className="ig-num" style={{ fontSize: 20 }}>{p.ipcs} IPCs</b>
+              </div>
+              <button className="ax-chip" onClick={() => setOpen(false)}>Map</button>
+            </header>
+            <div className="ax-buy-grid">
+              {BUYABLE.map((k) => {
+                const cost = costOf(k);
+                const afford = p.ipcs >= cost;
+                const have = p.staging[k] ?? 0;
+                const u = UNITS[k];
+                return (
+                  <div key={k} className={`ax-buy-row${have > 0 ? ' owned' : ''}`}>
+                    <span className="ax-buy-icon"><UnitIcon unitKey={k} size={30} title={u.name} /></span>
+                    <span className="ax-buy-name">
+                      <b>{u.name}</b>
+                      <em>{u.attack || '·'} / {u.defense || '·'} / {u.move || '·'}</em>
+                    </span>
+                    <span className="ax-buy-ctl">
+                      {have > 0 && (
+                        <>
+                          <button className="ax-buy-btn" onClick={() => act({ type: 'unbuy', key: k, count: 1 })} aria-label={`Return one ${u.name}`}>−</button>
+                          <b className="ig-num">{have}</b>
+                        </>
+                      )}
+                      <button
+                        className="ax-buy-btn buy"
+                        disabled={!afford}
+                        title={afford ? undefined : `Costs ${cost} IPCs, you have ${p.ipcs}`}
+                        onClick={() => act({ type: 'buy', key: k, count: 1 })}
+                        aria-label={`Buy one ${u.name}`}
+                      >+</button>
+                      <span className="ax-buy-price ig-num">{cost}</span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            {damaged.length > 0 && (
+              <div className="ax-buy-repairs">
+                <div className="ig-lab">Factory repairs · 1 IPC per point</div>
+                <div className="ax-row ax-wrap" style={{ marginTop: 6 }}>
+                  {damaged.map((t) => (
+                    <Chip
+                      key={t.id}
+                      label={`Repair ${t.name} (${view.factoryDamage[t.id]})`}
+                      disabled={p.ipcs < 1}
+                      onTap={() => act({ type: 'repair', territory: t.id, count: 1 })}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            <footer className="ax-buy-foot">
+              <span style={{ fontSize: 12.5, opacity: 0.7 }}>Purchases stand in the mobilization zone until you mobilize.</span>
+              <button className="ax-order-go" onClick={() => act({ type: 'endPhase' })}>DONE PURCHASING</button>
+            </footer>
           </div>
         </div>
       )}
-      {damaged.length > 0 && (
-        <div>
-          <div className="ig-lab" style={{ margin: '8px 0 4px' }}>Factory repairs · 1 IPC per point</div>
-          <div className="ax-row ax-wrap">
-            {damaged.map((t) => (
-              <Chip
-                key={t.id}
-                label={`Repair ${t.name} (${view.factoryDamage[t.id]})`}
-                disabled={p.ipcs < 1}
-                onTap={() => act({ type: 'repair', territory: t.id, count: 1 })}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-      <div className="ax-row">
-        <Chip label="Done purchasing" tone="gold" onTap={() => act({ type: 'endPhase' })} />
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -205,6 +237,7 @@ const partUnit = (part: string): UnitKey => (isCargoPart(part) ? part.slice(6) :
 function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'combat' | 'noncombat'; map: PublishMap }) {
   const me = view.active;
   const [origin, setOrigin] = useState<string | null>(null); // the focused region
+  const [peek, setPeek] = useState<string | null>(null); // any tapped region zooms
   const [take, setTake] = useState<Record<TakeKey, number>>({});
   const [pending, setPending] = useState<Target | null>(null);
   const [sbrAsk, setSbrAsk] = useState<string | null>(null);
@@ -377,7 +410,7 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
       (view.board[z] ?? []).some((st) => st.power === me && st.key === 'transport'));
   }, [origin, take, mode, view.board]);
 
-  const reset = () => { setOrigin(null); setTake({}); setSbrAsk(null); setPending(null); };
+  const reset = () => { setOrigin(null); setPeek(null); setTake({}); setSbrAsk(null); setPending(null); };
 
   const commit = (t: Target, forceSbr?: boolean) => {
     if (mode === 'combat') {
@@ -441,7 +474,7 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
         const t = targets.find((x) => x.id === id);
         if (t) setPending(t);
       },
-      focusSpace: origin,
+      focusSpace: origin ?? peek,
       arrows: pending && pickedSpaces.length ? [{
         from: pickedSpaces.map((sp) => SPACE_CENTER[sp] ?? [0, 0]),
         to: SPACE_CENTER[pending.id] ?? [0, 0],
@@ -449,11 +482,17 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
       }] : [],
       selectedKeys,
       onRegionTap: (id) => {
-        if (!origin && !pickedSpaces.length) { if (origins.includes(id)) setOrigin(id); return; }
+        // tapping ANY part of the map zooms onto that region (owner: HOI4)
+        if (!origin && !pickedSpaces.length) {
+          if (origins.includes(id)) setOrigin(id);
+          else setPeek(id);
+          return;
+        }
         if (id === origin) return;
         const t = targets.find((x) => x.id === id);
         if (t) { setPending(t); return; }
-        if (origins.includes(id)) { setOrigin(id); setPending(null); } // focus another origin, keep picks
+        if (origins.includes(id)) { setOrigin(id); setPending(null); return; } // focus another origin, keep picks
+        setPeek(id);
       },
       onStackTap: (spaceId, power, key) => {
         const mine = power === me || (me === 'usa' && power === 'china');
@@ -470,7 +509,7 @@ function MoveFlow({ view, act, mode, map }: { view: AxisView; act: Act; mode: 'c
         setPending(null);
       },
     });
-  }, [origin, targets, origins, mode, pending, take]);
+  }, [origin, peek, targets, origins, mode, pending, take]);
 
   const stepperFor = (space: string, part: string, max: number) => (
     <Stepper
@@ -600,7 +639,25 @@ function BattleSheet({ view, act, map }: { view: AxisView; act: Act; map: Publis
   const byUid = new Map([...b.attacker, ...b.defender].map((u) => [u.uid, u]));
   const needed = d?.type === 'casualties' ? d.buckets.reduce((n, bk) => n + Math.min(bk.hits, bk.eligible.length), 0) : 0;
   const deciderIsDefender = d && d.type !== 'retreat' && (d as { side?: string }).side === 'defender';
+  // battle decisions route to the power they belong to (the defender picks
+  // their own casualties even on the attacker's turn)
+  const defenderPower = (b.defender.find((u) => u.hp > 0)?.power ?? b.defender[0]?.power ?? 'china') as PowerKey | 'china';
+  const asDefender = defenderPower === 'china' ? 'usa' : defenderPower;
+  const decide = (a: Parameters<Act>[0]) => act(deciderIsDefender ? { ...a, asPower: asDefender as PowerKey } : a);
+  const over = Boolean(c.confirmed); // battle finished, both sides confirm
   useEffect(() => { map({ ...MAP_IDLE, focusSpace: c.space }); }, [c.space]);
+  useEffect(() => { setPicked([]); }, [c.id]);
+  const winnerLine =
+    b.status === 'attacker_captured' ? `${POWERS[c.attacker].name} takes ${spaceName(c.space)}` :
+    b.status === 'attacker_cleared' ? `${POWERS[c.attacker].name} clears ${spaceName(c.space)}` :
+    b.status === 'defender_won' ? 'The attack is repelled' :
+    b.status === 'retreated' ? `${POWERS[c.attacker].name} retreats` :
+    b.status === 'standoff' ? 'Standoff' : 'Mutual destruction';
+  const standing = (side: 'attacker' | 'defender') => {
+    const m = new Map<UnitKey, number>();
+    for (const u of b[side]) if (u.hp > 0) m.set(u.key, (m.get(u.key) ?? 0) + 1);
+    return [...m.entries()].map(([k, n]) => `${n} ${UNITS[k].name}`).join(', ') || 'none';
+  };
   return (
     <>
       <div className="ax-sheet-body">
@@ -608,22 +665,45 @@ function BattleSheet({ view, act, map }: { view: AxisView; act: Act; map: Publis
         <div style={{ fontSize: 13, opacity: 0.75 }}>The battle plays on the TV. Your orders are center screen.</div>
       </div>
       <div className="ax-battle-center">
-        {!d && (
+        {over && c.confirmed && (
+          <div className="ax-battle-cas ig-glass">
+            <div className="ax-battle-verdict">{winnerLine}</div>
+            <div className="ax-battle-standing">
+              <span style={{ color: powerHex(c.attacker) }}>{POWERS[c.attacker].name}</span> {standing('attacker')}
+            </div>
+            <div className="ax-battle-standing">
+              <span style={{ color: powerHex(defenderPower) }}>{defenderPower === 'china' ? 'China' : POWERS[defenderPower as PowerKey].name}</span> {standing('defender')}
+            </div>
+            <div className="ax-row" style={{ justifyContent: 'center', gap: 10 }}>
+              <button
+                className="ax-mega xl"
+                disabled={c.confirmed.attacker}
+                onClick={() => act({ type: 'battleContinue' })}
+              >{c.confirmed.attacker ? 'ATTACKER READY' : 'CONTINUE · ATTACKER'}</button>
+              <button
+                className="ax-mega xl"
+                disabled={c.confirmed.defender}
+                onClick={() => act({ type: 'battleContinue', asPower: asDefender as PowerKey } as Parameters<Act>[0])}
+              >{c.confirmed.defender ? 'DEFENDER READY' : 'CONTINUE · DEFENDER'}</button>
+            </div>
+          </div>
+        )}
+        {!over && !d && (
           <button className="ax-mega xl" onClick={() => act({ type: 'battleRoll' })}>ROLL THE DICE</button>
         )}
-        {d?.type === 'retreat' && (
+        {!over && d?.type === 'retreat' && (
           <>
             <button className="ax-mega xl" onClick={() => act({ type: 'battleRetreat', retreat: false })}>PRESS THE ATTACK</button>
             <button className="ax-mega xl danger" onClick={() => act({ type: 'battleRetreat', retreat: true })}>RETREAT</button>
           </>
         )}
-        {d?.type === 'submerge' && (
+        {!over && d?.type === 'submerge' && (
           <>
-            <button className="ax-mega xl" onClick={() => act({ type: 'battleSubmerge', uids: [] })}>STRIKE</button>
-            <button className="ax-mega xl" onClick={() => act({ type: 'battleSubmerge', uids: d.subs })}>SUBMERGE</button>
+            <button className="ax-mega xl" onClick={() => decide({ type: 'battleSubmerge', uids: [] })}>STRIKE</button>
+            <button className="ax-mega xl" onClick={() => decide({ type: 'battleSubmerge', uids: d.subs })}>SUBMERGE</button>
           </>
         )}
-        {d?.type === 'casualties' && (
+        {!over && d?.type === 'casualties' && (
           <div className="ax-battle-cas ig-glass">
             <div className="ig-lab">
               {deciderIsDefender ? 'Defender picks' : 'Attacker picks'} {needed} {needed === 1 ? 'casualty' : 'casualties'}{picked.length ? `, ${picked.length} picked` : ''}
@@ -643,7 +723,7 @@ function BattleSheet({ view, act, map }: { view: AxisView; act: Act; map: Publis
                 );
               })}
             </div>
-            <button className="ax-mega xl" disabled={picked.length < needed} onClick={() => { act({ type: 'battleCasualties', uids: picked }); setPicked([]); }}>
+            <button className="ax-mega xl" disabled={picked.length < needed} onClick={() => { decide({ type: 'battleCasualties', uids: picked }); setPicked([]); }}>
               CONFIRM CASUALTIES
             </button>
           </div>
@@ -703,28 +783,32 @@ function MobilizeSheet({ view, act, map }: { view: AxisView; act: Act; map: Publ
     setSel({});
   };
 
+  // the camera sits on the mobilization zone while units are chosen; the
+  // legal destinations light up on the map as soon as something is selected
   useEffect(() => {
     map({
       picks: spots.map((id) => ({ id, color: '#7be0a3' })),
       onPick: (id) => { if (spots.includes(id)) placeAll(id); },
-      focusSpace: null,
+      focusSpace: selected.length > 0 ? null : 'mobilization',
     });
   }, [spots.join(','), selected.map(([k, n]) => k + n).join(',')]);
 
   return (
     <div className="ax-sheet-body">
-      <div className="ig-lab">Mobilize · pick units, then tap the destination</div>
-      {staged.length === 0 && view.chinaGrant === 0 && <div style={{ fontSize: 13, opacity: 0.7 }}>Nothing staged.</div>}
+      <div className="ig-lab">Mobilize · pick units, then tap a lit destination</div>
+      {staged.length === 0 && view.chinaGrant === 0 && (
+        <div style={{ fontSize: 13, opacity: 0.7 }}>Nothing staged. End the turn to collect income.</div>
+      )}
       <div className="ax-units">
         {staged.map(([k, n]) => (
           <div key={k} className="ax-unit-row">
-            <span>{UNITS[k].name} × {n}</span>
+            <span className="ax-unit-label"><UnitIcon unitKey={k} size={22} /> {UNITS[k].name} × {n}</span>
             <Stepper value={sel[k] ?? 0} max={n} onChange={(v) => setSel((s) => ({ ...s, [k]: v }))} />
           </div>
         ))}
         {view.chinaGrant > 0 && (
           <div className="ax-unit-row">
-            <span>Chinese infantry × {view.chinaGrant}</span>
+            <span className="ax-unit-label"><UnitIcon unitKey="infantry" size={22} /> Chinese infantry × {view.chinaGrant}</span>
             <Stepper value={sel.china ?? 0} max={view.chinaGrant} onChange={(v) => setSel((s) => ({ ...s, china: v }))} />
           </div>
         )}
@@ -738,7 +822,7 @@ function MobilizeSheet({ view, act, map }: { view: AxisView; act: Act; map: Publ
         </div>
       )}
       <div className="ax-row">
-        <Chip label="Collect income" tone="gold" onTap={() => act({ type: 'endPhase' })} />
+        <Chip label="End turn" tone="gold" onTap={() => act({ type: 'endPhase' })} title="Places are done; income is collected automatically" />
       </div>
     </div>
   );
@@ -897,7 +981,9 @@ export default function AxisPlay({ view, act, error }: {
   const me = view.active; // dev single-player: the device drives the active power
   const power = POWERS[me];
   const p = view.powers[me];
-  const actAs: Act = (a) => act({ ...a, asPower: me } as unknown as AxisAction);
+  // sheets may name the power they act for (battle decisions belong to the
+  // defender); default is the active power
+  const actAs: Act = (a) => act({ asPower: me, ...a } as unknown as AxisAction);
   const manifest = useAxisManifest();
   const ready = useSceneReady();
   const [showNation, setShowNation] = useState(false);
@@ -963,15 +1049,6 @@ export default function AxisPlay({ view, act, error }: {
         {view.phase === 'battle' && view.combat && <BattleSheet view={view} act={actAs} map={publish} />}
         {view.phase === 'noncombat' && <MoveFlow view={view} act={actAs} mode="noncombat" map={publish} />}
         {view.phase === 'mobilize' && <MobilizeSheet view={view} act={actAs} map={publish} />}
-        {view.phase === 'income' && (
-          <div className="ax-sheet-body">
-            <div className="ig-lab">Income collected</div>
-            <div style={{ fontSize: 14 }}>{power.name} collected <b className="ig-num">{p.lastIncome}</b> IPCs. The production screen is on the TV.</div>
-            <div className="ax-row">
-              <Chip label="End turn" tone="gold" onTap={() => actAs({ type: 'endPhase' })} />
-            </div>
-          </div>
-        )}
         {view.phase === 'gameOver' && (
           <div className="ax-sheet-body">
             <div className="ig-lab">Game over</div>

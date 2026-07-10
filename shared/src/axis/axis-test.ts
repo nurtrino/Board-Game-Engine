@@ -73,7 +73,9 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
     const pend = s.pendings.find((p) => p.kind.startsWith('battle-'));
     if (pend) {
       const seatFor = (pend.power === 'china' ? defenderSeat : pend.power) as PowerKey;
-      if (pend.kind === 'battle-retreat') {
+      if (pend.kind === 'battle-continue') {
+        ok(act(s, seatFor, { type: 'battleContinue' }).ok, 'battle report confirmed');
+      } else if (pend.kind === 'battle-retreat') {
         ok(act(s, seatFor, { type: 'battleRetreat', retreat: false }).ok, 'retreat decision applies');
       } else if (pend.kind === 'battle-casualties') {
         const dec = s.combat!.battle.decision;
@@ -320,9 +322,7 @@ function driveBattle(s: AxisState, seat: PowerKey, defenderSeat: PowerKey): void
   act(s, 'germany', { type: 'endPhase' });
   ok(s.powers.germany.ipcs === ipcsBefore + 12, 'income = production (10 + 2)');
   ok(s.powers.germany.lastIncome === 12, 'income recorded for production screen');
-  ok(s.phase === 'income', 'income phase holds for the production screen');
-  act(s, 'germany', { type: 'endPhase' });
-  ok(activePower(s) === 'ussr', 'next power is USSR (1941 order)');
+  ok(activePower(s) === 'ussr', 'mobilize end collects income AND advances (merged stage)');
 }
 
 // ---------- factory mobilize cap ----------

@@ -254,42 +254,51 @@ export function SpacePieces({ manifest, spaceId, stacks, selectedKeys, onStackTa
   if (!center) return null;
   const [cx, cz] = px2r(center[0], center[1]);
   const ordered = [...stacks].sort((a, b) => UNIT_ORDER.indexOf(a.key) - UNIT_ORDER.indexOf(b.key));
+  const total = ordered.reduce((n, st) => n + st.count, 0);
+  // every unit stands on the board (owner: no stacking unless the region
+  // truly cannot fit them); the polygon layout keeps them inside the borders
+  const MAX_PHYSICAL = 40;
+  const want = Math.min(total, MAX_PHYSICAL);
+  const polyPts = regionsMod ? regionsMod.layoutPoints(spaceId, want, 118) : [];
+  const roomFor = polyPts.length; // how many the printed borders can hold
   const cols = Math.max(2, Math.ceil(Math.sqrt(ordered.length)));
   const step = 0.95;
-  // polygon layout keeps every stack inside its printed borders, no overlap
-  const polyPts = regionsMod ? regionsMod.layoutPoints(spaceId, ordered.length, 128) : [];
+  let cursor = 0;
   return (
     <group>
       {ordered.map((st, i) => {
         const def = meshFor(manifest, st.power, st.key);
         if (!def?.mesh) return null;
-        let x: number;
-        let z: number;
-        if (polyPts[i]) {
-          [x, z] = px2r(polyPts[i][0], polyPts[i][1]);
-        } else {
+        const stackKey = `${st.power}:${st.key}`;
+        // place each unit of the stack on its own point while room remains;
+        // overflow collapses back to one sculpt + a count chip
+        const slots: [number, number][] = [];
+        while (slots.length < st.count && cursor < roomFor && cursor < MAX_PHYSICAL) {
+          slots.push(px2r(polyPts[cursor][0], polyPts[cursor][1]));
+          cursor++;
+        }
+        if (slots.length === 0) {
           const r = Math.floor(i / cols);
           const c = i % cols;
-          x = cx + (c - (cols - 1) / 2) * step;
-          z = cz + (r - Math.floor((ordered.length - 1) / cols) / 2) * step;
+          slots.push([cx + (c - (cols - 1) / 2) * step, cz + (r - Math.floor((ordered.length - 1) / cols) / 2) * step]);
         }
-        const shown = 1; // one sculpt per stack; the count chip carries the number
-        const stackKey = `${st.power}:${st.key}`;
+        const overflow = st.count - slots.length;
+        const [lx, lz] = slots[slots.length - 1];
         return (
           <group key={`${st.power}-${st.key}-${i}`}>
-            {Array.from({ length: shown }, (_, k) => (
+            {slots.map(([x, z], k) => (
               <UnitMesh
                 key={k}
                 url={def.mesh}
                 tint={tintFor(st.power, st.key)}
-                x={x + k * 0.42}
-                z={z - k * 0.18}
+                x={x}
+                z={z}
                 scale={def.scale ?? 1}
                 selected={selectedKeys?.has(stackKey) ?? false}
                 onTap={onStackTap ? () => onStackTap(spaceId, st.power, st.key) : undefined}
               />
             ))}
-            {st.count > shown && <CountChip n={st.count} x={x + 0.62} z={z + 0.5} />}
+            {overflow > 0 && <CountChip n={overflow + 1} x={lx + 0.62} z={lz + 0.5} />}
           </group>
         );
       })}
@@ -333,32 +342,42 @@ function PickRing({ x, z, color = '#e8b450', onTap }: { x: number; z: number; co
   );
 }
 
-// Light translucent fill over a whole region (owner: highlight the zone,
-// no circles). Clicking the fill picks the region directly.
+// Elegant region highlight (owner: no blaring circles, no glowing pulse):
+// a whisper of fill over the whole region plus a crisp traced border that
+// breathes gently. Clicking anywhere inside picks the region.
 function RegionFill({ id, color = '#e8b450', onTap }: { id: string; color?: string; onTap?: () => void }) {
-  const geoms = useMemo(() => {
+  const parts = useMemo(() => {
     const rings = regionsMod?.ringsOf(id);
     if (!rings || rings.length === 0) return null;
-    return rings.map((ring) => {
+    const fills: THREE.ShapeGeometry[] = [];
+    const lineMat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.85, depthWrite: false });
+    const outlines: THREE.Line[] = [];
+    for (const ring of rings) {
       const shape = new THREE.Shape();
+      const pts: THREE.Vector3[] = [];
       ring.forEach(([px, py]: [number, number], i: number) => {
         const [x, z] = px2r(px, py);
         // ShapeGeometry lives in XY; we rotate -90 about X so shape Y maps to -Z
         if (i === 0) shape.moveTo(x, -z);
         else shape.lineTo(x, -z);
+        pts.push(new THREE.Vector3(x, 0, z));
       });
       shape.closePath();
-      return new THREE.ShapeGeometry(shape);
-    });
-  }, [id]);
-  const mat = useRef<THREE.MeshBasicMaterial>(null);
+      fills.push(new THREE.ShapeGeometry(shape));
+      pts.push(pts[0].clone());
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat);
+      line.position.y = BOARD_Y + 0.04;
+      outlines.push(line);
+    }
+    return { fills, outlines, lineMat };
+  }, [id, color]);
   useFrame(({ clock }) => {
-    if (mat.current) mat.current.opacity = 0.22 + Math.sin(clock.elapsedTime * 2.6) * 0.08;
+    if (parts) parts.lineMat.opacity = 0.72 + Math.sin(clock.elapsedTime * 1.6) * 0.18;
   });
-  if (!geoms) return null;
+  if (!parts) return null;
   return (
     <group>
-      {geoms.map((g, i) => (
+      {parts.fills.map((g, i) => (
         <mesh
           key={i}
           geometry={g}
@@ -366,9 +385,10 @@ function RegionFill({ id, color = '#e8b450', onTap }: { id: string; color?: stri
           position={[0, BOARD_Y + 0.03, 0]}
           onClick={onTap ? (e) => { e.stopPropagation(); onTap(); } : undefined}
         >
-          <meshBasicMaterial ref={i === 0 ? mat : undefined} color={color} transparent opacity={0.26} depthWrite={false} side={THREE.DoubleSide} />
+          <meshBasicMaterial color={color} transparent opacity={0.1} depthWrite={false} side={THREE.DoubleSide} />
         </mesh>
       ))}
+      {parts.outlines.map((l, i) => <primitive key={`o${i}`} object={l} />)}
     </group>
   );
 }
@@ -377,24 +397,38 @@ export interface SpacePick { id: string; color?: string }
 
 export interface StagedStack { power: PowerKey; key: UnitKey; count: number }
 
-/** Purchased units standing in the printed mobilization zone. */
+/** Purchased units standing in the printed mobilization zone — every piece
+ * physically present until the box runs out of room. */
 function StagingPieces({ manifest, staged }: { manifest: AxisManifest; staged: StagedStack[] }) {
-  const cols = 4;
+  const cols = 5;
+  const rows = 4;
   const stepX = (MOB_ZONE.x1 - MOB_ZONE.x0) / cols;
+  const stepY = (MOB_ZONE.y1 - MOB_ZONE.y0 - 160) / rows;
+  const capacity = cols * rows;
+  let slot = 0;
   return (
     <group>
-      {staged.map((st, i) => {
+      {staged.map((st) => {
         const def = meshFor(manifest, st.power, st.key);
         if (!def?.mesh) return null;
-        const c = i % cols;
-        const r = Math.floor(i / cols);
-        const px = MOB_ZONE.x0 + stepX * (c + 0.5);
-        const py = MOB_ZONE.y0 + 150 + r * 160;
-        const [x, z] = px2r(px, py);
+        const n = Math.min(st.count, Math.max(1, capacity - slot));
+        const first = slot;
+        slot += n;
+        const overflow = st.count - n;
+        const pos = (k: number): [number, number] => {
+          const idx = Math.min(first + k, capacity - 1);
+          const c = idx % cols;
+          const r = Math.floor(idx / cols);
+          return px2r(MOB_ZONE.x0 + stepX * (c + 0.5), MOB_ZONE.y0 + 130 + stepY * (r + 0.5));
+        };
+        const [lx, lz] = pos(n - 1);
         return (
           <group key={`${st.power}-${st.key}`}>
-            <UnitMesh url={def.mesh} tint={tintFor(st.power, st.key)} x={x} z={z} scale={def.scale ?? 1} />
-            {st.count > 1 && <CountChip n={st.count} x={x + 0.62} z={z + 0.4} />}
+            {Array.from({ length: n }, (_, k) => {
+              const [x, z] = pos(k);
+              return <UnitMesh key={k} url={def.mesh} tint={tintFor(st.power, st.key)} x={x} z={z} scale={def.scale ?? 1} />;
+            })}
+            {overflow > 0 && <CountChip n={overflow + 1} x={lx + 0.62} z={lz + 0.4} />}
           </group>
         );
       })}
@@ -409,42 +443,59 @@ export interface OrderArrow { from: [number, number][]; to: [number, number]; co
 function ArrowMesh({ arrow }: { arrow: OrderArrow }) {
   const color = arrow.color ?? '#e05555';
   const parts = useMemo(() => {
-    const toR = (p: [number, number]) => { const [x, z] = px2r(p[0], p[1]); return new THREE.Vector3(x, 0.35, z); };
+    const toR = (p: [number, number]) => { const [x, z] = px2r(p[0], p[1]); return new THREE.Vector3(x, 0.3, z); };
     const target = toR(arrow.to);
     const origins = arrow.from.map(toR);
     if (origins.length === 0) return null;
     const centroid = origins.reduce((a, b) => a.clone().add(b), new THREE.Vector3()).multiplyScalar(1 / origins.length);
-    const joint = centroid.clone().lerp(target, 0.35).setY(0.55);
+    const span = centroid.distanceTo(target);
+    const arc = Math.min(1.4, 0.45 + span * 0.05); // long throws arc higher
+    const joint = centroid.clone().lerp(target, 0.4).setY(arc);
     const lift = (v: THREE.Vector3, h: number) => v.clone().setY(h);
-    const tubes: THREE.TubeGeometry[] = [];
+    // smooth branch curves from each origin into the joint, then one trunk
+    // that dives onto the target; each drawn twice (dark under-stroke +
+    // bright core) so the arrow reads crisply over any map color
+    const branches: THREE.CatmullRomCurve3[] = [];
     for (const o of origins) {
-      const mid = o.clone().lerp(joint, 0.5).setY(0.9);
-      const curve = new THREE.CatmullRomCurve3([lift(o, 0.25), mid, joint]);
-      tubes.push(new THREE.TubeGeometry(curve, 18, 0.16, 8, false));
+      const mid = o.clone().lerp(joint, 0.55).setY(arc * 0.85 + 0.2);
+      branches.push(new THREE.CatmullRomCurve3([lift(o, 0.22), mid, joint], false, 'centripetal'));
     }
-    const headBase = joint.clone().lerp(lift(target, 0.3), 0.86);
-    const trunkMid = joint.clone().lerp(headBase, 0.5).setY(1.1);
-    const trunk = new THREE.CatmullRomCurve3([joint, trunkMid, headBase]);
-    tubes.push(new THREE.TubeGeometry(trunk, 22, origins.length > 1 ? 0.26 : 0.2, 8, false));
-    const dir = lift(target, 0.3).clone().sub(headBase).normalize();
-    return { tubes, headBase, dir };
+    const headTip = lift(target, 0.26);
+    const headBase = joint.clone().lerp(headTip, 0.82);
+    const trunkMid = joint.clone().lerp(headBase, 0.5).setY(arc + 0.25);
+    const trunk = new THREE.CatmullRomCurve3([joint, trunkMid, headBase], false, 'centripetal');
+    const trunkR = origins.length > 1 ? 0.24 : 0.18;
+    const geo = (c: THREE.CatmullRomCurve3, r: number) => new THREE.TubeGeometry(c, 48, r, 12, false);
+    const core: THREE.TubeGeometry[] = [...branches.map((b) => geo(b, 0.13)), geo(trunk, trunkR)];
+    const under: THREE.TubeGeometry[] = [...branches.map((b) => geo(b, 0.19)), geo(trunk, trunkR + 0.06)];
+    const dir = headTip.clone().sub(headBase).normalize();
+    return { core, under, headBase, dir, headR: trunkR + 0.26 };
   }, [JSON.stringify(arrow)]);
   const matRef = useRef<THREE.MeshStandardMaterial>(null);
   useFrame(({ clock }) => {
-    if (matRef.current) matRef.current.opacity = 0.75 + Math.sin(clock.elapsedTime * 3.4) * 0.2;
+    if (matRef.current) matRef.current.emissiveIntensity = 0.5 + Math.sin(clock.elapsedTime * 2.4) * 0.18;
   });
   if (!parts) return null;
   const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), parts.dir);
   return (
     <group renderOrder={5}>
-      {parts.tubes.map((g, i) => (
-        <mesh key={i} geometry={g}>
-          <meshStandardMaterial ref={i === 0 ? matRef : undefined} color={color} emissive={color} emissiveIntensity={0.55} transparent opacity={0.85} depthWrite={false} />
+      {parts.under.map((g, i) => (
+        <mesh key={`u${i}`} geometry={g} renderOrder={4}>
+          <meshBasicMaterial color="#0a0c10" transparent opacity={0.55} depthWrite={false} />
         </mesh>
       ))}
-      <mesh position={parts.headBase} quaternion={quat}>
-        <coneGeometry args={[0.55, 1.2, 12]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} transparent opacity={0.92} depthWrite={false} />
+      {parts.core.map((g, i) => (
+        <mesh key={i} geometry={g} renderOrder={5}>
+          <meshStandardMaterial ref={i === 0 ? matRef : undefined} color={color} emissive={color} emissiveIntensity={0.55} transparent opacity={0.95} depthWrite={false} />
+        </mesh>
+      ))}
+      <mesh position={parts.headBase} quaternion={quat} renderOrder={4}>
+        <coneGeometry args={[parts.headR + 0.08, 1.16, 20]} />
+        <meshBasicMaterial color="#0a0c10" transparent opacity={0.55} depthWrite={false} />
+      </mesh>
+      <mesh position={parts.headBase} quaternion={quat} renderOrder={5}>
+        <coneGeometry args={[parts.headR, 1.1, 20]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} transparent opacity={0.95} depthWrite={false} />
       </mesh>
     </group>
   );

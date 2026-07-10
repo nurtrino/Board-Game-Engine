@@ -8,7 +8,7 @@ import {
   type AxisView, type PowerKey, type UnitKey,
 } from '@bge/shared';
 import { AxisTable, useAxisManifest, useSceneReady, SPACE_CENTER, px2r, type FocusTarget, type StagedStack } from './AxisScene';
-import { AxisBattleStage, AfterAction } from './AxisBattleStage';
+import { AxisBattleStage, AfterAction, warmDiceBox } from './AxisBattleStage';
 import { playSfx } from '../sfx';
 
 const PHASE_LABEL: Record<string, string> = {
@@ -100,9 +100,9 @@ function BattlePanel({ view, art }: { view: AxisView; art?: string }) {
 
 // ---------- production screen (after every turn) ----------
 
-function ProductionScreen({ view, art }: { view: AxisView; art?: string }) {
+function ProductionScreen({ view, art, collected }: { view: AxisView; art?: string; collected: PowerKey }) {
   const order = view.turnOrder;
-  const active = view.active;
+  const active = collected;
   return (
     <div className="ig-modal" style={{ zIndex: 25 }}>
       <div
@@ -136,7 +136,7 @@ function ProductionScreen({ view, art }: { view: AxisView; art?: string }) {
           );
         })}
         <div style={{ marginTop: '.9rem', fontSize: 12.5, opacity: 0.65 }}>
-          The active player continues from their device.
+          {POWERS[view.active].name} is up next.
         </div>
       </div>
     </div>
@@ -225,10 +225,22 @@ export default function AxisBoard({ view }: { view: AxisView }) {
     setFocus({ x: (9500 / 2) * 0.01, z: -(4956 / 2) * 0.01, dist: 62 });
   }, [view.active, camPin]);
 
-  // voice turn changes and the win
+  // warm the dice physics so the first battle opens without a load stall
+  useEffect(() => { warmDiceBox(); }, []);
+
+  // voice turn changes and the win; hold the production screen on screen for
+  // a beat after every turn (mobilize + income are one merged stage now)
   const prevActive = useRef(view.active);
+  const [prodShow, setProdShow] = useState<PowerKey | null>(null);
   useEffect(() => {
-    if (prevActive.current !== view.active) { prevActive.current = view.active; playSfx('turn'); }
+    if (prevActive.current !== view.active) {
+      const finished = prevActive.current;
+      prevActive.current = view.active;
+      playSfx('turn');
+      setProdShow(finished);
+      const t = setTimeout(() => setProdShow(null), 8000);
+      return () => clearTimeout(t);
+    }
   }, [view.active]);
   const won = useRef(false);
   useEffect(() => { if (view.winner && !won.current) { won.current = true; playSfx('win'); } }, [view.winner]);
@@ -300,8 +312,8 @@ export default function AxisBoard({ view }: { view: AxisView }) {
 
       {view.combat && <AxisBattleStage view={view} />}
       <AfterAction view={view} />
-      {view.phase === 'income' && !view.winner && (
-        <ProductionScreen view={view} art={(manifest as { boards?: { image?: string }[] }).boards?.[1]?.image ?? undefined} />
+      {prodShow && !view.winner && !view.combat && (
+        <ProductionScreen view={view} collected={prodShow} art={(manifest as { boards?: { image?: string }[] }).boards?.[1]?.image ?? undefined} />
       )}
 
       {view.winner && (
