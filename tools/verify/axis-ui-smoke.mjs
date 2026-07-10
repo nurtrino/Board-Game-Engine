@@ -217,7 +217,7 @@ try {
     if (acts % 200 === 0 && did) console.log(`heartbeat · ${acts} acts · round ${round} · ${Math.round((Date.now() - started) / 1000)}s`);
 
     const r = pass % 8 === 0
-      ? await pages[i].evaluate(() => Number(document.querySelector('.ax-head .ig-lab')?.textContent?.match(/Round (\d+)/)?.[1] ?? 0)).catch(() => 0)
+      ? await pages[i].evaluate(() => Number(document.querySelector('.ax-left-head .ig-lab')?.textContent?.match(/Round (\d+)/)?.[1] ?? 0)).catch(() => 0)
       : 0;
     if (r > round) {
       round = r;
