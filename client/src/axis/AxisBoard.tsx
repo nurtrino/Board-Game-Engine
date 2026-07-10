@@ -148,12 +148,23 @@ export default function AxisBoard({ view }: { view: AxisView }) {
   const manifest = useAxisManifest();
   const [focus, setFocus] = useState<FocusTarget | null>(null);
 
+  // ?cam=px,py,dist pins the camera to an art-pixel spot (verification shots)
+  const camPin = useMemo(() => {
+    const q = new URLSearchParams(window.location.search).get('cam');
+    if (!q) return null;
+    const [px, py, dist] = q.split(',').map(Number);
+    const [x, z] = px2r(px, py);
+    return { x, z, dist: dist || 20 } as FocusTarget;
+  }, []);
+  useEffect(() => { if (camPin) setFocus(camPin); }, [camPin]);
+
   // fly to battles as they open; otherwise follow the latest logged action
   // (attack declarations, blitzes, captures); widen out on turn changes
   const combatSpace = view.combat?.space ?? null;
   const lastSpaced = [...view.log].reverse().find((e) => e.space)?.space ?? null;
   const lastLen = view.log.length;
   useEffect(() => {
+    if (camPin) return;
     const target = combatSpace ?? lastSpaced;
     if (target && SPACE_CENTER[target]) {
       const c = SPACE_CENTER[target];
@@ -163,9 +174,10 @@ export default function AxisBoard({ view }: { view: AxisView }) {
     }
   }, [combatSpace, lastSpaced, lastLen]);
   useEffect(() => {
+    if (camPin) return;
     // new power's turn: pull back to the whole map
     setFocus({ x: (9500 / 2) * 0.01, z: -(4956 / 2) * 0.01, dist: 62 });
-  }, [view.active]);
+  }, [view.active, camPin]);
 
   // voice turn changes and the win
   const prevActive = useRef(view.active);

@@ -17,7 +17,10 @@ import { AXIS_MAP, POWERS, CHINA_COLOR, type UnitStack, type PowerKey } from '@b
 const S = 0.01;
 export const ART_W = 9500;
 export const ART_H = 4956;
-export const px2r = (px: number, py: number): [number, number] => [px * S, -py * S];
+// art px -> render x,z. The board plane's texture keeps the art upright with
+// north away from the default camera; that puts the art's TOP row at z=-H*S
+// and the BOTTOM row at z=0, so py maps to (py - ART_H) * S (not -py).
+export const px2r = (px: number, py: number): [number, number] => [px * S, (py - 4956) * S];
 
 const BOARD_Y = 0;
 
@@ -131,8 +134,8 @@ function UnitMesh({ url, tint, x, z, scale, rotY = 0 }: {
   url: string; tint: number[] | null; x: number; z: number; scale: number; rotY?: number;
 }) {
   const { clone, minY, midX, midZ, span, broadside } = useAxisObj(url, tint);
-  // guard against out-of-family meshes: clamp footprint to ~2.4 render units
-  const s = Math.min(scale, span > 0 ? 2.4 / span : scale);
+  // clamp footprint so stacks stay inside their territories at close zoom
+  const s = Math.min(scale, span > 0 ? 1.7 / span : scale);
   return (
     <group position={[x, BOARD_Y - minY * s, z]} rotation={[0, rotY + (broadside ? Math.PI / 2 : 0), 0]} scale={[s, s, s]}>
       <primitive object={clone} position-x={-midX} position-z={-midZ} />
@@ -199,7 +202,7 @@ export function SpacePieces({ manifest, spaceId, stacks }: {
   const [cx, cz] = px2r(center[0], center[1]);
   const ordered = [...stacks].sort((a, b) => UNIT_ORDER.indexOf(a.key) - UNIT_ORDER.indexOf(b.key));
   const cols = Math.max(2, Math.ceil(Math.sqrt(ordered.length)));
-  const step = 1.35;
+  const step = 0.95;
   return (
     <group>
       {ordered.map((st, i) => {
@@ -209,7 +212,7 @@ export function SpacePieces({ manifest, spaceId, stacks }: {
         const c = i % cols;
         const x = cx + (c - (cols - 1) / 2) * step;
         const z = cz + (r - Math.floor((ordered.length - 1) / cols) / 2) * step;
-        const shown = Math.min(st.count, st.key === 'infantry' ? 2 : 1);
+        const shown = 1; // one sculpt per stack; the count chip carries the number
         return (
           <group key={`${st.power}-${st.key}-${i}`}>
             {Array.from({ length: shown }, (_, k) => (
@@ -324,6 +327,7 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, chil
       dpr={[1, 2]}
       gl={{ antialias: true }}
       style={{ position: 'absolute', inset: 0, background: '#04060a' }}
+      onCreated={({ scene }) => { (window as unknown as { __scene?: unknown }).__scene = scene; }}
     >
       <ambientLight intensity={0.9} />
       <directionalLight position={[30, 70, 25]} intensity={1.4} />
