@@ -36,10 +36,15 @@ const GAMES = [
     name: 'Dune: Imperium',
     logo: '/dune-logo.jpg',
   },
+  {
+    id: 'politik',
+    name: 'Politik',
+    logo: '/politik/logo.webp',
+  },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
     name: 'Axis & Allies Anniversary',
-    logo: '/axis-logo.jpg',
+    logo: '/axis-box.webp',
   }]),
 ];
 
@@ -64,6 +69,27 @@ const AXIS_OPTION_DEFS = [
   ] },
 ] as const;
 
+const POLITIK_OPTION_DEFS = [
+  {
+    key: 'longWar', label: 'LONG WAR', help: 'ADD 1 POWER GRAB TO THE STANDARD VICTORY REQUIREMENT.', values: [
+      { v: false, label: 'STANDARD' },
+      { v: true, label: 'ON' },
+    ],
+  },
+  {
+    key: 'trifecta', label: 'TRIFECTA', help: 'VICTORY REQUIRES AT LEAST ONE MILITARY, POLITICAL, AND CORPORATE POWER GRAB.', values: [
+      { v: false, label: 'STANDARD' },
+      { v: true, label: 'ON' },
+    ],
+  },
+  {
+    key: 'ragingImperials', label: 'RAGING IMPERIALS', help: 'FLIP 1 ADDITIONAL POLITIK CARD FOR IMPERIAL DEFENSE IN MILITARY CLASHES.', values: [
+      { v: false, label: 'STANDARD' },
+      { v: true, label: 'ON' },
+    ],
+  },
+] as const;
+
 const dateOf = (t: number) =>
   new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
@@ -86,6 +112,8 @@ export function SelectGame() {
     if (!game) return;
     const opts = game.id === 'axis'
       ? { scenario: '1941', winCondition: 'standard', rnd: false, nationalObjectives: true, ...options }
+      : game.id === 'politik'
+        ? { longWar: false, trifecta: false, ragingImperials: false, ...options }
       : undefined;
     socket.send({ type: 'create_room', name: name.trim(), game: game.id, options: opts });
   };
@@ -104,7 +132,8 @@ export function SelectGame() {
 
   useEffect(() => {
     if (!game) return;
-    setName(`${game.name.split(':')[0]} — ${dateOf(Date.now())}`);
+    setOptions({});
+    setName(`${game.name.split(':')[0]} - ${dateOf(Date.now())}`);
     fetch('/api/saves')
       .then((r) => r.json())
       .then((list: SaveInfo[]) => setSaves(list.filter((s) => s.game === game.id)))
@@ -161,6 +190,25 @@ export function SelectGame() {
                             className={current === val.v ? 'opt on' : 'opt'}
                             onClick={() => setOptions((o) => ({ ...o, [def.key]: val.v }))}
                           >{val.label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {game.id === 'politik' && (
+              <div className="create-options pk-create-options">
+                {POLITIK_OPTION_DEFS.map((def) => {
+                  const current = options[def.key] ?? def.values[0].v;
+                  return (
+                    <div key={def.key} className="create-option">
+                      <span className="create-option-label">{def.label}</span>
+                      <span className="pk-create-help">{def.help}</span>
+                      <div className="create-option-values">
+                        {def.values.map((val) => (
+                          <button key={String(val.v)} className={current === val.v ? 'opt on' : 'opt'} onClick={() => setOptions((state) => ({ ...state, [def.key]: val.v }))}>{val.label}</button>
                         ))}
                       </div>
                     </div>
