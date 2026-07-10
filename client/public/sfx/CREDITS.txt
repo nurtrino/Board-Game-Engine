@@ -1,4 +1,5 @@
-Sound effects sourced from Kenney (https://kenney.nl) — Casino Audio,
-Interface Sounds, Impact Sounds, and Music Jingles packs.
-License: Creative Commons CC0 1.0 (public domain). No attribution required;
-this note is kept for provenance only.
+Sound effects synthesized from scratch for this project (tools: procedural
+additive synthesis — soft sine/marimba/bell voices, filtered-noise felt, gentle
+low-pass warmth and consonant pentatonic intervals for a calm, non-harsh feel).
+Generator: tools/tts-extract/gen-sfx.mjs
+License: Creative Commons CC0 1.0 (public domain). No attribution required.
