@@ -19,12 +19,7 @@ import { ROUTES, ROUTE_BY_ID, type TtrColor } from '@bge/shared';
 
 export interface TtrSceneDef {
   map: { image: string; px: [number, number] };
-  mapTransform: { ax: number; bx: number; cx: number; ay: number; by: number; cy: number; h?: number[]; px: [number, number];
-    // second-stage warp: a locally-supported correction (fit-ttr-warp.mjs) that
-    // removes the homography's edge residual so printed slots deform onto their
-    // pieces. Gaussian-weighted average of nearby anchors' displacements —
-    // bounded, and 0 far from any anchor (falls back to the homography).
-    warp?: { kind: 'shepard'; sigma: number; bias: number; ctrl: number[][]; dwx: number[]; dwz: number[] } };
+  mapTransform: { ax: number; bx: number; cx: number; ay: number; by: number; cy: number; h?: number[]; px: [number, number] };
   rulesPdf: string;
   meshes: Record<'train' | 'ship' | 'harbor' | 'marker', { mesh: string; diffuse: string | null; scale: number[] }>;
   tints: Record<string, { train?: number[]; ship?: number[] }>;
@@ -75,32 +70,6 @@ const applyH = (m: number[][], x: number, y: number): [number, number] => {
   const w = m[2][0] * x + m[2][1] * y + m[2][2];
   return [(m[0][0] * x + m[0][1] * y + m[0][2]) / w, (m[1][0] * x + m[1][1] * y + m[1][2]) / w];
 };
-
-// Gaussian-weighted average of the anchors' world displacements at a map pixel.
-// Bounded by the anchors' own displacements and decays to 0 far from any anchor.
-function warpCorrection(warp: NonNullable<TtrSceneDef['mapTransform']['warp']>, x: number, y: number): [number, number] {
-  const { ctrl, dwx, dwz, sigma, bias } = warp;
-  const inv2s2 = 1 / (2 * sigma * sigma);
-  let sw = 0, sx = 0, sz = 0;
-  for (let i = 0; i < ctrl.length; i++) {
-    const dx = x - ctrl[i][0], dy = y - ctrl[i][1];
-    const wgt = Math.exp(-(dx * dx + dy * dy) * inv2s2);
-    sw += wgt; sx += wgt * dwx[i]; sz += wgt * dwz[i];
-  }
-  const denom = sw + bias;
-  return [sx / denom, sz / denom];
-}
-/** A snap with its world position nudged onto its printed slot. The homography
- *  leaves a smooth residual that grows toward the map edges, so a piece placed
- *  at the raw world snap sits slightly off its slot there; subtract the fitted
- *  correction (evaluated at the snap's projected pixel) to seat it on the slot.
- *  The map itself is left un-warped, so only the pieces move — not the board. */
-function warpedSnap(t: TtrSceneDef['mapTransform'], snap: { pos: number[]; rot: number[] }): { pos: number[]; rot: number[] } {
-  if (!t.warp) return snap;
-  const [px, py] = applyH(hmat(t), snap.pos[0], snap.pos[2]);
-  const [dx, dz] = warpCorrection(t.warp, px, py);
-  return { pos: [snap.pos[0] - dx, snap.pos[1], snap.pos[2] - dz], rot: snap.rot };
-}
 
 export function mapRect(t: TtrSceneDef['mapTransform']) {
   const inv = inv3(hmat(t));
@@ -292,7 +261,7 @@ export function PlacedPieces({ scene, routeOwners, harborOwners, harborSnapOf }:
         const tint = scene.tints[color]?.[kind] ?? null;
         return r.snaps.map((si) => (
           <Suspense key={`${id}:${si}`} fallback={null}>
-            <PieceMesh scene={scene} kind={kind} tint={tint} snap={warpedSnap(scene.mapTransform, scene.snaps[si - 1])} />
+            <PieceMesh scene={scene} kind={kind} tint={tint} snap={scene.snaps[si - 1]} />
           </Suspense>
         ));
       })}
@@ -302,7 +271,7 @@ export function PlacedPieces({ scene, routeOwners, harborOwners, harborSnapOf }:
         const tint = scene.tints[color]?.train ?? null;
         return (
           <Suspense key={`h:${city}`} fallback={null}>
-            <PieceMesh scene={scene} kind="harbor" tint={tint} snap={warpedSnap(scene.mapTransform, scene.snaps[si - 1])} />
+            <PieceMesh scene={scene} kind="harbor" tint={tint} snap={scene.snaps[si - 1]} />
           </Suspense>
         );
       })}
@@ -330,7 +299,7 @@ function RouteGlow({ scene, routeId, onPick, dim }: {
   return (
     <group>
       {r.snaps.map((si) => {
-        const s = warpedSnap(scene.mapTransform, scene.snaps[si - 1]);
+        const s = scene.snaps[si - 1];
         return (
           <mesh
             key={si}
