@@ -20,10 +20,11 @@ import { ROUTES, ROUTE_BY_ID, type TtrColor } from '@bge/shared';
 export interface TtrSceneDef {
   map: { image: string; px: [number, number] };
   mapTransform: { ax: number; bx: number; cx: number; ay: number; by: number; cy: number; h?: number[]; px: [number, number];
-    // second-stage warp: a regularized thin-plate correction that removes the
-    // homography's edge residual so printed slots land exactly on the pieces
-    // (fit-ttr-warp.mjs). Applied on top of the homography-inverse in MapPlane.
-    warp?: { ctrl: number[][]; wx: number[]; wz: number[] } };
+    // second-stage warp: a locally-supported correction (fit-ttr-warp.mjs) that
+    // removes the homography's edge residual so printed slots deform onto their
+    // pieces. Gaussian-weighted average of nearby anchors' displacements —
+    // bounded, and 0 far from any anchor (falls back to the homography).
+    warp?: { kind: 'shepard'; sigma: number; bias: number; ctrl: number[][]; dwx: number[]; dwz: number[] } };
   rulesPdf: string;
   meshes: Record<'train' | 'ship' | 'harbor' | 'marker', { mesh: string; diffuse: string | null; scale: number[] }>;
   tints: Record<string, { train?: number[]; ship?: number[] }>;
@@ -75,23 +76,27 @@ const applyH = (m: number[][], x: number, y: number): [number, number] => {
   return [(m[0][0] * x + m[0][1] * y + m[0][2]) / w, (m[1][0] * x + m[1][1] * y + m[1][2]) / w];
 };
 
-// Thin-plate RBF: evaluate the fitted pixel->world-displacement at a map pixel.
-// weights w are [per-control-point ..., a0, a_x, a_y]; U(r)=r^2 ln r.
-function rbfEval(w: number[], ctrl: number[][], x: number, y: number): number {
-  const n = ctrl.length;
-  let s = w[n] + w[n + 1] * x + w[n + 2] * y;
-  for (let i = 0; i < n; i++) {
-    const dx = x - ctrl[i][0], dy = y - ctrl[i][1], r = Math.hypot(dx, dy);
-    if (r > 1e-9) s += w[i] * (r * r * Math.log(r));
+// Gaussian-weighted average of the anchors' world displacements at a map pixel.
+// Bounded by the anchors' own displacements and decays to 0 far from any anchor.
+function warpCorrection(warp: NonNullable<TtrSceneDef['mapTransform']['warp']>, x: number, y: number): [number, number] {
+  const { ctrl, dwx, dwz, sigma, bias } = warp;
+  const inv2s2 = 1 / (2 * sigma * sigma);
+  let sw = 0, sx = 0, sz = 0;
+  for (let i = 0; i < ctrl.length; i++) {
+    const dx = x - ctrl[i][0], dy = y - ctrl[i][1];
+    const wgt = Math.exp(-(dx * dx + dy * dy) * inv2s2);
+    sw += wgt; sx += wgt * dwx[i]; sz += wgt * dwz[i];
   }
-  return s;
+  const denom = sw + bias;
+  return [sx / denom, sz / denom];
 }
 /** Map an image pixel to a world (x,z): homography-inverse plus the warp
  *  correction (if present) so the printed slots deform onto the pieces. */
 function pixelToWorld(t: TtrSceneDef['mapTransform'], inv: number[][], px: number, py: number): [number, number] {
   const [wx, wz] = applyH(inv, px, py);
   if (!t.warp) return [wx, wz];
-  return [wx + rbfEval(t.warp.wx, t.warp.ctrl, px, py), wz + rbfEval(t.warp.wz, t.warp.ctrl, px, py)];
+  const [dx, dz] = warpCorrection(t.warp, px, py);
+  return [wx + dx, wz + dz];
 }
 
 export function mapRect(t: TtrSceneDef['mapTransform']) {

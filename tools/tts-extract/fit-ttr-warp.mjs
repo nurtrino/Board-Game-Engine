@@ -70,34 +70,35 @@ for (const r of board.routes) {
 }
 console.log('warp anchors:', ctrl.length);
 
-// thin-plate RBF fit with Tikhonov regularization (lam) — smooth enough to
-// ignore centroid noise, exact enough to pin the slots (<1px residual).
-const LAM = 600;
-const U = (r) => (r < 1e-9 ? 0 : r * r * Math.log(r));
-function rbfFit(pts, vals, lam) {
-  const n = pts.length, N = n + 3;
-  const M = Array.from({ length: N }, () => Array(N).fill(0)); const bx = Array(N).fill(0);
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) M[i][j] = U(Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]));
-    M[i][i] += lam; M[i][n] = 1; M[i][n + 1] = pts[i][0]; M[i][n + 2] = pts[i][1]; bx[i] = vals[i];
+// Locally-supported correction: a Gaussian-weighted average of the nearby
+// anchors' displacements (Nadaraya-Watson). Unlike a thin-plate RBF it never
+// extrapolates — the correction is bounded by the anchors' own displacements
+// (<~1 world unit) and decays to 0 far from any anchor, so the map falls back
+// to the plain homography in route-free regions (corners, open ocean) instead
+// of blowing up. `bias` keeps the denominator from exploding where anchors are
+// sparse (there, weight is small -> correction fades toward 0).
+function shepard(sigma, bias, x, y) {
+  let sw = 0, sdx = 0, sdz = 0;
+  const inv2s2 = 1 / (2 * sigma * sigma);
+  for (let i = 0; i < ctrl.length; i++) {
+    const dx = x - ctrl[i][0], dy = y - ctrl[i][1];
+    const wgt = Math.exp(-(dx * dx + dy * dy) * inv2s2);
+    sw += wgt; sdx += wgt * resWx[i]; sdz += wgt * resWz[i];
   }
-  for (let i = 0; i < n; i++) { M[n][i] = 1; M[n + 1][i] = pts[i][0]; M[n + 2][i] = pts[i][1]; }
-  for (let c = 0; c < N; c++) {
-    let p = c; for (let r = c + 1; r < N; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
-    [M[c], M[p]] = [M[p], M[c]]; [bx[c], bx[p]] = [bx[p], bx[c]];
-    for (let r = 0; r < N; r++) { if (r === c) continue; const f = M[r][c] / M[c][c]; for (let k = c; k < N; k++) M[r][k] -= f * M[c][k]; bx[r] -= f * bx[c]; }
-  }
-  return bx.map((v, i) => v / M[i][i]);
+  const denom = sw + bias;
+  return [sdx / denom, sdz / denom];
 }
-const wx = rbfFit(ctrl, resWx, LAM), wz = rbfFit(ctrl, resWz, LAM);
-const rbfEval = (w, x, y) => { let s = w[ctrl.length] + w[ctrl.length + 1] * x + w[ctrl.length + 2] * y; for (let i = 0; i < ctrl.length; i++) s += w[i] * U(Math.hypot(x - ctrl[i][0], y - ctrl[i][1])); return s; };
+const SIGMA = 100, BIAS = 0.05;
+// residual at anchors + worst extrapolation at the map corners, for a few widths
+const [W2, H2] = [W, H];
+for (const sg of [80, 100, 120, 150]) {
+  const res = ctrl.map((c, i) => { const [dx, dz] = shepard(sg, BIAS, c[0], c[1]); return Math.hypot((dx - resWx[i]) * 33, (dz - resWz[i]) * 33); });
+  const s = [...res].sort((a, b) => a - b);
+  const corners = [[0, 0], [W2, 0], [0, H2], [W2, H2]].map(([x, y]) => { const [dx, dz] = shepard(sg, BIAS, x, y); return Math.hypot(dx, dz).toFixed(1); });
+  console.log(`sigma ${sg}: anchor resid mean ${(res.reduce((a, b) => a + b, 0) / res.length).toFixed(1)}px p90 ${s[Math.floor(s.length * 0.9)].toFixed(1)}px max ${Math.max(...res).toFixed(1)}px | corner |corr| (world) ${corners.join(',')}`);
+}
 
-// report residual after correction
-const res = ctrl.map((c, i) => Math.hypot((rbfEval(wx, c[0], c[1]) - resWx[i]) * 33, (rbfEval(wz, c[0], c[1]) - resWz[i]) * 33));
-const sorted = [...res].sort((a, b) => a - b);
-console.log(`residual after warp: mean ${(res.reduce((a, b) => a + b, 0) / res.length).toFixed(2)}px  p90 ${sorted[Math.floor(res.length * 0.9)].toFixed(2)}px  max ${Math.max(...res).toFixed(2)}px`);
-
-const warp = { ctrl: ctrl.map(([a, b]) => [+a.toFixed(1), +b.toFixed(1)]), wx: wx.map((v) => +v.toFixed(7)), wz: wz.map((v) => +v.toFixed(7)) };
+const warp = { kind: 'shepard', sigma: SIGMA, bias: BIAS, ctrl: ctrl.map(([a, b]) => [+a.toFixed(1), +b.toFixed(1)]), dwx: resWx.map((v) => +v.toFixed(4)), dwz: resWz.map((v) => +v.toFixed(4)) };
 golden.mapTransform = { ...golden.mapTransform, warp };
 scene.mapTransform = { ...scene.mapTransform, warp };
 fs.writeFileSync(path.join(ROOT, 'games/ticket-to-ride-world/golden/board.json'), JSON.stringify(golden, null, 1));
