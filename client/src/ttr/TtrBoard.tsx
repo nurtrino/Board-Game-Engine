@@ -28,7 +28,7 @@ export function TtrBoard({ view }: { view: TtrView }) {
   const lastSeq = useRef(0);
   useEffect(() => {
     const e = view.lastEvent;
-    if (e && e.seq > lastSeq.current) { lastSeq.current = e.seq; playSfx(e.drew ? 'cardDraw' : e.route ? 'build' : 'link'); }
+    if (e && e.seq > lastSeq.current) { lastSeq.current = e.seq; playSfx(e.drew ? null : e.route ? 'build' : 'link'); }
   }, [view.lastEvent?.seq]);
   const prevColor = useRef(view.turnColor);
   useEffect(() => {

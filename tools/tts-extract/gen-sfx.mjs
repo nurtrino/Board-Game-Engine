@@ -71,12 +71,6 @@ const N = { C4: 261.6, D4: 293.7, E4: 329.6, G4: 392.0, A4: 440.0, C5: 523.3, D5
 // --- click: a soft rounded "tok" -----------------------------------------
 { const o = buf(0.14); voice(o, 470, 0, 0.13, { gain: 0.5, attackMs: 6, tau: 0.04, parts: [[1, 1], [2, 0.18]] }); warm(o, 3200); norm(o, 0.5); writeWav('click', o); }
 
-// --- cardPlay: a soft-but-present wooden tap (a piece set on the board) ----
-{ const o = buf(0.17); voice(o, 300, 0, 0.09, { gain: 0.5, attackMs: 3, tau: 0.035, parts: [[1, 1], [2, 0.3], [3, 0.12]] }); voice(o, 140, 0, 0.06, { gain: 0.3, attackMs: 3, tau: 0.03, parts: [[1, 1]] }); noise(o, 0.001, 0.04, { gain: 0.3, cut: 2400, tau: 0.028, attackMs: 2 }); warm(o, 4400); norm(o, 0.66); writeWav('card-play', o); }
-
-// --- cardDraw: a soft card slide "fwip" (clear, falling noise sweep) -------
-{ const o = buf(0.2); noise(o, 0, 0.16, { gain: 0.55, cut: 2900, rise: -0.55, tau: 0.08, attackMs: 8 }); warm(o, 5200); norm(o, 0.6); writeWav('card-draw', o); }
-
 // --- shuffle: soft riffle of muffled ticks -------------------------------
 { const o = buf(0.62); for (let i = 0; i < 7; i++) noise(o, 0.02 + i * 0.075 + Math.random() * 0.012, 0.05, { gain: 0.34 - i * 0.02, cut: 1300, tau: 0.03, attackMs: 3 }); warm(o, 2600); norm(o, 0.5); writeWav('shuffle', o); }
 

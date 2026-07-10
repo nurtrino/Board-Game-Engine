@@ -60,7 +60,7 @@ export function DuneBoard({ view }: { view: DuneView }) {
     if (!e || e.seq <= lastSeq.current) return;
     lastSeq.current = e.seq;
     const t = e.title ?? '';
-    playSfx(/acquires/.test(t) ? 'coins' : /reveals/.test(t) ? 'cardDraw' : /1st|2nd|3rd/.test(t) ? 'win' : 'link');
+    playSfx(/acquires/.test(t) ? 'coins' : /reveals/.test(t) ? null : /1st|2nd|3rd/.test(t) ? 'win' : 'link');
   }, [view.lastEvent?.seq]);
   const prevTurn = useRef(view.turn);
   useEffect(() => {

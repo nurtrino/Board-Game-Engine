@@ -62,7 +62,7 @@ export function TrekBoard({ view }: { view: TrekView }) {
     if (!e || e.seq <= lastSeq.current) return;
     lastSeq.current = e.seq;
     const t = e.title ?? '';
-    playSfx(/claim|occup/i.test(t) ? 'coins' : /drew|draw/i.test(t) ? 'cardDraw' : 'link');
+    playSfx(/claim|occup/i.test(t) ? 'coins' : /drew|draw/i.test(t) ? null : 'link');
   }, [view.lastEvent?.seq]);
   const prevTurn = useRef(view.turn);
   useEffect(() => {

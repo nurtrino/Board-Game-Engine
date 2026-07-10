@@ -4,7 +4,7 @@
 // user gesture, so we prime the pipeline on the first pointer/key event.
 
 const FILES = {
-  cardPlay: 'card-play', cardDraw: 'card-draw', shuffle: 'shuffle',
+  shuffle: 'shuffle',
   build: 'build', link: 'link', coins: 'coins',
   turn: 'turn', click: 'click', error: 'error', win: 'win',
 } as const;
@@ -25,8 +25,8 @@ function base(name: SfxName): HTMLAudioElement {
   return a;
 }
 
-export function playSfx(name: SfxName): void {
-  if (!enabled) return;
+export function playSfx(name: SfxName | null | undefined): void {
+  if (!enabled || !name) return; // null = a deliberately silent event (e.g. card draws)
   try {
     const a = base(name).cloneNode() as HTMLAudioElement;
     a.volume = VOL[name] ?? 0.85;
@@ -54,13 +54,14 @@ export function initSfx(): void {
   window.addEventListener('keydown', unlock);
 }
 
-// The sound a completed action should make, by BrassEvent.kind.
-export function sfxForKind(kind?: string): SfxName {
+// The sound a completed action should make, by BrassEvent.kind. Actions with no
+// distinctive cue stay silent (null) rather than borrow a generic card sound.
+export function sfxForKind(kind?: string): SfxName | null {
   switch (kind) {
     case 'build': case 'develop': return 'build';
     case 'network': return 'link';
     case 'sell': case 'loan': return 'coins';
     case 'scout': return 'shuffle';
-    default: return 'cardPlay';
+    default: return null;
   }
 }

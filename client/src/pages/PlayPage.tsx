@@ -20,6 +20,7 @@ import { TrekPlay } from '../trek/TrekPlay';
 import { DtPlay } from '../darktower/DtPlay';
 import { DunePlay } from '../dune/DunePlay';
 import AxisPlay from '../axis/AxisPlay';
+import { PolitikPlay } from '../politik/PolitikPlay';
 import { GameIntro, BRASS_INTRO } from '../ttr/GameIntro';
 
 const ALL_COLORS: Color[] = ['Orange', 'Purple', 'Teal', 'Yellow'];
@@ -230,7 +231,6 @@ function GameView({ scene, view, act, error }: {
     const ev = view.lastEvent;
     if (ev?.drew && ev.color === color && mine.hand && ev.seq !== drawn?.seq) {
       setDrawn({ cards: mine.hand.slice(-ev.drew), seq: ev.seq });
-      playSfx('cardDraw');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view.lastEvent?.seq]);
@@ -941,6 +941,7 @@ export function PlayPage() {
     if (view.game === 'darktower') return <DtPlay view={view} act={act} error={error} />;
     if (view.game === 'dune') return <DunePlay view={view} act={act} error={error} />;
     if (view.game === 'axis') return <AxisPlay view={view} act={act} error={error} />;
+    if (view.game === 'politik') return <PolitikPlay view={view} act={act} error={error} />;
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
@@ -953,11 +954,15 @@ export function PlayPage() {
     ttr: 'Ticket to Ride: Rails & Sails',
     trek: 'Trekking the National Parks',
     darktower: 'Dark Tower',
+    dune: 'Dune: Imperium',
+    axis: 'Axis & Allies Anniversary',
+    politik: 'Politik',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
   const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
     : room.game === 'trek' ? 'Your colour is your trekker and the stones you collect.'
     : room.game === 'darktower' ? 'Your colour is your warrior on the quest.'
+    : room.game === 'politik' ? 'Your colour outlines your Nation, influence, support, and power grabs.'
     : "Your piece marks your income on the board's turn-order track.";
 
   return (
