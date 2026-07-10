@@ -1,0 +1,7375 @@
+{
+ "source": "TTS mod 1210887127 (Dark Souls TBG + official add-ons, Darkroot, Four Kings, Old Iron King, Black Dragon Kalameet)",
+ "generatedBy": "tools/tts-extract/extract-dark-souls.mjs",
+ "tiles": [
+  {
+   "id": "rooms-3baa0d",
+   "kind": "room-library",
+   "guid": "3baa0d",
+   "scale": 16.5,
+   "image": "/dark-souls/room-3baa0d.png",
+   "w": 496,
+   "h": 722,
+   "variants": [
+    {
+     "id": "room-3baa0d",
+     "image": "/dark-souls/room-3baa0d.png",
+     "w": 496,
+     "h": 722
+    },
+    {
+     "id": "room-9c5508",
+     "image": "/dark-souls/room-9c5508.webp",
+     "w": 1217,
+     "h": 902
+    },
+    {
+     "id": "room-4d8244",
+     "image": "/dark-souls/room-4d8244.webp",
+     "w": 1217,
+     "h": 903
+    },
+    {
+     "id": "room-0c485d",
+     "image": "/dark-souls/room-0c485d.webp",
+     "w": 1217,
+     "h": 902
+    },
+    {
+     "id": "room-8a5837",
+     "image": "/dark-souls/room-8a5837.webp",
+     "w": 1217,
+     "h": 903
+    },
+    {
+     "id": "room-e963bb",
+     "image": "/dark-souls/room-e963bb.webp",
+     "w": 1217,
+     "h": 902
+    },
+    {
+     "id": "room-080df5",
+     "image": "/dark-souls/room-080df5.webp",
+     "w": 1217,
+     "h": 903
+    },
+    {
+     "id": "room-be57bc",
+     "image": "/dark-souls/room-be57bc.webp",
+     "w": 1217,
+     "h": 902
+    },
+    {
+     "id": "room-5441eb",
+     "image": "/dark-souls/room-5441eb.webp",
+     "w": 620,
+     "h": 903
+    }
+   ]
+  },
+  {
+   "id": "rooms-4e3624",
+   "kind": "room-library",
+   "guid": "4e3624",
+   "scale": 16.5,
+   "image": "/dark-souls/room-4e3624.webp",
+   "w": 1509,
+   "h": 2048,
+   "variants": [
+    {
+     "id": "room-4e3624",
+     "image": "/dark-souls/room-4e3624.webp",
+     "w": 1509,
+     "h": 2048
+    },
+    {
+     "id": "room-91c7d5",
+     "image": "/dark-souls/room-91c7d5.webp",
+     "w": 1220,
+     "h": 900
+    },
+    {
+     "id": "room-8664a7",
+     "image": "/dark-souls/room-8664a7.webp",
+     "w": 1221,
+     "h": 905
+    },
+    {
+     "id": "room-3f51ff",
+     "image": "/dark-souls/room-3f51ff.webp",
+     "w": 1216,
+     "h": 902
+    },
+    {
+     "id": "room-984eed",
+     "image": "/dark-souls/room-984eed.webp",
+     "w": 1216,
+     "h": 905
+    },
+    {
+     "id": "room-715402",
+     "image": "/dark-souls/room-715402.webp",
+     "w": 1217,
+     "h": 902
+    },
+    {
+     "id": "room-8f016e",
+     "image": "/dark-souls/room-8f016e.webp",
+     "w": 1218,
+     "h": 902
+    },
+    {
+     "id": "room-2f7d60",
+     "image": "/dark-souls/room-2f7d60.webp",
+     "w": 1217,
+     "h": 904
+    }
+   ]
+  },
+  {
+   "id": "rooms-0a76c7",
+   "kind": "room-library",
+   "guid": "0a76c7",
+   "scale": 16.5,
+   "image": "/dark-souls/room-0a76c7.webp",
+   "w": 1325,
+   "h": 1930,
+   "variants": [
+    {
+     "id": "room-0a76c7",
+     "image": "/dark-souls/room-0a76c7.webp",
+     "w": 1325,
+     "h": 1930
+    },
+    {
+     "id": "room-1504d9",
+     "image": "/dark-souls/room-1504d9.webp",
+     "w": 2048,
+     "h": 1522
+    },
+    {
+     "id": "room-78915f",
+     "image": "/dark-souls/room-78915f.webp",
+     "w": 2048,
+     "h": 1524
+    },
+    {
+     "id": "room-1f416b",
+     "image": "/dark-souls/room-1f416b.webp",
+     "w": 2048,
+     "h": 1523
+    },
+    {
+     "id": "room-6ec924",
+     "image": "/dark-souls/room-6ec924.webp",
+     "w": 2048,
+     "h": 1523
+    },
+    {
+     "id": "room-0cfce5",
+     "image": "/dark-souls/room-0cfce5.webp",
+     "w": 2048,
+     "h": 1523
+    },
+    {
+     "id": "room-10bc18",
+     "image": "/dark-souls/room-10bc18.webp",
+     "w": 1325,
+     "h": 1930
+    }
+   ]
+  },
+  {
+   "id": "rooms-f94a58",
+   "kind": "room-library",
+   "guid": "f94a58",
+   "scale": 16.5,
+   "image": "/dark-souls/room-f94a58.webp",
+   "w": 1509,
+   "h": 2048,
+   "variants": [
+    {
+     "id": "room-f94a58",
+     "image": "/dark-souls/room-f94a58.webp",
+     "w": 1509,
+     "h": 2048
+    },
+    {
+     "id": "room-bca77a",
+     "image": "/dark-souls/room-bca77a.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-fe9aee",
+     "image": "/dark-souls/room-fe9aee.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-c303f2",
+     "image": "/dark-souls/room-c303f2.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-46ac9a",
+     "image": "/dark-souls/room-46ac9a.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-d12c35",
+     "image": "/dark-souls/room-d12c35.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-95affa",
+     "image": "/dark-souls/room-95affa.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-05a9ac",
+     "image": "/dark-souls/room-05a9ac.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-beeca7",
+     "image": "/dark-souls/room-beeca7.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-1d7cf5",
+     "image": "/dark-souls/room-1d7cf5.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-a70f3d",
+     "image": "/dark-souls/room-a70f3d.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-a70db9",
+     "image": "/dark-souls/room-a70db9.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-8df56a",
+     "image": "/dark-souls/room-8df56a.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-d803b3",
+     "image": "/dark-souls/room-d803b3.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-18bf8e",
+     "image": "/dark-souls/room-18bf8e.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-d14e01",
+     "image": "/dark-souls/room-d14e01.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-63324f",
+     "image": "/dark-souls/room-63324f.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-127322",
+     "image": "/dark-souls/room-127322.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-d6d779",
+     "image": "/dark-souls/room-d6d779.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-05ca3c",
+     "image": "/dark-souls/room-05ca3c.webp",
+     "w": 2048,
+     "h": 1390
+    },
+    {
+     "id": "room-463bae",
+     "image": "/dark-souls/room-463bae.webp",
+     "w": 1509,
+     "h": 2048
+    }
+   ]
+  },
+  {
+   "id": "rooms-e18678",
+   "kind": "room-library",
+   "guid": "e18678",
+   "scale": 16.5,
+   "image": "/dark-souls/room-e18678.png",
+   "w": 553,
+   "h": 816,
+   "variants": [
+    {
+     "id": "room-e18678",
+     "image": "/dark-souls/room-e18678.png",
+     "w": 553,
+     "h": 816
+    },
+    {
+     "id": "room-6aab41",
+     "image": "/dark-souls/room-6aab41.webp",
+     "w": 1106,
+     "h": 816
+    },
+    {
+     "id": "room-17f6ce",
+     "image": "/dark-souls/room-17f6ce.webp",
+     "w": 1106,
+     "h": 816
+    },
+    {
+     "id": "room-8ab230",
+     "image": "/dark-souls/room-8ab230.webp",
+     "w": 1106,
+     "h": 816
+    },
+    {
+     "id": "room-c61ee8",
+     "image": "/dark-souls/room-c61ee8.webp",
+     "w": 1106,
+     "h": 816
+    },
+    {
+     "id": "room-467060",
+     "image": "/dark-souls/room-467060.webp",
+     "w": 1106,
+     "h": 816
+    },
+    {
+     "id": "room-d4af0b",
+     "image": "/dark-souls/room-d4af0b.webp",
+     "w": 1106,
+     "h": 816
+    },
+    {
+     "id": "room-fa5008",
+     "image": "/dark-souls/room-fa5008.webp",
+     "w": 1106,
+     "h": 816
+    },
+    {
+     "id": "room-cba8fc",
+     "image": "/dark-souls/room-cba8fc.png",
+     "w": 553,
+     "h": 816
+    }
+   ]
+  },
+  {
+   "id": "rooms-f6dbf7",
+   "kind": "room-library",
+   "guid": "f6dbf7",
+   "scale": 16.5,
+   "image": "/dark-souls/room-f6dbf7.webp",
+   "w": 700,
+   "h": 1020,
+   "variants": [
+    {
+     "id": "room-f6dbf7",
+     "image": "/dark-souls/room-f6dbf7.webp",
+     "w": 700,
+     "h": 1020
+    },
+    {
+     "id": "room-e81ff9",
+     "image": "/dark-souls/room-e81ff9.webp",
+     "w": 1373,
+     "h": 1019
+    },
+    {
+     "id": "room-d9462a",
+     "image": "/dark-souls/room-d9462a.webp",
+     "w": 1375,
+     "h": 1019
+    },
+    {
+     "id": "room-c0d5e1",
+     "image": "/dark-souls/room-c0d5e1.webp",
+     "w": 1375,
+     "h": 1019
+    },
+    {
+     "id": "room-29e9dd",
+     "image": "/dark-souls/room-29e9dd.webp",
+     "w": 1375,
+     "h": 1020
+    },
+    {
+     "id": "room-916107",
+     "image": "/dark-souls/room-916107.webp",
+     "w": 1375,
+     "h": 1018
+    },
+    {
+     "id": "room-608453",
+     "image": "/dark-souls/room-608453.webp",
+     "w": 1375,
+     "h": 1018
+    },
+    {
+     "id": "room-c6186e",
+     "image": "/dark-souls/room-c6186e.webp",
+     "w": 1375,
+     "h": 1019
+    },
+    {
+     "id": "room-134dae",
+     "image": "/dark-souls/room-134dae.webp",
+     "w": 700,
+     "h": 1020
+    }
+   ]
+  },
+  {
+   "id": "room-1f650a",
+   "kind": "room-double",
+   "guid": "1f650a",
+   "scale": 12.78,
+   "image": "/dark-souls/room-1f650a.webp",
+   "w": 2048,
+   "h": 2048,
+   "back": "/dark-souls/room-1f650a-back.webp",
+   "variants": []
+  },
+  {
+   "id": "room-3c0ec9",
+   "kind": "room-double",
+   "guid": "3c0ec9",
+   "scale": 12.78,
+   "image": "/dark-souls/room-3c0ec9.webp",
+   "w": 2048,
+   "h": 2048,
+   "back": "/dark-souls/room-3c0ec9-back.webp",
+   "variants": []
+  },
+  {
+   "id": "room-224900",
+   "kind": "room-double",
+   "guid": "224900",
+   "scale": 12.78,
+   "image": "/dark-souls/room-224900.webp",
+   "w": 2048,
+   "h": 2048,
+   "back": "/dark-souls/room-224900-back.webp",
+   "variants": []
+  },
+  {
+   "id": "room-6abc01",
+   "kind": "room-double",
+   "guid": "6abc01",
+   "scale": 12.78,
+   "image": "/dark-souls/room-6abc01.webp",
+   "w": 2048,
+   "h": 2048,
+   "back": "/dark-souls/room-6abc01-back.webp",
+   "variants": []
+  },
+  {
+   "id": "room-4b1835",
+   "kind": "room-double",
+   "guid": "4b1835",
+   "scale": 12.78,
+   "image": "/dark-souls/room-4b1835.webp",
+   "w": 2048,
+   "h": 2048,
+   "back": "/dark-souls/room-4b1835-back.webp",
+   "variants": []
+  },
+  {
+   "id": "room-17b532",
+   "kind": "room-double",
+   "guid": "17b532",
+   "scale": 12.78,
+   "image": "/dark-souls/room-17b532.webp",
+   "w": 2048,
+   "h": 2048,
+   "back": "/dark-souls/room-17b532-back.webp",
+   "variants": []
+  },
+  {
+   "id": "boss-tile-f482f0",
+   "kind": "boss-tile",
+   "guid": "f482f0",
+   "scale": 12.78,
+   "image": "/dark-souls/boss-tile-f482f0.webp",
+   "w": 2048,
+   "h": 2048,
+   "back": "/dark-souls/boss-tile-f482f0-back.webp",
+   "variants": []
+  },
+  {
+   "id": "boss-tile-21f5ba",
+   "kind": "boss-tile",
+   "guid": "21f5ba",
+   "scale": 12.78,
+   "image": "/dark-souls/boss-tile-21f5ba.webp",
+   "w": 2048,
+   "h": 2048,
+   "back": "/dark-souls/boss-tile-21f5ba-back.webp",
+   "variants": []
+  },
+  {
+   "id": "arena-four-kings",
+   "kind": "mega-boss-arena",
+   "guid": "2e0c74",
+   "scale": 30,
+   "image": "/dark-souls/arena-four-kings.webp",
+   "w": 2039,
+   "h": 2048,
+   "back": "/dark-souls/arena-four-kings-back.webp",
+   "variants": []
+  },
+  {
+   "id": "arena-old-iron-king",
+   "kind": "mega-boss-arena",
+   "guid": "e659e7",
+   "scale": 30,
+   "image": "/dark-souls/arena-old-iron-king.webp",
+   "w": 2048,
+   "h": 2039,
+   "back": "/dark-souls/arena-old-iron-king-back.webp",
+   "variants": []
+  },
+  {
+   "id": "arena-black-dragon-kalameet",
+   "kind": "mega-boss-arena",
+   "guid": "e659e7",
+   "scale": 30,
+   "image": "/dark-souls/arena-black-dragon-kalameet.webp",
+   "w": 1015,
+   "h": 1015,
+   "back": "/dark-souls/arena-black-dragon-kalameet-back.webp",
+   "variants": []
+  }
+ ],
+ "boards": [
+  {
+   "id": "backdrop",
+   "guid": "a7ea11",
+   "image": "/dark-souls/board-backdrop.webp",
+   "w": 1024,
+   "h": 683,
+   "scale": 7.75
+  },
+  {
+   "id": "class-board-01",
+   "guid": "e8d958",
+   "image": "/dark-souls/class-board-01.webp",
+   "w": 2048,
+   "h": 1536,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-02",
+   "guid": "72e21a",
+   "image": "/dark-souls/class-board-02.webp",
+   "w": 2048,
+   "h": 1538,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-03",
+   "guid": "9c57c3",
+   "image": "/dark-souls/class-board-03.webp",
+   "w": 2048,
+   "h": 1539,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-04",
+   "guid": "086407",
+   "image": "/dark-souls/class-board-04.webp",
+   "w": 2048,
+   "h": 1537,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-05",
+   "guid": "c7da62",
+   "image": "/dark-souls/class-board-05.webp",
+   "w": 2048,
+   "h": 1537,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-06",
+   "guid": "c7fd54",
+   "image": "/dark-souls/class-board-06.webp",
+   "w": 2048,
+   "h": 1553,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-07",
+   "guid": "393658",
+   "image": "/dark-souls/class-board-07.webp",
+   "w": 2048,
+   "h": 1553,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-08",
+   "guid": "1db4a7",
+   "image": "/dark-souls/class-board-08.webp",
+   "w": 2048,
+   "h": 1553,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-09",
+   "guid": "9dd448",
+   "image": "/dark-souls/class-board-09.webp",
+   "w": 1757,
+   "h": 1326,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "class-board-10",
+   "guid": "9fd155",
+   "image": "/dark-souls/class-board-10.webp",
+   "w": 2048,
+   "h": 1553,
+   "back": "/dark-souls/class-board-back.webp",
+   "scale": 9.25
+  },
+  {
+   "id": "mat-blank",
+   "guid": "b061c3",
+   "image": "/dark-souls/mat-blank.webp",
+   "w": 1920,
+   "h": 1080,
+   "scale": 5.82
+  },
+  {
+   "id": "ref-board-a4fdec",
+   "guid": "a4fdec",
+   "image": "/dark-souls/ref-board-a4fdec.webp",
+   "w": 1262,
+   "h": 1500,
+   "variants": [
+    {
+     "id": "ref-board-a4fdec",
+     "image": "/dark-souls/ref-board-a4fdec.webp",
+     "w": 1262,
+     "h": 1500
+    },
+    {
+     "id": "ref-board-c5f3b7",
+     "image": "/dark-souls/ref-board-c5f3b7.webp",
+     "w": 1376,
+     "h": 695
+    },
+    {
+     "id": "ref-board-5b658c",
+     "image": "/dark-souls/ref-board-5b658c.webp",
+     "w": 1376,
+     "h": 962
+    },
+    {
+     "id": "ref-board-097fd0",
+     "image": "/dark-souls/ref-board-097fd0.webp",
+     "w": 1376,
+     "h": 1267
+    }
+   ]
+  }
+ ],
+ "minis": [
+  {
+   "id": "sorcerer",
+   "guid": "e136d5",
+   "name": "Sorcerer",
+   "kind": "character",
+   "scale": 0.85,
+   "mesh": "/dark-souls/mini-sorcerer.obj",
+   "texture": "/dark-souls/mini-sorcerer-diffuse.webp"
+  },
+  {
+   "id": "crossbow-hollow",
+   "guid": "b59509",
+   "name": "Crossbow Hollow",
+   "kind": "enemy",
+   "scale": 0.62,
+   "mesh": "/dark-souls/mini-crossbow-hollow.obj",
+   "texture": null,
+   "tint": [
+    0.491,
+    0.491,
+    0.491
+   ]
+  },
+  {
+   "id": "winged-knight",
+   "guid": "9d64b9",
+   "name": "Winged Knight",
+   "kind": "boss",
+   "scale": 0.19,
+   "mesh": "/dark-souls/mini-winged-knight.obj",
+   "texture": "/dark-souls/mini-winged-knight-diffuse.webp",
+   "tint": [
+    0.854,
+    0.854,
+    0.854
+   ]
+  },
+  {
+   "id": "sentinel",
+   "guid": "258020",
+   "name": "Sentinel",
+   "kind": "enemy",
+   "scale": 0.19,
+   "mesh": "/dark-souls/mini-sentinel.obj",
+   "texture": "/dark-souls/mini-sentinel-diffuse.webp",
+   "tint": [
+    0.462,
+    0.462,
+    0.462
+   ]
+  },
+  {
+   "id": "crossbow-hollow-alt",
+   "guid": "28330d",
+   "name": "Crossbow Hollow Alt",
+   "kind": "enemy",
+   "scale": 0.94,
+   "mesh": "/dark-souls/mini-crossbow-hollow-alt.obj",
+   "texture": "/dark-souls/mini-crossbow-hollow-alt-diffuse.webp",
+   "tint": [
+    0.737,
+    0.737,
+    0.737
+   ]
+  },
+  {
+   "id": "gargoyle",
+   "guid": "3d6715",
+   "name": "Gargoyle",
+   "kind": "boss",
+   "scale": 0.29,
+   "mesh": "/dark-souls/mini-gargoyle.obj",
+   "texture": "/dark-souls/mini-gargoyle-diffuse.webp",
+   "tint": [
+    0.605,
+    0.605,
+    0.605
+   ]
+  },
+  {
+   "id": "silver-knight-swordsman",
+   "guid": "290e3d",
+   "name": "Silver Knight Swordsman",
+   "kind": "enemy",
+   "scale": 0.323,
+   "mesh": "/dark-souls/mini-silver-knight-swordsman.obj",
+   "texture": null,
+   "tint": [
+    0.481,
+    0.481,
+    0.481
+   ]
+  },
+  {
+   "id": "hollow-soldier",
+   "guid": "2e056d",
+   "name": "Hollow Soldier",
+   "kind": "enemy",
+   "scale": 0.62,
+   "mesh": "/dark-souls/mini-hollow-soldier.obj",
+   "texture": null,
+   "tint": [
+    0.491,
+    0.491,
+    0.491
+   ]
+  },
+  {
+   "id": "silver-knight-swordsman-alt",
+   "guid": "e813b5",
+   "name": "Silver Knight Swordsman Alt",
+   "kind": "enemy",
+   "scale": 0.94,
+   "mesh": "/dark-souls/mini-silver-knight-swordsman-alt.obj",
+   "texture": "/dark-souls/mini-silver-knight-swordsman-alt-diffuse.webp",
+   "tint": [
+    0.663,
+    0.663,
+    0.663
+   ]
+  },
+  {
+   "id": "old-dragonslayer",
+   "guid": "bc2cd1",
+   "name": "Old Dragonslayer",
+   "kind": "boss",
+   "scale": 0.19,
+   "mesh": "/dark-souls/mini-old-dragonslayer.obj",
+   "texture": "/dark-souls/mini-old-dragonslayer-diffuse.webp",
+   "tint": [
+    0.011,
+    0,
+    0.232
+   ]
+  },
+  {
+   "id": "hollow-soldier-alt",
+   "guid": "6ce292",
+   "name": "Hollow Soldier Alt",
+   "kind": "enemy",
+   "scale": 0.94,
+   "mesh": "/dark-souls/mini-hollow-soldier-alt.obj",
+   "texture": "/dark-souls/mini-hollow-soldier-alt-diffuse.webp",
+   "tint": [
+    0.737,
+    0.737,
+    0.737
+   ]
+  },
+  {
+   "id": "silver-knight-greatbowman",
+   "guid": "e296b6",
+   "name": "Silver Knight Greatbowman",
+   "kind": "enemy",
+   "scale": 0.28,
+   "mesh": "/dark-souls/mini-silver-knight-greatbowman.obj",
+   "texture": null,
+   "tint": [
+    0.491,
+    0.491,
+    0.491
+   ]
+  },
+  {
+   "id": "hungry-mimic",
+   "guid": "ef9718",
+   "name": "Hungry Mimic",
+   "kind": "boss",
+   "scale": 1.12,
+   "mesh": "/dark-souls/mini-hungry-mimic.obj",
+   "texture": "/dark-souls/mini-hungry-mimic-diffuse.webp",
+   "tint": [
+    0.498,
+    0.498,
+    0.498
+   ]
+  },
+  {
+   "id": "large-hollow-soldier",
+   "guid": "59c52f",
+   "name": "Large Hollow Soldier",
+   "kind": "enemy",
+   "scale": 0.58,
+   "mesh": "/dark-souls/mini-large-hollow-soldier.obj",
+   "texture": null,
+   "tint": [
+    0.491,
+    0.491,
+    0.491
+   ]
+  },
+  {
+   "id": "voracious-mimic",
+   "guid": "759d36",
+   "name": "Voracious Mimic",
+   "kind": "boss",
+   "scale": 1.12,
+   "mesh": "/dark-souls/mini-hungry-mimic.obj",
+   "texture": "/dark-souls/mini-hungry-mimic-diffuse.webp",
+   "tint": [
+    0.498,
+    0.498,
+    0.498
+   ]
+  },
+  {
+   "id": "eygon-of-carim",
+   "guid": "519c9f",
+   "name": "Eygon of Carim",
+   "kind": "summon",
+   "scale": 1.8,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-eygon-of-carim.png",
+   "textureBack": "/dark-souls/mini-eygon-of-carim-back.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "witch-beatrice",
+   "guid": "0e0aba",
+   "name": "Witch Beatrice",
+   "kind": "summon",
+   "scale": 1.8,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-witch-beatrice.png",
+   "textureBack": "/dark-souls/mini-witch-beatrice-back.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "smelter-demon",
+   "guid": "20a0d2",
+   "name": "Smelter Demon",
+   "kind": "boss",
+   "scale": 11,
+   "mesh": "/dark-souls/mini-smelter-demon.obj",
+   "texture": null,
+   "tint": [
+    0.497,
+    0.044,
+    0.044
+   ]
+  },
+  {
+   "id": "kirk-knight-of-thorns",
+   "guid": "73e8ec",
+   "name": "Kirk, Knight of Thorns",
+   "kind": "invader",
+   "scale": 1.8,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-kirk-knight-of-thorns.png",
+   "textureBack": "/dark-souls/mini-kirk-knight-of-thorns-back.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "dancer-of-the-boreal-valley",
+   "guid": "ec593b",
+   "name": "Dancer of the Boreal Valley",
+   "kind": "boss",
+   "scale": 1.05,
+   "mesh": "/dark-souls/mini-dancer-of-the-boreal-valley.obj",
+   "texture": null,
+   "tint": [
+    0.375,
+    0.375,
+    0.375
+   ]
+  },
+  {
+   "id": "longfinger-kirk",
+   "guid": "460fac",
+   "name": "Longfinger Kirk",
+   "kind": "invader",
+   "scale": 1.8,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-kirk-knight-of-thorns.png",
+   "textureBack": "/dark-souls/mini-kirk-knight-of-thorns-back.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "boreal-outrider-knight",
+   "guid": "4966bf",
+   "name": "Boreal Outrider Knight",
+   "kind": "boss",
+   "scale": 0.19,
+   "mesh": "/dark-souls/mini-boreal-outrider-knight.obj",
+   "texture": "/dark-souls/mini-boreal-outrider-knight-diffuse.webp",
+   "tint": [
+    0.789,
+    0.789,
+    0.789
+   ]
+  },
+  {
+   "id": "dragon-slayer-ornstein",
+   "guid": "b78462",
+   "name": "Dragon Slayer Ornstein",
+   "kind": "boss",
+   "scale": 0.19,
+   "mesh": "/dark-souls/mini-old-dragonslayer.obj",
+   "texture": "/dark-souls/mini-old-dragonslayer-diffuse.webp",
+   "tint": [
+    0.812,
+    0.757,
+    0.047
+   ]
+  },
+  {
+   "id": "executioner-smough",
+   "guid": "a889fb",
+   "name": "Executioner Smough",
+   "kind": "boss",
+   "scale": 0.36,
+   "mesh": "/dark-souls/mini-executioner-smough.obj",
+   "texture": "/dark-souls/mini-executioner-smough-diffuse.webp",
+   "tint": [
+    0.812,
+    0.757,
+    0.047
+   ]
+  },
+  {
+   "id": "titanite-demon",
+   "guid": "ddb2d8",
+   "name": "Titanite Demon",
+   "kind": "boss",
+   "scale": 0.28,
+   "mesh": "/dark-souls/mini-titanite-demon.obj",
+   "texture": "/dark-souls/mini-titanite-demon-diffuse.webp",
+   "tint": [
+    0.931,
+    0.931,
+    0.931
+   ]
+  },
+  {
+   "id": "chest-mimic",
+   "guid": "b706b6",
+   "name": "Chest - Mimic?",
+   "kind": "scenery",
+   "scale": 1.12,
+   "mesh": "/dark-souls/mini-chest-mimic.obj",
+   "texture": "/dark-souls/mini-chest-mimic-diffuse.webp",
+   "tint": [
+    0.663,
+    0.663,
+    0.663
+   ]
+  },
+  {
+   "id": "tombstone-alt",
+   "guid": "05184a",
+   "name": "Tombstone Alt",
+   "kind": "scenery",
+   "scale": 1.31,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-tombstone-alt.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "tombstone",
+   "guid": "63f1db",
+   "name": "Tombstone",
+   "kind": "scenery",
+   "scale": 1.31,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-tombstone.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "barrel",
+   "guid": "4f048a",
+   "name": "Barrel",
+   "kind": "scenery",
+   "scale": 0.8,
+   "mesh": "/dark-souls/mini-barrel.obj",
+   "texture": "/dark-souls/mini-barrel-diffuse.webp"
+  },
+  {
+   "id": "barrel-2",
+   "guid": "5d013e",
+   "name": "Barrel",
+   "kind": "scenery",
+   "scale": 0.65,
+   "mesh": "/dark-souls/mini-barrel-2.obj",
+   "texture": "/dark-souls/mini-barrel-2-diffuse.webp"
+  },
+  {
+   "id": "blacksmith-andre",
+   "guid": "f654da",
+   "name": "Blacksmith Andre",
+   "kind": "npc",
+   "scale": 1.8,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-blacksmith-andre.png",
+   "textureBack": "/dark-souls/mini-blacksmith-andre-back.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "mushroom-child",
+   "guid": "03446c",
+   "name": "Mushroom Child",
+   "kind": "enemy",
+   "scale": 1,
+   "mesh": "/dark-souls/mini-mushroom-child.obj",
+   "texture": null,
+   "tint": [
+    0.479,
+    0.363,
+    0.28
+   ]
+  },
+  {
+   "id": "demonic-foliage",
+   "guid": "4f87db",
+   "name": "Demonic Foliage",
+   "kind": "enemy",
+   "scale": 1.8,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-demonic-foliage.png",
+   "textureBack": "/dark-souls/mini-demonic-foliage-back.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "plow-scarecrow",
+   "guid": "145482",
+   "name": "Scarecrow",
+   "kind": "enemy",
+   "scale": 1.55,
+   "mesh": "/dark-souls/mini-plow-scarecrow.obj",
+   "texture": "/dark-souls/mini-plow-scarecrow-diffuse.png",
+   "tint": [
+    0.643,
+    0.698,
+    0.165
+   ]
+  },
+  {
+   "id": "mushroom-parent",
+   "guid": "1ad029",
+   "name": "Mushroom Parent",
+   "kind": "enemy",
+   "scale": 1.8,
+   "mesh": "/dark-souls/mini-mushroom-child.obj",
+   "texture": null,
+   "tint": [
+    0.723,
+    0.566,
+    0.452
+   ]
+  },
+  {
+   "id": "great-grey-wolf-sif",
+   "guid": "f1a793",
+   "name": "Great Grey Wolf Sif",
+   "kind": "boss",
+   "scale": 1,
+   "mesh": "/dark-souls/mini-great-grey-wolf-sif.obj",
+   "texture": null,
+   "tint": [
+    0.765,
+    0.763,
+    0.763
+   ]
+  },
+  {
+   "id": "artorias",
+   "guid": "85d1f3",
+   "name": "Artorias",
+   "kind": "boss",
+   "scale": 0.875,
+   "mesh": "/dark-souls/mini-artorias.obj",
+   "texture": "/dark-souls/mini-artorias-diffuse.webp",
+   "tint": [
+    0.663,
+    0.663,
+    0.663
+   ]
+  },
+  {
+   "id": "stone-guardian",
+   "guid": "511d5b",
+   "name": "Stone Guardian",
+   "kind": "enemy",
+   "scale": 2,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-stone-guardian.png",
+   "textureBack": "/dark-souls/mini-stone-guardian.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "stone-knight",
+   "guid": "6c820d",
+   "name": "Stone Knight",
+   "kind": "enemy",
+   "scale": 2,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-stone-knight.png",
+   "textureBack": "/dark-souls/mini-stone-knight.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "shears-scarecrow",
+   "guid": "a9c71d",
+   "name": "Shears Scarecrow",
+   "kind": "enemy",
+   "scale": 1.8,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-shears-scarecrow.png",
+   "textureBack": "/dark-souls/mini-shears-scarecrow-back.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "four-kings-1",
+   "guid": "505795",
+   "name": null,
+   "kind": "boss",
+   "scale": 1.5,
+   "mesh": "/dark-souls/mini-four-kings-1.obj",
+   "texture": "/dark-souls/mini-four-kings-1-diffuse.webp"
+  },
+  {
+   "id": "four-kings-2",
+   "guid": "57fa21",
+   "name": null,
+   "kind": "boss",
+   "scale": 1.5,
+   "mesh": "/dark-souls/mini-four-kings-1.obj",
+   "texture": "/dark-souls/mini-four-kings-1-diffuse.webp"
+  },
+  {
+   "id": "four-kings-3",
+   "guid": "4303e5",
+   "name": null,
+   "kind": "boss",
+   "scale": 1.5,
+   "mesh": "/dark-souls/mini-four-kings-1.obj",
+   "texture": "/dark-souls/mini-four-kings-1-diffuse.webp"
+  },
+  {
+   "id": "four-kings-4",
+   "guid": "090d53",
+   "name": null,
+   "kind": "boss",
+   "scale": 1.5,
+   "mesh": "/dark-souls/mini-four-kings-1.obj",
+   "texture": "/dark-souls/mini-four-kings-1-diffuse.webp"
+  },
+  {
+   "id": "firekeeper",
+   "guid": "0e4a1e",
+   "name": "Firekeeper",
+   "kind": "npc",
+   "scale": 0.7,
+   "mesh": "/dark-souls/mini-firekeeper.obj",
+   "texture": null,
+   "tint": [
+    0.382,
+    0.382,
+    0.382
+   ]
+  },
+  {
+   "id": "megaboss-standee",
+   "guid": "8bfa5b",
+   "name": null,
+   "kind": "boss",
+   "scale": 7,
+   "mesh": null,
+   "flat": true,
+   "texture": "/dark-souls/mini-megaboss-standee.png",
+   "textureBack": "/dark-souls/mini-megaboss-standee-back.png",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "black-dragon-kalameet",
+   "guid": "3319b8",
+   "name": null,
+   "kind": "boss",
+   "scale": 0.6,
+   "mesh": "/dark-souls/mini-black-dragon-kalameet.obj",
+   "texture": "/dark-souls/mini-black-dragon-kalameet-diffuse.webp",
+   "tint": [
+    0.663,
+    0.663,
+    0.663
+   ]
+  },
+  {
+   "id": "warrior",
+   "guid": "ca6c3b",
+   "name": "Warrior",
+   "kind": "character",
+   "scale": 0.85,
+   "mesh": "/dark-souls/mini-warrior.obj",
+   "texture": "/dark-souls/mini-warrior-diffuse.webp",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "knight",
+   "guid": "971fed",
+   "name": "Knight",
+   "kind": "character",
+   "scale": 0.85,
+   "mesh": "/dark-souls/mini-knight.obj",
+   "texture": "/dark-souls/mini-knight-diffuse.webp",
+   "tint": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "herald",
+   "guid": "45c75b",
+   "name": "Herald",
+   "kind": "character",
+   "scale": 0.85,
+   "mesh": "/dark-souls/mini-herald.obj",
+   "texture": "/dark-souls/mini-herald-diffuse.webp"
+  },
+  {
+   "id": "assassin",
+   "guid": "17c68f",
+   "name": "Assassin",
+   "kind": "character",
+   "scale": 0.85,
+   "mesh": "/dark-souls/mini-assassin.obj",
+   "texture": "/dark-souls/mini-assassin-diffuse.webp"
+  },
+  {
+   "id": "class-unknown-1",
+   "guid": "b38e43",
+   "name": null,
+   "kind": "character",
+   "scale": 0.875,
+   "mesh": "/dark-souls/mini-class-unknown-1.obj",
+   "texture": "/dark-souls/mini-class-unknown-1-diffuse.webp",
+   "tint": [
+    0.663,
+    0.663,
+    0.663
+   ]
+  },
+  {
+   "id": "class-unknown-2",
+   "guid": "045693",
+   "name": null,
+   "kind": "character",
+   "scale": 0.875,
+   "mesh": "/dark-souls/mini-class-unknown-2.obj",
+   "texture": "/dark-souls/mini-class-unknown-2-diffuse.webp",
+   "tint": [
+    0.663,
+    0.663,
+    0.663
+   ]
+  }
+ ],
+ "decks": [
+  {
+   "id": "boss-winged-knight",
+   "guid": "421eb7",
+   "name": null,
+   "container": "Winged Knight",
+   "sheets": {
+    "20": {
+     "image": "/dark-souls/cards-boss-winged-knight-s20.webp",
+     "w": 4096,
+     "h": 3072,
+     "cols": 10,
+     "rows": 5,
+     "back": "/dark-souls/cards-boss-winged-knight-s20-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "winged-knight-halberd",
+     "cardID": 2027,
+     "sheet": "20",
+     "cell": 27
+    },
+    {
+     "id": "winged-knight-twin-axes",
+     "cardID": 2026,
+     "sheet": "20",
+     "cell": 26
+    },
+    {
+     "id": "winged-knight-armour",
+     "cardID": 2025,
+     "sheet": "20",
+     "cell": 25
+    }
+   ]
+  },
+  {
+   "id": "winged-knight-behaviour",
+   "guid": "3090da",
+   "name": null,
+   "container": "Winged Knight",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c1606",
+     "cardID": 1606,
+     "sheet": "16",
+     "cell": 6
+    },
+    {
+     "id": "c1607",
+     "cardID": 1607,
+     "sheet": "16",
+     "cell": 7
+    },
+    {
+     "id": "c1608",
+     "cardID": 1608,
+     "sheet": "16",
+     "cell": 8
+    },
+    {
+     "id": "c1609",
+     "cardID": 1609,
+     "sheet": "16",
+     "cell": 9
+    },
+    {
+     "id": "c1610",
+     "cardID": 1610,
+     "sheet": "16",
+     "cell": 10
+    },
+    {
+     "id": "c1611",
+     "cardID": 1611,
+     "sheet": "16",
+     "cell": 11
+    },
+    {
+     "id": "c1612",
+     "cardID": 1612,
+     "sheet": "16",
+     "cell": 12
+    },
+    {
+     "id": "c1613",
+     "cardID": 1613,
+     "sheet": "16",
+     "cell": 13
+    }
+   ]
+  },
+  {
+   "id": "boss-gargoyle",
+   "guid": "268086",
+   "name": null,
+   "container": "Gargoyle",
+   "sheets": {
+    "20": {
+     "image": "/dark-souls/cards-boss-winged-knight-s20.webp",
+     "w": 4096,
+     "h": 3072,
+     "cols": 10,
+     "rows": 5,
+     "back": "/dark-souls/cards-boss-winged-knight-s20-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "gargoyle-tail-axe",
+     "cardID": 2024,
+     "sheet": "20",
+     "cell": 24
+    },
+    {
+     "id": "gargoyles-halberd",
+     "cardID": 2023,
+     "sheet": "20",
+     "cell": 23
+    },
+    {
+     "id": "gargoyles-shield",
+     "cardID": 2022,
+     "sheet": "20",
+     "cell": 22
+    }
+   ]
+  },
+  {
+   "id": "gargoyle-behaviour",
+   "guid": "7cb4de",
+   "name": null,
+   "container": "Gargoyle",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c1624",
+     "cardID": 1624,
+     "sheet": "16",
+     "cell": 24
+    },
+    {
+     "id": "c1625",
+     "cardID": 1625,
+     "sheet": "16",
+     "cell": 25
+    },
+    {
+     "id": "c1623",
+     "cardID": 1623,
+     "sheet": "16",
+     "cell": 23
+    },
+    {
+     "id": "c1630",
+     "cardID": 1630,
+     "sheet": "16",
+     "cell": 30
+    },
+    {
+     "id": "c1629",
+     "cardID": 1629,
+     "sheet": "16",
+     "cell": 29
+    },
+    {
+     "id": "c1628",
+     "cardID": 1628,
+     "sheet": "16",
+     "cell": 28
+    },
+    {
+     "id": "c1627",
+     "cardID": 1627,
+     "sheet": "16",
+     "cell": 27
+    },
+    {
+     "id": "c1626",
+     "cardID": 1626,
+     "sheet": "16",
+     "cell": 26
+    }
+   ]
+  },
+  {
+   "id": "boss-old-dragonslayer",
+   "guid": "4be97c",
+   "name": null,
+   "container": "Old Dragonslayer",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "old-leo-ring",
+     "cardID": 2509,
+     "sheet": "25",
+     "cell": 9
+    },
+    {
+     "id": "old-dragonslayer-spear",
+     "cardID": 2510,
+     "sheet": "25",
+     "cell": 10
+    }
+   ]
+  },
+  {
+   "id": "old-dragonslayer-behaviour",
+   "guid": "1ba786",
+   "name": null,
+   "container": "Old Dragonslayer",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c2508",
+     "cardID": 2508,
+     "sheet": "25",
+     "cell": 8
+    },
+    {
+     "id": "c2507",
+     "cardID": 2507,
+     "sheet": "25",
+     "cell": 7
+    },
+    {
+     "id": "c2506",
+     "cardID": 2506,
+     "sheet": "25",
+     "cell": 6
+    },
+    {
+     "id": "c2505",
+     "cardID": 2505,
+     "sheet": "25",
+     "cell": 5
+    },
+    {
+     "id": "c2501",
+     "cardID": 2501,
+     "sheet": "25",
+     "cell": 1
+    },
+    {
+     "id": "c2504",
+     "cardID": 2504,
+     "sheet": "25",
+     "cell": 4
+    },
+    {
+     "id": "c2502",
+     "cardID": 2502,
+     "sheet": "25",
+     "cell": 2
+    },
+    {
+     "id": "c2503",
+     "cardID": 2503,
+     "sheet": "25",
+     "cell": 3
+    }
+   ]
+  },
+  {
+   "id": "hungry-mimic-behaviour",
+   "guid": "969461",
+   "name": null,
+   "container": "Hungry Mimic",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c2512",
+     "cardID": 2512,
+     "sheet": "25",
+     "cell": 12
+    },
+    {
+     "id": "c2513",
+     "cardID": 2513,
+     "sheet": "25",
+     "cell": 13
+    },
+    {
+     "id": "c2514",
+     "cardID": 2514,
+     "sheet": "25",
+     "cell": 14
+    },
+    {
+     "id": "c2515",
+     "cardID": 2515,
+     "sheet": "25",
+     "cell": 15
+    },
+    {
+     "id": "c2516",
+     "cardID": 2516,
+     "sheet": "25",
+     "cell": 16
+    },
+    {
+     "id": "c2517",
+     "cardID": 2517,
+     "sheet": "25",
+     "cell": 17
+    },
+    {
+     "id": "c2518",
+     "cardID": 2518,
+     "sheet": "25",
+     "cell": 18
+    }
+   ]
+  },
+  {
+   "id": "voracious-mimic-behaviour",
+   "guid": "e5764e",
+   "name": null,
+   "container": "Voracious Mimic",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c2520",
+     "cardID": 2520,
+     "sheet": "25",
+     "cell": 20
+    },
+    {
+     "id": "c2521",
+     "cardID": 2521,
+     "sheet": "25",
+     "cell": 21
+    },
+    {
+     "id": "c2522",
+     "cardID": 2522,
+     "sheet": "25",
+     "cell": 22
+    },
+    {
+     "id": "c2523",
+     "cardID": 2523,
+     "sheet": "25",
+     "cell": 23
+    },
+    {
+     "id": "c2524",
+     "cardID": 2524,
+     "sheet": "25",
+     "cell": 24
+    },
+    {
+     "id": "c2525",
+     "cardID": 2525,
+     "sheet": "25",
+     "cell": 25
+    },
+    {
+     "id": "c2526",
+     "cardID": 2526,
+     "sheet": "25",
+     "cell": 26
+    }
+   ]
+  },
+  {
+   "id": "eygon-of-carim-behaviour",
+   "guid": "47eabd",
+   "name": null,
+   "container": "Eyegon of Carim",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c2556",
+     "cardID": 2556,
+     "sheet": "25",
+     "cell": 56
+    },
+    {
+     "id": "c2557",
+     "cardID": 2557,
+     "sheet": "25",
+     "cell": 57
+    },
+    {
+     "id": "c2558",
+     "cardID": 2558,
+     "sheet": "25",
+     "cell": 58
+    },
+    {
+     "id": "c2559",
+     "cardID": 2559,
+     "sheet": "25",
+     "cell": 59
+    }
+   ]
+  },
+  {
+   "id": "witch-beatrice-behaviour",
+   "guid": "449606",
+   "name": null,
+   "container": "Witch Beatrice",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c2561",
+     "cardID": 2561,
+     "sheet": "25",
+     "cell": 61
+    },
+    {
+     "id": "c2562",
+     "cardID": 2562,
+     "sheet": "25",
+     "cell": 62
+    },
+    {
+     "id": "c2563",
+     "cardID": 2563,
+     "sheet": "25",
+     "cell": 63
+    },
+    {
+     "id": "c2564",
+     "cardID": 2564,
+     "sheet": "25",
+     "cell": 64
+    }
+   ]
+  },
+  {
+   "id": "boss-smelter-demon",
+   "guid": "b34452",
+   "name": null,
+   "container": "Smelter Demon",
+   "sheets": {
+    "26": {
+     "image": "/dark-souls/cards-boss-smelter-demon-s26.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-smelter-demon-s26-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "smelter-demon-armour",
+     "cardID": 2602,
+     "sheet": "26",
+     "cell": 2
+    },
+    {
+     "id": "aged-smelter-sword",
+     "cardID": 2601,
+     "sheet": "26",
+     "cell": 1
+    },
+    {
+     "id": "smelter-sword",
+     "cardID": 2600,
+     "sheet": "26",
+     "cell": 0
+    }
+   ]
+  },
+  {
+   "id": "smelter-demon-behaviour",
+   "guid": "370c8f",
+   "name": null,
+   "container": "Smelter Demon",
+   "sheets": {
+    "26": {
+     "image": "/dark-souls/cards-boss-smelter-demon-s26.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-smelter-demon-s26-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c2616",
+     "cardID": 2616,
+     "sheet": "26",
+     "cell": 16
+    },
+    {
+     "id": "c2615",
+     "cardID": 2615,
+     "sheet": "26",
+     "cell": 15
+    },
+    {
+     "id": "c2614",
+     "cardID": 2614,
+     "sheet": "26",
+     "cell": 14
+    },
+    {
+     "id": "c2613",
+     "cardID": 2613,
+     "sheet": "26",
+     "cell": 13
+    },
+    {
+     "id": "c2612",
+     "cardID": 2612,
+     "sheet": "26",
+     "cell": 12
+    },
+    {
+     "id": "c2611",
+     "cardID": 2611,
+     "sheet": "26",
+     "cell": 11
+    },
+    {
+     "id": "c2610",
+     "cardID": 2610,
+     "sheet": "26",
+     "cell": 10
+    },
+    {
+     "id": "c2604",
+     "cardID": 2604,
+     "sheet": "26",
+     "cell": 4
+    },
+    {
+     "id": "c2605",
+     "cardID": 2605,
+     "sheet": "26",
+     "cell": 5
+    },
+    {
+     "id": "c2606",
+     "cardID": 2606,
+     "sheet": "26",
+     "cell": 6
+    },
+    {
+     "id": "c2607",
+     "cardID": 2607,
+     "sheet": "26",
+     "cell": 7
+    },
+    {
+     "id": "c2608",
+     "cardID": 2608,
+     "sheet": "26",
+     "cell": 8
+    },
+    {
+     "id": "c2609",
+     "cardID": 2609,
+     "sheet": "26",
+     "cell": 9
+    }
+   ]
+  },
+  {
+   "id": "kirk-knight-of-thorns-behaviour",
+   "guid": "7887d9",
+   "name": null,
+   "container": "Kirk, Knight of Thornes",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c2544",
+     "cardID": 2544,
+     "sheet": "25",
+     "cell": 44
+    },
+    {
+     "id": "c2545",
+     "cardID": 2545,
+     "sheet": "25",
+     "cell": 45
+    },
+    {
+     "id": "c2546",
+     "cardID": 2546,
+     "sheet": "25",
+     "cell": 46
+    },
+    {
+     "id": "c2547",
+     "cardID": 2547,
+     "sheet": "25",
+     "cell": 47
+    },
+    {
+     "id": "c2548",
+     "cardID": 2548,
+     "sheet": "25",
+     "cell": 48
+    }
+   ]
+  },
+  {
+   "id": "boss-dancer",
+   "guid": "5c6480",
+   "name": null,
+   "container": "Dancer of the Boreal Valley",
+   "sheets": {
+    "20": {
+     "image": "/dark-souls/cards-boss-winged-knight-s20.webp",
+     "w": 4096,
+     "h": 3072,
+     "cols": 10,
+     "rows": 5,
+     "back": "/dark-souls/cards-boss-winged-knight-s20-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "dancers-enchanted-swords",
+     "cardID": 2018,
+     "sheet": "20",
+     "cell": 18
+    },
+    {
+     "id": "dancer-armour",
+     "cardID": 2017,
+     "sheet": "20",
+     "cell": 17
+    },
+    {
+     "id": "soothing-sunlight",
+     "cardID": 2016,
+     "sheet": "20",
+     "cell": 16
+    }
+   ]
+  },
+  {
+   "id": "dancer-of-the-boreal-valley-behaviour",
+   "guid": "1d9225",
+   "name": null,
+   "container": "Dancer of the Boreal Valley",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    },
+    "21": {
+     "image": "/dark-souls/cards-dancer-of-the-boreal-valley-behaviour-s21.jpg",
+     "w": 4096,
+     "h": 1092,
+     "cols": 10,
+     "rows": 2,
+     "back": "/dark-souls/cards-dancer-of-the-boreal-valley-behaviour-s21-back.jpg",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c1658",
+     "cardID": 1658,
+     "sheet": "16",
+     "cell": 58
+    },
+    {
+     "id": "c1659",
+     "cardID": 1659,
+     "sheet": "16",
+     "cell": 59
+    },
+    {
+     "id": "c1660",
+     "cardID": 1660,
+     "sheet": "16",
+     "cell": 60
+    },
+    {
+     "id": "c1661",
+     "cardID": 1661,
+     "sheet": "16",
+     "cell": 61
+    },
+    {
+     "id": "c1662",
+     "cardID": 1662,
+     "sheet": "16",
+     "cell": 62
+    },
+    {
+     "id": "c1663",
+     "cardID": 1663,
+     "sheet": "16",
+     "cell": 63
+    },
+    {
+     "id": "c1664",
+     "cardID": 1664,
+     "sheet": "16",
+     "cell": 64
+    },
+    {
+     "id": "c1665",
+     "cardID": 1665,
+     "sheet": "16",
+     "cell": 65
+    },
+    {
+     "id": "c1666",
+     "cardID": 1666,
+     "sheet": "16",
+     "cell": 66
+    },
+    {
+     "id": "c1667",
+     "cardID": 1667,
+     "sheet": "16",
+     "cell": 67
+    },
+    {
+     "id": "c1668",
+     "cardID": 1668,
+     "sheet": "16",
+     "cell": 68
+    },
+    {
+     "id": "c2100",
+     "cardID": 2100,
+     "sheet": "21",
+     "cell": 0
+    }
+   ]
+  },
+  {
+   "id": "longfinger-kirk-behaviour",
+   "guid": "84d961",
+   "name": null,
+   "container": "Longfinger Kirk",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c2554",
+     "cardID": 2554,
+     "sheet": "25",
+     "cell": 54
+    },
+    {
+     "id": "c2553",
+     "cardID": 2553,
+     "sheet": "25",
+     "cell": 53
+    },
+    {
+     "id": "c2552",
+     "cardID": 2552,
+     "sheet": "25",
+     "cell": 52
+    },
+    {
+     "id": "c2550",
+     "cardID": 2550,
+     "sheet": "25",
+     "cell": 50
+    },
+    {
+     "id": "c2551",
+     "cardID": 2551,
+     "sheet": "25",
+     "cell": 51
+    }
+   ]
+  },
+  {
+   "id": "boss-boreal-outrider",
+   "guid": "1edf62",
+   "name": null,
+   "container": "Boreal Outrider Knight",
+   "sheets": {
+    "20": {
+     "image": "/dark-souls/cards-boss-winged-knight-s20.webp",
+     "w": 4096,
+     "h": 3072,
+     "cols": 10,
+     "rows": 5,
+     "back": "/dark-souls/cards-boss-winged-knight-s20-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "irithyll-straight-sword",
+     "cardID": 2021,
+     "sheet": "20",
+     "cell": 21
+    },
+    {
+     "id": "irithyll-rapier",
+     "cardID": 2020,
+     "sheet": "20",
+     "cell": 20
+    },
+    {
+     "id": "outrider-armour",
+     "cardID": 2019,
+     "sheet": "20",
+     "cell": 19
+    }
+   ]
+  },
+  {
+   "id": "boreal-outrider-knight-behaviour",
+   "guid": "1b5e18",
+   "name": null,
+   "container": "Boreal Outrider Knight",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c1632",
+     "cardID": 1632,
+     "sheet": "16",
+     "cell": 32
+    },
+    {
+     "id": "c1633",
+     "cardID": 1633,
+     "sheet": "16",
+     "cell": 33
+    },
+    {
+     "id": "c1634",
+     "cardID": 1634,
+     "sheet": "16",
+     "cell": 34
+    },
+    {
+     "id": "c1635",
+     "cardID": 1635,
+     "sheet": "16",
+     "cell": 35
+    },
+    {
+     "id": "c1636",
+     "cardID": 1636,
+     "sheet": "16",
+     "cell": 36
+    },
+    {
+     "id": "c1637",
+     "cardID": 1637,
+     "sheet": "16",
+     "cell": 37
+    },
+    {
+     "id": "c1638",
+     "cardID": 1638,
+     "sheet": "16",
+     "cell": 38
+    },
+    {
+     "id": "c1639",
+     "cardID": 1639,
+     "sheet": "16",
+     "cell": 39
+    }
+   ]
+  },
+  {
+   "id": "boss-ornstein-smough",
+   "guid": "5c02ba",
+   "name": null,
+   "container": "Smough & Ornstein",
+   "sheets": {
+    "20": {
+     "image": "/dark-souls/cards-boss-winged-knight-s20.webp",
+     "w": 4096,
+     "h": 3072,
+     "cols": 10,
+     "rows": 5,
+     "back": "/dark-souls/cards-boss-winged-knight-s20-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "smoughs-hammer",
+     "cardID": 2015,
+     "sheet": "20",
+     "cell": 15
+    },
+    {
+     "id": "dragonslayer-armour",
+     "cardID": 2014,
+     "sheet": "20",
+     "cell": 14
+    },
+    {
+     "id": "smoughs-armour",
+     "cardID": 2013,
+     "sheet": "20",
+     "cell": 13
+    },
+    {
+     "id": "dragonslayer-spear",
+     "cardID": 2012,
+     "sheet": "20",
+     "cell": 12
+    }
+   ]
+  },
+  {
+   "id": "smough-ornstein-behaviour",
+   "guid": "716bb4",
+   "name": null,
+   "container": "Smough & Ornstein",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c1645",
+     "cardID": 1645,
+     "sheet": "16",
+     "cell": 45
+    },
+    {
+     "id": "c1644",
+     "cardID": 1644,
+     "sheet": "16",
+     "cell": 44
+    },
+    {
+     "id": "c1643",
+     "cardID": 1643,
+     "sheet": "16",
+     "cell": 43
+    },
+    {
+     "id": "c1642",
+     "cardID": 1642,
+     "sheet": "16",
+     "cell": 42
+    },
+    {
+     "id": "c1641",
+     "cardID": 1641,
+     "sheet": "16",
+     "cell": 41
+    }
+   ]
+  },
+  {
+   "id": "smough-ornstein-behaviour-2",
+   "guid": "34f996",
+   "name": null,
+   "container": "Smough & Ornstein",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c1651",
+     "cardID": 1651,
+     "sheet": "16",
+     "cell": 51
+    },
+    {
+     "id": "c1650",
+     "cardID": 1650,
+     "sheet": "16",
+     "cell": 50
+    },
+    {
+     "id": "c1647",
+     "cardID": 1647,
+     "sheet": "16",
+     "cell": 47
+    },
+    {
+     "id": "c1649",
+     "cardID": 1649,
+     "sheet": "16",
+     "cell": 49
+    },
+    {
+     "id": "c1648",
+     "cardID": 1648,
+     "sheet": "16",
+     "cell": 48
+    }
+   ]
+  },
+  {
+   "id": "smough-ornstein-behaviour-3",
+   "guid": "a86e11",
+   "name": null,
+   "container": "Smough & Ornstein",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c1653",
+     "cardID": 1653,
+     "sheet": "16",
+     "cell": 53
+    },
+    {
+     "id": "c1654",
+     "cardID": 1654,
+     "sheet": "16",
+     "cell": 54
+    },
+    {
+     "id": "c1655",
+     "cardID": 1655,
+     "sheet": "16",
+     "cell": 55
+    },
+    {
+     "id": "c1656",
+     "cardID": 1656,
+     "sheet": "16",
+     "cell": 56
+    },
+    {
+     "id": "c1657",
+     "cardID": 1657,
+     "sheet": "16",
+     "cell": 57
+    }
+   ]
+  },
+  {
+   "id": "boss-titanite-demon",
+   "guid": "044d7a",
+   "name": null,
+   "container": "Titanite Demon",
+   "sheets": {
+    "20": {
+     "image": "/dark-souls/cards-boss-winged-knight-s20.webp",
+     "w": 4096,
+     "h": 3072,
+     "cols": 10,
+     "rows": 5,
+     "back": "/dark-souls/cards-boss-winged-knight-s20-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "titanite-catch-pole",
+     "cardID": 2029,
+     "sheet": "20",
+     "cell": 29
+    },
+    {
+     "id": "titanite",
+     "cardID": 2028,
+     "sheet": "20",
+     "cell": 28
+    }
+   ]
+  },
+  {
+   "id": "titanite-demon-behaviour",
+   "guid": "5aea12",
+   "name": null,
+   "container": "Titanite Demon",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c1619",
+     "cardID": 1619,
+     "sheet": "16",
+     "cell": 19
+    },
+    {
+     "id": "c1618",
+     "cardID": 1618,
+     "sheet": "16",
+     "cell": 18
+    },
+    {
+     "id": "c1616",
+     "cardID": 1616,
+     "sheet": "16",
+     "cell": 16
+    },
+    {
+     "id": "c1615",
+     "cardID": 1615,
+     "sheet": "16",
+     "cell": 15
+    },
+    {
+     "id": "c1617",
+     "cardID": 1617,
+     "sheet": "16",
+     "cell": 17
+    },
+    {
+     "id": "c1620",
+     "cardID": 1620,
+     "sheet": "16",
+     "cell": 20
+    },
+    {
+     "id": "c1621",
+     "cardID": 1621,
+     "sheet": "16",
+     "cell": 21
+    },
+    {
+     "id": "c1622",
+     "cardID": 1622,
+     "sheet": "16",
+     "cell": 22
+    }
+   ]
+  },
+  {
+   "id": "level-3-encounter",
+   "guid": "d77ed8",
+   "name": "Level 3 Encounter",
+   "container": null,
+   "sheets": {
+    "20": {
+     "image": "/dark-souls/cards-boss-winged-knight-s20.webp",
+     "w": 4096,
+     "h": 3072,
+     "cols": 10,
+     "rows": 5,
+     "back": "/dark-souls/cards-boss-winged-knight-s20-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "profane-shrine",
+     "cardID": 2002,
+     "sheet": "20",
+     "cell": 2
+    },
+    {
+     "id": "silent-tombs",
+     "cardID": 2010,
+     "sheet": "20",
+     "cell": 10
+    },
+    {
+     "id": "lost-shrine",
+     "cardID": 2009,
+     "sheet": "20",
+     "cell": 9
+    },
+    {
+     "id": "desecrated-church",
+     "cardID": 2003,
+     "sheet": "20",
+     "cell": 3
+    },
+    {
+     "id": "dilapidated-bridge",
+     "cardID": 2001,
+     "sheet": "20",
+     "cell": 1
+    },
+    {
+     "id": "central-irithyll",
+     "cardID": 2004,
+     "sheet": "20",
+     "cell": 4
+    },
+    {
+     "id": "cemetary-of-ash",
+     "cardID": 2006,
+     "sheet": "20",
+     "cell": 6
+    },
+    {
+     "id": "untended-graves",
+     "cardID": 2007,
+     "sheet": "20",
+     "cell": 7
+    },
+    {
+     "id": "pit-of-the-dead",
+     "cardID": 2000,
+     "sheet": "20",
+     "cell": 0
+    },
+    {
+     "id": "wretched-gardens",
+     "cardID": 2008,
+     "sheet": "20",
+     "cell": 8
+    },
+    {
+     "id": "perished-depths",
+     "cardID": 2005,
+     "sheet": "20",
+     "cell": 5
+    },
+    {
+     "id": "empty-crypt",
+     "cardID": 2011,
+     "sheet": "20",
+     "cell": 11
+    }
+   ]
+  },
+  {
+   "id": "level-2-encounter",
+   "guid": "051bfa",
+   "name": "Level 2 Encounter",
+   "container": null,
+   "sheets": {
+    "19": {
+     "image": "/dark-souls/cards-level-2-encounter-s19.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-2-encounter-s19-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "black-dungeon",
+     "cardID": 1963,
+     "sheet": "19",
+     "cell": 63
+    },
+    {
+     "id": "temple-of-the-deeps",
+     "cardID": 1956,
+     "sheet": "19",
+     "cell": 56
+    },
+    {
+     "id": "sunrise-pass",
+     "cardID": 1955,
+     "sheet": "19",
+     "cell": 55
+    },
+    {
+     "id": "high-wall-of-lothric",
+     "cardID": 1962,
+     "sheet": "19",
+     "cell": 62
+    },
+    {
+     "id": "lost-labyrinth",
+     "cardID": 1964,
+     "sheet": "19",
+     "cell": 64
+    },
+    {
+     "id": "lightless-passage",
+     "cardID": 1960,
+     "sheet": "19",
+     "cell": 60
+    },
+    {
+     "id": "burned-gardens",
+     "cardID": 1958,
+     "sheet": "19",
+     "cell": 58
+    },
+    {
+     "id": "demon-ruins",
+     "cardID": 1953,
+     "sheet": "19",
+     "cell": 53
+    },
+    {
+     "id": "weathered-peak",
+     "cardID": 1961,
+     "sheet": "19",
+     "cell": 61
+    },
+    {
+     "id": "sentinels-wrath",
+     "cardID": 1959,
+     "sheet": "19",
+     "cell": 59
+    },
+    {
+     "id": "prison-tower",
+     "cardID": 1957,
+     "sheet": "19",
+     "cell": 57
+    },
+    {
+     "id": "forgotten-gorge",
+     "cardID": 1954,
+     "sheet": "19",
+     "cell": 54
+    }
+   ]
+  },
+  {
+   "id": "level-1-encounter",
+   "guid": "ca0f47",
+   "name": "Level 1 Encounter",
+   "container": null,
+   "sheets": {
+    "19": {
+     "image": "/dark-souls/cards-level-2-encounter-s19.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-2-encounter-s19-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "ghostly-keep",
+     "cardID": 1952,
+     "sheet": "19",
+     "cell": 52
+    },
+    {
+     "id": "the-deeps",
+     "cardID": 1947,
+     "sheet": "19",
+     "cell": 47
+    },
+    {
+     "id": "ruined-keep",
+     "cardID": 1951,
+     "sheet": "19",
+     "cell": 51
+    },
+    {
+     "id": "ash-gardens",
+     "cardID": 1942,
+     "sheet": "19",
+     "cell": 42
+    },
+    {
+     "id": "unlighted-chamber",
+     "cardID": 1950,
+     "sheet": "19",
+     "cell": 50
+    },
+    {
+     "id": "shattered-dungeon",
+     "cardID": 1949,
+     "sheet": "19",
+     "cell": 49
+    },
+    {
+     "id": "hollow-cave",
+     "cardID": 1948,
+     "sheet": "19",
+     "cell": 48
+    },
+    {
+     "id": "forsaken-depths",
+     "cardID": 1943,
+     "sheet": "19",
+     "cell": 43
+    },
+    {
+     "id": "broken-passageway",
+     "cardID": 1945,
+     "sheet": "19",
+     "cell": 45
+    },
+    {
+     "id": "ashen-hollow",
+     "cardID": 1941,
+     "sheet": "19",
+     "cell": 41
+    },
+    {
+     "id": "dark-hollow",
+     "cardID": 1944,
+     "sheet": "19",
+     "cell": 44
+    },
+    {
+     "id": "the-forgotten",
+     "cardID": 1946,
+     "sheet": "19",
+     "cell": 46
+    }
+   ]
+  },
+  {
+   "id": "core-treasure",
+   "guid": "3d2c27",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "23": {
+     "image": "/dark-souls/cards-core-treasure-s23.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s23-back.jpg",
+     "uniqueBack": false
+    },
+    "24": {
+     "image": "/dark-souls/cards-core-treasure-s24.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s24-back.webp",
+     "uniqueBack": true
+    },
+    "482": {
+     "image": "/dark-souls/cards-core-treasure-s482.webp",
+     "w": 3890,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s482-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "ember",
+     "cardID": 2430,
+     "sheet": "24",
+     "cell": 30
+    },
+    {
+     "id": "dark-armour",
+     "cardID": 48202,
+     "sheet": "482",
+     "cell": 2
+    },
+    {
+     "id": "heavy-gem",
+     "cardID": 2437,
+     "sheet": "24",
+     "cell": 37
+    },
+    {
+     "id": "catarina-armour",
+     "cardID": 48207,
+     "sheet": "482",
+     "cell": 7
+    },
+    {
+     "id": "crimson-robes",
+     "cardID": 48201,
+     "sheet": "482",
+     "cell": 1
+    },
+    {
+     "id": "eastern-iron-shield",
+     "cardID": 2338,
+     "sheet": "23",
+     "cell": 38
+    },
+    {
+     "id": "kukris",
+     "cardID": 2354,
+     "sheet": "23",
+     "cell": 54
+    },
+    {
+     "id": "winged-spear",
+     "cardID": 2367,
+     "sheet": "23",
+     "cell": 67
+    },
+    {
+     "id": "court-sorcerer-robes",
+     "cardID": 2344,
+     "sheet": "23",
+     "cell": 44
+    },
+    {
+     "id": "ember-4",
+     "cardID": 2433,
+     "sheet": "24",
+     "cell": 33
+    },
+    {
+     "id": "east-west-shield",
+     "cardID": 2339,
+     "sheet": "23",
+     "cell": 39
+    },
+    {
+     "id": "black-armour",
+     "cardID": 2348,
+     "sheet": "23",
+     "cell": 48
+    },
+    {
+     "id": "simple-gem",
+     "cardID": 2438,
+     "sheet": "24",
+     "cell": 38
+    },
+    {
+     "id": "scimitar",
+     "cardID": 2360,
+     "sheet": "23",
+     "cell": 60
+    },
+    {
+     "id": "claymore",
+     "cardID": 2400,
+     "sheet": "24",
+     "cell": 0
+    },
+    {
+     "id": "titanite-shard-4",
+     "cardID": 2304,
+     "sheet": "23",
+     "cell": 4
+    },
+    {
+     "id": "soulstream",
+     "cardID": 2333,
+     "sheet": "23",
+     "cell": 33
+    },
+    {
+     "id": "brigand-axe",
+     "cardID": 2356,
+     "sheet": "23",
+     "cell": 56
+    },
+    {
+     "id": "titanite-shard-3",
+     "cardID": 2303,
+     "sheet": "23",
+     "cell": 3
+    },
+    {
+     "id": "titanite-shard-2",
+     "cardID": 2302,
+     "sheet": "23",
+     "cell": 2
+    },
+    {
+     "id": "silver-eagle-kite-shield",
+     "cardID": 2341,
+     "sheet": "23",
+     "cell": 41
+    },
+    {
+     "id": "heal",
+     "cardID": 2306,
+     "sheet": "23",
+     "cell": 6
+    },
+    {
+     "id": "halberd",
+     "cardID": 2361,
+     "sheet": "23",
+     "cell": 61
+    },
+    {
+     "id": "rapier",
+     "cardID": 2362,
+     "sheet": "23",
+     "cell": 62
+    },
+    {
+     "id": "zweihander",
+     "cardID": 2365,
+     "sheet": "23",
+     "cell": 65
+    },
+    {
+     "id": "great-magic-weapon",
+     "cardID": 2305,
+     "sheet": "23",
+     "cell": 5
+    },
+    {
+     "id": "soul-arrow",
+     "cardID": 2336,
+     "sheet": "23",
+     "cell": 36
+    },
+    {
+     "id": "sharp-gem",
+     "cardID": 2436,
+     "sheet": "24",
+     "cell": 36
+    },
+    {
+     "id": "masters-attire",
+     "cardID": 2349,
+     "sheet": "23",
+     "cell": 49
+    },
+    {
+     "id": "havels-armour",
+     "cardID": 48206,
+     "sheet": "482",
+     "cell": 6
+    },
+    {
+     "id": "blood-gem",
+     "cardID": 2300,
+     "sheet": "23",
+     "cell": 0
+    },
+    {
+     "id": "gold-hemmed-black-robes",
+     "cardID": 48205,
+     "sheet": "482",
+     "cell": 5
+    },
+    {
+     "id": "shortsword",
+     "cardID": 2324,
+     "sheet": "23",
+     "cell": 24
+    },
+    {
+     "id": "silver-knight-straight-sword",
+     "cardID": 2358,
+     "sheet": "23",
+     "cell": 58
+    },
+    {
+     "id": "fireball",
+     "cardID": 2337,
+     "sheet": "23",
+     "cell": 37
+    },
+    {
+     "id": "embraced-armour-of-favour",
+     "cardID": 48204,
+     "sheet": "482",
+     "cell": 4
+    },
+    {
+     "id": "deacon-robes",
+     "cardID": 2352,
+     "sheet": "23",
+     "cell": 52
+    },
+    {
+     "id": "hard-leather-armour",
+     "cardID": 2347,
+     "sheet": "23",
+     "cell": 47
+    },
+    {
+     "id": "poison-gem",
+     "cardID": 2440,
+     "sheet": "24",
+     "cell": 40
+    },
+    {
+     "id": "force",
+     "cardID": 2335,
+     "sheet": "23",
+     "cell": 35
+    },
+    {
+     "id": "black-knight-armour",
+     "cardID": 48200,
+     "sheet": "482",
+     "cell": 0
+    },
+    {
+     "id": "crystal-gem",
+     "cardID": 2435,
+     "sheet": "24",
+     "cell": 35
+    },
+    {
+     "id": "dragon-crest-shield",
+     "cardID": 2340,
+     "sheet": "23",
+     "cell": 40
+    },
+    {
+     "id": "guardian-armour",
+     "cardID": 48209,
+     "sheet": "482",
+     "cell": 9
+    },
+    {
+     "id": "adventurers-armour",
+     "cardID": 48203,
+     "sheet": "482",
+     "cell": 3
+    },
+    {
+     "id": "sorcerers-staff",
+     "cardID": 2363,
+     "sheet": "23",
+     "cell": 63
+    },
+    {
+     "id": "morning-star",
+     "cardID": 2364,
+     "sheet": "23",
+     "cell": 64
+    },
+    {
+     "id": "murakumo",
+     "cardID": 2366,
+     "sheet": "23",
+     "cell": 66
+    },
+    {
+     "id": "blessed-gem",
+     "cardID": 2434,
+     "sheet": "24",
+     "cell": 34
+    },
+    {
+     "id": "thrall-axe",
+     "cardID": 2368,
+     "sheet": "23",
+     "cell": 68
+    },
+    {
+     "id": "firebombs",
+     "cardID": 2355,
+     "sheet": "23",
+     "cell": 55
+    },
+    {
+     "id": "effigy-shield",
+     "cardID": 2308,
+     "sheet": "23",
+     "cell": 8
+    },
+    {
+     "id": "worker-armour",
+     "cardID": 2353,
+     "sheet": "23",
+     "cell": 53
+    },
+    {
+     "id": "great-mace",
+     "cardID": 2357,
+     "sheet": "23",
+     "cell": 57
+    },
+    {
+     "id": "titanite-shard",
+     "cardID": 2301,
+     "sheet": "23",
+     "cell": 1
+    },
+    {
+     "id": "firelink-armour",
+     "cardID": 2343,
+     "sheet": "23",
+     "cell": 43
+    },
+    {
+     "id": "pierce-shield",
+     "cardID": 2342,
+     "sheet": "23",
+     "cell": 42
+    },
+    {
+     "id": "reinforced-club",
+     "cardID": 2359,
+     "sheet": "23",
+     "cell": 59
+    },
+    {
+     "id": "drang-armour",
+     "cardID": 2351,
+     "sheet": "23",
+     "cell": 51
+    },
+    {
+     "id": "sunless-armour",
+     "cardID": 2346,
+     "sheet": "23",
+     "cell": 46
+    },
+    {
+     "id": "ember-3",
+     "cardID": 2432,
+     "sheet": "24",
+     "cell": 32
+    },
+    {
+     "id": "black-iron-armour",
+     "cardID": 48208,
+     "sheet": "482",
+     "cell": 8
+    },
+    {
+     "id": "lightning-gem",
+     "cardID": 2439,
+     "sheet": "24",
+     "cell": 39
+    },
+    {
+     "id": "exile-armour",
+     "cardID": 2350,
+     "sheet": "23",
+     "cell": 50
+    },
+    {
+     "id": "chloranthy-ring",
+     "cardID": 2429,
+     "sheet": "24",
+     "cell": 29
+    },
+    {
+     "id": "greataxe",
+     "cardID": 2325,
+     "sheet": "23",
+     "cell": 25
+    },
+    {
+     "id": "ember-2",
+     "cardID": 2431,
+     "sheet": "24",
+     "cell": 31
+    },
+    {
+     "id": "heal-aid",
+     "cardID": 2307,
+     "sheet": "23",
+     "cell": 7
+    },
+    {
+     "id": "poison-mist",
+     "cardID": 2334,
+     "sheet": "23",
+     "cell": 34
+    },
+    {
+     "id": "sunset-armour",
+     "cardID": 2345,
+     "sheet": "23",
+     "cell": 45
+    }
+   ]
+  },
+  {
+   "id": "transmuted",
+   "guid": "8f98ec",
+   "name": "Transmuted Treasure",
+   "container": null,
+   "sheets": {
+    "23": {
+     "image": "/dark-souls/cards-core-treasure-s23.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s23-back.jpg",
+     "uniqueBack": false
+    },
+    "24": {
+     "image": "/dark-souls/cards-core-treasure-s24.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s24-back.webp",
+     "uniqueBack": true
+    },
+    "482": {
+     "image": "/dark-souls/cards-core-treasure-s482.webp",
+     "w": 3890,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s482-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "havels-armour-2",
+     "cardID": 48219,
+     "sheet": "482",
+     "cell": 19
+    },
+    {
+     "id": "guardian-armour-2",
+     "cardID": 48218,
+     "sheet": "482",
+     "cell": 18
+    },
+    {
+     "id": "black-iron-armour-2",
+     "cardID": 48217,
+     "sheet": "482",
+     "cell": 17
+    },
+    {
+     "id": "gold-hemmed-black-robes-2",
+     "cardID": 48216,
+     "sheet": "482",
+     "cell": 16
+    },
+    {
+     "id": "catarina-armour-2",
+     "cardID": 48215,
+     "sheet": "482",
+     "cell": 15
+    },
+    {
+     "id": "dark-armour-2",
+     "cardID": 48214,
+     "sheet": "482",
+     "cell": 14
+    },
+    {
+     "id": "adventurers-armour-2",
+     "cardID": 48213,
+     "sheet": "482",
+     "cell": 13
+    },
+    {
+     "id": "embraced-armour-of-favour-2",
+     "cardID": 48212,
+     "sheet": "482",
+     "cell": 12
+    },
+    {
+     "id": "black-knight-armour-2",
+     "cardID": 48211,
+     "sheet": "482",
+     "cell": 11
+    },
+    {
+     "id": "crimson-robes-2",
+     "cardID": 48210,
+     "sheet": "482",
+     "cell": 10
+    },
+    {
+     "id": "avelyn",
+     "cardID": 2328,
+     "sheet": "23",
+     "cell": 28
+    },
+    {
+     "id": "dragon-tooth",
+     "cardID": 2427,
+     "sheet": "24",
+     "cell": 27
+    },
+    {
+     "id": "sunlight-straight-sword",
+     "cardID": 2428,
+     "sheet": "24",
+     "cell": 28
+    },
+    {
+     "id": "santiers-spear",
+     "cardID": 2405,
+     "sheet": "24",
+     "cell": 5
+    },
+    {
+     "id": "washing-pole",
+     "cardID": 2326,
+     "sheet": "23",
+     "cell": 26
+    },
+    {
+     "id": "dark-sword",
+     "cardID": 2332,
+     "sheet": "23",
+     "cell": 32
+    },
+    {
+     "id": "drake-sword",
+     "cardID": 2331,
+     "sheet": "23",
+     "cell": 31
+    },
+    {
+     "id": "moonlight-greatsword",
+     "cardID": 2330,
+     "sheet": "23",
+     "cell": 30
+    },
+    {
+     "id": "fume-ultra-greatsword",
+     "cardID": 2329,
+     "sheet": "23",
+     "cell": 29
+    },
+    {
+     "id": "gotthard-twinswords",
+     "cardID": 2327,
+     "sheet": "23",
+     "cell": 27
+    }
+   ]
+  },
+  {
+   "id": "level-3-darkroot-encounter",
+   "guid": "c69f54",
+   "name": "Level 3 Darkroot Encounter",
+   "container": null,
+   "sheets": {
+    "463": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "sodden-mire",
+     "cardID": 46338,
+     "sheet": "463",
+     "cell": 38
+    },
+    {
+     "id": "desolate-hinterland",
+     "cardID": 46337,
+     "sheet": "463",
+     "cell": 37
+    },
+    {
+     "id": "abandoned-tower",
+     "cardID": 46336,
+     "sheet": "463",
+     "cell": 36
+    },
+    {
+     "id": "corpselight-fens",
+     "cardID": 46335,
+     "sheet": "463",
+     "cell": 35
+    },
+    {
+     "id": "hydra-lake",
+     "cardID": 46334,
+     "sheet": "463",
+     "cell": 34
+    },
+    {
+     "id": "dark-woods",
+     "cardID": 46333,
+     "sheet": "463",
+     "cell": 33
+    }
+   ]
+  },
+  {
+   "id": "level-1-darkroot-encounter",
+   "guid": "484c35",
+   "name": "Level 1 Darkroot Encounter",
+   "container": null,
+   "sheets": {
+    "464": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "fearful-woods",
+     "cardID": 46421,
+     "sheet": "464",
+     "cell": 21
+    },
+    {
+     "id": "overgrown-caves",
+     "cardID": 46422,
+     "sheet": "464",
+     "cell": 22
+    },
+    {
+     "id": "misty-woods",
+     "cardID": 46423,
+     "sheet": "464",
+     "cell": 23
+    },
+    {
+     "id": "leafy-grotto",
+     "cardID": 46424,
+     "sheet": "464",
+     "cell": 24
+    },
+    {
+     "id": "blackroot-well",
+     "cardID": 46425,
+     "sheet": "464",
+     "cell": 25
+    },
+    {
+     "id": "wild-glades",
+     "cardID": 46426,
+     "sheet": "464",
+     "cell": 26
+    }
+   ]
+  },
+  {
+   "id": "level-2-darkroot-encounter",
+   "guid": "e45128",
+   "name": "Level 2 Darkroot Encounter",
+   "container": null,
+   "sheets": {
+    "465": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "stone-hollow",
+     "cardID": 46527,
+     "sheet": "465",
+     "cell": 27
+    },
+    {
+     "id": "black-bog",
+     "cardID": 46528,
+     "sheet": "465",
+     "cell": 28
+    },
+    {
+     "id": "haunted-ruins",
+     "cardID": 46529,
+     "sheet": "465",
+     "cell": 29
+    },
+    {
+     "id": "withered-thicket",
+     "cardID": 46530,
+     "sheet": "465",
+     "cell": 30
+    },
+    {
+     "id": "boggy-hollow",
+     "cardID": 46532,
+     "sheet": "465",
+     "cell": 32
+    },
+    {
+     "id": "murky-roots",
+     "cardID": 46531,
+     "sheet": "465",
+     "cell": 31
+    }
+   ]
+  },
+  {
+   "id": "darkroot",
+   "guid": "706129",
+   "name": "Darkroot Treasure",
+   "container": null,
+   "sheets": {
+    "470": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "stone-knight-armour",
+     "cardID": 47014,
+     "sheet": "470",
+     "cell": 14
+    },
+    {
+     "id": "stone-greatshield",
+     "cardID": 47013,
+     "sheet": "470",
+     "cell": 13
+    },
+    {
+     "id": "hunter-armour",
+     "cardID": 47012,
+     "sheet": "470",
+     "cell": 12
+    },
+    {
+     "id": "dusk-crown-ring",
+     "cardID": 47011,
+     "sheet": "470",
+     "cell": 11
+    },
+    {
+     "id": "ember-5",
+     "cardID": 47010,
+     "sheet": "470",
+     "cell": 10
+    },
+    {
+     "id": "longbow",
+     "cardID": 47009,
+     "sheet": "470",
+     "cell": 9
+    },
+    {
+     "id": "titanite-shard-5",
+     "cardID": 47008,
+     "sheet": "470",
+     "cell": 8
+    },
+    {
+     "id": "hollow-gem",
+     "cardID": 47007,
+     "sheet": "470",
+     "cell": 7
+    },
+    {
+     "id": "crystal-shield",
+     "cardID": 47006,
+     "sheet": "470",
+     "cell": 6
+    },
+    {
+     "id": "stone-greataxe",
+     "cardID": 47005,
+     "sheet": "470",
+     "cell": 5
+    },
+    {
+     "id": "rotten-ghru-spear",
+     "cardID": 47004,
+     "sheet": "470",
+     "cell": 4
+    },
+    {
+     "id": "mannikin-claws",
+     "cardID": 47003,
+     "sheet": "470",
+     "cell": 3
+    },
+    {
+     "id": "stone-greatsword",
+     "cardID": 47002,
+     "sheet": "470",
+     "cell": 2
+    },
+    {
+     "id": "antiquated-robes",
+     "cardID": 47001,
+     "sheet": "470",
+     "cell": 1
+    },
+    {
+     "id": "four-pronged-plow",
+     "cardID": 47000,
+     "sheet": "470",
+     "cell": 0
+    }
+   ]
+  },
+  {
+   "id": "boss-sif",
+   "guid": "41525b",
+   "name": null,
+   "container": "Great Grey Wolf Sif",
+   "sheets": {
+    "467": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "greatshield-of-artorias",
+     "cardID": 46717,
+     "sheet": "467",
+     "cell": 17
+    },
+    {
+     "id": "cursed-greatsword-of-artorias",
+     "cardID": 46716,
+     "sheet": "467",
+     "cell": 16
+    },
+    {
+     "id": "greatsword-of-artorias",
+     "cardID": 46715,
+     "sheet": "467",
+     "cell": 15
+    }
+   ]
+  },
+  {
+   "id": "great-grey-wolf-sif-behaviour",
+   "guid": "496cb8",
+   "name": null,
+   "container": "Great Grey Wolf Sif",
+   "sheets": {
+    "479": {
+     "image": "/dark-souls/cards-great-grey-wolf-sif-behaviour-s479.webp",
+     "w": 4096,
+     "h": 1686,
+     "cols": 10,
+     "rows": 3,
+     "back": "/dark-souls/cards-great-grey-wolf-sif-behaviour-s479-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c47921",
+     "cardID": 47921,
+     "sheet": "479",
+     "cell": 21
+    },
+    {
+     "id": "c47923",
+     "cardID": 47923,
+     "sheet": "479",
+     "cell": 23
+    },
+    {
+     "id": "c47922",
+     "cardID": 47922,
+     "sheet": "479",
+     "cell": 22
+    },
+    {
+     "id": "c47920",
+     "cardID": 47920,
+     "sheet": "479",
+     "cell": 20
+    },
+    {
+     "id": "c47919",
+     "cardID": 47919,
+     "sheet": "479",
+     "cell": 19
+    },
+    {
+     "id": "c47918",
+     "cardID": 47918,
+     "sheet": "479",
+     "cell": 18
+    },
+    {
+     "id": "c47916",
+     "cardID": 47916,
+     "sheet": "479",
+     "cell": 16
+    },
+    {
+     "id": "c47915",
+     "cardID": 47915,
+     "sheet": "479",
+     "cell": 15
+    },
+    {
+     "id": "c47914",
+     "cardID": 47914,
+     "sheet": "479",
+     "cell": 14
+    },
+    {
+     "id": "c47913",
+     "cardID": 47913,
+     "sheet": "479",
+     "cell": 13
+    },
+    {
+     "id": "c47925",
+     "cardID": 47925,
+     "sheet": "479",
+     "cell": 25
+    },
+    {
+     "id": "c47924",
+     "cardID": 47924,
+     "sheet": "479",
+     "cell": 24
+    },
+    {
+     "id": "c47926",
+     "cardID": 47926,
+     "sheet": "479",
+     "cell": 26
+    },
+    {
+     "id": "c47917",
+     "cardID": 47917,
+     "sheet": "479",
+     "cell": 17
+    }
+   ]
+  },
+  {
+   "id": "boss-artorias",
+   "guid": "f881da",
+   "name": null,
+   "container": "Artorias",
+   "sheets": {
+    "466": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "dark-silver-tracer",
+     "cardID": 46620,
+     "sheet": "466",
+     "cell": 20
+    },
+    {
+     "id": "abyss-greatsword",
+     "cardID": 46619,
+     "sheet": "466",
+     "cell": 19
+    },
+    {
+     "id": "gold-tracer",
+     "cardID": 46618,
+     "sheet": "466",
+     "cell": 18
+    }
+   ]
+  },
+  {
+   "id": "artorias-behaviour",
+   "guid": "efbf7e",
+   "name": null,
+   "container": "Artorias",
+   "sheets": {
+    "478": {
+     "image": "/dark-souls/cards-great-grey-wolf-sif-behaviour-s479.webp",
+     "w": 4096,
+     "h": 1686,
+     "cols": 10,
+     "rows": 3,
+     "back": "/dark-souls/cards-great-grey-wolf-sif-behaviour-s479-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c47811",
+     "cardID": 47811,
+     "sheet": "478",
+     "cell": 11
+    },
+    {
+     "id": "c47810",
+     "cardID": 47810,
+     "sheet": "478",
+     "cell": 10
+    },
+    {
+     "id": "c47809",
+     "cardID": 47809,
+     "sheet": "478",
+     "cell": 9
+    },
+    {
+     "id": "c47808",
+     "cardID": 47808,
+     "sheet": "478",
+     "cell": 8
+    },
+    {
+     "id": "c47807",
+     "cardID": 47807,
+     "sheet": "478",
+     "cell": 7
+    },
+    {
+     "id": "c47804",
+     "cardID": 47804,
+     "sheet": "478",
+     "cell": 4
+    },
+    {
+     "id": "c47803",
+     "cardID": 47803,
+     "sheet": "478",
+     "cell": 3
+    },
+    {
+     "id": "c47802",
+     "cardID": 47802,
+     "sheet": "478",
+     "cell": 2
+    },
+    {
+     "id": "c47801",
+     "cardID": 47801,
+     "sheet": "478",
+     "cell": 1
+    },
+    {
+     "id": "c47800",
+     "cardID": 47800,
+     "sheet": "478",
+     "cell": 0
+    },
+    {
+     "id": "c47812",
+     "cardID": 47812,
+     "sheet": "478",
+     "cell": 12
+    },
+    {
+     "id": "c47806",
+     "cardID": 47806,
+     "sheet": "478",
+     "cell": 6
+    },
+    {
+     "id": "c47805",
+     "cardID": 47805,
+     "sheet": "478",
+     "cell": 5
+    }
+   ]
+  },
+  {
+   "id": "level-4-four-kings-encounter",
+   "guid": "8d3424",
+   "name": "Level 4 Four Kings Encounter",
+   "container": null,
+   "sheets": {
+    "478": {
+     "image": "/dark-souls/cards-level-4-four-kings-encounter-s478.webp",
+     "w": 4096,
+     "h": 3896,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-four-kings-encounter-s478-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "new-londo-ruins",
+     "cardID": 47826,
+     "sheet": "478",
+     "cell": 26
+    },
+    {
+     "id": "hall-of-wraiths",
+     "cardID": 47825,
+     "sheet": "478",
+     "cell": 25
+    },
+    {
+     "id": "edge-of-the-abyss",
+     "cardID": 47824,
+     "sheet": "478",
+     "cell": 24
+    },
+    {
+     "id": "cursed-cavern",
+     "cardID": 47823,
+     "sheet": "478",
+     "cell": 23
+    }
+   ]
+  },
+  {
+   "id": "boss-four-kings",
+   "guid": "3f0f26",
+   "name": "Four Kings Behaviour Cards",
+   "container": null,
+   "sheets": {
+    "478": {
+     "image": "/dark-souls/cards-level-4-four-kings-encounter-s478.webp",
+     "w": 4096,
+     "h": 3896,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-four-kings-encounter-s478-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "four-kings-sword",
+     "cardID": 47822,
+     "sheet": "478",
+     "cell": 22
+    },
+    {
+     "id": "bequeathed-lord-soul",
+     "cardID": 47821,
+     "sheet": "478",
+     "cell": 21
+    }
+   ]
+  },
+  {
+   "id": "king-four-behaviour-cards",
+   "guid": "51a738",
+   "name": "King Four Behaviour Cards",
+   "container": null,
+   "sheets": {
+    "478": {
+     "image": "/dark-souls/cards-level-4-four-kings-encounter-s478.webp",
+     "w": 4096,
+     "h": 3896,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-four-kings-encounter-s478-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c47820",
+     "cardID": 47820,
+     "sheet": "478",
+     "cell": 20
+    },
+    {
+     "id": "c47819",
+     "cardID": 47819,
+     "sheet": "478",
+     "cell": 19
+    },
+    {
+     "id": "c47818",
+     "cardID": 47818,
+     "sheet": "478",
+     "cell": 18
+    },
+    {
+     "id": "c47817",
+     "cardID": 47817,
+     "sheet": "478",
+     "cell": 17
+    }
+   ]
+  },
+  {
+   "id": "king-three-behaviour-cards",
+   "guid": "f801bf",
+   "name": "King Three Behaviour Cards",
+   "container": null,
+   "sheets": {
+    "478": {
+     "image": "/dark-souls/cards-level-4-four-kings-encounter-s478.webp",
+     "w": 4096,
+     "h": 3896,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-four-kings-encounter-s478-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c47816",
+     "cardID": 47816,
+     "sheet": "478",
+     "cell": 16
+    },
+    {
+     "id": "c47815",
+     "cardID": 47815,
+     "sheet": "478",
+     "cell": 15
+    },
+    {
+     "id": "c47814",
+     "cardID": 47814,
+     "sheet": "478",
+     "cell": 14
+    },
+    {
+     "id": "c47813",
+     "cardID": 47813,
+     "sheet": "478",
+     "cell": 13
+    }
+   ]
+  },
+  {
+   "id": "king-two-behaviour-cards",
+   "guid": "23566c",
+   "name": "King Two Behaviour Cards",
+   "container": null,
+   "sheets": {
+    "478": {
+     "image": "/dark-souls/cards-level-4-four-kings-encounter-s478.webp",
+     "w": 4096,
+     "h": 3896,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-four-kings-encounter-s478-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c47812",
+     "cardID": 47812,
+     "sheet": "478",
+     "cell": 12
+    },
+    {
+     "id": "c47811",
+     "cardID": 47811,
+     "sheet": "478",
+     "cell": 11
+    },
+    {
+     "id": "c47810",
+     "cardID": 47810,
+     "sheet": "478",
+     "cell": 10
+    },
+    {
+     "id": "c47809",
+     "cardID": 47809,
+     "sheet": "478",
+     "cell": 9
+    }
+   ]
+  },
+  {
+   "id": "king-one-behaviour-cards",
+   "guid": "9cad09",
+   "name": "King One Behaviour Cards",
+   "container": null,
+   "sheets": {
+    "478": {
+     "image": "/dark-souls/cards-level-4-four-kings-encounter-s478.webp",
+     "w": 4096,
+     "h": 3896,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-four-kings-encounter-s478-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c47808",
+     "cardID": 47808,
+     "sheet": "478",
+     "cell": 8
+    },
+    {
+     "id": "c47807",
+     "cardID": 47807,
+     "sheet": "478",
+     "cell": 7
+    },
+    {
+     "id": "c47806",
+     "cardID": 47806,
+     "sheet": "478",
+     "cell": 6
+    },
+    {
+     "id": "c47805",
+     "cardID": 47805,
+     "sheet": "478",
+     "cell": 5
+    },
+    {
+     "id": "c47804",
+     "cardID": 47804,
+     "sheet": "478",
+     "cell": 4
+    },
+    {
+     "id": "c47803",
+     "cardID": 47803,
+     "sheet": "478",
+     "cell": 3
+    },
+    {
+     "id": "c47802",
+     "cardID": 47802,
+     "sheet": "478",
+     "cell": 2
+    },
+    {
+     "id": "c47801",
+     "cardID": 47801,
+     "sheet": "478",
+     "cell": 1
+    }
+   ]
+  },
+  {
+   "id": "level-4-old-iron-king-encounter",
+   "guid": "f5f7a7",
+   "name": "Level 4 Old Iron King Encounter",
+   "container": null,
+   "sheets": {
+    "479": {
+     "image": "/dark-souls/cards-level-4-old-iron-king-encounter-s479.webp",
+     "w": 4096,
+     "h": 3900,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-old-iron-king-encounter-s479-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "lava-path",
+     "cardID": 47921,
+     "sheet": "479",
+     "cell": 21
+    },
+    {
+     "id": "fortress-gates",
+     "cardID": 47922,
+     "sheet": "479",
+     "cell": 22
+    },
+    {
+     "id": "blazing-furnace",
+     "cardID": 47923,
+     "sheet": "479",
+     "cell": 23
+    },
+    {
+     "id": "ironhearth-hall",
+     "cardID": 47924,
+     "sheet": "479",
+     "cell": 24
+    }
+   ]
+  },
+  {
+   "id": "old-iron-king-behaviour-cards",
+   "guid": "bf794d",
+   "name": "Old Iron King Behaviour Cards",
+   "container": null,
+   "sheets": {
+    "479": {
+     "image": "/dark-souls/cards-level-4-old-iron-king-encounter-s479.webp",
+     "w": 4096,
+     "h": 3900,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-old-iron-king-encounter-s479-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c47901",
+     "cardID": 47901,
+     "sheet": "479",
+     "cell": 1
+    },
+    {
+     "id": "c47902",
+     "cardID": 47902,
+     "sheet": "479",
+     "cell": 2
+    },
+    {
+     "id": "c47903",
+     "cardID": 47903,
+     "sheet": "479",
+     "cell": 3
+    },
+    {
+     "id": "c47904",
+     "cardID": 47904,
+     "sheet": "479",
+     "cell": 4
+    },
+    {
+     "id": "c47905",
+     "cardID": 47905,
+     "sheet": "479",
+     "cell": 5
+    },
+    {
+     "id": "c47906",
+     "cardID": 47906,
+     "sheet": "479",
+     "cell": 6
+    },
+    {
+     "id": "c47907",
+     "cardID": 47907,
+     "sheet": "479",
+     "cell": 7
+    },
+    {
+     "id": "c47908",
+     "cardID": 47908,
+     "sheet": "479",
+     "cell": 8
+    },
+    {
+     "id": "c47909",
+     "cardID": 47909,
+     "sheet": "479",
+     "cell": 9
+    },
+    {
+     "id": "c47910",
+     "cardID": 47910,
+     "sheet": "479",
+     "cell": 10
+    },
+    {
+     "id": "c47911",
+     "cardID": 47911,
+     "sheet": "479",
+     "cell": 11
+    },
+    {
+     "id": "c47912",
+     "cardID": 47912,
+     "sheet": "479",
+     "cell": 12
+    }
+   ]
+  },
+  {
+   "id": "heat-beam",
+   "guid": "0800ac",
+   "name": "Heat Beam",
+   "container": null,
+   "sheets": {
+    "479": {
+     "image": "/dark-souls/cards-level-4-old-iron-king-encounter-s479.webp",
+     "w": 4096,
+     "h": 3900,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-old-iron-king-encounter-s479-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c47913",
+     "cardID": 47913,
+     "sheet": "479",
+     "cell": 13
+    },
+    {
+     "id": "c47914",
+     "cardID": 47914,
+     "sheet": "479",
+     "cell": 14
+    },
+    {
+     "id": "c47915",
+     "cardID": 47915,
+     "sheet": "479",
+     "cell": 15
+    },
+    {
+     "id": "c47916",
+     "cardID": 47916,
+     "sheet": "479",
+     "cell": 16
+    },
+    {
+     "id": "c47917",
+     "cardID": 47917,
+     "sheet": "479",
+     "cell": 17
+    },
+    {
+     "id": "c47918",
+     "cardID": 47918,
+     "sheet": "479",
+     "cell": 18
+    }
+   ]
+  },
+  {
+   "id": "boss-old-iron-king",
+   "guid": "bfd1de",
+   "name": "Old Iron King Treasure Cards",
+   "container": null,
+   "sheets": {
+    "479": {
+     "image": "/dark-souls/cards-level-4-old-iron-king-encounter-s479.webp",
+     "w": 4096,
+     "h": 3900,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-old-iron-king-encounter-s479-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "iron-king-hammer",
+     "cardID": 47919,
+     "sheet": "479",
+     "cell": 19
+    },
+    {
+     "id": "blinding-bolt",
+     "cardID": 47920,
+     "sheet": "479",
+     "cell": 20
+    }
+   ]
+  },
+  {
+   "id": "black-dragon-kalameet-behaviour-cards",
+   "guid": "5e73ec",
+   "name": "Black Dragon Kalameet Behaviour Cards",
+   "container": null,
+   "sheets": {
+    "480": {
+     "image": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480.webp",
+     "w": 4096,
+     "h": 3890,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c48000",
+     "cardID": 48000,
+     "sheet": "480",
+     "cell": 0
+    },
+    {
+     "id": "c48001",
+     "cardID": 48001,
+     "sheet": "480",
+     "cell": 1
+    },
+    {
+     "id": "c48002",
+     "cardID": 48002,
+     "sheet": "480",
+     "cell": 2
+    },
+    {
+     "id": "c48003",
+     "cardID": 48003,
+     "sheet": "480",
+     "cell": 3
+    },
+    {
+     "id": "c48004",
+     "cardID": 48004,
+     "sheet": "480",
+     "cell": 4
+    },
+    {
+     "id": "c48005",
+     "cardID": 48005,
+     "sheet": "480",
+     "cell": 5
+    },
+    {
+     "id": "c48006",
+     "cardID": 48006,
+     "sheet": "480",
+     "cell": 6
+    },
+    {
+     "id": "c48007",
+     "cardID": 48007,
+     "sheet": "480",
+     "cell": 7
+    },
+    {
+     "id": "c48008",
+     "cardID": 48008,
+     "sheet": "480",
+     "cell": 8
+    },
+    {
+     "id": "c48009",
+     "cardID": 48009,
+     "sheet": "480",
+     "cell": 9
+    },
+    {
+     "id": "c48010",
+     "cardID": 48010,
+     "sheet": "480",
+     "cell": 10
+    },
+    {
+     "id": "c48011",
+     "cardID": 48011,
+     "sheet": "480",
+     "cell": 11
+    },
+    {
+     "id": "c48012",
+     "cardID": 48012,
+     "sheet": "480",
+     "cell": 12
+    }
+   ]
+  },
+  {
+   "id": "level-4-black-dragon-kalameet-encounter",
+   "guid": "343a9a",
+   "name": "Level 4 Black Dragon Kalameet Encounter",
+   "container": null,
+   "sheets": {
+    "480": {
+     "image": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480.webp",
+     "w": 4096,
+     "h": 3890,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "goughs-perch",
+     "cardID": 48027,
+     "sheet": "480",
+     "cell": 27
+    },
+    {
+     "id": "great-stone-bridge",
+     "cardID": 48026,
+     "sheet": "480",
+     "cell": 26
+    },
+    {
+     "id": "perilous-crossing",
+     "cardID": 48025,
+     "sheet": "480",
+     "cell": 25
+    },
+    {
+     "id": "royal-woods-passage",
+     "cardID": 48024,
+     "sheet": "480",
+     "cell": 24
+    }
+   ]
+  },
+  {
+   "id": "boss-kalameet",
+   "guid": "3ad29c",
+   "name": "Black Dragon Kalameet Treasure Cards",
+   "container": null,
+   "sheets": {
+    "480": {
+     "image": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480.webp",
+     "w": 4096,
+     "h": 3890,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "calamity-ring",
+     "cardID": 48023,
+     "sheet": "480",
+     "cell": 23
+    },
+    {
+     "id": "obsidian-greatsword",
+     "cardID": 48022,
+     "sheet": "480",
+     "cell": 22
+    }
+   ]
+  },
+  {
+   "id": "strafe-cards",
+   "guid": "3f72d5",
+   "name": "Strafe Cards",
+   "container": null,
+   "sheets": {
+    "480": {
+     "image": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480.webp",
+     "w": 4096,
+     "h": 3890,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c48021",
+     "cardID": 48021,
+     "sheet": "480",
+     "cell": 21
+    },
+    {
+     "id": "c48020",
+     "cardID": 48020,
+     "sheet": "480",
+     "cell": 20
+    },
+    {
+     "id": "c48019",
+     "cardID": 48019,
+     "sheet": "480",
+     "cell": 19
+    },
+    {
+     "id": "c48018",
+     "cardID": 48018,
+     "sheet": "480",
+     "cell": 18
+    },
+    {
+     "id": "c48017",
+     "cardID": 48017,
+     "sheet": "480",
+     "cell": 17
+    },
+    {
+     "id": "c48016",
+     "cardID": 48016,
+     "sheet": "480",
+     "cell": 16
+    },
+    {
+     "id": "c48015",
+     "cardID": 48015,
+     "sheet": "480",
+     "cell": 15
+    },
+    {
+     "id": "c48014",
+     "cardID": 48014,
+     "sheet": "480",
+     "cell": 14
+    }
+   ]
+  },
+  {
+   "id": "classdeck-51",
+   "guid": "51403d",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "24": {
+     "image": "/dark-souls/cards-core-treasure-s24.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s24-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "spiked-mace",
+     "cardID": 2403,
+     "sheet": "24",
+     "cell": 3
+    },
+    {
+     "id": "caestus",
+     "cardID": 2425,
+     "sheet": "24",
+     "cell": 25
+    },
+    {
+     "id": "great-wooden-hammer",
+     "cardID": 2404,
+     "sheet": "24",
+     "cell": 4
+    },
+    {
+     "id": "knight-slayers-ring",
+     "cardID": 2426,
+     "sheet": "24",
+     "cell": 26
+    },
+    {
+     "id": "silver-knight-shield",
+     "cardID": 2402,
+     "sheet": "24",
+     "cell": 2
+    }
+   ]
+  },
+  {
+   "id": "classdeck-52",
+   "guid": "2b842c",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "24": {
+     "image": "/dark-souls/cards-core-treasure-s24.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s24-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "dragonslayers-axe",
+     "cardID": 2407,
+     "sheet": "24",
+     "cell": 7
+    },
+    {
+     "id": "fallen-knight-armour",
+     "cardID": 2409,
+     "sheet": "24",
+     "cell": 9
+    },
+    {
+     "id": "great-machete",
+     "cardID": 2401,
+     "sheet": "24",
+     "cell": 1
+    },
+    {
+     "id": "warpick",
+     "cardID": 2408,
+     "sheet": "24",
+     "cell": 8
+    },
+    {
+     "id": "balder-side-sword",
+     "cardID": 2406,
+     "sheet": "24",
+     "cell": 6
+    }
+   ]
+  },
+  {
+   "id": "classdeck-53",
+   "guid": "bebdf4",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "23": {
+     "image": "/dark-souls/cards-core-treasure-s23.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s23-back.jpg",
+     "uniqueBack": false
+    },
+    "24": {
+     "image": "/dark-souls/cards-core-treasure-s24.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s24-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "lothric-knight-armour",
+     "cardID": 2423,
+     "sheet": "24",
+     "cell": 23
+    },
+    {
+     "id": "spider-shield",
+     "cardID": 2309,
+     "sheet": "23",
+     "cell": 9
+    },
+    {
+     "id": "broadsword",
+     "cardID": 2410,
+     "sheet": "24",
+     "cell": 10
+    },
+    {
+     "id": "blue-tearstone-ring",
+     "cardID": 2424,
+     "sheet": "24",
+     "cell": 24
+    },
+    {
+     "id": "sun-princess-ring",
+     "cardID": 2310,
+     "sheet": "23",
+     "cell": 10
+    }
+   ]
+  },
+  {
+   "id": "classdeck-54",
+   "guid": "585ba3",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "23": {
+     "image": "/dark-souls/cards-core-treasure-s23.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s23-back.jpg",
+     "uniqueBack": false
+    },
+    "24": {
+     "image": "/dark-souls/cards-core-treasure-s24.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s24-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "falchion",
+     "cardID": 2411,
+     "sheet": "24",
+     "cell": 11
+    },
+    {
+     "id": "black-iron-greatshield",
+     "cardID": 2311,
+     "sheet": "23",
+     "cell": 11
+    },
+    {
+     "id": "twin-dragon-greatshield",
+     "cardID": 2412,
+     "sheet": "24",
+     "cell": 12
+    },
+    {
+     "id": "faraam-armour",
+     "cardID": 2312,
+     "sheet": "23",
+     "cell": 12
+    },
+    {
+     "id": "elite-knight-armour",
+     "cardID": 2413,
+     "sheet": "24",
+     "cell": 13
+    }
+   ]
+  },
+  {
+   "id": "classdeck-55",
+   "guid": "a861d0",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "18": {
+     "image": "/dark-souls/cards-classdeck-55-s18.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-55-s18-back.webp",
+     "uniqueBack": true
+    },
+    "19": {
+     "image": "/dark-souls/cards-level-2-encounter-s19.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-2-encounter-s19-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "golden-wing-crest-shield",
+     "cardID": 1914,
+     "sheet": "19",
+     "cell": 14
+    },
+    {
+     "id": "tiny-beings-ring",
+     "cardID": 1815,
+     "sheet": "18",
+     "cell": 15
+    },
+    {
+     "id": "lothrics-holy-sword",
+     "cardID": 1813,
+     "sheet": "18",
+     "cell": 13
+    },
+    {
+     "id": "cathedral-knight-armour",
+     "cardID": 1915,
+     "sheet": "19",
+     "cell": 15
+    },
+    {
+     "id": "replenishment",
+     "cardID": 1814,
+     "sheet": "18",
+     "cell": 14
+    }
+   ]
+  },
+  {
+   "id": "classdeck-56",
+   "guid": "541756",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "23": {
+     "image": "/dark-souls/cards-core-treasure-s23.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s23-back.jpg",
+     "uniqueBack": false
+    }
+   },
+   "cards": [
+    {
+     "id": "partizan",
+     "cardID": 2317,
+     "sheet": "23",
+     "cell": 17
+    },
+    {
+     "id": "grass-crest-shield",
+     "cardID": 2318,
+     "sheet": "23",
+     "cell": 18
+    },
+    {
+     "id": "saint-bident",
+     "cardID": 2316,
+     "sheet": "23",
+     "cell": 16
+    },
+    {
+     "id": "bountiful-light",
+     "cardID": 2320,
+     "sheet": "23",
+     "cell": 20
+    },
+    {
+     "id": "bountiful-sunlight",
+     "cardID": 2319,
+     "sheet": "23",
+     "cell": 19
+    }
+   ]
+  },
+  {
+   "id": "classdeck-57",
+   "guid": "8ee2a5",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "23": {
+     "image": "/dark-souls/cards-core-treasure-s23.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s23-back.jpg",
+     "uniqueBack": false
+    },
+    "24": {
+     "image": "/dark-souls/cards-core-treasure-s24.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s24-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "rotten-ghru-dagger",
+     "cardID": 2416,
+     "sheet": "24",
+     "cell": 16
+    },
+    {
+     "id": "composite-bow",
+     "cardID": 2418,
+     "sheet": "24",
+     "cell": 18
+    },
+    {
+     "id": "spotted-whip",
+     "cardID": 2417,
+     "sheet": "24",
+     "cell": 17
+    },
+    {
+     "id": "hornet-ring",
+     "cardID": 2322,
+     "sheet": "23",
+     "cell": 22
+    },
+    {
+     "id": "shadow-armour",
+     "cardID": 2321,
+     "sheet": "23",
+     "cell": 21
+    }
+   ]
+  },
+  {
+   "id": "classdeck-58",
+   "guid": "551cc9",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "23": {
+     "image": "/dark-souls/cards-core-treasure-s23.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s23-back.jpg",
+     "uniqueBack": false
+    },
+    "24": {
+     "image": "/dark-souls/cards-core-treasure-s24.webp",
+     "w": 3902,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-core-treasure-s24-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "carthus-curved-sword",
+     "cardID": 2421,
+     "sheet": "24",
+     "cell": 21
+    },
+    {
+     "id": "lucerne",
+     "cardID": 2422,
+     "sheet": "24",
+     "cell": 22
+    },
+    {
+     "id": "umbral-dagger",
+     "cardID": 2419,
+     "sheet": "24",
+     "cell": 19
+    },
+    {
+     "id": "alva-armour",
+     "cardID": 2420,
+     "sheet": "24",
+     "cell": 20
+    },
+    {
+     "id": "elkhorn-round-shield",
+     "cardID": 2323,
+     "sheet": "23",
+     "cell": 23
+    }
+   ]
+  },
+  {
+   "id": "classdeck-59",
+   "guid": "fc31ac",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "torch",
+     "cardID": 2531,
+     "sheet": "25",
+     "cell": 31
+    },
+    {
+     "id": "magic-shield",
+     "cardID": 2535,
+     "sheet": "25",
+     "cell": 35
+    },
+    {
+     "id": "faron-flashsword",
+     "cardID": 2532,
+     "sheet": "25",
+     "cell": 32
+    },
+    {
+     "id": "aural-decoy",
+     "cardID": 2533,
+     "sheet": "25",
+     "cell": 33
+    },
+    {
+     "id": "dragonscale-armour",
+     "cardID": 2534,
+     "sheet": "25",
+     "cell": 34
+    }
+   ]
+  },
+  {
+   "id": "classdeck-60",
+   "guid": "3fde62",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "crystal-magic-weapon",
+     "cardID": 2538,
+     "sheet": "25",
+     "cell": 38
+    },
+    {
+     "id": "soul-greatsword",
+     "cardID": 2536,
+     "sheet": "25",
+     "cell": 36
+    },
+    {
+     "id": "crystal-hail",
+     "cardID": 2540,
+     "sheet": "25",
+     "cell": 40
+    },
+    {
+     "id": "bellowing-dragoncrest-ring",
+     "cardID": 2539,
+     "sheet": "25",
+     "cell": 39
+    },
+    {
+     "id": "homing-crystal-soulmass",
+     "cardID": 2537,
+     "sheet": "25",
+     "cell": 37
+    }
+   ]
+  },
+  {
+   "id": "classdeck-61",
+   "guid": "6b7e64",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "med-heal",
+     "cardID": 48100,
+     "sheet": "481",
+     "cell": 0
+    },
+    {
+     "id": "sacred-oath",
+     "cardID": 48101,
+     "sheet": "481",
+     "cell": 1
+    },
+    {
+     "id": "magic-barrier",
+     "cardID": 48102,
+     "sheet": "481",
+     "cell": 2
+    },
+    {
+     "id": "clerics-candlestick",
+     "cardID": 48103,
+     "sheet": "481",
+     "cell": 3
+    },
+    {
+     "id": "sunset-shield",
+     "cardID": 48104,
+     "sheet": "481",
+     "cell": 4
+    }
+   ]
+  },
+  {
+   "id": "classdeck-62",
+   "guid": "12bd1c",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "great-heal",
+     "cardID": 48109,
+     "sheet": "481",
+     "cell": 9
+    },
+    {
+     "id": "atonement",
+     "cardID": 48110,
+     "sheet": "481",
+     "cell": 10
+    },
+    {
+     "id": "magic-stoneplate-ring",
+     "cardID": 48111,
+     "sheet": "481",
+     "cell": 11
+    },
+    {
+     "id": "mornes-great-hammer",
+     "cardID": 48112,
+     "sheet": "481",
+     "cell": 12
+    },
+    {
+     "id": "archdeacon-robe",
+     "cardID": 48113,
+     "sheet": "481",
+     "cell": 13
+    }
+   ]
+  },
+  {
+   "id": "classdeck-63",
+   "guid": "01ea3e",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "binoculars",
+     "cardID": 48114,
+     "sheet": "481",
+     "cell": 14
+    },
+    {
+     "id": "buckler",
+     "cardID": 48115,
+     "sheet": "481",
+     "cell": 15
+    },
+    {
+     "id": "brass-armour",
+     "cardID": 48116,
+     "sheet": "481",
+     "cell": 16
+    },
+    {
+     "id": "broken-straight-sword",
+     "cardID": 48117,
+     "sheet": "481",
+     "cell": 17
+    },
+    {
+     "id": "dung-pie",
+     "cardID": 48118,
+     "sheet": "481",
+     "cell": 18
+    }
+   ]
+  },
+  {
+   "id": "classdeck-64",
+   "guid": "57a3b1",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "painting-guardians-curved-sword",
+     "cardID": 48122,
+     "sheet": "481",
+     "cell": 22
+    },
+    {
+     "id": "mirrah-armour",
+     "cardID": 48123,
+     "sheet": "481",
+     "cell": 23
+    },
+    {
+     "id": "black-knight-shield",
+     "cardID": 48124,
+     "sheet": "481",
+     "cell": 24
+    },
+    {
+     "id": "carthus-milkring",
+     "cardID": 48125,
+     "sheet": "481",
+     "cell": 25
+    },
+    {
+     "id": "great-club",
+     "cardID": 48126,
+     "sheet": "481",
+     "cell": 26
+    }
+   ]
+  },
+  {
+   "id": "classdeck-65",
+   "guid": "f914d8",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "crest-shield",
+     "cardID": 48127,
+     "sheet": "481",
+     "cell": 27
+    },
+    {
+     "id": "crystal-straight-sword",
+     "cardID": 48128,
+     "sheet": "481",
+     "cell": 28
+    },
+    {
+     "id": "warden-twinblades",
+     "cardID": 48129,
+     "sheet": "481",
+     "cell": 29
+    },
+    {
+     "id": "ring-of-favour",
+     "cardID": 48130,
+     "sheet": "481",
+     "cell": 30
+    },
+    {
+     "id": "black-leather-armour",
+     "cardID": 48131,
+     "sheet": "481",
+     "cell": 31
+    }
+   ]
+  },
+  {
+   "id": "classdeck-66",
+   "guid": "391ba0",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "wolf-ring",
+     "cardID": 48136,
+     "sheet": "481",
+     "cell": 36
+    },
+    {
+     "id": "eastern-armour",
+     "cardID": 48137,
+     "sheet": "481",
+     "cell": 37
+    },
+    {
+     "id": "drang-hammers",
+     "cardID": 48138,
+     "sheet": "481",
+     "cell": 38
+    },
+    {
+     "id": "onikiri-and-ubadachi",
+     "cardID": 48139,
+     "sheet": "481",
+     "cell": 39
+    },
+    {
+     "id": "large-leather-shield",
+     "cardID": 48140,
+     "sheet": "481",
+     "cell": 40
+    }
+   ]
+  },
+  {
+   "id": "classdeck-67",
+   "guid": "b29f64",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "fire-surge",
+     "cardID": 48141,
+     "sheet": "481",
+     "cell": 41
+    },
+    {
+     "id": "great-swamp-ring",
+     "cardID": 48142,
+     "sheet": "481",
+     "cell": 42
+    },
+    {
+     "id": "great-combustion",
+     "cardID": 48143,
+     "sheet": "481",
+     "cell": 43
+    },
+    {
+     "id": "cornyxs-robes",
+     "cardID": 48144,
+     "sheet": "481",
+     "cell": 44
+    },
+    {
+     "id": "immolation-tinder",
+     "cardID": 48145,
+     "sheet": "481",
+     "cell": 45
+    }
+   ]
+  },
+  {
+   "id": "classdeck-68",
+   "guid": "135ab4",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "rapport",
+     "cardID": 48150,
+     "sheet": "481",
+     "cell": 50
+    },
+    {
+     "id": "carthus-flame-arc",
+     "cardID": 48151,
+     "sheet": "481",
+     "cell": 51
+    },
+    {
+     "id": "fire-whip",
+     "cardID": 48152,
+     "sheet": "481",
+     "cell": 52
+    },
+    {
+     "id": "great-chaos-fireball",
+     "cardID": 48153,
+     "sheet": "481",
+     "cell": 53
+    },
+    {
+     "id": "stone-parma",
+     "cardID": 48154,
+     "sheet": "481",
+     "cell": 54
+    }
+   ]
+  },
+  {
+   "id": "classdeck-69",
+   "guid": "cd5f1c",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "black-hand-armour",
+     "cardID": 48155,
+     "sheet": "481",
+     "cell": 55
+    },
+    {
+     "id": "shotel",
+     "cardID": 48156,
+     "sheet": "481",
+     "cell": 56
+    },
+    {
+     "id": "obscuring-ring",
+     "cardID": 48157,
+     "sheet": "481",
+     "cell": 57
+    },
+    {
+     "id": "small-leather-shield",
+     "cardID": 48158,
+     "sheet": "481",
+     "cell": 58
+    },
+    {
+     "id": "covetous-silver-serpent-ring",
+     "cardID": 48159,
+     "sheet": "481",
+     "cell": 59
+    }
+   ]
+  },
+  {
+   "id": "classdeck-70",
+   "guid": "9a8d72",
+   "name": null,
+   "container": null,
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "dragonrider-bow",
+     "cardID": 48164,
+     "sheet": "481",
+     "cell": 64
+    },
+    {
+     "id": "royal-dirk",
+     "cardID": 48165,
+     "sheet": "481",
+     "cell": 65
+    },
+    {
+     "id": "man-serpent-hatchet",
+     "cardID": 48166,
+     "sheet": "481",
+     "cell": 66
+    },
+    {
+     "id": "hawkwoods-shield",
+     "cardID": 48167,
+     "sheet": "481",
+     "cell": 67
+    },
+    {
+     "id": "covetous-gold-serpent-ring",
+     "cardID": 48168,
+     "sheet": "481",
+     "cell": 68
+    }
+   ]
+  },
+  {
+   "id": "loose-s25",
+   "guid": null,
+   "name": null,
+   "container": "loose",
+   "sheets": {
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "sorcerer-robes",
+     "cardID": 2529,
+     "sheet": "25",
+     "cell": 29
+    },
+    {
+     "id": "leather-shield",
+     "cardID": 2528,
+     "sheet": "25",
+     "cell": 28
+    },
+    {
+     "id": "spiked-shield",
+     "cardID": 2541,
+     "sheet": "25",
+     "cell": 41
+    },
+    {
+     "id": "armour-of-thorns",
+     "cardID": 2542,
+     "sheet": "25",
+     "cell": 42
+    },
+    {
+     "id": "sorcerers-catalyst",
+     "cardID": 2530,
+     "sheet": "25",
+     "cell": 30
+    },
+    {
+     "id": "mail-breaker",
+     "cardID": 2527,
+     "sheet": "25",
+     "cell": 27
+    }
+   ]
+  },
+  {
+   "id": "loose-data",
+   "guid": null,
+   "name": null,
+   "container": "loose",
+   "sheets": {
+    "16": {
+     "image": "/dark-souls/cards-winged-knight-behaviour-s16.webp",
+     "w": 4096,
+     "h": 3824,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-winged-knight-behaviour-s16-back.webp",
+     "uniqueBack": true
+    },
+    "21": {
+     "image": "/dark-souls/cards-dancer-of-the-boreal-valley-behaviour-s21.jpg",
+     "w": 4096,
+     "h": 1092,
+     "cols": 10,
+     "rows": 2,
+     "back": "/dark-souls/cards-dancer-of-the-boreal-valley-behaviour-s21-back.jpg",
+     "uniqueBack": true
+    },
+    "25": {
+     "image": "/dark-souls/cards-boss-old-dragonslayer-s25.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-old-dragonslayer-s25-back.webp",
+     "uniqueBack": true
+    },
+    "26": {
+     "image": "/dark-souls/cards-boss-smelter-demon-s26.webp",
+     "w": 4096,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-boss-smelter-demon-s26-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "smelter-demon",
+     "cardID": 2603,
+     "sheet": "26",
+     "cell": 3
+    },
+    {
+     "id": "dancer-of-the-boreal-valley",
+     "cardID": 2101,
+     "sheet": "21",
+     "cell": 1
+    },
+    {
+     "id": "dragon-slayer-ornstein",
+     "cardID": 1652,
+     "sheet": "16",
+     "cell": 52
+    },
+    {
+     "id": "executioner-smough",
+     "cardID": 1646,
+     "sheet": "16",
+     "cell": 46
+    },
+    {
+     "id": "winged-knight",
+     "cardID": 1614,
+     "sheet": "16",
+     "cell": 14
+    },
+    {
+     "id": "old-dragonslayer",
+     "cardID": 2500,
+     "sheet": "25",
+     "cell": 0
+    },
+    {
+     "id": "gargoyle",
+     "cardID": 1631,
+     "sheet": "16",
+     "cell": 31
+    },
+    {
+     "id": "titanite-demon",
+     "cardID": 2102,
+     "sheet": "21",
+     "cell": 2
+    },
+    {
+     "id": "hollow-soldier",
+     "cardID": 1605,
+     "sheet": "16",
+     "cell": 5
+    },
+    {
+     "id": "boreal-outrider-knight",
+     "cardID": 1640,
+     "sheet": "16",
+     "cell": 40
+    },
+    {
+     "id": "crossbow-hollow",
+     "cardID": 1604,
+     "sheet": "16",
+     "cell": 4
+    },
+    {
+     "id": "witch-beatrice",
+     "cardID": 2560,
+     "sheet": "25",
+     "cell": 60
+    },
+    {
+     "id": "eygon-of-carim",
+     "cardID": 2555,
+     "sheet": "25",
+     "cell": 55
+    },
+    {
+     "id": "silver-knight-swordsman",
+     "cardID": 1602,
+     "sheet": "16",
+     "cell": 2
+    },
+    {
+     "id": "voracious-mimic",
+     "cardID": 2519,
+     "sheet": "25",
+     "cell": 19
+    },
+    {
+     "id": "hungry-mimic",
+     "cardID": 2511,
+     "sheet": "25",
+     "cell": 11
+    },
+    {
+     "id": "kirk-knight-of-thorns",
+     "cardID": 2543,
+     "sheet": "25",
+     "cell": 43
+    },
+    {
+     "id": "longfinger-kirk",
+     "cardID": 2549,
+     "sheet": "25",
+     "cell": 49
+    },
+    {
+     "id": "large-hollow-soldier",
+     "cardID": 1603,
+     "sheet": "16",
+     "cell": 3
+    },
+    {
+     "id": "silver-knight-greatbowman",
+     "cardID": 1601,
+     "sheet": "16",
+     "cell": 1
+    },
+    {
+     "id": "sentinel",
+     "cardID": 1600,
+     "sheet": "16",
+     "cell": 0
+    }
+   ]
+  },
+  {
+   "id": "reference",
+   "guid": null,
+   "name": null,
+   "container": "loose",
+   "sheets": {
+    "468": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "469": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "471": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "472": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "473": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "474": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "475": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "476": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "477": {
+     "image": "/dark-souls/cards-level-3-darkroot-encounter-s463.webp",
+     "w": 4048,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-3-darkroot-encounter-s463-back.webp",
+     "uniqueBack": true
+    },
+    "478": {
+     "image": "/dark-souls/cards-level-4-four-kings-encounter-s478.webp",
+     "w": 4096,
+     "h": 3896,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-four-kings-encounter-s478-back.webp",
+     "uniqueBack": true
+    },
+    "479": {
+     "image": "/dark-souls/cards-level-4-old-iron-king-encounter-s479.webp",
+     "w": 4096,
+     "h": 3900,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-level-4-old-iron-king-encounter-s479-back.webp",
+     "uniqueBack": true
+    },
+    "480": {
+     "image": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480.webp",
+     "w": 4096,
+     "h": 3890,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-black-dragon-kalameet-behaviour-cards-s480-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "c46839",
+     "cardID": 46839,
+     "sheet": "468",
+     "cell": 39
+    },
+    {
+     "id": "c46940",
+     "cardID": 46940,
+     "sheet": "469",
+     "cell": 40
+    },
+    {
+     "id": "c47141",
+     "cardID": 47141,
+     "sheet": "471",
+     "cell": 41
+    },
+    {
+     "id": "c47242",
+     "cardID": 47242,
+     "sheet": "472",
+     "cell": 42
+    },
+    {
+     "id": "c47343",
+     "cardID": 47343,
+     "sheet": "473",
+     "cell": 43
+    },
+    {
+     "id": "c47444",
+     "cardID": 47444,
+     "sheet": "474",
+     "cell": 44
+    },
+    {
+     "id": "c47545",
+     "cardID": 47545,
+     "sheet": "475",
+     "cell": 45
+    },
+    {
+     "id": "c47646",
+     "cardID": 47646,
+     "sheet": "476",
+     "cell": 46
+    },
+    {
+     "id": "c47747",
+     "cardID": 47747,
+     "sheet": "477",
+     "cell": 47
+    },
+    {
+     "id": "c47800",
+     "cardID": 47800,
+     "sheet": "478",
+     "cell": 0
+    },
+    {
+     "id": "c47900",
+     "cardID": 47900,
+     "sheet": "479",
+     "cell": 0
+    },
+    {
+     "id": "c48013",
+     "cardID": 48013,
+     "sheet": "480",
+     "cell": 13
+    }
+   ]
+  },
+  {
+   "id": "start-core",
+   "guid": null,
+   "name": null,
+   "container": "loose",
+   "sheets": {
+    "20": {
+     "image": "/dark-souls/cards-boss-winged-knight-s20.webp",
+     "w": 4096,
+     "h": 3072,
+     "cols": 10,
+     "rows": 5,
+     "back": "/dark-souls/cards-boss-winged-knight-s20-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "battle-axe",
+     "cardID": 2036,
+     "sheet": "20",
+     "cell": 36
+    },
+    {
+     "id": "northern-armour",
+     "cardID": 2034,
+     "sheet": "20",
+     "cell": 34
+    },
+    {
+     "id": "round-shield",
+     "cardID": 2035,
+     "sheet": "20",
+     "cell": 35
+    },
+    {
+     "id": "long-sword",
+     "cardID": 2039,
+     "sheet": "20",
+     "cell": 39
+    },
+    {
+     "id": "knight-armour",
+     "cardID": 2037,
+     "sheet": "20",
+     "cell": 37
+    },
+    {
+     "id": "kite-shield-2",
+     "cardID": 2038,
+     "sheet": "20",
+     "cell": 38
+    },
+    {
+     "id": "spear",
+     "cardID": 2032,
+     "sheet": "20",
+     "cell": 32
+    },
+    {
+     "id": "talisman",
+     "cardID": 2033,
+     "sheet": "20",
+     "cell": 33
+    },
+    {
+     "id": "herald-armour",
+     "cardID": 2030,
+     "sheet": "20",
+     "cell": 30
+    },
+    {
+     "id": "kite-shield",
+     "cardID": 2031,
+     "sheet": "20",
+     "cell": 31
+    },
+    {
+     "id": "estoc",
+     "cardID": 2042,
+     "sheet": "20",
+     "cell": 42
+    },
+    {
+     "id": "assassin-armour",
+     "cardID": 2040,
+     "sheet": "20",
+     "cell": 40
+    },
+    {
+     "id": "target-shield",
+     "cardID": 2041,
+     "sheet": "20",
+     "cell": 41
+    }
+   ]
+  },
+  {
+   "id": "start-extra",
+   "guid": null,
+   "name": null,
+   "container": "loose",
+   "sheets": {
+    "481": {
+     "image": "/dark-souls/cards-classdeck-61-s481.webp",
+     "w": 3870,
+     "h": 4096,
+     "cols": 10,
+     "rows": 7,
+     "back": "/dark-souls/cards-classdeck-61-s481-back.webp",
+     "uniqueBack": true
+    }
+   },
+   "cards": [
+    {
+     "id": "cleric-robes",
+     "cardID": 48105,
+     "sheet": "481",
+     "cell": 5
+    },
+    {
+     "id": "blue-wooden-shield",
+     "cardID": 48106,
+     "sheet": "481",
+     "cell": 6
+    },
+    {
+     "id": "mace",
+     "cardID": 48107,
+     "sheet": "481",
+     "cell": 7
+    },
+    {
+     "id": "sacred-chime",
+     "cardID": 48108,
+     "sheet": "481",
+     "cell": 8
+    },
+    {
+     "id": "loincloth",
+     "cardID": 48119,
+     "sheet": "481",
+     "cell": 19
+    },
+    {
+     "id": "plank-shield",
+     "cardID": 48120,
+     "sheet": "481",
+     "cell": 20
+    },
+    {
+     "id": "club",
+     "cardID": 48121,
+     "sheet": "481",
+     "cell": 21
+    },
+    {
+     "id": "sellsword-twinblade",
+     "cardID": 48132,
+     "sheet": "481",
+     "cell": 32
+    },
+    {
+     "id": "sellsword-twinblade-2",
+     "cardID": 48133,
+     "sheet": "481",
+     "cell": 33
+    },
+    {
+     "id": "wooden-shield",
+     "cardID": 48134,
+     "sheet": "481",
+     "cell": 34
+    },
+    {
+     "id": "sellsword-armour",
+     "cardID": 48135,
+     "sheet": "481",
+     "cell": 35
+    },
+    {
+     "id": "hand-axe",
+     "cardID": 48146,
+     "sheet": "481",
+     "cell": 46
+    },
+    {
+     "id": "caduceus-round-shield",
+     "cardID": 48147,
+     "sheet": "481",
+     "cell": 47
+    },
+    {
+     "id": "pyromancer-garb",
+     "cardID": 48148,
+     "sheet": "481",
+     "cell": 48
+    },
+    {
+     "id": "pyromancy-flame",
+     "cardID": 48149,
+     "sheet": "481",
+     "cell": 49
+    },
+    {
+     "id": "bandit-knife",
+     "cardID": 48160,
+     "sheet": "481",
+     "cell": 60
+    },
+    {
+     "id": "deserter-armour",
+     "cardID": 48161,
+     "sheet": "481",
+     "cell": 61
+    },
+    {
+     "id": "shortbow",
+     "cardID": 48162,
+     "sheet": "481",
+     "cell": 62
+    },
+    {
+     "id": "iron-round-shield",
+     "cardID": 48163,
+     "sheet": "481",
+     "cell": 63
+    }
+   ]
+  }
+ ],
+ "dice": {
+  "blue": {
+   "color": "blue",
+   "image": "/dark-souls/dice-blue.jpg",
+   "w": 302,
+   "h": 302,
+   "grid": {
+    "cols": 3,
+    "rows": 3
+   },
+   "count": 12
+  },
+  "dodge": {
+   "color": "dodge",
+   "image": "/dark-souls/dice-dodge.jpg",
+   "w": 302,
+   "h": 302,
+   "grid": {
+    "cols": 3,
+    "rows": 3
+   },
+   "count": 12
+  },
+  "black": {
+   "color": "black",
+   "image": "/dark-souls/dice-black.jpg",
+   "w": 302,
+   "h": 302,
+   "grid": {
+    "cols": 3,
+    "rows": 3
+   },
+   "count": 12
+  },
+  "orange": {
+   "color": "orange",
+   "image": "/dark-souls/dice-orange.jpg",
+   "w": 302,
+   "h": 302,
+   "grid": {
+    "cols": 3,
+    "rows": 3
+   },
+   "count": 12
+  }
+ },
+ "tokens": [
+  {
+   "id": "token-721e1e",
+   "guid": "721e1e",
+   "name": null,
+   "image": "/dark-souls/token-token-721e1e.png",
+   "w": 262,
+   "h": 262,
+   "backs": [
+    "/dark-souls/token-token-721e1e-back.png"
+   ],
+   "scale": 1.32
+  },
+  {
+   "id": "token-1cbaf2",
+   "guid": "1cbaf2",
+   "name": null,
+   "image": "/dark-souls/token-token-1cbaf2.png",
+   "w": 262,
+   "h": 262,
+   "backs": [
+    "/dark-souls/token-token-1cbaf2-back.png"
+   ],
+   "scale": 1.32
+  },
+  {
+   "id": "token-77829b",
+   "guid": "77829b",
+   "name": null,
+   "image": "/dark-souls/token-token-77829b.png",
+   "w": 262,
+   "h": 262,
+   "backs": [
+    "/dark-souls/token-token-77829b-back.png"
+   ],
+   "scale": 1.32
+  },
+  {
+   "id": "ref-64d0df",
+   "guid": "64d0df",
+   "name": null,
+   "image": "/dark-souls/token-ref-64d0df.png",
+   "w": 393,
+   "h": 393,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-ee80cc",
+   "guid": "ee80cc",
+   "name": null,
+   "image": "/dark-souls/token-ref-ee80cc.png",
+   "w": 392,
+   "h": 393,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-1d0b6c",
+   "guid": "1d0b6c",
+   "name": null,
+   "image": "/dark-souls/token-ref-1d0b6c.png",
+   "w": 433,
+   "h": 433,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-3d62c5",
+   "guid": "3d62c5",
+   "name": null,
+   "image": "/dark-souls/token-ref-3d62c5.png",
+   "w": 431,
+   "h": 433,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-f2c99c",
+   "guid": "f2c99c",
+   "name": null,
+   "image": "/dark-souls/token-ref-f2c99c.png",
+   "w": 392,
+   "h": 393,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-d87c6a",
+   "guid": "d87c6a",
+   "name": null,
+   "image": "/dark-souls/token-ref-d87c6a.png",
+   "w": 393,
+   "h": 393,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-ee268b",
+   "guid": "ee268b",
+   "name": null,
+   "image": "/dark-souls/token-ref-ee268b.png",
+   "w": 433,
+   "h": 433,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-e0af2a",
+   "guid": "e0af2a",
+   "name": null,
+   "image": "/dark-souls/token-ref-e0af2a.png",
+   "w": 431,
+   "h": 433,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-e793e2",
+   "guid": "e793e2",
+   "name": null,
+   "image": "/dark-souls/token-ref-e793e2.png",
+   "w": 433,
+   "h": 433,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-69b0af",
+   "guid": "69b0af",
+   "name": null,
+   "image": "/dark-souls/token-ref-69b0af.png",
+   "w": 431,
+   "h": 433,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-e389bd",
+   "guid": "e389bd",
+   "name": null,
+   "image": "/dark-souls/token-ref-e389bd.png",
+   "w": 392,
+   "h": 393,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-30bf44",
+   "guid": "30bf44",
+   "name": null,
+   "image": "/dark-souls/token-ref-30bf44.png",
+   "w": 393,
+   "h": 393,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-b1a692",
+   "guid": "b1a692",
+   "name": null,
+   "image": "/dark-souls/token-ref-b1a692.png",
+   "w": 393,
+   "h": 393,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-43736c",
+   "guid": "43736c",
+   "name": null,
+   "image": "/dark-souls/token-ref-43736c.png",
+   "w": 392,
+   "h": 393,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "fog-wall",
+   "guid": "f28a7c",
+   "name": "Fog Wall",
+   "image": "/dark-souls/token-fog-wall.png",
+   "w": 646,
+   "h": 216,
+   "backs": [],
+   "scale": 0.98
+  },
+  {
+   "id": "trap",
+   "guid": "071777",
+   "name": null,
+   "image": "/dark-souls/token-trap.png",
+   "w": 262,
+   "h": 262,
+   "backs": [
+    "/dark-souls/token-trap-back.png",
+    "/dark-souls/token-trap-back-2.png",
+    "/dark-souls/token-trap-back-3.png",
+    "/dark-souls/token-trap-back-4.png",
+    "/dark-souls/token-trap-back-5.png",
+    "/dark-souls/token-trap-back-6.png"
+   ],
+   "scale": 0.75
+  },
+  {
+   "id": "poison-token",
+   "guid": "6257c1",
+   "name": "Poison Token",
+   "image": "/dark-souls/token-poison-token.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "wound-counter-1",
+   "guid": "d3b2b6",
+   "name": "Wound Counter (1)",
+   "image": "/dark-souls/token-wound-counter-1.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "souls-1",
+   "guid": "e46501",
+   "name": "Souls (1)",
+   "image": "/dark-souls/token-souls-1.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "stagger-token",
+   "guid": "e3b24d",
+   "name": "Stagger Token",
+   "image": "/dark-souls/token-stagger-token.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "wound-counter-3",
+   "guid": "f4cb8b",
+   "name": "Wound Counter (3)",
+   "image": "/dark-souls/token-wound-counter-3.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "souls-3",
+   "guid": "685644",
+   "name": "Souls (3)",
+   "image": "/dark-souls/token-souls-3.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "frostbite-token",
+   "guid": "63f144",
+   "name": "Frostbite Token",
+   "image": "/dark-souls/token-frostbite-token.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "bleed-token",
+   "guid": "549edd",
+   "name": "Bleed Token",
+   "image": "/dark-souls/token-bleed-token.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "wound-counter-5",
+   "guid": "352b0c",
+   "name": "Wound Counter (5)",
+   "image": "/dark-souls/token-wound-counter-5.png",
+   "w": 263,
+   "h": 263,
+   "backs": [],
+   "scale": 0.67
+  },
+  {
+   "id": "souls-5",
+   "guid": "1b7922",
+   "name": "Souls (5)",
+   "image": "/dark-souls/token-souls-5.png",
+   "w": 261,
+   "h": 261,
+   "backs": [],
+   "scale": 0.67
+  },
+  {
+   "id": "invasion-token",
+   "guid": "4f7cfd",
+   "name": "Invasion token",
+   "image": "/dark-souls/token-invasion-token.png",
+   "w": 558,
+   "h": 556,
+   "backs": [
+    "/dark-souls/token-invasion-token-back.png",
+    "/dark-souls/token-invasion-token-back-2.png",
+    "/dark-souls/token-invasion-token-back-3.png"
+   ],
+   "scale": 1.06
+  },
+  {
+   "id": "souls-8",
+   "guid": "c51114",
+   "name": "Souls (8)",
+   "image": "/dark-souls/token-souls-8.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 0.67
+  },
+  {
+   "id": "chest-mimic",
+   "guid": "e5d7be",
+   "name": "Chest - Mimic?",
+   "image": "/dark-souls/token-chest-mimic.webp",
+   "w": 589,
+   "h": 814,
+   "backs": [
+    "/dark-souls/token-chest-mimic-back.webp",
+    "/dark-souls/token-chest-mimic-back-2.webp"
+   ],
+   "scale": 1.91
+  },
+  {
+   "id": "ember",
+   "guid": "c3587d",
+   "name": "Ember",
+   "image": "/dark-souls/token-ember.png",
+   "w": 262,
+   "h": 262,
+   "backs": [],
+   "scale": 0.67
+  },
+  {
+   "id": "tombstone",
+   "guid": "63abb2",
+   "name": "Tombstone",
+   "image": "/dark-souls/token-tombstone.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "chest-normal",
+   "guid": "772d48",
+   "name": "Chest - Normal",
+   "image": "/dark-souls/token-chest-normal.png",
+   "w": 378,
+   "h": 538,
+   "backs": [
+    "/dark-souls/token-chest-normal-back.png"
+   ],
+   "scale": 1.91
+  },
+  {
+   "id": "first-activation-token",
+   "guid": "cba101",
+   "name": "First Activation Token",
+   "image": "/dark-souls/token-first-activation-token.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "aggro-token",
+   "guid": "43dce6",
+   "name": "Aggro Token",
+   "image": "/dark-souls/token-aggro-token.png",
+   "w": 446,
+   "h": 461,
+   "backs": [],
+   "scale": 1.06
+  },
+  {
+   "id": "ref-705789",
+   "guid": "705789",
+   "name": null,
+   "image": "/dark-souls/token-ref-705789.png",
+   "w": 391,
+   "h": 393,
+   "backs": [],
+   "scale": 1.366,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "bonfire",
+   "guid": "acb35c",
+   "name": "Bonfire",
+   "image": "/dark-souls/token-bonfire.png",
+   "w": 393,
+   "h": 393,
+   "backs": [],
+   "scale": 1.366
+  },
+  {
+   "id": "barrel",
+   "guid": "ca620e",
+   "name": "Barrel",
+   "image": "/dark-souls/token-barrel.png",
+   "w": 325,
+   "h": 325,
+   "backs": [
+    "/dark-souls/token-barrel-back.png"
+   ],
+   "scale": 1.31
+  },
+  {
+   "id": "token-2c5c37",
+   "guid": "2c5c37",
+   "name": null,
+   "image": "/dark-souls/token-token-2c5c37.png",
+   "w": 85,
+   "h": 81,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "token-24631d",
+   "guid": "24631d",
+   "name": null,
+   "image": "/dark-souls/token-token-24631d.png",
+   "w": 89,
+   "h": 89,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "token-9bf6f0",
+   "guid": "9bf6f0",
+   "name": null,
+   "image": "/dark-souls/token-token-9bf6f0.png",
+   "w": 88,
+   "h": 88,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "token-6f0a82",
+   "guid": "6f0a82",
+   "name": null,
+   "image": "/dark-souls/token-token-6f0a82.png",
+   "w": 88,
+   "h": 88,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "token-6ab18f",
+   "guid": "6ab18f",
+   "name": null,
+   "image": "/dark-souls/token-token-6ab18f.png",
+   "w": 88,
+   "h": 88,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "ref-f61ba6",
+   "guid": "f61ba6",
+   "name": null,
+   "image": "/dark-souls/token-ref-f61ba6.webp",
+   "w": 1725,
+   "h": 1744,
+   "backs": [],
+   "scale": 1.997,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-620396",
+   "guid": "620396",
+   "name": null,
+   "image": "/dark-souls/token-ref-620396.png",
+   "w": 445,
+   "h": 232,
+   "backs": [],
+   "scale": 1,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-da7df6",
+   "guid": "da7df6",
+   "name": null,
+   "image": "/dark-souls/token-ref-da7df6.png",
+   "w": 457,
+   "h": 235,
+   "backs": [],
+   "scale": 1,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-b420ea",
+   "guid": "b420ea",
+   "name": null,
+   "image": "/dark-souls/token-ref-b420ea.png",
+   "w": 450,
+   "h": 238,
+   "backs": [],
+   "scale": 1,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "ref-bd1449",
+   "guid": "bd1449",
+   "name": null,
+   "image": "/dark-souls/token-ref-bd1449.png",
+   "w": 462,
+   "h": 246,
+   "backs": [],
+   "scale": 1,
+   "note": "unnamed reference/condition chart piece"
+  },
+  {
+   "id": "calamity-token",
+   "guid": "01f8d3",
+   "name": "Calamity Token",
+   "image": "/dark-souls/token-calamity-token.png",
+   "w": 229,
+   "h": 256,
+   "backs": [],
+   "scale": 0.581
+  },
+  {
+   "id": "warrior-moveable-healthbar",
+   "guid": "f0da63",
+   "name": "Warrior Moveable Healthbar",
+   "image": "/dark-souls/healthbar-warrior.jpg",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "knight-moveable-healthbar",
+   "guid": "ac79ea",
+   "name": "Knight Moveable Healthbar",
+   "image": "/dark-souls/healthbar-knight.png",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "herald-moveable-healthbar",
+   "guid": "04c287",
+   "name": "Herald Moveable Healthbar",
+   "image": "/dark-souls/healthbar-herald.png",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "assassin-moveable-healthbar",
+   "guid": "bd7433",
+   "name": "Assassin Moveable Healthbar",
+   "image": "/dark-souls/healthbar-assassin.png",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "sorcerer-moveable-healthbar",
+   "guid": "e1f9e5",
+   "name": "Sorcerer Moveable Healthbar",
+   "image": "/dark-souls/healthbar-sorcerer.jpg",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "thief-moveable-healthbar",
+   "guid": "13b7a8",
+   "name": "Thief Moveable Healthbar",
+   "image": "/dark-souls/healthbar-thief.jpg",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "token-7cf0d5",
+   "guid": "7cf0d5",
+   "name": null,
+   "image": "/dark-souls/token-token-7cf0d5.png",
+   "w": 226,
+   "h": 221,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "deprived-moveable-healthbar",
+   "guid": "a4904a",
+   "name": "Deprived Moveable Healthbar",
+   "image": "/dark-souls/healthbar-deprived.jpg",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "cleric-moveable-healthbar",
+   "guid": "7a7534",
+   "name": "Cleric Moveable Healthbar",
+   "image": "/dark-souls/healthbar-cleric.jpg",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "mercenary-moveable-healthbar",
+   "guid": "c17224",
+   "name": "Mercenary Moveable Healthbar",
+   "image": "/dark-souls/healthbar-mercenary.jpg",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "pyromancer-moveable-healthbar",
+   "guid": "f6ae99",
+   "name": "Pyromancer Moveable Healthbar",
+   "image": "/dark-souls/healthbar-pyromancer.jpg",
+   "w": 1500,
+   "h": 152,
+   "backs": [],
+   "scale": 1
+  },
+  {
+   "id": "token-540510",
+   "guid": "540510",
+   "name": null,
+   "image": "/dark-souls/token-token-540510.png",
+   "w": 325,
+   "h": 331,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "token-dc46c9",
+   "guid": "dc46c9",
+   "name": null,
+   "image": "/dark-souls/token-token-dc46c9.png",
+   "w": 332,
+   "h": 338,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "token-fc229c",
+   "guid": "fc229c",
+   "name": null,
+   "image": "/dark-souls/token-token-fc229c.png",
+   "w": 325,
+   "h": 330,
+   "backs": [],
+   "scale": 0.5
+  },
+  {
+   "id": "token-817444",
+   "guid": "817444",
+   "name": null,
+   "image": "/dark-souls/token-token-817444.png",
+   "w": 330,
+   "h": 332,
+   "backs": [],
+   "scale": 0.5
+  }
+ ],
+ "healthDials": [
+  {
+   "id": "warrior",
+   "guid": "f0da63",
+   "image": "/dark-souls/healthbar-warrior.jpg",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "knight",
+   "guid": "ac79ea",
+   "image": "/dark-souls/healthbar-knight.png",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "herald",
+   "guid": "04c287",
+   "image": "/dark-souls/healthbar-herald.png",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "assassin",
+   "guid": "bd7433",
+   "image": "/dark-souls/healthbar-assassin.png",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "sorcerer",
+   "guid": "e1f9e5",
+   "image": "/dark-souls/healthbar-sorcerer.jpg",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "thief",
+   "guid": "13b7a8",
+   "image": "/dark-souls/healthbar-thief.jpg",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "deprived",
+   "guid": "a4904a",
+   "image": "/dark-souls/healthbar-deprived.jpg",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "cleric",
+   "guid": "7a7534",
+   "image": "/dark-souls/healthbar-cleric.jpg",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "mercenary",
+   "guid": "c17224",
+   "image": "/dark-souls/healthbar-mercenary.jpg",
+   "w": 1500,
+   "h": 152
+  },
+  {
+   "id": "pyromancer",
+   "guid": "f6ae99",
+   "image": "/dark-souls/healthbar-pyromancer.jpg",
+   "w": 1500,
+   "h": 152
+  }
+ ],
+ "bossDial": {
+  "face": "/dark-souls/boss-dial.webp",
+  "back": "/dark-souls/boss-dial-back.webp",
+  "knobMesh": "/dark-souls/dial-knob.obj",
+  "instructions": "Lock the top half of the dial (The part with the Boss name and image)\n\nUse the knob attached to that segment to rotate the dial\n\nIf it isn't working, make sure you didn't lock the section of the dial that displays the numbers\n\nUse the Ornstein dial for the \"Corrupted Dragon Slayer\"  mini boss"
+ }
+}
