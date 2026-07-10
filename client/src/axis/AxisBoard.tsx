@@ -8,6 +8,7 @@ import {
   type AxisView, type PowerKey, type UnitKey,
 } from '@bge/shared';
 import { AxisTable, useAxisManifest, useSceneReady, SPACE_CENTER, px2r, type FocusTarget, type StagedStack } from './AxisScene';
+import { AxisBattleStage, AfterAction } from './AxisBattleStage';
 import { playSfx } from '../sfx';
 
 const PHASE_LABEL: Record<string, string> = {
@@ -296,7 +297,8 @@ export default function AxisBoard({ view }: { view: AxisView }) {
         </div>
       </div>
 
-      {view.combat && <BattlePanel view={view} art={(manifest as { boards?: { image?: string }[] }).boards?.[0]?.image ?? undefined} />}
+      {view.combat && <AxisBattleStage view={view} />}
+      <AfterAction view={view} />
       {view.phase === 'income' && !view.winner && (
         <ProductionScreen view={view} art={(manifest as { boards?: { image?: string }[] }).boards?.[1]?.image ?? undefined} />
       )}

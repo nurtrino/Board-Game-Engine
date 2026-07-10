@@ -557,6 +557,25 @@ function finishBattle(s: AxisState): void {
       captureTerritory(s, c.space, power);
     }
   }
+  // after-action report for the TV: losses per side from the battle log
+  const atkLost: Partial<Record<UnitKey, number>> = {};
+  const defLost: Partial<Record<UnitKey, number>> = {};
+  for (const e of b.log) {
+    for (const cas of e.casualties) {
+      const tgt = cas.side === 'attacker' ? atkLost : defLost;
+      tgt[cas.key] = (tgt[cas.key] ?? 0) + 1;
+    }
+  }
+  const defPowers = [...new Set(b.defender.map((u) => u.power))];
+  s.lastBattle = {
+    seq: c.id,
+    space: c.space,
+    attacker: power,
+    defender: (defPowers[0] ?? null) as PowerKey | 'china' | null,
+    status: b.status,
+    atkLost,
+    defLost,
+  };
   s.log.push({ round: s.round, power, space: c.space, text: battleOutcomeText(s, c) });
   s.combat = null;
   s.phase = 'combatMove';

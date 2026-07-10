@@ -57,7 +57,7 @@ export type BattleStatus =
   | 'retreated'
   | 'standoff'; // neither side can score a hit (e.g. transports vs transports)
 
-export interface RollDetail { key: UnitKey; value: number; hitOn: number; hit: boolean }
+export interface RollDetail { key: UnitKey; value: number; hitOn: number; hit: boolean; uid: number }
 
 // Hits are bucketed by what scored them, because assignment rules differ:
 // AA hits only fell aircraft; sub hits only sink sea units; air hits can't
@@ -402,7 +402,7 @@ export function resolveRoll(s: BattleState, values: number[]): void {
     const value = values[i];
     const hit = value <= d.hitOn;
     if (hit) { hits++; bySource.set(d.source, (bySource.get(d.source) ?? 0) + 1); }
-    details.push({ key: d.key, value, hitOn: d.hitOn, hit });
+    details.push({ key: d.key, value, hitOn: d.hitOn, hit, uid: d.uid });
   });
   const buckets = [...bySource.entries()].map(([source, n]) => ({ source, hits: n }));
 

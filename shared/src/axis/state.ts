@@ -95,6 +95,16 @@ export interface AxisState {
   factoryDamage: Record<string, number>;
   combat: ActiveCombat | null;
   combatSeq: number;
+  // after-action report of the most recent battle (TV shows the losses)
+  lastBattle: {
+    seq: number;
+    space: string;
+    attacker: PowerKey;
+    defender: PowerKey | 'china' | null;
+    status: string;
+    atkLost: Partial<Record<UnitKey, number>>;
+    defLost: Partial<Record<UnitKey, number>>;
+  } | null;
   awaitingChart?: boolean; // RND breakthrough rolled; chart choice pending
   pendings: AxisPending[];
   pendingSeq: number;
@@ -173,6 +183,7 @@ export function createAxis(
     factoryDamage: {},
     combat: null,
     combatSeq: 1,
+    lastBattle: null,
     pendings: [],
     pendingSeq: 1,
     contested: [],
@@ -291,6 +302,7 @@ export interface AxisView {
     dice: { kind: string; values: number[] } | null;
   }) | null;
   pendings: AxisPending[];
+  lastBattle: AxisState['lastBattle'];
   vc: { axis: number; allies: number; goal: number };
   winner: 'axis' | 'allies' | null;
   chinaGrant: number;
@@ -333,6 +345,7 @@ export function axisViewFor(s: AxisState, idx: MapIndex): AxisView {
         }
       : null,
     pendings: s.pendings,
+    lastBattle: s.lastBattle,
     vc: {
       axis: vcCount(s, idx, 'axis'),
       allies: vcCount(s, idx, 'allies'),

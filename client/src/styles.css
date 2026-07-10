@@ -806,3 +806,40 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .ax-loading-bar span { display: block; height: 100%; width: 40%; border-radius: 2px; background: #e8b450;
   animation: ax-load-slide 1.2s ease-in-out infinite alternate; }
 @keyframes ax-load-slide { 0% { margin-left: 0; } 100% { margin-left: 60%; } }
+
+/* ---------- A&A: the expanded battle stage on the TV ---------- */
+.ax-stage { position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%); z-index: 18;
+  width: min(1500px, 94vw); height: min(76vh, 780px); display: flex; gap: 12px; }
+.ax-stage-sim { position: relative; flex: 1; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--brd-2); background: #05070b; box-shadow: 0 24px 80px rgba(0,0,0,.65); }
+.ax-stage-sim > * { position: absolute !important; inset: 0; }
+.ax-stage-rail { width: 330px; display: flex; flex-direction: column; gap: 10px; }
+.ax-stage-title { display: flex; align-items: baseline; gap: .5rem; font-size: 1.05rem; font-weight: 800;
+  letter-spacing: .04em; text-transform: uppercase; padding: .6rem .8rem; border-radius: 12px;
+  background: var(--glass); border: 1px solid var(--brd-2); }
+.ax-stage-title em { font-style: normal; font-weight: 500; opacity: .6; font-size: .8rem; }
+.ax-dice-tray { padding: .7rem .8rem; border-radius: 12px; background: rgba(18, 26, 18, .8);
+  border: 1px solid var(--brd-2); min-height: 96px; }
+.ax-dice-row { display: flex; flex-wrap: wrap; gap: 6px; margin: .5rem 0 .35rem; }
+.ax-die { width: 40px; height: 46px; border-radius: 8px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 1px; background: #f2eee0; color: #1a1a1a; border: 1px solid #999;
+  animation: ax-die-in .3s ease both; box-shadow: 0 3px 6px rgba(0,0,0,.4); }
+.ax-die b { font-size: 1.15rem; line-height: 1; }
+.ax-die em { font-style: normal; font-size: .52rem; letter-spacing: .04em; text-transform: uppercase; opacity: .6; }
+.ax-die.hit { background: #e8b450; border-color: #8a6a20; }
+@keyframes ax-die-in { 0% { opacity: 0; transform: translateY(-14px) rotate(-14deg); } 100% { opacity: 1; transform: none; } }
+.ax-dice-text { font-size: .8rem; opacity: .8; }
+.ax-sideboard { padding: .6rem .8rem; border-radius: 12px; background: var(--glass); border: 1px solid var(--brd-2); }
+.ax-sideboard-head { font-weight: 800; letter-spacing: .06em; text-transform: uppercase; font-size: .85rem; }
+.ax-sideboard-bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.08); overflow: hidden; margin: .35rem 0 .45rem; }
+.ax-sideboard-bar span { display: block; height: 100%; transition: width .5s ease; }
+.ax-sideboard-units { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: .78rem; }
+.ax-sideboard-units.lost { opacity: .55; text-decoration: line-through; margin-top: .3rem; }
+.ax-stage-waiting { padding: .55rem .8rem; border-radius: 10px; font-size: .82rem; color: #e8b450;
+  border: 1px solid rgba(232,180,74,.45); }
+.ax-afteraction { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 21;
+  padding: 1rem 1.4rem; border-radius: 16px; border: 1px solid var(--brd-2); min-width: 380px;
+  animation: ax-announce-in .4s ease both; }
+.ax-afteraction-status { font-size: 1.25rem; font-weight: 750; margin: .3rem 0 .55rem; }
+.ax-afteraction-row { display: flex; gap: .6rem; font-size: .92rem; padding: .18rem 0; }
+.ax-afteraction-row span:first-child { min-width: 120px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: .8rem; }
