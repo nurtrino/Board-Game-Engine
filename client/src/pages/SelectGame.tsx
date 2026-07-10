@@ -39,7 +39,7 @@ const GAMES = [
   {
     id: 'politik',
     name: 'Politik',
-    logo: '/politik/logo.webp',
+    logo: '/politik/box.webp',
   },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
