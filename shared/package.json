@@ -6,7 +6,10 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "echo \"no tests\""
+    "test": "npm run test:politik && npm run test:axis && npm run test:darksouls",
+    "test:politik": "tsx src/politik/politik-test.ts",
+    "test:axis": "tsx src/axis/air-movement-test.ts && tsx src/axis/axis-air-actions-test.ts && tsx src/axis/axis-test.ts && tsx src/axis/axis-battle-test.ts && tsx src/axis/axis-china-test.ts",
+    "test:darksouls": "tsx src/darksouls/darksouls-test.ts"
   },
   "devDependencies": {
     "tsx": "^4.19.0",
