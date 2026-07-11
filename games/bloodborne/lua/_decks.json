@@ -1,0 +1,1250 @@
+[
+ {
+  "path": "/Ebrietas, Daughter of the Cosmos/Ebrietas, Daughter of the Cosmos",
+  "nick": "Ebrietas, Daughter of the Cosmos Phase 2",
+  "guid": "873e36",
+  "n": 5
+ },
+ {
+  "path": "/Ebrietas, Daughter of the Cosmos/Ebrietas, Daughter of the Cosmos",
+  "nick": "Ebrietas, Daughter of the Cosmos Phase 1",
+  "guid": "0eee83",
+  "n": 5
+ },
+ {
+  "path": "/Mergo's Wet Nurse/Mergo's Wet Nurse",
+  "nick": "Mergo's Wet Nurse Phase 2",
+  "guid": "267a2b",
+  "n": 5
+ },
+ {
+  "path": "/Mergo's Wet Nurse/Mergo's Wet Nurse",
+  "nick": "Mergo's Wet Nurse Phase 1",
+  "guid": "249941",
+  "n": 5
+ },
+ {
+  "path": "/Martyr Logarius/Martyr Logarius",
+  "nick": "Martyr Logarius Phase 2",
+  "guid": "46820d",
+  "n": 5
+ },
+ {
+  "path": "/Martyr Logarius/Martyr Logarius",
+  "nick": "Martyr Logarius Phase 1",
+  "guid": "7739ac",
+  "n": 5
+ },
+ {
+  "path": "/Annalise, Queen of the Vilebloods/Annalise, Queen of the Vilebloods",
+  "nick": "Annalise, Queen of the Vilebloods",
+  "guid": "d2fc10",
+  "n": 5
+ },
+ {
+  "path": "/Blood-starved Beast/Blood-Starved Beast",
+  "nick": "Blood-Starved Beast Phase 2",
+  "guid": "026585",
+  "n": 5
+ },
+ {
+  "path": "/Blood-starved Beast/Blood-Starved Beast",
+  "nick": "Blood-Starved Beast Phase 1",
+  "guid": "38cbdd",
+  "n": 5
+ },
+ {
+  "path": "/Vicar Amelia/Vicar Amelia",
+  "nick": "Vicar Amelia Phase 2",
+  "guid": "03bb96",
+  "n": 5
+ },
+ {
+  "path": "/Vicar Amelia/Vicar Amelia",
+  "nick": "Vicar Amelia Phase 2",
+  "guid": "73b5a8",
+  "n": 5
+ },
+ {
+  "path": "/Vicar Amelia/Vicar Amelia",
+  "nick": "Vicar Amelia Phase 1",
+  "guid": "b57791",
+  "n": 5
+ },
+ {
+  "path": "/Cleric Beast/Cleric Beast",
+  "nick": "Cleric Beast Phase 2",
+  "guid": "5c3d23",
+  "n": 5
+ },
+ {
+  "path": "/Cleric Beast/Cleric Beast",
+  "nick": "Cleric Beast Phase 2",
+  "guid": "eeae99",
+  "n": 5
+ },
+ {
+  "path": "/Cleric Beast/Cleric Beast",
+  "nick": "Cleric Beast Phase 1",
+  "guid": "d3af83",
+  "n": 5
+ },
+ {
+  "path": "/Father Gascoigne/Father Gascoigne",
+  "nick": "Father Gascoigne Phase 2",
+  "guid": "b2bb9f",
+  "n": 5
+ },
+ {
+  "path": "/Father Gascoigne/Father Gascoigne",
+  "nick": "Father Gascoigne Phase 2",
+  "guid": "2d28a5",
+  "n": 5
+ },
+ {
+  "path": "/Father Gascoigne/Father Gascoigne",
+  "nick": "Father Gascoigne Phase 1",
+  "guid": "45fa55",
+  "n": 5
+ },
+ {
+  "path": "/Father Gascoigne Transformed/Father Gascoigne Transformed",
+  "nick": "Father Gascoigne Transformed Phase 2",
+  "guid": "7a82ee",
+  "n": 5
+ },
+ {
+  "path": "/Father Gascoigne Transformed/Father Gascoigne Transformed",
+  "nick": "Father Gascoigne Transformed Phase 1",
+  "guid": "b12e8f",
+  "n": 5
+ },
+ {
+  "path": "/Watchdog of the Old Lords/Watchdog of the Old Lords",
+  "nick": "Watchdog of the Old Lords Phase 2",
+  "guid": "538c93",
+  "n": 5
+ },
+ {
+  "path": "/Watchdog of the Old Lords/Watchdog of the Old Lords",
+  "nick": "Watchdog of the Old Lords Phase 1",
+  "guid": "7e0308",
+  "n": 5
+ },
+ {
+  "path": "/Undead Giant/Undead Giant",
+  "nick": "Undead Giant Phase 2",
+  "guid": "e39a8f",
+  "n": 5
+ },
+ {
+  "path": "/Undead Giant/Undead Giant",
+  "nick": "Undead Giant Phase 1",
+  "guid": "aaa1f3",
+  "n": 5
+ },
+ {
+  "path": "/Yharnam, Pthumerian Queen/Yharnam, Pthumerian Queen",
+  "nick": "Yharnam, Pthumerian Queen Phase 2",
+  "guid": "634950",
+  "n": 5
+ },
+ {
+  "path": "/Yharnam, Pthumerian Queen/Yharnam, Pthumerian Queen",
+  "nick": "Yharnam, Pthumerian Queen Phase 1",
+  "guid": "35b27c",
+  "n": 5
+ },
+ {
+  "path": "/Pthumerian Descendant/Pthumerian Descendant",
+  "nick": "Pthumerian Descendant Phase 2",
+  "guid": "806d77",
+  "n": 5
+ },
+ {
+  "path": "/Pthumerian Descendant/Pthumerian Descendant",
+  "nick": "Pthumerian Descendant Phase 1",
+  "guid": "1abb7b",
+  "n": 5
+ },
+ {
+  "path": "/Beast-Possessed Soul/Beast-Possessed Soul",
+  "nick": "Beast-Possessed Soul Phase 2",
+  "guid": "449f81",
+  "n": 5
+ },
+ {
+  "path": "/Beast-Possessed Soul/Beast-Possessed Soul",
+  "nick": "Beast-Possessed Soul Phase 1",
+  "guid": "16cab9",
+  "n": 5
+ },
+ {
+  "path": "/Large Nightmare Apostle/Large Nightmare Apostle",
+  "nick": "Large Nightmare Apostle Phase 2",
+  "guid": "29022c",
+  "n": 5
+ },
+ {
+  "path": "/Large Nightmare Apostle/Large Nightmare Apostle",
+  "nick": "Large Nightmare Apostle Phase 1",
+  "guid": "5aa897",
+  "n": 5
+ },
+ {
+  "path": "/The One Reborn/The One Reborn",
+  "nick": "The One Reborn Phase 2",
+  "guid": "c2e50b",
+  "n": 5
+ },
+ {
+  "path": "/The One Reborn/The One Reborn",
+  "nick": "The One Reborn Phase 1",
+  "guid": "1c2f83",
+  "n": 5
+ },
+ {
+  "path": "/Yahar'gul Chapter 3 Deck",
+  "nick": "Yahar'gul Chapter 3 Deck",
+  "guid": "d19b1d",
+  "n": 6
+ },
+ {
+  "path": "/Yahar'gul Chapter 2 Deck",
+  "nick": "Yahar'gul Chapter 2 Deck",
+  "guid": "941d7f",
+  "n": 6
+ },
+ {
+  "path": "/Gehrman, the First Hunter/Gehrman, the First Hunter",
+  "nick": "Gehrman Burial Blade Transformed",
+  "guid": "84d2be",
+  "n": 5
+ },
+ {
+  "path": "/Gehrman, the First Hunter/Gehrman, the First Hunter",
+  "nick": "Gehrman Burial Blade",
+  "guid": "08cb0c",
+  "n": 5
+ },
+ {
+  "path": "/Moon Presence/Moon Presence",
+  "nick": "Moon Presence Phase 2",
+  "guid": "77957a",
+  "n": 5
+ },
+ {
+  "path": "/Moon Presence/Moon Presence",
+  "nick": "Moon Presence Phase 1",
+  "guid": "43bb55",
+  "n": 5
+ },
+ {
+  "path": "/Mini-Boss Spawn Deck",
+  "nick": "Mini-Boss Spawn Deck",
+  "guid": "ae588b",
+  "n": 29
+ },
+ {
+  "path": "/Shadows of Yharnam/Shadows of Yharnam",
+  "nick": "Shadows of Yharnam Phase 2",
+  "guid": "17ffc1",
+  "n": 5
+ },
+ {
+  "path": "/Shadows of Yharnam/Shadows of Yharnam",
+  "nick": "Shadows of Yharnam Phase 1",
+  "guid": "2d89a9",
+  "n": 5
+ },
+ {
+  "path": "/Witch of Hemwick/Witch of Hemwick",
+  "nick": "Witch of Hemwick Phase 2",
+  "guid": "7cd4a3",
+  "n": 5
+ },
+ {
+  "path": "/Witch of Hemwick/Witch of Hemwick",
+  "nick": "Witch of Hemwick Phase 1",
+  "guid": "821b19",
+  "n": 5
+ },
+ {
+  "path": "/Dark Rites Deck",
+  "nick": "Dark Rites Deck",
+  "guid": "54c675",
+  "n": 5
+ },
+ {
+  "path": "/Rom, The Vacuous Spider/Rom, The Vacuous Spider",
+  "nick": "Rom, The Vacuous Spider Phase 2",
+  "guid": "d710d5",
+  "n": 5
+ },
+ {
+  "path": "/Rom, The Vacuous Spider/Rom, The Vacuous Spider",
+  "nick": "Rom, The Vacuous Spider Phase 1",
+  "guid": "f2baeb",
+  "n": 5
+ },
+ {
+  "path": "/Madness Deck",
+  "nick": "Madness Deck",
+  "guid": "5feffd",
+  "n": 8
+ },
+ {
+  "path": "/The Unseen Village Deck",
+  "nick": "The Unseen Village",
+  "guid": "d72592",
+  "n": 49
+ },
+ {
+  "path": "/Celestial Truths Deck",
+  "nick": "Celestial Truths",
+  "guid": "1418fb",
+  "n": 72
+ },
+ {
+  "path": "/Birth of Madness Deck",
+  "nick": "Birth of Madness",
+  "guid": "8bf018",
+  "n": 56
+ },
+ {
+  "path": "/The Hunt's End Deck",
+  "nick": "The Hunt's End",
+  "guid": "a64bb6",
+  "n": 26
+ },
+ {
+  "path": "/Queen's Legacy Deck",
+  "nick": "Queen's Legacy",
+  "guid": "d96501",
+  "n": 31
+ },
+ {
+  "path": "/Martyr's Legacy Deck",
+  "nick": "Martyr's Legacy",
+  "guid": "13dd00",
+  "n": 34
+ },
+ {
+  "path": "/Forsaken Legacy Deck",
+  "nick": "Forsaken Legacy",
+  "guid": "37eac7",
+  "n": 17
+ },
+ {
+  "path": "/The Forsaken Castle Deck",
+  "nick": "The Forsaken Castle",
+  "guid": "1e42e4",
+  "n": 20
+ },
+ {
+  "path": "/Forbidden Woods Deck",
+  "nick": "Forbidden Woods",
+  "guid": "f2e87f",
+  "n": 21
+ },
+ {
+  "path": "/Den of Vipers Deck",
+  "nick": "Den of Vipers",
+  "guid": "f8075c",
+  "n": 49
+ },
+ {
+  "path": "/Dark Rites Deck",
+  "nick": "Dark Rites",
+  "guid": "67476f",
+  "n": 61
+ },
+ {
+  "path": "/The Eldritch Truth Deck",
+  "nick": "The Eldritch Truth",
+  "guid": "687b4b",
+  "n": 49
+ },
+ {
+  "path": "/Forsaken Cainhurst Castle Tiles",
+  "nick": "Forsaken Cainhurst Castle Tiles",
+  "guid": "1d63ac",
+  "n": 11
+ },
+ {
+  "path": "/Forbidden Woods Map Tiles",
+  "nick": "Forbidden Woods Tiles",
+  "guid": "fc4cb3",
+  "n": 12
+ },
+ {
+  "path": "/Core Map Tiles",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 20
+ },
+ {
+  "path": "/Chalice Dungeon Map Tiles",
+  "nick": "Chalice Dungeon Map Tiles",
+  "guid": "2afa80",
+  "n": 12
+ },
+ {
+  "path": "/Chalice Rite Deck",
+  "nick": "Chalice Rites",
+  "guid": "e14d9f",
+  "n": 10
+ },
+ {
+  "path": "/Winter Lantern/Winter Lantern",
+  "nick": "",
+  "guid": "305a34",
+  "n": 2
+ },
+ {
+  "path": "/Chalice Trap Deck",
+  "nick": "Chalice Trap Deck",
+  "guid": "5a3a09",
+  "n": 20
+ },
+ {
+  "path": "/The Long Hunt Deck",
+  "nick": "The Long Hunt",
+  "guid": "027bfd",
+  "n": 64
+ },
+ {
+  "path": "/Upgrade Stat Deck",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Secrets of the Church Deck",
+  "nick": "Secrets of the Church",
+  "guid": "1a4c66",
+  "n": 66
+ },
+ {
+  "path": "/Basic Stat Deck",
+  "nick": "Basic Stat Deck",
+  "guid": "a99bed",
+  "n": 12
+ },
+ {
+  "path": "/Growing Madness Deck",
+  "nick": "Growing Madness",
+  "guid": "38bb51",
+  "n": 62
+ },
+ {
+  "path": "/Fall of Old Yharnam Deck",
+  "nick": "Fall of Old Yharnam",
+  "guid": "acb4ce",
+  "n": 58
+ },
+ {
+  "path": "/Enemy Action Deck",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Consumable Deck",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Reward Deck",
+  "nick": "Reward Deck",
+  "guid": "a89ed7",
+  "n": 25
+ },
+ {
+  "path": "/Firearm Deck",
+  "nick": "Firearm Deck",
+  "guid": "d07424",
+  "n": 7
+ },
+ {
+  "path": "/Bloodborne: TBG/Expansion Extras/Hunter's Dream Extras",
+  "nick": "Firearm Deck",
+  "guid": "557f55",
+  "n": 3
+ },
+ {
+  "path": "/Bloodborne: TBG/Expansion Extras/Hunter's Dream Extras",
+  "nick": "Reward Deck",
+  "guid": "20823c",
+  "n": 15
+ },
+ {
+  "path": "/Bloodborne: TBG/Expansion Extras/Forbidden Woods Extras",
+  "nick": "Firearm Deck",
+  "guid": "5fe912",
+  "n": 2
+ },
+ {
+  "path": "/Bloodborne: TBG/Expansion Extras/Forbidden Woods Extras",
+  "nick": "Reward Deck",
+  "guid": "63dd30",
+  "n": 21
+ },
+ {
+  "path": "/Bloodborne: TBG/Expansion Extras/Forsaken Cainhurst Castle Extras",
+  "nick": "Reward Deck",
+  "guid": "e83040",
+  "n": 7
+ },
+ {
+  "path": "/Bloodborne: TBG/Expansion Extras/Forsaken Cainhurst Castle Extras",
+  "nick": "Firearm Deck",
+  "guid": "2d6f39",
+  "n": 2
+ },
+ {
+  "path": "/The Long Hunt Campaign Bag/The Long Hunt Campaign Bag",
+  "nick": "The Long Hunt",
+  "guid": "027bfd",
+  "n": 64
+ },
+ {
+  "path": "/The Long Hunt Campaign Bag/The Long Hunt Campaign Bag",
+  "nick": "Enemies",
+  "guid": "e69e25",
+  "n": 3
+ },
+ {
+  "path": "/The Long Hunt Campaign Bag/The Long Hunt Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 20
+ },
+ {
+  "path": "/The Long Hunt Campaign Bag/The Long Hunt Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "d07424",
+  "n": 7
+ },
+ {
+  "path": "/The Long Hunt Campaign Bag/The Long Hunt Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/The Long Hunt Campaign Bag/The Long Hunt Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/The Long Hunt Campaign Bag/The Long Hunt Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/The Long Hunt Campaign Bag/The Long Hunt Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "a89ed7",
+  "n": 25
+ },
+ {
+  "path": "",
+  "nick": "Basic Stat Deck",
+  "guid": "a99bed",
+  "n": 12
+ },
+ {
+  "path": "",
+  "nick": "Basic Stat Deck",
+  "guid": "353806",
+  "n": 12
+ },
+ {
+  "path": "",
+  "nick": "Basic Stat Deck",
+  "guid": "be0b8c",
+  "n": 12
+ },
+ {
+  "path": "",
+  "nick": "Basic Stat Deck",
+  "guid": "93f59d",
+  "n": 12
+ },
+ {
+  "path": "/Fall of Old Yharnam Campaign Bag/Fall of Old Yharnam Campaign Bag",
+  "nick": "Enemies",
+  "guid": "6f98fd",
+  "n": 3
+ },
+ {
+  "path": "/Fall of Old Yharnam Campaign Bag/Fall of Old Yharnam Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 20
+ },
+ {
+  "path": "/Fall of Old Yharnam Campaign Bag/Fall of Old Yharnam Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Fall of Old Yharnam Campaign Bag/Fall of Old Yharnam Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Fall of Old Yharnam Campaign Bag/Fall of Old Yharnam Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Fall of Old Yharnam Campaign Bag/Fall of Old Yharnam Campaign Bag",
+  "nick": "Fall of Old Yharnam",
+  "guid": "acb4ce",
+  "n": 58
+ },
+ {
+  "path": "/Fall of Old Yharnam Campaign Bag/Fall of Old Yharnam Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "dadc7d",
+  "n": 7
+ },
+ {
+  "path": "/Fall of Old Yharnam Campaign Bag/Fall of Old Yharnam Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "188eb1",
+  "n": 25
+ },
+ {
+  "path": "/Secrets of the Church Campaign Bag/Secrets of the Church Campaign Bag",
+  "nick": "Secrets of the Church",
+  "guid": "1a4c66",
+  "n": 66
+ },
+ {
+  "path": "/Secrets of the Church Campaign Bag/Secrets of the Church Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 20
+ },
+ {
+  "path": "/Secrets of the Church Campaign Bag/Secrets of the Church Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Secrets of the Church Campaign Bag/Secrets of the Church Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Secrets of the Church Campaign Bag/Secrets of the Church Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Secrets of the Church Campaign Bag/Secrets of the Church Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "731ac7",
+  "n": 7
+ },
+ {
+  "path": "/Secrets of the Church Campaign Bag/Secrets of the Church Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "e2bdf4",
+  "n": 25
+ },
+ {
+  "path": "/Growing Madness Campaign Bag/Growing Madness Campaign Bag",
+  "nick": "Growing Madness",
+  "guid": "38bb51",
+  "n": 62
+ },
+ {
+  "path": "/Growing Madness Campaign Bag/Growing Madness Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 20
+ },
+ {
+  "path": "/Growing Madness Campaign Bag/Growing Madness Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Growing Madness Campaign Bag/Growing Madness Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Growing Madness Campaign Bag/Growing Madness Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Growing Madness Campaign Bag/Growing Madness Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "4ec469",
+  "n": 7
+ },
+ {
+  "path": "/Growing Madness Campaign Bag/Growing Madness Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "59b08e",
+  "n": 25
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag",
+  "nick": "Chalice Rites",
+  "guid": "e14d9f",
+  "n": 10
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag",
+  "nick": "Chalice Dungeon Map Tiles",
+  "guid": "2afa80",
+  "n": 12
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag",
+  "nick": "Chalice Trap Deck",
+  "guid": "5a3a09",
+  "n": 20
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Yharnam, Pthumerian Queen",
+  "nick": "Yharnam, Pthumerian Queen Phase 2",
+  "guid": "634950",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Yharnam, Pthumerian Queen",
+  "nick": "Yharnam, Pthumerian Queen Phase 1",
+  "guid": "35b27c",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Watchdog of the Old Lords",
+  "nick": "Watchdog of the Old Lords Phase 2",
+  "guid": "538c93",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Watchdog of the Old Lords",
+  "nick": "Watchdog of the Old Lords Phase 1",
+  "guid": "7e0308",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Undead Giant",
+  "nick": "Undead Giant Phase 2",
+  "guid": "e39a8f",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Undead Giant",
+  "nick": "Undead Giant Phase 1",
+  "guid": "aaa1f3",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Pthumerian Descendant",
+  "nick": "Pthumerian Descendant Phase 2",
+  "guid": "806d77",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Pthumerian Descendant",
+  "nick": "Pthumerian Descendant Phase 1",
+  "guid": "1abb7b",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Beast-Possessed Soul",
+  "nick": "Beast-Possessed Soul Phase 2",
+  "guid": "449f81",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag/Random Bosses/Beast-Possessed Soul",
+  "nick": "Beast-Possessed Soul Phase 1",
+  "guid": "16cab9",
+  "n": 5
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "f12125",
+  "n": 7
+ },
+ {
+  "path": "/Chalice Rite Campaign Bag/Chalice Rite Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "d23ccd",
+  "n": 25
+ },
+ {
+  "path": "/Birth of Madness Campaign Bag/Birth of Madness Campaign Bag",
+  "nick": "Birth of Madness",
+  "guid": "8bf018",
+  "n": 56
+ },
+ {
+  "path": "/Birth of Madness Campaign Bag/Birth of Madness Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 21
+ },
+ {
+  "path": "/Birth of Madness Campaign Bag/Birth of Madness Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Birth of Madness Campaign Bag/Birth of Madness Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Birth of Madness Campaign Bag/Birth of Madness Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Birth of Madness Campaign Bag/Birth of Madness Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "b78743",
+  "n": 7
+ },
+ {
+  "path": "/Birth of Madness Campaign Bag/Birth of Madness Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "e3c634",
+  "n": 25
+ },
+ {
+  "path": "/Celestial Truths Campaign Bag/Celestial Truths Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 21
+ },
+ {
+  "path": "/Celestial Truths Campaign Bag/Celestial Truths Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Celestial Truths Campaign Bag/Celestial Truths Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Celestial Truths Campaign Bag/Celestial Truths Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Celestial Truths Campaign Bag/Celestial Truths Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "a89ed7",
+  "n": 25
+ },
+ {
+  "path": "/Celestial Truths Campaign Bag/Celestial Truths Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "d07424",
+  "n": 7
+ },
+ {
+  "path": "/Celestial Truths Campaign Bag/Celestial Truths Campaign Bag",
+  "nick": "Celestial Truths",
+  "guid": "1418fb",
+  "n": 72
+ },
+ {
+  "path": "/Celestial Truths Campaign Bag/Celestial Truths Campaign Bag",
+  "nick": "Enemies",
+  "guid": "3a8f3a",
+  "n": 3
+ },
+ {
+  "path": "/The Forsaken Castle Intro Campaign Bag/The Forsaken Castle Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 20
+ },
+ {
+  "path": "/The Forsaken Castle Intro Campaign Bag/The Forsaken Castle Campaign Bag",
+  "nick": "The Forsaken Castle",
+  "guid": "1e42e4",
+  "n": 20
+ },
+ {
+  "path": "/The Forsaken Castle Intro Campaign Bag/The Forsaken Castle Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/The Forsaken Castle Intro Campaign Bag/The Forsaken Castle Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/The Forsaken Castle Intro Campaign Bag/The Forsaken Castle Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/The Forsaken Castle Intro Campaign Bag/The Forsaken Castle Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "d07424",
+  "n": 9
+ },
+ {
+  "path": "/The Forsaken Castle Intro Campaign Bag/The Forsaken Castle Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "46c891",
+  "n": 32
+ },
+ {
+  "path": "/Martyr's Legacy Campaign A Bag/Martyr's Legacy Campaign Bag",
+  "nick": "Martyr's Legacy",
+  "guid": "13dd00",
+  "n": 34
+ },
+ {
+  "path": "/Martyr's Legacy Campaign A Bag/Martyr's Legacy Campaign Bag",
+  "nick": "Forsaken Cainhurst Castle Tiles",
+  "guid": "1d63ac",
+  "n": 11
+ },
+ {
+  "path": "/Martyr's Legacy Campaign A Bag/Martyr's Legacy Campaign Bag",
+  "nick": "Enemies",
+  "guid": "df3d1d",
+  "n": 2
+ },
+ {
+  "path": "/Queen's Legacy Campaign B Bag/Queen's Legacy Campaign Bag",
+  "nick": "Forsaken Cainhurst Castle Tiles",
+  "guid": "1d63ac",
+  "n": 11
+ },
+ {
+  "path": "/Queen's Legacy Campaign B Bag/Queen's Legacy Campaign Bag",
+  "nick": "Enemies",
+  "guid": "b63a56",
+  "n": 2
+ },
+ {
+  "path": "/Queen's Legacy Campaign B Bag/Queen's Legacy Campaign Bag",
+  "nick": "Martyr's Legacy",
+  "guid": "13dd00",
+  "n": 34
+ },
+ {
+  "path": "/Queen's Legacy Campaign B Bag/Queen's Legacy Campaign Bag",
+  "nick": "Queen's Legacy",
+  "guid": "d96501",
+  "n": 31
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Dark Rites",
+  "guid": "67476f",
+  "n": 61
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Enemies",
+  "guid": "ee0beb",
+  "n": 3
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Forbidden Woods Tiles",
+  "guid": "8532de",
+  "n": 12
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "a89ed7",
+  "n": 46
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "d07424",
+  "n": 9
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Dark Rites Campaign Bag/Dark Rites Campaign Bag",
+  "nick": "Dark Rites Deck",
+  "guid": "54c675",
+  "n": 5
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Den of Vipers",
+  "guid": "f8075c",
+  "n": 49
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Enemies",
+  "guid": "6f7135",
+  "n": 3
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Forbidden Woods Tiles",
+  "guid": "8532de",
+  "n": 12
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "a89ed7",
+  "n": 46
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "d07424",
+  "n": 9
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/Den of Vipers Campaign Bag/Den of Vipers Campaign Bag",
+  "nick": "Dark Rites",
+  "guid": "67476f",
+  "n": 61
+ },
+ {
+  "path": "/The Eldritch Truth Campaign Bag/The Eldritch Truth Campaign Bag",
+  "nick": "The Eldritch Truth",
+  "guid": "687b4b",
+  "n": 49
+ },
+ {
+  "path": "/The Eldritch Truth Campaign Bag/The Eldritch Truth Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "d07424",
+  "n": 7
+ },
+ {
+  "path": "/The Eldritch Truth Campaign Bag/The Eldritch Truth Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/The Eldritch Truth Campaign Bag/The Eldritch Truth Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/The Eldritch Truth Campaign Bag/The Eldritch Truth Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/The Eldritch Truth Campaign Bag/The Eldritch Truth Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "a89ed7",
+  "n": 25
+ },
+ {
+  "path": "/The Eldritch Truth Campaign Bag/The Eldritch Truth Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 21
+ },
+ {
+  "path": "/The Eldritch Truth Campaign Bag/The Eldritch Truth Campaign Bag",
+  "nick": "Madness Deck",
+  "guid": "5feffd",
+  "n": 8
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 21
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Firearm Deck",
+  "guid": "d07424",
+  "n": 7
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "6c9eca",
+  "n": 60
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Consumable Deck",
+  "guid": "60380e",
+  "n": 36
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "7a3577",
+  "n": 6
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Reward Deck",
+  "guid": "a89ed7",
+  "n": 25
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "The Unseen Village",
+  "guid": "d72592",
+  "n": 49
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Yahar'gul Chapter 2 Deck",
+  "guid": "941d7f",
+  "n": 6
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Yahar'gul Chapter 3 Deck",
+  "guid": "d19b1d",
+  "n": 6
+ },
+ {
+  "path": "/The Unseen Village Campaign Bag/The Unseen Village Campaign Bag",
+  "nick": "Enemies",
+  "guid": "abd8e8",
+  "n": 3
+ },
+ {
+  "path": "/Bonus Chapter: Forbidden Woods/Bonus Chapter: Forbidden Woods Bag",
+  "nick": "Forbidden Woods",
+  "guid": "f2e87f",
+  "n": 21
+ },
+ {
+  "path": "/Bonus Chapter: Forbidden Woods/Bonus Chapter: Forbidden Woods Bag",
+  "nick": "Forbidden Woods Tiles",
+  "guid": "fc4cb3",
+  "n": 12
+ },
+ {
+  "path": "/Bonus Chapter: Forsaken Legacy Bag/Bonus Chapter: Forsaken Legacy Bag",
+  "nick": "Forsaken Legacy",
+  "guid": "37eac7",
+  "n": 17
+ },
+ {
+  "path": "/Bonus Chapter: Forsaken Legacy Bag/Bonus Chapter: Forsaken Legacy Bag",
+  "nick": "Forsaken Cainhurst Castle Tiles",
+  "guid": "1d63ac",
+  "n": 11
+ },
+ {
+  "path": "/Bonus Chapter: The Hunt's End Bag/Bonus Chapter: The Hunt's End Bag",
+  "nick": "Core Tiles",
+  "guid": "1bdb44",
+  "n": 21
+ },
+ {
+  "path": "/Bonus Chapter: The Hunt's End Bag/Bonus Chapter: The Hunt's End Bag",
+  "nick": "The Hunt's End",
+  "guid": "a64bb6",
+  "n": 26
+ },
+ {
+  "path": "/Bonus Chapter: The Hunt's End Bag/Bonus Chapter: The Hunt's End Bag",
+  "nick": "Mini-Boss Spawn Deck",
+  "guid": "ae588b",
+  "n": 29
+ }
+]

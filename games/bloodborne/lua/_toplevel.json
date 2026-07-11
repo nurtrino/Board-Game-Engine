@@ -1,0 +1,2738 @@
+[
+ {
+  "name": "HandTrigger",
+  "nick": "",
+  "guid": "102169",
+  "pos": [
+   20,
+   15,
+   -159
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "HandTrigger",
+  "nick": "",
+  "guid": "2cf69a",
+  "pos": [
+   60,
+   15,
+   -159
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "HandTrigger",
+  "nick": "",
+  "guid": "62dcb7",
+  "pos": [
+   -60,
+   15,
+   -159
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "HandTrigger",
+  "nick": "",
+  "guid": "d0975b",
+  "pos": [
+   -20,
+   15,
+   -159
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Assetbundle",
+  "nick": "",
+  "guid": "afc863",
+  "pos": [
+   -144,
+   0,
+   -144
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Assetbundle",
+  "nick": "",
+  "guid": "c8edca",
+  "pos": [
+   -144,
+   0,
+   144
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Assetbundle",
+  "nick": "",
+  "guid": "393bf7",
+  "pos": [
+   144,
+   0,
+   144
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Assetbundle",
+  "nick": "",
+  "guid": "12c65e",
+  "pos": [
+   144,
+   0,
+   -144
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Chinese_Checkers_Piece",
+  "nick": "Flex Table Control",
+  "guid": "bd69bd",
+  "pos": [
+   163.2,
+   -0.3,
+   -166.1
+  ],
+  "kids": 0,
+  "luaLen": 16319
+ },
+ {
+  "name": "Custom_Assetbundle",
+  "nick": "",
+  "guid": "f938a2",
+  "pos": [
+   0,
+   0,
+   -144
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Assetbundle",
+  "nick": "",
+  "guid": "9f95fd",
+  "pos": [
+   -144,
+   0,
+   0
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Assetbundle",
+  "nick": "",
+  "guid": "35b95f",
+  "pos": [
+   0,
+   0,
+   144
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Assetbundle",
+  "nick": "",
+  "guid": "5af8f2",
+  "pos": [
+   144,
+   0,
+   0
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model",
+  "nick": "",
+  "guid": "4ee1f2",
+  "pos": [
+   0,
+   0,
+   0
+  ],
+  "kids": 0,
+  "luaLen": 23
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Corpse Token",
+  "guid": "c34134",
+  "pos": [
+   -2,
+   10.5,
+   -64
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Fog Gate",
+  "guid": "5360bc",
+  "pos": [
+   10,
+   10.5,
+   -64
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Hunt Tracker Token",
+  "guid": "bef9b7",
+  "pos": [
+   17.1,
+   10.5,
+   -92.2
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Frenzy",
+  "guid": "5700ef",
+  "pos": [
+   28,
+   10.5,
+   -69
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Insight",
+  "guid": "b9a421",
+  "pos": [
+   -10,
+   10.5,
+   -64
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Poison",
+  "guid": "0e170e",
+  "pos": [
+   28,
+   10.5,
+   -73
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Broken Lamp Token",
+  "guid": "4360e7",
+  "pos": [
+   6,
+   10.5,
+   -64
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Survivor Token",
+  "guid": "f8866e",
+  "pos": [
+   2,
+   10.5,
+   -64
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Infinite_Bag",
+  "nick": "Treasure Token",
+  "guid": "491307",
+  "pos": [
+   -6,
+   10.5,
+   -64
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "CardCustom",
+  "nick": "Hunt Board",
+  "guid": "66b398",
+  "pos": [
+   0,
+   10.5,
+   -80
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Token",
+  "nick": "Hunt Tracker",
+  "guid": "b567a0",
+  "pos": [
+   -11.8,
+   10.6,
+   -92
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Token",
+  "nick": "",
+  "guid": "bf5f32",
+  "pos": [
+   61,
+   10.6,
+   -127
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Token",
+  "nick": "",
+  "guid": "5a2aaf",
+  "pos": [
+   -19,
+   10.5,
+   -127
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Token",
+  "nick": "",
+  "guid": "c62f0f",
+  "pos": [
+   21,
+   10.5,
+   -127
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Token",
+  "nick": "",
+  "guid": "d3e0ee",
+  "pos": [
+   -59,
+   10.5,
+   -127
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "cffe86",
+  "pos": [
+   22.7,
+   10.8,
+   -135.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "c66ed7",
+  "pos": [
+   62.5,
+   10.8,
+   -135.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "b6e10c",
+  "pos": [
+   -18.2,
+   10.8,
+   -135.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "5789d8",
+  "pos": [
+   -57.9,
+   10.8,
+   -135.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "3DText",
+  "nick": "",
+  "guid": "360a45",
+  "pos": [
+   -160,
+   10.5,
+   2
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "3DText",
+  "nick": "",
+  "guid": "296bda",
+  "pos": [
+   -159,
+   10.5,
+   27
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "3DText",
+  "nick": "",
+  "guid": "101fe8",
+  "pos": [
+   -159.6,
+   10.5,
+   -101
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "3DText",
+  "nick": "",
+  "guid": "b6388b",
+  "pos": [
+   -160,
+   10.5,
+   -126
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Reiterpallasch",
+  "guid": "048a44",
+  "pos": [
+   90,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Ludwig's Uncanny Holy Blade",
+  "guid": "7b29fa",
+  "pos": [
+   90,
+   10.5,
+   -142
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Burial Blade",
+  "guid": "d328f9",
+  "pos": [
+   90,
+   10.5,
+   -154
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Kirkhammer",
+  "guid": "e5cefa",
+  "pos": [
+   106,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Blade of Mercy",
+  "guid": "bcc5d3",
+  "pos": [
+   122,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Logarius' Wheel",
+  "guid": "829389",
+  "pos": [
+   138,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Tonitrus",
+  "guid": "d2a837",
+  "pos": [
+   154,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Beast Claw",
+  "guid": "37336d",
+  "pos": [
+   106,
+   10.5,
+   -142
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Stake Driver",
+  "guid": "9d733a",
+  "pos": [
+   122,
+   10.5,
+   -142
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Rifle Spear",
+  "guid": "f0e72d",
+  "pos": [
+   138,
+   10.5,
+   -142
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Chikage",
+  "guid": "7e31e9",
+  "pos": [
+   154,
+   10.5,
+   -142
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Ludwig's Holy Blade",
+  "guid": "4c1899",
+  "pos": [
+   106,
+   10.5,
+   -154
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Hunter Axe",
+  "guid": "298f54",
+  "pos": [
+   122,
+   10.5,
+   -154
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Saw Cleaver",
+  "guid": "588674",
+  "pos": [
+   138,
+   10.5,
+   -154
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Threaded Cane",
+  "guid": "b52cf1",
+  "pos": [
+   154,
+   10.5,
+   -154
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "3DText",
+  "nick": "",
+  "guid": "c238e3",
+  "pos": [
+   -159,
+   10.5,
+   -30
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "3DText",
+  "nick": "",
+  "guid": "6fd21d",
+  "pos": [
+   -160,
+   10.5,
+   -22
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Tile",
+  "nick": "Hunter Dashboard",
+  "guid": "06cae7",
+  "pos": [
+   -60,
+   10.5,
+   -130
+  ],
+  "kids": 0,
+  "luaLen": 3855
+ },
+ {
+  "name": "Custom_Tile",
+  "nick": "Hunter Dashboard",
+  "guid": "999b81",
+  "pos": [
+   -20,
+   10.5,
+   -130
+  ],
+  "kids": 0,
+  "luaLen": 3857
+ },
+ {
+  "name": "Custom_Tile",
+  "nick": "Hunter Dashboard",
+  "guid": "b22b5b",
+  "pos": [
+   20,
+   10.6,
+   -130
+  ],
+  "kids": 0,
+  "luaLen": 3861
+ },
+ {
+  "name": "Custom_Tile",
+  "nick": "Hunter Dashboard",
+  "guid": "9d4af3",
+  "pos": [
+   60,
+   10.6,
+   -130
+  ],
+  "kids": 0,
+  "luaLen": 3861
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Ebrietas, Daughter of the Cosmos",
+  "guid": "334d65",
+  "pos": [
+   -158,
+   10.5,
+   -2
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Mergo's Wet Nurse",
+  "guid": "8509ed",
+  "pos": [
+   -150,
+   10.5,
+   -2
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Martyr Logarius",
+  "guid": "cf84df",
+  "pos": [
+   -110,
+   10.5,
+   -18
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Annalise, Queen of the Vilebloods",
+  "guid": "75095a",
+  "pos": [
+   -118,
+   10.5,
+   -18
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Blood-starved Beast",
+  "guid": "3bc1b9",
+  "pos": [
+   -150,
+   10.5,
+   -18
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Vicar Amelia",
+  "guid": "6ad8e9",
+  "pos": [
+   -142,
+   10.5,
+   -18
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Cleric Beast",
+  "guid": "8bae08",
+  "pos": [
+   -158,
+   10.5,
+   -18
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Father Gascoigne",
+  "guid": "304b83",
+  "pos": [
+   -134,
+   10.5,
+   -18
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Father Gascoigne Transformed",
+  "guid": "42b5f7",
+  "pos": [
+   -126,
+   10.5,
+   -18
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Watchdog of the Old Lords",
+  "guid": "7b8b59",
+  "pos": [
+   -158,
+   10.5,
+   -10
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Undead Giant",
+  "guid": "088504",
+  "pos": [
+   -150,
+   10.5,
+   -10
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Yharnam, Pthumerian Queen",
+  "guid": "567040",
+  "pos": [
+   -142,
+   10.5,
+   -10
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Pthumerian Descendant",
+  "guid": "aa7c6e",
+  "pos": [
+   -134,
+   10.5,
+   -10
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Beast-Possessed Soul",
+  "guid": "1b88a3",
+  "pos": [
+   -126,
+   10.5,
+   -10
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Large Nightmare Apostle",
+  "guid": "d7b496",
+  "pos": [
+   -126,
+   10.5,
+   -2
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The One Reborn",
+  "guid": "de0446",
+  "pos": [
+   -142,
+   10.5,
+   -2
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Yahar'gul Chapter 3 Deck",
+  "guid": "26f556",
+  "pos": [
+   -118,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Yahar'gul Chapter 2 Deck",
+  "guid": "b9e22b",
+  "pos": [
+   -126,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Gehrman, the First Hunter",
+  "guid": "efdb31",
+  "pos": [
+   -118,
+   10.5,
+   -2
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Moon Presence",
+  "guid": "8ffea1",
+  "pos": [
+   -110,
+   10.5,
+   -2
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Mini-Boss Spawn Deck",
+  "guid": "2c775d",
+  "pos": [
+   -110,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Shadows of Yharnam",
+  "guid": "c94610",
+  "pos": [
+   -118,
+   10.5,
+   -10
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Witch of Hemwick",
+  "guid": "197380",
+  "pos": [
+   -110,
+   10.5,
+   -10
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Dark Rites Deck",
+  "guid": "9388f4",
+  "pos": [
+   -134,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Rom, The Vacuous Spider",
+  "guid": "01afec",
+  "pos": [
+   -134,
+   10.5,
+   -2
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Madness Deck",
+  "guid": "c14051",
+  "pos": [
+   -142,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Unseen Village Deck",
+  "guid": "ec158e",
+  "pos": [
+   -110,
+   10.5,
+   -114
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Celestial Truths Deck",
+  "guid": "fffd76",
+  "pos": [
+   -110,
+   10.5,
+   -106
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Birth of Madness Deck",
+  "guid": "93306d",
+  "pos": [
+   -118,
+   10.5,
+   -106
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Hunt's End Deck",
+  "guid": "9c539d",
+  "pos": [
+   -142,
+   10.5,
+   -122
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Queen's Legacy Deck",
+  "guid": "3a83e7",
+  "pos": [
+   -142,
+   10.5,
+   -114
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Martyr's Legacy Deck",
+  "guid": "6183cb",
+  "pos": [
+   -150,
+   10.5,
+   -114
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Forsaken Legacy Deck",
+  "guid": "cc7ef7",
+  "pos": [
+   -150,
+   10.5,
+   -122
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Forsaken Castle Deck",
+  "guid": "42b700",
+  "pos": [
+   -158.1,
+   10.5,
+   -114
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Forbidden Woods Deck",
+  "guid": "50e5e0",
+  "pos": [
+   -158,
+   10.5,
+   -122
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Den of Vipers Deck",
+  "guid": "1d4d4b",
+  "pos": [
+   -126.3,
+   10.5,
+   -114
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Dark Rites Deck",
+  "guid": "0ccba5",
+  "pos": [
+   -134,
+   10.5,
+   -114
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Eldritch Truth Deck",
+  "guid": "32bb31",
+  "pos": [
+   -118,
+   10.5,
+   -114
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Player Aid Card",
+  "guid": "de2791",
+  "pos": [
+   -158,
+   10.5,
+   -138
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Yahar'gul Tile",
+  "guid": "091a09",
+  "pos": [
+   -144,
+   10.5,
+   8
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Altar of Despair Tile",
+  "guid": "ab5851",
+  "pos": [
+   -120,
+   10.5,
+   8
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Mergo's Loft Tile",
+  "guid": "6fcb89",
+  "pos": [
+   -108,
+   10.5,
+   8
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Workshop Tile",
+  "guid": "92c223",
+  "pos": [
+   -132,
+   10.5,
+   8
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Forsaken Cainhurst Castle Tiles",
+  "guid": "75daec",
+  "pos": [
+   -120,
+   10.5,
+   20
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Forbidden Woods Map Tiles",
+  "guid": "27d3aa",
+  "pos": [
+   -132,
+   10.5,
+   20
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Core Map Tiles",
+  "guid": "c59555",
+  "pos": [
+   -156,
+   10.5,
+   20
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Chalice Dungeon Map Tiles",
+  "guid": "ff6ae0",
+  "pos": [
+   -144,
+   10.5,
+   20
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Byrgenwerth Tile",
+  "guid": "877552",
+  "pos": [
+   -156,
+   10.5,
+   8
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Tonitrus Hunter",
+  "guid": "d6dc7e",
+  "pos": [
+   -142,
+   10.5,
+   -34
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Threaded Cane Hunter",
+  "guid": "f88ee8",
+  "pos": [
+   -134,
+   10.5,
+   -34
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Stake Driver Hunter",
+  "guid": "52038f",
+  "pos": [
+   -126,
+   10.5,
+   -34
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Saw Cleaver Hunter",
+  "guid": "cfb7b3",
+  "pos": [
+   -118,
+   10.5,
+   -34
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Rifle Spear Hunter",
+  "guid": "69b5c8",
+  "pos": [
+   -110,
+   10.5,
+   -34
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Beast Claw Hunter",
+  "guid": "258780",
+  "pos": [
+   -158,
+   10.5,
+   -42
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Chalice Rite Deck",
+  "guid": "2930b8",
+  "pos": [
+   -126,
+   10.5,
+   -106
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Ludwig's Uncanny Holy Blade Hunter",
+  "guid": "feca59",
+  "pos": [
+   -150,
+   10.5,
+   -42
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Kirkhammer Hunter",
+  "guid": "aa85a0",
+  "pos": [
+   -142,
+   10.5,
+   -42
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Hunter Axe Hunter",
+  "guid": "896430",
+  "pos": [
+   -134,
+   10.5,
+   -42
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Chikage Hunter",
+  "guid": "edc81d",
+  "pos": [
+   -126,
+   10.5,
+   -42
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Burial Blade Hunter",
+  "guid": "653985",
+  "pos": [
+   -118,
+   10.5,
+   -42
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Blade of Mercy Hunter",
+  "guid": "693eee",
+  "pos": [
+   -110,
+   10.5,
+   -42
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Logariu's Wheel Hunter",
+  "guid": "927ea8",
+  "pos": [
+   -158,
+   10.5,
+   -50
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Winter Lantern",
+  "guid": "766405",
+  "pos": [
+   -158,
+   10.5,
+   -34
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Reiterpallasch Hunter",
+  "guid": "97ddd5",
+  "pos": [
+   -150,
+   10.5,
+   -50
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Ludwig's Holy Blade Hunter",
+  "guid": "1f6d39",
+  "pos": [
+   -142,
+   10.5,
+   -50
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Executioner",
+  "guid": "25797c",
+  "pos": [
+   -150,
+   10.5,
+   -34
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Cramped Casket",
+  "guid": "6c0aba",
+  "pos": [
+   -118,
+   10.5,
+   -82
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Kidnapper",
+  "guid": "c2ce79",
+  "pos": [
+   -110,
+   10.5,
+   -82
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Brainsucker",
+  "guid": "b881e8",
+  "pos": [
+   -118,
+   10.5,
+   -90
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Celestial Emissary",
+  "guid": "c0886a",
+  "pos": [
+   -110,
+   10.5,
+   -90
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Mergo's Chief Attendant",
+  "guid": "749c46",
+  "pos": [
+   -118,
+   10.5,
+   -66
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Mergo's Attendant",
+  "guid": "dd5d2c",
+  "pos": [
+   -110,
+   10.5,
+   -66
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Cain's Servant / Knight",
+  "guid": "b01b05",
+  "pos": [
+   -158,
+   10.5,
+   -90
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Vileblood Knight",
+  "guid": "72e819",
+  "pos": [
+   -150,
+   10.5,
+   -90
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Bloodlicker / Starved",
+  "guid": "d4898e",
+  "pos": [
+   -142,
+   10.5,
+   -90
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Lost Child of Antiquity",
+  "guid": "ff4c48",
+  "pos": [
+   -134,
+   10.5,
+   -90
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Forsaken Castle Spirit",
+  "guid": "95e4c5",
+  "pos": [
+   -126,
+   10.5,
+   -90
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Mad One",
+  "guid": "5900d0",
+  "pos": [
+   -158,
+   10.5,
+   -82
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Maneater Boar",
+  "guid": "43bcec",
+  "pos": [
+   -150,
+   10.5,
+   -82
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Snake Parasite",
+  "guid": "e99641",
+  "pos": [
+   -142,
+   10.5,
+   -82
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Snake Ball",
+  "guid": "57d4cb",
+  "pos": [
+   -134,
+   10.5,
+   -82
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Hemwick Grave Woman",
+  "guid": "7b8b2d",
+  "pos": [
+   -126,
+   10.5,
+   -82
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Bell Ringer",
+  "guid": "71fccd",
+  "pos": [
+   -158,
+   10.5,
+   -74
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Hunting Dog",
+  "guid": "ca0fca",
+  "pos": [
+   -150,
+   10.5,
+   -74
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Labyrinth Rat",
+  "guid": "0b9240",
+  "pos": [
+   -142,
+   10.5,
+   -74
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Fluorescent Flower",
+  "guid": "1c74f4",
+  "pos": [
+   -134,
+   10.5,
+   -74
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Keeper of the Old Lords",
+  "guid": "197a2d",
+  "pos": [
+   -126,
+   10.5,
+   -74
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Gravekeeper Scorpion",
+  "guid": "bd1da8",
+  "pos": [
+   -118,
+   10.5,
+   -74
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Rabid Dog",
+  "guid": "23e076",
+  "pos": [
+   -110,
+   10.5,
+   -74
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Giant Lost Child",
+  "guid": "556f2c",
+  "pos": [
+   -158,
+   10.5,
+   -66
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Small Nightmare Apostle",
+  "guid": "7df899",
+  "pos": [
+   -150,
+   10.5,
+   -66
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Large Huntsman",
+  "guid": "550514",
+  "pos": [
+   -142,
+   10.5,
+   -66
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Merciless Watcher",
+  "guid": "308379",
+  "pos": [
+   -134,
+   10.5,
+   -66
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Loran Silverbeast",
+  "guid": "a4def2",
+  "pos": [
+   -126,
+   10.5,
+   -66
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Garden of Eyes",
+  "guid": "836e62",
+  "pos": [
+   -150,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Scholar",
+  "guid": "c75f9f",
+  "pos": [
+   -142,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Child of Rom",
+  "guid": "26dcf5",
+  "pos": [
+   -158,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Chalice Trap Deck",
+  "guid": "bcf931",
+  "pos": [
+   -150,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Long Hunt Deck",
+  "guid": "d361bf",
+  "pos": [
+   -158,
+   10.5,
+   -106
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Upgrade Stat Deck",
+  "guid": "8b8fd0",
+  "pos": [
+   -142,
+   10.5,
+   -138
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Secrets of the Church Deck",
+  "guid": "710c54",
+  "pos": [
+   -142,
+   10.5,
+   -106
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Basic Stat Deck",
+  "guid": "fb8e11",
+  "pos": [
+   -150,
+   10.5,
+   -138
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Iosefka",
+  "guid": "f33e7f",
+  "pos": [
+   -158,
+   10.5,
+   -26
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Old Hunter Henryk",
+  "guid": "e62361",
+  "pos": [
+   -150,
+   10.5,
+   -26
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Bloody Crow of Cainhurst",
+  "guid": "503cae",
+  "pos": [
+   -142,
+   10.5,
+   -26
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Eileen The Crow",
+  "guid": "038643",
+  "pos": [
+   -134,
+   10.5,
+   -26
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Alfred, Hunter of Vilebloods",
+  "guid": "f0ecee",
+  "pos": [
+   -126,
+   10.5,
+   -26
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Djura's Ally",
+  "guid": "3a514f",
+  "pos": [
+   -118,
+   10.5,
+   -26
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Old Hunter Djura",
+  "guid": "146057",
+  "pos": [
+   -110,
+   10.5,
+   -26
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Church Servant",
+  "guid": "cf8ad4",
+  "pos": [
+   -134,
+   10.5,
+   -58
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Church Giant",
+  "guid": "d940aa",
+  "pos": [
+   -126,
+   10.5,
+   -58
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Male Beast Patient",
+  "guid": "a98ba2",
+  "pos": [
+   -118,
+   10.5,
+   -58
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Female Beast Patient",
+  "guid": "9d7774",
+  "pos": [
+   -110,
+   10.5,
+   -58
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Scourge Beast",
+  "guid": "9a326e",
+  "pos": [
+   -142,
+   10.5,
+   -58
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Huntsman's Minion",
+  "guid": "070366",
+  "pos": [
+   -150,
+   10.5,
+   -58
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Hunter Mob",
+  "guid": "93429a",
+  "pos": [
+   -158,
+   10.5,
+   -58
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Growing Madness Deck",
+  "guid": "d302ba",
+  "pos": [
+   -134,
+   10.5,
+   -106
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Fall of Old Yharnam Deck",
+  "guid": "430b50",
+  "pos": [
+   -150,
+   10.5,
+   -106
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Enemy Action Deck",
+  "guid": "a6f3b1",
+  "pos": [
+   -158,
+   10.5,
+   -130
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Consumable Deck",
+  "guid": "dd27a0",
+  "pos": [
+   -118,
+   10.5,
+   -138
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Reward Deck",
+  "guid": "b7d7c2",
+  "pos": [
+   -134,
+   10.5,
+   -138
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Firearm Deck",
+  "guid": "c571ec",
+  "pos": [
+   -126,
+   10.5,
+   -138
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "3DText",
+  "nick": "",
+  "guid": "66eeec",
+  "pos": [
+   -160,
+   10.5,
+   -54
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Bag",
+  "nick": "Bloodborne: TBG",
+  "guid": "941153",
+  "pos": [
+   -152,
+   12.5,
+   -152
+  ],
+  "kids": 3,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Token",
+  "nick": "",
+  "guid": "9936b1",
+  "pos": [
+   18,
+   10.5,
+   -75
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Long Hunt Campaign Bag",
+  "guid": "081372",
+  "pos": [
+   -41,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Deck",
+  "nick": "Basic Stat Deck",
+  "guid": "a99bed",
+  "pos": [
+   -73.3,
+   10.7,
+   -124.8
+  ],
+  "kids": 12,
+  "luaLen": 0
+ },
+ {
+  "name": "Deck",
+  "nick": "Basic Stat Deck",
+  "guid": "353806",
+  "pos": [
+   -33.3,
+   10.7,
+   -124.8
+  ],
+  "kids": 12,
+  "luaLen": 0
+ },
+ {
+  "name": "Deck",
+  "nick": "Basic Stat Deck",
+  "guid": "be0b8c",
+  "pos": [
+   6.7,
+   10.7,
+   -124.8
+  ],
+  "kids": 12,
+  "luaLen": 0
+ },
+ {
+  "name": "Deck",
+  "nick": "Basic Stat Deck",
+  "guid": "93f59d",
+  "pos": [
+   46.7,
+   10.8,
+   -124.8
+  ],
+  "kids": 12,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Fall of Old Yharnam Campaign Bag",
+  "guid": "489295",
+  "pos": [
+   -35,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Secrets of the Church Campaign Bag",
+  "guid": "9c7e44",
+  "pos": [
+   -29,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Growing Madness Campaign Bag",
+  "guid": "a5caa4",
+  "pos": [
+   -23,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Chalice Rite Campaign Bag",
+  "guid": "89659e",
+  "pos": [
+   -17,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Birth of Madness Campaign Bag",
+  "guid": "d99659",
+  "pos": [
+   -11,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Celestial Truths Campaign Bag",
+  "guid": "fbbcab",
+  "pos": [
+   -5,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "CardCustom",
+  "nick": "Player Aid Card",
+  "guid": "99669c",
+  "pos": [
+   -46,
+   10.5,
+   -114
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "CardCustom",
+  "nick": "Player Aid Card",
+  "guid": "2c79e9",
+  "pos": [
+   -6,
+   10.5,
+   -114
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "CardCustom",
+  "nick": "Player Aid Card",
+  "guid": "7f457b",
+  "pos": [
+   74,
+   10.5,
+   -114
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Forsaken Castle Intro Campaign Bag",
+  "guid": "29ff40",
+  "pos": [
+   1,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "CardCustom",
+  "nick": "Player Aid Card",
+  "guid": "e39312",
+  "pos": [
+   34,
+   10.5,
+   -114
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Martyr's Legacy Campaign A Bag",
+  "guid": "dfdc50",
+  "pos": [
+   7,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Queen's Legacy Campaign B Bag",
+  "guid": "17528c",
+  "pos": [
+   13,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Dark Rites Campaign Bag",
+  "guid": "088372",
+  "pos": [
+   19,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Den of Vipers Campaign Bag",
+  "guid": "b91fc8",
+  "pos": [
+   25,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Eldritch Truth Campaign Bag",
+  "guid": "a94b69",
+  "pos": [
+   31,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "The Unseen Village Campaign Bag",
+  "guid": "8a3e27",
+  "pos": [
+   37,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Bonus Chapter: Forbidden Woods",
+  "guid": "3cda53",
+  "pos": [
+   43,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Bonus Chapter: Forsaken Legacy Bag",
+  "guid": "37a760",
+  "pos": [
+   49,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_Model_Infinite_Bag",
+  "nick": "Bonus Chapter: The Hunt's End Bag",
+  "guid": "19437c",
+  "pos": [
+   55,
+   10.5,
+   -98
+  ],
+  "kids": 1,
+  "luaLen": 0
+ },
+ {
+  "name": "Custom_PDF",
+  "nick": "Core Rulebook v1.1",
+  "guid": "ff088f",
+  "pos": [
+   -128,
+   10.5,
+   -152
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "a8429c",
+  "pos": [
+   7,
+   11,
+   -98
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "1af64d",
+  "pos": [
+   0,
+   11,
+   -74
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "b5a4c1",
+  "pos": [
+   -9.5,
+   11,
+   -85.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "cfd454",
+  "pos": [
+   4,
+   11,
+   -87
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "7ca31d",
+  "pos": [
+   17.3,
+   11,
+   -87
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "4db3f7",
+  "pos": [
+   17.3,
+   11,
+   -79
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "822ff6",
+  "pos": [
+   24.3,
+   11,
+   -79
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "877472",
+  "pos": [
+   17.3,
+   11,
+   -70.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "1b3553",
+  "pos": [
+   22.3,
+   11,
+   -70.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "8450a1",
+  "pos": [
+   44.5,
+   11,
+   -80.1
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "756be8",
+  "pos": [
+   -5.3,
+   11,
+   -58.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "cac3a5",
+  "pos": [
+   5,
+   11,
+   -58.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "a732ce",
+  "pos": [
+   -18.5,
+   11,
+   -62
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "f62a92",
+  "pos": [
+   -18.5,
+   11,
+   -71.3
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "cb3491",
+  "pos": [
+   -18.5,
+   11,
+   -80.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "2d2571",
+  "pos": [
+   -18.5,
+   11,
+   -89.5
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "a61d5f",
+  "pos": [
+   24,
+   11,
+   -64
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "18b18d",
+  "pos": [
+   18,
+   11,
+   53
+  ],
+  "kids": 0,
+  "luaLen": 0
+ },
+ {
+  "name": "ScriptingTrigger",
+  "nick": "",
+  "guid": "7d3f3f",
+  "pos": [
+   142,
+   11,
+   -83
+  ],
+  "kids": 0,
+  "luaLen": 0
+ }
+]

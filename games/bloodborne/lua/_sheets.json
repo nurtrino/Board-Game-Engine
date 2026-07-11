@@ -1,0 +1,258 @@
+{
+ "30": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/17988150138697291691/39DB66A21CE2706D721E2D6AA0E4B992924806E2/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/12039401582771666889/E278A482059088D7EB3586A02CBD0F652646A0FC/",
+  "w": 3,
+  "h": 2,
+  "unique": false,
+  "count": 1
+ },
+ "36": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/15428647628051095095/560E89BC9C27E95DCD70B0D27F03B27225058034/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/16898425202199555206/E44D9C44A4C8ED33F3140B3C8A283F8CE3216C20/",
+  "w": 3,
+  "h": 2,
+  "unique": false,
+  "count": 5
+ },
+ "46": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/10528082440970598541/2B5196ED8A4DE38B9C8B3EA65B277254BA949E8E/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/11996407053692406896/48C3F66AD6AC2C59E64E88F94CA06FA950F31D3F/",
+  "w": 4,
+  "h": 4,
+  "unique": true,
+  "count": 15
+ },
+ "67": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/11697686068821765813/D1040EEF030F572A33F17FF4E8CF1DD50CC38274/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/10729144035426372247/8EE84A65B4B18071502612300EA74784E75D8858/",
+  "w": 5,
+  "h": 3,
+  "unique": true,
+  "count": 615
+ },
+ "68": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/13036659871058968666/B3E8BF1B0B2736DB2E90ECEA552B4189217FAE2F/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/16294963878395457621/1255938E8481200F03DEB5EC3EBE4FBA4423CCA7/",
+  "w": 9,
+  "h": 7,
+  "unique": true,
+  "count": 116
+ },
+ "71": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/13813969435596089364/62C5364243B749DC6652738A4CB856B14D698050/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/11290150341011313855/19C3FCE302AF9EBD2FD525FED6DBE32600BA95FA/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 121
+ },
+ "72": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/9847935951251945934/2080D0260BCA84368B1B114C6534BC47C1420911/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/11677147207201309128/CACE15F367B49C31AA2676FBE201E3CA76FE6BC6/",
+  "w": 3,
+  "h": 3,
+  "unique": false,
+  "count": 230
+ },
+ "73": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/16847727068798780846/5A108A2CCE3563E9AA4E0272465E70C28567EB5A/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/11598503069455610544/7DB4CAB745ECC6C2D9A0D76033E7081DEA40AA16/",
+  "w": 6,
+  "h": 4,
+  "unique": true,
+  "count": 26
+ },
+ "74": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/12943588076572894431/8C3E3F88A4B406DB753479340CD652B880FBE9AD/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/1733297034324967418/47BAD722DEFBCA69915D2D2403396E0037FCEC6A/",
+  "w": 10,
+  "h": 5,
+  "unique": true,
+  "count": 775
+ },
+ "75": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/12261669027203769108/6C43C473512D0684FE43B16899DEB39D154DBEAD/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/12719972619923270599/B102005720333B63058BAC077C5F47BE7AF007B3/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 4
+ },
+ "76": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/11336781665252517425/994864EB5BB39EF1068F14108277BE3A14636528/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/12419085600229980183/4C95F6862F377CDB03C8F57A657B528FC7D51321/",
+  "w": 10,
+  "h": 5,
+  "unique": true,
+  "count": 647
+ },
+ "77": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/10289195186151734122/0A20ECA78F29989641F88DA94F5B2031C1574664/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/11537110058970136444/3DEA1A76DF8203D6BE117BCF7CFB4C762049D825/",
+  "w": 10,
+  "h": 5,
+  "unique": true,
+  "count": 75
+ },
+ "78": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/17467924911510835529/09EA249ED8E377E61305109F3627AFB33C5B5FD9/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/15499386331289774215/903EBCF5F0260E0E3A219BEE0204890A43CCC34B/",
+  "w": 4,
+  "h": 3,
+  "unique": true,
+  "count": 424
+ },
+ "79": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/13375902681131135922/32E9D745F9F99F62BA2239279BA44DC8FC0A4902/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/13375902681131135922/32E9D745F9F99F62BA2239279BA44DC8FC0A4902/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 7
+ },
+ "83": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/13416549504223099326/75ECDF2B928810D328C68F67A71E8E173EA5D664/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/11709786699878446320/E7BD5132FF8117661991B94D92E6CD24A5C4ECD5/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 1
+ },
+ "84": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/11097722949207358553/CC707BD84DE9AAA7FDC289705B80D595772F3DDB/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/16720860281337922435/F8D284637CA90E6F2B51758B7E45BA4A3E7BA12A/",
+  "w": 3,
+  "h": 2,
+  "unique": true,
+  "count": 4
+ },
+ "86": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/15929936044950352405/B3989A8CAB513F845F0CA4286EDAC49B7AD140EC/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/14431216212665483504/52ECB83109CDA398AC21130C3083BE82977DF389/",
+  "w": 9,
+  "h": 7,
+  "unique": true,
+  "count": 6
+ },
+ "90": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/18328809187070989460/D4FFCB777C180E07A7D077881AB46C140198DA42/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/12535736985070901355/7650FA878142FC345DE80CEB1B575DF92C9D162A/",
+  "w": 10,
+  "h": 7,
+  "unique": true,
+  "count": 433
+ },
+ "91": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/11540368071835275893/83C23A7DF9DD6E1A62F839CCE76C18B39D45EEF9/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/10548874746595143877/2C3B934EA54822C37EFDAD190DC28198D053A27C/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 2
+ },
+ "92": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/15097544861264743702/8EDC55FB1FDBB90F5763B674FC2AABE861AC1128/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/9539293632021460386/EA25B9E546EC9B45C466EDB083CA2A4E9EC5081A/",
+  "w": 6,
+  "h": 5,
+  "unique": true,
+  "count": 122
+ },
+ "93": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/12128074348404367293/2DB171B84A7A4A96AFB4C1E345D51041D6D16854/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/16645725591088889845/2CA1D714D375E54FCA0CFED4D7393C495E381D70/",
+  "w": 5,
+  "h": 4,
+  "unique": true,
+  "count": 8
+ },
+ "96": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/14448349100136095775/28FDF388479650D60BB27A56F96C4B50E6B87182/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/10071088563409942931/76BD318B94113C7E84C88C2799533550DF6D031A/",
+  "w": 7,
+  "h": 5,
+  "unique": true,
+  "count": 5
+ },
+ "97": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/16864522850365155000/8CC38289F14EFC2D5F48D1CBF61611544A44E676/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/17149368103752221288/AC7ACF634AB7248DDCCA63599FD9BB6FC38C46EA/",
+  "w": 6,
+  "h": 4,
+  "unique": true,
+  "count": 2
+ },
+ "98": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/10498539128462139254/41FBF99E8424704D1CD0E3717C4158BC9A839B69/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/10654123109402582444/A655EC4A3557D00C3310FB946D58A98ABD75FC94/",
+  "w": 6,
+  "h": 4,
+  "unique": true,
+  "count": 3
+ },
+ "99": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/17431709900354180127/7DC3616F82E30987168CE7C72D356FC9C4EBA0C0/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/17531657617444147276/D094FD1FD1796888826B29359FD0AB6095125502/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 6
+ },
+ "100": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/15442658712214033152/B8C03397D88D6DCD4A96DDC248F12CE89F96139D/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/11151261514303323347/6C3CF7EA1A0E5261B3AB155B6CA1C81930B8C684/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 6
+ },
+ "101": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/12117938360238815836/A99053A75D1B9E2E1A47ABCEBBBB058DB63C70C0/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/15519021174548524715/0580346BEE695DCA42C2A9B80DFE5B3298932377/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 6
+ },
+ "102": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/11232862316265949246/BBF6936ED0E0F4631329A45ADB3DD20DAB6775FA/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/12632226410249476158/68C727BBB73478E18CB9AE32820CC78ACD409650/",
+  "w": 10,
+  "h": 7,
+  "unique": true,
+  "count": 1
+ },
+ "110": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/17592563267897377086/FB5C901CF3280E01703BC9D1AD15CD2A4D932DA2/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/14526426458661985775/D0BF01574622C43EC85E88AAB352E95B3626E8D1/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 6
+ },
+ "111": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/9625622966350616976/8E938B0287B41EA7C9AD8E8E9BE97834A047C074/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/16858147723591855631/07126A41FA0509E362B17BDA196EF9AF3BDE6CBB/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 1
+ },
+ "114": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/17541384173707211978/672D948105704B32AED0CF764EB2AC7C68968E20/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/15150898836906604387/AB19F7D794402934E9066D39EC12E514A0E4E41E/",
+  "w": 9,
+  "h": 3,
+  "unique": true,
+  "count": 1
+ },
+ "116": {
+  "face": "https://steamusercontent-a.akamaihd.net/ugc/17780556541764238198/072799A176F11A7F62A8C6EFD0B5E952FEF658B7/",
+  "back": "https://steamusercontent-a.akamaihd.net/ugc/13006733167394098757/B7483E68F28A39B1B1343AFE90EAD752AD5A6DC2/",
+  "w": 1,
+  "h": 1,
+  "unique": false,
+  "count": 1
+ }
+}

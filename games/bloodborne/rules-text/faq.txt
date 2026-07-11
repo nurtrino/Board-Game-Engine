@@ -1,0 +1,234 @@
+===== PAGE 1 =====
+Q: What is the difference between Insight and 
+Insight Tokens? 
+ 
+Q: What does “At X Speed, before Hunter’s Attack” 
+mean when it appears on enemy Abilities?
+A: Enemy Abilities trigger immediately when they are revealed 
+(eg. when the Ability card is flipped from the Enemy Action 
+Deck) unless they specifically list a speed. “At X Speed” means 
+the Ability is only resolving at the listed Speed, meaning that 
+if the enemy is slain by a faster Attack, the Ability will not 
+resolve. The “… before Hunter’s Attack” wording on such 
+Abilities is specifically addressing the case of both the Hunter’s 
+Attack and the Ability being the same Speed, denoting that 
+in such an event the Ability will resolve before the Hunter’s 
+Attack (where-as, by usual rules, they would be simultaneous).
+Q: If I use a card to “Dodge”, do any other effects 
+listed on that card also trigger?
+A: Effects listed on Stat Cards happen any time they are placed 
+into an Attack Slot regardless if this is from being utilized as an 
+Attack or when Dodging; “Dodge” is just another keyword on 
+the card (just like Stagger or Heal). It does not cause any other 
+keywords to be excluded from triggering.
+Q: If Chapter Set-Up calls for “Random, Unused 
+tiles” are these in addition to the random tiles used 
+to generate the Tile Deck, or are they taken from 
+those tiles?
+A: If a Chapter calls for additional set-up using “Random, 
+Unused tiles” these tiles are not included in the number 
+listed under Set-Up. Example: Chapter 2 of the Long Hunt 
+calls for specific tiles to be placed prior to set-up, separated by 
+“2 random, unused tiles” and also instructs to generate the 
+Tile Deck with 
+ x2 Random Tiles. The 2 tiles taken during 
+Set-Up do not count towards the 
+ x2 Random Tiles.
+BLOODBORNE: THE BOARD GAME
+1
+V1.0 
+Insight is represented by the white cards (which 
+usually list Rewards as well) revealed once an 
+Insight/Hunt Mission has been completed.
+Q: Can I use a card with the 
+“Dodge” keyword to initiate an 
+Attack?
+A: Yes. Dodge is just a keyword on a 
+Stat Card designating that the card 
+can be used during the “Dodge” step 
+of Combat. It does not limit it to only 
+being used during that step.
+Q: Are effects on Stat Cards 
+optional or must they be used?
+A: If the effect can be completed (such 
+as Heal 1) then it must be used when the 
+card is played. Note that being unable 
+to perform the effect (such as trying to 
+Heal while at full HP) does not exclude 
+the card from being able to be used.
+G E N E R A L
+F A Q
+A: Insight Tokens are generic tokens used for a 
+multitude of things in the game (such as tracking 
+completion of Missions or marking a place 
+on the map). They are not related to gained 
+Insight, which is the reward for completing 
+Insight Missions (which are usually required to 
+win the game).
+
+===== PAGE 2 =====
+Q: When do the effects of Stat Cards trigger?
+A: All effects of Stat Cards trigger immediately when they 
+are placed into an Attack Slot (Such as Heal 1, Draw 1, Clear 
+Slot, etc) unless specifically stated otherwise (Such as Effects 
+Linked to Attacks, eg. Stagger). 
+Q: If a tile is placed as part of Chapter Set-Up, is it 
+populated with Enemies/Consumables?
+A: Yes.
+Are Named Tiles to be included when Chapter Set-Up 
+calls for “Random Tiles”?
+A: Yes.
+Q: During an Attack, an effect moves either the 
+Hunter or the Enemy out of the space before the 
+opponent’s Attack has resolved, what happens? 
+(Example, an Enemy Attack moves it 2 spaces away at 
+, while the Hunter’s Attack is resolving at 
+ ).
+A: The opposing Attack will not affect the Enemy/Hunter, as 
+they are no longer in that space. Note, however, the Attack 
+still takes place, which is relevant for any effects that might 
+trigger based off that Attack (Such as the Rally Upgrade card, 
+which Heals 2 after Attacking).
+Q: I have an effect that Heals after an Attack, but 
+the Enemy deals me enough damage to slay me. Do 
+I get to Heal?
+A: No. You Died.
+Q: Is there a limit to how many times the Hunt Track 
+can advance each Round?
+A: No. The Hunt Track advances 1 space at the Start of Each 
+Round and 1 space each time any Hunter Goes to the Dream 
+(regardless of why). This means that hypothetically in a game 
+with 4 Hunters, the Hunt Track could advance 5 times in one 
+Round: Once at the Start and 4 additional times should all 4 
+Hunters decide/are forced to Go to the Dream.
+Q: If during a Combat a Boss is dealt enough damage 
+to transition to Phase 2, but hadn’t yet resolved its 
+Attack (such as it having a 
+ Attack, and the Attack 
+that caused the transition being  
+) what happens?
+A: The Phase 1 Attack will still be resolved. All subsequent 
+draws will be from the Phase 2 Deck.
+Q: If a Mission spawns an Enemy-type outside the 
+3 selected during Chapter Set-Up, in what order do 
+those Enemies activate?
+A: Additional Enemies activate after those listed on the Hunt 
+Board. 
+Q: A Mission spawns an Enemy that utilizes Insight 
+Tokens: “Instead of being slain, remove 1 Insight 
+token…” What happens if I reduce that enemy to 0 
+HP before it has Attacked? Does it cancel the Attack?
+A: No. The Mission rule states, “instead of being slain.” The 
+Enemy is not slain for any gameplay purposes or triggers, nor is 
+its Attack cancelled in any way.
+2
+Follow-Up question: 
+Q: How does this interact with the “Block” effect? 
+A: “Block” is not an effect linked to attacking, nor does it 
+list a speed. When an Attack/Ability (Yes, this includes 
+when it appears on both Hunter and Enemy Attacks/
+Abilities) they gain the effect immediately; Blocking is 
+not reliant on the speed of the Attack or Ability.
+
+===== PAGE 3 =====
+STAT CARD: LEAPING: 
+How does this card work?
+This Stat Card can be used to initiate 
+an Attack from up to 2 spaces away. 
+The Hunter will move into the space 
+with the Enemy then resolve the 
+Attack as usual.
+STAT CARD “EFFECT”: BLOCK: 
+How does this effect work?
+“Block” is not an effect linked to 
+attacking, nor does it list a speed. 
+When an Attack/Ability (Yes, this 
+includes when it appears on both 
+Hunter and Enemy Attacks/Abilities) 
+they gain the effect immediately; 
+Blocking is not reliant on the speed 
+of the Attack or Ability.
+HUNTER TOOL: 
+BLOOD STONE SHARD: 
+Does this take up a Hunter Tool 
+Slot? Do I exhaust it?
+Yes, this takes up one of your 2 
+available Hunter Tool slots. No, this 
+unique reward is never exhausted. Its 
+effects are always active on the slot it 
+is placed in.
+HUNTER: SAW CLEAVER: 
+“Attacks 
+with 
+Stagger 
+deal 
++1 
+Damage”. Must my attack successfully 
+Stagger or is having the “Stagger” 
+keyword enough?
+The Attack only has to have the 
+Stagger keyword. It does not need to 
+actually Stagger the enemy to gain the 
++1 damage benefit.
+3
+Q: If an Attack “targets all Hunters in this space”, 
+what response can those Hunters do?
+A: The initial Hunter’s Attack resolves as usual (assuming they 
+Attacked). Other Hunters only have the option to Dodge, 
+unless the Enemy Attack specifically states otherwise.
+Q: Sometimes an enemy will have an Ability under 
+“Basic” or “Special”. How are these resolved?
+A: These are Abilities for all gameplay purposes (eg. They are 
+not Attacks), meaning, for example, they cannot be affected by 
+Stagger or the Hunter’s Pistol (which specifies a Basic Attack).
+Specific Cards
+
+===== PAGE 4 =====
+Errata
+Attached to this document are corrected files for cards with errors and/or typos. Here is a list of the corrections:
+CORE BOX
+Growing Madness - Chapter 3 Setup:
+Add “Graveyard” tile. Reduce Random tiles to (Max 5).
+The Long Hunt - Card 20: 
+Cleric Beast spawns on 
+ space, not 
+ .
+Secrets of the Church - Card 18: 
+Cleric Beast spawns on 
+ space, not 
+ .
+CHALICE DUNGEON 
+Setup Card: Add “Arena Gate” tile.
+FORSAKEN CAINHURST CASTLE
+Forsaken Legacy - Card 15: 
+Reward Typo: “Caryll Rune: Executioner” should be “Caryll 
+Rune: Corruption”.
+Martyr’s Legacy - Chapter 2 Missions: 
+Typo: “Statuary Hallway” should be “Statuary Hall”.
+Martyr’s Legacy - Card 11: 
+Typo: “Statuary Corridor” should be “Statuary Hall”.
+FORBIDDEN WOODS
+Dark Rites - Chapter 3 Setup: 
+Missing Decrepit Shack tile. Reduce Random tiles to (Max 5)
+Dark Rites - Card 46: 
+Typo: “Decrepit House” should be “Decrepit Shack”.
+Den of Vipers - Card 5: 
+Reward Typo: “Caryll Rune: Blood Moon” should be “Caryll 
+Rune: Moon”.
+Den of Vipers - Card 10: 
+Reward Typo: “Blunderbuss” should be “Hunter’s Blunderbuss”.
+Den of Vipers - Card 34: 
+Reward missing instruction to teleport any Hunters on the 
+Iosefka’s Clinic tile to the Collapsed Tunnel space.
+MERGO’S LOFT 
+Birth of Madness – Card 33: 
+Card text should be “Hunters may Interact while on any 
+ 
+ space to Teleport to the Mergo’s Loft “Lamp” space, or 
+Teleport from this space to any other 
+ space.
+BYRGENWERTH 
+The Eldritch Truth - Card 20: 
+Revision indicating Garden of Eyes cannot leave its space.
+The Eldritch Truth - Card 25: 
+This should refer to Garden of Eyes and Oedon’s Chapel.
