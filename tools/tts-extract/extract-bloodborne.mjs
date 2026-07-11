@@ -67,10 +67,19 @@ for (const { o } of flat) {
   }
 }
 // record which cells are used per sheet (from cards)
-// resolve a card's CustomDeck entry: by CardID prefix, else the card's only entry
-const deckEntryOf = (card) => {
+// resolve a card's CustomDeck entry: by CardID prefix, else the card's only
+// entry, else inherit from a parent deck's CustomDeck (some decks strip the
+// per-card entries — the Upgrade Stat Deck does).
+const deckEntryOf = (card, parents = []) => {
   const cds = card.CustomDeck ?? {};
-  return cds[String(Math.floor(card.CardID / 100))] ?? Object.values(cds)[0] ?? null;
+  const own = cds[String(Math.floor(card.CardID / 100))] ?? Object.values(cds)[0];
+  if (own) return own;
+  for (let i = parents.length - 1; i >= 0; i--) {
+    const p = parents[i].CustomDeck ?? {};
+    const hit = p[String(Math.floor(card.CardID / 100))];
+    if (hit) return hit;
+  }
+  return null;
 };
 for (const r of flat) {
   const { o } = r;
@@ -136,7 +145,7 @@ for (const r of flat) {
   const { o } = r;
   if (!/^Deck/.test(o.Name)) continue;
   const cards = (o.ContainedObjects ?? []).map((c) => {
-    const cd = deckEntryOf(c) ?? {};
+    const cd = deckEntryOf(c, [o]) ?? {};
     return { name: c.Nickname || '', cell: c.CardID % 100, sheet: sheetName.get(cd.FaceURL) ?? null, desc: c.Description || undefined };
   });
   decksOut.push({ nick: o.Nickname || '', guid: o.GUID, path: pathOf(r), cards });
