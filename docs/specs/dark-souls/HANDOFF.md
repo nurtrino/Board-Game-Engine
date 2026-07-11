@@ -1,5 +1,14 @@
 # Dark Souls: The Board Game — Port Handoff
 
+> **CLOSED 2026-07-10 (later session): the port SHIPPED.** Sections 8-9 are
+> historical. The broken partials were finished (not reverted), the spell DSL
+> + boss/summon conditions + player entry placement landed (decision log
+> 28-29, spec section 7), both ship gates passed (spec section 8 audit +
+> darksouls-ui-smoke.mjs PASS), the entangled wiring landed via the parallel
+> session's Bloodborne commit, and everything is pushed (6be3b47, e44915c).
+> Engine suite: 164 green. dsAssets.ts is REQUIRED (device manifest loader),
+> contrary to section 8's delete suggestion.
+
 Written 2026-07-10, mid-port, at the ship-gate stage. This is the complete,
 self-contained state of the Dark Souls port so a fresh session (or a different
 model) can resume with zero context loss. Read this top to bottom before
