@@ -164,7 +164,7 @@ export const dsUpgradeGrantsBleed = (card: DsTreasureCard): boolean =>
 // ---------- bosses ----------
 
 export type DsBossOp =
-  | { op: 'move'; distance: number; toward: 'nearest' | 'aggro' | 'awayFromNearest' | 'awayFromAggro'; push?: boolean; pushDamage?: number }
+  | { op: 'move'; distance: number; toward?: 'nearest' | 'aggro' | 'awayFromNearest' | 'awayFromAggro'; push?: boolean; pushDamage?: number }
   | { op: 'shift'; distance: number; direction: 'forward' | 'backward' | 'left' | 'right'; push?: boolean; pushDamage?: number }
   | { op: 'turn'; degrees: 90 | 180; direction?: 'left' | 'right' }
   | { op: 'leap'; to: 'nearest' | 'aggro'; push?: boolean; pushDamage?: number }
@@ -220,9 +220,21 @@ export interface DsBossDef {
   kingOne?: DsBossCard[]; kingTwo?: DsBossCard[]; kingThree?: DsBossCard[]; kingFour?: DsBossCard[];
   // Old Iron King
   fireBeam?: DsBossCard[];
-  blastedNodes?: { cell: number; name: string; pattern: string }[];
+  blastedNodes?: DsNodePatternCard[];
   // Kalameet
-  fieryRuin?: { cell: number; name: string; pattern: string }[];
+  fieryRuin?: DsNodePatternCard[];
+}
+
+/** Decoded beam/strafe card: `nodes` are the flame-burst node ids on the
+ * printed mini-map of `tile` (the arena back face); `dpadNode` is the d-pad
+ * marker node — for OIK the eye he surfaces at (always itself blasted), for
+ * Kalameet the landing node (never itself aflame). Golden `_meta.resolved`. */
+export interface DsNodePatternCard {
+  cell: number;
+  name: string;
+  tile: string;
+  nodes: string[];
+  dpadNode: string;
 }
 
 interface RawBossEntry {
@@ -255,6 +267,47 @@ export const DS_BOSSES: Record<string, DsBossDef> = Object.fromEntries(rawBosses
   else def.data = b.data as DsBossData;
   return [b.id, def];
 }));
+
+// ---------- summons (add-ons p.6-9; golden `summons` section) ----------
+
+export type DsSummonOp =
+  | { op: 'shift'; distance: number } // d-pad cross: the players move the summon up to N nodes
+  | { op: 'attack'; type: 'physical' | 'magical'; dice: Partial<Record<'black' | 'blue' | 'orange', number>>; stagger?: boolean }
+  | { op: 'distract' }  // flaming skull: virtual Aggro for the next boss activation
+  | { op: 'dodgeBuff'; value: number }; // Run for Cover text box
+
+export interface DsSummonCard {
+  cell: number;
+  name: string;
+  range: number | 'infinite' | null; // null = no attack this behaviour
+  ops: DsSummonOp[];
+}
+
+export interface DsSummonDef {
+  id: string;
+  name: string;
+  bossTier: 'mini' | 'main'; // summon icon: black starburst = mini, orange = main
+  cell: number;
+  data: {
+    taunt: number;
+    health: number;
+    block: Partial<Record<'black' | 'blue' | 'orange', number>>;
+    resist: Partial<Record<'black' | 'blue' | 'orange', number>>;
+    dodge: number;
+    specialName: string;
+    special: string;
+    battleReadyShift?: number;      // Eygon: free shift before the first enemy activation
+    weakArcBonusDie?: 'blue';       // Beatrice: weak-arc bonus die is blue, not black
+  };
+  behaviors: DsSummonCard[];
+}
+
+export const DS_SUMMONS: Record<string, DsSummonDef> = Object.fromEntries(
+  (((bossesJson as unknown as { summons?: DsSummonDef[] }).summons) ?? []).map((d) => [d.id, d]),
+);
+
+export const dsSummonPool = (tier: 'mini' | 'main'): DsSummonDef[] =>
+  Object.values(DS_SUMMONS).filter((d) => d.bossTier === tier);
 
 // ---------- classes ----------
 

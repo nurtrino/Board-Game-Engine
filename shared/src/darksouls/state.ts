@@ -16,6 +16,12 @@ import {
   type DsTreasureCard, type DsScenarioDef, type DsScenarioSection, type DsBossCard,
 } from './data.js';
 
+// ---------- seats ----------
+// Lobby seat colors only (join order = seat index). Class-agnostic on purpose:
+// players pick one of the 10 classes during the in-game setup phase.
+export const DS_SEATS = ['Ember', 'Ash', 'Moss', 'Slate'] as const;
+export type DsSeat = (typeof DS_SEATS)[number];
+
 // ---------- options ----------
 
 export interface DsCreateOptions {
@@ -33,8 +39,9 @@ export interface DsCreateOptions {
   darkrootTreasure?: boolean;
   mimics?: boolean;
   invaders?: boolean;
-  /** Accepted but non-functional: the mod's goldens carry no summon decks
-   * (Eygon/Beatrice data absent from bosses.json) — flagged in the spec. */
+  /** Summons module (add-ons p.6-9): fog-gate zero-souls trade for a white
+   * phantom ally (Eygon before a mini boss, Beatrice before a main boss —
+   * the mod's two summon decks; golden `summons` section). */
   summons?: boolean;
   /** custom-oneshot: 1-3 encounter levels plus one boss. */
   oneshot?: { levels: number[]; boss: string };
@@ -174,6 +181,20 @@ export interface DsBossRun {
   pendingLanding: string | null;
 }
 
+// ---------- summon runtime (add-ons p.6-9) ----------
+
+export interface DsSummon {
+  id: string; // DS_SUMMONS key
+  health: number;
+  maxHealth: number;
+  nodeId: string | null;
+  arc: 'front' | 'left' | 'right' | 'back' | null; // while on a boss node
+  deck: number[];    // behaviour cells, index 0 = top; always all four cards
+  discard: number[]; // index 0 = most recent flip
+  /** Run for Cover: extra dodge dice during the next boss activation */
+  dodgeBuff: number;
+}
+
 // ---------- pendings & script ----------
 
 export type DsPendingKind =
@@ -188,7 +209,9 @@ export type DsPendingKind =
   | 'arcChoice'       // boundary-arc pick when stepping onto a boss node
   | 'treasureKeep'    // drawn treasure: stash or equip
   | 'emberAssign'     // Ember card: whose board gets the token
-  | 'trap';           // suffer or dodge (traps / push damage; never blockable)
+  | 'trap'            // suffer or dodge (traps / push damage; never blockable)
+  | 'summonOffer'     // fog-gate victory: normal souls XOR a summon (add-ons p.7)
+  | 'summonMove';     // shift icon: the players position the summon (add-ons p.9)
 
 export interface DsPendingOption { key: string; label: string }
 
@@ -261,10 +284,14 @@ export interface DsState {
 
   encounter: DsEncounterRun | null;
   boss: DsBossRun | null;
+  /** the earned white sign by the fog gate (mini/main), consumed at boss setup */
+  summonEarned: 'mini' | 'main' | null;
+  /** the active white phantom during a boss encounter */
+  summon: DsSummon | null;
 
   aggroSeat: number;
-  /** summon distract would override aggro for one boss activation; unused
-   * while the summons module is data-less, kept for the invariant. */
+  /** summon Distract: the boss treats the summon as the Aggro holder for the
+   * next boss activation (add-ons p.9); cleared when that activation ends. */
   distract: boolean;
   firstActivationSeat: number;
 
@@ -479,6 +506,8 @@ export function createDarkSouls(options: DsCreateOptions): DsState {
     fogGateTileId: null,
     encounter: null,
     boss: null,
+    summonEarned: null,
+    summon: null,
     aggroSeat: 0,
     distract: false,
     firstActivationSeat: 0,
@@ -786,16 +815,17 @@ export function dsPushPending(
 
 // ---------- occupancy ----------
 
-export function dsModelsAt(s: DsState, nodeId: string): { chars: DsCharacter[]; enemies: DsEnemyModel[]; bossUnits: DsBossUnit[] } {
+export function dsModelsAt(s: DsState, nodeId: string): { chars: DsCharacter[]; enemies: DsEnemyModel[]; bossUnits: DsBossUnit[]; summons: DsSummon[] } {
   const chars = s.characters.filter((c) => c.nodeId === nodeId);
   const enemies = (s.encounter?.enemies ?? []).filter((e) => e.nodeId === nodeId);
   const bossUnits = (s.boss?.units ?? []).filter((u) => u.inPlay && u.nodeId === nodeId);
-  return { chars, enemies, bossUnits };
+  const summons = s.summon && s.summon.nodeId === nodeId ? [s.summon] : [];
+  return { chars, enemies, bossUnits, summons };
 }
 
 export function dsOccupancy(s: DsState, nodeId: string): number {
   const m = dsModelsAt(s, nodeId);
-  return m.chars.length + m.enemies.length + m.bossUnits.length;
+  return m.chars.length + m.enemies.length + m.bossUnits.length + m.summons.length;
 }
 
 export function dsActiveFaceId(s: DsState): string | null {
@@ -870,6 +900,8 @@ export interface DsView {
   fogGateTileId: string | null;
   encounter: DsEncounterRun | null;
   boss: (Omit<DsBossRun, 'deck'> & { deckCount: number }) | null;
+  summonEarned: 'mini' | 'main' | null;
+  summon: DsSummon | null;
   miniBossId: string | null;
   mainBossId: string | null;
   megaBossId: string | null;
@@ -918,6 +950,8 @@ export function dsViewFor(s: DsState, viewer: number | null | 'dev'): DsView {
     boss: s.boss
       ? (() => { const { deck, ...rest } = s.boss!; return { ...rest, deckCount: deck.length }; })()
       : null,
+    summonEarned: s.summonEarned,
+    summon: s.summon,
     miniBossId: s.miniBossId,
     mainBossId: s.mainBossId,
     megaBossId: s.megaBossId,

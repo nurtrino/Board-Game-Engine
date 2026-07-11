@@ -815,14 +815,133 @@ console.log('--- directed rules tests ---');
     'the encounter continues after the invader falls (ao p.15)');
 }
 
-// summons module: accepted but data-less (spec judgment — no golden decks)
+// OIK Blasted Nodes: the decoded per-card node lists drive the beam (oik p.13)
+{
+  const s = mkGame({ seed: 57 });
+  const decoded = DS_BOSSES['old-iron-king'].blastedNodes!;
+  ok(decoded.length === 6 && decoded.every((c) => c.tile === 'mega-old-iron-king-back'
+    && c.nodes.length >= 8 && c.nodes.includes(c.dpadNode)),
+  'all 6 Blasted Nodes cards carry decoded node lists; the d-pad eye is itself blasted (golden)');
+  _dsInternals.startBossFight(s, 'old-iron-king', 'mega');
+  const run = s.boss!;
+  // deterministic: the Fire Beam signature flips first (signatures are always in the deck)
+  run.deck = ['beam:1', ...run.deck.filter((c) => c !== 'beam:1')];
+  const pattern = decoded.find((c) => c.cell === run.beamDeck![0])!;
+  // park seat 0 on a decoded blasted node that is not the surfacing eye,
+  // seat 1 outside the pattern entirely
+  const targetNode = pattern.nodes.find((n) => n !== pattern.dpadNode)!;
+  s.characters[0].nodeId = targetNode;
+  s.characters[1].nodeId = dsTileGraph('mega-old-iron-king-back').face.nodes
+    .find((n) => !pattern.nodes.includes(n.id))!.id;
+  drain(s, (st) => st.pendings.some((p) => p.kind === 'defence'));
+  const defs = s.pendings.filter((p) => p.kind === 'defence');
+  ok(defs.length === 1 && defs[0].seat === 0 && defs[0].data.damage === 5 && defs[0].data.magical === true,
+    'the beam hits exactly the character on a decoded blasted node, 5 magical (oik p.13)');
+  ok(run.units[0].nodeId === pattern.dpadNode, 'OIK surfaces at the card\'s d-pad eye node');
+  ok(run.beamDiscard![0] === pattern.cell, 'the Blasted Nodes card is discarded');
+  drain(s);
+}
+
+// Kalameet Fiery Ruin: decoded strafe targets + the d-pad landing node (kal p.13)
+{
+  const s = mkGame({ seed: 58 });
+  const decoded = DS_BOSSES['black-dragon-kalameet'].fieryRuin!;
+  ok(decoded.length === 8 && decoded.every((c) => c.tile === 'mega-black-dragon-kalameet-back'
+    && c.nodes.length >= 9 && !c.nodes.includes(c.dpadNode)),
+  'all 8 Fiery Ruin cards carry decoded node lists; the landing node is never aflame (golden)');
+  _dsInternals.startBossFight(s, 'black-dragon-kalameet', 'mega');
+  const run = s.boss!;
+  run.deck = ['1', ...run.deck.filter((c) => c !== '1')]; // Hellfire Blast signature
+  const pattern = decoded.find((c) => c.cell === run.strafeDeck![0])!;
+  const targetNode = pattern.nodes.find((n) => n !== pattern.dpadNode)!;
+  s.characters[0].nodeId = targetNode;
+  s.characters[1].nodeId = dsTileGraph('mega-black-dragon-kalameet-back').face.nodes
+    .find((n) => !pattern.nodes.includes(n.id) && n.id !== pattern.dpadNode)!.id;
+  drain(s, (st) => st.pendings.some((p) => p.kind === 'defence'));
+  const defs = s.pendings.filter((p) => p.kind === 'defence');
+  ok(defs.length === 1 && defs[0].seat === 0 && defs[0].data.damage === 5 && defs[0].data.magical === true,
+    'the strafe rakes exactly the decoded target nodes (kal p.13)');
+  drain(s);
+  ok(run.units[0].nodeId === pattern.dpadNode, 'Kalameet lands on the card\'s d-pad node');
+  ok(run.strafeDiscard![0] === pattern.cell, 'the Fiery Ruin card is discarded');
+}
+
+// summons module: fog-gate trade, spawn, activation loop, attack, distract (add-ons p.6-9)
 {
   const s = createDarkSouls({
     scenarioId: 'standard', partySize: 2, classIds: classesFor(2),
     miniBoss: 'winged-knight', mainBoss: 'dancer-of-the-boreal-valley',
-    summons: true, seed: 57,
+    summons: true, seed: 59,
   });
-  ok(s.options.summons === true, 'summons toggle accepted (non-functional: no golden data)');
+  // walk the party onto the fog-gate tile and defeat its encounter (before
+  // the first enemy phase — this test is about the reward fork)
+  for (const t of s.tiles.slice(0, -1)) { t.faceUp = true; t.cleared = true; }
+  s.partyAt = s.tiles.length > 1 ? s.tiles[s.tiles.length - 2].id : 'bonfire';
+  act(s, 0, { type: 'travel', tileId: s.fogGateTileId! });
+  const soulsBefore = s.soulCache;
+  for (const uid of (s.encounter?.enemies ?? []).map((e) => e.uid)) {
+    _dsInternals.applyEnemyDamage(s, uid, 999, null);
+  }
+  const offer = s.pendings.find((p) => p.kind === 'summonOffer');
+  ok(offer != null, 'clearing the fog-gate encounter offers souls XOR a summon (add-ons p.7)');
+  const r = act(s, 0, { type: 'choose', pick: 'summon' });
+  ok(r.ok && s.soulCache === soulsBefore && s.summonEarned === 'mini',
+    'taking the summon sign forfeits the whole souls reward');
+  drain(s);
+  // through the fog gate: Eygon spawns (the only mini-tier summon in the mod)
+  act(s, 0, { type: 'enter_fog_gate' });
+  ok(s.summon?.id === 'eygon-of-carim' && s.summonEarned === null && s.summon.health === 9,
+    'Eygon of Carim answers the mini-boss summons with his health dial set (add-ons p.8)');
+  ok(s.summon!.deck.length === 4, 'summon behaviour deck = all four cards, shuffled (add-ons p.8)');
+  ok(s.pendings.some((p) => p.kind === 'summonMove'),
+    'Battle Ready: Eygon may move before the first enemy activation (data card)');
+  drain(s);
+  // force a known behaviour and a base-to-base position, then run one round:
+  // boss (already flipped) -> character -> summon -> boss
+  const run = s.boss!;
+  const su = s.summon!;
+  su.deck = [59, ...su.deck.filter((c) => c !== 59)]; // Morne's Rage: move 1 + 3 black dice
+  su.discard = su.deck.splice(4);
+  su.nodeId = run.units[0].nodeId;
+  su.arc = 'left';
+  const logLen = s.log.length;
+  if (s.encounter!.turn === 'characters') act(s, s.encounter!.activeSeat, { type: 'end_activation' });
+  drain(s);
+  ok(s.summon == null || s.summon.discard.includes(59),
+    'the summon activates after the character activation (add-ons p.8)');
+  ok(s.log.slice(logLen).some((l) => l.text.includes('Eygon of Carim attacks')),
+    'Morne\'s Rage rolls its dice against the boss (add-ons p.7)');
+  ok(s.summon == null || s.summon.deck.length + s.summon.discard.length === 4,
+    'summon deck conservation (recycle unshuffled)');
+  // distract: the flaming-skull card marks the summon as the virtual aggro holder
+  if (s.summon && s.phase === 'bossEncounter') {
+    const su2 = s.summon;
+    su2.deck = [57]; // Moaning Shield Advance: move 1 + Distract
+    su2.discard = [];
+    const logLen2 = s.log.length;
+    if (s.encounter!.turn === 'characters') act(s, s.encounter!.activeSeat, { type: 'end_activation' });
+    drain(s);
+    ok(s.log.slice(logLen2).some((l) => l.text.startsWith('Distract:')),
+      'Distract marks Eygon as the boss\'s target for its next activation (add-ons p.9)');
+    ok(s.distract === false, 'Distract expires when the boss activation ends');
+  }
+  // the phantom departs when the fight ends
+  if (s.phase === 'bossEncounter') {
+    _dsInternals.applyBossDamage(s, 'boss', 999, null);
+    ok(s.summon === null, 'the phantom departs when the boss falls');
+  }
+}
+
+// summons view + option plumbing
+{
+  const s = createDarkSouls({
+    scenarioId: 'standard', partySize: 2, classIds: classesFor(2),
+    miniBoss: 'winged-knight', mainBoss: 'dancer-of-the-boreal-valley',
+    summons: true, seed: 60,
+  });
+  ok(s.options.summons === true, 'summons toggle accepted (functional: golden summon decks)');
+  const v = dsViewFor(s, 0);
+  ok(v.summon === null && v.summonEarned === null, 'view exposes the (empty) summon slot');
 }
 
 // dice faces match the golden exactly (spec correction 6)

@@ -632,3 +632,37 @@ Goldens (all mirrored into `shared/src/darksouls/` when the engine lands):
     (already noted in enemies.json): repeat the entire behaviour
     (move + attack twice); confirm against how the card is played in the
     community if it matters to you.
+
+## 7. Decision log (engine v1)
+
+The 27 judgment calls the engine builder made where the goldens/digests were
+silent or ambiguous. Numbered for cross-reference from code comments
+(`decision log N`). Entries 14 and 17 carry post-v1 updates.
+
+1. Linear tile chain bonfire->t1..t4->fog gate.
+2. Main-boss arena = main tile face alone, O&S Smough on highest-degree node adjacent to spawn.
+3. Trap token values invented (6 blank, 8x 2dmg/dodge1, 4x 3/1, 2x 4/2).
+4. Enemy tie pendings only across different enemy types / meaningful move ties.
+5. Obstacle-aware BFS movement, pure node-distance range.
+6. Luck rerolls lowest die.
+7. Voluntary stamina requires free boxes, unaffordable dodge downgrades.
+8. Rest clears endurance bar.
+9. Cornered push: stay + damage, Kirk spikes bleed all pushed.
+10. Character node-AoE hits enemies only.
+11. Text-only card actions rejected v1, upgrade text executes +N damage / gain Bleed only - LARGEST KNOWN GAP (25 spells).
+12. Shift = free move credits, repeat pays once rolls N, enemy repeat = whole behaviour.
+13. Character conditions do not stick to bosses v1.
+14. OIK beam/Kalameet strafe approximated by bands. — UPDATE (reconciled): the goldens now carry exact per-card node lists for OIK's 6 Blasted Nodes and Kalameet's 8 Fiery Ruin cards (`{tile, nodes[], dpadNode}`, `bosses.json _meta.resolved`); the engine consumes them directly (`beamPattern`/`strafePattern`). OIK surfaces at the card's d-pad eye (itself blasted); Kalameet lands on the card's d-pad node (never itself aflame). The band approximation is deleted — nothing about the beam/strafe remains graphical (the 3 Fire Beam behaviour cards target exclusively through the Blasted Nodes deck per oik p.13).
+15. Dancer reshuffle = remaining deck only.
+16. Mimic ambush 1-in-3, printed mimic chests ambush even module-off.
+17. Summons module non-functional pending decks. — UPDATE (reconciled): Eygon of Carim (mini) and Witch Beatrice (main) transcribed from the addon25 sheet (cells 55-64) into the golden `summons` section; the module is functional: fog-gate zero-souls trade (`summonOffer` pending), spawn on an entry node at boss setup, activation after every character activation, 4-card always-all deck with unshuffled recycle, Shift = player-positioned move pending (host seat), Distract = virtual Aggro for the next boss activation, Run for Cover = dodge dice vs the next activation, weak-arc bonus die shared once per flipped card (Beatrice's Curse upgrades hers to blue), summon death despawns without a bonfire reset. New v1 sub-judgments: summon defence is auto-played (dodge when dodging is its only defence, else block/resist), a pushed summon auto-relocates to the first free adjacent node with no push damage, printed stagger vs bosses is not applied (see 13), and a party wipe loses the consumed summon.
+18. Invasion tokens engine-virtual and visible, re-arm on dash-out, identity once per game.
+19. Campaign multi-boss +1 spark lump at final boss, capped.
+20. Legendary injection = transmuted deck at mini reset / section 1->2.
+21. L4 reserved at draw, CotA third draw cross-deck.
+22. Rest host-confirmed seat 0.
+23. Ember applies to enemy attack+push damage, not traps/poison; Andre std draw 1 soul.
+24. Assassin Backstab auto-picks first legal weapon, Knight Stand Fast post-roll, Winged Knight Heavy Blows block>=3.
+25. Arena drops key arena:<bossId>, tile drops auto-collect on next clear.
+26. Boss faces entry door initially, move-0 turns in place.
+27. Continue = pacing ack, treasure pendings survive endings.

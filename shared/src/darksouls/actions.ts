@@ -18,10 +18,11 @@ import {
 } from './config.js';
 import {
   DS_BOSSES, DS_CLASSES, DS_ENCOUNTER_BY_ID, DS_ENEMIES, DS_INVADERS,
-  DS_INVADER_ADVANCED, DS_INVADER_STANDARD, DS_TREASURE_BY_ID,
-  dsEntryNodes, dsNodeDistance, dsNodesOfTerrain, dsTileGraph,
+  DS_INVADER_ADVANCED, DS_INVADER_STANDARD, DS_SUMMONS, DS_TREASURE_BY_ID,
+  dsEntryNodes, dsNodeDistance, dsNodesOfTerrain, dsSummonPool, dsTileGraph,
   dsTreasureDeckCards, dsUpgradeDamageBonus, dsUpgradeGrantsBleed,
-  type DsBossCard, type DsBossOp, type DsEnemyBehavior, type DsTreasureAction,
+  type DsBossCard, type DsBossOp, type DsEnemyBehavior, type DsSummonOp,
+  type DsTreasureAction,
 } from './data.js';
 import {
   dsArcsOf, dsCanSpendStamina, dsCombatDistance, dsCurrentSection, dsDefenceDice, dsDodgeDiceCount,
@@ -32,7 +33,8 @@ import {
   dsSectionBossIds, dsSetupSection, dsSetupStandardStage, dsShuffle,
   dsSpendStamina, dsStatValue, dsWeaponCount,
   type DsArc, type DsBossRun, type DsBossUnit, type DsCharacter, type DsEnemyModel,
-  type DsPending, type DsPendingOption, type DsState, type DsStep, type DsTile,
+  type DsPending, type DsPendingOption, type DsState, type DsStep, type DsSummon,
+  type DsTile,
 } from './state.js';
 
 // ---------- action union ----------
@@ -958,6 +960,12 @@ function topDiscardCardFor(run: DsBossRun, unitKey: string): DsBossCard | null {
 }
 
 function inWeakArc(s: DsState, ch: DsCharacter, unitKey: string): boolean {
+  return weakArcAt(s, ch.nodeId!, ch.arc, unitKey);
+}
+
+/** Is the model at `nodeId` (with `arc` when base-to-base) in the weak arc of
+ * the unit's current top-of-discard card? Shared by characters and summons. */
+function weakArcAt(s: DsState, nodeId: string, arc: DsArc | null, unitKey: string): boolean {
   const run = s.boss!;
   const unit = run.units.find((u) => u.key === unitKey)!;
   const card = topDiscardCardFor(run, unitKey);
@@ -965,9 +973,9 @@ function inWeakArc(s: DsState, ch: DsCharacter, unitKey: string): boolean {
   const lastAttack = [...card.ops].reverse().find((op) => op.op === 'attack') as Extract<DsBossOp, { op: 'attack' }> | undefined;
   const weak = lastAttack?.arcs?.weak ?? card.arcs?.weak ?? [];
   if (weak.length === 0) return false;
-  const arcs = ch.nodeId === unit.nodeId
-    ? (ch.arc ? [ch.arc] : [])
-    : dsNodeArcs(s.encounter!.faceId, unit.nodeId!, unit.facing ?? [0, -1], ch.nodeId!);
+  const arcs = nodeId === unit.nodeId
+    ? (arc ? [arc] : [])
+    : dsNodeArcs(s.encounter!.faceId, unit.nodeId!, unit.facing ?? [0, -1], nodeId);
   return arcs.some((a) => weak.includes(a));
 }
 
@@ -981,7 +989,14 @@ function doEndActivation(s: DsState, seat: number): DsActionResult {
   ch.act = null;
   s.firstActivationSeat = (seat + 1) % s.options.partySize;
   s.encounter.turn = 'enemies';
-  s.script.push(s.boss ? { t: 'bossPhase' } : { t: 'enemyPhase' });
+  if (s.boss) {
+    // the summon activates after EVERY character activation (add-ons p.8):
+    // boss, character, summon, boss, character, summon, ...
+    if (activeSummon(s)) s.script.push({ t: 'summonTurn' });
+    s.script.push({ t: 'bossPhase' });
+  } else {
+    s.script.push({ t: 'enemyPhase' });
+  }
   return OK;
 }
 
@@ -1219,6 +1234,27 @@ function startBossFight(s: DsState, bossId: string, tier: 'mini' | 'main' | 'meg
   log(s, `${def.name} awaits beyond the fog gate${gargoyleTwo ? ' — the second Gargoyle descends!' : '.'}`, 'phase');
   dsPushPending(s, 0, 'leadCharacter', 'Place the Aggro token.',
     s.characters.map((c) => ({ key: `seat:${c.seat}`, label: DS_CLASSES[c.classId].name })), {});
+
+  // white phantom: shuffle the earned tier's data cards, draw one, place the
+  // ally on an entry node like a character (add-ons p.8)
+  s.summon = null;
+  if (s.options.summons && s.summonEarned === tier) {
+    s.summonEarned = null;
+    const pool = dsSummonPool(tier as 'mini' | 'main');
+    const sdef = pool[dsRandInt(s, pool.length)];
+    const node = entries.find((n) => dsOccupancy(s, n) < DS_NODE_MODEL_CAP) ?? entries[0];
+    s.summon = {
+      id: sdef.id, health: sdef.data.health, maxHealth: sdef.data.health,
+      nodeId: node, arc: null,
+      deck: dsShuffle(s, sdef.behaviors.map((c) => c.cell)), discard: [],
+      dodgeBuff: 0,
+    };
+    log(s, `${sdef.name} answers the summons!`, 'phase', node);
+    if (sdef.data.battleReadyShift) {
+      queueSummonMove(s, sdef.data.battleReadyShift,
+        `${sdef.data.specialName}: ${sdef.name} may move before the first enemy activation.`);
+    }
+  }
   s.script.push({ t: 'bossPhase' });
 }
 
@@ -1329,6 +1365,26 @@ function resolveChoice(s: DsState, p: DsPending, pick: string): void {
         dsSpendStamina(ch, dodgeStamina(ch));
         rollDodge(s, { ...data, noMove: true, damage: data.damage, dodge: data.dodge, unreduced: true });
       }
+      return;
+    }
+    case 'summonOffer': {
+      const souls = p.data.souls as number;
+      if (pick === 'summon') {
+        s.summonEarned = p.data.tier as 'mini' | 'main';
+        log(s, 'The party takes no souls — a summon sign glows beside the fog gate (add-ons p.7).', 'phase');
+      } else {
+        s.soulCache += souls;
+        log(s, `The party claims the ${souls} souls.`, 'win');
+      }
+      return;
+    }
+    case 'summonMove': {
+      const su = s.summon;
+      if (!su || pick === 'stay') return;
+      const [, node, arc] = pick.split(':');
+      su.nodeId = node;
+      su.arc = (arc as DsArc | undefined) ?? null;
+      log(s, `${DS_SUMMONS[su.id].name} moves.`, 'move', node);
       return;
     }
     default:
@@ -1704,8 +1760,15 @@ function encounterVictory(s: DsState): void {
     ch.act = null; ch.arc = null;
   }
   const souls = (card?.level === 4 ? DS_SOULS_PER_L4 : DS_SOULS_PER_ENCOUNTER) * s.options.partySize;
-  s.soulCache += souls;
-  log(s, `Encounter defeated! +${souls} souls.`, 'win');
+  // fog-gate tile + summons module: the party may trade the whole souls
+  // reward for a summon sign (add-ons p.7) — the fork pends below
+  const summonTier = summonOfferTier(s, tile);
+  if (summonTier == null) {
+    s.soulCache += souls;
+    log(s, `Encounter defeated! +${souls} souls.`, 'win');
+  } else {
+    log(s, 'Encounter defeated!', 'win');
+  }
   if (tile) {
     tile.cleared = true;
     if (card?.level === 4) {
@@ -1724,6 +1787,15 @@ function encounterVictory(s: DsState): void {
   s.pendings = s.pendings.filter((p) => p.kind === 'treasureKeep' || p.kind === 'emberAssign');
   s.encounter = null;
   s.phase = 'bonfire';
+  if (summonTier != null) {
+    const name = dsSummonPool(summonTier).map((d) => d.name).join(' / ');
+    dsPushPending(s, 0, 'summonOffer',
+      `The fog gate stands ahead: take the ${souls} souls, or take nothing and place a summon sign (${name})?`,
+      [
+        { key: 'souls', label: `Take ${souls} souls` },
+        { key: 'summon', label: 'Take nothing — summon an ally for the boss' },
+      ], { souls, tier: summonTier });
+  }
   // standard mega framework: clearing the L4 flips the board (mega insert p.9);
   // the party may open chests first, then returns to the bonfire
   if (s.stage === 'megaL4' && tile?.kind === 'mega') {
@@ -1732,9 +1804,22 @@ function encounterVictory(s: DsState): void {
   }
 }
 
+/** The summons fork applies on the fog-gate tile when the module is on and
+ * the upcoming boss tier has a summon pool in the mod (add-ons p.7). */
+function summonOfferTier(s: DsState, tile: DsTile | null): 'mini' | 'main' | null {
+  if (!s.options.summons || !tile || tile.id !== s.fogGateTileId) return null;
+  const next = nextBoss(s);
+  if (!next || (next.tier !== 'mini' && next.tier !== 'main')) return null;
+  return dsSummonPool(next.tier).length > 0 ? next.tier : null;
+}
+
 function bossDefeated(s: DsState): void {
   const run = s.boss!;
   const def = DS_BOSSES[run.id];
+  if (s.summon) {
+    log(s, `${DS_SUMMONS[s.summon.id].name} bows and fades into the light.`, 'phase');
+    s.summon = null; // the phantom departs when the fight ends (add-ons p.8)
+  }
   s.script = [];
   s.pendings = s.pendings.filter((p) => p.kind === 'treasureKeep' || p.kind === 'emberAssign');
   if (run.kind === 'mimic') {
@@ -1908,6 +1993,7 @@ function partyWipe(s: DsState, deadSeat: number): void {
   for (const ch of s.characters) { ch.nodeId = null; ch.arc = null; ch.act = null; }
   s.encounter = null;
   s.boss = null;
+  s.summon = null; // a consumed summon is lost with the wipe (engine judgment)
   s.pendings = s.pendings.filter((p) => p.kind === 'treasureKeep' || p.kind === 'emberAssign');
   s.script = [];
   s.sparks -= 1;
@@ -1948,6 +2034,8 @@ function execStep(s: DsState, step: DsStep): 'done' | 'retry' {
     case 'bossUnitCard': return stepBossUnitCard(s, step);
     case 'bOp': return stepBossOp(s, step);
     case 'afterBossCard': return stepAfterBossCard(s, step);
+    case 'summonTurn': return stepSummonTurn(s);
+    case 'sOp': return stepSummonOp(s, step);
     default: throw new Error(`unknown step ${step.t}`);
   }
 }
@@ -2060,6 +2148,233 @@ function nearestSeat(s: DsState, fromNode: string): number | null {
 function targetSeatFor(s: DsState, fromNode: string, mode: string): number | null {
   if (mode === 'aggro' || mode === 'awayFromAggro') return s.aggroSeat;
   return nearestSeat(s, fromNode);
+}
+
+// ---------- boss targeting with a summon on the field (add-ons p.6-9) ----------
+
+/** a boss target: a character seat, or the white phantom */
+type DsAllyTok = number | 'summon';
+
+function activeSummon(s: DsState): DsSummon | null {
+  return s.summon && s.summon.health > 0 && s.summon.nodeId ? s.summon : null;
+}
+
+/** Boss-eye "nearest": characters and the summon compete by node distance;
+ * ties go to the (possibly virtual, Distract) Aggro holder, then the highest
+ * taunt — summon taunt levels work like characters' (add-ons p.6). */
+function nearestTok(s: DsState, fromNode: string): DsAllyTok | null {
+  const enc = s.encounter!;
+  const su = activeSummon(s);
+  const cands: { tok: DsAllyTok; d: number; taunt: number; aggro: boolean }[] = [];
+  for (const ch of s.characters) {
+    if (!ch.nodeId) continue;
+    cands.push({
+      tok: ch.seat, d: dsNodeDistance(enc.faceId, fromNode, ch.nodeId),
+      taunt: DS_CLASSES[ch.classId].taunt, aggro: !s.distract && ch.seat === s.aggroSeat,
+    });
+  }
+  if (su) {
+    cands.push({
+      tok: 'summon', d: dsNodeDistance(enc.faceId, fromNode, su.nodeId!),
+      taunt: DS_SUMMONS[su.id].data.taunt, aggro: s.distract,
+    });
+  }
+  if (cands.length === 0) return null;
+  const best = Math.min(...cands.map((c) => c.d));
+  const tied = cands.filter((c) => c.d === best);
+  return (tied.find((c) => c.aggro) ?? tied.sort((a, b) => b.taunt - a.taunt)[0]).tok;
+}
+
+/** Distract: the boss treats the summon as the Aggro holder for this
+ * activation (add-ons p.9). */
+function bossTargetTok(s: DsState, fromNode: string, mode: string): DsAllyTok | null {
+  if (mode === 'aggro' || mode === 'awayFromAggro') {
+    return s.distract && activeSummon(s) ? 'summon' : s.aggroSeat;
+  }
+  return nearestTok(s, fromNode);
+}
+
+/** resolve a target token to its model (both carry nodeId + arc) */
+function tokModel(s: DsState, tok: DsAllyTok | null): { nodeId: string | null; arc: DsArc | null } | null {
+  if (tok == null) return null;
+  if (tok === 'summon') return activeSummon(s);
+  return s.characters[tok] ?? null;
+}
+
+// ---------- summon activation (add-ons p.8-9) ----------
+
+function stepSummonTurn(s: DsState): 'done' | 'retry' {
+  const su = activeSummon(s);
+  if (!su || !s.boss) return 'done';
+  // empty deck at activation start: recycle face down without shuffling (add-ons p.8)
+  if (su.deck.length === 0) {
+    su.deck = [...su.discard].reverse();
+    su.discard = [];
+  }
+  const cell = su.deck.shift()!;
+  su.discard.unshift(cell);
+  const sdef = DS_SUMMONS[su.id];
+  const card = sdef.behaviors.find((c) => c.cell === cell)!;
+  log(s, `${sdef.name}: ${card.name}.`, 'flip', su.nodeId ?? undefined);
+  s.script.unshift(...card.ops.map((op) => ({ t: 'sOp', op, range: card.range } as DsStep)));
+  return 'done';
+}
+
+function stepSummonOp(s: DsState, step: DsStep): 'done' | 'retry' {
+  const su = activeSummon(s);
+  const run = s.boss;
+  if (!su || !run) return 'done';
+  const sdef = DS_SUMMONS[su.id];
+  const op = step.op as DsSummonOp;
+  const enc = s.encounter!;
+  switch (op.op) {
+    case 'shift': {
+      // the players position the summon: up to N nodes (add-ons p.9)
+      queueSummonMove(s, op.distance, `${sdef.name} may move up to ${op.distance} node${op.distance > 1 ? 's' : ''}.`);
+      return 'done';
+    }
+    case 'attack': {
+      const range = step.range === 'infinite' ? Infinity : (step.range as number | null);
+      if (range == null || !su.nodeId) return 'done';
+      const units = run.units
+        .filter((u) => u.inPlay && u.nodeId != null
+          && dsNodeDistance(enc.faceId, su.nodeId!, u.nodeId!) <= range)
+        .sort((a, b) => dsNodeDistance(enc.faceId, su.nodeId!, a.nodeId!)
+          - dsNodeDistance(enc.faceId, su.nodeId!, b.nodeId!));
+      const unit = units[0];
+      if (!unit) {
+        log(s, `${sdef.name}'s attack finds no one.`, 'attack', su.nodeId);
+        return 'done';
+      }
+      const rolled: { color: 'black' | 'blue' | 'orange'; value: number }[] = [];
+      for (const [color, n] of Object.entries(op.dice)) {
+        for (let i = 0; i < (n ?? 0); i++) {
+          rolled.push({ color: color as 'black' | 'blue' | 'orange', value: dsRollDie(s, color as 'black' | 'blue' | 'orange') });
+        }
+      }
+      // weak-arc bonus die, shared once per flipped boss card (core p.28);
+      // Beatrice's Curse upgrades hers to a blue die (data card)
+      if (!run.weakArcUsed && weakArcAt(s, su.nodeId, su.arc, unit.key)) {
+        const color = sdef.data.weakArcBonusDie ?? 'black';
+        rolled.push({ color, value: dsRollDie(s, color) });
+        run.weakArcUsed = true;
+        log(s, `Weak arc! ${sdef.name} adds a ${color} die.`, 'dice');
+      }
+      const total = rolled.reduce((n, d) => n + d.value, 0);
+      const bdef = DS_BOSSES[run.id];
+      const data = bdef.paired ? bdef.pairedData![unit.key as 'ornstein' | 'smough'] : bdef.data!;
+      const dmg = Math.max(0, total - (op.type === 'magical' ? data.resist : data.block));
+      log(s, `${sdef.name} attacks ${bdef.name}: ${total} ${op.type} — ${dmg} through.`, 'dice', unit.nodeId ?? undefined);
+      // printed stagger vs a boss is not applied (decision log 13)
+      applyBossDamage(s, unit.key, dmg, null);
+      return 'done';
+    }
+    case 'distract': {
+      s.distract = true;
+      log(s, `Distract: ${sdef.name} draws the boss's fury for its next activation.`, 'phase', su.nodeId ?? undefined);
+      return 'done';
+    }
+    case 'dodgeBuff': {
+      su.dodgeBuff = op.value;
+      log(s, `${sdef.name} takes cover: ${op.value} dodge dice against the next activation.`, 'phase', su.nodeId ?? undefined);
+      return 'done';
+    }
+    default:
+      return 'done';
+  }
+}
+
+/** Offer the party (host seat, decision log 22) the summon's move: nodes
+ * reachable within `distance` unblocked steps; boss nodes list one option per
+ * arc (base-to-base like characters, core p.28). */
+function queueSummonMove(s: DsState, distance: number, prompt: string): void {
+  const su = activeSummon(s);
+  if (!su || !su.nodeId) return;
+  const g = dsTileGraph(s.encounter!.faceId);
+  const seen = new Set<string>([su.nodeId]);
+  const reachable: string[] = [];
+  let frontier = [su.nodeId];
+  for (let d = 0; d < distance; d++) {
+    const next: string[] = [];
+    for (const n of frontier) {
+      for (const m of g.adj[n]) {
+        if (seen.has(m) || dsNodeBlocked(s, m)) continue;
+        seen.add(m);
+        if (dsOccupancy(s, m) >= DS_NODE_MODEL_CAP) continue; // full: no entry, no pass-through
+        reachable.push(m);
+        // boss nodes are destinations, not corridors
+        if (dsModelsAt(s, m).bossUnits.length === 0) next.push(m);
+      }
+    }
+    frontier = next;
+  }
+  const options: DsPendingOption[] = [{ key: 'stay', label: 'Hold position' }];
+  for (const n of reachable.sort()) {
+    const boss = dsModelsAt(s, n).bossUnits[0];
+    if (boss) {
+      for (const arc of ['front', 'left', 'right', 'back'] as DsArc[]) {
+        options.push({ key: `node:${n}:${arc}`, label: `Engage ${boss.key} on ${n} (${arc} arc)` });
+      }
+    } else {
+      options.push({ key: `node:${n}`, label: `Move to ${n}` });
+    }
+  }
+  if (options.length === 1) return; // cornered: nothing to decide
+  dsPushPending(s, 0, 'summonMove', prompt, options, {});
+}
+
+/** Engine judgment: a pushed phantom is repositioned automatically to the
+ * first free adjacent node (the players position it on its own activation);
+ * cornered, it stays put. Push damage is not applied to summons in v1. */
+function pushSummonFrom(s: DsState, fromNodeId: string, source: string): void {
+  const su = activeSummon(s);
+  if (!su || su.nodeId !== fromNodeId) return;
+  const g = dsTileGraph(s.encounter!.faceId);
+  const dest = [...g.adj[fromNodeId]].sort().find((n) =>
+    !dsNodeBlocked(s, n) && dsOccupancy(s, n) < DS_NODE_MODEL_CAP
+    && dsModelsAt(s, n).bossUnits.length === 0);
+  if (!dest) return;
+  su.nodeId = dest;
+  su.arc = null;
+  log(s, `${DS_SUMMONS[su.id].name} is shoved aside by ${source}.`, 'move', dest);
+}
+
+/** Summons roll their printed defence dice against boss damage (add-ons p.6).
+ * Auto-played: dodge when dodging is the summon's defence, else block/resist. */
+function summonDefend(s: DsState, ctx: { damage: number; magical: boolean; dodge: number; push: boolean; source: string }): void {
+  const su = activeSummon(s);
+  if (!su) return;
+  const sdef = DS_SUMMONS[su.id];
+  const defDice = ctx.magical ? sdef.data.resist : sdef.data.block;
+  const defCount = Object.values(defDice).reduce((n, x) => n + (x ?? 0), 0);
+  const dodgeDice = sdef.data.dodge + su.dodgeBuff;
+  let taken = ctx.damage;
+  if (dodgeDice > 0 && defCount === 0) {
+    let icons = 0;
+    for (let i = 0; i < dodgeDice; i++) icons += dsRollDodgeDie(s);
+    if (ctx.dodge <= 0 || icons >= ctx.dodge) {
+      log(s, `${sdef.name} dodges (${icons} vs ${ctx.dodge}).`, 'dice', su.nodeId ?? undefined);
+      return;
+    }
+    log(s, `${sdef.name}'s dodge fails (${icons} vs ${ctx.dodge}).`, 'dice', su.nodeId ?? undefined);
+  } else if (defCount > 0) {
+    let blocked = 0;
+    for (const [color, n] of Object.entries(defDice)) {
+      for (let i = 0; i < (n ?? 0); i++) blocked += dsRollDie(s, color as 'black' | 'blue' | 'orange');
+    }
+    taken = Math.max(0, taken - blocked);
+    log(s, `${sdef.name} ${ctx.magical ? 'resists' : 'blocks'} ${Math.min(blocked, ctx.damage)}.`, 'dice', su.nodeId ?? undefined);
+  }
+  if (taken > 0) {
+    su.health -= taken;
+    log(s, `${sdef.name} suffers ${taken}.`, 'attack', su.nodeId ?? undefined);
+  }
+  if (su.health <= 0) {
+    log(s, `${sdef.name} falls — the phantom fades, the party fights on (add-ons p.9).`, 'phase', su.nodeId ?? undefined);
+    s.summon = null;
+    return;
+  }
+  if (ctx.push && su.nodeId) pushSummonFrom(s, su.nodeId, ctx.source);
 }
 
 function stepEnemyMove(s: DsState, step: DsStep): 'done' | 'retry' {
@@ -2650,10 +2965,8 @@ function stepBossOp(s: DsState, step: DsStep): 'done' | 'retry' {
     case 'move': return bossMove(s, step, unit, op);
     case 'shift': return bossShift(s, step, unit, op);
     case 'leap': {
-      const seatNo = targetSeatFor(s, unit.nodeId ?? g.face.nodes[0].id, op.to);
-      if (seatNo == null) return 'done';
-      const target = s.characters[seatNo];
-      if (!target.nodeId) return 'done';
+      const target = tokModel(s, bossTargetTok(s, unit.nodeId ?? g.face.nodes[0].id, op.to));
+      if (!target?.nodeId) return 'done';
       const dest = target.nodeId;
       const otherBoss = bossUnitAt(s, dest);
       if (otherBoss && otherBoss.key !== unit.key) return 'done'; // 1 boss per node
@@ -2666,6 +2979,7 @@ function stepBossOp(s: DsState, step: DsStep): 'done' | 'retry' {
           pushDamage: op.pushDamage, dodge: step.dodge as number, source: def.name,
         });
       }
+      pushSummonFrom(s, dest, def.name);
       return 'done';
     }
     case 'attack': return bossAttack(s, step, unit, op);
@@ -2687,9 +3001,9 @@ function stepBossOp(s: DsState, step: DsStep): 'done' | 'retry' {
       }
       const cardIdx = run.strafeDeck.shift()!;
       (run.strafeDiscard ??= []).unshift(cardIdx);
-      const band = strafeBand(s, cardIdx);
-      run.templateNodes = band.nodes;
-      run.pendingLanding = band.landing;
+      const card = strafePattern(s, cardIdx);
+      run.templateNodes = card.nodes;
+      run.pendingLanding = card.landing;
       unit.nodeId = null;
       log(s, `${def.name} takes wing — fiery ruin rakes the field!`, 'move');
       return 'done';
@@ -2711,6 +3025,7 @@ function stepBossOp(s: DsState, step: DsStep): 'done' | 'retry' {
           ch.arc = null;
           queuePushChar(s, ch.seat, { mode: 'any', fromNodeId: beam.node, source: def.name });
         }
+        pushSummonFrom(s, beam.node, def.name);
       }
       run.templateNodes = beam.nodes;
       return 'done';
@@ -2720,33 +3035,24 @@ function stepBossOp(s: DsState, step: DsStep): 'done' | 'retry' {
   }
 }
 
-/** The blasted-node/fiery-ruin patterns are graphical and untranscribed
- * (bosses.json flags). Engine judgment, documented for the spec decision
- * log: beam card k teleports OIK to ironKing node k%3 and burns the vertical
- * band of nodes around that column; strafe card k burns a horizontal band
- * and lands Kalameet on the free node nearest the band centre. */
+/** Blasted Nodes card (bosses.json decoded per-card node lists): the d-pad
+ * node is the eye OIK surfaces at (oik p.13, always itself blasted); `nodes`
+ * are the flame-burst targets of the magical template attack. */
 function beamPattern(s: DsState, cardIdx: number): { node: string; nodes: string[] } {
-  const enc = s.encounter!;
-  const g = dsTileGraph(enc.faceId);
-  const kings = dsNodesOfTerrain(enc.faceId, 'ironKing').sort((a, b) => g.nodeById[a].x - g.nodeById[b].x);
-  const node = kings[cardIdx % kings.length];
-  const cx = g.nodeById[node].x;
-  const width = g.face.sizePx[0] / 6;
-  const nodes = g.face.nodes.filter((n) => Math.abs(n.x - cx) <= width).map((n) => n.id);
-  return { node, nodes };
+  const card = DS_BOSSES['old-iron-king'].blastedNodes!.find((c) => c.cell === cardIdx);
+  if (!card) throw new Error(`unknown Blasted Nodes cell ${cardIdx}`);
+  void s;
+  return { node: card.dpadNode, nodes: [...card.nodes] };
 }
 
-function strafeBand(s: DsState, cardIdx: number): { nodes: string[]; landing: string } {
-  const enc = s.encounter!;
-  const g = dsTileGraph(enc.faceId);
-  const bandY = g.face.sizePx[1] * ((cardIdx % 4) + 0.5) / 4;
-  const height = g.face.sizePx[1] / 6;
-  const nodes = g.face.nodes.filter((n) => Math.abs(n.y - bandY) <= height).map((n) => n.id);
-  const cx = g.face.sizePx[0] / 2;
-  const landing = [...g.face.nodes]
-    .sort((a, b) => Math.hypot(a.x - cx, a.y - bandY) - Math.hypot(b.x - cx, b.y - bandY))
-    .find((n) => !dsNodeBlocked(s, n.id))?.id ?? g.face.nodes[0].id;
-  return { nodes, landing };
+/** Fiery Ruin card (bosses.json decoded per-card node lists): `nodes` are the
+ * strafe targets, the d-pad node is where Kalameet lands (kal p.13; the
+ * landing node is never itself aflame — golden `_meta.resolved`). */
+function strafePattern(s: DsState, cardIdx: number): { nodes: string[]; landing: string } {
+  const card = DS_BOSSES['black-dragon-kalameet'].fieryRuin!.find((c) => c.cell === cardIdx);
+  if (!card) throw new Error(`unknown Fiery Ruin cell ${cardIdx}`);
+  void s;
+  return { nodes: [...card.nodes], landing: card.dpadNode };
 }
 
 function bossMove(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBossOp, { op: 'move' }>): 'done' | 'retry' {
@@ -2764,9 +3070,10 @@ function bossMove(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBoss
       ch.arc = null;
       queuePushChar(s, ch.seat, { mode: 'any', fromNodeId: unit.nodeId, source: def.name });
     }
-    const seatNo = targetSeatFor(s, unit.nodeId, op.toward);
-    if (seatNo != null && s.characters[seatNo].nodeId) {
-      const t = g.nodeById[s.characters[seatNo].nodeId!];
+    pushSummonFrom(s, unit.nodeId, def.name);
+    const faceTarget = tokModel(s, bossTargetTok(s, unit.nodeId, op.toward ?? 'nearest'));
+    if (faceTarget?.nodeId) {
+      const t = g.nodeById[faceTarget.nodeId];
       const b = g.nodeById[unit.nodeId];
       unit.facing = [t.x - b.x, t.y - b.y];
     }
@@ -2774,15 +3081,15 @@ function bossMove(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBoss
   }
   if (unit.nodeId == null) return 'done';
 
+  // some decoded cards (OIK Fire Beam move-0) print no target ring: nearest
+  const mode = op.toward ?? 'nearest';
   if (step.leftMove == null) {
     step.leftMove = op.distance;
-    step.lockSeat = targetSeatFor(s, unit.nodeId, op.toward);
+    step.lockTok = bossTargetTok(s, unit.nodeId, mode);
   }
-  const seatNo = step.lockSeat as number | null;
-  if (seatNo == null) return 'done';
-  const target = s.characters[seatNo];
-  if (!target.nodeId) return 'done';
-  const away = op.toward.startsWith('awayFrom');
+  const target = tokModel(s, (step.lockTok ?? null) as DsAllyTok | null);
+  if (!target || !target.nodeId) return 'done';
+  const away = mode.startsWith('awayFrom');
 
   // distance 0 or target on own node: turn in place to face the target (core p.29)
   if ((op.distance === 0 || target.nodeId === unit.nodeId) && !away) {
@@ -2850,6 +3157,10 @@ function bossMove(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBoss
       ch.arc = arcFor(ch.nodeId!); // base-to-base in the arc that faced them (core p.29)
     }
   }
+  for (const su of occupants.summons) {
+    if (op.push) pushSummonFrom(s, dest, def.name);
+    else su.arc = arcFor(su.nodeId!);
+  }
   step.leftMove = left - 1;
   s.script.unshift({ ...step });
   return 'done';
@@ -2893,7 +3204,8 @@ function bossShift(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBos
     if (!best) break;
     unit.nodeId = best; // shifts do not rotate (core p.29)
     log(s, `${def.name} shifts ${op.direction}.`, 'move', best);
-    for (const ch of dsModelsAt(s, best).chars) {
+    const entered = dsModelsAt(s, best);
+    for (const ch of entered.chars) {
       if (op.push) {
         queuePushChar(s, ch.seat, {
           mode: 'any', fromNodeId: best,
@@ -2903,6 +3215,10 @@ function bossShift(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBos
         const arcs = dsArcsOf(unit.facing, g.nodeById[ch.nodeId!].x - g.nodeById[best].x, g.nodeById[ch.nodeId!].y - g.nodeById[best].y);
         ch.arc = arcs[0] ?? 'front';
       }
+    }
+    for (const su of entered.summons) {
+      if (op.push) pushSummonFrom(s, best, def.name);
+      else su.arc = 'front';
     }
     left -= 1;
     if (s.pendings.length > 0) { step.leftShift = left; s.script.unshift({ ...step }); return 'done'; }
@@ -2930,41 +3246,54 @@ function bossAttack(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBo
   if (op.stagger) conds.push('stagger');
   if (op.frostbite) conds.push('frostbite');
 
+  const su = activeSummon(s);
   let targets: DsCharacter[] = [];
+  let hitSummon = false;
   if (op.style === 'template') {
     const nodes = run.templateNodes ?? [];
     targets = s.characters.filter((c) => c.nodeId && nodes.includes(c.nodeId));
+    hitSummon = su != null && nodes.includes(su.nodeId!);
     run.templateNodes = null;
   } else if (op.style === 'target') {
-    const seatNo = targetSeatFor(s, unit.nodeId!, op.target ?? 'nearest');
-    if (seatNo != null) {
-      const ch = s.characters[seatNo];
+    const tok = bossTargetTok(s, unit.nodeId!, op.target ?? 'nearest');
+    if (tok === 'summon') {
+      hitSummon = su != null && inRange(su.nodeId!);
+    } else if (tok != null) {
+      const ch = s.characters[tok];
       if (ch.nodeId && inRange(ch.nodeId)) targets = [ch];
     }
   } else if (op.style === 'node') {
-    const seatNo = targetSeatFor(s, unit.nodeId!, op.target ?? 'nearest');
-    if (seatNo != null) {
-      const node = s.characters[seatNo].nodeId;
-      if (node && inRange(node)) targets = s.characters.filter((c) => c.nodeId === node);
+    const node = tokModel(s, bossTargetTok(s, unit.nodeId!, op.target ?? 'nearest'))?.nodeId ?? null;
+    if (node && inRange(node)) {
+      targets = s.characters.filter((c) => c.nodeId === node);
+      hitSummon = su != null && su.nodeId === node;
     }
-  } else { // area: all characters on nodes in the attack arcs within range (core p.29)
+  } else { // area: all models on nodes in the attack arcs within range (core p.29)
     const arcs = op.arcs ?? (step.cardArcs as { attack: string[] } | null) ?? null;
     const attackArcs = arcs?.attack ?? [];
-    targets = s.characters.filter((c) => {
-      if (!c.nodeId || !inRange(c.nodeId)) return false;
+    const inAttackArcs = (nodeId: string, arc: DsArc | null): boolean => {
+      if (!inRange(nodeId)) return false;
       if (run.kind === 'mimic' || attackArcs.length === 0 || !unit.facing || unit.nodeId == null) {
         // mimics ignore facing (ao p.11); arc-less area cards hit all in range
         return true;
       }
-      const inArcs = c.nodeId === unit.nodeId
-        ? (c.arc ? [c.arc] : [])
-        : dsNodeArcs(enc.faceId, unit.nodeId, unit.facing, c.nodeId);
+      const inArcs = nodeId === unit.nodeId
+        ? (arc ? [arc] : [])
+        : dsNodeArcs(enc.faceId, unit.nodeId, unit.facing, nodeId);
       return inArcs.some((a) => attackArcs.includes(a));
-    });
+    };
+    targets = s.characters.filter((c) => c.nodeId != null && inAttackArcs(c.nodeId, c.arc));
+    hitSummon = su != null && inAttackArcs(su.nodeId!, su.arc);
   }
-  if (targets.length === 0) {
+  if (targets.length === 0 && !hitSummon) {
     log(s, `${def.name}'s attack finds no one.`, 'attack', unit.nodeId ?? undefined);
     return 'done';
+  }
+  if (hitSummon) {
+    summonDefend(s, {
+      damage, magical: op.type === 'magical', dodge,
+      push: Boolean(op.push), source: def.name,
+    });
   }
   for (const ch of targets) {
     queueDefence(s, ch.seat, {
@@ -2998,6 +3327,9 @@ function stepAfterBossCard(s: DsState, step: DsStep): 'done' | 'retry' {
   }
   void def;
   run.lastHitSeats = [];
+  // summon one-activation effects expire with the boss activation (add-ons p.9)
+  s.distract = false;
+  if (s.summon) s.summon.dodgeBuff = 0;
   s.script.unshift({ t: 'charTurn' });
   return 'done';
 }

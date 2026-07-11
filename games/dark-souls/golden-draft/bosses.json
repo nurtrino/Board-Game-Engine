@@ -17,11 +17,14 @@
       "behavior": "{ cell, name, heatUp, range (number | 'infinite' | 'special' | null=no attack), dodge, repeat?, arcs {attack[], weak[]} | null, ops[] in printed left-to-right order }",
       "ops": "move {distance, toward nearest|aggro|awayFromNearest|awayFromAggro, push} | shift {distance, direction forward|backward|left|right, push} | turn {degrees, direction?} | leap {to, push, pushDamage?} | attack {type physical|magical, damage, style area|node|target|template, target?, push?, stagger?, frostbite?, arcs? (only when card prints multiple arc circles)} | stagger | flight | fireBeamTemplate | special",
       "notes": "Cards with one printed arc circle carry it at card level 'arcs'; ops carry 'arcs' only when the card prints one circle per attack. specialAbility texts are concise mechanical paraphrases of the printed rule, not verbatim prose.",
-      "nodePattern": "{ cell, name, tile (tiles.json arena back tile the mini-map depicts), nodes[] (tile node ids printed with a flame burst), dpadNode (node printed with the d-pad marker) }"
+      "nodePattern": "{ cell, name, tile (tiles.json arena back tile the mini-map depicts), nodes[] (tile node ids printed with a flame burst), dpadNode (node printed with the d-pad marker) }",
+      "summon": "{ id, name, bossTier mini|main (summon icon: black starburst=mini, orange=main), cell (data card), data { taunt, health, block/resist (defence dice by colour), dodge (dodge dice), specialName, special, battleReadyShift?, weakArcBonusDie? }, behaviors[4] }",
+      "summonOps": "shift {distance} = the players move the summon up to N nodes (d-pad cross, add-ons p.9) | attack {type, dice (rolled, unlike fixed boss damage), stagger?} | distract (flaming-skull: summon holds virtual Aggro next boss activation) | dodgeBuff {value} (printed text box)"
     },
     "resolved": [
       "OIK Blasted Nodes (oik cells 13-18): patterns decoded node-by-node from the card mini-maps against mega-old-iron-king-back (verified by overlay against the arena art; the three ironKing eye nodes n3/n7/n9 are printed on every card and align with the arena's eyes). The d-pad always sits on one of the three eyes (2 cards per eye: n9/n9, n7/n7, n3/n3) and that eye is always itself blasted, so dpadNode is included in nodes.",
-      "Kalameet Fiery Ruin (kalameet cells 14-21): strafe patterns decoded node-by-node against mega-black-dragon-kalameet-back (verified by overlay against the arena art). A Kalameet head icon is printed at n5 on every card; n5 is listed in nodes only on the 5 cards where the head is printed with its own flame arms (cells 14, 15, 16, 17, 21). The d-pad node varies per card and is never itself printed aflame, so dpadNode is NOT included in nodes."
+      "Kalameet Fiery Ruin (kalameet cells 14-21): strafe patterns decoded node-by-node against mega-black-dragon-kalameet-back (verified by overlay against the arena art). A Kalameet head icon is printed at n5 on every card; n5 is listed in nodes only on the 5 cards where the head is printed with its own flame arms (cells 14, 15, 16, 17, 21). The d-pad node varies per card and is never itself printed aflame, so dpadNode is NOT included in nodes.",
+      "Summons (addon25 cells 55-64): Eygon of Carim (mini icon) and Witch Beatrice (main icon) are the only two summon characters in the mod (the booklet framework names ten; the other eight are absent from the save). Data/behaviour cards transcribed cell-by-cell; range '-' on a card = no attack this behaviour (null). Behaviour cards print no arcs, no dodge difficulty, no heat-up (add-ons p.7). battleReadyShift/weakArcBonusDie are machine fields for the printed specials."
     ],
     "flags": [
       "OIK Fire Beam movement d-pad prints its 0 in the bottom petal (recorded as move 0 / no movement).",
@@ -40,16 +43,256 @@
       "name": "Winged Knight",
       "tier": "mini",
       "expansion": "core",
-      "data": { "threat": 10, "health": 24, "deckSize": 4, "heatUpThreshold": 12, "block": 3, "resist": 1, "encounterIcons": [2, 2, 0], "specialName": "Heavy Blows", "special": "When a character blocks an attack from the Winged Knight with a block roll of 3 or more, that character gains 1 stamina cube (spends 1 stamina)." },
+      "data": {
+        "threat": 10,
+        "health": 24,
+        "deckSize": 4,
+        "heatUpThreshold": 12,
+        "block": 3,
+        "resist": 1,
+        "encounterIcons": [
+          2,
+          2,
+          0
+        ],
+        "specialName": "Heavy Blows",
+        "special": "When a character blocks an attack from the Winged Knight with a block roll of 3 or more, that character gains 1 stamina cube (spends 1 stamina)."
+      },
       "behaviors": [
-        { "cell": 6, "name": "Double Slash", "heatUp": true, "range": 1, "dodge": 2, "repeat": 2, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": 7, "name": "Whirlwind", "heatUp": true, "range": 1, "dodge": 1, "repeat": 3, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 4, "style": "area" } ] },
-        { "cell": 8, "name": "Backhand Shaft Strike", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 9, "name": "Charging Assault", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 1, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 4, "style": "area" } ] },
-        { "cell": 10, "name": "Diagonal Uppercut", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "move", "distance": 1, "toward": "nearest", "push": true } ] },
-        { "cell": 11, "name": "Pillars of Light", "heatUp": true, "range": "infinite", "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 5, "style": "area" } ] },
-        { "cell": 12, "name": "Sweeping Blade Swing", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 13, "name": "Overhand Smash", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 2, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "node", "target": "aggro" } ] }
+        {
+          "cell": 6,
+          "name": "Double Slash",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 7,
+          "name": "Whirlwind",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 3,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 8,
+          "name": "Backhand Shaft Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 9,
+          "name": "Charging Assault",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 10,
+          "name": "Diagonal Uppercut",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 11,
+          "name": "Pillars of Light",
+          "heatUp": true,
+          "range": "infinite",
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 12,
+          "name": "Sweeping Blade Swing",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 13,
+          "name": "Overhand Smash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "node",
+              "target": "aggro"
+            }
+          ]
+        }
       ]
     },
     {
@@ -57,16 +300,249 @@
       "name": "Titanite Demon",
       "tier": "mini",
       "expansion": "core",
-      "data": { "threat": 10, "health": 22, "deckSize": 4, "heatUpThreshold": 10, "block": 3, "resist": 2, "encounterIcons": [1, 3, 0], "specialName": "Titanite Construct", "special": "If the Titanite Demon would suffer 3 or more damage from a single attack roll, reduce that damage by 1." },
+      "data": {
+        "threat": 10,
+        "health": 22,
+        "deckSize": 4,
+        "heatUpThreshold": 10,
+        "block": 3,
+        "resist": 2,
+        "encounterIcons": [
+          1,
+          3,
+          0
+        ],
+        "specialName": "Titanite Construct",
+        "special": "If the Titanite Demon would suffer 3 or more damage from a single attack roll, reduce that damage by 1."
+      },
       "behaviors": [
-        { "cell": 15, "name": "Vaulting Slam", "heatUp": true, "range": null, "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "leap", "to": "aggro", "push": true, "pushDamage": 6 }, { "op": "move", "distance": 0, "toward": "aggro", "push": false } ] },
-        { "cell": 16, "name": "Double Pole Crush", "heatUp": true, "range": 2, "dodge": 1, "repeat": 2, "arcs": { "attack": ["front"], "weak": [] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "shift", "distance": 1, "direction": "backward", "push": true } ] },
-        { "cell": 17, "name": "Sweeping Strike", "heatUp": true, "range": 2, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "shift", "distance": 2, "direction": "backward", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": 18, "name": "Lightning Bolt", "heatUp": false, "range": "infinite", "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "shift", "distance": 1, "direction": "backward", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "target", "target": "aggro" } ] },
-        { "cell": 19, "name": "Tail Whip", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["left", "right", "back"], "weak": ["front"] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 4, "style": "area", "push": true } ] },
-        { "cell": 20, "name": "Grab & Smash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": false }, { "op": "attack", "type": "physical", "damage": 6, "style": "target", "target": "nearest" } ] },
-        { "cell": 21, "name": "Vicious Swing", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "right", "back"], "weak": ["left"] }, "ops": [ { "op": "turn", "degrees": 180 }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 22, "name": "Double Swing", "heatUp": false, "range": 1, "dodge": 1, "repeat": 2, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 4, "style": "area" } ] }
+        {
+          "cell": 15,
+          "name": "Vaulting Slam",
+          "heatUp": true,
+          "range": null,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true,
+              "pushDamage": 6
+            },
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "aggro",
+              "push": false
+            }
+          ]
+        },
+        {
+          "cell": 16,
+          "name": "Double Pole Crush",
+          "heatUp": true,
+          "range": 2,
+          "dodge": 1,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 17,
+          "name": "Sweeping Strike",
+          "heatUp": true,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 2,
+              "direction": "backward",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 18,
+          "name": "Lightning Bolt",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 19,
+          "name": "Tail Whip",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 20,
+          "name": "Grab & Smash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 21,
+          "name": "Vicious Swing",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "right",
+              "back"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "turn",
+              "degrees": 180
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 22,
+          "name": "Double Swing",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area"
+            }
+          ]
+        }
       ]
     },
     {
@@ -74,16 +550,251 @@
       "name": "Gargoyle",
       "tier": "mini",
       "expansion": "core",
-      "data": { "threat": 10, "health": 26, "deckSize": 4, "heatUpThreshold": 12, "block": 2, "resist": 1, "encounterIcons": [3, 1, 0], "specialName": "Flying High", "special": "After heat up, characters in the Gargoyle's node must spend 1 additional stamina to attack." },
+      "data": {
+        "threat": 10,
+        "health": 26,
+        "deckSize": 4,
+        "heatUpThreshold": 12,
+        "block": 2,
+        "resist": 1,
+        "encounterIcons": [
+          3,
+          1,
+          0
+        ],
+        "specialName": "Flying High",
+        "special": "After heat up, characters in the Gargoyle's node must spend 1 additional stamina to attack."
+      },
       "behaviors": [
-        { "cell": 23, "name": "Aerial Electric Breath", "heatUp": true, "range": 2, "dodge": 2, "arcs": { "attack": ["front"], "weak": [] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": false }, { "op": "attack", "type": "magical", "damage": 5, "style": "area" } ] },
-        { "cell": 24, "name": "Flying Tail Whip", "heatUp": true, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left"], "weak": [] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": 25, "name": "Swooping Cleave", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "node", "target": "nearest" } ] },
-        { "cell": 26, "name": "Electric Breath", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front"], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": false }, { "op": "attack", "type": "magical", "damage": 4, "style": "area" } ] },
-        { "cell": 27, "name": "Tail Sweep", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 4, "style": "area" } ] },
-        { "cell": 28, "name": "Tail Whip", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["right", "back"], "weak": ["front"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 4, "style": "area" }, { "op": "move", "distance": 1, "toward": "aggro", "push": true } ] },
-        { "cell": 29, "name": "Halberd Thrust", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 1, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "target", "target": "aggro" } ] },
-        { "cell": 30, "name": "Sweeping Strike", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] }
+        {
+          "cell": 23,
+          "name": "Aerial Electric Breath",
+          "heatUp": true,
+          "range": 2,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 24,
+          "name": "Flying Tail Whip",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 25,
+          "name": "Swooping Cleave",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "node",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 26,
+          "name": "Electric Breath",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 27,
+          "name": "Tail Sweep",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 28,
+          "name": "Tail Whip",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "right",
+              "back"
+            ],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "aggro",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 29,
+          "name": "Halberd Thrust",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 30,
+          "name": "Sweeping Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        }
       ]
     },
     {
@@ -91,16 +802,267 @@
       "name": "Boreal Outrider Knight",
       "tier": "mini",
       "expansion": "core",
-      "data": { "threat": 10, "health": 26, "deckSize": 4, "heatUpThreshold": 13, "block": 2, "resist": 3, "encounterIcons": [2, 2, 0], "specialName": "Ice in His Veins", "special": "The Boreal Outrider Knight never gains Frostbite or Stagger tokens." },
+      "data": {
+        "threat": 10,
+        "health": 26,
+        "deckSize": 4,
+        "heatUpThreshold": 13,
+        "block": 2,
+        "resist": 3,
+        "encounterIcons": [
+          2,
+          2,
+          0
+        ],
+        "specialName": "Ice in His Veins",
+        "special": "The Boreal Outrider Knight never gains Frostbite or Stagger tokens."
+      },
       "behaviors": [
-        { "cell": 32, "name": "Lunging Triple Slash", "heatUp": true, "range": 1, "dodge": 1, "repeat": 3, "arcs": { "attack": ["front"], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 4, "style": "area" } ] },
-        { "cell": 33, "name": "Frost Breath", "heatUp": true, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": false }, { "op": "attack", "type": "magical", "damage": 6, "style": "area", "frostbite": true } ] },
-        { "cell": 34, "name": "Uppercut Slam", "heatUp": true, "range": 1, "dodge": 2, "repeat": 2, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest", "frostbite": true } ] },
-        { "cell": 35, "name": "Overhand Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["right", "back"], "weak": ["front"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "left", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 36, "name": "Chilling Thrust", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 2, "toward": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 4, "style": "target", "target": "aggro", "frostbite": true } ] },
-        { "cell": 37, "name": "Sweeping Strike", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "back"], "weak": ["right"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "move", "distance": 1, "toward": "aggro", "push": true } ] },
-        { "cell": 38, "name": "Backhand Slashes", "heatUp": false, "range": 1, "dodge": 2, "repeat": 2, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 4, "style": "area", "frostbite": true } ] },
-        { "cell": 39, "name": "Leaping Frost", "heatUp": false, "range": 1, "dodge": 1, "repeat": 2, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 4, "style": "area", "frostbite": true }, { "op": "leap", "to": "aggro", "push": true } ] }
+        {
+          "cell": 32,
+          "name": "Lunging Triple Slash",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 3,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 33,
+          "name": "Frost Breath",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area",
+              "frostbite": true
+            }
+          ]
+        },
+        {
+          "cell": 34,
+          "name": "Uppercut Slam",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "repeat": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest",
+              "frostbite": true
+            }
+          ]
+        },
+        {
+          "cell": 35,
+          "name": "Overhand Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "right",
+              "back"
+            ],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "left",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 36,
+          "name": "Chilling Thrust",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "target",
+              "target": "aggro",
+              "frostbite": true
+            }
+          ]
+        },
+        {
+          "cell": 37,
+          "name": "Sweeping Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "back"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "aggro",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 38,
+          "name": "Backhand Slashes",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area",
+              "frostbite": true
+            }
+          ]
+        },
+        {
+          "cell": 39,
+          "name": "Leaping Frost",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area",
+              "frostbite": true
+            },
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true
+            }
+          ]
+        }
       ]
     },
     {
@@ -108,20 +1070,390 @@
       "name": "Dancer of the Boreal Valley",
       "tier": "main",
       "expansion": "core",
-      "data": { "threat": 10, "health": 34, "deckSize": 5, "heatUpThreshold": 18, "block": 2, "resist": 2, "encounterIcons": [0, 2, 2], "specialName": "Unpredictable Onslaught", "special": "After a heat up behaviour card is drawn and resolved, shuffle the behaviour deck." },
+      "data": {
+        "threat": 10,
+        "health": 34,
+        "deckSize": 5,
+        "heatUpThreshold": 18,
+        "block": 2,
+        "resist": 2,
+        "encounterIcons": [
+          0,
+          2,
+          2
+        ],
+        "specialName": "Unpredictable Onslaught",
+        "special": "After a heat up behaviour card is drawn and resolved, shuffle the behaviour deck."
+      },
       "behaviors": [
-        { "cell": 58, "name": "Whirling Blades", "heatUp": true, "range": 1, "dodge": 1, "repeat": 4, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "forward", "push": true }, { "op": "turn", "degrees": 90, "direction": "left" }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": 59, "name": "Plunging Assault", "heatUp": true, "range": null, "dodge": 1, "repeat": 3, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "leap", "to": "aggro", "push": true, "pushDamage": 6 } ] },
-        { "cell": 60, "name": "Blade Dance", "heatUp": true, "range": 1, "dodge": 1, "repeat": 2, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "shift", "distance": 2, "direction": "forward", "push": true }, { "op": "turn", "degrees": 180 }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 61, "name": "Triple Slash", "heatUp": false, "range": 1, "dodge": 1, "repeat": 3, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "forward", "push": true }, { "op": "turn", "degrees": 90, "direction": "left" }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 62, "name": "Plunging Attack", "heatUp": false, "range": null, "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "leap", "to": "nearest", "push": true, "pushDamage": 6 } ] },
-        { "cell": 63, "name": "Double Slash", "heatUp": false, "range": 1, "dodge": 1, "repeat": 2, "arcs": { "attack": ["front", "right"], "weak": ["back"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "forward", "push": true }, { "op": "turn", "degrees": 90, "direction": "right" }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 64, "name": "Uppercut", "heatUp": false, "range": 1, "dodge": 2, "repeat": 2, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 3, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest" } ] },
-        { "cell": 65, "name": "Ash Cloud", "heatUp": false, "range": "infinite", "dodge": 1, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "area" }, { "op": "leap", "to": "aggro", "push": true } ] },
-        { "cell": 66, "name": "Backhand Blade Swipe", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "forward", "push": true }, { "op": "turn", "degrees": 90, "direction": "left" }, { "op": "attack", "type": "physical", "damage": 7, "style": "area" } ] },
-        { "cell": 67, "name": "Sweeping Blade Swipe", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "forward", "push": true }, { "op": "turn", "degrees": 90, "direction": "right" }, { "op": "attack", "type": "physical", "damage": 7, "style": "area" } ] },
-        { "cell": 68, "name": "Flashing Blade", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "shift", "distance": 2, "direction": "forward", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": "boss21:0", "name": "Deadly Grasp", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "left", "push": true }, { "op": "attack", "type": "physical", "damage": 7, "style": "target", "target": "nearest", "push": true } ] }
+        {
+          "cell": 58,
+          "name": "Whirling Blades",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 4,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            },
+            {
+              "op": "turn",
+              "degrees": 90,
+              "direction": "left"
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 59,
+          "name": "Plunging Assault",
+          "heatUp": true,
+          "range": null,
+          "dodge": 1,
+          "repeat": 3,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true,
+              "pushDamage": 6
+            }
+          ]
+        },
+        {
+          "cell": 60,
+          "name": "Blade Dance",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 2,
+              "direction": "forward",
+              "push": true
+            },
+            {
+              "op": "turn",
+              "degrees": 180
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 61,
+          "name": "Triple Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 3,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            },
+            {
+              "op": "turn",
+              "degrees": 90,
+              "direction": "left"
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 62,
+          "name": "Plunging Attack",
+          "heatUp": false,
+          "range": null,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "nearest",
+              "push": true,
+              "pushDamage": 6
+            }
+          ]
+        },
+        {
+          "cell": 63,
+          "name": "Double Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            },
+            {
+              "op": "turn",
+              "degrees": 90,
+              "direction": "right"
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 64,
+          "name": "Uppercut",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "repeat": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 3,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 65,
+          "name": "Ash Cloud",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 66,
+          "name": "Backhand Blade Swipe",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            },
+            {
+              "op": "turn",
+              "degrees": 90,
+              "direction": "left"
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 7,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 67,
+          "name": "Sweeping Blade Swipe",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            },
+            {
+              "op": "turn",
+              "degrees": 90,
+              "direction": "right"
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 7,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 68,
+          "name": "Flashing Blade",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 2,
+              "direction": "forward",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "boss21:0",
+          "name": "Deadly Grasp",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "left",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 7,
+              "style": "target",
+              "target": "nearest",
+              "push": true
+            }
+          ]
+        }
       ]
     },
     {
@@ -131,49 +1463,582 @@
       "expansion": "core",
       "paired": true,
       "data": {
-        "ornstein": { "threat": 10, "health": 20, "deckSize": 5, "heatUpThreshold": 0, "block": 3, "resist": 3, "encounterIcons": [0, 1, 3], "specialName": "United We Stand", "special": "Both bosses activate each turn. When Smough dies, Ornstein gains 10 Health and his heat up cards become the new behaviour deck. Ornstein spawns on the Main Boss node." },
-        "smough": { "threat": 9, "health": 30, "deckSize": 5, "heatUpThreshold": 0, "block": 2, "resist": 2, "encounterIcons": [0, 1, 3], "specialName": "Divided You Fall", "special": "Both bosses activate each turn. When Ornstein dies, Smough gains 15 Health and his heat up cards become the new behaviour deck. Smough spawns on the Mini Boss node." }
+        "ornstein": {
+          "threat": 10,
+          "health": 20,
+          "deckSize": 5,
+          "heatUpThreshold": 0,
+          "block": 3,
+          "resist": 3,
+          "encounterIcons": [
+            0,
+            1,
+            3
+          ],
+          "specialName": "United We Stand",
+          "special": "Both bosses activate each turn. When Smough dies, Ornstein gains 10 Health and his heat up cards become the new behaviour deck. Ornstein spawns on the Main Boss node."
+        },
+        "smough": {
+          "threat": 9,
+          "health": 30,
+          "deckSize": 5,
+          "heatUpThreshold": 0,
+          "block": 2,
+          "resist": 2,
+          "encounterIcons": [
+            0,
+            1,
+            3
+          ],
+          "specialName": "Divided You Fall",
+          "special": "Both bosses activate each turn. When Ornstein dies, Smough gains 15 Health and his heat up cards become the new behaviour deck. Smough spawns on the Mini Boss node."
+        }
       },
       "pairedBehaviors": [
         {
           "cell": 53,
-          "ornstein": { "name": "Spear Slam", "range": 1, "dodge": 1, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "leap", "to": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "aggro" } ] },
-          "smough": { "name": "Hammer Sweep", "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "shift", "distance": 1, "direction": "backward", "push": true } ] }
+          "ornstein": {
+            "name": "Spear Slam",
+            "range": 1,
+            "dodge": 1,
+            "arcs": {
+              "attack": [],
+              "weak": [
+                "right"
+              ]
+            },
+            "ops": [
+              {
+                "op": "leap",
+                "to": "aggro",
+                "push": true
+              },
+              {
+                "op": "attack",
+                "type": "physical",
+                "damage": 5,
+                "style": "target",
+                "target": "aggro"
+              }
+            ]
+          },
+          "smough": {
+            "name": "Hammer Sweep",
+            "range": 1,
+            "dodge": 1,
+            "arcs": {
+              "attack": [
+                "front",
+                "left",
+                "right"
+              ],
+              "weak": [
+                "back"
+              ]
+            },
+            "ops": [
+              {
+                "op": "attack",
+                "type": "physical",
+                "damage": 5,
+                "style": "area"
+              },
+              {
+                "op": "shift",
+                "distance": 1,
+                "direction": "backward",
+                "push": true
+              }
+            ]
+          }
         },
         {
           "cell": 54,
-          "ornstein": { "name": "Swiping Combo", "range": 1, "dodge": 1, "repeat": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "node", "target": "nearest" } ] },
-          "smough": { "name": "Bonzai Drop", "range": null, "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "leap", "to": "nearest", "push": true, "pushDamage": 5 } ] }
+          "ornstein": {
+            "name": "Swiping Combo",
+            "range": 1,
+            "dodge": 1,
+            "repeat": 2,
+            "arcs": {
+              "attack": [],
+              "weak": [
+                "back"
+              ]
+            },
+            "ops": [
+              {
+                "op": "move",
+                "distance": 1,
+                "toward": "nearest",
+                "push": true
+              },
+              {
+                "op": "attack",
+                "type": "physical",
+                "damage": 5,
+                "style": "node",
+                "target": "nearest"
+              }
+            ]
+          },
+          "smough": {
+            "name": "Bonzai Drop",
+            "range": null,
+            "dodge": 2,
+            "arcs": {
+              "attack": [],
+              "weak": []
+            },
+            "ops": [
+              {
+                "op": "leap",
+                "to": "nearest",
+                "push": true,
+                "pushDamage": 5
+              }
+            ]
+          }
         },
         {
           "cell": 55,
-          "ornstein": { "name": "Gliding Stab", "range": 1, "dodge": 3, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "aggro" } ] },
-          "smough": { "name": "Hammer Smash", "range": 1, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["right"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "left", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest" } ] }
+          "ornstein": {
+            "name": "Gliding Stab",
+            "range": 1,
+            "dodge": 3,
+            "arcs": {
+              "attack": [],
+              "weak": [
+                "back"
+              ]
+            },
+            "ops": [
+              {
+                "op": "move",
+                "distance": 1,
+                "toward": "aggro",
+                "push": true
+              },
+              {
+                "op": "attack",
+                "type": "physical",
+                "damage": 5,
+                "style": "target",
+                "target": "aggro"
+              }
+            ]
+          },
+          "smough": {
+            "name": "Hammer Smash",
+            "range": 1,
+            "dodge": 1,
+            "arcs": {
+              "attack": [
+                "front"
+              ],
+              "weak": [
+                "right"
+              ]
+            },
+            "ops": [
+              {
+                "op": "shift",
+                "distance": 1,
+                "direction": "left",
+                "push": true
+              },
+              {
+                "op": "attack",
+                "type": "physical",
+                "damage": 5,
+                "style": "target",
+                "target": "nearest"
+              }
+            ]
+          }
         },
         {
           "cell": 56,
-          "ornstein": { "name": "Evasive Sweep", "range": 2, "dodge": 2, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "backward", "push": true }, { "op": "attack", "type": "physical", "damage": 4, "style": "area" } ] },
-          "smough": { "name": "Trampling Charge", "range": null, "dodge": 1, "arcs": { "attack": [], "weak": ["front"] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true, "pushDamage": 5 } ] }
+          "ornstein": {
+            "name": "Evasive Sweep",
+            "range": 2,
+            "dodge": 2,
+            "arcs": {
+              "attack": [
+                "front"
+              ],
+              "weak": [
+                "left"
+              ]
+            },
+            "ops": [
+              {
+                "op": "shift",
+                "distance": 1,
+                "direction": "backward",
+                "push": true
+              },
+              {
+                "op": "attack",
+                "type": "physical",
+                "damage": 4,
+                "style": "area"
+              }
+            ]
+          },
+          "smough": {
+            "name": "Trampling Charge",
+            "range": null,
+            "dodge": 1,
+            "arcs": {
+              "attack": [],
+              "weak": [
+                "front"
+              ]
+            },
+            "ops": [
+              {
+                "op": "move",
+                "distance": 2,
+                "toward": "nearest",
+                "push": true,
+                "pushDamage": 5
+              }
+            ]
+          }
         },
         {
           "cell": 57,
-          "ornstein": { "name": "Lightning Bolt", "range": "infinite", "dodge": 1, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 5, "style": "target", "target": "aggro" } ] },
-          "smough": { "name": "Jumping Slam", "range": 1, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] }
+          "ornstein": {
+            "name": "Lightning Bolt",
+            "range": "infinite",
+            "dodge": 1,
+            "arcs": {
+              "attack": [],
+              "weak": [
+                "back"
+              ]
+            },
+            "ops": [
+              {
+                "op": "attack",
+                "type": "magical",
+                "damage": 5,
+                "style": "target",
+                "target": "aggro"
+              }
+            ]
+          },
+          "smough": {
+            "name": "Jumping Slam",
+            "range": 1,
+            "dodge": 1,
+            "arcs": {
+              "attack": [
+                "front"
+              ],
+              "weak": [
+                "left"
+              ]
+            },
+            "ops": [
+              {
+                "op": "move",
+                "distance": 1,
+                "toward": "nearest",
+                "push": true
+              },
+              {
+                "op": "attack",
+                "type": "physical",
+                "damage": 6,
+                "style": "area"
+              }
+            ]
+          }
         }
       ],
       "ornsteinHeatUps": [
-        { "cell": 47, "name": "Charged Bolt", "heatUp": true, "range": "infinite", "dodge": 3, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "target", "target": "aggro" } ] },
-        { "cell": 48, "name": "High Voltage", "heatUp": true, "range": 1, "dodge": 1, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "leap", "to": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 6, "style": "target", "target": "aggro" } ] },
-        { "cell": 49, "name": "Electric Clash", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "area" } ] },
-        { "cell": 50, "name": "Lightning Stab", "heatUp": true, "range": 1, "dodge": 1, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 7, "style": "target", "target": "nearest" } ] },
-        { "cell": 51, "name": "Charged Swiping Combo", "heatUp": true, "range": 1, "dodge": 1, "repeat": 3, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "node", "target": "nearest" } ] }
+        {
+          "cell": 47,
+          "name": "Charged Bolt",
+          "heatUp": true,
+          "range": "infinite",
+          "dodge": 3,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 48,
+          "name": "High Voltage",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 49,
+          "name": "Electric Clash",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 50,
+          "name": "Lightning Stab",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 7,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 51,
+          "name": "Charged Swiping Combo",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 3,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "node",
+              "target": "nearest"
+            }
+          ]
+        }
       ],
       "smoughHeatUps": [
-        { "cell": 41, "name": "Charged Charge", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 2, "toward": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 6, "style": "target", "target": "aggro" } ] },
-        { "cell": 42, "name": "Electric Bonzai Drop", "heatUp": true, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "leap", "to": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 7, "style": "area" } ] },
-        { "cell": 43, "name": "Jumping Volt Slam", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "area" } ] },
-        { "cell": 44, "name": "Lightning Sweep", "heatUp": true, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 6, "style": "area" } ] },
-        { "cell": 45, "name": "Electric Hammer Smash", "heatUp": true, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 6, "style": "area" } ] }
+        {
+          "cell": 41,
+          "name": "Charged Charge",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 42,
+          "name": "Electric Bonzai Drop",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 7,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 43,
+          "name": "Jumping Volt Slam",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 44,
+          "name": "Lightning Sweep",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 45,
+          "name": "Electric Hammer Smash",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        }
       ]
     },
     {
@@ -181,16 +2046,265 @@
       "name": "Old Dragonslayer",
       "tier": "mini",
       "expansion": "addon",
-      "data": { "threat": 10, "health": 20, "deckSize": 4, "heatUpThreshold": null, "block": 2, "resist": 2, "encounterIcons": [3, 1, 0], "specialName": "Corrupted Dragonslayer", "special": "The first three times the Old Dragonslayer loses 4 or more Health from a single attack, add one random heat up card to the top of the behaviour deck." },
+      "data": {
+        "threat": 10,
+        "health": 20,
+        "deckSize": 4,
+        "heatUpThreshold": null,
+        "block": 2,
+        "resist": 2,
+        "encounterIcons": [
+          3,
+          1,
+          0
+        ],
+        "specialName": "Corrupted Dragonslayer",
+        "special": "The first three times the Old Dragonslayer loses 4 or more Health from a single attack, add one random heat up card to the top of the behaviour deck."
+      },
       "behaviors": [
-        { "cell": 1, "name": "Leaping Darkness", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "leap", "to": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 4, "style": "area" } ] },
-        { "cell": 2, "name": "Lunging Combo", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest" }, { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest" } ] },
-        { "cell": 3, "name": "Massive Sweep", "heatUp": true, "range": 2, "dodge": 2, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": false }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "shift", "distance": 1, "direction": "forward", "push": true } ] },
-        { "cell": 4, "name": "Darkness Falls", "heatUp": true, "range": 2, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "leap", "to": "aggro", "push": true }, { "op": "move", "distance": 0, "toward": "aggro", "push": false }, { "op": "attack", "type": "magical", "damage": 5, "style": "area", "target": "aggro" } ] },
-        { "cell": 5, "name": "Darkness Bolt", "heatUp": false, "range": 3, "dodge": 3, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 0, "toward": "aggro", "push": false }, { "op": "attack", "type": "magical", "damage": 4, "style": "target", "target": "aggro" } ] },
-        { "cell": 6, "name": "Spear Sweep", "heatUp": false, "range": 2, "dodge": 2, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 4, "style": "area" }, { "op": "shift", "distance": 1, "direction": "forward", "push": true } ] },
-        { "cell": 7, "name": "Spear Lunge", "heatUp": false, "range": 2, "dodge": 2, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest" } ] },
-        { "cell": 8, "name": "Skewering Charge", "heatUp": false, "range": null, "dodge": 1, "arcs": { "attack": [], "weak": ["front"] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true, "pushDamage": 4 } ] }
+        {
+          "cell": 1,
+          "name": "Leaping Darkness",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 2,
+          "name": "Lunging Combo",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 3,
+          "name": "Massive Sweep",
+          "heatUp": true,
+          "range": 2,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 4,
+          "name": "Darkness Falls",
+          "heatUp": true,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true
+            },
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "aggro",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 5,
+          "name": "Darkness Bolt",
+          "heatUp": false,
+          "range": 3,
+          "dodge": 3,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "aggro",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 6,
+          "name": "Spear Sweep",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "area"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 7,
+          "name": "Spear Lunge",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 8,
+          "name": "Skewering Charge",
+          "heatUp": false,
+          "range": null,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": true,
+              "pushDamage": 4
+            }
+          ]
+        }
       ]
     },
     {
@@ -198,15 +2312,162 @@
       "name": "Hungry Mimic",
       "tier": "mini",
       "expansion": "addon",
-      "data": { "threat": 10, "health": 18, "deckSize": 4, "heatUpThreshold": 8, "block": 1, "resist": 1, "encounterIcons": null, "specialName": "Loot the Body", "special": "When the Hungry Mimic is defeated, draw treasure as if the party had opened two chests.", "note": "Mimic behaviour cards print no arc diagrams; mimics ignore facing. No heat up cards." },
+      "data": {
+        "threat": 10,
+        "health": 18,
+        "deckSize": 4,
+        "heatUpThreshold": 8,
+        "block": 1,
+        "resist": 1,
+        "encounterIcons": null,
+        "specialName": "Loot the Body",
+        "special": "When the Hungry Mimic is defeated, draw treasure as if the party had opened two chests.",
+        "note": "Mimic behaviour cards print no arc diagrams; mimics ignore facing. No heat up cards."
+      },
       "behaviors": [
-        { "cell": 12, "name": "Raking Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": null, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": false }, { "op": "attack", "type": "physical", "damage": 4, "style": "node", "target": "nearest", "push": true } ] },
-        { "cell": 13, "name": "Heavy Punch", "heatUp": false, "range": 1, "dodge": 2, "arcs": null, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest" } ] },
-        { "cell": 14, "name": "Leaping Spin Kick", "heatUp": false, "range": null, "dodge": 2, "arcs": null, "ops": [ { "op": "leap", "to": "nearest", "push": true, "pushDamage": 5 } ] },
-        { "cell": 15, "name": "Stomping Kick", "heatUp": false, "range": null, "dodge": 1, "arcs": null, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true, "pushDamage": 6 } ] },
-        { "cell": 16, "name": "Charging Chomp", "heatUp": false, "range": 0, "dodge": 3, "arcs": null, "ops": [ { "op": "move", "distance": 3, "toward": "aggro", "push": false }, { "op": "attack", "type": "physical", "damage": 4, "style": "target", "target": "aggro" } ] },
-        { "cell": 17, "name": "Vicious Chomp", "heatUp": false, "range": 0, "dodge": 2, "arcs": null, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "target", "target": "nearest" } ] },
-        { "cell": 18, "name": "Aggressive Grab", "heatUp": false, "range": 0, "dodge": 1, "arcs": null, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": false }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest" } ] }
+        {
+          "cell": 12,
+          "name": "Raking Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "node",
+              "target": "nearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 13,
+          "name": "Heavy Punch",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 14,
+          "name": "Leaping Spin Kick",
+          "heatUp": false,
+          "range": null,
+          "dodge": 2,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "leap",
+              "to": "nearest",
+              "push": true,
+              "pushDamage": 5
+            }
+          ]
+        },
+        {
+          "cell": 15,
+          "name": "Stomping Kick",
+          "heatUp": false,
+          "range": null,
+          "dodge": 1,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true,
+              "pushDamage": 6
+            }
+          ]
+        },
+        {
+          "cell": 16,
+          "name": "Charging Chomp",
+          "heatUp": false,
+          "range": 0,
+          "dodge": 3,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 3,
+              "toward": "aggro",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 17,
+          "name": "Vicious Chomp",
+          "heatUp": false,
+          "range": 0,
+          "dodge": 2,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 18,
+          "name": "Aggressive Grab",
+          "heatUp": false,
+          "range": 0,
+          "dodge": 1,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        }
       ]
     },
     {
@@ -214,15 +2475,162 @@
       "name": "Voracious Mimic",
       "tier": "mini",
       "expansion": "addon",
-      "data": { "threat": 10, "health": 18, "deckSize": 4, "heatUpThreshold": 8, "block": 2, "resist": 2, "encounterIcons": null, "specialName": "Loot the Body", "special": "When the Voracious Mimic is defeated, draw treasure as if the party had opened two chests.", "note": "Mimic behaviour cards print no arc diagrams; mimics ignore facing. No heat up cards." },
+      "data": {
+        "threat": 10,
+        "health": 18,
+        "deckSize": 4,
+        "heatUpThreshold": 8,
+        "block": 2,
+        "resist": 2,
+        "encounterIcons": null,
+        "specialName": "Loot the Body",
+        "special": "When the Voracious Mimic is defeated, draw treasure as if the party had opened two chests.",
+        "note": "Mimic behaviour cards print no arc diagrams; mimics ignore facing. No heat up cards."
+      },
       "behaviors": [
-        { "cell": 20, "name": "Raking Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": null, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": false }, { "op": "attack", "type": "physical", "damage": 5, "style": "node", "target": "nearest", "push": true } ] },
-        { "cell": 21, "name": "Heavy Punch", "heatUp": false, "range": 1, "dodge": 2, "arcs": null, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "target", "target": "nearest" } ] },
-        { "cell": 22, "name": "Leaping Spin Kick", "heatUp": false, "range": null, "dodge": 2, "arcs": null, "ops": [ { "op": "leap", "to": "nearest", "push": true, "pushDamage": 6 } ] },
-        { "cell": 23, "name": "Stomping Kick", "heatUp": false, "range": null, "dodge": 1, "arcs": null, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true, "pushDamage": 7 } ] },
-        { "cell": 24, "name": "Charging Chomp", "heatUp": false, "range": 0, "dodge": 3, "arcs": null, "ops": [ { "op": "move", "distance": 3, "toward": "aggro", "push": false }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "aggro" } ] },
-        { "cell": 25, "name": "Vicious Chomp", "heatUp": false, "range": 0, "dodge": 2, "arcs": null, "ops": [ { "op": "attack", "type": "physical", "damage": 7, "style": "target", "target": "nearest" } ] },
-        { "cell": 26, "name": "Aggressive Grab", "heatUp": false, "range": 0, "dodge": 1, "arcs": null, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": false }, { "op": "attack", "type": "physical", "damage": 6, "style": "target", "target": "nearest" } ] }
+        {
+          "cell": 20,
+          "name": "Raking Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "node",
+              "target": "nearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 21,
+          "name": "Heavy Punch",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 22,
+          "name": "Leaping Spin Kick",
+          "heatUp": false,
+          "range": null,
+          "dodge": 2,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "leap",
+              "to": "nearest",
+              "push": true,
+              "pushDamage": 6
+            }
+          ]
+        },
+        {
+          "cell": 23,
+          "name": "Stomping Kick",
+          "heatUp": false,
+          "range": null,
+          "dodge": 1,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true,
+              "pushDamage": 7
+            }
+          ]
+        },
+        {
+          "cell": 24,
+          "name": "Charging Chomp",
+          "heatUp": false,
+          "range": 0,
+          "dodge": 3,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 3,
+              "toward": "aggro",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 25,
+          "name": "Vicious Chomp",
+          "heatUp": false,
+          "range": 0,
+          "dodge": 2,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 7,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": 26,
+          "name": "Aggressive Grab",
+          "heatUp": false,
+          "range": 0,
+          "dodge": 1,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        }
       ]
     },
     {
@@ -230,21 +2638,409 @@
       "name": "Smelter Demon",
       "tier": "main",
       "expansion": "addon",
-      "data": { "threat": 10, "health": 22, "deckSize": 5, "heatUpThreshold": 11, "block": 4, "resist": 3, "encounterIcons": [0, 2, 2], "specialName": "Smelter's Blade", "special": "On heat up, replace the behaviour deck with 5 randomly chosen Heat Up cards." },
+      "data": {
+        "threat": 10,
+        "health": 22,
+        "deckSize": 5,
+        "heatUpThreshold": 11,
+        "block": 4,
+        "resist": 3,
+        "encounterIcons": [
+          0,
+          2,
+          2
+        ],
+        "specialName": "Smelter's Blade",
+        "special": "On heat up, replace the behaviour deck with 5 randomly chosen Heat Up cards."
+      },
       "behaviors": [
-        { "cell": 4, "name": "Sweeping Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": 5, "name": "Double Sweep", "heatUp": false, "range": 1, "dodge": 1, "repeat": 2, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "area" }, { "op": "shift", "distance": 1, "direction": "backward", "push": true } ] },
-        { "cell": 6, "name": "Leaping Impalement Strike", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["left", "right"] }, "ops": [ { "op": "leap", "to": "aggro", "push": true, "pushDamage": 4 }, { "op": "attack", "type": "physical", "damage": 4, "style": "node", "target": "aggro" } ] },
-        { "cell": 7, "name": "Overhead Chop", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["front", "back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "node", "target": "nearest", "stagger": true } ] },
-        { "cell": 8, "name": "Fiery Blast", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 5, "style": "area" } ] },
-        { "cell": 9, "name": "Lunging Strike", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "backward", "push": true }, { "op": "move", "distance": 2, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 7, "style": "target", "target": "aggro" } ] },
-        { "cell": 10, "name": "Flaming Sweeping Slash", "heatUp": true, "range": 2, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 6, "style": "area" } ] },
-        { "cell": 11, "name": "Flaming Double Sweep", "heatUp": true, "range": 1, "dodge": 1, "repeat": 2, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "area" }, { "op": "shift", "distance": 1, "direction": "backward", "push": true } ] },
-        { "cell": 12, "name": "Flaming Impalement Strike", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["left", "right"] }, "ops": [ { "op": "leap", "to": "aggro", "push": true, "pushDamage": 4 }, { "op": "attack", "type": "magical", "damage": 4, "style": "node", "target": "aggro" } ] },
-        { "cell": 13, "name": "Flaming Overhead Chop", "heatUp": true, "range": 2, "dodge": 2, "arcs": { "attack": [], "weak": ["front", "back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 6, "style": "node", "target": "nearest", "stagger": true } ] },
-        { "cell": 14, "name": "Fiery Explosion", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "area" } ] },
-        { "cell": 15, "name": "Flaming Lunging Strike", "heatUp": true, "range": 2, "dodge": 1, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "backward", "push": true }, { "op": "move", "distance": 2, "toward": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 7, "style": "target", "target": "aggro" } ] },
-        { "cell": 16, "name": "Flame Wave", "heatUp": true, "range": "infinite", "dodge": 2, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 0, "toward": "aggro", "push": false }, { "op": "attack", "type": "magical", "damage": 5, "style": "area" } ] }
+        {
+          "cell": 4,
+          "name": "Sweeping Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 5,
+          "name": "Double Sweep",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 6,
+          "name": "Leaping Impalement Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left",
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true,
+              "pushDamage": 4
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 4,
+              "style": "node",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 7,
+          "name": "Overhead Chop",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "front",
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "node",
+              "target": "nearest",
+              "stagger": true
+            }
+          ]
+        },
+        {
+          "cell": 8,
+          "name": "Fiery Blast",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 9,
+          "name": "Lunging Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            },
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 7,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 10,
+          "name": "Flaming Sweeping Slash",
+          "heatUp": true,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 11,
+          "name": "Flaming Double Sweep",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 1,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 12,
+          "name": "Flaming Impalement Strike",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left",
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true,
+              "pushDamage": 4
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "node",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 13,
+          "name": "Flaming Overhead Chop",
+          "heatUp": true,
+          "range": 2,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "front",
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "node",
+              "target": "nearest",
+              "stagger": true
+            }
+          ]
+        },
+        {
+          "cell": 14,
+          "name": "Fiery Explosion",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 15,
+          "name": "Flaming Lunging Strike",
+          "heatUp": true,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            },
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 7,
+              "style": "target",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 16,
+          "name": "Flame Wave",
+          "heatUp": true,
+          "range": "infinite",
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "aggro",
+              "push": false
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        }
       ]
     },
     {
@@ -252,21 +3048,393 @@
       "name": "Artorias",
       "tier": "main",
       "expansion": "darkroot",
-      "data": { "threat": 10, "health": 25, "deckSize": 5, "heatUpThreshold": 15, "block": 3, "resist": 3, "encounterIcons": [0, 0, 4], "specialName": "Walking the Abyss", "special": "On heat up, remove 2 random behaviour cards from the deck, then add all 3 Heat Up cards and shuffle." },
+      "data": {
+        "threat": 10,
+        "health": 25,
+        "deckSize": 5,
+        "heatUpThreshold": 15,
+        "block": 3,
+        "resist": 3,
+        "encounterIcons": [
+          0,
+          0,
+          4
+        ],
+        "specialName": "Walking the Abyss",
+        "special": "On heat up, remove 2 random behaviour cards from the deck, then add all 3 Heat Up cards and shuffle."
+      },
       "behaviors": [
-        { "cell": "sifart:0", "name": "Wrath of the Abyss", "heatUp": false, "range": 2, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "area" } ] },
-        { "cell": "sifart:1", "name": "Retreating Strike", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front"], "weak": [] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "stagger" }, { "op": "move", "distance": 2, "toward": "awayFromNearest", "push": true } ] },
-        { "cell": "sifart:2", "name": "Heavy Thrust", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "target", "target": "nearest" } ] },
-        { "cell": "sifart:3", "name": "Somersault Strike", "heatUp": false, "range": null, "dodge": 2, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "leap", "to": "nearest", "push": true, "pushDamage": 5 } ] },
-        { "cell": "sifart:4", "name": "Overhead Cleave", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" }, { "op": "stagger" } ] },
-        { "cell": "sifart:5", "name": "Abyss Assault", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "leap", "to": "aggro", "push": true, "pushDamage": 5 }, { "op": "attack", "type": "magical", "damage": 5, "style": "area" } ] },
-        { "cell": "sifart:6", "name": "Leaping Fury", "heatUp": true, "range": null, "dodge": 2, "arcs": { "attack": [], "weak": ["front"] }, "ops": [ { "op": "leap", "to": "nearest", "push": true, "pushDamage": 5 }, { "op": "leap", "to": "aggro", "push": true, "pushDamage": 6 } ] },
-        { "cell": "sifart:7", "name": "Abyss Sludge", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "area" }, { "op": "stagger" }, { "op": "leap", "to": "aggro", "push": true } ] },
-        { "cell": "sifart:8", "name": "Steadfast Leap", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "leap", "to": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": "sifart:9", "name": "Charging Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": "sifart:10", "name": "Somersault Slam", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "area" } ] },
-        { "cell": "sifart:11", "name": "Spinning Slash", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "move", "distance": 1, "toward": "nearest", "push": true } ] },
-        { "cell": "sifart:12", "name": "Lunging Cleave", "heatUp": true, "range": 1, "dodge": 2, "arcs": { "attack": ["front"], "weak": [] }, "ops": [ { "op": "leap", "to": "aggro", "push": true, "pushDamage": 5 }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] }
+        {
+          "cell": "sifart:0",
+          "name": "Wrath of the Abyss",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:1",
+          "name": "Retreating Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            },
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "awayFromNearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": "sifart:2",
+          "name": "Heavy Thrust",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:3",
+          "name": "Somersault Strike",
+          "heatUp": false,
+          "range": null,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "nearest",
+              "push": true,
+              "pushDamage": 5
+            }
+          ]
+        },
+        {
+          "cell": "sifart:4",
+          "name": "Overhead Cleave",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:5",
+          "name": "Abyss Assault",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true,
+              "pushDamage": 5
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:6",
+          "name": "Leaping Fury",
+          "heatUp": true,
+          "range": null,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "nearest",
+              "push": true,
+              "pushDamage": 5
+            },
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true,
+              "pushDamage": 6
+            }
+          ]
+        },
+        {
+          "cell": "sifart:7",
+          "name": "Abyss Sludge",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            },
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": "sifart:8",
+          "name": "Steadfast Leap",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:9",
+          "name": "Charging Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:10",
+          "name": "Somersault Slam",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:11",
+          "name": "Spinning Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": "sifart:12",
+          "name": "Lunging Cleave",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true,
+              "pushDamage": 5
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        }
       ]
     },
     {
@@ -274,22 +3442,458 @@
       "name": "Great Grey Wolf Sif",
       "tier": "main",
       "expansion": "darkroot",
-      "data": { "threat": 10, "health": 36, "deckSize": 5, "heatUpThreshold": 19, "block": 2, "resist": 3, "encounterIcons": [0, 1, 3], "specialName": "Mournful Howl", "special": "Limping Strike is not a starting or Heat Up card. When Sif is reduced to 3 Health or less, replace the behaviour deck with the Limping Strike card." },
+      "data": {
+        "threat": 10,
+        "health": 36,
+        "deckSize": 5,
+        "heatUpThreshold": 19,
+        "block": 2,
+        "resist": 3,
+        "encounterIcons": [
+          0,
+          1,
+          3
+        ],
+        "specialName": "Mournful Howl",
+        "special": "Limping Strike is not a starting or Heat Up card. When Sif is reduced to 3 Health or less, replace the behaviour deck with the Limping Strike card."
+      },
       "behaviors": [
-        { "cell": "sifart:13", "name": "Dashing Slice", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front"], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 2, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 7, "style": "area" } ] },
-        { "cell": "sifart:14", "name": "Spinning Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": "sifart:15", "name": "Sidestep Slash", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "right", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": "sifart:16", "name": "Sword Slam", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" }, { "op": "stagger" } ] },
-        { "cell": "sifart:17", "name": "Limping Strike", "heatUp": false, "coolDownCard": true, "range": 1, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["left", "right"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 2, "style": "area" } ] },
-        { "cell": "sifart:18", "name": "Slashing Retreat", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "move", "distance": 1, "toward": "awayFromNearest", "push": true } ] },
-        { "cell": "sifart:19", "name": "Evasive Strike", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left"], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "area" }, { "op": "move", "distance": 1, "toward": "awayFromNearest", "push": true } ] },
-        { "cell": "sifart:20", "name": "Upward Slash", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 2, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 7, "style": "node", "target": "aggro" } ] },
-        { "cell": "sifart:21", "name": "Pouncing Assault", "heatUp": false, "range": null, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "leap", "to": "aggro", "push": true, "pushDamage": 6 }, { "op": "stagger" } ] },
-        { "cell": "sifart:22", "name": "Slashing Assault", "heatUp": false, "range": 1, "dodge": 1, "arcs": null, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area", "arcs": { "attack": ["front"], "weak": ["back"] } }, { "op": "attack", "type": "physical", "damage": 5, "style": "area", "arcs": { "attack": ["front"], "weak": ["back"] } } ] },
-        { "cell": "sifart:23", "name": "Sidestep Cleave", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "left", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" } ] },
-        { "cell": "sifart:24", "name": "Feral Onslaught", "heatUp": true, "range": 1, "dodge": 2, "repeat": 2, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" }, { "op": "stagger" } ] },
-        { "cell": "sifart:25", "name": "Cyclone Strikes", "heatUp": true, "range": 1, "dodge": 2, "repeat": 2, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "physical", "damage": 7, "style": "area" }, { "op": "stagger" }, { "op": "shift", "distance": 1, "direction": "forward", "push": true } ] },
-        { "cell": "sifart:26", "name": "Savage Retreat", "heatUp": true, "range": 1, "dodge": 2, "repeat": 3, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "area" }, { "op": "stagger" }, { "op": "shift", "distance": 1, "direction": "backward", "push": true } ] }
+        {
+          "cell": "sifart:13",
+          "name": "Dashing Slice",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 7,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:14",
+          "name": "Spinning Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:15",
+          "name": "Sidestep Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "right",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:16",
+          "name": "Sword Slam",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:17",
+          "name": "Limping Strike",
+          "heatUp": false,
+          "coolDownCard": true,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left",
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 2,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:18",
+          "name": "Slashing Retreat",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "awayFromNearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": "sifart:19",
+          "name": "Evasive Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "awayFromNearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": "sifart:20",
+          "name": "Upward Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 7,
+              "style": "node",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:21",
+          "name": "Pouncing Assault",
+          "heatUp": false,
+          "range": null,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "leap",
+              "to": "aggro",
+              "push": true,
+              "pushDamage": 6
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:22",
+          "name": "Slashing Assault",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area",
+              "arcs": {
+                "attack": [
+                  "front"
+                ],
+                "weak": [
+                  "back"
+                ]
+              }
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area",
+              "arcs": {
+                "attack": [
+                  "front"
+                ],
+                "weak": [
+                  "back"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "cell": "sifart:23",
+          "name": "Sidestep Cleave",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "left",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:24",
+          "name": "Feral Onslaught",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": "sifart:25",
+          "name": "Cyclone Strikes",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "repeat": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 7,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": "sifart:26",
+          "name": "Savage Retreat",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "repeat": 3,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            }
+          ]
+        }
       ]
     },
     {
@@ -297,35 +3901,653 @@
       "name": "The Four Kings",
       "tier": "mega",
       "expansion": "four-kings",
-      "data": { "threat": null, "threatNote": "Data card prints X in the threat position.", "health": 25, "healthNote": "25 Health per King.", "deckSize": 4, "heatUpThreshold": null, "block": 2, "resist": 2, "encounterIcons": null, "specialName": "Royal Summons", "special": "The encounter starts with King One. The first three times you would flip over the behaviour deck, perform a summoning heat up instead (the next King and its behaviour cards enter)." },
-      "excludedCells": { "21": "Bequeathed Lord Soul (equipment reward: Tier 3 for each stat is 40 while equipped)", "22": "Four Kings Sword (weapon reward)", "23": "Cursed Cavern (encounter card)" },
+      "data": {
+        "threat": null,
+        "threatNote": "Data card prints X in the threat position.",
+        "health": 25,
+        "healthNote": "25 Health per King.",
+        "deckSize": 4,
+        "heatUpThreshold": null,
+        "block": 2,
+        "resist": 2,
+        "encounterIcons": null,
+        "specialName": "Royal Summons",
+        "special": "The encounter starts with King One. The first three times you would flip over the behaviour deck, perform a summoning heat up instead (the next King and its behaviour cards enter)."
+      },
+      "excludedCells": {
+        "21": "Bequeathed Lord Soul (equipment reward: Tier 3 for each stat is 40 while equipped)",
+        "22": "Four Kings Sword (weapon reward)",
+        "23": "Cursed Cavern (encounter card)"
+      },
       "kingOne": [
-        { "cell": 1, "name": "Forward Thrust", "heatUp": false, "range": 2, "dodge": 1, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "target", "target": "aggro", "push": true } ] },
-        { "cell": 2, "name": "Wrath of the Kings", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 4, "style": "area", "push": true } ] },
-        { "cell": 3, "name": "Homing Arrow Mass", "heatUp": false, "range": "infinite", "dodge": 1, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 4, "style": "area" }, { "op": "shift", "distance": 1, "direction": "left", "push": true } ] },
-        { "cell": 4, "name": "Homing Abyss Arrow", "heatUp": false, "range": "infinite", "dodge": 1, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 0, "toward": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "target", "target": "aggro" }, { "op": "shift", "distance": 1, "direction": "right", "push": true } ] },
-        { "cell": 5, "name": "Lifedrain Grab", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "target", "target": "nearest", "push": true }, { "op": "stagger" } ] },
-        { "cell": 6, "name": "Horizontal Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 7, "name": "Upward Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "left", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "stagger" } ] },
-        { "cell": 8, "name": "Downward Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left"], "weak": ["right"] }, "ops": [ { "op": "shift", "distance": 1, "direction": "right", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "stagger" } ] }
+        {
+          "cell": 1,
+          "name": "Forward Thrust",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "target",
+              "target": "aggro",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 2,
+          "name": "Wrath of the Kings",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "area",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 3,
+          "name": "Homing Arrow Mass",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "area"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "left",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 4,
+          "name": "Homing Abyss Arrow",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "target",
+              "target": "aggro"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "right",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 5,
+          "name": "Lifedrain Grab",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 6,
+          "name": "Horizontal Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 7,
+          "name": "Upward Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "left",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 8,
+          "name": "Downward Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "right",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        }
       ],
       "kingTwo": [
-        { "cell": 9, "name": "Evasive Slash", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area" }, { "op": "move", "distance": 1, "toward": "awayFromNearest", "push": true } ] },
-        { "cell": 10, "name": "Thrust & Retreat", "heatUp": false, "range": 2, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "target", "target": "aggro", "push": true }, { "op": "move", "distance": 1, "toward": "awayFromAggro", "push": true } ] },
-        { "cell": 11, "name": "Cautious Arrow Mass", "heatUp": false, "range": "infinite", "dodge": 1, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "area" }, { "op": "move", "distance": 1, "toward": "awayFromNearest", "push": true } ] },
-        { "cell": 12, "name": "Evasive Abyss Arrow", "heatUp": false, "range": "infinite", "dodge": 2, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 0, "toward": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "target", "target": "aggro" }, { "op": "move", "distance": 1, "toward": "awayFromAggro", "push": true } ] }
+        {
+          "cell": 9,
+          "name": "Evasive Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "awayFromNearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 10,
+          "name": "Thrust & Retreat",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "target",
+              "target": "aggro",
+              "push": true
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "awayFromAggro",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 11,
+          "name": "Cautious Arrow Mass",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "awayFromNearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 12,
+          "name": "Evasive Abyss Arrow",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "target",
+              "target": "aggro"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "awayFromAggro",
+              "push": true
+            }
+          ]
+        }
       ],
       "kingThree": [
-        { "cell": 13, "name": "Precision Slash", "heatUp": false, "range": 1, "dodge": 3, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 14, "name": "Unerring Thrust", "heatUp": false, "range": 2, "dodge": 3, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "target", "target": "aggro", "push": true } ] },
-        { "cell": 15, "name": "Blazing Wrath", "heatUp": false, "range": 1, "dodge": 3, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 4, "style": "area", "push": true } ] },
-        { "cell": 16, "name": "Pinpoint Homing Arrows", "heatUp": false, "range": "infinite", "dodge": 3, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 4, "style": "area" } ] }
+        {
+          "cell": 13,
+          "name": "Precision Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 3,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 14,
+          "name": "Unerring Thrust",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 3,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "target",
+              "target": "aggro",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 15,
+          "name": "Blazing Wrath",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 3,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "area",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 16,
+          "name": "Pinpoint Homing Arrows",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 3,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "area"
+            }
+          ]
+        }
       ],
       "kingFour": [
-        { "cell": 17, "name": "Executioner's Slash", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front"], "weak": [] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 5, "style": "area", "push": true }, { "op": "stagger" } ] },
-        { "cell": 18, "name": "Shockwave", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 5, "style": "area", "push": true }, { "op": "stagger" } ] },
-        { "cell": 19, "name": "Into the Abyss", "heatUp": false, "range": "infinite", "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "move", "distance": 0, "toward": "aggro", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "target", "target": "aggro", "push": true }, { "op": "stagger" } ] },
-        { "cell": 20, "name": "Lifedrain Death Grasp", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 5, "style": "target", "target": "nearest", "push": true }, { "op": "stagger" } ] }
+        {
+          "cell": 17,
+          "name": "Executioner's Slash",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 18,
+          "name": "Shockwave",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 19,
+          "name": "Into the Abyss",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "target",
+              "target": "aggro",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 20,
+          "name": "Lifedrain Death Grasp",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "target",
+              "target": "nearest",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        }
       ]
     },
     {
@@ -333,63 +4555,1181 @@
       "name": "Old Iron King",
       "tier": "mega",
       "expansion": "old-iron-king",
-      "data": { "threat": 10, "health": 44, "deckSize": 6, "heatUpThreshold": 22, "block": 3, "resist": 3, "encounterIcons": null, "specialName": "Old Iron Rage", "special": "After heat up, increase the damage and dodge difficulty of all Fire Beam cards by +1." },
+      "data": {
+        "threat": 10,
+        "health": 44,
+        "deckSize": 6,
+        "heatUpThreshold": 22,
+        "block": 3,
+        "resist": 3,
+        "encounterIcons": null,
+        "specialName": "Old Iron Rage",
+        "special": "After heat up, increase the damage and dodge difficulty of all Fire Beam cards by +1."
+      },
       "behaviors": [
-        { "cell": 4, "name": "Fist Pound", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front"], "weak": ["right"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "area", "push": true }, { "op": "stagger" } ] },
-        { "cell": 5, "name": "Double Fist Pound", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["left", "right"], "weak": ["front"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "area", "push": true }, { "op": "stagger" } ] },
-        { "cell": 6, "name": "Swipe", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right"], "weak": [] }, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "area", "push": true } ] },
-        { "cell": 7, "name": "Shockwave", "heatUp": false, "range": 2, "dodge": 1, "arcs": { "attack": ["left", "right"], "weak": ["front"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" } ] },
-        { "cell": 8, "name": "Bash", "heatUp": false, "range": 2, "dodge": 3, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "node", "target": "nearest", "push": true }, { "op": "stagger" } ] },
-        { "cell": 9, "name": "Searing Blast", "heatUp": false, "range": "infinite", "dodge": 1, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "node", "target": "aggro" } ] },
-        { "cell": 10, "name": "Magma Blast", "heatUp": true, "range": "infinite", "dodge": 3, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "node", "target": "aggro" } ] },
-        { "cell": 11, "name": "Firestorm", "heatUp": true, "range": "infinite", "dodge": 2, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 5, "style": "area" } ] },
-        { "cell": 12, "name": "Double Swipe", "heatUp": true, "range": 1, "dodge": 2, "arcs": null, "ops": [ { "op": "attack", "type": "physical", "damage": 6, "style": "area", "arcs": { "attack": ["front", "left"], "weak": [] } }, { "op": "attack", "type": "physical", "damage": 6, "style": "area", "arcs": { "attack": ["front", "right"], "weak": [] } } ] }
+        {
+          "cell": 4,
+          "name": "Fist Pound",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 5,
+          "name": "Double Fist Pound",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "left",
+              "right"
+            ],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 6,
+          "name": "Swipe",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 7,
+          "name": "Shockwave",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "left",
+              "right"
+            ],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 8,
+          "name": "Bash",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 3,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "node",
+              "target": "nearest",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 9,
+          "name": "Searing Blast",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "node",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 10,
+          "name": "Magma Blast",
+          "heatUp": true,
+          "range": "infinite",
+          "dodge": 3,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "node",
+              "target": "aggro"
+            }
+          ]
+        },
+        {
+          "cell": 11,
+          "name": "Firestorm",
+          "heatUp": true,
+          "range": "infinite",
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 12,
+          "name": "Double Swipe",
+          "heatUp": true,
+          "range": 1,
+          "dodge": 2,
+          "arcs": null,
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area",
+              "arcs": {
+                "attack": [
+                  "front",
+                  "left"
+                ],
+                "weak": []
+              }
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area",
+              "arcs": {
+                "attack": [
+                  "front",
+                  "right"
+                ],
+                "weak": []
+              }
+            }
+          ]
+        }
       ],
       "fireBeam": [
-        { "cell": 1, "name": "Fire Beam", "range": "special", "dodge": 1, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "move", "distance": 0, "push": true }, { "op": "fireBeamTemplate" }, { "op": "attack", "type": "magical", "damage": 5, "style": "template" } ] },
-        { "cell": 2, "name": "Fire Beam", "range": "special", "dodge": 1, "arcs": { "attack": [], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 0, "push": true }, { "op": "fireBeamTemplate" }, { "op": "attack", "type": "magical", "damage": 5, "style": "template" } ] },
-        { "cell": 3, "name": "Fire Beam", "range": "special", "dodge": 1, "arcs": { "attack": [], "weak": ["front"] }, "ops": [ { "op": "move", "distance": 0, "push": true }, { "op": "fireBeamTemplate" }, { "op": "attack", "type": "magical", "damage": 6, "style": "template" } ] }
+        {
+          "cell": 1,
+          "name": "Fire Beam",
+          "range": "special",
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "push": true
+            },
+            {
+              "op": "fireBeamTemplate"
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "template"
+            }
+          ]
+        },
+        {
+          "cell": 2,
+          "name": "Fire Beam",
+          "range": "special",
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "push": true
+            },
+            {
+              "op": "fireBeamTemplate"
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "template"
+            }
+          ]
+        },
+        {
+          "cell": 3,
+          "name": "Fire Beam",
+          "range": "special",
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "push": true
+            },
+            {
+              "op": "fireBeamTemplate"
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "template"
+            }
+          ]
+        }
       ],
       "blastedNodes": [
-        { "cell": 13, "name": "Blasted Nodes", "tile": "mega-old-iron-king-back", "nodes": ["n0", "n2", "n3", "n5", "n6", "n8", "n9", "n11"], "dpadNode": "n9" },
-        { "cell": 14, "name": "Blasted Nodes", "tile": "mega-old-iron-king-back", "nodes": ["n6", "n8", "n9", "n10", "n11", "n12", "n13", "n15", "n16"], "dpadNode": "n9" },
-        { "cell": 15, "name": "Blasted Nodes", "tile": "mega-old-iron-king-back", "nodes": ["n1", "n3", "n4", "n5", "n6", "n7", "n8", "n10"], "dpadNode": "n7" },
-        { "cell": 16, "name": "Blasted Nodes", "tile": "mega-old-iron-king-back", "nodes": ["n3", "n5", "n6", "n7", "n8", "n10", "n12", "n15"], "dpadNode": "n3" },
-        { "cell": 17, "name": "Blasted Nodes", "tile": "mega-old-iron-king-back", "nodes": ["n3", "n5", "n6", "n8", "n9", "n11", "n14", "n18"], "dpadNode": "n3" },
-        { "cell": 18, "name": "Blasted Nodes", "tile": "mega-old-iron-king-back", "nodes": ["n5", "n7", "n8", "n10", "n11", "n13", "n14", "n17", "n18"], "dpadNode": "n7" }
+        {
+          "cell": 13,
+          "name": "Blasted Nodes",
+          "tile": "mega-old-iron-king-back",
+          "nodes": [
+            "n0",
+            "n2",
+            "n3",
+            "n5",
+            "n6",
+            "n8",
+            "n9",
+            "n11"
+          ],
+          "dpadNode": "n9"
+        },
+        {
+          "cell": 14,
+          "name": "Blasted Nodes",
+          "tile": "mega-old-iron-king-back",
+          "nodes": [
+            "n6",
+            "n8",
+            "n9",
+            "n10",
+            "n11",
+            "n12",
+            "n13",
+            "n15",
+            "n16"
+          ],
+          "dpadNode": "n9"
+        },
+        {
+          "cell": 15,
+          "name": "Blasted Nodes",
+          "tile": "mega-old-iron-king-back",
+          "nodes": [
+            "n1",
+            "n3",
+            "n4",
+            "n5",
+            "n6",
+            "n7",
+            "n8",
+            "n10"
+          ],
+          "dpadNode": "n7"
+        },
+        {
+          "cell": 16,
+          "name": "Blasted Nodes",
+          "tile": "mega-old-iron-king-back",
+          "nodes": [
+            "n3",
+            "n5",
+            "n6",
+            "n7",
+            "n8",
+            "n10",
+            "n12",
+            "n15"
+          ],
+          "dpadNode": "n3"
+        },
+        {
+          "cell": 17,
+          "name": "Blasted Nodes",
+          "tile": "mega-old-iron-king-back",
+          "nodes": [
+            "n3",
+            "n5",
+            "n6",
+            "n8",
+            "n9",
+            "n11",
+            "n14",
+            "n18"
+          ],
+          "dpadNode": "n3"
+        },
+        {
+          "cell": 18,
+          "name": "Blasted Nodes",
+          "tile": "mega-old-iron-king-back",
+          "nodes": [
+            "n5",
+            "n7",
+            "n8",
+            "n10",
+            "n11",
+            "n13",
+            "n14",
+            "n17",
+            "n18"
+          ],
+          "dpadNode": "n7"
+        }
       ],
-      "excludedCells": { "19": "Iron King Hammer (weapon reward)" }
+      "excludedCells": {
+        "19": "Iron King Hammer (weapon reward)"
+      }
     },
     {
       "id": "black-dragon-kalameet",
       "name": "Black Dragon Kalameet",
       "tier": "mega",
       "expansion": "kalameet",
-      "data": { "threat": 10, "health": 38, "deckSize": 6, "heatUpThreshold": 22, "block": 4, "resist": 3, "encounterIcons": null, "specialName": "Calamity & Ruin", "special": "Kalameet's behaviour deck always includes the Mark of Calamity and Hellfire Blast cards." },
+      "data": {
+        "threat": 10,
+        "health": 38,
+        "deckSize": 6,
+        "heatUpThreshold": 22,
+        "block": 4,
+        "resist": 3,
+        "encounterIcons": null,
+        "specialName": "Calamity & Ruin",
+        "special": "Kalameet's behaviour deck always includes the Mark of Calamity and Hellfire Blast cards."
+      },
       "behaviors": [
-        { "cell": 0, "name": "Sweeping Flame", "heatUp": false, "range": 2, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 6, "style": "area" } ] },
-        { "cell": 1, "name": "Hellfire Blast", "heatUp": false, "range": "special", "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "flight" }, { "op": "attack", "type": "magical", "damage": 5, "style": "template" }, { "op": "move", "distance": 0, "toward": "nearest", "push": true } ] },
-        { "cell": 2, "name": "Mark of Calamity", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 0, "toward": "nearest", "push": true }, { "op": "attack", "type": "magical", "damage": 4, "style": "area", "push": true }, { "op": "special", "icon": "calamityMark" } ] },
-        { "cell": 3, "name": "Flame Feint", "heatUp": false, "range": 2, "dodge": 1, "arcs": { "attack": ["front"], "weak": ["right"] }, "ops": [ { "op": "shift", "distance": 2, "direction": "forward", "push": true }, { "op": "turn", "degrees": 180 }, { "op": "attack", "type": "magical", "damage": 6, "style": "area" } ] },
-        { "cell": 4, "name": "Rising Inferno", "heatUp": false, "range": 1, "dodge": 1, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "magical", "damage": 7, "style": "area", "push": true } ] },
-        { "cell": 5, "name": "Conflagration", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left", "right"], "weak": ["back"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "area", "push": true }, { "op": "shift", "distance": 1, "direction": "backward", "push": true } ] },
-        { "cell": 6, "name": "Consuming Blaze", "heatUp": false, "range": "infinite", "dodge": 1, "arcs": { "attack": [], "weak": ["right"] }, "ops": [ { "op": "attack", "type": "magical", "damage": 6, "style": "node", "target": "aggro" }, { "op": "move", "distance": 1, "toward": "awayFromAggro", "push": true } ] },
-        { "cell": 7, "name": "Hellfire Barrage", "heatUp": true, "range": "special", "dodge": 2, "arcs": { "attack": [], "weak": [] }, "ops": [ { "op": "flight" }, { "op": "attack", "type": "magical", "damage": 6, "style": "template" }, { "op": "move", "distance": 0, "toward": "nearest", "push": true } ] },
-        { "cell": 8, "name": "Swooping Charge", "heatUp": false, "range": null, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "shift", "distance": 3, "direction": "forward", "push": true, "pushDamage": 5 }, { "op": "stagger" }, { "op": "turn", "degrees": 180 } ] },
-        { "cell": 9, "name": "Evasive Tail Whip", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["front", "left", "right", "back"], "weak": [] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "shift", "distance": 1, "direction": "backward", "push": true } ] },
-        { "cell": 10, "name": "Rush Strike", "heatUp": false, "range": 1, "dodge": 3, "arcs": { "attack": ["front", "right"], "weak": ["left"] }, "ops": [ { "op": "move", "distance": 2, "toward": "aggro", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "area", "push": true }, { "op": "stagger" } ] },
-        { "cell": 11, "name": "Tail Sweep", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": ["left", "right", "back"], "weak": ["front"] }, "ops": [ { "op": "attack", "type": "physical", "damage": 5, "style": "area" }, { "op": "shift", "distance": 1, "direction": "forward", "push": true } ] },
-        { "cell": 12, "name": "Head Strike", "heatUp": false, "range": 1, "dodge": 2, "arcs": { "attack": [], "weak": ["back"] }, "ops": [ { "op": "move", "distance": 1, "toward": "nearest", "push": true }, { "op": "attack", "type": "physical", "damage": 6, "style": "node", "target": "nearest" }, { "op": "stagger" } ] }
+        {
+          "cell": 0,
+          "name": "Sweeping Flame",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 1,
+          "name": "Hellfire Blast",
+          "heatUp": false,
+          "range": "special",
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "flight"
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 5,
+              "style": "template"
+            },
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 2,
+          "name": "Mark of Calamity",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 4,
+              "style": "area",
+              "push": true
+            },
+            {
+              "op": "special",
+              "icon": "calamityMark"
+            }
+          ]
+        },
+        {
+          "cell": 3,
+          "name": "Flame Feint",
+          "heatUp": false,
+          "range": 2,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front"
+            ],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 2,
+              "direction": "forward",
+              "push": true
+            },
+            {
+              "op": "turn",
+              "degrees": 180
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area"
+            }
+          ]
+        },
+        {
+          "cell": 4,
+          "name": "Rising Inferno",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 1,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 7,
+              "style": "area",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 5,
+          "name": "Conflagration",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right"
+            ],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "area",
+              "push": true
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 6,
+          "name": "Consuming Blaze",
+          "heatUp": false,
+          "range": "infinite",
+          "dodge": 1,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "right"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "node",
+              "target": "aggro"
+            },
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "awayFromAggro",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 7,
+          "name": "Hellfire Barrage",
+          "heatUp": true,
+          "range": "special",
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "flight"
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "damage": 6,
+              "style": "template"
+            },
+            {
+              "op": "move",
+              "distance": 0,
+              "toward": "nearest",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 8,
+          "name": "Swooping Charge",
+          "heatUp": false,
+          "range": null,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 3,
+              "direction": "forward",
+              "push": true,
+              "pushDamage": 5
+            },
+            {
+              "op": "stagger"
+            },
+            {
+              "op": "turn",
+              "degrees": 180
+            }
+          ]
+        },
+        {
+          "cell": 9,
+          "name": "Evasive Tail Whip",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "front",
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": []
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "backward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 10,
+          "name": "Rush Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 3,
+          "arcs": {
+            "attack": [
+              "front",
+              "right"
+            ],
+            "weak": [
+              "left"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 2,
+              "toward": "aggro",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "area",
+              "push": true
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        },
+        {
+          "cell": 11,
+          "name": "Tail Sweep",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [
+              "left",
+              "right",
+              "back"
+            ],
+            "weak": [
+              "front"
+            ]
+          },
+          "ops": [
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 5,
+              "style": "area"
+            },
+            {
+              "op": "shift",
+              "distance": 1,
+              "direction": "forward",
+              "push": true
+            }
+          ]
+        },
+        {
+          "cell": 12,
+          "name": "Head Strike",
+          "heatUp": false,
+          "range": 1,
+          "dodge": 2,
+          "arcs": {
+            "attack": [],
+            "weak": [
+              "back"
+            ]
+          },
+          "ops": [
+            {
+              "op": "move",
+              "distance": 1,
+              "toward": "nearest",
+              "push": true
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "damage": 6,
+              "style": "node",
+              "target": "nearest"
+            },
+            {
+              "op": "stagger"
+            }
+          ]
+        }
       ],
       "fieryRuin": [
-        { "cell": 14, "name": "Fiery Ruin", "tile": "mega-black-dragon-kalameet-back", "nodes": ["n1", "n2", "n5", "n8", "n9", "n15", "n16", "n19", "n22", "n23"], "dpadNode": "n12" },
-        { "cell": 15, "name": "Fiery Ruin", "tile": "mega-black-dragon-kalameet-back", "nodes": ["n2", "n5", "n6", "n9", "n12", "n13", "n16", "n19", "n23"], "dpadNode": "n20" },
-        { "cell": 16, "name": "Fiery Ruin", "tile": "mega-black-dragon-kalameet-back", "nodes": ["n4", "n5", "n6", "n7", "n8", "n9", "n10", "n12", "n13"], "dpadNode": "n11" },
-        { "cell": 17, "name": "Fiery Ruin", "tile": "mega-black-dragon-kalameet-back", "nodes": ["n0", "n1", "n2", "n4", "n5", "n6", "n8", "n10", "n12", "n13", "n16", "n17", "n20", "n24"], "dpadNode": "n9" },
-        { "cell": 18, "name": "Fiery Ruin", "tile": "mega-black-dragon-kalameet-back", "nodes": ["n7", "n8", "n9", "n10", "n11", "n13", "n14", "n15", "n16", "n17"], "dpadNode": "n12" },
-        { "cell": 19, "name": "Fiery Ruin", "tile": "mega-black-dragon-kalameet-back", "nodes": ["n11", "n12", "n14", "n15", "n16", "n17", "n18", "n19", "n20"], "dpadNode": "n13" },
-        { "cell": 20, "name": "Fiery Ruin", "tile": "mega-black-dragon-kalameet-back", "nodes": ["n0", "n4", "n7", "n8", "n11", "n12", "n14", "n16", "n18", "n19", "n20", "n22", "n23", "n24"], "dpadNode": "n15" },
-        { "cell": 21, "name": "Fiery Ruin", "tile": "mega-black-dragon-kalameet-back", "nodes": ["n1", "n5", "n8", "n11", "n12", "n15", "n18", "n19", "n22"], "dpadNode": "n4" }
+        {
+          "cell": 14,
+          "name": "Fiery Ruin",
+          "tile": "mega-black-dragon-kalameet-back",
+          "nodes": [
+            "n1",
+            "n2",
+            "n5",
+            "n8",
+            "n9",
+            "n15",
+            "n16",
+            "n19",
+            "n22",
+            "n23"
+          ],
+          "dpadNode": "n12"
+        },
+        {
+          "cell": 15,
+          "name": "Fiery Ruin",
+          "tile": "mega-black-dragon-kalameet-back",
+          "nodes": [
+            "n2",
+            "n5",
+            "n6",
+            "n9",
+            "n12",
+            "n13",
+            "n16",
+            "n19",
+            "n23"
+          ],
+          "dpadNode": "n20"
+        },
+        {
+          "cell": 16,
+          "name": "Fiery Ruin",
+          "tile": "mega-black-dragon-kalameet-back",
+          "nodes": [
+            "n4",
+            "n5",
+            "n6",
+            "n7",
+            "n8",
+            "n9",
+            "n10",
+            "n12",
+            "n13"
+          ],
+          "dpadNode": "n11"
+        },
+        {
+          "cell": 17,
+          "name": "Fiery Ruin",
+          "tile": "mega-black-dragon-kalameet-back",
+          "nodes": [
+            "n0",
+            "n1",
+            "n2",
+            "n4",
+            "n5",
+            "n6",
+            "n8",
+            "n10",
+            "n12",
+            "n13",
+            "n16",
+            "n17",
+            "n20",
+            "n24"
+          ],
+          "dpadNode": "n9"
+        },
+        {
+          "cell": 18,
+          "name": "Fiery Ruin",
+          "tile": "mega-black-dragon-kalameet-back",
+          "nodes": [
+            "n7",
+            "n8",
+            "n9",
+            "n10",
+            "n11",
+            "n13",
+            "n14",
+            "n15",
+            "n16",
+            "n17"
+          ],
+          "dpadNode": "n12"
+        },
+        {
+          "cell": 19,
+          "name": "Fiery Ruin",
+          "tile": "mega-black-dragon-kalameet-back",
+          "nodes": [
+            "n11",
+            "n12",
+            "n14",
+            "n15",
+            "n16",
+            "n17",
+            "n18",
+            "n19",
+            "n20"
+          ],
+          "dpadNode": "n13"
+        },
+        {
+          "cell": 20,
+          "name": "Fiery Ruin",
+          "tile": "mega-black-dragon-kalameet-back",
+          "nodes": [
+            "n0",
+            "n4",
+            "n7",
+            "n8",
+            "n11",
+            "n12",
+            "n14",
+            "n16",
+            "n18",
+            "n19",
+            "n20",
+            "n22",
+            "n23",
+            "n24"
+          ],
+          "dpadNode": "n15"
+        },
+        {
+          "cell": 21,
+          "name": "Fiery Ruin",
+          "tile": "mega-black-dragon-kalameet-back",
+          "nodes": [
+            "n1",
+            "n5",
+            "n8",
+            "n11",
+            "n12",
+            "n15",
+            "n18",
+            "n19",
+            "n22"
+          ],
+          "dpadNode": "n4"
+        }
+      ]
+    }
+  ],
+  "summons": [
+    {
+      "id": "eygon-of-carim",
+      "name": "Eygon of Carim",
+      "bossTier": "mini",
+      "cell": 55,
+      "data": {
+        "taunt": 11,
+        "health": 9,
+        "block": {
+          "blue": 1
+        },
+        "resist": {
+          "blue": 1
+        },
+        "dodge": 0,
+        "specialName": "Battle Ready",
+        "special": "Before the first enemy activation, Eygon may perform this behaviour: move up to 1 node.",
+        "battleReadyShift": 1
+      },
+      "behaviors": [
+        {
+          "cell": 56,
+          "name": "Hammer Smash",
+          "range": 0,
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "dice": {
+                "blue": 2
+              }
+            }
+          ]
+        },
+        {
+          "cell": 57,
+          "name": "Moaning Shield Advance",
+          "range": null,
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1
+            },
+            {
+              "op": "distract"
+            }
+          ]
+        },
+        {
+          "cell": 58,
+          "name": "Jumping Slam",
+          "range": 0,
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 2
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "dice": {
+                "blue": 1
+              },
+              "stagger": true
+            }
+          ]
+        },
+        {
+          "cell": 59,
+          "name": "Morne's Rage",
+          "range": 0,
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1
+            },
+            {
+              "op": "attack",
+              "type": "physical",
+              "dice": {
+                "black": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "witch-beatrice",
+      "name": "Witch Beatrice",
+      "bossTier": "main",
+      "cell": 60,
+      "data": {
+        "taunt": 0,
+        "health": 13,
+        "block": {},
+        "resist": {},
+        "dodge": 1,
+        "specialName": "Beatrice's Curse",
+        "special": "Beatrice gains 1 blue die instead of 1 black die for attacking a boss in its weak arc.",
+        "weakArcBonusDie": "blue"
+      },
+      "behaviors": [
+        {
+          "cell": 61,
+          "name": "Homing Soulmass",
+          "range": 2,
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "dice": {
+                "black": 3
+              }
+            }
+          ]
+        },
+        {
+          "cell": 62,
+          "name": "Great Heavy Soul Arrow",
+          "range": "infinite",
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 1
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "dice": {
+                "black": 1,
+                "blue": 1
+              }
+            }
+          ]
+        },
+        {
+          "cell": 63,
+          "name": "Charging Staff Lunge",
+          "range": 1,
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 2
+            },
+            {
+              "op": "attack",
+              "type": "magical",
+              "dice": {
+                "black": 3
+              }
+            }
+          ]
+        },
+        {
+          "cell": 64,
+          "name": "Run for Cover",
+          "range": null,
+          "ops": [
+            {
+              "op": "shift",
+              "distance": 2
+            },
+            {
+              "op": "dodgeBuff",
+              "value": 3
+            }
+          ]
+        }
       ]
     }
   ]
