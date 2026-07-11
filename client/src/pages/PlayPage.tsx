@@ -582,21 +582,10 @@ function GameView({ scene, view, act, error }: {
         >?</button>
       )}
 
-      {/* show deck — the full card sheet as a reference */}
-      <button
-        onClick={() => setFocus(-2)}
-        title="Show the card deck"
-        style={{
-          position: 'absolute', top: 12, left: 54, zIndex: 30, height: 36, padding: '0 14px',
-          borderRadius: 18, border: '1px solid rgba(255,255,255,0.25)',
-          background: 'rgba(10,12,15,0.85)', color: '#e8ebf0', cursor: 'pointer',
-          font: '600 12px Inter, sans-serif',
-        }}
-      >Deck</button>
-
       {/* holdings: labelled tabular stats */}
-      <div className="ig-glass" style={{
-        position: 'absolute', top: 60, left: 12, zIndex: 30, width: 258,
+      <div className="ig-glass" data-testid="brass-player-holdings" style={{
+        position: 'absolute', top: 12, right: 12, zIndex: 30,
+        width: 'min(258px, calc(100vw - 24px))',
         padding: '12px 14px', borderRadius: 16,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 9, paddingBottom: 11 }}>
@@ -844,20 +833,11 @@ function GameView({ scene, view, act, error }: {
         </div>
       )}
 
-      {/* focused card (focus === -1 reference sheets, -2 the deck) */}
-      {focus !== null && (focus === -1 ? (scene.actionsSheet ?? scene.cheatSheet) : focus === -2 ? scene.cardSheet : hand[focus]) && (
+      {/* focused hand card or the reference sheets */}
+      {focus !== null && (focus === -1 ? (scene.actionsSheet ?? scene.cheatSheet) : hand[focus]) && (
         <div className="card-focus-backdrop" onClick={() => setFocus(null)}>
           <div className="card-focus" onClick={(e) => e.stopPropagation()}>
-            {focus === -2 ? (
-              <div style={{ textAlign: 'center' }}>
-                <div className="ig-lab" style={{ paddingBottom: 8 }}>The deck</div>
-                <img
-                  src={scene.cardSheet.image}
-                  alt="The card deck"
-                  style={{ display: 'block', maxHeight: '84vh', maxWidth: '92vw', width: 'auto', borderRadius: 12, boxShadow: '0 18px 60px rgba(0,0,0,0.85)', margin: '0 auto' }}
-                />
-              </div>
-            ) : focus === -1 ? (
+            {focus === -1 ? (
               <div style={{ textAlign: 'center' }}>
                 <div style={{ display: 'inline-flex', gap: 6, padding: 5, borderRadius: 10, background: 'rgba(20,24,30,0.95)', marginBottom: 10, alignItems: 'center' }}>
                   {([['actions', 'How the actions work'], ['cards', 'Card distribution'], ['glossary', 'Glossary']] as const).map(([id, label]) => (
