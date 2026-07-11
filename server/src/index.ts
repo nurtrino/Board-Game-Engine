@@ -496,6 +496,9 @@ function scheduleBbBots(room: Room): void {
   botTimers.set(room.id, setTimeout(() => {
     botTimers.delete(room.id);
     try { bbBotAct(room); } catch (err) { console.error('bot error:', err); }
+    // belt-and-suspenders: an act-less tick produces no broadcast (which is
+    // what re-enters scheduling) — re-arm so a transient impasse never stalls
+    if (!botTimers.has(room.id)) scheduleBbBots(room);
   }, delay));
 }
 

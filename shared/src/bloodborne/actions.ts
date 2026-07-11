@@ -758,6 +758,16 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
       const h = hunterOf(s, seat);
       if (h.tookTurnThisRound) err('You already acted this round');
       if (h.skipTurn) err('Slain this round, your turn is skipped');
+      if (h.pendingReturn && lampSpaces(s).length === 0) {
+        // every lamp is broken: the hunter cannot return this round (p. 24)
+        h.tookTurnThisRound = true;
+        evt(s, 'NO LAMP BURNS · THE DREAM HOLDS YOU', seat, 'dream');
+        if (s.hunters.every((x) => x.tookTurnThisRound || x.skipTurn)) {
+          for (const x of s.hunters) x.skipTurn = false;
+          endRound(s);
+        }
+        return s;
+      }
       s.activeSeat = seat;
       if (h.pendingReturn) s.pending.push({ seat, kind: 'return-placement' });
       evt(s, `${BB_HUNTERS[h.hunterId!]?.name.toUpperCase() ?? 'HUNTER'} TAKES THE HUNT`, seat, 'turn');
