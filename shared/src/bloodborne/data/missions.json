@@ -8,6 +8,10 @@
    "story": "We must take to the streets of Central Yharnam. The number of Scourge Beasts grows, and we must leave no area unchecked and uncleansed. We should also gather what information we can from the surviving townsfolk. Perhaps they can grant us insight into the cause of this sudden infestation...",
    "body": "",
    "goalText": "End a move on the Central Lamp tile, after you have collected at least 2 Insight: Reveal card 2.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 59
+   },
    "goal": {
     "type": "endMoveOnTile",
     "params": {
@@ -31,6 +35,10 @@
    "story": "Your senses flare at the sound of rapid-moving claws. You turn just in time as a Scourge Beast, much larger than the rest, leaps at you, its eyes glowing a haunting blue.",
    "body": "Reveal card 3. Surround the Central Lamp tile with Fog Gates. Spawn 1 Scourge Beast on its {enemy1} space. It respawns to this space on {reset}.",
    "goalText": "Complete the Hunt by slaying this Scourge Beast: Reveal card 4.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 58
+   },
    "onReveal": [
     {
      "do": "reveal",
@@ -70,6 +78,10 @@
    "story": null,
    "body": "Place {n} Insight tokens on this card. When the Scourge Beast would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}. Replace its Ability with: ABILITY: VICIOUS - Scourge Beast makes 1 Quick Swipe Attack. It cannot be Staggered, deals +1 {dmg}, and gains Stagger and Stun.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 57
+   },
    "onReveal": [
     {
      "do": "hpPool",
@@ -103,6 +115,10 @@
    "story": "The beast lets out one final roar before slumping to the ground. In the distance, you spot a group of the creatures, seemingly watching the fight. Readying yourself for attack, you instead find them turning and bounding off, deeper into the district...",
    "body": "Distribute the Blood Stone Shard and the Caryll Rune: Moon rewards among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 56
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -122,6 +138,10 @@
    "story": "Entering, you find a large mob of townsfolk, all gathered around a blazing pyre constructed in the center of the courtyard. Upon it lie the bodies of numerous Scourge Beasts. Suddenly, from behind, you hear shouting. \"More infected!\" as the mob begins to surround you.",
    "body": "Reveal card 6. Surround the Courtyard Lamp tile with Fog Gates. Spawn 1 Hunter Mob on its {enemy1} space. It respawns to this space on {reset}.",
    "goalText": "Complete this Mission by slaying this Hunter Mob: Reveal card 7.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 55
+   },
    "onReveal": [
     {
      "do": "reveal",
@@ -158,6 +178,10 @@
    "story": null,
    "body": "Place 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 54
+   },
    "onReveal": [
     {
      "do": "hpPool",
@@ -174,6 +198,10 @@
    "story": "Driven to frenzy by the early stages of the infection, the townsfolk are compelled to partake in the Hunt, believing that by eradicating the beasts the plague will be quelled as well... From their remains, you gather what useful supplies you can find.",
    "body": "Distribute the Hand Lantern reward and the Ludwig's Rifle firearm among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 53
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -193,6 +221,10 @@
    "story": "You knock on the door. From inside, a frail and elderly voice addresses you. \"A Hunter? About time you showed up. It ain't safe out here for an old woman! Reckon you can take me someplace to wait out the night?\"",
    "body": "Place 1 Survivor token on the Occupied House space. Any Hunter may pick up the token when they move out of that space. The token is returned to the Occupied House space if the Hunter teleports or goes to the Dream.",
    "goalText": "End a move on the Oedon Chapel tile with the token: Reveal card 9.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 52
+   },
    "onReveal": [
     {
      "do": "survivor",
@@ -225,6 +257,10 @@
    "story": "The smell of beast-warding incense fills your nose as you enter the old chapel. The old woman thanks you for your kindness before taking refuge with another small band of townsfolk. Suddenly, the chapel's magnificent stained glass window shatters as a Scourge Beast crashes through.",
    "body": "Reveal card 10. Surround the Oedon Chapel tile with Fog Gates. Spawn 1 Scourge Beast on its {enemy1} space. It respawns to that space on {reset}. It is immune to the effect of Oedon Chapel.",
    "goalText": "Complete this Mission by slaying this Scourge Beast: Reveal card 11.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 51
+   },
    "onReveal": [
     {
      "do": "reveal",
@@ -262,6 +298,10 @@
    "story": null,
    "body": "Place 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When the Scourge Beast would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}. Replace its Special with: SPECIAL: BLOOD FRENZY - {fast} {dmg}{dmg} - Deals +2 {dmg} if Scourge Beast has {dmg} on it. If Scourge Beast is slain, Hunter must Dodge ({slow}) or suffer 3 {dmg}.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 50
+   },
    "onReveal": [
     {
      "do": "hpPool",
@@ -297,6 +337,10 @@
    "story": "The warding incense usually repel such beasts during the Hunt. For them to not only attack the Chapel, but also appear unaffected by the incense... There is something greater than mere instinct driving them this night...",
    "body": "Distribute 1 Consumable and the Caryll Rune: Clawmark reward among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 49
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -316,6 +360,10 @@
    "story": "As you enter the ransacked house, you catch sight of a young girl hiding in the corner from the monsters stalking her. Once these creatures are dispatched, she can be rescued...",
    "body": "Place 1 Survivor token on the Ransacked House space.",
    "goalText": "Interact with the Survivor token: Reveal card 13.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 48
+   },
    "onReveal": [
     {
      "do": "survivor",
@@ -346,6 +394,10 @@
    "story": "You approach the girl cautiously. Suddenly, she bursts past you, darting out into the street, her eyes wide with fear.",
    "body": "Move the Survivor token 4 spaces away. She may reveal tiles during this move. At the end of each turn, she moves 1 space away from the nearest Hunter, but no longer reveals tiles.",
    "goalText": "Complete this Mission by ending a move on the space with the Survivor token, and have no Enemies Pursue into that space: Reveal card 14.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 47
+   },
    "onReveal": [
     {
      "do": "tokenFlee",
@@ -378,6 +430,10 @@
    "story": "You grip the girl's arm, keeping her from further flight. \"I'm not infected! Please! Let me go!\" she pleads, tugging at your grip. Now that she is close, the girl does indeed reek of the beast stench, though whether this is from the plague, or the blood covering her, is undeterminable...",
    "body": "Choose 1 to Complete this Mission:",
    "goalText": "Strike the girl down: Reveal card 15. Spare her and order her to flee: Reveal card 16.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 46
+   },
    "goal": {
     "type": "choice",
     "params": {
@@ -404,6 +460,10 @@
    "story": "Once claimed by the Beast Plague, there is no cure, and no mercy may be granted when it comes to the infected. Had you not taken the action you did, who knows what threat she may have potentially become? We cannot take chances.",
    "body": "The Hunter that Completed this Mission gains 1 Blood Echo and the Caryll Rune: Blood Rapture reward.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 45
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -423,6 +483,10 @@
    "story": "You lock eyes with the young girl and glimpse her humanity and fear. \"Oedon Chapel\" is all you say before releasing your grip. Between sobs, she nods before darting off into the night.",
    "body": "The Hunter that Completed this Mission gains 1 Consumable and the Caryll Rune: Eye reward.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 44
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -442,6 +506,10 @@
    "story": null,
    "body": "Before creating the tile deck, take the Graveyard, Tomb of Oedon, and 1 random, unused tile. Redraw the random tile if it does not have at least 2 exits. Connect the Graveyard to the Central Lamp. Connect the random tile to the opposite side of the Central Lamp, then connect the Tomb of Oedon to the random tile.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 43
+   },
    "kindOverride": "special"
   },
   "18": {
@@ -452,6 +520,10 @@
    "story": "We have taken the first steps towards cleansing Central Yharnam of the Scourge infestation, but our efforts have not gone unnoticed. The Beasts have fled deeper into the district, and some seek to avoid us. Perhaps some bait can be used to lure them out...",
    "body": "During their turn, Hunters may discard 1 Consumable to spawn 1 Scourge Beast in their space. Each time you slay a Scourge Beast, gain 1 Corpse token. Hunters may discard held tokens while on the Graveyard tile, placing them on this card.",
    "goalText": "When this card has {n}+1 Corpse tokens on it: Reveal card 19.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 42
+   },
    "onReveal": [
     {
      "do": "counter",
@@ -492,6 +564,10 @@
    "story": "Now that we have suitable bait, setting a trap for these instinctive beasts will be easy enough. As we prepare, we should also investigate the havens across the district, where the common folk gather during nights of the Hunt, to see just how far the infection has spread through Central Yharnam...",
    "body": "",
    "goalText": "When the Hunters have collected at least 2 Insight this Chapter: Reveal card 20.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 41
+   },
    "goal": {
     "type": "insightThisChapter",
     "params": {
@@ -514,6 +590,10 @@
    "story": "From deep in the district, a piercing screech rends the night air. This is not the familiar roar of a Scourge Beast. With a loud crash, a monstrous figure lands upon our corpse-laden trap.",
    "body": "Surround the Graveyard tile with Fog Gates. Spawn the Cleric Beast on its {enemy3} space. It respawns to this space on {reset}.",
    "goalText": "When the Cleric Beast enters Phase 2: Reveal cards 21 and 22.",
+   "art": {
+    "sheet": "birth-of-madness",
+    "cell": 0
+   },
    "onReveal": [
     {
      "do": "fogGates",
@@ -552,6 +632,10 @@
    "story": "The Beast has become enraged, lashing out with deadly force. If we continue this fight here, the damage to the city would be extreme-something we cannot afford. We must lure this creature someplace more isolated.",
    "body": "Remove the Fog Gates from the Graveyard tile. Remove all Insight tokens from the Cleric Beast.",
    "goalText": "Complete the Hunt when the Cleric Beast enters the Tomb of Oedon tile: Reveal card 23.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 39
+   },
    "onReveal": [
     {
      "do": "removeFogGates",
@@ -588,6 +672,10 @@
    "story": null,
    "body": "The Cleric Beast cannot be damaged. The Cleric Beast respawns to the Graveyard {enemy3} space on {reset} instead of the usual Enemy. At the end of each round, the Cleric Beast makes 1 special bonus Activation, moving toward and Attacking the nearest Hunter with the lowest HP.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 38
+   },
    "onReveal": [
     {
      "do": "bossOverride",
@@ -608,6 +696,10 @@
    "story": "We have successfully lured the monstrous creature to the Tomb of Oedon, far enough from the streets of the city so any major damage can be avoided. Hopefully, the beast's attention can be kept here for the time being...",
    "body": "Distribute 1 Blood Echo and the Beast Roar reward among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 37
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -627,6 +719,10 @@
    "story": "A soft voice addresses you: \"A Hunter? I'm terribly sorry but... You may not enter. I am Iosefka. This is my clinic. And I cannot allow any chance of infection within! But... I might be able to aid you. I am working on a cure for this terrible plague, but I require blood samples from those freshly infected... Will you assist me?\"",
    "body": "",
    "goalText": "Slay a Hunter Mob or Huntsman's Minion while it is on the Iosefka's Clinic tile: Reveal card 25.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 36
+   },
    "goal": {
     "type": "slayTypeOnTile",
     "params": {
@@ -653,6 +749,10 @@
    "story": "You knock on the heavy wooden door. After a moment, you hear Iosefka. \"You have brought me samples? Immensely useful... Perhaps you can be of further use. I require the still-warm blood of one of those beasts... Lure one here, strike it down, and I'll handle the rest...\" As you leave, you can't help but feel an underlying ruthlessness has replaced the compassion in her tone.",
    "body": "Reveal card 27.",
    "goalText": "Complete this Mission by slaying a Scourge Beast while it is on the Iosefka's Clinic tile: Reveal card 26.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 35
+   },
    "onReveal": [
     {
      "do": "reveal",
@@ -684,6 +784,10 @@
    "story": "Iosefka has researched the effects of the Beast Plague, invaluable information that we can put to use. More so, she has synthesized her own form of refined healing blood. She could prove to be quite useful in the Hunts to come...",
    "body": "Distribute 1 Consumable and the Iosefka's Blood Vial reward among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 34
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -703,6 +807,10 @@
    "story": "\"Hunter, I would ask one other task of you. Should you find any survivors out there, send them here, and I swear on my Hippocratic oath I will protect them, perhaps even cure them... And reward you for your efforts, of course.\"",
    "body": "Hunters also gain 1 Survivor token when they pick up Consumables from {consumable} spaces. These tokens are lost if the Hunter teleports or goes to the Dream. Hunters ending a move on the Iosefka's Clinic tile place their held tokens on this card.",
    "goalText": "Complete this Mission when {n}+1 tokens have been placed on this card: Reveal card 28.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 33
+   },
    "onReveal": [
     {
      "do": "counter",
@@ -742,6 +850,10 @@
    "story": "\"They're safe with me now. And their treatment is going well. Stabilized... for the most part... Fascinating, really.... Here you are, as promised.\"",
    "body": "Distribute the Messenger's Gift reward among the Hunters.",
    "goalText": "The Shelter at Oedon Chapel Insight Mission may no longer be completed.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 32
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -761,6 +873,10 @@
    "story": "As you approach the old Chapel, the smell of warding incense fills your nose. You cautiously press on the large wooden doors.",
    "body": "",
    "goalText": "If you have Moment of Mercy: Reveal card 30. Otherwise: Reveal card 33.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 31
+   },
    "goal": {
     "type": "branch",
     "params": {
@@ -787,6 +903,10 @@
    "story": "The interior of the Chapel lies covered with blood. Corpses litter the ground. At the center, a figure lies hunched, feeding upon the remains. As it rises and turns to face you, you see it is garbed in the tattered clothes of the girl you chose to spare.",
    "body": "Reveal card 31. Surround the Oedon Chapel tile with Fog Gates. Spawn 1 Female Beast Patient on the Oedon Chapel {enemy1} space. It respawns to that space on {reset}. It is immune to the effect of Oedon Chapel.",
    "goalText": "Complete this Mission by slaying this Beast Patient: Reveal card 32.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 30
+   },
    "onReveal": [
     {
      "do": "reveal",
@@ -824,6 +944,10 @@
    "story": null,
    "body": "Place 2 Insight tokens on this card. If 3+ Hunters, place 1 additional token. When the Beast Patient would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}. Replace its Special with: SPECIAL: RAVAGE - {fast} {dmg}{dmg}{dmg} - Stun. If Beast Patient is slain, Hunter must Dodge ({slow}) or suffer 3 {dmg}.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 29
+   },
    "onReveal": [
     {
      "do": "hpPool",
@@ -859,6 +983,10 @@
    "story": "We must take this as a lesson: Even the slightest hesitation in our duties can lead to disaster. Mercy is not an option we can afford on the Hunt.",
    "body": "Distribute 1 Consumable and the Caryll Rune: Formless Oedon reward among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 28
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -878,6 +1006,10 @@
    "story": "From the darkened corner of the Chapel, a hunched and robed figure addresses you: \"Ahh, a Hunter are ya? Good, good. I've been waiting for one of your ilk... If you spot anyone with their wits about 'em... Bring 'em to this 'ere Oedon Chapel. They'll be safe here.\"",
    "body": "Hunters also gain 1 Survivor token when they pick up Consumables from {consumable} spaces. These tokens are lost if the Hunter teleports or goes to the Dream. Hunters ending a move on the Oedon Chapel tile place their held tokens on this card.",
    "goalText": "Complete this Mission when {n}+1 tokens have been placed on this card: Reveal card 34.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 27
+   },
    "onReveal": [
     {
      "do": "counter",
@@ -917,6 +1049,10 @@
    "story": "Oedon Chapel, with its warding incense, offers protection to all during these nights of the Hunt.",
    "body": "Distribute the Caryll Rune: Oedon Writhe reward among the Hunters.",
    "goalText": "The Shelter at Iosefka's Clinic Insight Mission may no longer be completed.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 26
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -940,6 +1076,10 @@
    "story": "As you enter the massive bridge, you hear the familiar gunshot of a Hunter's firearm. Rushing forth, you come across the sight of a Hunter slumped against a wall, firearm raised as a towering figure approaches.",
    "body": "Reveal card 36. Surround The Great Bridge tile with Fog Gates. Spawn 1 Huntsman's Minion on the {enemy2} space instead of the usual Enemy. It respawns to that space on {reset}.",
    "goalText": "Slay this Huntsman's Minion: Reveal card 37.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 25
+   },
    "onReveal": [
     {
      "do": "reveal",
@@ -976,6 +1116,10 @@
    "story": null,
    "body": "Place 1 Insight token on this card. When the Huntsman's Minion would be slain, instead, remove the token and Heal all {dmg} from it. Token is returned on {reset}. Replace its Special with: SPECIAL: IMMUNE TO PAIN - {slow} {dmg}{dmg}{dmg}{dmg} - Block 2 {dmg} from Hunter's Attack. Cannot be Staggered.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 24
+   },
    "onReveal": [
     {
      "do": "hpPool",
@@ -1007,6 +1151,10 @@
    "story": "Checking over the Hunter, he still lives-but only barely. He is not a Hunter of the Dream, however. If he is to survive, we must get him someplace safe.",
    "body": "Place 1 Survivor token on The Great Bridge space. Any Hunter may pick up the token when they move out of that space. It respawns to The Great Bridge {enemy2} if the Hunter teleports or goes to the Dream. Complete this Mission when:",
    "goalText": "Hunter ends a move on the Iosefka's Clinic tile with the token: Reveal card 38. Hunter ends a move on the Oedon Chapel tile with the token: Reveal card 39.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 23
+   },
    "onReveal": [
     {
      "do": "survivor",
@@ -1043,6 +1191,10 @@
    "story": "As you approach the clinic, Iosefka instructs you to lay the wounded Hunter near the door, then leave. She will handle it from here. Before departing, the weakened Hunter reaches for you, motioning for you to take his equipment.",
    "body": "Distribute the Old Hunter's Bone reward and the Repeating Pistol firearm among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 22
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -1062,6 +1214,10 @@
    "story": "As you enter the old chapel, the Hunter comes to. He stands, although weakly. \"T-Thanks... Looks like my hunt has ended for now... But be warned, I believe there to be some greater threat out this night. Something greater drives these beasts forward, though what, I do not know...\"",
    "body": "Distribute the Old Hunter's Bone reward and the Repeating Pistol firearm among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 21
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -1081,6 +1237,10 @@
    "story": "From deep within the Tomb of Oedon, the Cleric Beast emits a thundering roar. From all around Central Yharnam, howls of Scourge Beasts are heard in turn. It would appear this creature has taken up the role of \"pack leader\", summoning the beasts to it. As long as this creature lives, more Scourge Beasts will be drawn to it... The goal is clear.",
    "body": "Reveal card 41. Surround the Tomb of Oedon tile with Fog Gates. Spawn the Cleric Beast on its {enemy1} space.",
    "goalText": "Complete the Hunt by slaying the Cleric Beast: Reveal card 44.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 20
+   },
    "onReveal": [
     {
      "do": "reveal",
@@ -1122,6 +1282,10 @@
    "story": "The Cleric Beast has been lured to the Tomb of Oedon. While it is distracted, let us use this time to complete the rest of the Hunt.",
    "body": "Hunters may not enter the Tomb of Oedon. When the Hunters have collected at least 2 Insight this Chapter, or the 2nd {reset} space of the Hunt Track is reached (mark this space with an Insight token): Reveal cards 42 and 43.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 19
+   },
    "onReveal": [
     {
      "do": "specialRule",
@@ -1159,6 +1323,10 @@
    "story": null,
    "body": "Remove the \"Contained\" card and the Fog Gates from the Tomb of Oedon. At the end of each round, if the Cleric Beast is not in a space with a Hunter, it moves 4 spaces toward the nearest Hunter with the lowest HP and Attacks. Otherwise, it Attacks the Hunter with the lowest HP in its space. It is not removed on {reset}, but instead Heals all {dmg} and removes all Insight tokens.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 18
+   },
    "onReveal": [
     {
      "do": "tileUnlock",
@@ -1187,6 +1355,10 @@
    "story": null,
    "body": "Each time the Cleric Beast flips Recovery, spawn 1 Scourge Beast in its space. These Scourge Beasts do not respawn on {reset}. Discard this card if the Hunters have, or gain, the Clearing the Pack card.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 17
+   },
    "onReveal": [
     {
      "do": "bossOverride",
@@ -1214,6 +1386,10 @@
    "story": "The towering beast lets out one final shrill cry before collapsing to the ground. In the distance, howls and cries of Scourge Beasts, now retreating from Central Yharnam, fill the air. On the horizon, the rays of the sun begin to rise, bringing the dawn and marking the end of this Long Hunt. You know, soon though, the Blood Moon will rise once more, and a new threat will call you into yet another Hunt...",
    "body": "",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 16
+   },
    "kindOverride": "other"
   },
   "45": {
@@ -1224,6 +1400,10 @@
    "story": "You approach the large, barred doors of the clinic. Knocking upon them, a low female voice answers.",
    "body": "",
    "goalText": "If you have both Iosefka's Research and Safe Refuge: Iosefka's Clinic: Reveal card 46. If you have Safe Refuge: Iosefka's Clinic but do not have Iosefka's Research: Reveal card 51. If you have Iosefka's Research but do not have Safe Refuge: Iosefka's Clinic: Reveal card 52. Otherwise: Reveal card 24.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 15
+   },
    "goal": {
     "type": "branch",
     "params": {
@@ -1263,6 +1443,10 @@
    "story": "Suddenly, the large wooden doors of the clinic burst open and a bloodied Yharnamite staggers out, collapsing to the ground. You recognize him as one of the survivors you escorted here this very night. \"You... Have to stop her... She's torturing us... It's horrific...\" he weakly pleads before running off. From the darkness of the doorway, a female figure emerges. \"A pity... But understand, what I do is for the greater good of Yharnam-No, mankind. What are a few lost lives? You can continue to aid me, Hunter, even pretend you saw nothing... and we may yet find a cure...\"",
    "body": "Choose 1:",
    "goalText": "Attack Iosefka: Reveal card 47. Agree to aid her: Reveal card 49.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 14
+   },
    "goal": {
     "type": "choice",
     "params": {
@@ -1289,6 +1473,10 @@
    "story": "\"Can't anyone comprehend?! That'll be quite enough of you, then. Isn't it time someone put you out of your misery? Ah, well... I always wanted to try my hand on a Hunter.\"",
    "body": "Surround the Iosefka's Clinic tile with Fog Gates. Spawn Iosefka (represented by her token) on its {enemy1} space. She respawns to that space on {reset}.",
    "goalText": "Complete this Mission by slaying Iosefka: Reveal card 48.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 13
+   },
    "onReveal": [
     {
      "do": "fogGates",
@@ -1323,6 +1511,10 @@
    "story": "\"Curse this oblivious fool...\" Iosefka mutters before slumping to the ground. Inspecting the interior of the clinic, you confirm the words of the fleeing survivor... What could have pushed her to such feats of madness?",
    "body": "Distribute 1 Consumable and the Augur of Ebrietas reward among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 12
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -1342,6 +1534,10 @@
    "story": "\"I need more patients... There aren't many humans left, I know, but find me every last one you can. We must find a way to surpass our own stupidity. You're one of the bright ones. Don't you see how much this means? You can start by catching that fool that you let get away.\"",
    "body": "Place 1 Survivor token on your space, then move it 4 spaces away. At the end of each turn, it moves 1 space away from the nearest Hunter. Interact on its space to capture it. It drops into their space if the Hunter teleports or goes to the Dream.",
    "goalText": "Complete this Mission by ending a move on the Iosefka's Clinic tile with the token: Reveal card 50.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 11
+   },
    "onReveal": [
     {
      "do": "survivor",
@@ -1380,6 +1576,10 @@
    "story": "\"This time, I'll be trying old blood. I've achieved much. And I owe it all to you. Take this, as thanks.\"",
    "body": "Distribute 1 Consumable and the Augur of Ebrietas reward among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 10
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -1399,6 +1599,10 @@
    "story": "You knock on the heavy wooden door. After a moment, you hear Iosefka. \"You again? Hmm... Perhaps you can be of further use. I require the still-warm blood of one of those beasts... Lure one here, strike it down, and I'll handle the rest...\" As you leave, you can't help but feel an underlying ruthlessness has replaced the compassion in her tone.",
    "body": "",
    "goalText": "Complete this Mission by slaying a Scourge Beast while it is on the Iosefka's Clinic tile: Reveal card 26.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 9
+   },
    "goal": {
     "type": "slayTypeOnTile",
     "params": {
@@ -1424,6 +1628,10 @@
    "story": "\"Ah, the Hunter! I have a task for you! The infection spreads and the common folk need shelter... Send them here and I swear I will protect them, perhaps even cure them... And, of course, you will be rewarded as well.\"",
    "body": "Hunters also gain 1 Survivor token when they pick up Consumables from {consumable} spaces. These tokens are lost if the Hunter teleports or goes to the Dream. Hunters ending a move on the Iosefka's Clinic tile place their held tokens on this card.",
    "goalText": "Complete this Mission when {n}+1 tokens have been placed on this card: Reveal card 28",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 8
+   },
    "onReveal": [
     {
      "do": "counter",
@@ -1463,6 +1671,10 @@
    "story": "The Great Bridge, the connector between Central Yharnam and the Cathedral Ward...",
    "body": "",
    "goalText": "If you have Ominous Warnings or Surviving the Hunt: Reveal card 54. Otherwise: Reveal card 35.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 7
+   },
    "goal": {
     "type": "branch",
     "params": {
@@ -1492,6 +1704,10 @@
    "story": "You come across a small pack of Scourge Beasts. Surprisingly, rather than attack, they retreat, seemingly fleeing you. Perhaps it is the smell of blood, or some animal instinct instructing them to do so, but regardless of the reason, you will finish the purging of these beasts from Yharnam.",
    "body": "Place {n}+2 Insight tokens on this card. Each time a Scourge Beast is slain, remove 1 token from this card.",
    "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 55.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 6
+   },
    "onReveal": [
     {
      "do": "counter",
@@ -1529,6 +1745,10 @@
    "story": "The Scourge Beasts have been eradicated from the district... At least, for now.",
    "body": "Distribute the Executioner's Gloves reward among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 5
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -1544,6 +1764,10 @@
    "story": "You press open the large doors of the ancient chapel...",
    "body": "",
    "goalText": "If you have Ominous Warnings: Reveal card 57. If you do not have Ominous Warnings, but have Safe Refuge: Oedon Chapel: Reveal card 59. Otherwise: Reveal card 33.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 4
+   },
    "goal": {
     "type": "branch",
     "params": {
@@ -1575,6 +1799,10 @@
    "story": "As you enter Oedon Chapel, the familiar sight of the Hunter you rescued greets you. He stands, reloading his pistol and drawing his weapon. \"Ah, you've returned... Perhaps I still have some fight left in me,\" he says, though suddenly gripping his side. \"Well... Perhaps with some assistance...\"",
    "body": "Place {n}+1 Insight tokens on this card. Place 1 NPC token on the Oedon Chapel space. When a Hunter moves out of its space, it may be moved with them. Each time a Hunter Mob or Huntsman's Minion is slain in its space, remove 1 token from this card.",
    "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 58.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 3
+   },
    "onReveal": [
     {
      "do": "counter",
@@ -1620,6 +1848,10 @@
    "story": "\"The Hunt... How invigorating. Come! Let us purge these beasts!\"",
    "body": "Distribute 1 Consumable and the Caryll Rune: Hunter reward among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 2
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -1639,6 +1871,10 @@
    "story": "Survivors gather around the lights and warding incense of the chapel. One approaches you. \"Noble Hunter, you've done so much for us this night... But I am sorry, I would ask just a bit more of your kindness...\"",
    "body": "Place {n}+1 Insight tokens on this card. Hunters ending a move on the Oedon Chapel tile may discard any number of their held Consumables. For each one discarded, remove 1 token from this card.",
    "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 60.",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 1
+   },
    "onReveal": [
     {
      "do": "counter",
@@ -1676,6 +1912,10 @@
    "story": "\"Thank you, kind Hunter... While we cannot offer much, this seems far better suited to one such as yourself than us...\"",
    "body": "Distribute the Empty Phantasm Shell reward and the Flamesprayer firearm among the Hunters.",
    "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 0
+   },
    "onReveal": [
     {
      "do": "reward",
@@ -1695,6 +1935,10 @@
    "story": null,
    "body": "SETUP - ENEMIES: Hunter Mob, Huntsman's Minion, Scourge Beast. TILES: Courtyard Lamp, Occupied House, Oedon Chapel, Ransacked House, {n} x2 Random (Max 6). MISSIONS - Start of the Hunt: Reveal card 1. End a move on the Courtyard Lamp tile: Reveal card 5. End a move on the Occupied House tile: Reveal card 8. End a move on the Ransacked House tile: Reveal card 12.",
    "goalText": "Start of the Hunt: Reveal card 1",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 62
+   },
    "triggers": [
     {
      "on": "startOfHunt",
@@ -1725,6 +1969,10 @@
    "story": null,
    "body": "SETUP - ENEMIES: Hunter Mob, Huntsman's Minion, Scourge Beast. TILES: Graveyard, Iosefka's Clinic, Oedon Chapel, The Great Bridge, Tomb of Oedon, {n} x2 Random (Max 5). SPECIAL RULES CARDS: Long Hunt card 17. MISSIONS - Start of the Hunt: Reveal card 18. End a move on the Iosefka's Clinic tile: Reveal card 24. End a move on the Oedon Chapel tile: Reveal card 29. End a move on The Great Bridge tile: Reveal card 35.",
    "goalText": "Start of the Hunt: Reveal card 18",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 61
+   },
    "triggers": [
     {
      "on": "startOfHunt",
@@ -1763,6 +2011,10 @@
    "story": null,
    "body": "SETUP - ENEMIES: Hunter Mob, Huntsman's Minion, Scourge Beast. TILES: Graveyard, Iosefka's Clinic, Oedon Chapel, The Great Bridge, Tomb of Oedon, {n} x2 Random (Max 5). SPECIAL RULES CARDS: Long Hunt card 17. MISSIONS - Start of the Hunt: Reveal card 40. End a move on the Iosefka's Clinic tile: Reveal card 45. End a move on The Great Bridge tile: Reveal card 53. End a move on the Oedon Chapel tile: Reveal card 56.",
    "goalText": "Start of the Hunt: Reveal card 40",
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 60
+   },
    "triggers": [
     {
      "on": "startOfHunt",
@@ -1800,7 +2052,11 @@
    "title": "The Long Hunt - Introduction",
    "story": "Of the monsters created by the Beast Plague, the Scourge Beasts are the most reviled. Once human, these terrible monstrosities are fast, agile, and lethal. As of late, more and more of these beasts have begun appearing in Central Yharnam, and thus we have been tasked with discovering the source of their increasing numbers, as well as eliminating as many as possible.",
    "body": "",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "the-long-hunt",
+    "cell": 63
+   }
   }
  },
  "growing-madness": {
@@ -1811,7 +2067,11 @@
    "title": "ON THE HUNT",
    "story": "Gascoigne steps forward, taking the lead. He lifts his head. \"Ah... Tonight there is something different in the air. Let there be no doubt. If it moves, you can be sure it's a beast... And even if it doesn't... Well, don't take any chances... Now, we hunt!\"",
    "body": "Place {n} +2 Insight tokens on this card. Place Father Gascoigne's miniature on the Central Lamp space. When a Hunter moves out of his space, Gascoigne may be moved with them. After a Hunter in his space Attacks, deal that Enemy 1 additional {dmg} (no one gains a Blood Echo if this slays the Enemy). Each time an Enemy is slain in his space, remove 1 token.",
-   "goalText": "When this card has no remaining tokens: Reveal card 2."
+   "goalText": "When this card has no remaining tokens: Reveal card 2.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 4
+   }
   },
   "2": {
    "campaign": "growing-madness",
@@ -1820,7 +2080,11 @@
    "title": "ON THE HUNT",
    "story": "Gascoigne's blows strike down his latest foe, but he does not stop. He rears back, bringing his mighty axe down again and again, blood splattering as he chops away. Suddenly, the bells of the Grand Cathedral, far across The Great Bridge, begin to chime. Gascoigne stops, drawn by their sound. \"More beasts... Can't you smell them? So many this night... So many left to kill...\" With this, he silently turns and departs...",
    "body": "Remove Father Gascoigne from the map.",
-   "goalText": "When a Hunter ends a move on The Great Bridge after collecting at least 2 Insight: Reveal card 3."
+   "goalText": "When a Hunter ends a move on The Great Bridge after collecting at least 2 Insight: Reveal card 3.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 5
+   }
   },
   "3": {
    "campaign": "growing-madness",
@@ -1829,7 +2093,11 @@
    "title": "ON THE HUNT",
    "story": "Corpses litter the bridge, massacred-the wounds upon them evident of a Hunter Axe. These bodies do not bear the signs of the plague, but appear to have been cut down while fleeing... Suddenly, you hear a loud crash. From across The Great Bridge, a large bolder comes rolling.",
    "body": "Reveal card 4.\nSurround The Great Bridge tile with Fog Gates. Spawn 1 Hunter Mob and 1 Huntsman's Minion on The Great Bridge {enemy?} space instead of the usual Enemy. They respawn to that space on {reset}.",
-   "goalText": "Complete the Hunt at the end of a round if no Enemies remain on The Great Bridge tile: Reveal card 5."
+   "goalText": "Complete the Hunt at the end of a round if no Enemies remain on The Great Bridge tile: Reveal card 5.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 6
+   }
   },
   "4": {
    "campaign": "growing-madness",
@@ -1838,7 +2106,11 @@
    "title": "BRIDGE GUARDS",
    "story": null,
    "body": "When this card is revealed, and each time Ability is flipped by the Huntsman's Minion, all Hunters on The Great Bridge must Dodge ({fast}) or suffer 3 {dmg}.\nPlace 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. Tokens are returned on {reset}.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 7
+   }
   },
   "5": {
    "campaign": "growing-madness",
@@ -1847,7 +2119,11 @@
    "title": "UNSETTLING SUSPICIONS",
    "story": "Looking to the sky, you feel the rays of the Blood Moon casting down upon you, and even you cannot deny the bloodlust... A suspicion continues to grow in your mind, although you wish it didn't... You must locate Gascoigne.",
    "body": "Distribute 2 Consumables and the Caryll Rune: Moon reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 8
+   }
   },
   "6": {
    "campaign": "growing-madness",
@@ -1856,7 +2132,11 @@
    "title": "INNOCENT BYSTANDERS",
    "story": "The night of the Hunt is dangerous for any wandering the streets of Yharnam, for even those free of the Beast Plague may become a target for not only the ravanous beasts, but also the mobs of townsfolk, so eager to partake in the Hunt...",
    "body": "Reveal card 7.\nSpawn 1 Hunter Mob on the Central Lamp space. It cannot move from this space. Place 1 Survivor token on the Central Lamp space. On {reset}, if no Hunter is on this space, remove this token and discard this Mission (it can't be completed).",
-   "goalText": "Slay this Hunter Mob: Reveal card 8."
+   "goalText": "Slay this Hunter Mob: Reveal card 8.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 9
+   }
   },
   "7": {
    "campaign": "growing-madness",
@@ -1865,7 +2145,11 @@
    "title": "FRENZIED MOB",
    "story": null,
    "body": "Place 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. Tokens are returned on {reset}.\nReplace its Basic with:\nBASIC: RECKLESS ANGER {medium} {dmg} {dmg} Frenzy",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 10
+   }
   },
   "8": {
    "campaign": "growing-madness",
@@ -1874,7 +2158,11 @@
    "title": "SAFETY FROM THE HUNT",
    "story": "You approach the figure, a bruised and bloodied man. \"Oh thank the heavens! You're a Hunter, right? A proper one? Then, please help. I'm trying to get someplace safe, wait out this terrible night. They've all gone mad!\"",
    "body": "Do not remove the Survivor token.\nWhen a Hunter moves out of the space with the Survivor token, it may be moved with them.",
-   "goalText": "Complete this Mission if you end a move on the Oedon Chapel tile with the token: Reveal card 9.\nComplete this Mission if you end a move with the token after a {reset} occurs: Reveal card 10."
+   "goalText": "Complete this Mission if you end a move on the Oedon Chapel tile with the token: Reveal card 9.\nComplete this Mission if you end a move with the token after a {reset} occurs: Reveal card 10.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 11
+   }
   },
   "9": {
    "campaign": "growing-madness",
@@ -1883,7 +2171,11 @@
    "title": "SAFETY FROM THE HUNT",
    "story": "\"Aye, this place should do! And none too soon, my friend. I've experienced many a'hunt, but this one... Something ain't right, I tell ya. This one won't end well, not this time... 'ere, take this, with my thanks.\"",
    "body": "Distribute 1 Consumable and the Hand Lantern reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 12
+   }
   },
   "10": {
    "campaign": "growing-madness",
@@ -1892,7 +2184,11 @@
    "title": "UNCONTROLLED RAGE",
    "story": "A sharp pain hits you from behind. You turn just in time to parry a blade held by the man, his eyes suddenly showing madness among the gleam of the moon. Overtaken by rage, you strike him down... It seems even Hunters are not immune to this frenzy.",
    "body": "Hunter suffers 1 {dmg} and Frenzy, but gains 1 Blood Echo and the Caryll Rune: Blood Rapture reward. Discard the Survivor token.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 13
+   }
   },
   "11": {
    "campaign": "growing-madness",
@@ -1901,7 +2197,11 @@
    "title": "SUPPLIES FOR THE NIGHT",
    "story": "\"Oh, you must be a Hunter. Must have had a fine time of it... Was out on the hunt myself, but now? I don't think I could stand if I wanted to... Say, you wouldn't be willing to help a fellow Yharnamite out, would you? I can even make it worth your while. Just need some supplies to last me through the night, that's all.\"",
    "body": "Place {n} +1 Insight tokens on this card. Hunters ending a move on the Occupied House space may discard any number of their held Consumables. For each one discarded, remove 1 token from this card.",
-   "goalText": "When this card has no remaining tokens: Reveal card 12."
+   "goalText": "When this card has no remaining tokens: Reveal card 12.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 14
+   }
   },
   "12": {
    "campaign": "growing-madness",
@@ -1910,7 +2210,11 @@
    "title": "SUPPLIES FOR THE NIGHT",
    "story": "\"Splendid! Splendid! This should be right enough to get me through this Hunt. Now, as for your reward, don't think I forgot! It's just... Well, I had to leave my tools escaping one of the beasts out near the old graveyard... I'm sure they're still out there though... Probably.\"",
    "body": "",
-   "goalText": "Complete this Mission by Interacting on the Graveyard space: Reveal card 13."
+   "goalText": "Complete this Mission by Interacting on the Graveyard space: Reveal card 13.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 15
+   }
   },
   "13": {
    "campaign": "growing-madness",
@@ -1919,7 +2223,11 @@
    "title": "OUT ON THE HUNT",
    "story": "When the Hunt is called, even the common towsfolk take to the streets to partake in the slaying of beasts. Of course, without the proper training, techniques, and tools, many often find themselves slaughtered by the creatures they seek.",
    "body": "Distribute the Hunter Torch reward and the Flamesprayer firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 16
+   }
   },
   "14": {
    "campaign": "growing-madness",
@@ -1928,7 +2236,11 @@
    "title": "EILEEN THE CROW",
    "story": "\"Oh, a Hunter? What a mess you've been caught up in. And tonight, of all nights... Heh heh. I am Eileen, a fellow Hunter, of sorts... You've seen the madness that has gripped those out this night, haven't you? They cannot be saved, so that leaves just the one option... And the reason why I am here. But you seem to still have your wits about. Why don't you show me just what you can do?\"",
    "body": "Place {n} +2 Insight tokens on this card. While on the Oedon Chapel tile, Hunters may discard their held Blood Echoes. For each one discarded, remove 1 token from this card.",
-   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 15."
+   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 15.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 17
+   }
   },
   "15": {
    "campaign": "growing-madness",
@@ -1937,7 +2249,11 @@
    "title": "PROVEN HUNTER",
    "story": "\"Quite impressive. Perhaps you have what it takes to survive this Hunt after all... Here, a gift for the proven hunter. ...Good luck out there, heh heh.\"",
    "body": "Distribute 2 Consumables and the Messenger's Gift reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 18
+   }
   },
   "16": {
    "campaign": "growing-madness",
@@ -1946,7 +2262,11 @@
    "title": "SPECIAL SETUP",
    "story": null,
    "body": "Before creating the tile deck, take The Great Bridge and Tomb of Oedon tiles.\nConnect The Great Bridge to the Central Lamp, then connect the Tomb of Oedon to The Great Bridge.\nSurround the Tomb of Oedon tile with Fog Gates. They cannot be crossed.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 19
+   }
   },
   "17": {
    "campaign": "growing-madness",
@@ -1955,7 +2275,11 @@
    "title": "ON THE HUNT",
    "story": "It may very well be that Gascoigne has succumbed to the effects of the Frenzy. If this is true, we cannot allow one of our own to continue this path of wanton slaughter... Unfortunately, it appears the passage leading forward has been barred. Given that The Great Bridge separates Central Yharnam from the Cathedral Ward, perhaps the servants of the Church might hold the key we need...",
    "body": "When the Grand Cathedral tile is revealed, spawn 1 Church Giant and 1 Church Servant on its {enemy?} space. These Enemies are not removed on {reset}, and do not respawn.",
-   "goalText": "Slay these Enemies: Reveal card 18."
+   "goalText": "Slay these Enemies: Reveal card 18.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 20
+   }
   },
   "18": {
    "campaign": "growing-madness",
@@ -1964,7 +2288,11 @@
    "title": "ON THE HUNT",
    "story": "On the corpse of the creatures you find the key you were searching for. With this, you can continue on the trail of Gascoigne... But while verifying your fears about the madness gripping the old Hunter is indeed important, we must also take care to see just how far said madness has spread to the townsfolk as well...",
    "body": "The Fog Gate on the Tomb of Oedon can be crossed once the Hunters have collected at least 2 Insight this Chapter.",
-   "goalText": "End a move on the Tomb of Oedon tile: Reveal card 19."
+   "goalText": "End a move on the Tomb of Oedon tile: Reveal card 19.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 21
+   }
   },
   "19": {
    "campaign": "growing-madness",
@@ -1973,7 +2301,11 @@
    "title": "ON THE HUNT",
    "story": "The stench of death covers the massive graveyard. Bodies, both beasts and human alike, litter the ground. Moving onward, you come across the sight of Father Gascoigne, mindlessly chopping away at a pile of fresh corpses. \"Beasts all over the shop... You'll all be one of them... Sooner or later...\" Suddenly, he lunges forward to attack.",
    "body": "Reveal card 20.\nSpawn Father Gascoigne on the Tomb of Oedon {enemy?} space. He respawns to that space on {reset}.",
-   "goalText": "Complete the Hunt by slaying Father Gascoigne: Reveal card 21."
+   "goalText": "Complete the Hunt by slaying Father Gascoigne: Reveal card 21.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 22
+   }
   },
   "20": {
    "campaign": "growing-madness",
@@ -1982,7 +2314,11 @@
    "title": "TINY MUSIC BOX",
    "story": null,
    "body": "The Tiny Music Box reward gains the following effect:\nWhen Gascoigne Attacks: Gascoigne's Attack suffers -1 {fast}.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 23
+   }
   },
   "21": {
    "campaign": "growing-madness",
@@ -1991,7 +2327,11 @@
    "title": "FUELED BY RAGE",
    "story": "Staggering, with blood splattering from his mouth, Gascoigne falls to a knee. Suddenly, before you can react, a new vigor fills Gascoigne as he withdraws a Blood Vial and injects it into his leg. He rises once more, uttering a frenzied roar.",
    "body": "Distribute the Caryll Rune: Beast reward and the Hunter Blunderbuss firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 24
+   }
   },
   "22": {
    "campaign": "growing-madness",
@@ -2000,7 +2340,11 @@
    "title": "BLOOD MOON'S INFLUENCE",
    "story": "You are given pause as the red tint that has overtaken the city seems to grow an even deeper crimson. Casting your eyes to the sky, you face the terrible sight of the Blood Moon, seemingly so much larger than it should be... A ringing fills your ears as your head pounds and your vision blurs momentarily. As it subsides, you can almost feel an electricity in the air as the sound of chaos rises through the city. The madness is spreading...",
    "body": "All Hunters suffer Frenzy.",
-   "goalText": "Reveal cards 23 and 24."
+   "goalText": "Reveal cards 23 and 24.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 25
+   }
   },
   "23": {
    "campaign": "growing-madness",
@@ -2009,7 +2353,11 @@
    "title": "FRENZIED MOB",
    "story": null,
    "body": "All Hunter Mobs replace their Basic with:\nBASIC: RECKLESS ANGER {medium} {dmg} {dmg} Frenzy",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 26
+   }
   },
   "24": {
    "campaign": "growing-madness",
@@ -2018,7 +2366,11 @@
    "title": "CONTROLLING THE MADNESS",
    "story": "This madness would easily break those of lesser conviction. But we are Hunters, we are above such influences! While hunting those who have been afflicted, we must take care not to succumb as well. We must steel ourselves against this frenzy!",
    "body": "After each {reset}, spawn 1 Hunter Mob (if available) on each {enemy?} space, beginning with those closest to Hunters. Place {n} +2 Insight tokens on this card. Each time a Hunter Mob is slain, unless the Hunter is Frenzied, remove 1 token.",
-   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 25."
+   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 25.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 27
+   }
   },
   "25": {
    "campaign": "growing-madness",
@@ -2027,7 +2379,11 @@
    "title": "INNER RESOLVE",
    "story": "Standing above your fallen foes, you remember the teachings of Ludwig, First Hunter of the Healing Church, who focused his resolve inward to overcome the horrors of the Hunt.",
    "body": "Distribute 1 Consumable and the Caryll Rune: Guidance reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 28
+   }
   },
   "26": {
    "campaign": "growing-madness",
@@ -2036,7 +2392,11 @@
    "title": "MISSING PARENTS",
    "story": "\"Are you a Hunter? Then, please, will you look for my mum? Daddy never came back from the Hunt, and she went to find him, but now she's gone, too. I'm all alone... and scared. She wears a red jeweled brooch. It's so big and beautiful. You won't miss it. Oh, I mustn't forget. If you find her, give her this music box. It plays one of daddy's favorite songs. And when daddy forgets us, we play it so he remembers. Mum's so silly, running off without it!\"",
    "body": "Gain the Tiny Music Box reward.",
-   "goalText": "Interact on the Graveyard space: Reveal card 27."
+   "goalText": "Interact on the Graveyard space: Reveal card 27.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 29
+   }
   },
   "27": {
    "campaign": "growing-madness",
@@ -2045,7 +2405,11 @@
    "title": "MISSING PARENTS",
    "story": "Inside the graveyard you come across the corpse of a young Yharnam woman, a large red brooch around her neck. It would appear the girl's mother has become another unfortunate victim of the madness overtaking the city this night. While heavily mutilated, however, the corpse does not appear to bear signs of the Scourge...",
    "body": "Gain 1 Insight token (Red Jeweled Brooch).",
-   "goalText": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 28."
+   "goalText": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 28.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 30
+   }
   },
   "28": {
    "campaign": "growing-madness",
@@ -2054,7 +2418,11 @@
    "title": "MISSING PARENTS",
    "story": "As you near the house, you pull out the brooch. The light of the blood moon catches it, glinting off its center... A Blood Stone Shard, a rare item used to fortify weapons at the workshop. It would be right to return it to the girl, but such a find is rare indeed... From the barred window, the girl speaks: \"Brave Hunter... Did you find my mum...?\"",
    "body": "Choose 1 to Complete this Mission:",
-   "goalText": "Lie to the girl and keep the shard: Reveal card 29.\nTell her the truth: Reveal card 30."
+   "goalText": "Lie to the girl and keep the shard: Reveal card 29.\nTell her the truth: Reveal card 30.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 31
+   }
   },
   "29": {
    "campaign": "growing-madness",
@@ -2063,7 +2431,11 @@
    "title": "STILL WAITING",
    "story": "\"You couldn't find her...? Oh, okay... But isn't there something I can do? Maybe mum and dad are stuck out there, waiting for me to come to them... No. I'll be a good girl and wait for them...\"",
    "body": "Distribute the Blood Stone Shard reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 32
+   }
   },
   "30": {
    "campaign": "growing-madness",
@@ -2072,7 +2444,11 @@
    "title": "LEFT ALONE",
    "story": "\"Hunter... was it really her?...Mummy... mummy... Don't leave me alone...\" You lay the brooch on the window before slowly departing, the girl's sobs echoing through the night.",
    "body": "Distribute the Caryll Rune: Eye reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 33
+   }
   },
   "31": {
    "campaign": "growing-madness",
@@ -2081,7 +2457,11 @@
    "title": "OEDON CHAPEL",
    "story": "The beams of the Blood Moon bathe the old Chapel in an eerie light, the scent of beast-warding incense filling your nose. From the shadows, the figure of a Hunter emerges, dressed in Crowfeather garb.",
    "body": "",
-   "goalText": "If you have Proven Hunter: Reveal card 33.\nOtherwise: Reveal card 32."
+   "goalText": "If you have Proven Hunter: Reveal card 33.\nOtherwise: Reveal card 32.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 34
+   }
   },
   "32": {
    "campaign": "growing-madness",
@@ -2090,7 +2470,11 @@
    "title": "EILEEN THE CROW",
    "story": "\"Oh, a Hunter? What a mess you've been caught up in. And tonight, of all nights... Heh heh. I am Eileen, a fellow Hunter, of sorts... You've seen the madness that has gripped those out this night, haven't you? They cannot be saved, so that leaves just the one option... And the reason why I am here. But you seem to still have your wits about. Why don't you show me just what you can do?\"",
    "body": "Place {n} +2 Insight tokens on this card. While on the Oedon Chapel tile, Hunters may discard their held Blood Echoes. For each one discarded, remove 1 token from this card.",
-   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal cards 15 and 33."
+   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal cards 15 and 33.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 35
+   }
   },
   "33": {
    "campaign": "growing-madness",
@@ -2099,7 +2483,11 @@
    "title": "HUNTER OF HUNTERS",
    "story": "\"Well well, the Proven Hunter... Shouldn't you be out there, well, hunting? Heh, no matter... But before you go, a friendly warning to you: do not go near the old graveyard. Henryk, an old Hunter, has gone mad... And he's my mark.\"",
    "body": "",
-   "goalText": "End a move on the Graveyard tile: Reveal card 34."
+   "goalText": "End a move on the Graveyard tile: Reveal card 34.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 36
+   }
   },
   "34": {
    "campaign": "growing-madness",
@@ -2108,7 +2496,11 @@
    "title": "HUNTER OF HUNTERS",
    "story": "You enter the graveyard to the sounds of clashing weapons. Moving forth, you see Eileen locked in combat with another Hunter.",
    "body": "Reveal card 35.\nSurround the Graveyard tile with Fog Gates. Spawn Old Hunter Henryk and Eileen the Crow (represented by their tokens) on its {enemy?} space.\nHenryk respawns to that space on {reset}.\nEileen is not hostile towards the Hunters.",
-   "goalText": "Complete this Mission by slaying Henryk: Reveal card 36. If Eileen was slain before Henryk, reveal card 37 instead."
+   "goalText": "Complete this Mission by slaying Henryk: Reveal card 36. If Eileen was slain before Henryk, reveal card 37 instead.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 37
+   }
   },
   "35": {
    "campaign": "growing-madness",
@@ -2117,7 +2509,11 @@
    "title": "AIDING THE CROW",
    "story": null,
    "body": "Place 3 Insight tokens on this card.\nAt the end of each Hunter Turn, flip an Enemy Action card. If Ability or Special, remove 1 Insight token from this card. If all tokens are removed, Eileen is slain. Remove her token from the map and discard this card.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 38
+   }
   },
   "36": {
    "campaign": "growing-madness",
@@ -2126,7 +2522,11 @@
    "title": "EILEEN'S APPROVAL",
    "story": "As Henryk falls to the ground, Eileen stands beside you. \"...I told you Henryk was my mark... But you have my thanks... Though, I would advise you: watch yourself this night, for it seems the madness is strong. Leave the hunting of Hunters to me.\"",
    "body": "Distribute the Caryll Rune: Blood Rapture reward and the Rosmarinus firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 39
+   }
   },
   "37": {
    "campaign": "growing-madness",
@@ -2135,7 +2535,11 @@
    "title": "PREY SLAUGHTERED: OLD HUNTER HENRYK",
    "story": "Henryk falls to the ground, motionless. You rush to Eileen's side. She still lives, though her breaths are staggered and forced. \"This madness... It will eventually take us all... Heh heh... I'll be fine...Go. There is still more hunting to be done...\"",
    "body": "Distribute the Beast Roar reward and the Rosmarinus firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 40
+   }
   },
   "38": {
    "campaign": "growing-madness",
@@ -2144,7 +2548,11 @@
    "title": "SPECIAL SETUP",
    "story": null,
    "body": "Before creating the tile deck, take the The Great Bridge and Tomb of Oedon tiles.\nConnect The Great Bridge to the Central Lamp, then connect the Tomb of Oedon to The Great Bridge.\nSpawn Father Gascoigne (Phase 2) on the Tomb of Oedon {enemy?} space.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 41
+   }
   },
   "39": {
    "campaign": "growing-madness",
@@ -2153,7 +2561,11 @@
    "title": "GROWING MADNESS",
    "story": "Gascoigne rears up, convulsing as vigor flows through him. \"Beasts... Cannot... Slay me.\" You move to attack, but your blows seem to have little impact. Perhaps it is the influence of the Blood Moon, or some deeper force pushing him forward, but for now you decide to fall back and regroup before launching your attack. Gascoigne is still a veteran Hunter and should not be underestimated...",
    "body": "Reveal card 40.",
-   "goalText": "Collect at least 2 Insight this Chapter, or when the 3rd {reset} space of the Hunt Track is reached (mark this space with an Insight token): Reveal card 41."
+   "goalText": "Collect at least 2 Insight this Chapter, or when the 3rd {reset} space of the Hunt Track is reached (mark this space with an Insight token): Reveal card 41.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 42
+   }
   },
   "40": {
    "campaign": "growing-madness",
@@ -2162,7 +2574,11 @@
    "title": "BOUNDLESS FRENZY",
    "story": null,
    "body": "Gascoigne has 6 HP, but cannot be slain. If Gascoigne would be slain, instead, mark him with an Insight token. He no longer Activates or Pursues. He is not removed on {reset}, but Heals all {dmg} and removes the token. At the end of each round, if Gascoigne is not in a space with a Hunter, he moves 3 spaces towards the nearest Hunter with the lowest HP and Attacks. Otherwise, he Attacks the Hunter in his space with the lowest HP.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 43
+   }
   },
   "41": {
    "campaign": "growing-madness",
@@ -2171,7 +2587,11 @@
    "title": "GROWING MADNESS",
    "story": "Gascoigne staggers back, casting his weapons aside as he grips his head. Suddenly, his form erupts into that of a monstrous creature. No more than one of the beasts now... Let us end this. If we cannot stop this madness ourselves, we can at least delay its spread this awful night.",
    "body": "Replace Father Gascoigne with Father Gascoigne Transformed.\nHeal all {dmg} from him and reset him to Phase 1. Discard Boundless Frenzy and the Tiny Music Box if in play.",
-   "goalText": "Complete the Hunt by slaying Gascoigne: Reveal card 42."
+   "goalText": "Complete the Hunt by slaying Gascoigne: Reveal card 42.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 44
+   }
   },
   "42": {
    "campaign": "growing-madness",
@@ -2180,7 +2600,11 @@
    "title": "HUNT COMPLETED",
    "story": "Gascoigne lets out a bloodied roar before falling to the ground... A shame to see this fate befall one of our own. Looking upward, you see the Blood Moon has begun to retreat from the sky, making way for the first lights of the dawn. Even now, you feel its terrible influence subsiding. With the rising of the sun, you know this Hunt will soon end... But you feel no victory here... While you have quelled a large number of those affected, preventing the spread of this frenzy, you cannot help but wonder what the rising of the next Blood Moon will bring...",
    "body": "",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 45
+   }
   },
   "43": {
    "campaign": "growing-madness",
@@ -2189,7 +2613,11 @@
    "title": "THE BARRED WINDOW",
    "story": null,
    "body": "",
-   "goalText": "If you have Left Alone: Reveal card 47.\nIf you have Still Waiting: Reveal card 44.\nOtherwise: Reveal card 26."
+   "goalText": "If you have Left Alone: Reveal card 47.\nIf you have Still Waiting: Reveal card 44.\nOtherwise: Reveal card 26.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 46
+   }
   },
   "44": {
    "campaign": "growing-madness",
@@ -2198,7 +2626,11 @@
    "title": "STILL WAITING",
    "story": "You knock on the barred window where previously you had encountered that young girl. A new voice answers you, sounding older than the previous one: \"A Hunter...? You haven't by chance... seen my little sister, have you? I told her to look after the house, but she's run off somewhere. She's still quite small and wears a big, white ribbon. Have you seen her out there anywhere?\"",
    "body": "Spawn a Huntsman's Minion 4 spaces away from the Barred Window space (revealing tiles if needed) and mark it with an Insight token. It is not removed on {reset}, but Heals all {dmg}.",
-   "goalText": "Slay this Huntsman's Minion: Reveal card 45."
+   "goalText": "Slay this Huntsman's Minion: Reveal card 45.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 47
+   }
   },
   "45": {
    "campaign": "growing-madness",
@@ -2207,7 +2639,11 @@
    "title": "STILL WAITING",
    "story": "As the gigantic creature falls, you notice something off. Caught around its grotesque hands seems to be the tattered remains of a large, white ribbon, now stained a crimson red...",
    "body": "Gain 1 Insight token (Bloodied White Ribbon).",
-   "goalText": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 46."
+   "goalText": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 46.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 48
+   }
   },
   "46": {
    "campaign": "growing-madness",
@@ -2216,7 +2652,11 @@
    "title": "SOMETHING TO REMEMBER",
    "story": "\"How... How did this happen... Why would she ever go outside...? At least... At least I'll have something to remember her by...\"",
    "body": "Distribute the Caryll Rune: Communion reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 49
+   }
   },
   "47": {
    "campaign": "growing-madness",
@@ -2225,7 +2665,11 @@
    "title": "LEFT ALONE",
    "story": "In the distance, the shrill cry of a young child fills the night air...",
    "body": "Place 1 Survivor token 4 spaces away from the Barred Window space (revealing tiles if needed).\nOn {reset}, if no Hunter is on this space, discard this token and this Mission (it can't be completed).",
-   "goalText": "End a move on the space with the Survivor token, and have no Enemies Pursue into that space: Reveal card 48."
+   "goalText": "End a move on the space with the Survivor token, and have no Enemies Pursue into that space: Reveal card 48.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 50
+   }
   },
   "48": {
    "campaign": "growing-madness",
@@ -2234,7 +2678,11 @@
    "title": "LEFT ALONE",
    "story": "\"I... I didn't know what to do, Hunter... I have nowhere to go. Please... Help me.\" The girl breaks down in sobs. We cannot merely leave the child alone. We must get her someplace safe, at least for this night...",
    "body": "Do not remove the Survivor token from the map. Any Hunter may pick up the token when they move out of its space. The token is moved to the Barred Window space if the Hunter teleports or goes to the Dream.",
-   "goalText": "Complete this Mission by ending a move on the Grand Cathedral tile with the token: Reveal card 49."
+   "goalText": "Complete this Mission by ending a move on the Grand Cathedral tile with the token: Reveal card 49.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 51
+   }
   },
   "49": {
    "campaign": "growing-madness",
@@ -2243,7 +2691,11 @@
    "title": "LED TO SAFETY",
    "story": "Central Yharnam has been overtaken by madness this night, and it would appear even the usual vestiges of refuge cannot be trusted... This is the best we can provide for the time being, though whether the girl will survive... We can only hope.",
    "body": "Distribute 1 Consumable and the Caryll Rune: Oedon Writhe reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 52
+   }
   },
   "50": {
    "campaign": "growing-madness",
@@ -2252,7 +2704,11 @@
    "title": "GRAND CATHEDRAL",
    "story": null,
    "body": "",
-   "goalText": "If you have Eileen's Approval: Reveal card 53.\nOtherwise: Reveal card 51."
+   "goalText": "If you have Eileen's Approval: Reveal card 53.\nOtherwise: Reveal card 51.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 53
+   }
   },
   "51": {
    "campaign": "growing-madness",
@@ -2261,7 +2717,11 @@
    "title": "HUNTER OF HUNTERS",
    "story": "As you enter the Grand Cathedral, you come across the sight of a Hunter, garbed in Crowfeather attire. She turns to you, her breathing haggard as she lets out a low laugh. \"Few can resist the intoxication of the Hunt. Look at you, just the same as all the rest. The Hunters must die. Your punishment is death! Death to Hunters!\" She cackles as she draws her blades. \"The nightmare must end!\"",
    "body": "Surround the Grand Cathedral tile with Fog Gates. Spawn Eileen the Crow (represented by her token) on its {enemy?} space. She respawns to that space on {reset}.",
-   "goalText": "Complete this Mission by slaying Eileen: Reveal card 52."
+   "goalText": "Complete this Mission by slaying Eileen: Reveal card 52.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 54
+   }
   },
   "52": {
    "campaign": "growing-madness",
@@ -2270,7 +2730,11 @@
    "title": "SLAYING THE SLAYER",
    "story": "As she falls to the ground, blood pooling around her, she reaches toward you, fighting till the very end. \"All... Hunters...Must... Die...\" she cackles before falling silent.",
    "body": "Distribute the Old Hunter Bone and the Caryll Rune: Clawmark reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 55
+   }
   },
   "53": {
    "campaign": "growing-madness",
@@ -2279,7 +2743,11 @@
    "title": "HUNTER OF HUNTERS",
    "story": "You come across the form of Eileen, slumped against the wall of the Cathedral. \"Oh, you... I'm afraid I've made a bit of a blunder... But that thing still lies in wait. Turn back. This is my score... to settle... I'm just... going to have... a short rest...\" she speaks before passing out. She seems stable. Cautiously, you enter the Cathedral.",
    "body": "Surround the Grand Cathedral tile with Fog Gates. Spawn The Bloody Crow of Cainhurst (represented by their token) on its {enemy?} space. They respawn to that space on {reset}.",
-   "goalText": "Complete this Mission by slaying the Bloody Crow of Cainhurst: Reveal card 54."
+   "goalText": "Complete this Mission by slaying the Bloody Crow of Cainhurst: Reveal card 54.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 56
+   }
   },
   "54": {
    "campaign": "growing-madness",
@@ -2288,7 +2756,11 @@
    "title": "HUNTER OF HUNTERS",
    "story": "Eileen lies against the wall, beaten but alive. \"Don't you ever listen to your elders? No matter, you did save my life... Hmm, I know... Here, for you. This too is Hunters' work, but bears no honor... A burden you may choose to carry.\"",
    "body": "Distribute the Old Hunter Bone and the Caryll Rune: Hunter rewards among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 57
+   }
   },
   "55": {
    "campaign": "growing-madness",
@@ -2297,7 +2769,11 @@
    "title": "OCCUPIED HOUSE",
    "story": null,
    "body": "",
-   "goalText": "If you have Out on the Hunt: Reveal card 56.\nOtherwise: Reveal card 11."
+   "goalText": "If you have Out on the Hunt: Reveal card 56.\nOtherwise: Reveal card 11.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 58
+   }
   },
   "56": {
    "campaign": "growing-madness",
@@ -2306,7 +2782,11 @@
    "title": "VICTIM OF THE MADNESS",
    "story": "You knock on the window, checking in on the civilian who aided you earlier, before the true madness of the night had begun. From inside, you hear stirring. Silence then falls before the door to the house is violently cast open. From inside, a beast comes charging toward you.",
    "body": "Reveal card 57.\nSpawn 1 Scourge Beast on the Occupied House space. It respawns to that space on {reset}.",
-   "goalText": "Complete this Mission by slaying this Scourge Beast: Reveal card 58."
+   "goalText": "Complete this Mission by slaying this Scourge Beast: Reveal card 58.",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 59
+   }
   },
   "57": {
    "campaign": "growing-madness",
@@ -2315,7 +2795,11 @@
    "title": "FRENZIED",
    "story": null,
    "body": "Place 2 Insight tokens on this card. If 3+ Hunters, place 1 additional token. When the Scourge Beast would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}.\nReplace its Basic with:\nBASIC: FRENZIED SWIPES {slow} {dmg} {dmg} Frenzy",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 60
+   }
   },
   "58": {
    "campaign": "growing-madness",
@@ -2324,7 +2808,11 @@
    "title": "THE SPREADING FRENZY",
    "story": "Inspecting the house, your fears are confirmed: he was not slain by this monster, but succumbed to the scourge. The transformation is usually much slower, however... Did the frenzy quicken its spread? Of this, you wish not to think...",
    "body": "Distribute 2 Consumables and the Tiny Tonitrus reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 61
+   }
   },
   "Introduction": {
    "campaign": "growing-madness",
@@ -2333,7 +2821,11 @@
    "title": "GROWING MADNESS - Introduction",
    "story": "This night, a grand Hunt has been called: Hunter and townsfolk alike have taken to the streets to join in the great purging. Among them, the renowned Hunter, Father Gascoigne, has joined you in your task. Yet, something about this Hunt feels different... The scent of blood is heavy in the air. From above, the rays of the Blood Moon bathe the streets in a crimson red. All the while, an unnerving feeling lies just below the surface, as if something terrible is waiting to be unleashed...",
    "body": "",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 0
+   }
   },
   "Chapter 1 - Setup": {
    "campaign": "growing-madness",
@@ -2342,7 +2834,11 @@
    "title": "GROWING MADNESS - Chapter 1 - Missions",
    "story": null,
    "body": "Start of the Hunt: Reveal card 1\nWhen the Hunt Track reaches the 1st {reset} space (mark this space with an Insight token): Reveal card 6\nEnd a move on the Occupied House tile: Reveal card 11\nEnd a move on the Oedon Chapel tile: Reveal card 14",
-   "goalText": "Start of the Hunt: Reveal card 1"
+   "goalText": "Start of the Hunt: Reveal card 1",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 1
+   }
   },
   "Chapter 2 - Setup": {
    "campaign": "growing-madness",
@@ -2351,7 +2847,11 @@
    "title": "GROWING MADNESS - Chapter 2 - Missions",
    "story": null,
    "body": "Start of the Hunt: Reveal card 17\nWhen the Hunt Track reaches the 1st {reset} space (mark this space with an Insight token): Reveal card 22\nEnd a move on the Barred Window tile: Reveal card 26\nEnd a move on the Oedon Chapel tile: Reveal card 31",
-   "goalText": "Start of the Hunt: Reveal card 17"
+   "goalText": "Start of the Hunt: Reveal card 17",
+   "art": {
+    "sheet": "growing-madness",
+    "cell": 2
+   }
   },
   "Chapter 3 - Setup": {
    "campaign": "growing-madness",
@@ -2360,7 +2860,11 @@
    "title": "GROWING MADNESS - Chapter 3 - Missions",
    "story": null,
    "body": "Start of the Hunt: Reveal card 39\nEnd a move on the Barred Window space: Reveal card 43\nEnd a move on the Grand Cathedral tile: Reveal card 50\nEnd a move on the Occupied House space: Reveal card 55",
-   "goalText": "Start of the Hunt: Reveal card 39"
+   "goalText": "Start of the Hunt: Reveal card 39",
+   "art": {
+    "sheet": "birth-of-madness",
+    "cell": 6
+   }
   }
  },
  "secrets-of-the-church": {
@@ -2371,7 +2875,11 @@
    "title": "ACCESS TO CATHEDRAL WARD",
    "story": "On a usual night of the Hunt, the Cathedral Ward would barricade itself off from greater Yharnam, leaving few ways in or out... But strange events are happening this night. The bells of the Grand Cathedral, which usually mark the start of the Hunt, have not ceased, and the servants of the Church have been seen wandering the streets of Central Yharnam, far from where they belong... We must find entry to the Ward and see what has befallen it.",
    "body": "",
-   "goalText": "When you have collected at least 2 Insight: Reveal card 2."
+   "goalText": "When you have collected at least 2 Insight: Reveal card 2.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 4
+   }
   },
   "2": {
    "campaign": "secrets-of-the-church",
@@ -2380,7 +2888,11 @@
    "title": "ACCESS TO CATHEDRAL WARD",
    "story": "If the information you have gathered is to be believed, there is a secret entrance to the Cathedral Ward located within the Tomb of Oedon. This night grows long-let us make our way there.",
    "body": "",
-   "goalText": "End a move on the Tomb of Oedon tile: Reveal card 3."
+   "goalText": "End a move on the Tomb of Oedon tile: Reveal card 3.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 5
+   }
   },
   "3": {
    "campaign": "secrets-of-the-church",
@@ -2389,7 +2901,11 @@
    "title": "ACCESS TO CATHEDRAL WARD",
    "story": "The towering graveyard looms before you. Something is amiss, however-as you approach the set of large wrought-iron gates leading to the passage, you see a contingent of the creatures controlled by the clergy...",
    "body": "Reveal card 4.\nSurround the Tomb of Oedon tile with Fog Gates. Spawn 1 Church Servant and 1 Church Giant on its {lamp} space. If 3+ Hunters, spawn 1 additional Church Giant. They respawn to that space on {reset}.",
-   "goalText": "Complete the Hunt at the end of a round if no Enemies remain on the Tomb of Oedon tile: Reveal card 5."
+   "goalText": "Complete the Hunt at the end of a round if no Enemies remain on the Tomb of Oedon tile: Reveal card 5.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 6
+   }
   },
   "4": {
    "campaign": "secrets-of-the-church",
@@ -2398,7 +2914,11 @@
    "title": "PASSAGE GUARDS",
    "story": null,
    "body": "Place 1 Insight token on this card. When the Church Servant would be slain, instead, remove the token and Heal all {dmg} from it. Token is returned on {reset}. At the end of each round, it makes 1 bonus Activation, targeting the Hunter on its tile with the lowest HP.\n\nThe Church Giants can never become Staggered and, if Ability is flipped, replace it with their Special.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 7
+   }
   },
   "5": {
    "campaign": "secrets-of-the-church",
@@ -2407,7 +2927,11 @@
    "title": "PASSAGE TO OEDON CHAPEL",
    "story": "The last of the creatures falls. From its corpse, you find a key to the large gates. Proceeding forward, you find a passage spiraling upwards, connecting you to the crypts beneath Oedon Chapel.",
    "body": "Distribute 2 Consumables and the Empty Phantasm Shell reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 8
+   }
   },
   "6": {
    "campaign": "secrets-of-the-church",
@@ -2416,7 +2940,11 @@
    "title": "THE GREAT BRIDGE",
    "story": "The Great Bridge is the main access from Central Yharnam to the Cathedral Ward. Entering it, you see a large throng of townsfolk, seemingly trying to force their way across. If we are to gain access ourselves, they must be dealt with first.",
    "body": "Reveal card 7.\nSurround The Great Bridge tile with Fog Gates. Spawn 1 Hunter Mob on The Great Bridge {enemy?} space instead of the usual Enemy. It respawns to that space on {reset}.",
-   "goalText": "Complete this Mission by slaying this Hunter Mob: Reveal cards 8 and 9."
+   "goalText": "Complete this Mission by slaying this Hunter Mob: Reveal cards 8 and 9.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 9
+   }
   },
   "7": {
    "campaign": "secrets-of-the-church",
@@ -2425,7 +2953,11 @@
    "title": "PANICKED HORDE",
    "story": null,
    "body": "Place 2 Insight tokens on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. Tokens are returned on {reset}. Replace its Ability with:\n\nABILITY: OVERRUN\nAll Hunters on The Great Bridge tile must Dodge ({slow}) or suffer 2 {dmg} and Stun.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 10
+   }
   },
   "8": {
    "campaign": "secrets-of-the-church",
@@ -2434,7 +2966,11 @@
    "title": "BARRED PASSAGE",
    "story": null,
    "body": "Unfortunately, the entrance from The Great Bridge to the Cathedral Ward has been blocked off.\n\nPlace a Fog Gate token on the opposite side to mark that it is impassable.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 11
+   }
   },
   "9": {
    "campaign": "secrets-of-the-church",
@@ -2443,7 +2979,11 @@
    "title": "BECKONING OF THE BELLS",
    "story": "As you feared, access from The Great Bridge lies barred and barricaded... But the behavior of the townsfolk lingers in your mind. They did not seem to be fleeing, but instead trying to force their way into the Cathedral Ward...?",
    "body": "Distribute the Hunter's Torch reward and the Evelyn firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 12
+   }
   },
   "10": {
    "campaign": "secrets-of-the-church",
@@ -2452,7 +2992,11 @@
    "title": "ADELLA'S PLIGHT",
    "story": "A young woman, dressed in the garb of the Church, approaches you. \"Hunter! Greetings, I am Adella, servant of the Church. I am trying to find my way back to the Cathedral Ward, but these creatures block every passage. But I do know of one remaining way. ...Perhaps you can escort me?\"",
    "body": "Place 1 Survivor token on the Courtyard Lamp space. Any Hunter may pick up the token when they move out of that space. Token is returned to the Courtyard Lamp space if the Hunter teleports or goes to the Dream.",
-   "goalText": "End a move on the Alleyway space with the token: Reveal card 11."
+   "goalText": "End a move on the Alleyway space with the token: Reveal card 11.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 13
+   }
   },
   "11": {
    "campaign": "secrets-of-the-church",
@@ -2461,7 +3005,11 @@
    "title": "ADELLA'S PLIGHT",
    "story": "Approaching the alleyway, Adella rushes forward. \"It's this way, Hunter.\" She swiftly enters, moving ahead of you. Suddenly, a figure rises from the darkness-that of a towering Huntsman's Minion! You shout to her. She turns just in time to avoid being crushed by the large creature, who instead slams into the alley wall, sending it crumbling from the impact... Angered, it turns its attention toward you.",
    "body": "Spawn 1 Huntsman's Minion on the Alleyway space. It respawns to this space on {reset}.",
-   "goalText": "Complete this Mission by Interacting on the Alleyway space: Reveal card 12."
+   "goalText": "Complete this Mission by Interacting on the Alleyway space: Reveal card 12.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 14
+   }
   },
   "12": {
    "campaign": "secrets-of-the-church",
@@ -2470,7 +3018,11 @@
    "title": "AIDING ADELLA",
    "story": "The passage lies entirely blocked, rubble piled high before you. From the other side, you hear Adella's muffled voice. \"Are you Ok? I-I'm fine, but the passage is blocked! I... I hear them coming! I can't stay! Thank you, brave Hunter! Be safe!\"",
    "body": "Distribute 1 Consumable and the Caryll Rune: Guidance reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 15
+   }
   },
   "13": {
    "campaign": "secrets-of-the-church",
@@ -2479,7 +3031,11 @@
    "title": "AGENTS OF THE CHURCH",
    "story": "The Church Servants, creatures in service to the Choir and the clergy, have been spotted roaming the streets of Central Yharnam. It is absolutely unheard of for these creatures to leave the confines of the Cathedral Ward. Let us seek them out and find their purpose here...",
    "body": "Place {n} +1 Insight tokens on this card. When this card is revealed, and after each {reset}, spawn 1 Church Servant on each space with a {enemy?} or {lamp} icon other than the Central Lamp. Each time a Church Servant is slain, remove 1 token from this card.",
-   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 14."
+   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 14.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 16
+   }
   },
   "14": {
    "campaign": "secrets-of-the-church",
@@ -2488,7 +3044,11 @@
    "title": "SLAYING THE SERVANTS",
    "story": "Searching over the corpses of the Church Servants, you find a number of Hunter relics and tools in their possession. Why would these creatures be after such items...?",
    "body": "Distribute the Augur of Ebrietas reward and the Rosmarinus firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 17
+   }
   },
   "15": {
    "campaign": "secrets-of-the-church",
@@ -2497,7 +3057,11 @@
    "title": "SPECIAL SETUP",
    "story": null,
    "body": "Before generating the tile deck, take the Oedon Chapel tile and connect it to the Central Lamp. Then, take The Great Bridge and Tomb of Oedon tiles and connect them to Oedon Chapel.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 18
+   }
   },
   "16": {
    "campaign": "secrets-of-the-church",
@@ -2506,7 +3070,11 @@
    "title": "ACCESS TO THE INNER PLAZA",
    "story": "From the hidden passage in the Tomb of Oedon, you have gained access to the Cathedral Ward. This was merely the first step, however, as your destination is the Grand Cathedral at the heart of the district. To access it, you will need to pass through the main gate into the Central Plaza, beyond the old graveyard. Exiting from Oedon Chapel into the streets, you find the Ward in chaos. Creatures infest the district and panic has overtaken the townsfolk, punctuated by the incessant tolling bells of the Grand Cathedral.",
    "body": "",
-   "goalText": "End a move on the Graveyard tile: Reveal card 17."
+   "goalText": "End a move on the Graveyard tile: Reveal card 17.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 19
+   }
   },
   "17": {
    "campaign": "secrets-of-the-church",
@@ -2515,7 +3083,11 @@
    "title": "ACCESS TO THE INNER PLAZA",
    "story": "From the graveyard, you come to the entrance to the central plaza of the Cathedral Ward... The large drop-gate securely locked... More protection by the Church... It is said that only those with a Hunter Chief Emblem, a sigil of the Church Hunters, can open the gate once closed...",
    "body": "This card remains in play until cards 18 and 22 have both been revealed.\nBlock 1 exit on the Graveyard with a Fog Gate to mark the entrance to the Central Plaza. It cannot be crossed.",
-   "goalText": "End a move on The Great Bridge tile: Reveal card 18.\nEnd a move on the Tomb of Oedon tile: Reveal card 22."
+   "goalText": "End a move on The Great Bridge tile: Reveal card 18.\nEnd a move on the Tomb of Oedon tile: Reveal card 22.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 20
+   }
   },
   "18": {
    "campaign": "secrets-of-the-church",
@@ -2524,7 +3096,11 @@
    "title": "THE CLERIC BEAST",
    "story": "Re-entering The Great Bridge, you find it littered with bodies-a mixture of townsfolk, infected, and the servants of the Church. Perhaps somewhere in this tangle of bodies you can find the emblem you seek. Just as you reach the center of the bridge, a loud screech is heard as a vast shadow descends upon the bridge, crashing down to reveal a massive Cleric Beast.",
    "body": "Surround The Great Bridge tile with Fog Gates. Spawn the Cleric Beast (Phase 2) on its {enemy?} space.\nIt respawns to that space on {reset}.",
-   "goalText": "Gain 1 Insight by slaying the Cleric Beast: Reveal cards 19 and 20."
+   "goalText": "Gain 1 Insight by slaying the Cleric Beast: Reveal cards 19 and 20.",
+   "art": {
+    "sheet": "birth-of-madness",
+    "cell": 3
+   }
   },
   "19": {
    "campaign": "secrets-of-the-church",
@@ -2533,7 +3109,11 @@
    "title": "ACCESS TO THE INNER PLAZA",
    "story": "You have found the emblem you need to raise the gate leading to the Central Plaza, but while reaching the Grand Cathedral is paramount, we cannot just ignore the events happening as a result of whatever has overtaken the Cathedral Ward. Before moving onward, we should gather what information we can, and at least attempt to quell some of this chaos before it spreads to the rest of Yharnam.",
    "body": "",
-   "goalText": "Complete the Hunt at the end of a round if you have collected at least 3 Insight. If 3+ Hunters, collect at least 4 Insight: Reveal card 21."
+   "goalText": "Complete the Hunt at the end of a round if you have collected at least 3 Insight. If 3+ Hunters, collect at least 4 Insight: Reveal card 21.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 22
+   }
   },
   "20": {
    "campaign": "secrets-of-the-church",
@@ -2542,7 +3122,11 @@
    "title": "PREY SLAUGHTERED: CLERIC BEAST",
    "story": "Now that the beast has been felled, you may continue your search. Rooting through the bodies, you come across one of a Hunter, garbed in the attire of the Church, and the items you seek. It would appear the Church was trying to contain its own mess...",
    "body": "Distribute the Beast Roar reward and the Cannon firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 23
+   }
   },
   "21": {
    "campaign": "secrets-of-the-church",
@@ -2551,7 +3135,11 @@
    "title": "ACCESS TO THE CENTRAL PLAZA",
    "story": "The ringing of the Grand Cathedral's bells cuts through the night. As you pass through the gates to the Central Plaza, a sharp pain enters your head as strange visions flash within. Shaking it off, you continue onward... What was that?",
    "body": "Distribute the Messenger's Gift and the Caryll Rune: Eye rewards among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 24
+   }
   },
   "22": {
    "campaign": "secrets-of-the-church",
@@ -2560,7 +3148,11 @@
    "title": "THE OLD HUNTER",
    "story": "Entering the Tomb of Oedon, you come across the sight of a Hunter standing over a pile of bodies, both human and beast alike-a number of them dressed in the bloodied garb of the Church Hunters and their servants. The old Hunter turns to you. \"Even more to cover up the mess? No better than the rest of the beasts!\" he yells before charging forth.",
    "body": "Surround the Tomb of Oedon tile with Fog Gates. Spawn Father Gascoigne (Phase 2) on its {lamp} space.\nHe respawns to that space on {reset}.",
-   "goalText": "Gain 1 Insight by slaying Father Gascoigne: Reveal cards 20 and 23."
+   "goalText": "Gain 1 Insight by slaying Father Gascoigne: Reveal cards 20 and 23.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 25
+   }
   },
   "23": {
    "campaign": "secrets-of-the-church",
@@ -2569,7 +3161,11 @@
    "title": "PREY SLAUGHTERED: FATHER GASCOIGNE",
    "story": "Sadly, there was no reasoning with this Hunter, and thus he had to be put down. Searching through the bodies, you indeed find what you seek. But as you leave, you do wonder at his words... Just what mess is the Church attempting to cover up?",
    "body": "Distribute the Caryll Rune: Hunter reward and the Hunter's Blunderbuss firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 26
+   }
   },
   "24": {
    "campaign": "secrets-of-the-church",
@@ -2578,7 +3174,11 @@
    "title": "GATHERING SURVIVORS",
    "story": "The streets of the Cathedral Ward are in chaos. Townsfolk flee in panic as the creatures of the Church march through the district, striking down any and all they find. We must locate whatever survivors we can!",
    "body": "Place 1 Survivor token and 1 Church Giant on each Named Location space (unless Fog Gated), and each time one is revealed. Hunters may Interact on these spaces to claim these tokens and place them on this card. Both the tokens and Giants respawn on these spaces on {reset}.",
-   "goalText": "Complete this Mission when {n} +1 tokens have been placed on this card: Reveal card 25."
+   "goalText": "Complete this Mission when {n} +1 tokens have been placed on this card: Reveal card 25.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 27
+   }
   },
   "25": {
    "campaign": "secrets-of-the-church",
@@ -2587,7 +3187,11 @@
    "title": "LIGHTS FROM THE CATHEDRAL",
    "story": "From the survivors, you learn that just before the bells of the Cathedral began to ring, a terrible light pierced the night. Shortly after, the creatures descended from the Inner Ward in droves and began attacking all those in their path.",
    "body": "Distribute 2 Consumables and the Caryll Rune: Formless Oedon reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 28
+   }
   },
   "26": {
    "campaign": "secrets-of-the-church",
@@ -2596,7 +3200,11 @@
    "title": "A LADY IN DISTRESS",
    "story": "Exploring the tunneling streets of the Cathedral Ward, you come upon a lone house, its door being battered by a hulking Huntsman's Minion. This particular one seems to be wielding a large statue in addition to the common debris usually carried... From inside, you hear the screams of someone in distress.",
    "body": "Reveal card 27.\nSpawn 1 Huntsman's Minion on the Occupied House tile {enemy?} space instead of the usual Enemy.\nIt respawns to that space on {reset}.",
-   "goalText": "Slay this Huntsman's Minion: Reveal card 28."
+   "goalText": "Slay this Huntsman's Minion: Reveal card 28.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 29
+   }
   },
   "27": {
    "campaign": "secrets-of-the-church",
@@ -2605,7 +3213,11 @@
    "title": "HULKING BRUTE",
    "story": null,
    "body": "Place 1 Insight token on this card. When the Huntsman's Minion would be slain, instead, remove the token and Heal all {dmg} from it. Token is returned on {reset}. Replace its Special with:\n\nSPECIAL: ARCING SWEEP\n{slow} {dmg}{dmg}{dmg}{dmg}\nCannot be Staggered.\nTargets all Hunters in this space.\nHunters hit are moved 1 space away and suffer Stun.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 30
+   }
   },
   "28": {
    "campaign": "secrets-of-the-church",
@@ -2614,7 +3226,11 @@
    "title": "A LADY IN DISTRESS",
    "story": "As the beast falls, the door to the house slowly opens. From inside, a lady emerges. \"Oh, thank goodness. You're a Hunter, right? My name is Arianna... Might you know of a safe place? The night is long and I've very little of the incense left...\"",
    "body": "Place 1 Survivor token on the Occupied House space. Any Hunter may pick up the token when they move out of that space. The token is returned to the Occupied House space if the Hunter teleports or goes to the Dream.",
-   "goalText": "Complete this Mission when you end a move on the Oedon Chapel tile with the token: Reveal card 29."
+   "goalText": "Complete this Mission when you end a move on the Oedon Chapel tile with the token: Reveal card 29.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 31
+   }
   },
   "29": {
    "campaign": "secrets-of-the-church",
@@ -2623,7 +3239,11 @@
    "title": "AIDING ARIANNA",
    "story": "\"You weren't lying, this is a safe place! This night has been wretched... There was some terrible light that came from the Cathedral... I-I think I passed out... When I came to, that beast was trying to force its way inside... I'm so glad you came along...\"",
    "body": "Distribute 1 Consumable and the Blood of Arianna reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 32
+   }
   },
   "30": {
    "campaign": "secrets-of-the-church",
@@ -2632,7 +3252,11 @@
    "title": "AN UNKNOWN FIGURE",
    "story": "You come across a figure dressed in the garb of the Executioners-a Covenant which sometimes gives aid to the Workshop. He greets you: \"Ah, a fellow Hunter! Greetings. I am Alfred. I suppose you too have been called out here this night? A Hunter Chief Emblem you say? Interesting... I do indeed know where one might obtain such an item. Perhaps we can make a trade... Assist me in a small task and perhaps I can assist you as well...\"",
    "body": "Choose 1:",
-   "goalText": "You have no time for such tasks. Demand the information... or else: Reveal card 31.\nAgree to assist him: Reveal card 33."
+   "goalText": "You have no time for such tasks. Demand the information... or else: Reveal card 31.\nAgree to assist him: Reveal card 33.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 33
+   }
   },
   "31": {
    "campaign": "secrets-of-the-church",
@@ -2641,7 +3265,11 @@
    "title": "MAKING AN ENEMY",
    "story": "\"You would threaten me? Just what is the meaning of this? Has the blood gone to your head?!\" Alfred moves back, drawing his weapon. \"I should have just stuck to the mission. This is what I get for trying to show a bit of compassion for a fellow Hunter!\"",
    "body": "Surround the Graveyard tile with Fog Gates. Spawn Alfred, Hunter of Vilebloods (represented by his token) on its {enemy?} space.\nHe respawns to that space on {reset}.",
-   "goalText": "Complete this Mission by slaying Alfred: Reveal cards 20 and 32."
+   "goalText": "Complete this Mission by slaying Alfred: Reveal cards 20 and 32.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 34
+   }
   },
   "32": {
    "campaign": "secrets-of-the-church",
@@ -2650,7 +3278,11 @@
    "title": "ENEMY OF THE EXECUTIONERS",
    "story": "Alfred rears back, deeply wounded. \"Bloody fools! So quick to run off to your own deaths! Fine, enjoy your fate!\" He shouts as he casts the Emblem to your feet. \"But know this, you will regret your actions this night!\" he curses as he flees.",
    "body": "Distribute 1 Consumable and the Caryll Rune: Blood Rapture reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 35
+   }
   },
   "33": {
    "campaign": "secrets-of-the-church",
@@ -2659,7 +3291,11 @@
    "title": "SURVEYING THE CHAOS",
    "story": "\"Splendid! My task this night is much like your own: I must see the extent of the destruction that has befallen our dear city. Come, let us make haste, and may the good blood guide our way!\"",
    "body": "Place {n} +2 Insight tokens on this card. Place the Alfred token on the Graveyard space. When a Hunter moves out of his space, Alfred may be moved with them. When Alfred is moved onto a tile, take 1 Insight token from this card and place it on that tile. Each tile may have 1 token.",
-   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal cards 20 and 34."
+   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal cards 20 and 34.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 36
+   }
   },
   "34": {
    "campaign": "secrets-of-the-church",
@@ -2668,7 +3304,11 @@
    "title": "AIDING THE EXECUTIONERS",
    "story": "\"These are troubling events indeed, my friend... I am saddened we did not meet under better circumstances. Here, as agreed upon, as well as a token of my personal appreciation. I must depart now and report to the others... We shall meet again soon.\"",
    "body": "Distribute 1 Consumable and the Executioner's Gloves reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 37
+   }
   },
   "35": {
    "campaign": "secrets-of-the-church",
@@ -2677,7 +3317,11 @@
    "title": "ACCESSING THE CATHEDRAL",
    "story": "Finally we have gained access to the innermost reaches of the Cathedral Ward. Now all that remains is for us to make our way to the Grand Cathedral itself, and hopefully find the reason for the chaos that has overtaken the district this night.",
    "body": "",
-   "goalText": "End a move on the Courtyard Lamp tile: Reveal card 36."
+   "goalText": "End a move on the Courtyard Lamp tile: Reveal card 36.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 38
+   }
   },
   "36": {
    "campaign": "secrets-of-the-church",
@@ -2686,7 +3330,11 @@
    "title": "ACCESSING THE CATHEDRAL",
    "story": "Before you, a large congregation of enemies blocks your path. Worse, from the Cathedral itself a pale light pulses periodically, bathing the area. As it washes over you, your mind fills with incomprehensible voices and images...",
    "body": "Reveal card 37.\nSurround the Courtyard Lamp tile with Fog Gates. Spawn 2 Church Servants and 1 Church Giant on its {lamp} space. These Enemies are not removed on {reset}, but Heal all {dmg}. They do not respawn. Remove the Fog Gates when these Enemies have been slain, or when the 3rd {reset} space of the Hunt Track is reached.",
-   "goalText": "End a move on the Grand Cathedral: Reveal card 38."
+   "goalText": "End a move on the Grand Cathedral: Reveal card 38.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 39
+   }
   },
   "37": {
    "campaign": "secrets-of-the-church",
@@ -2695,7 +3343,11 @@
    "title": "UNSPEAKABLE TRUTHS",
    "story": "Whatever is radiating from the Grand Cathedral threatens your sanity. Only by focusing your resolve can you keep the whispers at bay.",
    "body": "Connect the Grand Cathedral to the Courtyard Lamp tile.\nHunters entering the Grand Cathedral tile suffer Frenzy unless you have collected at least 1 Insight this Chapter.\nHunter's Attacks and Dodges suffer -1 {dmg} and -1 {medium} while on the Grand Cathedral tile unless you have collected at least 2 Insight this Chapter.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 40
+   }
   },
   "38": {
    "campaign": "secrets-of-the-church",
@@ -2704,7 +3356,11 @@
    "title": "ACCESSING THE CATHEDRAL",
    "story": "You enter to the sight of a woman knelt in prayer. Before her rests an artifact of the Church-a skull. \"Let us partake in communion and feast upon the old blood. Our thirst for blood satiates us, soothes our fears. Seek the old blood...\" As she prays, you see the pulses of light are originating from the skull... As a new wave washes over her, all sound ceases. Suddenly, she grips her chest before emitting a deathly shriek, her form erupting into that of a horrid beast.",
    "body": "Surround the Grand Cathedral tile with Fog Gates. Spawn Vicar Amelia on its {lamp} space. She respawns to that space on {reset}.",
-   "goalText": "Complete the Hunt by slaying Vicar Amelia: Reveal card 39."
+   "goalText": "Complete the Hunt by slaying Vicar Amelia: Reveal card 39.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 41
+   }
   },
   "39": {
    "campaign": "secrets-of-the-church",
@@ -2713,7 +3369,11 @@
    "title": "HUNT COMPLETED",
    "story": "Moving forward, you reach toward the glowing skull-that of Laurence, First Vicar of the Healing Church. Touching it, flashes of the past, and perhaps the future, fill your thoughts. You steel your resolve and force them from your mind. You do not quite comprehend the nature of what has transpired here, but this relic will find a new home in the Workshop... As you depart, you hear one final phrase whispered into your mind: \"Fear the old blood...\"",
    "body": "",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 42
+   }
   },
   "40": {
    "campaign": "secrets-of-the-church",
@@ -2722,7 +3382,11 @@
    "title": "OEDON CHAPEL",
    "story": null,
    "body": "",
-   "goalText": "If you have both Aiding Adella and Aiding Arianna: Reveal card 41.\nIf you have Aiding Arianna, but do not have Aiding Adella: Reveal card 45.\nIf you have Aiding Adella, but do not have Aiding Arianna: Reveal card 49.\nOtherwise: Reveal card 51."
+   "goalText": "If you have both Aiding Adella and Aiding Arianna: Reveal card 41.\nIf you have Aiding Arianna, but do not have Aiding Adella: Reveal card 45.\nIf you have Aiding Adella, but do not have Aiding Arianna: Reveal card 49.\nOtherwise: Reveal card 51.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 43
+   }
   },
   "41": {
    "campaign": "secrets-of-the-church",
@@ -2731,7 +3395,11 @@
    "title": "A BLOODY SCENE",
    "story": "Re-entering the old Church, a survivor rushes up to you, ushering you to follow. Doing so, you come across a horrific scene: Arianna, the girl you saved earlier, lies in a pool of blood. \"She's dead. Killed stone dead! Musta been a beast, right...? Or d'ya think someone from outside could've... I... I just don't... There's a trail o'blood, Hunter... Leadin' out toward the ol' graveyard.\"",
    "body": "",
-   "goalText": "End a move on the Graveyard tile: Reveal card 42."
+   "goalText": "End a move on the Graveyard tile: Reveal card 42.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 44
+   }
   },
   "42": {
    "campaign": "secrets-of-the-church",
@@ -2740,7 +3408,11 @@
    "title": "A BLOODY SCENE",
    "story": "Entering the graveyard, you come across the sight of Adella and a Church Servant. Adella's attire is covered in blood, a blade in her hand. \"You accepted that wretch's blood... Tainted like the rest... Unfit for Holy Communion... How could you...\" She begins to approach you, knife raised. \"I can't ha... I can't help myself... hahaha.\"",
    "body": "Reveal card 43.\nPlace 1 Insight token (Adella) and spawn 1 Church Servant on the Graveyard {enemy?} space instead of the usual Enemy. They are not removed on {reset} and do not respawn once slain.",
-   "goalText": "Complete this Mission by slaying these Enemies: Reveal card 44."
+   "goalText": "Complete this Mission by slaying these Enemies: Reveal card 44.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 45
+   }
   },
   "43": {
    "campaign": "secrets-of-the-church",
@@ -2749,7 +3421,11 @@
    "title": "ADELLA",
    "story": null,
    "body": "Adella has 1 HP.\nAny time an Enemy within 1 space of Adella (including herself) flips Ability or Special, they also Block 2 {dmg}.\n\nAdella only Attacks when Basic is flipped:\n\nBASIC: POISONED BLADE\n{medium}{medium} {dmg}\nPoison",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 46
+   }
   },
   "44": {
    "campaign": "secrets-of-the-church",
@@ -2758,7 +3434,11 @@
    "title": "THE MAD CLERGY",
    "story": "It is strange. It seems the closer you get to the Grand Cathedral, the higher the depths of madness affecting those around it. The effect seems heightened in those connected to the Church...",
    "body": "Distribute 1 Blood Echo and the Blood of Adella reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 47
+   }
   },
   "45": {
    "campaign": "secrets-of-the-church",
@@ -2767,7 +3447,11 @@
    "title": "MISSING",
    "story": "Re-entering Oedon Chapel, you find Arianna missing. Speaking with the other survivors, they say she seemed ill, clutching her stomach and speaking of horrible pains, but none have seen her recently... Near her usual seat, a faint trail of blood leads out of the old Chapel and into the streets... Why would she leave the safety of the Chapel this night?",
    "body": "",
-   "goalText": "End a move on the Graveyard tile: Reveal card 46."
+   "goalText": "End a move on the Graveyard tile: Reveal card 46.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 48
+   }
   },
   "46": {
    "campaign": "secrets-of-the-church",
@@ -2776,7 +3460,11 @@
    "title": "MISSING",
    "story": "The trail grows thin and you fear you have missed it before you begin to hear a strange noise. From among the tombstones a low sound is heard, almost like the cries of a child. Exploring, you come across a horrific sight-the body of Arianna, torn seemingly from within, a grotesque and deformed creature next to her, like a mutated infant.",
    "body": "Reveal card 47.\nPlace 1 Insight token (Celestial Child) and spawn 1 Church Servant on the Graveyard {enemy?} space instead of the usual Enemy. They are not removed on {reset} and do not respawn once slain.",
-   "goalText": "Complete this Mission by slaying these Enemies: Reveal card 48."
+   "goalText": "Complete this Mission by slaying these Enemies: Reveal card 48.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 49
+   }
   },
   "47": {
    "campaign": "secrets-of-the-church",
@@ -2785,7 +3473,11 @@
    "title": "CELESTIAL CHILD",
    "story": null,
    "body": "The Celestial Child has 1 HP.\nAny time an Enemy within 1 space of the Celestial Child (including itself) flips Ability or Special, they also Block 2 {dmg}.\n\nThe Child only Attacks when Basic is flipped:\n\nBASIC: HORRIFIC CRIES\n{fast}{fast}{fast} {dmg}\nFrenzy\nCannot be Dodged.\nTargets all Hunters within 2 spaces.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 50
+   }
   },
   "48": {
    "campaign": "secrets-of-the-church",
@@ -2794,7 +3486,11 @@
    "title": "GREAT ONE'S BLESSING",
    "story": "It is worse than we feared. Whatever has befallen the Cathedral Ward does not originate from our own world... Something far more sinister has taken root here...",
    "body": "Distribute 1 Consumable and the Caryll Rune: Communion reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 51
+   }
   },
   "49": {
    "campaign": "secrets-of-the-church",
@@ -2803,7 +3499,11 @@
    "title": "OTHERWORLDLY INFLUENCE",
    "story": "You hear a scream. Turning, you see Adella. She stands, covered in blood, over a man's corpse. You see a flicker of panic in her eyes. \"H-help...\" she says, gripping her head, madness filling her expression as she begins to move toward you.",
    "body": "Reveal card 43.\nPlace 1 Insight token (Adella) and 1 Church Servant 2 spaces away from yours. They do not respawn once slain.\nComplete this Mission when you:",
-   "goalText": "Slay both the Church Servant and Adella: Reveal card 44.\nSlay the Church Servant and lure Adella into Oedon Chapel: Reveal card 50."
+   "goalText": "Slay both the Church Servant and Adella: Reveal card 44.\nSlay the Church Servant and lure Adella into Oedon Chapel: Reveal card 50.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 52
+   }
   },
   "50": {
    "campaign": "secrets-of-the-church",
@@ -2812,7 +3512,11 @@
    "title": "VISIONS OF THE PAST",
    "story": "Adella shakes her head violently. The warding incense seems to be affecting her. Coming to her senses, she speaks \"H... Hunter..? It was horrible-visions in my head... Of the Cathedral, of Laurence... Things we were not meant to know...\"",
    "body": "Distribute 1 Blood Echo and the Blood of Adella reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 53
+   }
   },
   "51": {
    "campaign": "secrets-of-the-church",
@@ -2821,7 +3525,11 @@
    "title": "CLEANSING OF THE CHURCH",
    "story": "Approaching the old Chapel, you hear the sound of screams and conflict. Rushing forth, you find the large doors of the Church ripped open. Entering, you find a grouping of Church Servants within. Many townsfolk lie dead.",
    "body": "Reveal card 52.\nSurround the Oedon Chapel tile with Fog Gates. Spawn 2 Church Servants on its {lamp} space. They respawn to that space on {reset} and are immune to the effect of Oedon Chapel.",
-   "goalText": "Complete this Mission when no Enemies remain on the Oedon Chapel tile: Reveal card 53."
+   "goalText": "Complete this Mission when no Enemies remain on the Oedon Chapel tile: Reveal card 53.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 54
+   }
   },
   "52": {
    "campaign": "secrets-of-the-church",
@@ -2830,7 +3538,11 @@
    "title": "CHURCH'S BLESSING",
    "story": null,
    "body": "Place 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When a Church Servant would be slain, instead, remove 1 token and Heal all {dmg} from it. Tokens are returned on {reset}. Replace their Special with:\n\nSPECIAL: FLAMESPRAYER\n{medium}{medium} {dmg}{dmg}{dmg}\nStagger\nTargets all Hunters within 1 space.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 55
+   }
   },
   "53": {
    "campaign": "secrets-of-the-church",
@@ -2839,7 +3551,11 @@
    "title": "CHURCH'S TOOLS",
    "story": "The Church seems intent on removing any who would still survive in the Cathedral Ward, going so far as to send its minions to do its dirty work...",
    "body": "Distribute the A Call Beyond reward and the Flamesprayer firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 56
+   }
   },
   "54": {
    "campaign": "secrets-of-the-church",
@@ -2848,7 +3564,11 @@
    "title": "STRENGTH THROUGH BLOOD",
    "story": "Whatever force has overtaken the Cathedral Ward is attempting to worm its way into our minds. We must steel ourselves against its influence, and there is no better conduit to temper the mind than the channeling of blood-the very essence of the Hunt, and our purpose.",
    "body": "When Hunters go to the Dream, instead of using Blood Echoes for Upgrading, they may instead discard them to place Insight tokens on this card.",
-   "goalText": "Complete this Mission when this card has {n} +2 tokens: Reveal card 55."
+   "goalText": "Complete this Mission when this card has {n} +2 tokens: Reveal card 55.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 57
+   }
   },
   "55": {
    "campaign": "secrets-of-the-church",
@@ -2857,7 +3577,11 @@
    "title": "STRENGTH THROUGH BLOOD",
    "story": "Whatever has affected the lesser minds of the population will not break us. We know our mission, and we know our purpose. None, not even those of the Church, will stand in our way!",
    "body": "Distribute the Blood Stone Shard reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 58
+   }
   },
   "56": {
    "campaign": "secrets-of-the-church",
@@ -2866,7 +3590,11 @@
    "title": "THE EXECUTIONERS ARRIVE",
    "story": "As the moon reaches its apex, and the clamoring sound of the Cathedral bells fills the Inner Ward, a new sound is heard echoing through the streets. On swift feet, the sounds of transforming weapons and gunshots ring into the night. En masse, the Hunters of the Executioners Covenant have descended into the streets of the Cathedral Ward.",
    "body": "",
-   "goalText": "If you have Aiding the Executioners: Reveal card 60.\nOtherwise: Reveal card 57."
+   "goalText": "If you have Aiding the Executioners: Reveal card 60.\nOtherwise: Reveal card 57.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 59
+   }
   },
   "57": {
    "campaign": "secrets-of-the-church",
@@ -2875,7 +3603,11 @@
    "title": "HUNTERS OF THE CHURCH",
    "story": "Taking to the streets, the Executioners have begun to cut down all those before them, townsfolk and monster alike. Leading them seems to be Alfred. What part do the Executioners play in all this...? Regardless, it appears we might have to fight our own kind if we are to complete our mission...",
    "body": "Reveal card 58.\nSpawn Alfred (represented by his token) and {n} Executioners (represented by Insight tokens) on the Central Lamp space.\nOn {reset}, they are not removed, but Heal all {dmg}.",
-   "goalText": "Complete this Mission when Alfred and all Executioners have been slain: Reveal card 59."
+   "goalText": "Complete this Mission when Alfred and all Executioners have been slain: Reveal card 59.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 60
+   }
   },
   "58": {
    "campaign": "secrets-of-the-church",
@@ -2884,7 +3616,11 @@
    "title": "EXECUTIONERS",
    "story": null,
    "body": "Executioners are represented by Insight tokens (Executioner). They are Enemies with 2 HP and do not respawn once slain. If they flip Ability or Special, they use Basic with +1 {medium}, +1 {dmg}, and Stagger.\n\nBASIC: HUNTER'S ZEAL\n{medium}{medium} {dmg}{dmg}\nCannot be Staggered.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 61
+   }
   },
   "59": {
    "campaign": "secrets-of-the-church",
@@ -2893,7 +3629,11 @@
    "title": "PREY SLAUGHTERED: ALFRED",
    "story": "\"Pray for Master Logarius... in my stead...\" Alfred utters before falling to the ground. Searching him, you find orders instructing that none must be allowed to escape, especially those who \"witnessed\" the events in the Grand Cathedral this night.",
    "body": "Distribute 2 Consumables and the Executioner's Gloves reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 62
+   }
   },
   "60": {
    "campaign": "secrets-of-the-church",
@@ -2902,7 +3642,11 @@
    "title": "EXECUTIONER'S REQUEST",
    "story": "You come upon Alfred standing over a mound of fresh corpses, all appearing human. He turns, ready to attack, before recognizing you. \"Ah! It's you. Praise the good blood... My friend, I bring dire news and a grim task... The plague has contaminated the Ward... And as Hunters, it is our duty to contain it... Don't be fooled, they are all infected. You will aid us, won't you? It would be a pitty to find Hunters neglecting their sacred duty...\"",
    "body": "Choose 1:",
-   "goalText": "Aid the Executioners in purging the Cathedral Ward: Reveal card 61.\nDeny Alfred's request: Reveal card 57."
+   "goalText": "Aid the Executioners in purging the Cathedral Ward: Reveal card 61.\nDeny Alfred's request: Reveal card 57.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 63
+   }
   },
   "61": {
    "campaign": "secrets-of-the-church",
@@ -2911,7 +3655,11 @@
    "title": "PURGING THE WARD",
    "story": "\"Good to see you understand... Come, let us do what must be done.\"",
    "body": "Place 1 Survivor token on each space with a {enemy?} or {lamp} icon, and on new ones when revealed. Hunters may Attack these tokens. When they are Attacked, remove them and place them on this card.",
-   "goalText": "Complete this Mission when this card has {n} +2 tokens: Reveal card 62."
+   "goalText": "Complete this Mission when this card has {n} +2 tokens: Reveal card 62.",
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 64
+   }
   },
   "62": {
    "campaign": "secrets-of-the-church",
@@ -2920,7 +3668,11 @@
    "title": "PURGING THE WARD",
    "story": "The last survivor pleads as you strike them down. While it is indeed a grim task, this is the duty of a Hunter, to protect the whole of Yharnam. A calmness surrounds you as you hear the bells of the Cathedral. For some reason, they now grant you a small solace...",
    "body": "Distribute 1 Blood Echo, 1 Consumable, and the Caryll Rune: Beast reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 65
+   }
   },
   "Introduction": {
    "campaign": "secrets-of-the-church",
@@ -2929,7 +3681,11 @@
    "title": "Secrets of the Church - Introduction",
    "story": "The Healing Church, while not formally affiliated with the Hunters, remains one of our strongest allies. Located in the district known as the Cathedral Ward, access is often barred on nights when the Hunt is called. This night, however, the great bells of the Grand Cathedral toll without end. Ominous, as all communication from within the Ward has ceased. With such strange events, you have been dispatched by the Workshop to investigate.",
    "body": "",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 0
+   }
   },
   "Chapter 1 - Setup": {
    "campaign": "secrets-of-the-church",
@@ -2938,7 +3694,11 @@
    "title": "Secrets of the Church - Chapter 1 - Setup",
    "story": null,
    "body": "ENEMIES:\n3 Random Enemies, excluding Church Servants.\n\nTILES:\nRemove the Grand Cathedral\nRemove Oedon Chapel\nAlleyway\nCourtyard Lamp\nThe Great Bridge\nTomb of Oedon\n{n} x2 Random (Max 6)",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 1
+   }
   },
   "Chapter 2 - Setup": {
    "campaign": "secrets-of-the-church",
@@ -2947,7 +3707,11 @@
    "title": "Secrets of the Church - Chapter 2 - Setup",
    "story": null,
    "body": "ENEMIES:\n3 Random Enemies, excluding Church Giants.\n\nTILES:\nRemove the Grand Cathedral\nGraveyard\nOccupied House\nThe Great Bridge\nTomb of Oedon\n{n} x2 Random (Max 6)\n\nSPECIAL RULES CARDS:\nSecrets of the Church card 15",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 2
+   }
   },
   "Chapter 3 - Setup": {
    "campaign": "secrets-of-the-church",
@@ -2956,7 +3720,11 @@
    "title": "Secrets of the Church - Chapter 3 - Setup",
    "story": null,
    "body": "ENEMIES:\nChurch Giant\nChurch Servant\n1 Random Enemy\n\nTILES:\nRemove the Grand Cathedral\nCourtyard Lamp\nGraveyard\nRansacked House\nOedon Chapel\n{n} x2 Random (Max 6)",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "secrets-of-the-church",
+    "cell": 3
+   }
   }
  },
  "fall-of-old-yharnam": {
@@ -2967,7 +3735,11 @@
    "title": "ANTIDOTE",
    "story": null,
    "body": "While in the Hunter's Dream, Hunters may discard 1 Consumable and replace it with 1 Antidote card from the Consumables deck or discard pile. (Shuffle the deck afterward.)",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 4
+   }
   },
   "2": {
    "campaign": "fall-of-old-yharnam",
@@ -2976,7 +3748,11 @@
    "title": "MISSING POWDER KEGS",
    "story": "Entering the old hamlet, you find its buildings and homes in disrepair and neglect, an eerie quiet seemingly overtaking its streets. While far less populated than the rest of Yharnam, this was once a thriving town, but you would almost swear it has been abandoned...",
    "body": "",
-   "goalText": "End a move on the Alleyway tile: Reveal card 3."
+   "goalText": "End a move on the Alleyway tile: Reveal card 3.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 5
+   }
   },
   "3": {
    "campaign": "fall-of-old-yharnam",
@@ -2985,7 +3761,11 @@
    "title": "MISSING POWDER KEGS",
    "story": "Entering the row of houses, you see the form of a Hunter slumped against a wall. Even from this distance, his many wounds are plain. Standing before him is a beast, claw raised to strike.",
    "body": "Place 1 Survivor token on the Alleyway space.",
-   "goalText": "Interact with the Survivor token: Reveal card 4."
+   "goalText": "Interact with the Survivor token: Reveal card 4.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 6
+   }
   },
   "4": {
    "campaign": "fall-of-old-yharnam",
@@ -2994,7 +3774,11 @@
    "title": "MISSING POWDER KEGS",
    "story": "You rush to the side of the fallen Hunter. Through staggered and pained breaths, he speaks. \"They sent others...? You must flee... The poison runs too deep... The district is lost... Get out...\" He chokes out before slumping over. We will not abandon our duty, however. We must find any remaining Powder Kegs and learn the extent of this outbreak.",
    "body": "End a move on the Ransacked House tile: Reveal card 6 (Do not discard this card)\nEnd a move on the Graveyard tile: Reveal card 8 (Do not discard this card)",
-   "goalText": "Complete the Hunt at the end of a round when you collect at least {n} +1 Insight: Reveal card 5."
+   "goalText": "Complete the Hunt at the end of a round when you collect at least {n} +1 Insight: Reveal card 5.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 7
+   }
   },
   "5": {
    "campaign": "fall-of-old-yharnam",
@@ -3003,7 +3787,11 @@
    "title": "OLD YHARNAM OVERRUN",
    "story": "How could the district have fallen so far without us knowing? The Powder Kegs sent here have been massacred and the hamlet is overrun by beasts. But worse still, the infected do not bear the usual signs of the Sickness... Is this some new plague?",
    "body": "Distribute 1 Consumable and the Ludwig's Rifle firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 8
+   }
   },
   "6": {
    "campaign": "fall-of-old-yharnam",
@@ -3012,7 +3800,11 @@
    "title": "DEN OF THE INFECTED",
    "story": "A troublesome silence fills the dark house. As you explore, you hear the dragging of feet and low moans. From every corner, staggering infected shuffle out of the shadows.",
    "body": "Surround the Ransacked House tile with Fog Gates. Spawn 2 Male Beast Patients and 1 Female Beast Patient instead of the usual Enemies.",
-   "goalText": "Complete this Mission when no Enemies remain on the Ransacked House tile: Reveal card 7."
+   "goalText": "Complete this Mission when no Enemies remain on the Ransacked House tile: Reveal card 7.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 9
+   }
   },
   "7": {
    "campaign": "fall-of-old-yharnam",
@@ -3021,7 +3813,11 @@
    "title": "DEN OF THE INFECTED",
    "story": "Inspecting the house, you find the remains of one of the missing Powder Kegs. Given the bloody scene, it would appear he at least dispatched a great number of the beasts before succumbing to their blows.",
    "body": "Distribute the Tiny Tonitrus reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 10
+   }
   },
   "8": {
    "campaign": "fall-of-old-yharnam",
@@ -3030,7 +3826,11 @@
    "title": "MEDICAL AID",
    "story": "You come upon a Hunter slumped against a collection of tombstones. Kneeling beside her, she looks to you. Through labored and congested voice she speaks. \"Antidote...\" She lets out a hacking cough as her head hangs low. She still lives, but we will need to act swiftly.",
    "body": "Place 1 Survivor token on the Graveyard space.",
-   "goalText": "Complete this Mission by Interacting with the Survivor token and discarding 1 Antidote Consumable and 1 Blood Echo: Reveal card 9."
+   "goalText": "Complete this Mission by Interacting with the Survivor token and discarding 1 Antidote Consumable and 1 Blood Echo: Reveal card 9.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 11
+   }
   },
   "9": {
    "campaign": "fall-of-old-yharnam",
@@ -3039,7 +3839,11 @@
    "title": "POISONOUS OUTBREAK",
    "story": "\"T... Thank you... But you cannot allow this sickness to spread... Find Djura and the others... Burn it all... It's the only way...\" she forces out as a black ichor escapes her mouth. She leans back, convulsing slightly before falling silent and motionless.",
    "body": "Distribute the Empty Phantasm Shell reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 12
+   }
   },
   "10": {
    "campaign": "fall-of-old-yharnam",
@@ -3048,7 +3852,11 @@
    "title": "INFECTED TOWNSFOLK",
    "story": "Entering the courtyard, you see a mass of townsfolk congregating in the open area. While you make moves to evade them, one notices you and shouts, alerting the others. Soon the mob descends upon you, torches and weapons at the ready.",
    "body": "Reveal card 11. Surround the Courtyard Lamp tile with Fog Gates. Spawn 1 Hunter Mob on its {enemy?} space. It respawns to this space on {reset}.",
-   "goalText": "Complete this Mission by slaying this Hunter Mob: Reveal card 12."
+   "goalText": "Complete this Mission by slaying this Hunter Mob: Reveal card 12.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 13
+   }
   },
   "11": {
    "campaign": "fall-of-old-yharnam",
@@ -3057,7 +3865,11 @@
    "title": "INFECTED",
    "story": null,
    "body": "Place 2 Insight tokens on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. Tokens are returned on {reset}. Replace its Basic with:\nBASIC: INFECTED STRIKE {medium} {dmg}{dmg}\nPoison\nIf the Hunter is already Poisoned, their Attacks and Dodges suffer -1 {slow}.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 14
+   }
   },
   "12": {
    "campaign": "fall-of-old-yharnam",
@@ -3066,7 +3878,11 @@
    "title": "MYSTERIOUS SYMPTOMS",
    "story": "Inspecting the corpses of the fallen, you notice something strange. While some sickness has indeed ravaged them, the sores and pale-gray skin are not the usual trappings of the Beast Plague. Could it be some new illness has manifested itself?",
    "body": "Distribute the Evelyn firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 15
+   }
   },
   "13": {
    "campaign": "fall-of-old-yharnam",
@@ -3075,7 +3891,11 @@
    "title": "TRAPPED",
    "story": "From a barred window, a girl's hand reaches out, grasping. \"Help! He's gone mad!\" She screams before being violently knocked back. Suddenly, the figure of one of the infected comes into view. You will need to force your way inside, and quickly, if you are to save this girl!",
    "body": "Place 1 Insight token (Barred Door) on the Occupied House space. Hunters may Attack this token. Once it has been dealt 3 {dmg}, replace it with 1 Survivor token and spawn 1 Male Beast Patient in that space. It respawns to this space on {reset}.",
-   "goalText": "Complete this Mission by Interacting with the Survivor token: Reveal card 14."
+   "goalText": "Complete this Mission by Interacting with the Survivor token: Reveal card 14.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 16
+   }
   },
   "14": {
    "campaign": "fall-of-old-yharnam",
@@ -3084,7 +3904,11 @@
    "title": "SURVIVORS OF THE INFECTION",
    "story": "It unfortunately appears the blow from the beast was lethal. The girl breathes her last as you kneel beside her. There is one solace at least... The infected do not attack their own... And that means if one survived, others might still remain as well...",
    "body": "Distribute the Caryll Rune: Moon reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 17
+   }
   },
   "15": {
    "campaign": "fall-of-old-yharnam",
@@ -3093,7 +3917,11 @@
    "title": "BLOOD-STARVED BEAST",
    "story": "The slow rasping of large claws on cobblestone is heard as a large beast, sinewy and gaunt, emerges from a darkened alleyway. Bloodied flesh drapes its frame as dark ichor pools where it stands. Raising its head, it sniffs the air before letting out a thundering roar. The Hunters are now being hunted...",
    "body": "Reveal card 16. Spawn the Blood-Starved Beast on the Central Lamp space. It is not removed on {reset}, but Heals all {dmg}.",
-   "goalText": "Complete this Mission when the Blood-Starved Beast enters Phase 2: Reveal card 17."
+   "goalText": "Complete this Mission when the Blood-Starved Beast enters Phase 2: Reveal card 17.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 18
+   }
   },
   "16": {
    "campaign": "fall-of-old-yharnam",
@@ -3102,7 +3930,11 @@
    "title": "BLOOD-STARVED BEAST",
    "story": null,
    "body": "The Blood-Starved Beast Moves and Pursues 2 spaces.\nAt the end of each round, it moves 3 spaces toward the nearest Hunter with the lowest HP and Attacks.\nRemove the Blood-Starved Beast from the map when it enters Phase 2.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 19
+   }
   },
   "17": {
    "campaign": "fall-of-old-yharnam",
@@ -3111,7 +3943,11 @@
    "title": "A NEW FOE",
    "story": "The creature lets out a shrill cry before bounding off, a trail of black blood in its wake. While you have encountered terrible creatures born of the Beast Plague, this one does not feel of similar origins... Could this be something altogether new?",
    "body": "Distribute 1 Blood Echo and the Caryll Rune: Oedon Writhe reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 20
+   }
   },
   "18": {
    "campaign": "fall-of-old-yharnam",
@@ -3120,7 +3956,11 @@
    "title": "THE SPREADING PLAGUE",
    "story": "The extent of this outbreak is concerning. These are not the typical signs of the Beast Plague, but something new altogether... Finding the remaining Powder Kegs has diminished in priority compared to discovering whatever we can about this new threat. If this is truly some new sickness, then all of Yharnam is potentially at risk.",
    "body": "",
-   "goalText": "End a move on the Occupied House tile: Reveal card 19."
+   "goalText": "End a move on the Occupied House tile: Reveal card 19.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 21
+   }
   },
   "19": {
    "campaign": "fall-of-old-yharnam",
@@ -3129,7 +3969,11 @@
    "title": "THE SPREADING PLAGUE",
    "story": "Entering the row, you see the sight of a Hunter emerging from one of the houses. He stops upon seeing you, raising his Stake Driver defensively. \"You are no Powder Keg. Who are you?\" He cautiously approaches, keeping his distance as you answer. \"I see. So word has spread above. I am Djura. Unfortunately, I have not come upon any others...\" He looks back toward the doorway. \"I will finish here... But no threats remain... Check the rest of the hamlet. I will find you once I am finished.\"",
    "body": "",
-   "goalText": "End a move on the Graveyard tile after collecting at least 1 Insight this Chapter: Reveal card 20."
+   "goalText": "End a move on the Graveyard tile after collecting at least 1 Insight this Chapter: Reveal card 20.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 22
+   }
   },
   "20": {
    "campaign": "fall-of-old-yharnam",
@@ -3138,7 +3982,11 @@
    "title": "THE SPREADING PLAGUE",
    "story": "You come upon a Hunter standing over a pile of slain beasts, Saw Cleaver wet with blood. He turns to you, but does not seem aggressive. \"And just who are you?\" You explain your purpose. \"I see... Well, good you're here. There are only a few of us Powder Kegs left.\" He shakes his head. \"Old Yharnam is lost, and it is paramount we stop this outbreak, no matter the cost. Gather what you can, then find us at the center of the hamlet. Tonight, Old Yharnam must burn.\"",
    "body": "",
-   "goalText": "End a move on the Central Lamp tile after collecting at least 2 Insight this Chapter: Reveal card 21."
+   "goalText": "End a move on the Central Lamp tile after collecting at least 2 Insight this Chapter: Reveal card 21.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 23
+   }
   },
   "21": {
    "campaign": "fall-of-old-yharnam",
@@ -3147,7 +3995,11 @@
    "title": "THE SPREADING PLAGUE",
    "story": "Smoke and heat engulf the area as, all around you, buildings have begun to burn. Emerging into the plaza, you hear the sounds of combat. Rushing forth, you find Djura and the Saw Cleaver Hunter from before locked in battle. \"You are a fool Djura! This place must be purged!\" the Saw Cleaver Hunter shouts as he strikes. Djura dodges and responds: \"You would slay those we protect! Can't you see what you're doing? The things you hunt, they're not beasts! They're people!\" The two move forward and clash once again.",
    "body": "Choose 1:",
-   "goalText": "Aid Djura: Reveal card 22.\nAid the Saw Cleaver Hunter: Reveal card 24."
+   "goalText": "Aid Djura: Reveal card 22.\nAid the Saw Cleaver Hunter: Reveal card 24.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 24
+   }
   },
   "22": {
    "campaign": "fall-of-old-yharnam",
@@ -3156,7 +4008,11 @@
    "title": "THE SPREADING PLAGUE",
    "story": "The Saw Cleaver Hunter lands a telling blow on Djura, sending him staggering to the ground. Seeing an opening, you move to strike, landing a surprise blow on the Saw Cleaver Hunter. \"What treachery is this? Have you succumbed to this madness as well!?\" He shouts before moving to counterattack.",
    "body": "Spawn Djura's Ally (represented by his token) on the Central Lamp space. He is not removed on {reset}, but Heals all {dmg}.",
-   "goalText": "Complete the Hunt by slaying Djura's Ally: Reveal card 23."
+   "goalText": "Complete the Hunt by slaying Djura's Ally: Reveal card 23.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 25
+   }
   },
   "23": {
    "campaign": "fall-of-old-yharnam",
@@ -3165,7 +4021,11 @@
    "title": "PREY SLAUGHTERED: DJURA'S ALLY",
    "story": "Your blows land true and strike the Hunter down. Djura slowly moves to his feet and staggers toward you. \"Good to see some remain untouched by bloodlust...\" He looks upon the fires surrounding you. \"But no time for chatter, we must move quickly...\"",
    "body": "Distribute the Caryll Rune: Hunter reward and the Repeating Pistol firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 26
+   }
   },
   "24": {
    "campaign": "fall-of-old-yharnam",
@@ -3174,7 +4034,11 @@
    "title": "THE SPREADING PLAGUE",
    "story": "Djura lands a telling blow on the Saw Cleaver Hunter, sending him staggering to the ground. Seeing an opening, you move to strike, landing a surprise blow on Djura. \"Urg! If you refuse to listen, then you leave me no other option!\" He shouts before moving to counterattack.",
    "body": "Spawn Djura (represented by his token) on the Central Lamp space. He is not removed on {reset}, but Heals all {dmg}.",
-   "goalText": "Complete the Hunt by slaying Djura: Reveal card 25."
+   "goalText": "Complete the Hunt by slaying Djura: Reveal card 25.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 27
+   }
   },
   "25": {
    "campaign": "fall-of-old-yharnam",
@@ -3183,7 +4047,11 @@
    "title": "PREY SLAUGHTERED: DJURA",
    "story": "Your blows land true and strike Djura down. The Saw Cleaver Hunter stands and staggers toward you. \"A fool... He would allow the infected to escape. He would doom us all.\" He readies himself. \"Come... We have work to do.\"",
    "body": "Distribute the Caryll Rune: Hunter reward and the Hunter Blunderbuss firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 28
+   }
   },
   "26": {
    "campaign": "fall-of-old-yharnam",
@@ -3192,7 +4060,11 @@
    "title": "BURNT REMINDERS",
    "story": "The purity of flame has long been one of our strongest tools against the infected, both physically and as a display to the common folk of our might. Sometimes, they forget themselves. Let us create some reminders, that even in the face of a plague such as this, we do not waver.",
    "body": "Place {n} +1 Insight tokens on this card. Each time you slay an Enemy while it is on the Central Lamp tile, remove 1 token from this card.",
-   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 27."
+   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 27.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 29
+   }
   },
   "27": {
    "campaign": "fall-of-old-yharnam",
@@ -3201,7 +4073,11 @@
    "title": "BURNT REMINDERS",
    "story": "The burning pyre roars into the night sky. Looking upon the bodies of the beasts, the potential impact of this outbreak sinks into you. Should this be allowed to spread to the whole of Yharnam, there is no telling the havok it could bring.",
    "body": "Distribute 1 Consumable and the Hunter Torch reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 30
+   }
   },
   "28": {
    "campaign": "fall-of-old-yharnam",
@@ -3210,7 +4086,11 @@
    "title": "THOSE THAT REMAIN",
    "story": "You come upon a small band of townsfolk, huddled together against the creature standing before them. One moves to feebly attack it and is immediately cut down. Your attack will not be so inept.",
    "body": "Place 1 Survivor token on the Alleyway space.",
-   "goalText": "Interact with the Survivor token: Reveal card 29."
+   "goalText": "Interact with the Survivor token: Reveal card 29.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 31
+   }
   },
   "29": {
    "campaign": "fall-of-old-yharnam",
@@ -3219,7 +4099,11 @@
    "title": "THOSE THAT REMAIN",
    "story": "The band of survivors shies away from you, cautiously watching you with fear in their eyes, as if you were another beast ready to strike. Before approaching, you recall the effects of the outbreak overtaking the district. The ruthless approach would be to cut them down where they stand and not risk spreading the plague... But is it not the very reason we Hunt but to protect the common folk?",
    "body": "Choose 1:",
-   "goalText": "Aid the Survivors: Reveal card 30.\nAttack the Survivors: Reveal card 32."
+   "goalText": "Aid the Survivors: Reveal card 30.\nAttack the Survivors: Reveal card 32.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 32
+   }
   },
   "30": {
    "campaign": "fall-of-old-yharnam",
@@ -3228,7 +4112,11 @@
    "title": "THOSE THAT REMAIN",
    "story": "Such a large group will undoubtedly attract attention... But we must do what we can to get them someplace safe, at least for now.",
    "body": "When a Hunter moves out of the space with the Survivor token, it may be moved up to 2 spaces. After this move, all Enemies within 1 tile and not in a space with a Hunter move 1 space toward the token. If there are ever Enemies in the space with the token at the end of a Hunter Turn, the Survivors are slain. Return the token to the Alleyway space.",
-   "goalText": "Complete this Mission when the token moves onto the Courtyard Lamp space: Reveal card 31."
+   "goalText": "Complete this Mission when the token moves onto the Courtyard Lamp space: Reveal card 31.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 33
+   }
   },
   "31": {
    "campaign": "fall-of-old-yharnam",
@@ -3237,7 +4125,11 @@
    "title": "GUIDING THE SURVIVORS",
    "story": "Old Yharnam has been devastated, and from what you have seen, only a handful of townsfolk still survive. This makes every one that you save all the more important as this terrible sickness runs rampant.",
    "body": "Distribute 1 Consumable and the Caryll Rune: Guidance reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 34
+   }
   },
   "32": {
    "campaign": "fall-of-old-yharnam",
@@ -3246,7 +4138,11 @@
    "title": "THOSE THAT REMAIN",
    "story": "You cannot risk spread of this infection. They must all be purged.",
    "body": "Place {n} +1 Survivor tokens in this space. Move each token 2 spaces away, in different directions where possible. They may reveal tiles during this move. At the end of each Hunter's turn, move these tokens 1 space away from the nearest Hunter. Hunters may Attack these tokens to remove them from the map.",
-   "goalText": "Complete this Mission when all Survivor tokens have been slain: Reveal card 33."
+   "goalText": "Complete this Mission when all Survivor tokens have been slain: Reveal card 33.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 35
+   }
   },
   "33": {
    "campaign": "fall-of-old-yharnam",
@@ -3255,7 +4151,11 @@
    "title": "CULLING THE INFECTED",
    "story": "The last of the survivors lets out a cry before you strike them down, silencing the last echo of life in the streets. The distant crackling of fires are the only sounds that remain as you somberly turn to depart. There is still much to be done.",
    "body": "Distribute 1 Consumable and the Caryll Rune: Beast reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 36
+   }
   },
   "34": {
    "campaign": "fall-of-old-yharnam",
@@ -3264,7 +4164,11 @@
    "title": "POWDER KEG INGENUITY",
    "story": "From the streets, a Hunter staggers into view. \"Reinforcements... About time you showed up...\" He slumps against a nearby wagon, covered in tarps. \"Old Yharnam burns this night. All we can do now is aid the pyre, heh heh. For that, I need supplies: Oil, Wood, Powder, as much as you can find... Bring them to me, I'll handle the rest.\"",
    "body": "Place {n} +2 Insight tokens on this card. Hunters ending a move on the Barred Window space may discard any number of their held Consumables. For each one discarded, remove 1 token from this card.",
-   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 35."
+   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 35.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 37
+   }
   },
   "35": {
    "campaign": "fall-of-old-yharnam",
@@ -3273,7 +4177,11 @@
    "title": "POWDER KEG SUPPLIES",
    "story": "\"Thank you, friend. I'll put these to good use...Trust me, you'll like my little project.\" As he moves, you see him gripping a deep wound at his side. \"Going to show these beasts just what it means to fight a Powder Keg, heh heh.\"",
    "body": "Distribute the A Call Beyond reward and the Cannon firearm among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 38
+   }
   },
   "36": {
    "campaign": "fall-of-old-yharnam",
@@ -3282,7 +4190,11 @@
    "title": "ESCAPING THE PURGE",
    "story": "Djura approaches you. \"The Church ordered us to seal off Old Yharnam, burn it all... and everyone... But we may still save the remaining uninfected, if we move swiftly. Gather whatever uninfected you can find. I will see if I can find a means of escape...\"",
    "body": "Place 1 Survivor token on each space with a {consumable} or {enemy?} icon, and on new ones when revealed. Hunters may Interact on these spaces to remove the token and place it on this card.",
-   "goalText": "When this card has {n} +1 tokens: Reveal card 37"
+   "goalText": "When this card has {n} +1 tokens: Reveal card 37",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 39
+   }
   },
   "37": {
    "campaign": "fall-of-old-yharnam",
@@ -3291,7 +4203,11 @@
    "title": "ESCAPING THE PURGE",
    "story": "Djura awaits your return, the remaining survivors having banded to him. \"These are all that remain...\" He shakes his head. \"No matter... My suspicions were confirmed, the main paths have all been destroyed. We'll need to find another way to get them out of here... I know of one way that may still exist... I shall gather those that remain in the Old Church. Gather what you must and meet us there. Let us escape before it's too late.\"",
    "body": "",
-   "goalText": "Gather at least 2 Insight this Chapter, then end a move on the Church of the Good Chalice tile: Reveal card 38."
+   "goalText": "Gather at least 2 Insight this Chapter, then end a move on the Church of the Good Chalice tile: Reveal card 38.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 40
+   }
   },
   "38": {
    "campaign": "fall-of-old-yharnam",
@@ -3300,7 +4216,11 @@
    "title": "ESCAPING THE PURGE",
    "story": "Numerous townsfolk lay slain within the courtyard of the ancient building. Entering, it reeks of the smell of blood and beast. From the altar, you hear a low growl and the rapping of claws across cobblestone floor. The gruesome beast from before can be seen, form wet with gore. With a roar, it bounds toward you.",
    "body": "Reveal card 39. Surround the Church of the Good Chalice tile with Fog Gates. Spawn the Blood-Starved Beast on its {enemy?} space. It respawns to that space on {reset}.",
-   "goalText": "Complete the Hunt by slaying the Blood-Starved Beast: Reveal card 40."
+   "goalText": "Complete the Hunt by slaying the Blood-Starved Beast: Reveal card 40.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 41
+   }
   },
   "39": {
    "campaign": "fall-of-old-yharnam",
@@ -3309,7 +4229,11 @@
    "title": "BLOOD-CRAZED",
    "story": null,
    "body": "Each time the Blood-Starved Beast slays a Hunter, it Heals {n}.\nAt the end of each round, it makes 1 bonus Activation, moving toward and Attacking the Hunter on its tile with the lowest remaining HP.\nAny Hunter on its tile may discard 1 Blood Echo to prevent this Activation.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 42
+   }
   },
   "40": {
    "campaign": "fall-of-old-yharnam",
@@ -3318,7 +4242,11 @@
    "title": "HUNT COMPLETED",
    "story": "Exiting the church, you see Djura leading a small band of survivors and Powder Kegs. \"Good to see you, friend...\" he says solemnly. \"I have one final favor to ask of you... I have decided to remain here. Old Yharnam is lost to the world above, but... There are still those here that require protection... Those above would not understand... Take the uninfected. Leave this place... And may you never return.\"",
    "body": "",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 43
+   }
   },
   "41": {
    "campaign": "fall-of-old-yharnam",
@@ -3327,7 +4255,11 @@
    "title": "PURGING OLD YHARNAM",
    "story": "The Hunter approaches you. \"Old Yharnam is lost to us. This ashen plague runs too deep. We have but one course of action if we are to contain the spread... It must all be burned. The other Powder Kegs are moving to root out the beasts and infected. While they work, let us do what we must.\"",
    "body": "Place {n} +2 Insight tokens (Fire) on this card. While on a tile without a token, Hunters may Interact to remove 1 token from this card and place it on that tile.",
-   "goalText": "When this card has no remaining tokens: Reveal card 42."
+   "goalText": "When this card has no remaining tokens: Reveal card 42.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 44
+   }
   },
   "42": {
    "campaign": "fall-of-old-yharnam",
@@ -3336,7 +4268,11 @@
    "title": "PURGING OLD YHARNAM",
    "story": "As you return, you find the remaining Powder Kegs gathering. All around, the night has been consumed with the glow of burning buildings, and the heavy smell of smoke and ash fills the air. \"We've moved to block off all the main paths out of the hamlet. None can be allowed to escape. There is but one grouping left: the old church in the heart of the hamlet. Gather what you may still need, then meet us there. Let us end this.\"",
    "body": "",
-   "goalText": "Gather at least 2 Insight this Chapter, then end a move on the Church of the Good Chalice tile: Reveal card 43."
+   "goalText": "Gather at least 2 Insight this Chapter, then end a move on the Church of the Good Chalice tile: Reveal card 43.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 45
+   }
   },
   "43": {
    "campaign": "fall-of-old-yharnam",
@@ -3345,7 +4281,11 @@
    "title": "PURGING OLD YHARNAM",
    "story": "Nearing the church, you happen upon a scene of carnage. Numerous Powder Kegs lay slain within the courtyard of the ancient building. Entering, it reeks of the smell of blood and beast. From the altar, you hear a low growl and the rapping of claws across the cobblestone floor. The gruesome beast from before can be seen, form wet with gore.",
    "body": "Reveal card 39. Surround the Church of the Good Chalice tile with Fog Gates. Spawn the Blood-Starved Beast on its {enemy?} space. It respawns to that space on {reset}.",
-   "goalText": "Complete the Hunt by slaying the Blood-Starved Beast: Reveal card 44."
+   "goalText": "Complete the Hunt by slaying the Blood-Starved Beast: Reveal card 44.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 46
+   }
   },
   "44": {
    "campaign": "fall-of-old-yharnam",
@@ -3354,7 +4294,11 @@
    "title": "HUNT COMPLETED",
    "story": "Setting the last of the fires, you exit the church into the night air, now heavy with smoke and ash. All around, the once-great hamlet of Old Yharnam lies burning, and hopefully with it, whatever terrible plague that brought such devastation. While the events of this night are unfortunate indeed, we did what we had to... For the greater good of Yharnam.",
    "body": "",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 47
+   }
   },
   "45": {
    "campaign": "fall-of-old-yharnam",
@@ -3363,7 +4307,11 @@
    "title": "CHAOS AND FIRE",
    "story": "Old Yharnam is burning, but it seems the sickness continues to spread among the infected, driving them into a greater frenzy.",
    "body": "Reveal card 46. After each {reset}, spawn 1 Scourge Beast (if available) on each {enemy?} space, beginning with those closest to Hunters. Place {n} +2 Insight tokens on this card. Each time a Scourge Beast is slain, remove 1 token.",
-   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 47."
+   "goalText": "Complete this Mission when this card has no remaining tokens: Reveal card 47.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 48
+   }
   },
   "46": {
    "campaign": "fall-of-old-yharnam",
@@ -3372,7 +4320,11 @@
    "title": "GROWING SICKNESS",
    "story": null,
    "body": "Replace all Scourge Beast's Basic with:\nBASIC: INFECTED CLAWS {fast} {dmg}{dmg}\nPoison",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 49
+   }
   },
   "47": {
    "campaign": "fall-of-old-yharnam",
@@ -3381,7 +4333,11 @@
    "title": "FIRE AND DEATH",
    "story": "The district lies burning, and with it, many of the infected-townsfolk and beast alike. If we do not act to contain the spread, this fate could extend to the whole of Yharnam.",
    "body": "Distribute 1 Consumable and the A Call Beyond reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 50
+   }
   },
   "48": {
    "campaign": "fall-of-old-yharnam",
@@ -3390,7 +4346,11 @@
    "title": "REMAINING POWDER KEGS",
    "story": null,
    "body": "",
-   "goalText": "If you have Powder Keg Supplies: Reveal card 49.\nOtherwise: Reveal card 34."
+   "goalText": "If you have Powder Keg Supplies: Reveal card 49.\nOtherwise: Reveal card 34.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 51
+   }
   },
   "49": {
    "campaign": "fall-of-old-yharnam",
@@ -3399,7 +4359,11 @@
    "title": "MORE POWDER",
    "story": "Despite his wound, the Powder Keg from before continues his work. \"You've returned. Good, good... I need one final component.\" His face takes on a pained expression as he grips his wound. \"Hurry now... Then we can show these beasts what for, heh.\"",
    "body": "Interact on the Ransacked House space to gain 1 Insight token (Powder Keg Supplies). The token is lost if the Hunter goes to the Dream. While carrying the token, Hunter's Attacks suffer -1 {slow}.",
-   "goalText": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 50."
+   "goalText": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 50.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 52
+   }
   },
   "50": {
    "campaign": "fall-of-old-yharnam",
@@ -3408,7 +4372,11 @@
    "title": "POWDER KEG RECKONING",
    "story": "Finishing the mixture, the Hunter smiles and begins to limp off. \"Don't follow. This is my Hunt, heh heh.\" Shortly after you part, an explosion booms through the night, shaking the ground and leveling a large section of buildings... Powder Keg indeed.",
    "body": "Distribute 1 Consumable and the Caryll Rune: Clawmark reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 53
+   }
   },
   "51": {
    "campaign": "fall-of-old-yharnam",
@@ -3417,7 +4385,11 @@
    "title": "VENGEANCE",
    "story": "From someplace high above, you hear a voice call out, echoing through the streets. \"You would not see things as you should... This leaves me little choice in the matter...\" Suddenly, a whirling sound fills the air as a hail of bullets begins raining down upon you! From here, you see a large gatling gun mounted upon a looming tower. Perhaps you can find some pathway to it and put a stop to this...",
    "body": "All Hunters must Dodge ({medium}) or suffer 2 {dmg}. Reveal card 52.",
-   "goalText": "End a move on the Alleyway tile: Reveal card 53."
+   "goalText": "End a move on the Alleyway tile: Reveal card 53.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 54
+   }
   },
   "52": {
    "campaign": "fall-of-old-yharnam",
@@ -3426,7 +4398,11 @@
    "title": "GATLING GUN",
    "story": null,
    "body": "At the start of each Hunter's turn, flip an Enemy Action card. If Ability or Special, they must Dodge ({medium}) or suffer 2 {dmg}.\nThis effect is ignored by Hunters on the Church of the Good Chalice tile, or if any Hunter is on The Great Bridge tile.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 55
+   }
   },
   "53": {
    "campaign": "fall-of-old-yharnam",
@@ -3435,7 +4411,11 @@
    "title": "VENGEANCE",
    "story": "You weave your way through the winding streets until you find a path leading to their vantage point. Let us find them and end this!",
    "body": "Take The Great Bridge tile, place it to the side, and surround it with Fog Gates. Both The Great Bridge spaces are adjacent to the Alleyway space. If you have Prey Slaughtered: Djura's Ally, spawn Djura's Ally on the {enemy?} space. If you have Prey Slaughtered: Djura, spawn Djura on the {enemy?} space.",
-   "goalText": "Complete this Mission and remove the Gatling Gun card by slaying the Enemy on The Great Bridge tile: Reveal card 54."
+   "goalText": "Complete this Mission and remove the Gatling Gun card by slaying the Enemy on The Great Bridge tile: Reveal card 54.",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 56
+   }
   },
   "54": {
    "campaign": "fall-of-old-yharnam",
@@ -3444,7 +4424,11 @@
    "title": "HUNTER'S RECKONING",
    "story": "Landing a staggering blow, you send your foe reeling back, topping off the side of The Great Bridge into the fiery streets below. While it's a shame this tool cannot be put to better use, at least it will no longer be used against you...",
    "body": "Distribute the Old Hunter's Bone reward among the Hunters.",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 57
+   }
   },
   "Introduction": {
    "campaign": "fall-of-old-yharnam",
@@ -3453,7 +4437,11 @@
    "title": "FALL OF OLD YHARNAM - Introduction",
    "story": "Spiraling below the Cathedral Ward lies the hamlet known as Old Yharnam. Far removed, the town lies isolated from the greater city. Recently, however, rumors have emerged of a strange sickness, different from that of the Beast Plague, spreading through its streets. A group of hunters, notably those of the Powder Kegs covenant, were sent to investigate. Time has passed, and none have returned, thus we have been dispatched to discover what fate has befallen them.",
    "body": "",
-   "goalText": null
+   "goalText": null,
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 0
+   }
   },
   "Chapter 1 - Setup": {
    "campaign": "fall-of-old-yharnam",
@@ -3462,7 +4450,11 @@
    "title": "FALL OF OLD YHARNAM - Chapter 1 - Missions",
    "story": null,
    "body": "Start of the Hunt: Reveal card 2\nEnd a move on the Courtyard Lamp tile: Reveal card 10\nEnd a move on the Occupied House tile: Reveal card 13\nWhen the Hunt Track reaches the 1st {reset} space (mark this with an Insight token): Reveal card 15",
-   "goalText": "Start of the Hunt: Reveal card 2"
+   "goalText": "Start of the Hunt: Reveal card 2",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 1
+   }
   },
   "Chapter 2 - Setup": {
    "campaign": "fall-of-old-yharnam",
@@ -3471,7 +4463,11 @@
    "title": "FALL OF OLD YHARNAM - Chapter 2 - Missions",
    "story": null,
    "body": "Start of the Hunt: Reveal card 18\nStart of the Hunt: Reveal card 26\nEnd a move on the Alleyway tile: Reveal card 28\nEnd a move on the Barred Window tile: Reveal card 34",
-   "goalText": "Start of the Hunt: Reveal card 18"
+   "goalText": "Start of the Hunt: Reveal card 18",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 2
+   }
   },
   "Chapter 3 - Setup": {
    "campaign": "fall-of-old-yharnam",
@@ -3480,7 +4476,11 @@
    "title": "FALL OF OLD YHARNAM - Chapter 3 - Missions",
    "story": null,
    "body": "Start of the Hunt, if you have Prey Slaughtered: Djura: Reveal card 41\nOtherwise: Reveal card 36\nStart of the Hunt: Reveal card 45\nEnd a move on the Barred Window tile: Reveal card 48\nWhen the Hunt Track reaches the 1st {reset} space (mark this with an Insight token): Reveal card 51",
-   "goalText": "Start of the Hunt, if you have Prey Slaughtered: Djura: Reveal card 41. Otherwise: Reveal card 36"
+   "goalText": "Start of the Hunt, if you have Prey Slaughtered: Djura: Reveal card 41. Otherwise: Reveal card 36",
+   "art": {
+    "sheet": "fall-of-old-yharnam",
+    "cell": 3
+   }
   }
  }
 }

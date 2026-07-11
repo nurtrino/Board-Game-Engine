@@ -59,8 +59,10 @@ const hunters = {};
         ...(sl.text ? { text: sl.text, effects: parseEffects(sl.text, 'slot') } : {}),
       })),
     });
-    // starting firearm: from components mapping where present; default hunter-pistol
-    const compHunter = comp.hunters[id];
+    // starting firearm: from components mapping where present; default hunter-pistol.
+    // components.json keys use the mod bag slugs (no apostrophe-s split):
+    // ludwig-s-holy-blade -> ludwigs-holy-blade, logarius-wheel unchanged.
+    const compHunter = comp.hunters[id] ?? comp.hunters[id.replace(/-s-/g, 's-')] ?? comp.hunters[id.replace(/'/g, '')];
     hunters[id] = {
       id,
       name: w.face.name,
@@ -293,19 +295,28 @@ write('items.json', items);
 {
   const missions = {};
   const DSL_DIR = path.join(ROOT, 'games/bloodborne/golden/dsl');
-  const CAMPS = { 'the-long-hunt': 'missions-the-long-hunt.json', 'growing-madness': 'missions-growing-madness.json', 'secrets-of-the-church': 'missions-secrets-of-the-church.json', 'fall-of-old-yharnam': 'missions-fall-of-old-yharnam.json' };
-  for (const [cid, file] of Object.entries(CAMPS)) {
-    const p = path.join(ROOT, 'games/bloodborne/golden/transcribed', file);
-    if (!fs.existsSync(p)) { warn(`missions transcription missing: ${file}`); continue; }
+  const cellmaps = G('campaign-cellmaps.json');
+  const CAMPS = {
+    'the-long-hunt': { file: 'missions-the-long-hunt.json', map: 'The Long Hunt' },
+    'growing-madness': { file: 'missions-growing-madness.json', map: 'Growing Madness' },
+    'secrets-of-the-church': { file: 'missions-secrets-of-the-church.json', map: 'Secrets of the Church' },
+    'fall-of-old-yharnam': { file: 'missions-fall-of-old-yharnam.json', map: 'Fall of Old Yharnam' },
+  };
+  for (const [cid, cfg] of Object.entries(CAMPS)) {
+    const p = path.join(ROOT, 'games/bloodborne/golden/transcribed', cfg.file);
+    if (!fs.existsSync(p)) { warn(`missions transcription missing: ${cfg.file}`); continue; }
     const cards = JSON.parse(fs.readFileSync(p, 'utf8')).cards;
+    const cellmap = new Map((cellmaps[cfg.map] ?? []).map((e) => [e.number, e]));
     const overlayPath = path.join(DSL_DIR, `${cid}.json`);
     const overlay = fs.existsSync(overlayPath) ? JSON.parse(fs.readFileSync(overlayPath, 'utf8')) : {};
     missions[cid] = {};
     for (const [number, c] of Object.entries(cards)) {
+      const cm = cellmap.get(number);
       missions[cid][number] = {
         campaign: cid, number,
         kind: c.kind, title: c.title ?? '', story: c.story ?? null,
         body: c.body ?? '', goalText: c.goal ?? null,
+        ...(cm ? { art: { sheet: cm.sheet, cell: cm.cell } } : {}),
         ...(overlay[number] ?? {}),
       };
       if (!overlay[number] && (c.kind === 'hunt' || c.kind === 'insight')) warn(`no DSL overlay: ${cid} #${number} (${c.title})`);

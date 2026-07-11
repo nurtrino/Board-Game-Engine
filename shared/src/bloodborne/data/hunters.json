@@ -47,8 +47,8 @@
   ],
   "art": {
    "weaponCell": 0,
-   "mini": null,
-   "weaponMini": null,
+   "mini": "ludwigs-uncanny-holy-blade-hunter",
+   "weaponMini": "ludwigs-uncanny-holy-blade-weapon",
    "dashboardSheet": "sheet-2"
   }
  },
@@ -706,8 +706,8 @@
   ],
   "art": {
    "weaponCell": 11,
-   "mini": null,
-   "weaponMini": null,
+   "mini": "ludwigs-holy-blade-hunter",
+   "weaponMini": "ludwigs-holy-blade-weapon",
    "dashboardSheet": "sheet-2"
   }
  },

@@ -4,24 +4,32 @@
 // Your hand is splayed at the bottom: hover to lift a card, click to focus it
 // center-screen, X (or click away) to dismiss.
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { socket, useRoom } from '../net';
 import { TableScene, useBrassScene, SEAT_HEX, seatLabel, type SceneDef, type CardSheet, type PickTarget } from '../brass/TableScene';
-import { gameSceneState } from './BoardPage';
+import { gameSceneState } from '../brass/gameSceneState';
 import { playSfx } from '../sfx';
 import {
   buildLocations, freeSquares, buildableLinks, sellableSquares, developableTiles,
   cardIndustries, lowestTile, planBuild, GAME_SEATS,
   type BrassView, type BrassAction, type Card, type Color,
 } from '@bge/shared';
-import { TtrPlay } from '../ttr/TtrPlay';
-import { TrekPlay } from '../trek/TrekPlay';
-import { DtPlay } from '../darktower/DtPlay';
-import { DunePlay } from '../dune/DunePlay';
-import AxisPlay from '../axis/AxisPlay';
-import { PolitikPlay } from '../politik/PolitikPlay';
 import { GameIntro, BRASS_INTRO } from '../ttr/GameIntro';
+
+const TtrPlay = lazy(() => import('../ttr/TtrPlay').then((module) => ({ default: module.TtrPlay })));
+const TrekPlay = lazy(() => import('../trek/TrekPlay').then((module) => ({ default: module.TrekPlay })));
+const DtPlay = lazy(() => import('../darktower/DtPlay').then((module) => ({ default: module.DtPlay })));
+const DunePlay = lazy(() => import('../dune/DunePlay').then((module) => ({ default: module.DunePlay })));
+const AxisPlay = lazy(() => import('../axis/AxisPlay'));
+const PolitikPlay = lazy(() => import('../politik/PolitikPlay').then((module) => ({ default: module.PolitikPlay })));
+const DsPlay = lazy(() => import('../darksouls/DsPlay'));
+const FeastPlay = lazy(() => import('../feast/FeastPlay').then((module) => ({ default: module.FeastPlay })));
+const BbPlay = lazy(() => import('../bloodborne/BbPlay'));
+
+function PlayerGameLoading({ game }: { game: string }) {
+  return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} command table…</div>;
+}
 
 const ALL_COLORS: Color[] = ['Orange', 'Purple', 'Teal', 'Yellow'];
 
@@ -936,12 +944,51 @@ export function PlayPage() {
 
   if (room.started) {
     if (!view) return <div className="page center"><h2>Dealing…</h2></div>;
-    if (view.game === 'ttr') return <TtrPlay view={view} act={act} error={error} />;
-    if (view.game === 'trek') return <TrekPlay view={view} act={act} error={error} />;
-    if (view.game === 'darktower') return <DtPlay view={view} act={act} error={error} />;
-    if (view.game === 'dune') return <DunePlay view={view} act={act} error={error} />;
-    if (view.game === 'axis') return <AxisPlay view={view} act={act} error={error} />;
-    if (view.game === 'politik') return <PolitikPlay view={view} act={act} error={error} />;
+    if (view.game === 'ttr') return (
+      <Suspense fallback={<PlayerGameLoading game="Ticket to Ride" />}>
+        <TtrPlay view={view} act={act} error={error} />
+      </Suspense>
+    );
+    if (view.game === 'trek') return (
+      <Suspense fallback={<PlayerGameLoading game="Trekking the National Parks" />}>
+        <TrekPlay view={view} act={act} error={error} />
+      </Suspense>
+    );
+    if (view.game === 'darktower') return (
+      <Suspense fallback={<PlayerGameLoading game="Return to Dark Tower" />}>
+        <DtPlay view={view} act={act} error={error} />
+      </Suspense>
+    );
+    if (view.game === 'dune') return (
+      <Suspense fallback={<PlayerGameLoading game="Dune: Imperium" />}>
+        <DunePlay view={view} act={act} error={error} />
+      </Suspense>
+    );
+    if (view.game === 'axis') return (
+      <Suspense fallback={<PlayerGameLoading game="Axis & Allies" />}>
+        <AxisPlay view={view} act={act} error={error} />
+      </Suspense>
+    );
+    if (view.game === 'politik') return (
+      <Suspense fallback={<PlayerGameLoading game="Politik" />}>
+        <PolitikPlay view={view} act={act} error={error} />
+      </Suspense>
+    );
+    if (view.game === 'darksouls') return (
+      <Suspense fallback={<PlayerGameLoading game="Dark Souls" />}>
+        <DsPlay view={view} act={act} seat={me ?? 0} error={error} />
+      </Suspense>
+    );
+    if (view.game === 'feast') return (
+      <Suspense fallback={<PlayerGameLoading game="A Feast for Odin" />}>
+        <FeastPlay view={view} act={act} error={error} />
+      </Suspense>
+    );
+    if (view.game === 'bloodborne') return (
+      <Suspense fallback={<PlayerGameLoading game="Bloodborne" />}>
+        <BbPlay view={view} act={act} seat={me ?? 0} error={error} />
+      </Suspense>
+    );
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
@@ -957,12 +1004,18 @@ export function PlayPage() {
     dune: 'Dune: Imperium',
     axis: 'Axis & Allies Anniversary',
     politik: 'Politik',
+    darksouls: 'Dark Souls: The Board Game',
+    bloodborne: 'Bloodborne: The Board Game',
+    feast: 'A Feast for Odin',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
   const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
     : room.game === 'trek' ? 'Your colour is your trekker and the stones you collect.'
     : room.game === 'darktower' ? 'Your colour is your warrior on the quest.'
     : room.game === 'politik' ? 'Your colour outlines your Nation, influence, support, and power grabs.'
+    : room.game === 'darksouls' ? 'Your colour marks your seat. Pick a class once the party sets out.'
+    : room.game === 'bloodborne' ? 'Your colour marks your seat. Choose a hunter once the Hunt begins.'
+    : room.game === 'feast' ? 'Your colour marks your Vikings, action spaces, and personal boards.'
     : "Your piece marks your income on the board's turn-order track.";
 
   return (

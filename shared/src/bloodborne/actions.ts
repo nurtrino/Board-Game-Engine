@@ -38,9 +38,11 @@ export type BbAction =
   | { type: 'choose'; [k: string]: unknown }
   | { type: 'next_chapter' };
 
-const err = (m: string): never => {
+// Function declaration (not arrow) so TypeScript narrows after never-returning
+// guard calls like `if (!x) err(...)`.
+function err(m: string): never {
   throw new Error(m.replace(/\s+—\s+/g, ', ').replace(/^\p{Ll}/u, (c) => c.toUpperCase()));
-};
+}
 
 const evt = (s: BbState, text: string, seat?: number, kind?: string): void => {
   s.lastEvent = { seq: s.lastEvent.seq + 1, text, seat, kind };
@@ -881,7 +883,7 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
         h.consumables.splice(ix, 1);
         s.consumableDiscard.push(id);
       }
-      const t = s.tiles.find((x) => x.uid === parseRef(h.space).uid)!;
+      const t = s.tiles.find((x) => x.uid === parseRef(h.space!).uid)!;
       bbMissionEvent(s, { type: 'missionDiscard', seat, tile: tileDef(t.tileId).name, count: action.cards.length });
       evt(s, `${action.cards.length} CONSUMABLE${action.cards.length > 1 ? 'S' : ''} OFFERED`, seat, 'mission');
       return s;

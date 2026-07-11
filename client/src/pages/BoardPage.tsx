@@ -2,33 +2,27 @@
 // After start: ONLY the main board. Every action flies the camera to where it
 // happened and narrates it in a caption, then eases back out.
 
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useParams } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { useRoom } from '../net';
 import { SidePieces } from '../three/FallingPieces';
-import { TableScene, useBrassScene, SEAT_HEX, type GameSceneState, type FocusReq, type SceneDef } from '../brass/TableScene';
+import { TableScene, useBrassScene, SEAT_HEX, type FocusReq, type SceneDef } from '../brass/TableScene';
+import { gameSceneState } from '../brass/gameSceneState';
 import { LOCATION_OF, type BrassView, type BrassEvent } from '@bge/shared';
 import { playSfx, sfxForKind, sfxEnabled, setSfxEnabled } from '../sfx';
-import { TtrBoard } from '../ttr/TtrBoard';
-import { TrekBoard } from '../trek/TrekBoard';
-import { DtBoard } from '../darktower/DtBoard';
-import { DuneBoard } from '../dune/DuneBoard';
-import AxisBoard from '../axis/AxisBoard';
+const TtrBoard = lazy(() => import('../ttr/TtrBoard').then((module) => ({ default: module.TtrBoard })));
+const TrekBoard = lazy(() => import('../trek/TrekBoard').then((module) => ({ default: module.TrekBoard })));
+const DtBoard = lazy(() => import('../darktower/DtBoard').then((module) => ({ default: module.DtBoard })));
+const DuneBoard = lazy(() => import('../dune/DuneBoard').then((module) => ({ default: module.DuneBoard })));
+const AxisBoard = lazy(() => import('../axis/AxisBoard'));
+const PolitikBoard = lazy(() => import('../politik/PolitikBoard').then((module) => ({ default: module.PolitikBoard })));
+const DsBoard = lazy(() => import('../darksouls/DsBoard').then((module) => ({ default: module.DsBoard })));
+const FeastBoard = lazy(() => import('../feast/FeastBoard').then((module) => ({ default: module.FeastBoard })));
+const BbBoard = lazy(() => import('../bloodborne/BbBoard').then((module) => ({ default: module.BbBoard })));
 
-export function gameSceneState(view: BrassView): GameSceneState {
-  return {
-    era: view.era,
-    turnOrder: view.turnOrder,
-    merchants: view.merchants,
-    drawCount: view.drawCount,
-    colors: view.players.map((p) => p.color),
-    spentByColor: Object.fromEntries(view.players.map((p) => [p.color, p.spent])),
-    industries: view.board.industries,
-    links: view.board.links,
-    markers: view.players.map((p) => ({ color: p.color, incomeOffset: p.incomeOffset, vpOffset: p.vp })),
-    markets: view.markets,
-  };
+function BoardGameLoading({ game }: { game: string }) {
+  return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} table…</div>;
 }
 
 /** World-space (three) focus point for an event, from the extracted zones. */
@@ -239,16 +233,56 @@ function TvBoard({ view }: { view: BrassView }) {
 
 export function BoardPage() {
   const { roomId = '' } = useParams();
-  const { room, view } = useRoom(roomId, 'watch');
+  const { room, view, signalBattleVisualReady } = useRoom(roomId, 'watch');
 
   if (!room) return <div className="page center"><h2>Connecting</h2></div>;
 
   if (room.started && view) {
-    if (view.game === 'ttr') return <TtrBoard view={view} />;
-    if (view.game === 'trek') return <TrekBoard view={view} />;
-    if (view.game === 'darktower') return <DtBoard view={view} />;
-    if (view.game === 'dune') return <DuneBoard view={view} />;
-    if (view.game === 'axis') return <AxisBoard view={view} />;
+    if (view.game === 'ttr') return (
+      <Suspense fallback={<BoardGameLoading game="Ticket to Ride" />}>
+        <TtrBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'trek') return (
+      <Suspense fallback={<BoardGameLoading game="Trekking the National Parks" />}>
+        <TrekBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'darktower') return (
+      <Suspense fallback={<BoardGameLoading game="Return to Dark Tower" />}>
+        <DtBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'dune') return (
+      <Suspense fallback={<BoardGameLoading game="Dune: Imperium" />}>
+        <DuneBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'axis') return (
+      <Suspense fallback={<BoardGameLoading game="Axis & Allies" />}>
+        <AxisBoard view={view} onBattleVisualReady={signalBattleVisualReady} />
+      </Suspense>
+    );
+    if (view.game === 'politik') return (
+      <Suspense fallback={<BoardGameLoading game="Politik" />}>
+        <PolitikBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'darksouls') return (
+      <Suspense fallback={<BoardGameLoading game="Dark Souls" />}>
+        <DsBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'feast') return (
+      <Suspense fallback={<BoardGameLoading game="A Feast for Odin" />}>
+        <FeastBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'bloodborne') return (
+      <Suspense fallback={<BoardGameLoading game="Bloodborne" />}>
+        <BbBoard view={view} />
+      </Suspense>
+    );
     return <TvBoard view={view} />;
   }
 
