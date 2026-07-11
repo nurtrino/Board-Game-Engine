@@ -1,0 +1,1163 @@
+{
+ "central-lamp": {
+  "id": "central-lamp",
+  "name": "CENTRAL LAMP",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.16,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": []
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "named": "CENTRAL LAMP",
+    "icons": [
+     "lamp"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.84,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "b",
+    "edge": "N"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   },
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "c",
+    "edge": "E"
+   }
+  ],
+  "specialText": "Interact on the Central Lamp space: Teleport to any [lamp icon] space or inside any Fog Gate.",
+  "art": "/bloodborne/tiles/central-lamp.webp"
+ },
+ "ransacked-house": {
+  "id": "ransacked-house",
+  "name": "RANSACKED HOUSE",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.27
+    },
+    "named": "RANSACKED HOUSE",
+    "icons": [
+     "enemy1",
+     "enemy3"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.62
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "a",
+    "edge": "E"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/ransacked-house.webp",
+  "uncertain": true,
+  "note": "House interior tile. W/E exits are lit doorways with arrow signs at y~0.37 (house style, not the usual blue-brick notch). S exit is the central staircase at x~0.5. The two dark thorn-filled pits flanking the bottom corridor read as decorative/inaccessible, not spaces."
+ },
+ "courtyard-lamp": {
+  "id": "courtyard-lamp",
+  "name": "COURTYARD LAMP",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.16,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": []
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "named": "COURTYARD LAMP",
+    "icons": [
+     "lamp"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.84,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   },
+   {
+    "space": "c",
+    "edge": "E"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/courtyard-lamp.webp"
+ },
+ "occupied-house": {
+  "id": "occupied-house",
+  "name": "OCCUPIED HOUSE",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.3
+    },
+    "named": null,
+    "icons": [
+     "enemy1"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.8
+    },
+    "named": "OCCUPIED HOUSE",
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "N"
+   },
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "a",
+    "edge": "E"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/occupied-house.webp"
+ },
+ "the-great-bridge": {
+  "id": "the-great-bridge",
+  "name": "THE GREAT BRIDGE",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.28
+    },
+    "named": "THE GREAT BRIDGE",
+    "icons": [
+     "enemy3",
+     "consumable"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.75
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "N"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   }
+  ],
+  "specialText": "Hunters may not move out of spaces containing Enemies while on this tile.",
+  "art": "/bloodborne/tiles/the-great-bridge.webp"
+ },
+ "core-tiles-c05": {
+  "id": "core-tiles-c05",
+  "name": "",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.26,
+     "y": 0.32
+    },
+    "named": null,
+    "icons": [
+     "consumable"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.76,
+     "y": 0.32
+    },
+    "named": null,
+    "icons": []
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.5,
+     "y": 0.8
+    },
+    "named": null,
+    "icons": [
+     "enemy1"
+    ]
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "a",
+    "c"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "b",
+    "edge": "E"
+   },
+   {
+    "space": "c",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/core-tiles-c05.webp"
+ },
+ "tomb-of-oedon": {
+  "id": "tomb-of-oedon",
+  "name": "TOMB OF OEDON",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.3
+    },
+    "named": "TOMB OF OEDON",
+    "icons": [
+     "consumable"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.78
+    },
+    "named": null,
+    "icons": [
+     "lamp"
+    ]
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "b",
+    "edge": "S"
+   }
+  ],
+  "specialText": "Instead of drawing a random [consumable icon], draw 3 and select 1. Shuffle the others back into the deck.",
+  "art": "/bloodborne/tiles/tomb-of-oedon.webp"
+ },
+ "alleyway": {
+  "id": "alleyway",
+  "name": "ALLEYWAY",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.17,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": []
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "named": "ALLEYWAY",
+    "icons": [
+     "enemy3"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.85,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "c",
+    "edge": "E"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/alleyway.webp"
+ },
+ "barred-window": {
+  "id": "barred-window",
+  "name": "BARRED WINDOW",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.3,
+     "y": 0.32
+    },
+    "named": "BARRED WINDOW",
+    "icons": []
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.8,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": [
+     "consumable"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.3,
+     "y": 0.78
+    },
+    "named": null,
+    "icons": [
+     "enemy2"
+    ]
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "a",
+    "c"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "b",
+    "edge": "E"
+   },
+   {
+    "space": "c",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/barred-window.webp"
+ },
+ "graveyard": {
+  "id": "graveyard",
+  "name": "GRAVEYARD",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.17
+    },
+    "named": null,
+    "icons": []
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.52
+    },
+    "named": "GRAVEYARD",
+    "icons": [
+     "consumable",
+     "enemy2"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.5,
+     "y": 0.86
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "N"
+   },
+   {
+    "space": "b",
+    "edge": "W"
+   },
+   {
+    "space": "b",
+    "edge": "E"
+   },
+   {
+    "space": "c",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/graveyard.webp"
+ },
+ "grand-cathedral": {
+  "id": "grand-cathedral",
+  "name": "GRAND CATHEDRAL",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.22
+    },
+    "named": "GRAND CATHEDRAL",
+    "icons": []
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.32,
+     "y": 0.52
+    },
+    "named": null,
+    "icons": [
+     "lamp"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.68,
+     "y": 0.52
+    },
+    "named": null,
+    "icons": [
+     "consumable"
+    ]
+   },
+   {
+    "id": "d",
+    "center": {
+     "x": 0.5,
+     "y": 0.85
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "a",
+    "c"
+   ],
+   [
+    "b",
+    "c"
+   ],
+   [
+    "b",
+    "d"
+   ],
+   [
+    "c",
+    "d"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "d",
+    "edge": "S"
+   }
+  ],
+  "specialText": "Interact on any space: Heal 2",
+  "art": "/bloodborne/tiles/grand-cathedral.webp"
+ },
+ "iosefka-s-clinic": {
+  "id": "iosefka-s-clinic",
+  "name": "IOSEFKA'S CLINIC",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.4
+    },
+    "named": "IOSEFKA'S CLINIC",
+    "icons": [
+     "lamp"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.85
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "a",
+    "edge": "E"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   }
+  ],
+  "specialText": "Once during their turn, the Hunter may suffer 1 [blood-drop icon] to draw 1 card.",
+  "art": "/bloodborne/tiles/iosefka-s-clinic.webp",
+  "uncertain": true,
+  "note": "Clinic interior (top ~2/3) plus cobbled yard below; divider is the short white line at the interior steps. W/E exits are lit doorways with arrow signs at y~0.5 (house style, same as tile 1). Large double cabinet on the north wall is furniture, not an exit."
+ },
+ "core-tiles-c12": {
+  "id": "core-tiles-c12",
+  "name": "",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.22,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": [
+     "enemy2"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.78,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": [
+     "consumable"
+    ]
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "N"
+   },
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   },
+   {
+    "space": "b",
+    "edge": "E"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/core-tiles-c12.webp",
+  "uncertain": true,
+  "note": "Central square pit (gallows well) blocks the middle; the walkable ring around it is cut by two divider segments: one from the top edge to the pit at x~0.565, one from the pit to the bottom edge at x~0.425. This yields two wrap-around spaces: a = west half, b = east half. Top-edge exit (x~0.5) lies west of the top cut -> a; bottom-edge exit (x~0.5) lies east of the bottom cut -> b. enemy2 = copper barbed-talon (bottom-left); consumable = green vial-rack (top-right)."
+ },
+ "core-tiles-c13": {
+  "id": "core-tiles-c13",
+  "name": "",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.17
+    },
+    "named": null,
+    "icons": [
+     "consumable"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": [
+     "enemy2"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.5,
+     "y": 0.83
+    },
+    "named": null,
+    "icons": [
+     "enemy1"
+    ]
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "b",
+    "edge": "W"
+   },
+   {
+    "space": "b",
+    "edge": "E"
+   },
+   {
+    "space": "c",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/core-tiles-c13.webp"
+ },
+ "core-tiles-c14": {
+  "id": "core-tiles-c14",
+  "name": "",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.25
+    },
+    "named": null,
+    "icons": []
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.75
+    },
+    "named": null,
+    "icons": [
+     "consumable",
+     "enemy3"
+    ]
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "N"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/core-tiles-c14.webp"
+ },
+ "oedon-chapel": {
+  "id": "oedon-chapel",
+  "name": "OEDON CHAPEL",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.25
+    },
+    "named": "OEDON CHAPEL",
+    "icons": [
+     "lamp"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.3,
+     "y": 0.68
+    },
+    "named": null,
+    "icons": []
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.7,
+     "y": 0.68
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "a",
+    "c"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "N"
+   },
+   {
+    "space": "b",
+    "edge": "W"
+   },
+   {
+    "space": "c",
+    "edge": "E"
+   }
+  ],
+  "specialText": "Enemy Attacks suffer -1 [attack/range icon] while on this tile.",
+  "art": "/bloodborne/tiles/oedon-chapel.webp"
+ },
+ "core-tiles-c16": {
+  "id": "core-tiles-c16",
+  "name": "",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.25,
+     "y": 0.3
+    },
+    "named": null,
+    "icons": [
+     "enemy1"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.75,
+     "y": 0.3
+    },
+    "named": null,
+    "icons": [
+     "enemy3"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.5,
+     "y": 0.82
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "a",
+    "c"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "b",
+    "edge": "E"
+   },
+   {
+    "space": "c",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/core-tiles-c16.webp"
+ },
+ "core-tiles-c17": {
+  "id": "core-tiles-c17",
+  "name": "",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.3
+    },
+    "named": null,
+    "icons": [
+     "consumable"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.8
+    },
+    "named": null,
+    "icons": [
+     "enemy3"
+    ]
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "a",
+    "edge": "E"
+   },
+   {
+    "space": "b",
+    "edge": "S"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/core-tiles-c17.webp"
+ },
+ "core-tiles-c18": {
+  "id": "core-tiles-c18",
+  "name": "",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.28,
+     "y": 0.5
+    },
+    "named": null,
+    "icons": [
+     "enemy2"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.78,
+     "y": 0.45
+    },
+    "named": null,
+    "icons": [
+     "enemy1"
+    ]
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "a",
+    "edge": "W"
+   },
+   {
+    "space": "b",
+    "edge": "E"
+   }
+  ],
+  "specialText": null,
+  "art": "/bloodborne/tiles/core-tiles-c18.webp"
+ },
+ "church-of-the-good-chalice": {
+  "id": "church-of-the-good-chalice",
+  "name": "CHURCH OF THE GOOD CHALICE",
+  "set": "core",
+  "spaces": [
+   {
+    "id": "a",
+    "center": {
+     "x": 0.5,
+     "y": 0.27
+    },
+    "named": "CHURCH OF THE GOOD CHALICE",
+    "icons": [
+     "consumable",
+     "consumable"
+    ]
+   },
+   {
+    "id": "b",
+    "center": {
+     "x": 0.5,
+     "y": 0.55
+    },
+    "named": null,
+    "icons": [
+     "lamp"
+    ]
+   },
+   {
+    "id": "c",
+    "center": {
+     "x": 0.5,
+     "y": 0.85
+    },
+    "named": null,
+    "icons": []
+   }
+  ],
+  "adjacency": [
+   [
+    "a",
+    "b"
+   ],
+   [
+    "b",
+    "c"
+   ]
+  ],
+  "exits": [
+   {
+    "space": "c",
+    "edge": "S"
+   }
+  ],
+  "specialText": "When Interacting: 1 [consumable icon] may be used to gain 1 Blood Echo.",
+  "art": "/bloodborne/tiles/church-of-the-good-chalice.webp"
+ }
+}

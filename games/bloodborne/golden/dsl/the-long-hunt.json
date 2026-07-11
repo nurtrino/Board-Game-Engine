@@ -1,0 +1,233 @@
+{
+  "_comment": "Hand-authored mission DSL for The Long Hunt, encoded from games/bloodborne/golden/transcribed/missions-the-long-hunt.json (verbatim text). Icon-slot picks {enemy1/2/3} follow the hunt-board slot verification (olive larva=1, copper talon=2, purple hand=3); the transcription's navy/silver/brown medallions map navy=enemy3(hand? see note) - RESOLVED per-tile: arena spawns reference the tile's OWN printed spawn space via icon field, and every core tile has exactly one spawn icon except Central Lamp, so the icon id is redundant in practice; 'anySpawn' is used where the tile has one spawn space.",
+
+  "Chapter 1 - Setup": { "triggers": [
+    { "on": "startOfHunt", "reveal": "1" },
+    { "on": "endMoveOnTile", "tile": "Courtyard Lamp", "reveal": "5" },
+    { "on": "endMoveOnTile", "tile": "Occupied House", "reveal": "8" },
+    { "on": "endMoveOnTile", "tile": "Ransacked House", "reveal": "12" }
+  ]},
+  "Chapter 2 - Setup": { "triggers": [
+    { "on": "startOfHunt", "reveal": "18" },
+    { "on": "endMoveOnTile", "tile": "Iosefka's Clinic", "reveal": "24" },
+    { "on": "endMoveOnTile", "tile": "Oedon Chapel", "reveal": "29" },
+    { "on": "endMoveOnTile", "tile": "The Great Bridge", "reveal": "35" }
+  ], "prePlace": { "chain": ["Graveyard", "random2exit", "Tomb of Oedon"], "specialRuleCard": "17" } },
+  "Chapter 3 - Setup": { "triggers": [
+    { "on": "startOfHunt", "reveal": "40" },
+    { "on": "endMoveOnTile", "tile": "Iosefka's Clinic", "reveal": "45" },
+    { "on": "endMoveOnTile", "tile": "The Great Bridge", "reveal": "53" },
+    { "on": "endMoveOnTile", "tile": "Oedon Chapel", "reveal": "56" }
+  ], "prePlace": { "chain": ["Graveyard", "random2exit", "Tomb of Oedon"], "specialRuleCard": "17" } },
+
+  "1": { "goal": { "type": "endMoveOnTile", "params": { "tile": "Central Lamp", "insight": 2 }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "2" } ] } },
+  "2": {
+    "onReveal": [
+      { "do": "reveal", "card": "3" },
+      { "do": "arena", "tile": "Central Lamp", "enemy": "Scourge Beast", "icon": "anySpawn", "tag": "2", "respawnOnReset": true }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "2" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "4" }, { "do": "completeHunt" } ] }
+  },
+  "3": { "onReveal": [
+    { "do": "hpPool", "tag": "2", "tokens": "n" },
+    { "do": "replaceAttack", "tag": "2", "slot": "ability", "attack": { "name": "Vicious", "speed": "fast", "damage": 3, "isAbility": false, "text": "Scourge Beast makes 1 Quick Swipe Attack. It cannot be Staggered, deals +1 {dmg}, and gains Stagger and Stun.", "flags": { "noStagger": true, "stagger": true, "stun": true } } }
+  ]},
+  "4": { "onReveal": [ { "do": "reward", "item": "Blood Stone Shard" }, { "do": "reward", "item": "Caryll Rune: Moon" } ] },
+
+  "5": {
+    "onReveal": [
+      { "do": "reveal", "card": "6" },
+      { "do": "arena", "tile": "Courtyard Lamp", "enemy": "Hunter Mob", "icon": "anySpawn", "tag": "5", "respawnOnReset": true }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "5" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "7" } ] }
+  },
+  "6": { "onReveal": [ { "do": "hpPool", "tag": "5", "tokens": "1or2at3plus" } ] },
+  "7": { "onReveal": [ { "do": "reward", "item": "Hand Lantern" }, { "do": "reward", "item": "Ludwig's Rifle" } ] },
+
+  "8": {
+    "onReveal": [ { "do": "survivor", "id": "8", "space": "space:Occupied House", "pickup": "moveOut", "onLose": "return" } ],
+    "goal": { "type": "escortTokenTo", "params": { "id": "8", "tile": "Oedon Chapel" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "9" } ] }
+  },
+  "9": {
+    "onReveal": [
+      { "do": "reveal", "card": "10" },
+      { "do": "arena", "tile": "Oedon Chapel", "enemy": "Scourge Beast", "icon": "anySpawn", "tag": "9", "respawnOnReset": true, "immuneToTileText": true }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "9" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "11" } ] }
+  },
+  "10": { "onReveal": [
+    { "do": "hpPool", "tag": "9", "tokens": "1or2at3plus" },
+    { "do": "replaceAttack", "tag": "9", "slot": "special", "attack": { "name": "Blood Frenzy", "speed": "fast", "damage": 2, "text": "Deals +2 {dmg} if Scourge Beast has {dmg} on it. If Scourge Beast is slain, Hunter must Dodge ({slow}) or suffer 3 {dmg}.", "flags": { "bonusIfSelfDamaged": 2 }, "rider": { "kind": "on-slain-dodge-or-suffer", "speed": "slow", "damage": 3 } } }
+  ]},
+  "11": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Clawmark" } ] },
+
+  "12": {
+    "onReveal": [ { "do": "survivor", "id": "12", "space": "space:Ransacked House", "pickup": "interact" } ],
+    "goal": { "type": "interactToken", "params": { "id": "12" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "13" } ] }
+  },
+  "13": {
+    "onReveal": [ { "do": "tokenFlee", "id": "12", "distance": 4, "revealTiles": true, "movesAwayPerTurn": 1 } ],
+    "goal": { "type": "endMoveOnToken", "params": { "id": "12", "noPursuit": true }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "14" } ] }
+  },
+  "14": { "goal": { "type": "choice", "params": { "options": [
+      { "label": "STRIKE THE GIRL DOWN", "reveal": "15" },
+      { "label": "SPARE HER AND ORDER HER TO FLEE", "reveal": "16" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "15": { "onReveal": [ { "do": "reward", "echoes": 1 }, { "do": "reward", "item": "Caryll Rune: Blood Rapture" } ] },
+  "16": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Eye" } ] },
+
+  "17": { "kindOverride": "special" },
+
+  "18": {
+    "onReveal": [ { "do": "counter", "id": "18", "tokens": 0 }, { "do": "specialRule", "rule": "18" } ],
+    "goal": { "type": "counterAtLeast", "params": { "id": "18", "count": "nPlus1" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "19" } ] },
+    "hooks": { "discardConsumableSpawns": "Scourge Beast", "corpseOnSlay": "Scourge Beast", "dropCorpsesOnTile": "Graveyard", "dropTo": "18" }
+  },
+  "19": { "goal": { "type": "insightThisChapter", "params": { "count": 2 }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "20" } ] } },
+  "20": {
+    "onReveal": [
+      { "do": "fogGates", "tile": "Graveyard" },
+      { "do": "spawnBoss", "boss": "Cleric Beast", "space": "enemy3:Graveyard", "tag": "20" }
+    ],
+    "goal": { "type": "bossPhase2", "params": { "boss": "Cleric Beast" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "21" }, { "do": "reveal", "card": "22" } ] }
+  },
+  "21": {
+    "onReveal": [ { "do": "removeFogGates", "tile": "Graveyard" }, { "do": "clearHpPool", "tag": "20" } ],
+    "goal": { "type": "bossEntersTile", "params": { "boss": "Cleric Beast", "tile": "Tomb of Oedon" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "23" }, { "do": "completeHunt" } ] }
+  },
+  "22": { "onReveal": [ { "do": "bossOverride", "boss": "Cleric Beast", "set": { "invulnerable": true, "bonusActivationRoundEnd": "towardLowestHp", "respawnTo": "enemy3:Graveyard" } } ] },
+  "23": { "onReveal": [ { "do": "reward", "echoes": 1 }, { "do": "reward", "item": "Beast Roar" } ] },
+
+  "24": { "goal": { "type": "slayTypeOnTile", "params": { "enemies": ["Hunter Mob", "Huntsman's Minion"], "tile": "Iosefka's Clinic" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "25" } ] } },
+  "25": {
+    "onReveal": [ { "do": "reveal", "card": "27" } ],
+    "goal": { "type": "slayTypeOnTile", "params": { "enemies": ["Scourge Beast"], "tile": "Iosefka's Clinic" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "26" } ] }
+  },
+  "26": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Iosefka's Blood Vial" } ] },
+  "27": {
+    "onReveal": [ { "do": "counter", "id": "27", "tokens": 0 }, { "do": "specialRule", "rule": "27" } ],
+    "goal": { "type": "counterAtLeast", "params": { "id": "27", "count": "nPlus1" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "28" } ] },
+    "hooks": { "survivorOnConsumablePickup": true, "dropSurvivorsOnTile": "Iosefka's Clinic", "dropTo": "27" }
+  },
+  "28": { "onReveal": [ { "do": "reward", "item": "Messenger's Gift" }, { "do": "lockMission", "card": "33" } ] },
+
+  "29": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCard": "16", "reveal": "30" },
+      { "else": true, "reveal": "33" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "30": {
+    "onReveal": [
+      { "do": "reveal", "card": "31" },
+      { "do": "arena", "tile": "Oedon Chapel", "enemy": "Female Beast Patient", "icon": "anySpawn", "tag": "30", "respawnOnReset": true, "immuneToTileText": true }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "30" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "32" } ] }
+  },
+  "31": { "onReveal": [
+    { "do": "hpPool", "tag": "30", "tokens": "2or3at3plus" },
+    { "do": "replaceAttack", "tag": "30", "slot": "special", "attack": { "name": "Ravage", "speed": "fast", "damage": 3, "text": "Stun. If Beast Patient is slain, Hunter must Dodge ({slow}) or suffer 3 {dmg}.", "flags": { "stun": true }, "rider": { "kind": "on-slain-dodge-or-suffer", "speed": "slow", "damage": 3 } } }
+  ]},
+  "32": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Formless Oedon" } ] },
+  "33": {
+    "onReveal": [ { "do": "counter", "id": "33", "tokens": 0 }, { "do": "specialRule", "rule": "33" } ],
+    "goal": { "type": "counterAtLeast", "params": { "id": "33", "count": "nPlus1" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "34" } ] },
+    "hooks": { "survivorOnConsumablePickup": true, "dropSurvivorsOnTile": "Oedon Chapel", "dropTo": "33" }
+  },
+  "34": { "onReveal": [ { "do": "reward", "item": "Caryll Rune: Oedon Writhe" }, { "do": "lockMission", "card": "27" }, { "do": "lockMission", "card": "52" } ] },
+
+  "35": {
+    "onReveal": [
+      { "do": "reveal", "card": "36" },
+      { "do": "arena", "tile": "The Great Bridge", "enemy": "Huntsman's Minion", "icon": "anySpawn", "tag": "35", "respawnOnReset": true }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "35" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "37" } ] }
+  },
+  "36": { "onReveal": [
+    { "do": "hpPool", "tag": "35", "tokens": 1 },
+    { "do": "replaceAttack", "tag": "35", "slot": "special", "attack": { "name": "Immune to Pain", "speed": "slow", "damage": 4, "text": "Block 2 {dmg} from Hunter's Attack. Cannot be Staggered.", "flags": { "blockFromHunter": 2, "noStagger": true } } }
+  ]},
+  "37": {
+    "onReveal": [ { "do": "survivor", "id": "37", "space": "space:The Great Bridge", "pickup": "moveOut", "onLose": "return" } ],
+    "goal": { "type": "escortTokenTo", "params": { "id": "37", "tiles": [ { "tile": "Iosefka's Clinic", "reveal": "38" }, { "tile": "Oedon Chapel", "reveal": "39" } ] }, "completesMission": true, "onComplete": [] }
+  },
+  "38": { "onReveal": [ { "do": "reward", "item": "Old Hunter Bone" }, { "do": "reward", "item": "Repeating Pistol" } ] },
+  "39": { "onReveal": [ { "do": "reward", "item": "Old Hunter Bone" }, { "do": "reward", "item": "Repeating Pistol" } ] },
+
+  "40": {
+    "onReveal": [
+      { "do": "reveal", "card": "41" },
+      { "do": "fogGates", "tile": "Tomb of Oedon" },
+      { "do": "spawnBoss", "boss": "Cleric Beast", "space": "enemy1:Tomb of Oedon", "tag": "40" }
+    ],
+    "goal": { "type": "slayBoss", "params": { "boss": "Cleric Beast" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "44" }, { "do": "completeHunt" } ] }
+  },
+  "41": {
+    "onReveal": [ { "do": "specialRule", "rule": "41" }, { "do": "tileLock", "tile": "Tomb of Oedon" } ],
+    "goal": { "type": "insightThisChapterOrTrack", "params": { "count": 2, "trackSpace": 8 }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "42" }, { "do": "reveal", "card": "43" } ] }
+  },
+  "42": { "onReveal": [
+    { "do": "tileUnlock", "tile": "Tomb of Oedon" },
+    { "do": "removeFogGates", "tile": "Tomb of Oedon" },
+    { "do": "bossOverride", "boss": "Cleric Beast", "set": { "bonusActivationRoundEnd": "moveFourTowardLowestHpAndAttack", "healOnReset": true, "clearPoolOnReset": true } }
+  ]},
+  "43": { "onReveal": [ { "do": "bossOverride", "boss": "Cleric Beast", "set": { "onFlip": { "card": "Recovery", "spawn": "Scourge Beast", "noRespawn": true } } }, { "do": "discardIfInsightCard", "card": "55", "discard": "43" } ] },
+  "44": { "kindOverride": "other" },
+
+  "45": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCardsAll": ["26", "28"], "reveal": "46" },
+      { "ifInsightCard": "28", "notInsightCard": "26", "reveal": "51" },
+      { "ifInsightCard": "26", "notInsightCard": "28", "reveal": "52" },
+      { "else": true, "reveal": "24" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "46": { "goal": { "type": "choice", "params": { "options": [
+      { "label": "ATTACK IOSEFKA", "reveal": "47" },
+      { "label": "AGREE TO AID HER", "reveal": "49" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "47": {
+    "onReveal": [
+      { "do": "fogGates", "tile": "Iosefka's Clinic" },
+      { "do": "spawnNpc", "enemy": "Iosefka", "space": "enemy1:Iosefka's Clinic", "tag": "47" }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "47" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "48" } ] }
+  },
+  "48": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Augur of Ebrietas" } ] },
+  "49": {
+    "onReveal": [ { "do": "survivor", "id": "49", "space": "self", "pickup": "interact" }, { "do": "tokenFlee", "id": "49", "distance": 4, "revealTiles": false, "movesAwayPerTurn": 1 } ],
+    "goal": { "type": "escortTokenTo", "params": { "id": "49", "tile": "Iosefka's Clinic" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "50" } ] }
+  },
+  "50": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Augur of Ebrietas" } ] },
+  "51": { "goal": { "type": "slayTypeOnTile", "params": { "enemies": ["Scourge Beast"], "tile": "Iosefka's Clinic" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "26" } ] } },
+  "52": {
+    "onReveal": [ { "do": "counter", "id": "52", "tokens": 0 }, { "do": "specialRule", "rule": "52" } ],
+    "goal": { "type": "counterAtLeast", "params": { "id": "52", "count": "nPlus1" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "28" } ] },
+    "hooks": { "survivorOnConsumablePickup": true, "dropSurvivorsOnTile": "Iosefka's Clinic", "dropTo": "52" }
+  },
+
+  "53": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCardAny": ["38", "39"], "reveal": "54" },
+      { "else": true, "reveal": "35" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "54": {
+    "onReveal": [ { "do": "counter", "id": "54", "tokens": "nPlus2" }, { "do": "specialRule", "rule": "54" } ],
+    "goal": { "type": "counterExhausted", "params": { "id": "54" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "55" } ] },
+    "hooks": { "decrementOnSlay": "Scourge Beast", "decFrom": "54" }
+  },
+  "55": { "onReveal": [ { "do": "reward", "item": "Executioner's Gloves" } ] },
+
+  "56": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCard": "39", "reveal": "57" },
+      { "ifInsightCard": "34", "notInsightCard": "39", "reveal": "59" },
+      { "else": true, "reveal": "33" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "57": {
+    "onReveal": [ { "do": "counter", "id": "57", "tokens": "nPlus1" }, { "do": "npcFollower", "id": "57", "space": "space:Oedon Chapel" }, { "do": "specialRule", "rule": "57" } ],
+    "goal": { "type": "counterExhausted", "params": { "id": "57" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "58" } ] },
+    "hooks": { "decrementOnSlayTypesAtNpc": ["Hunter Mob", "Huntsman's Minion"], "decFrom": "57" }
+  },
+  "58": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Hunter" } ] },
+  "59": {
+    "onReveal": [ { "do": "counter", "id": "59", "tokens": "nPlus1" }, { "do": "specialRule", "rule": "59" } ],
+    "goal": { "type": "counterExhausted", "params": { "id": "59" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "60" } ] },
+    "hooks": { "discardConsumablesOnTileDecrements": "Oedon Chapel", "decFrom": "59" }
+  },
+  "60": { "onReveal": [ { "do": "reward", "item": "Empty Phantasm Shell" }, { "do": "reward", "item": "Flamesprayer" } ] }
+}

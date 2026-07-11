@@ -1,0 +1,1090 @@
+{
+ "eileen-the-crow": {
+  "id": "eileen-the-crow",
+  "name": "EILEEN THE CROW",
+  "npc": true,
+  "core": false,
+  "sides": [
+   {
+    "hp": 10,
+    "basic": {
+     "name": "BLADE OF MERCY",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Deals +1 {dmg} for each {n} faster than Hunter's Attack.",
+     "rider": {
+      "kind": "display",
+      "text": "Deals +1 {dmg} for each {n} faster than Hunter's Attack."
+     }
+    },
+    "special": {
+     "name": "PARRY STRIKE",
+     "speed": "fast",
+     "damage": 3,
+     "text": "Stagger\nStun",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nStun"
+     }
+    },
+    "ability": {
+     "name": "HUNTER PISTOL",
+     "speed": null,
+     "damage": 0,
+     "text": "Stagger Hunter's Attack unless they Dodge ({fast}).\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Stagger Hunter's Attack unless they Dodge ({fast}).\nFlip another Enemy Action."
+     }
+    }
+   },
+   {
+    "hp": 18,
+    "basic": {
+     "name": "BLADE OF MERCY",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Deals +1 {dmg} for each {n} faster than Hunter's Attack.",
+     "rider": {
+      "kind": "display",
+      "text": "Deals +1 {dmg} for each {n} faster than Hunter's Attack."
+     }
+    },
+    "special": {
+     "name": "PARRY STRIKE",
+     "speed": "fast",
+     "damage": 3,
+     "text": "Stagger\nStun",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nStun"
+     }
+    },
+    "ability": {
+     "name": "HUNTER PISTOL",
+     "speed": null,
+     "damage": 0,
+     "text": "Stagger Hunter's Attack unless they Dodge ({fast}).\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Stagger Hunter's Attack unless they Dodge ({fast}).\nFlip another Enemy Action."
+     }
+    }
+   }
+  ],
+  "mini": "eileen-the-crow",
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 0
+  }
+ },
+ "iosefka": {
+  "id": "iosefka",
+  "name": "IOSEFKA",
+  "npc": true,
+  "core": false,
+  "sides": [
+   {
+    "hp": 10,
+    "basic": {
+     "name": "THREADED CANE",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Poison",
+     "rider": {
+      "kind": "display",
+      "text": "Poison"
+     }
+    },
+    "special": {
+     "name": "AUGUR OF EBRIETAS",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Stagger\nTargets all Hunters in this space.\nHunters hit are moved 1 space away.",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nTargets all Hunters in this space.\nHunters hit are moved 1 space away."
+     }
+    },
+    "ability": {
+     "name": "HUNTER PISTOL",
+     "speed": null,
+     "damage": 0,
+     "text": "Stagger Hunter's Attack unless they Dodge ({fast}).\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Stagger Hunter's Attack unless they Dodge ({fast}).\nFlip another Enemy Action."
+     }
+    }
+   },
+   {
+    "hp": 18,
+    "basic": {
+     "name": "THREADED CANE",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Poison",
+     "rider": {
+      "kind": "display",
+      "text": "Poison"
+     }
+    },
+    "special": {
+     "name": "AUGUR OF EBRIETAS",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Stagger\nTargets all Hunters in this space.\nHunters hit are moved 1 space away.",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nTargets all Hunters in this space.\nHunters hit are moved 1 space away."
+     }
+    },
+    "ability": {
+     "name": "HUNTER PISTOL",
+     "speed": null,
+     "damage": 0,
+     "text": "Stagger Hunter's Attack unless they Dodge ({fast}).\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Stagger Hunter's Attack unless they Dodge ({fast}).\nFlip another Enemy Action."
+     }
+    }
+   }
+  ],
+  "mini": null,
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 1
+  }
+ },
+ "old-hunter-henryk": {
+  "id": "old-hunter-henryk",
+  "name": "OLD HUNTER HENRYK",
+  "npc": true,
+  "core": false,
+  "sides": [
+   {
+    "hp": 10,
+    "basic": {
+     "name": "SAW CLEAVER",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Deals 1 {dmg} to all other Hunters in this space unless they Dodge ({medium}).",
+     "rider": {
+      "kind": "display",
+      "text": "Deals 1 {dmg} to all other Hunters in this space unless they Dodge ({medium})."
+     }
+    },
+    "special": {
+     "name": "HUNTER PISTOL",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger"
+     }
+    },
+    "ability": {
+     "name": "POISONED KNIFE",
+     "speed": null,
+     "damage": 0,
+     "text": "Hunter suffers 1 {dmg} and Poison unless they Dodge ({fast}).\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Hunter suffers 1 {dmg} and Poison unless they Dodge ({fast}).\nFlip another Enemy Action."
+     }
+    }
+   },
+   {
+    "hp": 18,
+    "basic": {
+     "name": "SAW CLEAVER",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Deals 1 {dmg} to all other Hunters in this space unless they Dodge ({medium}).",
+     "rider": {
+      "kind": "display",
+      "text": "Deals 1 {dmg} to all other Hunters in this space unless they Dodge ({medium})."
+     }
+    },
+    "special": {
+     "name": "HUNTER PISTOL",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger"
+     }
+    },
+    "ability": {
+     "name": "POISONED KNIFE",
+     "speed": null,
+     "damage": 0,
+     "text": "Hunter suffers 1 {dmg} and Poison unless they Dodge ({fast}).\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Hunter suffers 1 {dmg} and Poison unless they Dodge ({fast}).\nFlip another Enemy Action."
+     }
+    }
+   }
+  ],
+  "mini": "old-hunter-henryk",
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 2
+  }
+ },
+ "huntsman-s-minion": {
+  "id": "huntsman-s-minion",
+  "name": "HUNTSMAN'S MINION",
+  "npc": false,
+  "core": true,
+  "sides": [
+   {
+    "hp": 5,
+    "basic": {
+     "name": "LUMBERING SWING",
+     "speed": "slow",
+     "damage": 3
+    },
+    "special": {
+     "name": "OVERHEAD SLAM",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Cannot be Staggered.\nDeals 2 {dmg} to all other Hunters in this space unless they Dodge ({slow}).",
+     "rider": {
+      "kind": "display",
+      "text": "Cannot be Staggered.\nDeals 2 {dmg} to all other Hunters in this space unless they Dodge ({slow})."
+     }
+    },
+    "ability": {
+     "name": "BRICK STUN",
+     "speed": null,
+     "damage": 0,
+     "text": "Hunter must discard 1 card or their Attack suffers -2 {n} and they cannot Dodge.\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Hunter must discard 1 card or their Attack suffers -2 {n} and they cannot Dodge.\nFlip another Enemy Action."
+     }
+    }
+   },
+   {
+    "hp": 5,
+    "basic": {
+     "name": "LUMBERING SWING",
+     "speed": "slow",
+     "damage": 3
+    },
+    "special": {
+     "name": "BRICK SWIPE",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger"
+     }
+    },
+    "ability": {
+     "name": "SHOULDER CHARGE",
+     "speed": null,
+     "damage": 0,
+     "text": "At {slow}, before Hunter's Attack, move Huntsman's Minion 2 spaces away. Unless Hunter Dodges ({slow}), they are also moved and suffer 3 {dmg} and Stun.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "At {slow}, before Hunter's Attack, move Huntsman's Minion 2 spaces away. Unless Hunter Dodges ({slow}), they are also moved and suffer 3 {dmg} and Stun."
+     }
+    }
+   }
+  ],
+  "mini": null,
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 3
+  }
+ },
+ "hunter-mob": {
+  "id": "hunter-mob",
+  "name": "HUNTER MOB",
+  "npc": false,
+  "core": true,
+  "sides": [
+   {
+    "hp": 4,
+    "basic": {
+     "name": "AXE SWING",
+     "speed": "medium",
+     "damage": 2
+    },
+    "special": {
+     "name": "SHIELD BASH",
+     "speed": "medium",
+     "damage": 2,
+     "text": "Stagger\nStun",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nStun"
+     }
+    },
+    "ability": {
+     "name": "MOB FRENZY",
+     "speed": null,
+     "damage": 0,
+     "text": "Flip another Enemy Action.\nHunter Mob's next Attack gains +1 {n} and +1 {dmg}.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Flip another Enemy Action.\nHunter Mob's next Attack gains +1 {n} and +1 {dmg}."
+     }
+    }
+   },
+   {
+    "hp": 4,
+    "basic": {
+     "name": "AXE SWING",
+     "speed": "medium",
+     "damage": 2
+    },
+    "special": {
+     "name": "RIFLE SHOT",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Stun",
+     "rider": {
+      "kind": "display",
+      "text": "Stun"
+     }
+    },
+    "ability": {
+     "name": "MOLOTOV TOSS",
+     "speed": null,
+     "damage": 0,
+     "text": "At {slow}, before Hunter's Attack, move Hunter Mob 1 space away. All Hunters in the space it left must then Dodge ({medium}) or suffer 3 {dmg}.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "At {slow}, before Hunter's Attack, move Hunter Mob 1 space away. All Hunters in the space it left must then Dodge ({medium}) or suffer 3 {dmg}."
+     }
+    }
+   }
+  ],
+  "mini": null,
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 4
+  }
+ },
+ "scourge-beast": {
+  "id": "scourge-beast",
+  "name": "SCOURGE BEAST",
+  "npc": false,
+  "core": true,
+  "sides": [
+   {
+    "hp": 4,
+    "basic": {
+     "name": "QUICK SWIPE",
+     "speed": "fast",
+     "damage": 2
+    },
+    "special": {
+     "name": "COMBO SLASH",
+     "speed": "medium",
+     "damage": 2,
+     "text": "Even if this Attack is Dodged or Staggered, Hunter must Dodge ({medium}) or suffer 2 additional {dmg}.",
+     "rider": {
+      "kind": "dodge-or-suffer",
+      "speed": "medium",
+      "damage": 2,
+      "text": "Even if this Attack is Dodged or Staggered, Hunter must Dodge ({medium}) or suffer 2 additional {dmg}."
+     }
+    },
+    "ability": {
+     "name": "FERAL RAGE",
+     "speed": null,
+     "damage": 0,
+     "text": "Flip another Enemy Action.\nScourge Beast's next Attack gains +1 {dmg} and Stagger.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Flip another Enemy Action.\nScourge Beast's next Attack gains +1 {dmg} and Stagger."
+     }
+    },
+    "passive": "Scourge Beasts move 2 when Activating or Pursuing.",
+    "passiveEffects": {
+     "moveBonus": 1
+    }
+   },
+   {
+    "hp": 4,
+    "basic": {
+     "name": "QUICK SWIPE",
+     "speed": "fast",
+     "damage": 2
+    },
+    "special": {
+     "name": "PIN AND GNAW",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Stun\nCannot be Dodged.",
+     "rider": {
+      "kind": "display",
+      "text": "Stun\nCannot be Dodged."
+     }
+    },
+    "ability": {
+     "name": "BESTIAL HOWL",
+     "speed": null,
+     "damage": 0,
+     "text": "At {slow}, before Hunter's Attack, spawn 1 Scourge Beast in this space.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "At {slow}, before Hunter's Attack, spawn 1 Scourge Beast in this space."
+     }
+    },
+    "passive": "Scourge Beasts move 2 when Activating or Pursuing.",
+    "passiveEffects": {
+     "moveBonus": 1
+    }
+   }
+  ],
+  "mini": null,
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 5
+  }
+ },
+ "male-beast-patient": {
+  "id": "male-beast-patient",
+  "name": "MALE BEAST PATIENT",
+  "npc": false,
+  "core": true,
+  "sides": [
+   {
+    "hp": 3,
+    "basic": {
+     "name": "CLAW SWIPE",
+     "speed": "medium",
+     "damage": 2
+    },
+    "special": {
+     "name": "DEATH RATTLE",
+     "speed": "medium",
+     "damage": 2,
+     "text": "If Beast Patient is killed, unless it was Staggered, Hunter suffers 2 {dmg} and Poison.",
+     "rider": {
+      "kind": "display",
+      "text": "If Beast Patient is killed, unless it was Staggered, Hunter suffers 2 {dmg} and Poison."
+     }
+    },
+    "ability": {
+     "name": "PACK TACTICS",
+     "speed": null,
+     "damage": 0,
+     "text": "At {medium}, before Hunter's Attack, spawn 1 Male Beast Patient in this space.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "At {medium}, before Hunter's Attack, spawn 1 Male Beast Patient in this space."
+     }
+    }
+   },
+   {
+    "hp": 3,
+    "basic": {
+     "name": "CLAW SWIPE",
+     "speed": "medium",
+     "damage": 2
+    },
+    "special": {
+     "name": "ASHEN TOXIN",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Poison\nIf the Hunter is already Poisoned, they suffer Stun, and their Attack deals -2 {dmg}.",
+     "rider": {
+      "kind": "stun",
+      "text": "Poison\nIf the Hunter is already Poisoned, they suffer Stun, and their Attack deals -2 {dmg}."
+     }
+    },
+    "ability": {
+     "name": "PACK TACTICS",
+     "speed": null,
+     "damage": 0,
+     "text": "At {medium}, before Hunter's Attack, spawn 1 Male Beast Patient in this space.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "At {medium}, before Hunter's Attack, spawn 1 Male Beast Patient in this space."
+     }
+    }
+   }
+  ],
+  "mini": null,
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 6
+  }
+ },
+ "female-beast-patient": {
+  "id": "female-beast-patient",
+  "name": "FEMALE BEAST PATIENT",
+  "npc": false,
+  "core": true,
+  "sides": [
+   {
+    "hp": 3,
+    "basic": {
+     "name": "CLAW SLASH",
+     "speed": "medium",
+     "damage": 2
+    },
+    "special": {
+     "name": "GRAB AND VOMIT",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Poison\nStun\nCannot be Dodged.",
+     "rider": {
+      "kind": "display",
+      "text": "Poison\nStun\nCannot be Dodged."
+     }
+    },
+    "ability": {
+     "name": "ASHEN BLOOD",
+     "speed": null,
+     "damage": 0,
+     "text": "If Hunter's Attack deals any {dmg}, they must Dodge ({fast}) or suffer that much {dmg} and Poison.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "If Hunter's Attack deals any {dmg}, they must Dodge ({fast}) or suffer that much {dmg} and Poison."
+     }
+    }
+   },
+   {
+    "hp": 3,
+    "basic": {
+     "name": "CLAW SLASH",
+     "speed": "medium",
+     "damage": 2
+    },
+    "special": {
+     "name": "ASHEN RAGE",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Flip another Enemy Action.\nIf Basic, Attack deals +2 {dmg}.\nIf Ability or Special, it gains Stagger and Poison.",
+     "rider": {
+      "kind": "flip-another",
+      "text": "Flip another Enemy Action.\nIf Basic, Attack deals +2 {dmg}.\nIf Ability or Special, it gains Stagger and Poison."
+     }
+    },
+    "ability": {
+     "name": "ASHEN BLOOD",
+     "speed": null,
+     "damage": 0,
+     "text": "If Hunter's Attack deals any {dmg}, they must Dodge ({fast}) or suffer that much {dmg} and Poison.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "If Hunter's Attack deals any {dmg}, they must Dodge ({fast}) or suffer that much {dmg} and Poison."
+     }
+    }
+   }
+  ],
+  "mini": null,
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 7
+  }
+ },
+ "church-giant": {
+  "id": "church-giant",
+  "name": "CHURCH GIANT",
+  "npc": false,
+  "core": true,
+  "sides": [
+   {
+    "hp": 6,
+    "basic": {
+     "name": "RECKLESS SWING",
+     "speed": "slow",
+     "damage": 4,
+     "text": "If Dodged, Hunter's Attack deals +1 {dmg}.",
+     "rider": {
+      "kind": "display",
+      "text": "If Dodged, Hunter's Attack deals +1 {dmg}."
+     }
+    },
+    "special": {
+     "name": "EXECUTE",
+     "speed": "slow",
+     "damage": 6,
+     "text": "Cannot be Staggered.",
+     "rider": {
+      "kind": "display",
+      "text": "Cannot be Staggered."
+     }
+    },
+    "ability": {
+     "name": "LUMBERING",
+     "speed": null,
+     "damage": 0,
+     "text": "The Church Giant makes no Attack.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "The Church Giant makes no Attack."
+     }
+    }
+   },
+   {
+    "hp": 6,
+    "basic": {
+     "name": "RECKLESS SWING",
+     "speed": "slow",
+     "damage": 4,
+     "text": "If Dodged, Hunter's Attack deals +1 {dmg}.",
+     "rider": {
+      "kind": "display",
+      "text": "If Dodged, Hunter's Attack deals +1 {dmg}."
+     }
+    },
+    "special": {
+     "name": "MIGHTY SWING",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Cannot be Staggered.\nTargets all Hunters in this space.\nHunters hit are moved 2 spaces away.",
+     "rider": {
+      "kind": "display",
+      "text": "Cannot be Staggered.\nTargets all Hunters in this space.\nHunters hit are moved 2 spaces away."
+     }
+    },
+    "ability": {
+     "name": "LUMBERING",
+     "speed": null,
+     "damage": 0,
+     "text": "The Church Giant makes no Attack.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "The Church Giant makes no Attack."
+     }
+    }
+   }
+  ],
+  "mini": null,
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 8
+  }
+ },
+ "old-hunter-djura": {
+  "id": "old-hunter-djura",
+  "name": "OLD HUNTER DJURA",
+  "npc": true,
+  "core": false,
+  "sides": [
+   {
+    "hp": 10,
+    "basic": {
+     "name": "STAKE DRIVER",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Enemy Activation: Djura makes 1 Primed Stake Attack instead.",
+     "rider": {
+      "kind": "display",
+      "text": "Enemy Activation: Djura makes 1 Primed Stake Attack instead."
+     }
+    },
+    "special": {
+     "name": "PRIMED STAKE",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Stun\nDeals 2 {dmg} to all other Hunters in this space unless they Dodge ({slow}).",
+     "rider": {
+      "kind": "display",
+      "text": "Stun\nDeals 2 {dmg} to all other Hunters in this space unless they Dodge ({slow})."
+     }
+    },
+    "ability": {
+     "name": "BLUNDERBUSS",
+     "speed": null,
+     "damage": 0,
+     "text": "All Hunters in this space must Dodge ({medium}) or suffer 1 {dmg} and Stun.\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "dodge-or-suffer",
+      "speed": "medium",
+      "damage": 1,
+      "text": "All Hunters in this space must Dodge ({medium}) or suffer 1 {dmg} and Stun.\nFlip another Enemy Action."
+     }
+    }
+   },
+   {
+    "hp": 18,
+    "basic": {
+     "name": "STAKE DRIVER",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Enemy Activation: Djura makes 1 Primed Stake Attack instead.",
+     "rider": {
+      "kind": "display",
+      "text": "Enemy Activation: Djura makes 1 Primed Stake Attack instead."
+     }
+    },
+    "special": {
+     "name": "PRIMED STAKE",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Stun\nDeals 2 {dmg} to all other Hunters in this space unless they Dodge ({slow}).",
+     "rider": {
+      "kind": "display",
+      "text": "Stun\nDeals 2 {dmg} to all other Hunters in this space unless they Dodge ({slow})."
+     }
+    },
+    "ability": {
+     "name": "BLUNDERBUSS",
+     "speed": null,
+     "damage": 0,
+     "text": "All Hunters in this space must Dodge ({medium}) or suffer 1 {dmg} and Stun.\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "dodge-or-suffer",
+      "speed": "medium",
+      "damage": 1,
+      "text": "All Hunters in this space must Dodge ({medium}) or suffer 1 {dmg} and Stun.\nFlip another Enemy Action."
+     }
+    }
+   }
+  ],
+  "mini": "old-hunter-djura",
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 9
+  }
+ },
+ "alfred-hunter-of-vilebloods": {
+  "id": "alfred-hunter-of-vilebloods",
+  "name": "ALFRED, HUNTER OF VILEBLOODS",
+  "npc": true,
+  "core": false,
+  "sides": [
+   {
+    "hp": 10,
+    "basic": {
+     "name": "KIRKHAMMER SLAM",
+     "speed": "slow",
+     "damage": 3,
+     "text": "Stun",
+     "rider": {
+      "kind": "display",
+      "text": "Stun"
+     }
+    },
+    "special": {
+     "name": "COMBO FLOURISH",
+     "speed": "medium",
+     "damage": 2,
+     "text": "After resolving all Attacks, Alfred makes 1 Kirkhammer Slam Attack.",
+     "rider": {
+      "kind": "display",
+      "text": "After resolving all Attacks, Alfred makes 1 Kirkhammer Slam Attack."
+     }
+    },
+    "ability": {
+     "name": "LUDWIG'S RIFLE",
+     "speed": null,
+     "damage": 0,
+     "text": "Hunter must Dodge ({medium}) or suffer Stagger and Stun.\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Hunter must Dodge ({medium}) or suffer Stagger and Stun.\nFlip another Enemy Action."
+     }
+    }
+   },
+   {
+    "hp": 18,
+    "basic": {
+     "name": "KIRKHAMMER SLAM",
+     "speed": "slow",
+     "damage": 3,
+     "text": "Stun",
+     "rider": {
+      "kind": "display",
+      "text": "Stun"
+     }
+    },
+    "special": {
+     "name": "COMBO FLOURISH",
+     "speed": "medium",
+     "damage": 2,
+     "text": "After resolving all Attacks, Alfred makes 1 Kirkhammer Slam Attack.",
+     "rider": {
+      "kind": "display",
+      "text": "After resolving all Attacks, Alfred makes 1 Kirkhammer Slam Attack."
+     }
+    },
+    "ability": {
+     "name": "LUDWIG'S RIFLE",
+     "speed": null,
+     "damage": 0,
+     "text": "Hunter must Dodge ({medium}) or suffer Stagger and Stun.\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Hunter must Dodge ({medium}) or suffer Stagger and Stun.\nFlip another Enemy Action."
+     }
+    }
+   }
+  ],
+  "mini": "alfred-hunter-of-vilebloods",
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 10
+  }
+ },
+ "djura-s-ally": {
+  "id": "djura-s-ally",
+  "name": "DJURA'S ALLY",
+  "npc": true,
+  "core": false,
+  "sides": [
+   {
+    "hp": 10,
+    "basic": {
+     "name": "SAW CLEAVER",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Deals 1 {dmg} to all other Hunters in this space unless they Dodge ({medium}).",
+     "rider": {
+      "kind": "display",
+      "text": "Deals 1 {dmg} to all other Hunters in this space unless they Dodge ({medium})."
+     }
+    },
+    "special": {
+     "name": "RALLY STRIKE",
+     "speed": "medium",
+     "damage": 3,
+     "text": "After Attack, if this Attack dealt any {dmg}, Djura's Ally Heals 2.",
+     "rider": {
+      "kind": "display",
+      "text": "After Attack, if this Attack dealt any {dmg}, Djura's Ally Heals 2."
+     }
+    },
+    "ability": {
+     "name": "BLOODTHIRSTY",
+     "speed": null,
+     "damage": 0,
+     "text": "Flip another Enemy Action.\nDjura's Ally's next Attack gains +1 {n} and Stagger.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Flip another Enemy Action.\nDjura's Ally's next Attack gains +1 {n} and Stagger."
+     }
+    }
+   },
+   {
+    "hp": 18,
+    "basic": {
+     "name": "SAW CLEAVER",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Deals 1 {dmg} to all other Hunters in this space unless they Dodge ({medium}).",
+     "rider": {
+      "kind": "display",
+      "text": "Deals 1 {dmg} to all other Hunters in this space unless they Dodge ({medium})."
+     }
+    },
+    "special": {
+     "name": "RALLY STRIKE",
+     "speed": "medium",
+     "damage": 3,
+     "text": "After Attack, if this Attack dealt any {dmg}, Djura's Ally Heals 2.",
+     "rider": {
+      "kind": "display",
+      "text": "After Attack, if this Attack dealt any {dmg}, Djura's Ally Heals 2."
+     }
+    },
+    "ability": {
+     "name": "BLOODTHIRSTY",
+     "speed": null,
+     "damage": 0,
+     "text": "Flip another Enemy Action.\nDjura's Ally's next Attack gains +1 {n} and Stagger.",
+     "isAbility": true,
+     "rider": {
+      "kind": "flip-another",
+      "text": "Flip another Enemy Action.\nDjura's Ally's next Attack gains +1 {n} and Stagger."
+     }
+    }
+   }
+  ],
+  "mini": "djura-s-ally",
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 11
+  }
+ },
+ "church-servant": {
+  "id": "church-servant",
+  "name": "CHURCH SERVANT",
+  "npc": false,
+  "core": true,
+  "sides": [
+   {
+    "hp": 4,
+    "basic": {
+     "name": "CANE STRIKE",
+     "speed": "medium",
+     "damage": 3
+    },
+    "special": {
+     "name": "ARCANE EXPLOSION",
+     "speed": "slow",
+     "damage": 3,
+     "text": "Stun\nCannot be Dodged.\nTargets all Hunters in this space.",
+     "rider": {
+      "kind": "display",
+      "text": "Stun\nCannot be Dodged.\nTargets all Hunters in this space."
+     }
+    },
+    "ability": {
+     "name": "HORRIFIC VISIONS",
+     "speed": null,
+     "damage": 0,
+     "text": "Hunter suffers Frenzy. If the Hunter is already Frenzied, they suffer Stun instead.\nFlip another Enemy Action.",
+     "isAbility": true,
+     "rider": {
+      "kind": "frenzy",
+      "text": "Hunter suffers Frenzy. If the Hunter is already Frenzied, they suffer Stun instead.\nFlip another Enemy Action."
+     }
+    }
+   },
+   {
+    "hp": 4,
+    "basic": {
+     "name": "CANE STRIKE",
+     "speed": "medium",
+     "damage": 3
+    },
+    "special": {
+     "name": "PROFANE MARK",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Frenzy\nIf the Hunter is already Frenzied, this Attack gains +1 {n}.",
+     "rider": {
+      "kind": "display",
+      "text": "Frenzy\nIf the Hunter is already Frenzied, this Attack gains +1 {n}."
+     }
+    },
+    "ability": {
+     "name": "ARCANE MISSILES",
+     "speed": null,
+     "damage": 0,
+     "text": "After their Attack, Hunter suffers 5 {dmg}. Hunter may Dodge to Block 2 {dmg} for each {n} of Dodge.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "After their Attack, Hunter suffers 5 {dmg}. Hunter may Dodge to Block 2 {dmg} for each {n} of Dodge."
+     }
+    }
+   }
+  ],
+  "mini": null,
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 12
+  }
+ },
+ "bloody-crow-of-cainhurst": {
+  "id": "bloody-crow-of-cainhurst",
+  "name": "BLOODY CROW OF CAINHURST",
+  "npc": true,
+  "core": false,
+  "sides": [
+   {
+    "hp": 10,
+    "basic": {
+     "name": "CHIKAGE",
+     "speed": "medium",
+     "damage": 2,
+     "text": "If the Bloody Crow has taken 4 or more {dmg}, this Attack gains +1 {n} and +1 {dmg}.",
+     "rider": {
+      "kind": "display",
+      "text": "If the Bloody Crow has taken 4 or more {dmg}, this Attack gains +1 {n} and +1 {dmg}."
+     }
+    },
+    "special": {
+     "name": "REPEATING PISTOL",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger\nAfter resolving all Attacks, the Bloody Crow makes 1 Chikage Attack.",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nAfter resolving all Attacks, the Bloody Crow makes 1 Chikage Attack."
+     }
+    },
+    "ability": {
+     "name": "SUPPLIES",
+     "speed": null,
+     "damage": 0,
+     "text": "Blood Vial: If the Bloody Crow has taken 4 or more {dmg}, he Heals 3. Otherwise:\nOld Hunter's Bone: Dodges Hunter's Attack and moves 1 space away.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "Blood Vial: If the Bloody Crow has taken 4 or more {dmg}, he Heals 3. Otherwise:\nOld Hunter's Bone: Dodges Hunter's Attack and moves 1 space away."
+     }
+    }
+   },
+   {
+    "hp": 18,
+    "basic": {
+     "name": "CHIKAGE",
+     "speed": "medium",
+     "damage": 2,
+     "text": "If the Bloody Crow has taken 10 or more {dmg}, this Attack gains +1 {n} and +1 {dmg}.",
+     "rider": {
+      "kind": "display",
+      "text": "If the Bloody Crow has taken 10 or more {dmg}, this Attack gains +1 {n} and +1 {dmg}."
+     }
+    },
+    "special": {
+     "name": "REPEATING PISTOL",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger\nAfter resolving all Attacks, the Bloody Crow makes 1 Chikage Attack.",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nAfter resolving all Attacks, the Bloody Crow makes 1 Chikage Attack."
+     }
+    },
+    "ability": {
+     "name": "SUPPLIES",
+     "speed": null,
+     "damage": 0,
+     "text": "Blood Vial: If the Bloody Crow has taken 10 or more {dmg}, he Heals 4. Otherwise:\nOld Hunter's Bone: Dodges Hunter's Attack and moves 1 space away.",
+     "isAbility": true,
+     "rider": {
+      "kind": "display",
+      "text": "Blood Vial: If the Bloody Crow has taken 10 or more {dmg}, he Heals 4. Otherwise:\nOld Hunter's Bone: Dodges Hunter's Attack and moves 1 space away."
+     }
+    }
+   }
+  ],
+  "mini": "bloody-crow-of-cainhurst",
+  "art": {
+   "sheet": "enemies-2",
+   "cell": 13
+  }
+ }
+}

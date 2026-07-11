@@ -1,0 +1,1076 @@
+{
+ "blood-starved-beast": {
+  "id": "blood-starved-beast",
+  "name": "Blood-Starved Beast",
+  "core": true,
+  "hp": [
+   {
+    "1": 8,
+    "2": 13,
+    "3": 18,
+    "4": 20
+   },
+   {
+    "1": 7,
+    "2": 12,
+    "3": 16,
+    "4": 18
+   }
+  ],
+  "phases": [
+   [
+    {
+     "name": "Lunging Slash",
+     "speed": "medium",
+     "damage": 2,
+     "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space.",
+     "rider": {
+      "kind": "poison",
+      "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space."
+     }
+    },
+    {
+     "name": "Lunging Slash",
+     "speed": "medium",
+     "damage": 2,
+     "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space.",
+     "rider": {
+      "kind": "poison",
+      "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space."
+     }
+    },
+    {
+     "name": "Crippling Poison",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Poison\nIf already Poisoned, Hunter cannot Dodge, and their Attack deals -1 {dmg} and loses Stagger.",
+     "rider": {
+      "kind": "poison",
+      "text": "Poison\nIf already Poisoned, Hunter cannot Dodge, and their Attack deals -1 {dmg} and loses Stagger."
+     }
+    },
+    {
+     "name": "Rage Combo",
+     "speed": "medium",
+     "damage": 4,
+     "text": "Cannot be Dodged.\nIf Staggered, Hunter's Attack deals +1 {dmg}.",
+     "rider": {
+      "kind": "display",
+      "text": "Cannot be Dodged.\nIf Staggered, Hunter's Attack deals +1 {dmg}."
+     }
+    },
+    {
+     "name": "Poison Blast",
+     "speed": null,
+     "damage": 0,
+     "text": "Unless they Dodge ({fast}), each Hunter within 1 space suffers Poison. If already Poisoned, they suffer Stagger and Stun.\nFlip another Boss Action.",
+     "isAbility": true
+    }
+   ],
+   [
+    {
+     "name": "Lunging Slash",
+     "speed": "medium",
+     "damage": 2,
+     "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space.",
+     "rider": {
+      "kind": "poison",
+      "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space."
+     }
+    },
+    {
+     "name": "Crippling Poison",
+     "speed": "medium",
+     "damage": 3,
+     "text": "If not in play, search the Blood-Starved Beast's deck and play Poison Aura.\nPoison\nIf already Poisoned, the Hunter cannot Dodge, and their Attack deals -1 {dmg} and loses Stagger.",
+     "rider": {
+      "kind": "poison",
+      "text": "If not in play, search the Blood-Starved Beast's deck and play Poison Aura.\nPoison\nIf already Poisoned, the Hunter cannot Dodge, and their Attack deals -1 {dmg} and loses Stagger."
+     }
+    },
+    {
+     "name": "Quick Lunge",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space.",
+     "rider": {
+      "kind": "poison",
+      "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space."
+     }
+    },
+    {
+     "name": "Pin & Maul",
+     "speed": "medium",
+     "damage": 4,
+     "text": "Stagger\nStun\nCannot be Dodged.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stagger\nStun\nCannot be Dodged."
+     }
+    },
+    {
+     "name": "Poison Aura",
+     "speed": null,
+     "damage": 0,
+     "text": "ONGOING\n(Place to the side, do not re-shuffle into the deck)\nAll Hunters ending their turn in the Blood-Starved Beast's space suffer Poison. While in its space, Poisoned Hunter's Attacks and Dodges suffer -1 {slow}.\nFlip another Boss Action.",
+     "isAbility": true
+    }
+   ]
+  ],
+  "mini": "blood-starved-beast",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 0
+  }
+ },
+ "cleric-beast": {
+  "id": "cleric-beast",
+  "name": "Cleric Beast",
+  "core": true,
+  "hp": [
+   {
+    "1": 10,
+    "2": 14,
+    "3": 20,
+    "4": 24
+   },
+   {
+    "1": 8,
+    "2": 12,
+    "3": 16,
+    "4": 20
+   }
+  ],
+  "phases": [
+   [
+    {
+     "name": "Overhead Slam",
+     "speed": "medium",
+     "damage": 4,
+     "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token.",
+     "rider": {
+      "kind": "display",
+      "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token."
+     }
+    },
+    {
+     "name": "Overhead Slam",
+     "speed": "medium",
+     "damage": 4,
+     "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token.",
+     "rider": {
+      "kind": "display",
+      "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token."
+     }
+    },
+    {
+     "name": "Grab",
+     "speed": "fast",
+     "damage": 3,
+     "text": "Stagger\nThe Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token on Cleric Beast.",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nThe Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token on Cleric Beast."
+     }
+    },
+    {
+     "name": "Lunging Swipe",
+     "speed": "medium",
+     "damage": 4,
+     "text": "Cannot be Dodged.\nAfter this Attack, move Cleric Beast 1 space away. Before this Attack, the Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token.",
+     "rider": {
+      "kind": "display",
+      "text": "Cannot be Dodged.\nAfter this Attack, move Cleric Beast 1 space away. Before this Attack, the Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token."
+     }
+    },
+    {
+     "name": "Recovery",
+     "speed": null,
+     "damage": 0,
+     "text": "Remove all Insight tokens on Cleric Beast's card.\nBlock 2 {dmg} from Hunter's Attack.\nShuffle Cleric Beast's Action deck.",
+     "isAbility": true
+    }
+   ],
+   [
+    {
+     "name": "Overhead Slam",
+     "speed": "medium",
+     "damage": 4,
+     "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token.",
+     "rider": {
+      "kind": "display",
+      "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token."
+     }
+    },
+    {
+     "name": "Grab & Toss",
+     "speed": "fast",
+     "damage": 3,
+     "text": "Stagger\nStun\nMove the Hunter 1 space away. Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token on Cleric Beast.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stagger\nStun\nMove the Hunter 1 space away. Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token on Cleric Beast."
+     }
+    },
+    {
+     "name": "Crushing Slam",
+     "speed": "slow",
+     "damage": 6,
+     "text": "Cannot be Staggered.\nIf they Dodge, Hunter's Attack deals +1 {dmg}. All other Hunters in this space must Dodge ({slow}) or suffer 2 {dmg}.\nDeals -1 {dmg} per Insight token on Cleric Beast.",
+     "rider": {
+      "kind": "dodge-or-suffer",
+      "speed": "slow",
+      "damage": 2,
+      "text": "Cannot be Staggered.\nIf they Dodge, Hunter's Attack deals +1 {dmg}. All other Hunters in this space must Dodge ({slow}) or suffer 2 {dmg}.\nDeals -1 {dmg} per Insight token on Cleric Beast."
+     }
+    },
+    {
+     "name": "Jumping Smash",
+     "speed": null,
+     "damage": 0,
+     "text": "All Hunters in this space must Dodge ({slow}) or suffer 2 {dmg} and Stun.\nFlip another Boss Action.",
+     "isAbility": true
+    },
+    {
+     "name": "Recovery",
+     "speed": null,
+     "damage": 0,
+     "text": "Remove all Insight tokens on Cleric Beast's card.\nBlock 2 {dmg} from Hunter's Attack.\nShuffle Cleric Beast's Action deck.",
+     "isAbility": true
+    }
+   ]
+  ],
+  "mini": "cleric-beast",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 1
+  }
+ },
+ "father-gascoigne": {
+  "id": "father-gascoigne",
+  "name": "Father Gascoigne",
+  "core": true,
+  "hp": [
+   {
+    "1": 8,
+    "2": 13,
+    "3": 16,
+    "4": 20
+   },
+   {
+    "1": 8,
+    "2": 13,
+    "3": 16,
+    "4": 20
+   }
+  ],
+  "phases": [
+   [
+    {
+     "name": "Axe Slash",
+     "speed": "medium",
+     "damage": 2,
+     "text": "If Gascoigne deals any {dmg}, he Heals 1.",
+     "rider": {
+      "kind": "display",
+      "text": "If Gascoigne deals any {dmg}, he Heals 1."
+     }
+    },
+    {
+     "name": "Axe Slash",
+     "speed": "medium",
+     "damage": 2,
+     "text": "If Gascoigne deals any {dmg}, he Heals 1.",
+     "rider": {
+      "kind": "display",
+      "text": "If Gascoigne deals any {dmg}, he Heals 1."
+     }
+    },
+    {
+     "name": "Scattergun Burst",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger\nAll other Hunters in this space suffer 1 {dmg} unless they Dodge ({fast}).",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nAll other Hunters in this space suffer 1 {dmg} unless they Dodge ({fast})."
+     }
+    },
+    {
+     "name": "Spark Uppercut",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Stun\nCannot be Staggered.\nCan only be Dodged with {medium} slots.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stun\nCannot be Staggered.\nCan only be Dodged with {medium} slots."
+     }
+    },
+    {
+     "name": "Charged Swing",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Stun\nIf Dodged or Staggered, Hunter's Attack deals +1 {dmg}.\nAll other Hunters in this space must Dodge ({slow}) or suffer 2 {dmg}.",
+     "rider": {
+      "kind": "dodge-or-suffer",
+      "speed": "slow",
+      "damage": 2,
+      "text": "Stun\nIf Dodged or Staggered, Hunter's Attack deals +1 {dmg}.\nAll other Hunters in this space must Dodge ({slow}) or suffer 2 {dmg}."
+     }
+    }
+   ],
+   [
+    {
+     "name": "Axe Sweep",
+     "speed": "medium",
+     "damage": 2,
+     "text": "All other Hunters in this space suffer 1 {dmg} unless they Dodge ({medium}).",
+     "rider": {
+      "kind": "display",
+      "text": "All other Hunters in this space suffer 1 {dmg} unless they Dodge ({medium})."
+     }
+    },
+    {
+     "name": "Axe Sweep",
+     "speed": "medium",
+     "damage": 2,
+     "text": "All other Hunters in this space suffer 1 {dmg} unless they Dodge ({medium}).",
+     "rider": {
+      "kind": "display",
+      "text": "All other Hunters in this space suffer 1 {dmg} unless they Dodge ({medium})."
+     }
+    },
+    {
+     "name": "Scattergun Burst",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger\nAll other Hunters in this space suffer 1 {dmg} unless they Dodge ({fast}).",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nAll other Hunters in this space suffer 1 {dmg} unless they Dodge ({fast})."
+     }
+    },
+    {
+     "name": "Jump Attack",
+     "speed": "medium",
+     "damage": 4,
+     "text": "Stagger\nStun\nCan only be Dodged with {medium} slots. If Dodged, Hunter's Attack deals +1 {dmg}.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stagger\nStun\nCan only be Dodged with {medium} slots. If Dodged, Hunter's Attack deals +1 {dmg}."
+     }
+    },
+    {
+     "name": "Charged Spin",
+     "speed": "slow",
+     "damage": 3,
+     "text": "Even if this Attack is Dodged or Staggered, at {slow} Hunter must Dodge ({slow}) or suffer 3 additional {dmg}.",
+     "rider": {
+      "kind": "dodge-or-suffer",
+      "speed": "slow",
+      "damage": 3,
+      "text": "Even if this Attack is Dodged or Staggered, at {slow} Hunter must Dodge ({slow}) or suffer 3 additional {dmg}."
+     }
+    }
+   ]
+  ],
+  "mini": "father-gascoigne",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 2
+  }
+ },
+ "father-gascoigne-transformed": {
+  "id": "father-gascoigne-transformed",
+  "name": "Father Gascoigne Transformed",
+  "core": true,
+  "hp": [
+   {
+    "1": 8,
+    "2": 13,
+    "3": 16,
+    "4": 20
+   },
+   {
+    "1": 7,
+    "2": 12,
+    "3": 15,
+    "4": 18
+   }
+  ],
+  "phases": [
+   [
+    {
+     "name": "Claw Slash",
+     "speed": "fast",
+     "damage": 2
+    },
+    {
+     "name": "Claw Slash",
+     "speed": "fast",
+     "damage": 2
+    },
+    {
+     "name": "Claw Combo",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Even if this Attack is Dodged or Staggered, at {medium} Hunter must Dodge ({medium}) or suffer 2 additional {dmg}.",
+     "rider": {
+      "kind": "dodge-or-suffer",
+      "speed": "medium",
+      "damage": 2,
+      "text": "Even if this Attack is Dodged or Staggered, at {medium} Hunter must Dodge ({medium}) or suffer 2 additional {dmg}."
+     }
+    },
+    {
+     "name": "Overhead Smash",
+     "speed": "slow",
+     "damage": 3,
+     "text": "Stun\nTargets all Hunters in this space.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stun\nTargets all Hunters in this space."
+     }
+    },
+    {
+     "name": "Pin & Maul",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Stun\nCannot be Dodged.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stun\nCannot be Dodged."
+     }
+    }
+   ],
+   [
+    {
+     "name": "Claw Slash",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger\nDeals +1 {dmg} for each {slow} faster than Hunter's Attack.",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nDeals +1 {dmg} for each {slow} faster than Hunter's Attack."
+     }
+    },
+    {
+     "name": "Double Slash",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stagger\nEven if this Attack is Dodged or Staggered, at {medium} Hunter must Dodge ({medium}) or suffer 2 additional {dmg}.",
+     "rider": {
+      "kind": "dodge-or-suffer",
+      "speed": "medium",
+      "damage": 2,
+      "text": "Stagger\nEven if this Attack is Dodged or Staggered, at {medium} Hunter must Dodge ({medium}) or suffer 2 additional {dmg}."
+     }
+    },
+    {
+     "name": "Overhead Smash",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Stagger\nStun\nTargets all Hunters in this space.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stagger\nStun\nTargets all Hunters in this space."
+     }
+    },
+    {
+     "name": "Aerial Dive",
+     "speed": null,
+     "damage": 0,
+     "text": "Remove Gascoigne from the map. At the end of the Hunter Turn/Enemy Activation, return him to this space. All Hunters in this space must Dodge ({fast}) or suffer 2 {dmg}.",
+     "isAbility": true
+    },
+    {
+     "name": "Bestial Roar",
+     "speed": null,
+     "damage": 0,
+     "text": "All Hunters in this space suffer Stun.\nGascoigne Blocks 2 {dmg}.",
+     "isAbility": true
+    }
+   ]
+  ],
+  "mini": "father-gascoigne-transformed",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 3
+  }
+ },
+ "vicar-amelia": {
+  "id": "vicar-amelia",
+  "name": "Vicar Amelia",
+  "core": true,
+  "hp": [
+   {
+    "1": 7,
+    "2": 10,
+    "3": 14,
+    "4": 18
+   },
+   {
+    "1": 8,
+    "2": 15,
+    "3": 20,
+    "4": 24
+   }
+  ],
+  "phases": [
+   [
+    {
+     "name": "Gnashing Grab",
+     "speed": "fast",
+     "damage": 3,
+     "text": "Stagger\nStun",
+     "rider": {
+      "kind": "stun",
+      "text": "Stagger\nStun"
+     }
+    },
+    {
+     "name": "Cross Sweep",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Cannot be Staggered.\nTargets all Hunters in this space.",
+     "rider": {
+      "kind": "display",
+      "text": "Cannot be Staggered.\nTargets all Hunters in this space."
+     }
+    },
+    {
+     "name": "Timed Slash",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Can only be Dodged with {medium} slots.",
+     "rider": {
+      "kind": "display",
+      "text": "Can only be Dodged with {medium} slots."
+     }
+    },
+    {
+     "name": "Timed Slash",
+     "speed": "slow",
+     "damage": 3,
+     "text": "Can only be Dodged with {slow} slots.",
+     "rider": {
+      "kind": "display",
+      "text": "Can only be Dodged with {slow} slots."
+     }
+    },
+    {
+     "name": "Uppercut Sweep",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Stun\nStagger\nCannot be Staggered.\nStaggers Attacks of the same Speed.\nMove the Hunter 1 space away.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stun\nStagger\nCannot be Staggered.\nStaggers Attacks of the same Speed.\nMove the Hunter 1 space away."
+     }
+    }
+   ],
+   [
+    {
+     "name": "Quick Bite",
+     "speed": "fast",
+     "damage": 2,
+     "text": "Stun\nCannot be Staggered.\nDeals {dmg} before Attacks of the same Speed.",
+     "rider": {
+      "kind": "stun",
+      "text": "Stun\nCannot be Staggered.\nDeals {dmg} before Attacks of the same Speed."
+     }
+    },
+    {
+     "name": "Tantrum Combo",
+     "speed": "fast",
+     "damage": 3,
+     "text": "Stagger\nAfter resolving all Attacks, Amelia Activates again.\nIf Dodged, Hunter's Attack deals +1 {dmg}.",
+     "rider": {
+      "kind": "display",
+      "text": "Stagger\nAfter resolving all Attacks, Amelia Activates again.\nIf Dodged, Hunter's Attack deals +1 {dmg}."
+     }
+    },
+    {
+     "name": "Timed Slash",
+     "speed": "medium",
+     "damage": 3,
+     "text": "Can only be Dodged with {medium} slots.",
+     "rider": {
+      "kind": "display",
+      "text": "Can only be Dodged with {medium} slots."
+     }
+    },
+    {
+     "name": "Axe-Handle Smash",
+     "speed": "slow",
+     "damage": 4,
+     "text": "Stun\nCannot be Staggered.\nAll other Hunters in this space suffer 2 {dmg} unless they Dodge ({slow}).",
+     "rider": {
+      "kind": "stun",
+      "text": "Stun\nCannot be Staggered.\nAll other Hunters in this space suffer 2 {dmg} unless they Dodge ({slow})."
+     }
+    },
+    {
+     "name": "Healing Prayer",
+     "speed": null,
+     "damage": 0,
+     "text": "At {slow}, before Hunter's Attack, Heal Amelia 3 and move her 2 spaces away.\nShuffle Amelia's Boss Action deck.",
+     "isAbility": true
+    }
+   ]
+  ],
+  "mini": "vicar-amelia",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 4
+  }
+ },
+ "large-nightmare-apostle": {
+  "id": "large-nightmare-apostle",
+  "name": "Large Nightmare Apostle",
+  "core": false,
+  "hp": [
+   {
+    "1": 8,
+    "2": 14,
+    "3": 16,
+    "4": 20
+   },
+   {
+    "1": 7,
+    "2": 14,
+    "3": 16,
+    "4": 18
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "large-nightmare-apostle",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 5
+  }
+ },
+ "rom-the-vacuous-spider": {
+  "id": "rom-the-vacuous-spider",
+  "name": "Rom, the Vacuous Spider",
+  "core": false,
+  "hp": [
+   {
+    "1": 8,
+    "2": 12,
+    "3": 16,
+    "4": 20
+   },
+   {
+    "1": 10,
+    "2": 15,
+    "3": 20,
+    "4": 25
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "rom-the-vacuous-spider",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 6
+  }
+ },
+ "beast-possessed-soul": {
+  "id": "beast-possessed-soul",
+  "name": "Beast-Possessed Soul",
+  "core": false,
+  "hp": [
+   {
+    "1": 7,
+    "2": 13,
+    "3": 16,
+    "4": 20
+   },
+   {
+    "1": 7,
+    "2": 12,
+    "3": 16,
+    "4": 18
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "beast-possessed-soul",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 7
+  }
+ },
+ "pthumerian-descendant": {
+  "id": "pthumerian-descendant",
+  "name": "Pthumerian Descendant",
+  "core": false,
+  "hp": [
+   {
+    "1": 8,
+    "2": 12,
+    "3": 16,
+    "4": 20
+   },
+   {
+    "1": 7,
+    "2": 12,
+    "3": 16,
+    "4": 18
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "pthumerian-descendant",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 8
+  }
+ },
+ "undead-giant": {
+  "id": "undead-giant",
+  "name": "Undead Giant",
+  "core": false,
+  "hp": [
+   {
+    "1": 10,
+    "2": 15,
+    "3": 20,
+    "4": 25
+   },
+   {
+    "1": 10,
+    "2": 15,
+    "3": 20,
+    "4": 25
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "undead-giant",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 9
+  }
+ },
+ "watchdog-of-the-old-lords": {
+  "id": "watchdog-of-the-old-lords",
+  "name": "Watchdog of the Old Lords",
+  "core": false,
+  "hp": [
+   {
+    "1": 8,
+    "2": 15,
+    "3": 20,
+    "4": 24
+   },
+   {
+    "1": 7,
+    "2": 14,
+    "3": 18,
+    "4": 22
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "watchdog-of-the-old-lords",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 10
+  }
+ },
+ "yharnam-pthumerian-queen": {
+  "id": "yharnam-pthumerian-queen",
+  "name": "Yharnam, Pthumerian Queen",
+  "core": false,
+  "hp": [
+   {
+    "1": 6,
+    "2": 10,
+    "3": 14,
+    "4": 18
+   },
+   {
+    "1": 10,
+    "2": 16,
+    "3": 20,
+    "4": 24
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "yharnam-pthumerian-queen",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 11
+  }
+ },
+ "shadows-of-yharnam": {
+  "id": "shadows-of-yharnam",
+  "name": "Shadows of Yharnam",
+  "core": false,
+  "hp": [
+   {
+    "1": 8,
+    "2": 14,
+    "3": 18,
+    "4": 22
+   },
+   {
+    "1": 7,
+    "2": 13,
+    "3": 16,
+    "4": 20
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "shadows-of-yharnam",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 12
+  }
+ },
+ "witch-of-hemwick": {
+  "id": "witch-of-hemwick",
+  "name": "Witch of Hemwick",
+  "core": false,
+  "hp": [
+   {
+    "1": 6,
+    "2": 8,
+    "3": 10,
+    "4": 12
+   },
+   {
+    "1": 6,
+    "2": 8,
+    "3": 10,
+    "4": 12
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": null,
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 13
+  }
+ },
+ "annalise-queen-of-the-vilebloods": {
+  "id": "annalise-queen-of-the-vilebloods",
+  "name": "Annalise, Queen of the Vilebloods",
+  "core": false,
+  "hp": [
+   {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3
+   },
+   {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": null,
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 14
+  }
+ },
+ "martyr-logarius": {
+  "id": "martyr-logarius",
+  "name": "Martyr Logarius",
+  "core": false,
+  "hp": [
+   {
+    "1": 10,
+    "2": 15,
+    "3": 20,
+    "4": 24
+   },
+   {
+    "1": 8,
+    "2": 12,
+    "3": 16,
+    "4": 20
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "martyr-logarius",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 15
+  }
+ },
+ "gehrman-the-first-hunter": {
+  "id": "gehrman-the-first-hunter",
+  "name": "Gehrman, the First Hunter",
+  "core": false,
+  "hp": [
+   {
+    "1": 12,
+    "2": 20,
+    "3": 30,
+    "4": 40
+   },
+   {
+    "1": 12,
+    "2": 20,
+    "3": 30,
+    "4": 40
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": null,
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 16
+  }
+ },
+ "moon-presence": {
+  "id": "moon-presence",
+  "name": "Moon Presence",
+  "core": false,
+  "hp": [
+   {
+    "1": 10,
+    "2": 20,
+    "3": 28,
+    "4": 36
+   },
+   {
+    "1": 5,
+    "2": 8,
+    "3": 10,
+    "4": 12
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "moon-presence",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 17
+  }
+ },
+ "mergo-s-wet-nurse": {
+  "id": "mergo-s-wet-nurse",
+  "name": "Mergo's Wet Nurse",
+  "core": false,
+  "hp": [
+   {
+    "1": 8,
+    "2": 16,
+    "3": 20,
+    "4": 24
+   },
+   {
+    "1": 7,
+    "2": 13,
+    "3": 16,
+    "4": 20
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "mergo-s-wet-nurse",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 18
+  }
+ },
+ "ebrietas-daughter-of-the-cosmos": {
+  "id": "ebrietas-daughter-of-the-cosmos",
+  "name": "Ebrietas, Daughter of the Cosmos",
+  "core": false,
+  "hp": [
+   {
+    "1": 10,
+    "2": 15,
+    "3": 20,
+    "4": 25
+   },
+   {
+    "1": 7,
+    "2": 12,
+    "3": 16,
+    "4": 20
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "ebrietas-daughter-of-the-cosmos",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 19
+  }
+ },
+ "the-one-reborn": {
+  "id": "the-one-reborn",
+  "name": "The One Reborn",
+  "core": false,
+  "hp": [
+   {
+    "1": 10,
+    "2": 15,
+    "3": 20,
+    "4": 25
+   },
+   {
+    "1": 10,
+    "2": 15,
+    "3": 20,
+    "4": 25
+   }
+  ],
+  "phases": [
+   [],
+   []
+  ],
+  "mini": "the-one-reborn",
+  "art": {
+   "hpSheet": "sheet-3",
+   "hpCell": 20
+  }
+ }
+}

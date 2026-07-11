@@ -15,29 +15,42 @@ export * from './axis/config.js';
 export * from './axis/map.js';
 export * from './axis/physical.js';
 export * from './axis/airMovement.js';
+export * from './axis/movementRules.js';
+export * from './axis/mobilizationRules.js';
+export * from './axis/carrierCommitments.js';
+export * from './axis/defendingCarrierLandings.js';
+export * from './axis/specialTechnologyRules.js';
+export * from './axis/retreat.js';
+export * from './axis/china.js';
 export {
   createAxisGame, axisGameViewFor, applyAxisGameAction, axisPowerOfSeat,
   AXIS_MAP, AXIS_MAP_STUB, AXIS_INDEX,
   type AxisSeat, type AxisRoomOptions,
 } from './axis/game.js';
 export {
-  AXIS_SEATS, activePower as axisActivePower, normalizeAxisState,
-  type AxisState, type AxisView, type AxisCreateOptions, type UnitStack, type AxisPending,
+  AXIS_SEATS, activePower as axisActivePower, operatingPower as axisOperatingPower, normalizeAxisState, snapshotAxisTurnStartSea,
+  allocateAxisCarrierHullRef, allocateAxisDefendingCarrierFighterRef,
+  type AxisState, type AxisView, type AxisCreateOptions, type AxisCombatant, type UsaOperationFirst, type UnitStack, type AxisPending,
+  type AxisCarrierLandingTag, type AxisDefendingCarrierLandingQueueState,
 } from './axis/state.js';
 export {
   type AxisAction, type AxisUnitPick, type AxisBomberForce, type AxisBattleTarget,
+  type AxisNewCarrierLandingOrder, type AxisParatrooperPieceRef,
+  type AxisParatrooperPairOrder, type AxisParatrooperGroupOrder,
 } from './axis/actions.js';
 export * from './politik/state.js';
 export * from './politik/actions.js';
 // Dark Souls: everything is Ds/DS_/ds-prefixed (collision-checked)
 export {
+  DS_SEATS, type DsSeat,
   createDarkSouls, dsViewFor, dsRollDie, dsRollDodgeDie, dsShuffle, dsDrawL4,
   dsStatValue, dsMeetsReqs, dsDefenceDice, dsDodgeDiceCount, dsWeaponCount,
   dsModelsAt, dsOccupancy, dsNodeBlocked, dsPushPending,
   type DsState, type DsView, type DsCreateOptions, type DsCharacter,
   type DsTile, type DsEncounterRun, type DsBossRun, type DsBossUnit,
   type DsPending, type DsPendingKind, type DsPendingOption, type DsEnemyModel,
-  type DsPhase, type DsStage, type DsArc, type DsLogEntry,
+  type DsPhase, type DsStage, type DsArc, type DsLogEntry, type DsSummon,
+  type DsDefBuff,
 } from './darksouls/state.js';
 export { applyDarkSoulsAction, type DsAction, type DsActionResult } from './darksouls/actions.js';
 export {
@@ -48,8 +61,37 @@ export {
 export {
   DS_CLASSES, DS_CLASS_IDS, DS_ENEMIES, DS_INVADERS, DS_BOSSES, DS_ENCOUNTERS,
   DS_ENCOUNTER_BY_ID, DS_TREASURES, DS_TREASURE_BY_ID, DS_TILE_FACES,
-  DS_SCENARIOS, dsTileGraph, dsNodeDistance, dsEntryNodes, dsNodesOfTerrain,
-  dsIsDrawableEncounter, dsTreasureDeckCards,
+  DS_SCENARIOS, DS_SUMMONS, dsTileGraph, dsNodeDistance, dsEntryNodes, dsNodesOfTerrain,
+  dsIsDrawableEncounter, dsTreasureDeckCards, dsSummonPool,
   type DsClassDef, type DsBossDef, type DsBossCard, type DsBossOp,
-  type DsEncounterCard, type DsTreasureCard, type DsTileFace, type DsScenarioDef,
+  type DsEncounterCard, type DsTreasureCard, type DsTreasureAction, type DsTileFace, type DsScenarioDef,
+  type DsSummonDef, type DsSummonCard, type DsSummonOp, type DsNodePatternCard,
+  type DsSpellEffect,
 } from './darksouls/data.js';
+// A Feast for Odin: all public names are Feast/FEAST_/feast-prefixed.
+export * from './feast/types.js';
+export * from './feast/data.js';
+export * from './feast/placement.js';
+export * from './feast/state.js';
+export * from './feast/actions.js';
+// Bloodborne: The Board Game — all public names are Bb/BB_/bb-prefixed.
+export {
+  BB_SEATS, createBloodborne, bbViewFor, setupChapter as bbSetupChapter,
+  spaceNeighbors as bbSpaceNeighbors, lampSpaces as bbLampSpaces,
+  parseRef as bbParseRef, spaceRef as bbSpaceRef, tileDef as bbTileDef,
+  worldExits as bbWorldExits, connectedTiles as bbConnectedTiles,
+  type BbSeat, type BbState, type BbView, type BbCreateOptions,
+  type BbHunterState, type BbEnemyOnMap, type BbBossOnMap, type BbPlacedTile,
+  type BbPending, type BbCombat, type BbSpaceRef as BbSpaceRefT, type BbEdge,
+} from './bloodborne/state.js';
+export { applyBloodborneAction, bbPostProcess, type BbAction } from './bloodborne/actions.js';
+export { missionState as bbMissionState, type BbMissionState } from './bloodborne/missions.js';
+export {
+  BB_HUNTERS, BB_ENEMIES, BB_BOSSES, BB_TILES, BB_CAMPAIGNS, BB_ITEMS,
+  BB_STAT_CARDS, BB_BASIC_CARDS, BB_UPGRADE_CARDS, BB_MISSIONS, BB_HUNT_TRACK,
+  bbStatCard, bbItem,
+  type BbHunterDef, type BbEnemyDef, type BbBossDef, type BbTileDef,
+  type BbCampaignDef, type BbChapterDef, type BbItemDef, type BbStatCardDef,
+  type BbAttackDef, type BbEffects, type BbMissionDef,
+} from './bloodborne/data.js';
+export { BB_MAX_HP, BB_MAX_ECHOES, BB_SPEED_RANK, type BbSpeed, type BbStat } from './bloodborne/config.js';

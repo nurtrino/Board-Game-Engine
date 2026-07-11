@@ -1,0 +1,891 @@
+{
+ "ludwig-s-uncanny-holy-blade": {
+  "id": "ludwig-s-uncanny-holy-blade",
+  "name": "Ludwig's Uncanny Holy Blade",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Ludwig's Uncanny Holy Blade",
+    "ability": "Each time you Clear a slot, deal 1 {dmg} to 1 Enemy in your space",
+    "effects": {},
+    "slots": [
+     {
+      "name": "QUICK STAB",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "QUICK STAB",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "HEAVY SLASH",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Ludwig's Uncanny Holy Blade",
+    "ability": "After Attacking with Combo Strike: May Transform Weapon for free",
+    "effects": {},
+    "slots": [
+     {
+      "name": "COMBO STRIKE",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "IMPALING THRUST",
+      "speed": "medium",
+      "damage": 3
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 0,
+   "mini": null,
+   "weaponMini": null,
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "tonitrus": {
+  "id": "tonitrus",
+  "name": "Tonitrus",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Tonitrus",
+    "ability": "After Transforming: next Attack this round gains +1 {arrow} and +1 {dmg}",
+    "effects": {
+     "dmgBonus": 1,
+     "speedBonus": 1
+    },
+    "slots": [
+     {
+      "name": "BLUDGEON",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "BLUDGEON",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "HEAVY SLAM",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Tonitrus",
+    "ability": "After Transforming: next Attack this round gains +1 {arrow} and +1 {dmg}",
+    "effects": {
+     "dmgBonus": 1,
+     "speedBonus": 1
+    },
+    "slots": [
+     {
+      "name": "BLUDGEON",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "BLUDGEON",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "HEAVY SLAM",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 1,
+   "mini": "tonitrus-hunter",
+   "weaponMini": "tonitrus-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "reiterpallasch": {
+  "id": "reiterpallasch",
+  "name": "Reiterpallasch",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Reiterpallasch",
+    "ability": "When Dodging at the same Speed as the Enemy Attack, deal 2 {dmg} to that Enemy",
+    "effects": {},
+    "slots": [
+     {
+      "name": "QUICK STAB",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "DEADLY THRUST",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Reiterpallasch",
+    "ability": "Place 1 card facedown on Quicksilver Shot: Deal 2 {dmg} to 1 Enemy in your space",
+    "effects": {},
+    "slots": [
+     {
+      "name": "RIPOSTE",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "QUICKSILVER SHOT",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "DEADLY THRUST",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 2,
+   "mini": "reiterpallasch-hunter",
+   "weaponMini": "reiterpallasch-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "burial-blade": {
+  "id": "burial-blade",
+  "name": "Burial Blade",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Burial Blade",
+    "ability": "Before Attacking, may move any Enemies within 2 spaces into your space",
+    "effects": {},
+    "slots": [
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "ARCING CLEAVE",
+      "speed": "slow",
+      "damage": 3
+     },
+     {
+      "name": "ARCING CLEAVE",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Burial Blade",
+    "ability": "At Attack Speed, deal 1 {dmg} to all other Enemies within 1 space",
+    "effects": {},
+    "slots": [
+     {
+      "name": "QUICK CARVE",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 3,
+   "mini": "burial-blade-hunter",
+   "weaponMini": "burial-blade-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "rifle-spear": {
+  "id": "rifle-spear",
+  "name": "Rifle Spear",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Rifle Spear",
+    "ability": "Attacks deal +1 {dmg} for each Move action taken this round",
+    "effects": {
+     "dmgBonus": 1
+    },
+    "slots": [
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "IMPALE",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Rifle Spear",
+    "ability": "Enemy moves into space: Place 1 card facedown in 1 slot to deal them 2 {dmg}",
+    "effects": {},
+    "slots": [
+     {
+      "name": "THRUST",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "THRUST",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "THRUST",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 4,
+   "mini": "rifle-spear-hunter",
+   "weaponMini": "rifle-spear-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "stake-driver": {
+  "id": "stake-driver",
+  "name": "Stake Driver",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Stake Driver",
+    "ability": "After Attacking with Primed Slash: May Transform Weapon for free",
+    "effects": {},
+    "slots": [
+     {
+      "name": "THRUST",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "PRIMED SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SKEWER",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Stake Driver",
+    "ability": "After Attack: Move all Enemies within 1 space up to 2 spaces away",
+    "effects": {},
+    "slots": [
+     {
+      "name": "DETONATE",
+      "speed": "slow",
+      "damage": 4,
+      "text": "Deals 2 {dmg} to all other Enemies within 1 space.",
+      "effects": {}
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 5,
+   "mini": "stake-driver-hunter",
+   "weaponMini": "stake-driver-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "beast-claw": {
+  "id": "beast-claw",
+  "name": "Beast Claw",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Beast Claw",
+    "ability": "On Attack: If you have 3 or less HP, Attack gains +1 {arrow} and +1 {dmg}",
+    "effects": {
+     "dmgBonus": 1,
+     "speedBonus": 1
+    },
+    "slots": [
+     {
+      "name": "QUICK SLASH",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "FRENZIED CUT",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Beast Claw",
+    "ability": "On Kill: Heal 2 and Move 2",
+    "effects": {
+     "heal": 2,
+     "onKillHeal": 2
+    },
+    "slots": [
+     {
+      "name": "QUICK SLASH",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "HEAVY CARVE",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 6,
+   "mini": "beast-claw-hunter",
+   "weaponMini": "beast-claw-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "chikage": {
+  "id": "chikage",
+  "name": "Chikage",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Chikage",
+    "ability": "On Attack: May suffer 1 {dmg} to gain +1 {arrow} or +1 {dmg}",
+    "effects": {
+     "dmgBonus": 1,
+     "speedBonus": 1
+    },
+    "slots": [
+     {
+      "name": "QUICK CUT",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   },
+   {
+    "label": "Chikage",
+    "ability": "When you Dodge: Heal 1 and deal 1 {dmg} to 1 Enemy in your space",
+    "effects": {
+     "dodge": true,
+     "heal": 1
+    },
+    "slots": [
+     {
+      "name": "QUICK CUT",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 7,
+   "mini": "chikage-hunter",
+   "weaponMini": "chikage-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "saw-cleaver": {
+  "id": "saw-cleaver",
+  "name": "Saw Cleaver",
+  "set": "core",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Saw Cleaver",
+    "ability": "Attacks with Stagger also deal +1 {dmg}",
+    "effects": {
+     "dmgBonus": 1,
+     "staggerBonusDmg": 1
+    },
+    "slots": [
+     {
+      "name": "QUICK CUT",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "QUICK CUT",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   },
+   {
+    "label": "Saw Cleaver",
+    "ability": "On Kill: Draw 1 and Heal 1",
+    "effects": {
+     "draw": 1,
+     "heal": 1,
+     "onKillDraw": 1,
+     "onKillHeal": 1
+    },
+    "slots": [
+     {
+      "name": "QUICK CUT",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "HEAVY CARVE",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 8,
+   "mini": "saw-cleaver-hunter",
+   "weaponMini": "saw-cleaver-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "threaded-cane": {
+  "id": "threaded-cane",
+  "name": "Threaded Cane",
+  "set": "core",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Threaded Cane",
+    "ability": "When you Dodge: Deal 1 {dmg} to all Enemies within 1 space",
+    "effects": {
+     "dodge": true
+    },
+    "slots": [
+     {
+      "name": "QUICK LASH",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "FLAY",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "FLAY",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   },
+   {
+    "label": "Threaded Cane",
+    "ability": "Stagger can affect Enemy Attacks of the same Speed",
+    "effects": {
+     "stagger": true
+    },
+    "slots": [
+     {
+      "name": "QUICK CUT",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "DEADLY THRUST",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 9,
+   "mini": "threaded-cane-hunter",
+   "weaponMini": "threaded-cane-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "hunter-axe": {
+  "id": "hunter-axe",
+  "name": "Hunter Axe",
+  "set": "core",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Hunter Axe",
+    "ability": "After Attacking with Rally Strike: Heal 1 for each {dmg} you dealt",
+    "effects": {
+     "heal": 1
+    },
+    "slots": [
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "RALLY STRIKE",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   },
+   {
+    "label": "Hunter Axe",
+    "ability": "On Kill: Deal 2 {dmg} to 1 Enemy within 1 space",
+    "effects": {},
+    "slots": [
+     {
+      "name": "ARCING SWING",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "HEAVY CLEAVE",
+      "speed": "slow",
+      "damage": 3
+     },
+     {
+      "name": "HEAVY CLEAVE",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 10,
+   "mini": "hunter-axe-hunter",
+   "weaponMini": "hunter-axe-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "ludwig-s-holy-blade": {
+  "id": "ludwig-s-holy-blade",
+  "name": "Ludwig's Holy Blade",
+  "set": "core",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Ludwig's Holy Blade",
+    "ability": "After Attacking with Combo Slash: May Transform Weapon for free",
+    "effects": {},
+    "slots": [
+     {
+      "name": "COMBO SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "OVERHEAD SLAM",
+      "speed": "slow",
+      "damage": 4
+     }
+    ]
+   },
+   {
+    "label": "Ludwig's Holy Blade",
+    "ability": "Each time you Clear a slot, deal 1 {dmg} to 1 Enemy in your space",
+    "effects": {},
+    "slots": [
+     {
+      "name": "QUICK STAB",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 11,
+   "mini": null,
+   "weaponMini": null,
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "kirkhammer": {
+  "id": "kirkhammer",
+  "name": "Kirkhammer",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Kirkhammer",
+    "ability": "Each time you Clear a slot, deal 1 {dmg} to 1 Enemy in your space",
+    "effects": {},
+    "slots": [
+     {
+      "name": "QUICK STAB",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     }
+    ]
+   },
+   {
+    "label": "Kirkhammer",
+    "ability": "Attacking with Crushing Slam: Cannot be Staggered, but cannot Dodge",
+    "effects": {
+     "dodge": true
+    },
+    "slots": [
+     {
+      "name": "HEAVY SWING",
+      "speed": "slow",
+      "damage": 3
+     },
+     {
+      "name": "CRUSHING SLAM",
+      "speed": "slow",
+      "damage": 4
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 12,
+   "mini": "kirkhammer-hunter",
+   "weaponMini": "kirkhammer-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "logarius-wheel": {
+  "id": "logarius-wheel",
+  "name": "Logarius' Wheel",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Logarius' Wheel",
+    "ability": "On Attack: Heal 1",
+    "effects": {
+     "heal": 1
+    },
+    "slots": [
+     {
+      "name": "BASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLAM",
+      "speed": "slow",
+      "damage": 3
+     },
+     {
+      "name": "SLAM",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Logarius' Wheel",
+    "ability": "On Attack: May suffer up to 2 {dmg} to deal that much additional {dmg}",
+    "effects": {},
+    "slots": [
+     {
+      "name": "EMPOWERED BASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "EMPOWERED SLAM",
+      "speed": "slow",
+      "damage": 3
+     },
+     {
+      "name": "EMPOWERED SLAM",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 13,
+   "mini": "logarius-wheel-hunter",
+   "weaponMini": "logarius-wheel-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ },
+ "blade-of-mercy": {
+  "id": "blade-of-mercy",
+  "name": "Blade of Mercy",
+  "set": "expansion",
+  "firearmId": "hunter-pistol",
+  "sides": [
+   {
+    "label": "Blade of Mercy",
+    "ability": "Stagger can affect Enemy Attacks of the same Speed",
+    "effects": {
+     "stagger": true
+    },
+    "slots": [
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "SLASH",
+      "speed": "medium",
+      "damage": 2
+     },
+     {
+      "name": "HEAVY SLASH",
+      "speed": "slow",
+      "damage": 3
+     }
+    ]
+   },
+   {
+    "label": "Blade of Mercy",
+    "ability": "Combo Finisher deals +1 {dmg} for each Filled Attack Slot",
+    "effects": {
+     "dmgBonus": 1
+    },
+    "slots": [
+     {
+      "name": "QUICK CUT",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "QUICK CUT",
+      "speed": "fast",
+      "damage": 1
+     },
+     {
+      "name": "COMBO FINISHER",
+      "speed": "fast",
+      "damage": 1
+     }
+    ]
+   }
+  ],
+  "art": {
+   "weaponCell": 14,
+   "mini": "blade-of-mercy-hunter",
+   "weaponMini": "blade-of-mercy-weapon",
+   "dashboardSheet": "sheet-2"
+  }
+ }
+}

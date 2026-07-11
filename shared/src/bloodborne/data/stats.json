@@ -1,0 +1,376 @@
+{
+ "cards": {
+  "basic-vitality": {
+   "id": "basic-vitality",
+   "name": "Basic Vitality",
+   "stat": "vitality",
+   "basic": true,
+   "text": "Draw 1",
+   "effects": {
+    "draw": 1
+   },
+   "art": {
+    "sheet": "basic-stat-deck",
+    "cell": 0
+   }
+  },
+  "basic-endurance": {
+   "id": "basic-endurance",
+   "name": "Basic Endurance",
+   "stat": "endurance",
+   "basic": true,
+   "text": "Dodge\nClear this slot",
+   "effects": {
+    "dodge": true,
+    "clearSlots": 0
+   },
+   "art": {
+    "sheet": "basic-stat-deck",
+    "cell": 1
+   }
+  },
+  "basic-skill": {
+   "id": "basic-skill",
+   "name": "Basic Skill",
+   "stat": "skill",
+   "basic": true,
+   "text": "Stagger",
+   "effects": {
+    "stagger": true
+   },
+   "art": {
+    "sheet": "basic-stat-deck",
+    "cell": 2
+   }
+  },
+  "basic-strength": {
+   "id": "basic-strength",
+   "name": "Basic Strength",
+   "stat": "strength",
+   "basic": true,
+   "text": "+1 {dmg}",
+   "effects": {
+    "dmgBonus": 1
+   },
+   "art": {
+    "sheet": "basic-stat-deck",
+    "cell": 3
+   }
+  }
+ },
+ "upgrades": {
+  "up-invigorating": {
+   "id": "up-invigorating",
+   "name": "Invigorating",
+   "stat": "endurance",
+   "basic": false,
+   "text": "Dodge\nHeal 1\nClear this or any other slot.",
+   "effects": {
+    "dodge": true,
+    "heal": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 0
+   }
+  },
+  "up-tactical": {
+   "id": "up-tactical",
+   "name": "Tactical",
+   "stat": "endurance",
+   "basic": false,
+   "text": "Dodge\nAttack or Dodge at +1 {speed}.\nClear this slot",
+   "effects": {
+    "dodge": true,
+    "clearSlots": 0,
+    "speedBonus": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 1
+   }
+  },
+  "up-dash": {
+   "id": "up-dash",
+   "name": "Dash",
+   "stat": "endurance",
+   "basic": false,
+   "text": "Dodge\nClear this slot\nWhen used to Move: Move 3 spaces.",
+   "effects": {
+    "dodge": true,
+    "clearSlots": 0
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 2
+   }
+  },
+  "up-quick-change": {
+   "id": "up-quick-change",
+   "name": "Quick Change",
+   "stat": "endurance",
+   "basic": false,
+   "text": "Dodge\nMay Transform Weapon for free after Attack or Dodge.",
+   "effects": {
+    "dodge": true
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 3
+   }
+  },
+  "up-counter-strike": {
+   "id": "up-counter-strike",
+   "name": "Counter Strike",
+   "stat": "endurance",
+   "basic": false,
+   "text": "Dodge\nAfter Dodging: Deal 2 {dmg} to that Enemy.",
+   "effects": {
+    "dodge": true
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 4
+   }
+  },
+  "up-cheap-shot": {
+   "id": "up-cheap-shot",
+   "name": "Cheap Shot",
+   "stat": "skill",
+   "basic": false,
+   "text": "Stagger\nIf an Enemy in your space uses Ability, discard from hand: Deal them 2 {dmg}.",
+   "effects": {
+    "stagger": true
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 5
+   }
+  },
+  "up-unyielding": {
+   "id": "up-unyielding",
+   "name": "Unyielding",
+   "stat": "skill",
+   "basic": false,
+   "text": "Stagger\nDraw 1",
+   "effects": {
+    "stagger": true,
+    "draw": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 6
+   }
+  },
+  "up-adaptive": {
+   "id": "up-adaptive",
+   "name": "Adaptive",
+   "stat": "skill",
+   "basic": false,
+   "text": "Dodge\nStagger\nClear this slot",
+   "effects": {
+    "dodge": true,
+    "stagger": true,
+    "clearSlots": 0
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 7
+   }
+  },
+  "up-agile": {
+   "id": "up-agile",
+   "name": "Agile",
+   "stat": "skill",
+   "basic": false,
+   "text": "Stagger\n+1 {speed}",
+   "effects": {
+    "stagger": true,
+    "speedBonus": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 8
+   }
+  },
+  "up-visceral": {
+   "id": "up-visceral",
+   "name": "Visceral",
+   "stat": "skill",
+   "basic": false,
+   "text": "Stagger\n+1 {dmg}",
+   "effects": {
+    "stagger": true,
+    "dmgBonus": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 9
+   }
+  },
+  "up-swift": {
+   "id": "up-swift",
+   "name": "Swift",
+   "stat": "strength",
+   "basic": false,
+   "text": "+1 {dmg}\n+1 {speed}",
+   "effects": {
+    "dmgBonus": 1,
+    "speedBonus": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 10
+   }
+  },
+  "up-leaping": {
+   "id": "up-leaping",
+   "name": "Leaping",
+   "stat": "strength",
+   "basic": false,
+   "text": "+1 {dmg}\nMay make a Move action before using this card to Attack.",
+   "effects": {
+    "dmgBonus": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 11
+   }
+  },
+  "up-poised": {
+   "id": "up-poised",
+   "name": "Poised",
+   "stat": "strength",
+   "basic": false,
+   "text": "+1 {dmg}\nCannot suffer Stagger or Stun.",
+   "effects": {
+    "stagger": true,
+    "dmgBonus": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 12
+   }
+  },
+  "up-bloodthirsty": {
+   "id": "up-bloodthirsty",
+   "name": "Bloodthirsty",
+   "stat": "strength",
+   "basic": false,
+   "text": "+1 {dmg}\nOn Kill:\nDraw 1\nHeal 1",
+   "effects": {
+    "draw": 1,
+    "heal": 1,
+    "dmgBonus": 1,
+    "onKillDraw": 1,
+    "onKillHeal": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 13
+   }
+  },
+  "up-rallying": {
+   "id": "up-rallying",
+   "name": "Rallying",
+   "stat": "strength",
+   "basic": false,
+   "text": "+1 {dmg}\nAfter Attack:\nHeal 2",
+   "effects": {
+    "heal": 2,
+    "dmgBonus": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 14
+   }
+  },
+  "up-tireless": {
+   "id": "up-tireless",
+   "name": "Tireless",
+   "stat": "vitality",
+   "basic": false,
+   "text": "Draw 2, then discard 1 card.\nRemove 1 {frenzy} or 1 {poison}.",
+   "effects": {
+    "draw": 2
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 15
+   }
+  },
+  "up-defensive": {
+   "id": "up-defensive",
+   "name": "Defensive",
+   "stat": "vitality",
+   "basic": false,
+   "text": "Block 2 {dmg}",
+   "effects": {
+    "block": 2
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 16
+   }
+  },
+  "up-indomitable": {
+   "id": "up-indomitable",
+   "name": "Indomitable",
+   "stat": "vitality",
+   "basic": false,
+   "text": "Draw 1\nCannot suffer Frenzy, Poison, Stagger, or Stun.",
+   "effects": {
+    "stagger": true,
+    "draw": 1
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 17
+   }
+  },
+  "up-rapid": {
+   "id": "up-rapid",
+   "name": "Rapid",
+   "stat": "vitality",
+   "basic": false,
+   "text": "Dodge\nDraw 1\nClear this slot",
+   "effects": {
+    "dodge": true,
+    "draw": 1,
+    "clearSlots": 0
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 18
+   }
+  },
+  "up-second-wind": {
+   "id": "up-second-wind",
+   "name": "Second Wind",
+   "stat": "vitality",
+   "basic": false,
+   "text": "When used for non-Attack action:\nHeal 2",
+   "effects": {
+    "heal": 2
+   },
+   "art": {
+    "sheet": "upgrade-stat-deck",
+    "cell": 19
+   }
+  }
+ },
+ "startingDeck": [
+  "basic-endurance",
+  "basic-endurance",
+  "basic-endurance",
+  "basic-skill",
+  "basic-skill",
+  "basic-skill",
+  "basic-strength",
+  "basic-strength",
+  "basic-strength",
+  "basic-vitality",
+  "basic-vitality",
+  "basic-vitality"
+ ]
+}

@@ -1,0 +1,810 @@
+{
+ "hunter-pistol": {
+  "id": "hunter-pistol",
+  "name": "Hunter Pistol",
+  "kind": "firearm",
+  "timing": "Hunter Turn",
+  "text": "Discard 1 card to refresh",
+  "effects": {
+   "refresh": "discard1",
+   "custom": "fire-hunter-pistol"
+  },
+  "art": {
+   "sheet": "firearm-deck",
+   "cell": null
+  }
+ },
+ "evelyn": {
+  "id": "evelyn",
+  "name": "Evelyn",
+  "kind": "firearm",
+  "timing": "Hunter Turn",
+  "text": "Discard 1 card or 1 Blood Echo to refresh",
+  "effects": {
+   "refresh": "discard1",
+   "custom": "fire-evelyn"
+  },
+  "art": {
+   "sheet": "firearm-deck",
+   "cell": null
+  }
+ },
+ "repeating-pistol": {
+  "id": "repeating-pistol",
+  "name": "Repeating Pistol",
+  "kind": "firearm",
+  "timing": "Hunter Turn",
+  "text": "Discard 1 card to refresh, or for free when you Transform your weapon",
+  "effects": {
+   "refresh": "discard1",
+   "custom": "fire-repeating-pistol"
+  },
+  "art": {
+   "sheet": "firearm-deck",
+   "cell": null
+  }
+ },
+ "cannon": {
+  "id": "cannon",
+  "name": "Cannon",
+  "kind": "firearm",
+  "timing": "Hunter Turn",
+  "text": "Discard 2 cards to refresh",
+  "effects": {
+   "refresh": "discard2",
+   "custom": "fire-cannon"
+  },
+  "art": {
+   "sheet": "firearm-deck",
+   "cell": null
+  }
+ },
+ "flamesprayer": {
+  "id": "flamesprayer",
+  "name": "Flamesprayer",
+  "kind": "firearm",
+  "timing": "Hunter Turn",
+  "text": "Discard 2 cards to refresh",
+  "effects": {
+   "refresh": "discard2",
+   "custom": "fire-flamesprayer"
+  },
+  "art": {
+   "sheet": "firearm-deck",
+   "cell": null
+  }
+ },
+ "hunter-blunderbuss": {
+  "id": "hunter-blunderbuss",
+  "name": "Hunter Blunderbuss",
+  "kind": "firearm",
+  "timing": "Hunter Turn",
+  "text": "Discard 2 cards to refresh",
+  "effects": {
+   "refresh": "discard2",
+   "custom": "fire-hunter-blunderbuss"
+  },
+  "art": {
+   "sheet": "firearm-deck",
+   "cell": null
+  }
+ },
+ "ludwig-s-rifle": {
+  "id": "ludwig-s-rifle",
+  "name": "Ludwig's Rifle",
+  "kind": "firearm",
+  "timing": "Hunter Turn",
+  "text": "Discard 2 cards to refresh",
+  "effects": {
+   "refresh": "discard2",
+   "custom": "fire-ludwig-s-rifle"
+  },
+  "art": {
+   "sheet": "firearm-deck",
+   "cell": null
+  }
+ },
+ "rosmarinus": {
+  "id": "rosmarinus",
+  "name": "Rosmarinus",
+  "kind": "firearm",
+  "timing": "Hunter Turn",
+  "text": "Discard 2 cards to refresh",
+  "effects": {
+   "refresh": "discard2",
+   "custom": "fire-rosmarinus"
+  },
+  "art": {
+   "sheet": "firearm-deck",
+   "cell": null
+  }
+ },
+ "pungent-blood-cocktail": {
+  "id": "pungent-blood-cocktail",
+  "name": "Pungent Blood Cocktail",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "1 non-Boss Enemy within 2 spaces doesn't Activate",
+  "effects": {
+   "custom": "suppress-activation"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "coldblood-dew": {
+  "id": "coldblood-dew",
+  "name": "Coldblood Dew",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Gain 1 Blood Echo",
+  "effects": {
+   "custom": "gain-echo"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "fire-paper": {
+  "id": "fire-paper",
+  "name": "Fire Paper",
+  "kind": "consumable",
+  "timing": "On Attack",
+  "text": "+1 {dmg}",
+  "effects": {
+   "dmgBonus": 1
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "blue-elixir": {
+  "id": "blue-elixir",
+  "name": "Blue Elixir",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Move 2",
+  "effects": {
+   "custom": "move-2"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "blood-vial": {
+  "id": "blood-vial",
+  "name": "Blood Vial",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Heal 2",
+  "effects": {
+   "heal": 2
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "pebble": {
+  "id": "pebble",
+  "name": "Pebble",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Move 1 Enemy within 2 spaces up to 2 spaces",
+  "effects": {
+   "custom": "move-enemy-2"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "bolt-paper": {
+  "id": "bolt-paper",
+  "name": "Bolt Paper",
+  "kind": "consumable",
+  "timing": "On Attack",
+  "text": "+1 {fast}",
+  "effects": {
+   "speedBonus": 1
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "beckoning-bell": {
+  "id": "beckoning-bell",
+  "name": "Beckoning Bell",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "1 other Hunter teleports to your space",
+  "effects": {
+   "custom": "summon-ally"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "antidote": {
+  "id": "antidote",
+  "name": "Antidote",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Draw 1 card\nRemove 1 {poison}",
+  "effects": {
+   "draw": 1,
+   "custom": "cure-poison"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "bone-marrow-ash": {
+  "id": "bone-marrow-ash",
+  "name": "Bone Marrow Ash",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Refresh 1 Reward card",
+  "effects": {
+   "custom": "refresh-reward"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "lead-elixir": {
+  "id": "lead-elixir",
+  "name": "Lead Elixir",
+  "kind": "consumable",
+  "timing": "On Attack",
+  "text": "Block 1 {dmg}",
+  "effects": {
+   "block": 1
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "numbing-mist": {
+  "id": "numbing-mist",
+  "name": "Numbing Mist",
+  "kind": "consumable",
+  "timing": "On Attack",
+  "text": "Enemy's Attack loses all effects",
+  "effects": {
+   "custom": "strip-enemy-effects"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "throwing-knife": {
+  "id": "throwing-knife",
+  "name": "Throwing Knife",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Deal 1 {dmg} to 1 Enemy within 1 space",
+  "effects": {
+   "custom": "damage-1-range-1"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "molotov-cocktail": {
+  "id": "molotov-cocktail",
+  "name": "Molotov Cocktail",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Deal 2 {dmg} to 1 Enemy in your space",
+  "effects": {
+   "custom": "damage-2-same-space"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "sedative": {
+  "id": "sedative",
+  "name": "Sedative",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Draw 1 card\nRemove 1 {frenzy}",
+  "effects": {
+   "draw": 1,
+   "custom": "cure-frenzy"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "quicksilver-bullets": {
+  "id": "quicksilver-bullets",
+  "name": "Quicksilver Bullets",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Refresh Firearm",
+  "effects": {
+   "custom": "refresh-firearm"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "bold-hunter-s-mark": {
+  "id": "bold-hunter-s-mark",
+  "name": "Bold Hunter's Mark",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Teleport your Hunter to any {lamp} space",
+  "effects": {
+   "custom": "teleport-lamp"
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "beast-blood-pellet": {
+  "id": "beast-blood-pellet",
+  "name": "Beast Blood Pellet",
+  "kind": "consumable",
+  "timing": "Hunter Turn",
+  "text": "Clear 1 Attack Slot",
+  "effects": {
+   "clearSlots": 1
+  },
+  "count": 2,
+  "art": {
+   "sheet": "consumable-deck",
+   "cell": null
+  }
+ },
+ "a-call-beyond": {
+  "id": "a-call-beyond",
+  "name": "A Call Beyond",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Deal 2 {dmg} to all Enemies in your space.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "augur-of-ebrietas": {
+  "id": "augur-of-ebrietas",
+  "name": "Augur of Ebrietas",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Deal 2 {dmg} to 1 Enemy in your space and move them up to 2 spaces away.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-beast": {
+  "id": "rune-beast",
+  "name": "Caryll Rune: Beast",
+  "kind": "rune",
+  "timing": "On Kill",
+  "text": "Deal 2 {dmg} to 1 other Enemy within 1 space.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "beast-roar": {
+  "id": "beast-roar",
+  "name": "Beast Roar",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Move all Enemies in your space up to 2 spaces away.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "blood-of-adella": {
+  "id": "blood-of-adella",
+  "name": "Blood of Adella",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Heal 1\nMay spend 1 Blood Echo to Heal +2.",
+  "effects": {
+   "heal": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "blood-of-arianna": {
+  "id": "blood-of-arianna",
+  "name": "Blood of Arianna",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Draw 1\nHeal 1",
+  "effects": {
+   "draw": 1,
+   "heal": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-blood-rapture": {
+  "id": "rune-blood-rapture",
+  "name": "Caryll Rune: Blood Rapture",
+  "kind": "rune",
+  "timing": "On Kill",
+  "text": "Draw 1\nHeal 1",
+  "effects": {
+   "draw": 1,
+   "heal": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "blood-stone-shard": {
+  "id": "blood-stone-shard",
+  "name": "Blood Stone Shard",
+  "kind": "tool",
+  "text": "Place on an Attack Slot. May switch slot on Transform. While on slot, that Attack deals +1 {dmg}.",
+  "effects": {
+   "dmgBonus": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-clawmark": {
+  "id": "rune-clawmark",
+  "name": "Caryll Rune: Clawmark",
+  "kind": "rune",
+  "timing": "On Attack",
+  "text": "Replace your Stat card's effect with: +1 {dmg}, Stagger.",
+  "effects": {
+   "stagger": true,
+   "dmgBonus": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-communion": {
+  "id": "rune-communion",
+  "name": "Caryll Rune: Communion",
+  "kind": "rune",
+  "timing": "Hunter Turn",
+  "text": "Heal 2",
+  "effects": {
+   "heal": 2
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "empty-phantasm-shell": {
+  "id": "empty-phantasm-shell",
+  "name": "Empty Phantasm Shell",
+  "kind": "tool",
+  "timing": "On Attack",
+  "text": "+1 {speed}\n+1 {dmg}",
+  "effects": {
+   "dmgBonus": 1,
+   "speedBonus": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "executioner-s-gloves": {
+  "id": "executioner-s-gloves",
+  "name": "Executioner's Gloves",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Slay 1 Enemy within 2 spaces that has 2 or less remaining HP.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-eye": {
+  "id": "rune-eye",
+  "name": "Caryll Rune: Eye",
+  "kind": "rune",
+  "timing": "Hunter Turn",
+  "text": "Discard 1 card from your hand to return 1 card from your discard.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-formless-oedon": {
+  "id": "rune-formless-oedon",
+  "name": "Caryll Rune: Formless Oedon",
+  "kind": "rune",
+  "timing": "Hunter Turn",
+  "text": "Refresh your Firearm.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-guidance": {
+  "id": "rune-guidance",
+  "name": "Caryll Rune: Guidance",
+  "kind": "rune",
+  "timing": "Hunter Turn",
+  "text": "Clear 1 slot\nMove 2",
+  "effects": {
+   "clearSlots": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "hand-lantern": {
+  "id": "hand-lantern",
+  "name": "Hand Lantern",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Teleport to any {lamp} space.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-hunter": {
+  "id": "rune-hunter",
+  "name": "Caryll Rune: Hunter",
+  "kind": "rune",
+  "timing": "On Attack",
+  "text": "Attack gains +1 {speed}. After Attack, may Transform Weapon for free.",
+  "effects": {
+   "speedBonus": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "hunter-torch": {
+  "id": "hunter-torch",
+  "name": "Hunter Torch",
+  "kind": "tool",
+  "timing": "When a non-Boss Enemy moves into your space",
+  "text": "That Enemy stops 1 space away and suffers 1 {dmg}.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "iosefka-s-blood-vial": {
+  "id": "iosefka-s-blood-vial",
+  "name": "Iosefka's Blood Vial",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Heal 2",
+  "effects": {
+   "heal": 2
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "messenger-s-gift": {
+  "id": "messenger-s-gift",
+  "name": "Messenger's Gift",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Non-Boss Enemies do not Activate after your turn.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-moon": {
+  "id": "rune-moon",
+  "name": "Caryll Rune: Moon",
+  "kind": "rune",
+  "timing": "When you are slain",
+  "text": "Keep 1 Blood Echo (It is immediately used when you go to the Dream).",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-oedon-writhe": {
+  "id": "rune-oedon-writhe",
+  "name": "Caryll Rune: Oedon Writhe",
+  "kind": "rune",
+  "timing": "On Attack",
+  "text": "Attack gains Stagger, and may Stagger Attacks of the same Speed.",
+  "effects": {
+   "stagger": true
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "old-hunter-bone": {
+  "id": "old-hunter-bone",
+  "name": "Old Hunter Bone",
+  "kind": "tool",
+  "timing": "When you are Attacked",
+  "text": "Automatically Dodge that Attack.",
+  "effects": {
+   "dodge": true
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "tiny-music-box": {
+  "id": "tiny-music-box",
+  "name": "Tiny Music Box",
+  "kind": "tool",
+  "text": "No Use",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "tiny-tonitrus": {
+  "id": "tiny-tonitrus",
+  "name": "Tiny Tonitrus",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "Deal 2 {dmg} to 1 non-Boss Enemy within 1 space. It does not Activate.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "ritual-materials": {
+  "id": "ritual-materials",
+  "name": "Ritual Materials",
+  "kind": "tool",
+  "text": "No Use",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "blood-stone-chunk": {
+  "id": "blood-stone-chunk",
+  "name": "Blood Stone Chunk",
+  "kind": "tool",
+  "text": "Place on an Attack Slot. May switch slot on Transform. While on slot, that Attack gains +1 {speed} and +1 {dmg}.",
+  "effects": {
+   "dmgBonus": 1,
+   "speedBonus": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-corruption": {
+  "id": "rune-corruption",
+  "name": "Caryll Rune: Corruption",
+  "kind": "rune",
+  "timing": "Once per Chapter, if you would be slain",
+  "text": "You're not slain. Heal all {dmg}.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "queenly-flesh": {
+  "id": "queenly-flesh",
+  "name": "Queenly Flesh",
+  "kind": "tool",
+  "timing": "At the Start of Your Turn",
+  "text": "Heal 1",
+  "effects": {
+   "heal": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "rune-radiance": {
+  "id": "rune-radiance",
+  "name": "Caryll Rune: Radiance",
+  "kind": "rune",
+  "timing": "Hunter Turn, Once Per Chapter",
+  "text": "Draw until you have 3 Stat cards in your hand.",
+  "effects": {},
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "ring-of-betrothal": {
+  "id": "ring-of-betrothal",
+  "name": "Ring of Betrothal",
+  "kind": "tool",
+  "timing": "Hunter Turn",
+  "text": "All Hunters within 2 spaces Heal 1.",
+  "effects": {
+   "heal": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ },
+ "tear-blood-gem": {
+  "id": "tear-blood-gem",
+  "name": "Tear Blood Gem",
+  "kind": "tool",
+  "text": "Place on an Attack Slot. May switch slot on Transform. When Attacking with that slot: On Attack: Heal 1",
+  "effects": {
+   "heal": 1
+  },
+  "art": {
+   "sheet": "reward-deck",
+   "cell": null
+  }
+ }
+}

@@ -12,15 +12,26 @@ import type { DtAction } from './darktower/actions.js';
 import type { DuneView, DuneSeat } from './dune/state.js';
 import type { DuneAction } from './dune/actions.js';
 import type { AxisView, AxisSeat, AxisAction } from './axis/game.js';
+import type { PolitikView, PolitikSeat } from './politik/state.js';
+import type { PolitikAction } from './politik/actions.js';
+import type { DsView, DsSeat } from './darksouls/state.js';
+import type { DsAction } from './darksouls/actions.js';
+import type { FeastAction, FeastSeatColor, FeastView } from './feast/types.js';
+import type { BbView, BbSeat } from './bloodborne/state.js';
+import type { BbAction } from './bloodborne/actions.js';
 import { SEAT_COLORS } from './brass/state.js';
 import { TTR_COLORS } from './ttr/state.js';
 import { TREK_SEATS } from './trek/state.js';
 import { DT_SEATS } from './darktower/state.js';
 import { DUNE_SEATS } from './dune/state.js';
 import { AXIS_SEATS } from './axis/state.js';
+import { POLITIK_SEATS } from './politik/state.js';
+import { DS_SEATS } from './darksouls/state.js';
+import { FEAST_SEATS } from './feast/state.js';
+import { BB_SEATS } from './bloodborne/state.js';
 
 /** Any seat color across games. */
-export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat | AxisSeat;
+export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat | AxisSeat | PolitikSeat | DsSeat | FeastSeatColor | BbSeat;
 
 /** Per-game lobby facts: seat colors in pick order + max players. */
 export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: number }> = {
@@ -30,10 +41,14 @@ export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: num
   darktower: { colors: DT_SEATS, max: 4 },
   dune: { colors: DUNE_SEATS, max: 4 },
   axis: { colors: AXIS_SEATS, max: 6 },
+  politik: { colors: POLITIK_SEATS, max: 6 },
+  darksouls: { colors: DS_SEATS, max: 4 },
+  feast: { colors: FEAST_SEATS, max: 4 },
+  bloodborne: { colors: BB_SEATS, max: 4 },
 };
 
-export type GameView = BrassView | TtrView | TrekView | DtView | DuneView | AxisView;
-export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction | AxisAction;
+export type GameView = BrassView | TtrView | TrekView | DtView | DuneView | AxisView | PolitikView | DsView | FeastView | BbView;
+export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction | AxisAction | PolitikAction | DsAction | FeastAction | BbAction;
 
 /** Per-game create options chosen on the create screen (scenario, variants). */
 export type GameOptions = Record<string, string | number | boolean>;
@@ -69,10 +84,11 @@ export type ClientMsg =
   | { type: 'start' } // host or TV starts the game
   | { type: 'pick_color'; color: SeatColor } // lobby: claim a seat color
   | { type: 'action'; action: GameAction } // play an action (as your seat, or your dev seat)
+  | { type: 'axis_battle_visual_ready'; combatId: number; visualSeq: number; ready: boolean } // TV only: exact battle-state presentation readiness
   | { type: 'dev_view'; seat: number | null }; // dev: view/control as any seat (null = own)
 
 export type ServerMsg =
-  | { type: 'room_created'; roomId: string; joinUrl: string }
+  | { type: 'room_created'; roomId: string; joinUrl: string; /** Save-owner credential; absent only on older servers. */ ownerToken?: string }
   | { type: 'joined'; roomId: string; playerToken: string; playerIndex: number }
   | { type: 'watching'; roomId: string }
   | { type: 'room'; info: RoomInfo }
