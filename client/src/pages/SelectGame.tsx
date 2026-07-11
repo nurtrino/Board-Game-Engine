@@ -50,7 +50,7 @@ const GAMES = [
   {
     id: 'darksouls',
     name: 'Dark Souls: The Board Game',
-    logo: '/dark-souls/logo.webp',
+    logo: '/dark-souls/box.webp',
   },
   {
     id: 'feast',
@@ -60,7 +60,7 @@ const GAMES = [
   {
     id: 'bloodborne',
     name: 'Bloodborne: The Board Game',
-    logo: '/bloodborne/logo.webp',
+    logo: '/bloodborne/box.webp',
   },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
