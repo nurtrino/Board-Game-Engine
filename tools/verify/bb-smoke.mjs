@@ -18,6 +18,7 @@ const CARDS = { ...STATS.cards, ...STATS.upgrades };
 const RANK = { fast: 3, medium: 2, slow: 1 };
 
 const URL = process.argv[2] ?? 'ws://localhost:8787/ws';
+const CAMPAIGN = process.argv[3] ?? 'the-long-hunt';
 const ws = new WebSocket(URL);
 const send = (m) => ws.send(JSON.stringify(m));
 
@@ -209,7 +210,7 @@ function myMove() {
   return act({ type: 'end_move' });
 }
 
-ws.on('open', () => send({ type: 'create_room', name: 'BB smoke', game: 'bloodborne' }));
+ws.on('open', () => send({ type: 'create_room', name: 'BB smoke ' + CAMPAIGN, game: 'bloodborne', options: { campaign: CAMPAIGN, chapter: 1, partySize: 4 } }));
 ws.on('message', (raw) => {
   const m = JSON.parse(String(raw));
   if (m.type === 'room_created') {

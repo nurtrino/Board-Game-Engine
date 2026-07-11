@@ -141,6 +141,12 @@ Owner directive: full parity, correct assets, perfect new-user UX.
   hunter's space, Attack (Combat). Surprise: enemies entering activation
   range mid-activation still activate. Sudden death: hunter slain →
   remaining activations cancel.
+  **OWNER DIRECTIVE (Jul 10 2026): the engine resolves Enemy Activation
+  fully automatically** — movement, pathing, pursuit, and attack initiation
+  happen without any player input, applying Intelligent & Cruel
+  deterministically to path/order ambiguities (e.g. tie-break toward the
+  move that reaches a hunter, then the lowest-HP hunter). Players only act
+  inside the resulting combats (dodge etc.).
 
 ### Combat (pp. 18–22)
 
@@ -388,7 +394,43 @@ Quick Cut / Slash / Deadly Thrust, Scourge Beast 4 HP Quick Swipe fast 2dmg
 basic), component counts (p. 4–6), Lua campaign tables (mission numbers per
 chapter), errata list, enemy action deck 3/2/1.
 
-## 9. Open items
+## 9. Ship-gate results (Jul 10 2026)
+
+**Rulebook UI-coverage audit** — every printed decision has a home:
+hunter pick (device picker, both weapon sides previewable, free start-side
+choice per p. 8), turn order (BEGIN TURN per seat, any order), move/stop-early
+(map taps + END MOVE), tile reveal + orientation choice (rotation previews),
+interact, transform, dream, attack (card + slot + target via map tap),
+combat attack-back / dodge (slot speed legality enforced + shown) / pass,
+firearm fire + refresh (discard picker; Evelyn echo option; Cannon/Flamesprayer
+as combat attacks; Blunderbuss target; rifle/torch sentries automatic),
+all 24 core rewards (on-kill windows are explicit prompts; gem slot picker;
+Old Hunter Bone auto-dodge button in the dodge window; Eye rune swap picker),
+consumable timing windows + target pickers, dream upgrade forced spending +
+optional incorporation swaps, return placement (side + lamp), round refresh
+discard-any, mission choices/branches as prompts, mission bait/offer buttons
+(engine-hook gated), End Turn explicit, Show deck + missions log w/ real card
+backs, rulebook linked. Reverse audit (engine actions the UI can't reach):
+none — every action type + choose variant has a device affordance.
+Known simplifications (documented, non-blocking): `clearSlots` auto-picks the
+first filled slot (printed "any 1 slot" is a player choice); Beast-rune on-kill
+target is deterministic (closest-to-death within 1); leaping attacks target
+via first-enemy default at range.
+
+**UI-driven full game**: 4-seat puppeteer game entirely through the device DOM
+reached YOU DIED in 83s / 397 clicks with zero stalls (tools/verify/
+bloodborne-ui-smoke.mjs). **WS smokes**: full games completed on all four core
+campaigns through the real server w/ CPU co-op seats. **Engine tests**:
+bloodborne-test.ts green (1/2/4p playthroughs, conservation invariants,
+directed rules). Client tsc + build green.
+
+**DSL coverage**: The Long Hunt fully encoded; Growing Madness / Secrets of
+the Church / Fall of Old Yharnam encoded with `_unsupported` lists in
+games/bloodborne/golden/dsl/*.json — inexpressible printed effects surface as
+special-rule chips on the device (visible, honor-system) rather than being
+dropped; interpreter extensions continue.
+
+## 10. Open items
 
 - PVP mode (Chalice components include PVP screens): out of scope unless
   owner asks.
