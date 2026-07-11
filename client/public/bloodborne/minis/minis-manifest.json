@@ -1,0 +1,387 @@
+{
+ "saw-cleaver-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "saw-cleaver-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "threaded-cane-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "threaded-cane-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "hunter-axe-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "hunter-axe-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "ludwigs-holy-blade-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "ludwigs-holy-blade-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "kirkhammer-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "kirkhammer-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "blade-of-mercy-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "blade-of-mercy-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "logarius-wheel-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "logarius-wheel-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "tonitrus-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "tonitrus-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "beast-claw-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "beast-claw-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "stake-driver-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "stake-driver-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "rifle-spear-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "rifle-spear-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "chikage-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "chikage-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "ludwigs-uncanny-holy-blade-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "ludwigs-uncanny-holy-blade-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "burial-blade-weapon": {
+  "verts": 0,
+  "tex": [
+   1024,
+   1024
+  ]
+ },
+ "burial-blade-hunter": {
+  "verts": 0,
+  "tex": [
+   1024,
+   1024
+  ]
+ },
+ "reiterpallasch-weapon": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "reiterpallasch-hunter": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "ebrietas-daughter-of-the-cosmos": {
+  "verts": 0,
+  "tex": [
+   2048,
+   2048
+  ]
+ },
+ "mergo-s-wet-nurse": {
+  "verts": 0,
+  "tex": [
+   2048,
+   2048
+  ]
+ },
+ "martyr-logarius": {
+  "verts": 0,
+  "tex": [
+   4096,
+   2048
+  ]
+ },
+ "annalise-queen-of-the-vilebloods": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "blood-starved-beast": {
+  "verts": 0,
+  "tex": [
+   4096,
+   2048
+  ]
+ },
+ "vicar-amelia": {
+  "verts": 0,
+  "tex": [
+   4096,
+   4096
+  ]
+ },
+ "cleric-beast": {
+  "verts": 0,
+  "tex": [
+   4096,
+   2048
+  ]
+ },
+ "father-gascoigne": {
+  "verts": 0,
+  "tex": [
+   4096,
+   2048
+  ]
+ },
+ "father-gascoigne-transformed": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "watchdog-of-the-old-lords": {
+  "verts": 0,
+  "tex": [
+   4096,
+   2048
+  ]
+ },
+ "undead-giant": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "yharnam-pthumerian-queen": {
+  "verts": 0,
+  "tex": [
+   2048,
+   2048
+  ]
+ },
+ "pthumerian-descendant": {
+  "verts": 0,
+  "tex": [
+   2048,
+   2048
+  ]
+ },
+ "beast-possessed-soul": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "large-nightmare-apostle": {
+  "verts": 0,
+  "tex": [
+   2048,
+   2048
+  ]
+ },
+ "the-one-reborn": {
+  "verts": 0,
+  "tex": [
+   2048,
+   2048
+  ]
+ },
+ "moon-presence": {
+  "verts": 0,
+  "tex": [
+   2048,
+   2048
+  ]
+ },
+ "shadows-of-yharnam": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "rom-the-vacuous-spider": {
+  "verts": 0,
+  "tex": [
+   4096,
+   4096
+  ]
+ },
+ "old-hunter-henryk": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "bloody-crow-of-cainhurst": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "eileen-the-crow": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "alfred-hunter-of-vilebloods": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "djura-s-ally": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ },
+ "old-hunter-djura": {
+  "verts": 0,
+  "tex": [
+   2048,
+   1024
+  ]
+ }
+}

@@ -1,0 +1,3187 @@
+{
+ "hunters": {
+  "saw-cleaver": {
+   "weaponDashboard": {
+    "name": "Saw Cleaver",
+    "cell": 8,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Saw Cleaver",
+    "cell": 11,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Saw Cleaver Hunter",
+    "cell": 53,
+    "sheet": "enemies"
+   },
+   "startingRune": {
+    "name": "Caryll Rune: Hunter",
+    "cell": 63,
+    "sheet": "reward-deck"
+   },
+   "weaponMini": "saw-cleaver-weapon",
+   "hunterMini": "saw-cleaver-hunter"
+  },
+  "threaded-cane": {
+   "weaponDashboard": {
+    "name": "Threaded Cane",
+    "cell": 9,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Cannon - Threaded Cane",
+    "cell": 13,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Cannon",
+    "cell": 26,
+    "sheet": "firearm-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "threaded-cane-weapon",
+   "hunterMini": "threaded-cane-hunter"
+  },
+  "hunter-axe": {
+   "weaponDashboard": {
+    "name": "Hunter Axe",
+    "cell": 10,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Hunter Axe",
+    "cell": 4,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "A Call Beyond",
+    "cell": 53,
+    "sheet": "reward-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "hunter-axe-weapon",
+   "hunterMini": "hunter-axe-hunter"
+  },
+  "ludwigs-holy-blade": {
+   "weaponDashboard": {
+    "name": "Ludwig's Holy Blade",
+    "cell": 11,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Evelyn - Ludwig's Holy Blade",
+    "cell": 7,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Empty Phantasm Shell",
+    "cell": 59,
+    "sheet": "reward-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "ludwigs-holy-blade-weapon",
+   "hunterMini": "ludwigs-holy-blade-hunter"
+  },
+  "kirkhammer": {
+   "weaponDashboard": {
+    "name": "Kirkhammer",
+    "cell": 12,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Kirkhammer",
+    "cell": 5,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Kirkhammer Hunter",
+    "cell": 47,
+    "sheet": "enemies"
+   },
+   "startingRune": {
+    "name": "Caryll Rune: Oedon Writhe",
+    "cell": 65,
+    "sheet": "reward-deck"
+   },
+   "weaponMini": "kirkhammer-weapon",
+   "hunterMini": "kirkhammer-hunter"
+  },
+  "blade-of-mercy": {
+   "weaponDashboard": {
+    "name": "Blade of Mercy",
+    "cell": 14,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Blade of Mercy",
+    "cell": 1,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Blade of Mercy Hunter",
+    "cell": 42,
+    "sheet": "enemies"
+   },
+   "startingRune": {
+    "name": "Caryll Rune: Clawmark",
+    "cell": 57,
+    "sheet": "reward-deck"
+   },
+   "weaponMini": "blade-of-mercy-weapon",
+   "hunterMini": "blade-of-mercy-hunter"
+  },
+  "logarius-wheel": {
+   "weaponDashboard": {
+    "name": "Logarius' Wheel",
+    "cell": 13,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Logarius' Wheel",
+    "cell": 6,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Logariu's Wheel Hunter",
+    "cell": 48,
+    "sheet": "enemies"
+   },
+   "startingRune": {
+    "name": "Caryll Rune: Communion",
+    "cell": 58,
+    "sheet": "reward-deck"
+   },
+   "weaponMini": "logarius-wheel-weapon",
+   "hunterMini": "logarius-wheel-hunter"
+  },
+  "tonitrus": {
+   "weaponDashboard": {
+    "name": "Tonitrus",
+    "cell": 1,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Tonitrus",
+    "cell": 14,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Tiny Tonitrus",
+    "cell": 67,
+    "sheet": "reward-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "tonitrus-weapon",
+   "hunterMini": "tonitrus-hunter"
+  },
+  "beast-claw": {
+   "weaponDashboard": {
+    "name": "Beast Claw",
+    "cell": 6,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Beast Claw",
+    "cell": 0,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Beast Roar",
+    "cell": 54,
+    "sheet": "reward-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "beast-claw-weapon",
+   "hunterMini": "beast-claw-hunter"
+  },
+  "stake-driver": {
+   "weaponDashboard": {
+    "name": "Stake Driver",
+    "cell": 5,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Repeating Pistol - Stake Driver",
+    "cell": 12,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Repeating Pistol",
+    "cell": 28,
+    "sheet": "firearm-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "stake-driver-weapon",
+   "hunterMini": "stake-driver-hunter"
+  },
+  "rifle-spear": {
+   "weaponDashboard": {
+    "name": "Hunter Pistol - Rifle Spear",
+    "cell": 10,
+    "sheet": "firearm-deck"
+   },
+   "firearm": {
+    "name": "Rifle Spear",
+    "cell": 4,
+    "sheet": "sheet-2"
+   },
+   "hunterCard": {
+    "name": "Iosefka's Blood Vial",
+    "cell": 64,
+    "sheet": "reward-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "rifle-spear-weapon",
+   "hunterMini": "rifle-spear-hunter"
+  },
+  "chikage": {
+   "weaponDashboard": {
+    "name": "Chikage",
+    "cell": 7,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Chikage",
+    "cell": 3,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Chikage Hunter",
+    "cell": 44,
+    "sheet": "enemies"
+   },
+   "startingRune": {
+    "name": "Caryll Rune: Blood Rapture",
+    "cell": 55,
+    "sheet": "reward-deck"
+   },
+   "weaponMini": "chikage-weapon",
+   "hunterMini": "chikage-hunter"
+  },
+  "ludwigs-uncanny-holy-blade": {
+   "weaponDashboard": {
+    "name": "Ludwig's Uncanny Holy Blade",
+    "cell": 0,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Repeating Pistol - Ludwig's Uncanny Holy Blade",
+    "cell": 8,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Repeating Pistol",
+    "cell": 27,
+    "sheet": "firearm-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "ludwigs-uncanny-holy-blade-weapon",
+   "hunterMini": "ludwigs-uncanny-holy-blade-hunter"
+  },
+  "burial-blade": {
+   "weaponDashboard": {
+    "name": "Burial Blade",
+    "cell": 3,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Burial Blade",
+    "cell": 2,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Old Hunter Bone",
+    "cell": 66,
+    "sheet": "reward-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "burial-blade-weapon",
+   "hunterMini": "burial-blade-hunter"
+  },
+  "reiterpallasch": {
+   "weaponDashboard": {
+    "name": "Reiterpallasch",
+    "cell": 2,
+    "sheet": "sheet-2"
+   },
+   "firearm": {
+    "name": "Hunter Pistol - Reiterpallasch",
+    "cell": 9,
+    "sheet": "firearm-deck"
+   },
+   "hunterCard": {
+    "name": "Executioner's Gloves",
+    "cell": 60,
+    "sheet": "reward-deck"
+   },
+   "startingRune": null,
+   "weaponMini": "reiterpallasch-weapon",
+   "hunterMini": "reiterpallasch-hunter"
+  }
+ },
+ "enemies": {
+  "annalise-queen-of-the-vilebloods": {
+   "name": "Annalise, Queen of the Vilebloods",
+   "card": {
+    "name": "Annalise, Queen of the Vilebloods",
+    "cell": 14,
+    "sheet": "sheet-3"
+   },
+   "extraCards": [],
+   "mini": "annalise-queen-of-the-vilebloods",
+   "miniCount": 1
+  },
+  "winter-lantern": {
+   "name": "Winter Lantern",
+   "card": {
+    "name": "Winter Lantern",
+    "cell": 57,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "executioner": {
+   "name": "Executioner",
+   "card": {
+    "name": "Blood Stone Shard",
+    "cell": 56,
+    "sheet": "reward-deck"
+   },
+   "extraCards": [
+    {
+     "name": "Executioner",
+     "cell": 45,
+     "sheet": "enemies"
+    }
+   ],
+   "mini": null,
+   "miniCount": 0
+  },
+  "cramped-casket": {
+   "name": "Cramped Casket",
+   "card": {
+    "name": "Cramped Casket",
+    "cell": 62,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "kidnapper": {
+   "name": "Kidnapper",
+   "card": {
+    "name": "Kidnapper",
+    "cell": 63,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "brainsucker": {
+   "name": "Brainsucker",
+   "card": {
+    "name": "Brainsucker",
+    "cell": 60,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "celestial-emissary": {
+   "name": "Celestial Emissary",
+   "card": {
+    "name": "Celestial Emissary",
+    "cell": 61,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "mergo-s-chief-attendant": {
+   "name": "Mergo's Chief Attendant",
+   "card": {
+    "name": "Mergo's Chief Attendant",
+    "cell": 59,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "mergo-s-attendant": {
+   "name": "Mergo's Attendant",
+   "card": {
+    "name": "Mergo's Attendant",
+    "cell": 58,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "cain-s-servant-knight": {
+   "name": "Cain's Servant / Knight",
+   "card": {
+    "name": "Cain's Servant",
+    "cell": 36,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "vileblood-knight": {
+   "name": "Vileblood Knight",
+   "card": {
+    "name": "Vileblood Knight",
+    "cell": 40,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "bloodlicker-starved": {
+   "name": "Bloodlicker / Starved",
+   "card": {
+    "name": "Bloodlicker",
+    "cell": 34,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "lost-child-of-antiquity": {
+   "name": "Lost Child of Antiquity",
+   "card": {
+    "name": "Lost Child of Antiquity",
+    "cell": 39,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "forsaken-castle-spirit": {
+   "name": "Forsaken Castle Spirit",
+   "card": {
+    "name": "Forsaken Castle Spirit",
+    "cell": 38,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "mad-one": {
+   "name": "Mad One",
+   "card": {
+    "name": "Mad One",
+    "cell": 30,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "maneater-boar": {
+   "name": "Maneater Boar",
+   "card": {
+    "name": "Maneater Boar",
+    "cell": 31,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "snake-parasite": {
+   "name": "Snake Parasite",
+   "card": {
+    "name": "Snake Parasite",
+    "cell": 33,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "snake-ball": {
+   "name": "Snake Ball",
+   "card": {
+    "name": "Snake Ball",
+    "cell": 32,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "hemwick-grave-woman": {
+   "name": "Hemwick Grave Woman",
+   "card": {
+    "name": "Hemwick Grave Woman",
+    "cell": 29,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "bell-ringer": {
+   "name": "Bell Ringer",
+   "card": {
+    "name": "Bell Ringer",
+    "cell": 22,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "hunting-dog": {
+   "name": "Hunting Dog",
+   "card": {
+    "name": "Hunting Dog",
+    "cell": 25,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "labyrinth-rat": {
+   "name": "Labyrinth Rat",
+   "card": {
+    "name": "Labyrinth Rat",
+    "cell": 27,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "fluorescent-flower": {
+   "name": "Fluorescent Flower",
+   "card": {
+    "name": "Fluorescent Flower",
+    "cell": 23,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "keeper-of-the-old-lords": {
+   "name": "Keeper of the Old Lords",
+   "card": {
+    "name": "Keeper of the Old Lords",
+    "cell": 26,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "gravekeeper-scorpion": {
+   "name": "Gravekeeper Scorpion",
+   "card": {
+    "name": "Gravekeeper Scorpion",
+    "cell": 24,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "rabid-dog": {
+   "name": "Rabid Dog",
+   "card": {
+    "name": "Rabid Dog",
+    "cell": 28,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "giant-lost-child": {
+   "name": "Giant Lost Child",
+   "card": {
+    "name": "Giant Lost Child",
+    "cell": 14,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "small-nightmare-apostle": {
+   "name": "Small Nightmare Apostle",
+   "card": {
+    "name": "Small Nightmare Apostle",
+    "cell": 18,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "large-huntsman": {
+   "name": "Large Huntsman",
+   "card": {
+    "name": "Large Huntsman",
+    "cell": 15,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "merciless-watcher": {
+   "name": "Merciless Watcher",
+   "card": {
+    "name": "Merciless Watcher",
+    "cell": 17,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "loran-silverbeast": {
+   "name": "Loran Silverbeast",
+   "card": {
+    "name": "Loran Silverbeast",
+    "cell": 16,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "garden-of-eyes": {
+   "name": "Garden of Eyes",
+   "card": {
+    "name": "Garden of Eyes",
+    "cell": 20,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "scholar": {
+   "name": "Scholar",
+   "card": {
+    "name": "Scholar",
+    "cell": 21,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "child-of-rom": {
+   "name": "Child of Rom",
+   "card": {
+    "name": "Child of Rom",
+    "cell": 19,
+    "sheet": "enemies"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "iosefka": {
+   "name": "Iosefka",
+   "card": {
+    "name": "Iosefka",
+    "cell": 1,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 1
+  },
+  "old-hunter-henryk": {
+   "name": "Old Hunter Henryk",
+   "card": {
+    "name": "Old Hunter Henryk",
+    "cell": 2,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": "old-hunter-henryk",
+   "miniCount": 1
+  },
+  "bloody-crow-of-cainhurst": {
+   "name": "Bloody Crow of Cainhurst",
+   "card": {
+    "name": "Bloody Crow of Cainhurst",
+    "cell": 13,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": "bloody-crow-of-cainhurst",
+   "miniCount": 1
+  },
+  "eileen-the-crow": {
+   "name": "Eileen The Crow",
+   "card": {
+    "name": "Eileen The Crow",
+    "cell": 0,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": "eileen-the-crow",
+   "miniCount": 1
+  },
+  "alfred-hunter-of-vilebloods": {
+   "name": "Alfred, Hunter of Vilebloods",
+   "card": {
+    "name": "Alfred, Hunter of Vilebloods",
+    "cell": 10,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": "alfred-hunter-of-vilebloods",
+   "miniCount": 1
+  },
+  "djura-s-ally": {
+   "name": "Djura's Ally",
+   "card": {
+    "name": "Djura's Ally",
+    "cell": 11,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": "djura-s-ally",
+   "miniCount": 1
+  },
+  "old-hunter-djura": {
+   "name": "Old Hunter Djura",
+   "card": {
+    "name": "Old Hunter Djura",
+    "cell": 9,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": "old-hunter-djura",
+   "miniCount": 1
+  },
+  "church-servant": {
+   "name": "Church Servant",
+   "card": {
+    "name": "Church Servant",
+    "cell": 12,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "church-giant": {
+   "name": "Church Giant",
+   "card": {
+    "name": "Church Giant",
+    "cell": 8,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "male-beast-patient": {
+   "name": "Male Beast Patient",
+   "card": {
+    "name": "Male Beast Patient",
+    "cell": 6,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "female-beast-patient": {
+   "name": "Female Beast Patient",
+   "card": {
+    "name": "Female Beast Patient",
+    "cell": 7,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "scourge-beast": {
+   "name": "Scourge Beast",
+   "card": {
+    "name": "Scourge Beast",
+    "cell": 5,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "huntsman-s-minion": {
+   "name": "Huntsman's Minion",
+   "card": {
+    "name": "Huntsman's Minion",
+    "cell": 3,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  },
+  "hunter-mob": {
+   "name": "Hunter Mob",
+   "card": {
+    "name": "Hunter Mob",
+    "cell": 4,
+    "sheet": "enemies-2"
+   },
+   "extraCards": [],
+   "mini": null,
+   "miniCount": 0
+  }
+ },
+ "bosses": {
+  "ebrietas-daughter-of-the-cosmos": {
+   "name": "Ebrietas, Daughter of the Cosmos",
+   "hpCard": {
+    "name": "Ebrietas, Daughter of the Cosmos",
+    "cell": 19,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Ebrietas, Daughter of the Cosmos Phase 2",
+     "guid": "873e36",
+     "cards": [
+      {
+       "name": "",
+       "cell": 7,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 9,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 5,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 6,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 8,
+       "sheet": null
+      }
+     ]
+    },
+    {
+     "nick": "Ebrietas, Daughter of the Cosmos Phase 1",
+     "guid": "0eee83",
+     "cards": [
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": "ebrietas-daughter-of-the-cosmos-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": "ebrietas-daughter-of-the-cosmos-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": "ebrietas-daughter-of-the-cosmos-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": "ebrietas-daughter-of-the-cosmos-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "ebrietas-daughter-of-the-cosmos-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "ebrietas-daughter-of-the-cosmos"
+  },
+  "mergo-s-wet-nurse": {
+   "name": "Mergo's Wet Nurse",
+   "hpCard": {
+    "name": "Mergo's Wet Nurse",
+    "cell": 18,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Mergo's Wet Nurse Phase 2",
+     "guid": "267a2b",
+     "cards": [
+      {
+       "name": "",
+       "cell": 7,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 6,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 8,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 9,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 5,
+       "sheet": null
+      }
+     ]
+    },
+    {
+     "nick": "Mergo's Wet Nurse Phase 1",
+     "guid": "249941",
+     "cards": [
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": "mergo-s-wet-nurse-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": "mergo-s-wet-nurse-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": "mergo-s-wet-nurse-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "mergo-s-wet-nurse-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": "mergo-s-wet-nurse-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "mergo-s-wet-nurse"
+  },
+  "martyr-logarius": {
+   "name": "Martyr Logarius",
+   "hpCard": {
+    "name": "Martyr Logarius",
+    "cell": 15,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Martyr Logarius Phase 2",
+     "guid": "46820d",
+     "cards": [
+      {
+       "name": "",
+       "cell": 8,
+       "sheet": "martyr-logarius-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 5,
+       "sheet": "martyr-logarius-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 9,
+       "sheet": "martyr-logarius-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 7,
+       "sheet": "martyr-logarius-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 6,
+       "sheet": "martyr-logarius-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Martyr Logarius Phase 1",
+     "guid": "7739ac",
+     "cards": [
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": "martyr-logarius-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "martyr-logarius-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": "martyr-logarius-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": "martyr-logarius-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": "martyr-logarius-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "martyr-logarius"
+  },
+  "blood-starved-beast": {
+   "name": "Blood-starved Beast",
+   "hpCard": {
+    "name": "Blood-Starved Beast",
+    "cell": 0,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Blood-Starved Beast Phase 2",
+     "guid": "026585",
+     "cards": [
+      {
+       "name": "",
+       "cell": 15,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 12,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 13,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 11,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 14,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Blood-Starved Beast Phase 1",
+     "guid": "38cbdd",
+     "cards": [
+      {
+       "name": "",
+       "cell": 8,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 6,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 7,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 10,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 9,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "blood-starved-beast"
+  },
+  "vicar-amelia": {
+   "name": "Vicar Amelia",
+   "hpCard": {
+    "name": "Vicar Amelia",
+    "cell": 4,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Vicar Amelia Phase 2",
+     "guid": "03bb96",
+     "cards": [
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": "vicar-amelia-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "vicar-amelia-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": "vicar-amelia-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": "vicar-amelia-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": "vicar-amelia-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Vicar Amelia Phase 2",
+     "guid": "73b5a8",
+     "cards": [
+      {
+       "name": "",
+       "cell": 55,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 51,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 54,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 53,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 52,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Vicar Amelia Phase 1",
+     "guid": "b57791",
+     "cards": [
+      {
+       "name": "",
+       "cell": 46,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 47,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 50,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 48,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 49,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "vicar-amelia"
+  },
+  "cleric-beast": {
+   "name": "Cleric Beast",
+   "hpCard": {
+    "name": "Cleric Beast",
+    "cell": 1,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Cleric Beast Phase 2",
+     "guid": "5c3d23",
+     "cards": [
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "cleric-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": null
+      }
+     ]
+    },
+    {
+     "nick": "Cleric Beast Phase 2",
+     "guid": "eeae99",
+     "cards": [
+      {
+       "name": "",
+       "cell": 24,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 23,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 25,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 22,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 21,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Cleric Beast Phase 1",
+     "guid": "d3af83",
+     "cards": [
+      {
+       "name": "",
+       "cell": 20,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 17,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 18,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 16,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 19,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "cleric-beast"
+  },
+  "father-gascoigne": {
+   "name": "Father Gascoigne",
+   "hpCard": {
+    "name": "Father Gascoigne",
+    "cell": 2,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Father Gascoigne Phase 2",
+     "guid": "b2bb9f",
+     "cards": [
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": null
+      }
+     ]
+    },
+    {
+     "nick": "Father Gascoigne Phase 2",
+     "guid": "2d28a5",
+     "cards": [
+      {
+       "name": "",
+       "cell": 34,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 33,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 31,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 35,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 32,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Father Gascoigne Phase 1",
+     "guid": "45fa55",
+     "cards": [
+      {
+       "name": "",
+       "cell": 28,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 29,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 30,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 27,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 26,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "father-gascoigne"
+  },
+  "father-gascoigne-transformed": {
+   "name": "Father Gascoigne Transformed",
+   "hpCard": {
+    "name": "Father Gascoigne Transformed",
+    "cell": 3,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Father Gascoigne Transformed Phase 2",
+     "guid": "7a82ee",
+     "cards": [
+      {
+       "name": "",
+       "cell": 43,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 41,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 45,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 42,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 44,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Father Gascoigne Transformed Phase 1",
+     "guid": "b12e8f",
+     "cards": [
+      {
+       "name": "",
+       "cell": 38,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 39,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 37,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 40,
+       "sheet": "blood-starved-beast-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 36,
+       "sheet": "blood-starved-beast-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "father-gascoigne-transformed"
+  },
+  "watchdog-of-the-old-lords": {
+   "name": "Watchdog of the Old Lords",
+   "hpCard": {
+    "name": "Watchdog of the Old Lords",
+    "cell": 10,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Watchdog of the Old Lords Phase 2",
+     "guid": "538c93",
+     "cards": [
+      {
+       "name": "",
+       "cell": 39,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 37,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 36,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 35,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 38,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Watchdog of the Old Lords Phase 1",
+     "guid": "7e0308",
+     "cards": [
+      {
+       "name": "",
+       "cell": 34,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 31,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 33,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 30,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 32,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "watchdog-of-the-old-lords"
+  },
+  "undead-giant": {
+   "name": "Undead Giant",
+   "hpCard": {
+    "name": "Undead Giant",
+    "cell": 9,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Undead Giant Phase 2",
+     "guid": "e39a8f",
+     "cards": [
+      {
+       "name": "",
+       "cell": 26,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 27,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 28,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 29,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 25,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Undead Giant Phase 1",
+     "guid": "aaa1f3",
+     "cards": [
+      {
+       "name": "",
+       "cell": 23,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 22,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 20,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 24,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 21,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "undead-giant"
+  },
+  "yharnam-pthumerian-queen": {
+   "name": "Yharnam, Pthumerian Queen",
+   "hpCard": {
+    "name": "Yharnam, Pthumerian Queen",
+    "cell": 11,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Yharnam, Pthumerian Queen Phase 2",
+     "guid": "634950",
+     "cards": [
+      {
+       "name": "",
+       "cell": 46,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 47,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 45,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 48,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 49,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Yharnam, Pthumerian Queen Phase 1",
+     "guid": "35b27c",
+     "cards": [
+      {
+       "name": "",
+       "cell": 42,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 40,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 43,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 44,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 41,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "yharnam-pthumerian-queen"
+  },
+  "pthumerian-descendant": {
+   "name": "Pthumerian Descendant",
+   "hpCard": {
+    "name": "Pthumerian Descendant",
+    "cell": 8,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Pthumerian Descendant Phase 2",
+     "guid": "806d77",
+     "cards": [
+      {
+       "name": "",
+       "cell": 18,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 15,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 17,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 16,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 19,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Pthumerian Descendant Phase 1",
+     "guid": "1abb7b",
+     "cards": [
+      {
+       "name": "",
+       "cell": 10,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 13,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 11,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 12,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 14,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "pthumerian-descendant"
+  },
+  "beast-possessed-soul": {
+   "name": "Beast-Possessed Soul",
+   "hpCard": {
+    "name": "Beast-Possessed Soul",
+    "cell": 7,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Beast-Possessed Soul Phase 2",
+     "guid": "449f81",
+     "cards": [
+      {
+       "name": "",
+       "cell": 9,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 6,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 5,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 8,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 7,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Beast-Possessed Soul Phase 1",
+     "guid": "16cab9",
+     "cards": [
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "beast-possessed-soul"
+  },
+  "large-nightmare-apostle": {
+   "name": "Large Nightmare Apostle",
+   "hpCard": {
+    "name": "Large Nightmare Apostle",
+    "cell": 5,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Large Nightmare Apostle Phase 2",
+     "guid": "29022c",
+     "cards": [
+      {
+       "name": "",
+       "cell": 57,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 59,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 55,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 58,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 56,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Large Nightmare Apostle Phase 1",
+     "guid": "5aa897",
+     "cards": [
+      {
+       "name": "",
+       "cell": 54,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 53,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 52,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 50,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 51,
+       "sheet": "watchdog-of-the-old-lords-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "large-nightmare-apostle"
+  },
+  "the-one-reborn": {
+   "name": "The One Reborn",
+   "hpCard": {
+    "name": "The One Reborn",
+    "cell": 20,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "The One Reborn Phase 2",
+     "guid": "c2e50b",
+     "cards": [
+      {
+       "name": "",
+       "cell": 9,
+       "sheet": "the-one-reborn-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 6,
+       "sheet": "the-one-reborn-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 7,
+       "sheet": "the-one-reborn-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 8,
+       "sheet": "the-one-reborn-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 5,
+       "sheet": "the-one-reborn-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "The One Reborn Phase 1",
+     "guid": "1c2f83",
+     "cards": [
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": "the-one-reborn-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": "the-one-reborn-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "the-one-reborn-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": "the-one-reborn-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": "the-one-reborn-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "the-one-reborn"
+  },
+  "moon-presence": {
+   "name": "Moon Presence",
+   "hpCard": {
+    "name": "Moon Presence",
+    "cell": 17,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Moon Presence Phase 2",
+     "guid": "77957a",
+     "cards": [
+      {
+       "name": "",
+       "cell": 15,
+       "sheet": "gehrman-burial-blade-transformed"
+      },
+      {
+       "name": "",
+       "cell": 18,
+       "sheet": "gehrman-burial-blade-transformed"
+      },
+      {
+       "name": "",
+       "cell": 19,
+       "sheet": "gehrman-burial-blade-transformed"
+      },
+      {
+       "name": "",
+       "cell": 17,
+       "sheet": "gehrman-burial-blade-transformed"
+      },
+      {
+       "name": "",
+       "cell": 16,
+       "sheet": "gehrman-burial-blade-transformed"
+      }
+     ]
+    },
+    {
+     "nick": "Moon Presence Phase 1",
+     "guid": "43bb55",
+     "cards": [
+      {
+       "name": "",
+       "cell": 14,
+       "sheet": "gehrman-burial-blade-transformed"
+      },
+      {
+       "name": "",
+       "cell": 10,
+       "sheet": "gehrman-burial-blade-transformed"
+      },
+      {
+       "name": "",
+       "cell": 13,
+       "sheet": "gehrman-burial-blade-transformed"
+      },
+      {
+       "name": "",
+       "cell": 12,
+       "sheet": "gehrman-burial-blade-transformed"
+      },
+      {
+       "name": "",
+       "cell": 11,
+       "sheet": "gehrman-burial-blade-transformed"
+      }
+     ]
+    }
+   ],
+   "mini": "moon-presence"
+  },
+  "shadows-of-yharnam": {
+   "name": "Shadows of Yharnam",
+   "hpCard": {
+    "name": "Shadows of Yharnam",
+    "cell": 12,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Shadows of Yharnam Phase 2",
+     "guid": "17ffc1",
+     "cards": [
+      {
+       "name": "",
+       "cell": 5,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 7,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 8,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 6,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 9,
+       "sheet": "shadows-of-yharnam-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Shadows of Yharnam Phase 1",
+     "guid": "2d89a9",
+     "cards": [
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 4,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 3,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": "shadows-of-yharnam-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "shadows-of-yharnam"
+  },
+  "witch-of-hemwick": {
+   "name": "Witch of Hemwick",
+   "hpCard": {
+    "name": "Witch of Hemwick",
+    "cell": 13,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Witch of Hemwick Phase 2",
+     "guid": "7cd4a3",
+     "cards": [
+      {
+       "name": "",
+       "cell": 18,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 15,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 16,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 17,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 19,
+       "sheet": "shadows-of-yharnam-phase-2"
+      }
+     ]
+    },
+    {
+     "nick": "Witch of Hemwick Phase 1",
+     "guid": "821b19",
+     "cards": [
+      {
+       "name": "",
+       "cell": 14,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 11,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 13,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 10,
+       "sheet": "shadows-of-yharnam-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 12,
+       "sheet": "shadows-of-yharnam-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": null
+  },
+  "rom-the-vacuous-spider": {
+   "name": "Rom, The Vacuous Spider",
+   "hpCard": {
+    "name": "Rom, The Vacuous Spider",
+    "cell": 6,
+    "sheet": "sheet-3"
+   },
+   "phaseDecks": [
+    {
+     "nick": "Rom, The Vacuous Spider Phase 2",
+     "guid": "d710d5",
+     "cards": [
+      {
+       "name": "",
+       "cell": 13,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 14,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 16,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 15,
+       "sheet": null
+      },
+      {
+       "name": "",
+       "cell": 17,
+       "sheet": null
+      }
+     ]
+    },
+    {
+     "nick": "Rom, The Vacuous Spider Phase 1",
+     "guid": "f2baeb",
+     "cards": [
+      {
+       "name": "",
+       "cell": 10,
+       "sheet": "rom-the-vacuous-spider-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 9,
+       "sheet": "rom-the-vacuous-spider-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 11,
+       "sheet": "rom-the-vacuous-spider-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 8,
+       "sheet": "rom-the-vacuous-spider-phase-2"
+      },
+      {
+       "name": "",
+       "cell": 12,
+       "sheet": "rom-the-vacuous-spider-phase-2"
+      }
+     ]
+    }
+   ],
+   "mini": "rom-the-vacuous-spider"
+  },
+  "bonus-chapter-forbidden-woods": {
+   "name": "Bonus Chapter: Forbidden Woods",
+   "hpCard": null,
+   "phaseDecks": [
+    {
+     "nick": "Forbidden Woods",
+     "guid": "f2e87f",
+     "cards": [
+      {
+       "name": "18",
+       "cell": 20,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "17",
+       "cell": 19,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "16",
+       "cell": 18,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "15",
+       "cell": 17,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "14",
+       "cell": 16,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "13",
+       "cell": 15,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "12",
+       "cell": 14,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "11",
+       "cell": 13,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "10",
+       "cell": 12,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "9",
+       "cell": 11,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "8",
+       "cell": 10,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "7",
+       "cell": 9,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "6",
+       "cell": 8,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "5",
+       "cell": 7,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "4",
+       "cell": 6,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "3",
+       "cell": 5,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "2",
+       "cell": 4,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "1",
+       "cell": 3,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "Bonus Chapter - Setup",
+       "cell": 2,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "Mysterious Connections - Special Setup",
+       "cell": 0,
+       "sheet": "forbidden-woods"
+      },
+      {
+       "name": "Introduction",
+       "cell": 1,
+       "sheet": "forbidden-woods"
+      }
+     ]
+    },
+    {
+     "nick": "Forbidden Woods Tiles",
+     "guid": "fc4cb3",
+     "cards": [
+      {
+       "name": "",
+       "cell": 0,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "",
+       "cell": 1,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "",
+       "cell": 2,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Witch's Abode",
+       "cell": 3,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Decrepit Shack",
+       "cell": 4,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Forbidden Graveyard",
+       "cell": 5,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Old Tree",
+       "cell": 6,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Ritual Altar",
+       "cell": 7,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Passageway Lamp",
+       "cell": 8,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Collapsed Tunnel",
+       "cell": 9,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Empty Shack",
+       "cell": 10,
+       "sheet": "forbidden-woods-tiles"
+      },
+      {
+       "name": "Mud Pit",
+       "cell": 11,
+       "sheet": "forbidden-woods-tiles"
+      }
+     ]
+    }
+   ],
+   "mini": null
+  }
+ },
+ "npcs": {},
+ "tokens": {
+  "corpse-token": {
+   "name": "Corpse Token",
+   "img": {
+    "rel": "/bloodborne/tokens/corpse-token.webp",
+    "w": 512,
+    "h": 512
+   }
+  },
+  "fog-gate": {
+   "name": "Fog Gate",
+   "img": {
+    "rel": "/bloodborne/tokens/fog-gate.webp",
+    "w": 512,
+    "h": 512
+   }
+  },
+  "hunt-tracker-token": {
+   "name": "Hunt Tracker Token",
+   "img": {
+    "rel": "/bloodborne/tokens/hunt-tracker-token.webp",
+    "w": 512,
+    "h": 512
+   }
+  },
+  "frenzy": {
+   "name": "Frenzy",
+   "img": {
+    "rel": "/bloodborne/tokens/frenzy.webp",
+    "w": 512,
+    "h": 512
+   }
+  },
+  "insight": {
+   "name": "Insight",
+   "img": {
+    "rel": "/bloodborne/tokens/insight.webp",
+    "w": 512,
+    "h": 512
+   }
+  },
+  "poison": {
+   "name": "Poison",
+   "img": {
+    "rel": "/bloodborne/tokens/poison.webp",
+    "w": 512,
+    "h": 512
+   }
+  },
+  "broken-lamp-token": {
+   "name": "Broken Lamp Token",
+   "img": {
+    "rel": "/bloodborne/tokens/broken-lamp-token.webp",
+    "w": 512,
+    "h": 512
+   }
+  },
+  "survivor-token": {
+   "name": "Survivor Token",
+   "img": {
+    "rel": "/bloodborne/tokens/survivor-token.webp",
+    "w": 512,
+    "h": 512
+   }
+  },
+  "treasure-token": {
+   "name": "Treasure Token",
+   "img": {
+    "rel": "/bloodborne/tokens/treasure-token.webp",
+    "w": 512,
+    "h": 512
+   }
+  }
+ },
+ "tiles": [
+  {
+   "id": "queen-s-chamber",
+   "name": "Queen's Chamber",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/queen-s-chamber.webp",
+   "back": null
+  },
+  {
+   "id": "entranceway-lamp",
+   "name": "Entranceway Lamp",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 4,
+   "rel": "/bloodborne/tiles/entranceway-lamp.webp",
+   "back": null
+  },
+  {
+   "id": "forsaken-cainhurst-castle-tiles-c00",
+   "name": "",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/forsaken-cainhurst-castle-tiles-c00.webp",
+   "back": null
+  },
+  {
+   "id": "forsaken-cainhurst-castle-tiles-c01",
+   "name": "",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 1,
+   "rel": "/bloodborne/tiles/forsaken-cainhurst-castle-tiles-c01.webp",
+   "back": null
+  },
+  {
+   "id": "forsaken-cainhurst-castle-tiles-c02",
+   "name": "",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 2,
+   "rel": "/bloodborne/tiles/forsaken-cainhurst-castle-tiles-c02.webp",
+   "back": null
+  },
+  {
+   "id": "empty-corridor",
+   "name": "Empty Corridor",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 3,
+   "rel": "/bloodborne/tiles/empty-corridor.webp",
+   "back": null
+  },
+  {
+   "id": "library",
+   "name": "Library",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 5,
+   "rel": "/bloodborne/tiles/library.webp",
+   "back": null
+  },
+  {
+   "id": "rooftop-access",
+   "name": "Rooftop Access",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 6,
+   "rel": "/bloodborne/tiles/rooftop-access.webp",
+   "back": null
+  },
+  {
+   "id": "statuary-hall",
+   "name": "Statuary Hall",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 7,
+   "rel": "/bloodborne/tiles/statuary-hall.webp",
+   "back": null
+  },
+  {
+   "id": "forsaken-cainhurst-castle-tiles-c08",
+   "name": "",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 8,
+   "rel": "/bloodborne/tiles/forsaken-cainhurst-castle-tiles-c08.webp",
+   "back": null
+  },
+  {
+   "id": "forsaken-cainhurst-castle-tiles-c09",
+   "name": "",
+   "deck": "Forsaken Cainhurst Castle Tiles",
+   "sheet": "forsaken-cainhurst-castle-tiles-2",
+   "cell": 9,
+   "rel": "/bloodborne/tiles/forsaken-cainhurst-castle-tiles-c09.webp",
+   "back": null
+  },
+  {
+   "id": "forbidden-woods-tiles-c00",
+   "name": "",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/forbidden-woods-tiles-c00.webp",
+   "back": null
+  },
+  {
+   "id": "forbidden-woods-tiles-c01",
+   "name": "",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 1,
+   "rel": "/bloodborne/tiles/forbidden-woods-tiles-c01.webp",
+   "back": null
+  },
+  {
+   "id": "forbidden-woods-tiles-c02",
+   "name": "",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 2,
+   "rel": "/bloodborne/tiles/forbidden-woods-tiles-c02.webp",
+   "back": null
+  },
+  {
+   "id": "witch-s-abode",
+   "name": "Witch's Abode",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 3,
+   "rel": "/bloodborne/tiles/witch-s-abode.webp",
+   "back": null
+  },
+  {
+   "id": "decrepit-shack",
+   "name": "Decrepit Shack",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 4,
+   "rel": "/bloodborne/tiles/decrepit-shack.webp",
+   "back": null
+  },
+  {
+   "id": "forbidden-graveyard",
+   "name": "Forbidden Graveyard",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 5,
+   "rel": "/bloodborne/tiles/forbidden-graveyard.webp",
+   "back": null
+  },
+  {
+   "id": "old-tree",
+   "name": "Old Tree",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 6,
+   "rel": "/bloodborne/tiles/old-tree.webp",
+   "back": null
+  },
+  {
+   "id": "ritual-altar",
+   "name": "Ritual Altar",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 7,
+   "rel": "/bloodborne/tiles/ritual-altar.webp",
+   "back": null
+  },
+  {
+   "id": "passageway-lamp",
+   "name": "Passageway Lamp",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 8,
+   "rel": "/bloodborne/tiles/passageway-lamp.webp",
+   "back": null
+  },
+  {
+   "id": "collapsed-tunnel",
+   "name": "Collapsed Tunnel",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 9,
+   "rel": "/bloodborne/tiles/collapsed-tunnel.webp",
+   "back": null
+  },
+  {
+   "id": "empty-shack",
+   "name": "Empty Shack",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 10,
+   "rel": "/bloodborne/tiles/empty-shack.webp",
+   "back": null
+  },
+  {
+   "id": "mud-pit",
+   "name": "Mud Pit",
+   "deck": "Forbidden Woods Tiles",
+   "sheet": "forbidden-woods-tiles",
+   "cell": 11,
+   "rel": "/bloodborne/tiles/mud-pit.webp",
+   "back": null
+  },
+  {
+   "id": "central-lamp",
+   "name": "Central Lamp",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/central-lamp.webp",
+   "back": null
+  },
+  {
+   "id": "ransacked-house",
+   "name": "Ransacked House",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 1,
+   "rel": "/bloodborne/tiles/ransacked-house.webp",
+   "back": null
+  },
+  {
+   "id": "courtyard-lamp",
+   "name": "Courtyard Lamp",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 2,
+   "rel": "/bloodborne/tiles/courtyard-lamp.webp",
+   "back": null
+  },
+  {
+   "id": "occupied-house",
+   "name": "Occupied House",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 3,
+   "rel": "/bloodborne/tiles/occupied-house.webp",
+   "back": null
+  },
+  {
+   "id": "the-great-bridge",
+   "name": "The Great Bridge",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 4,
+   "rel": "/bloodborne/tiles/the-great-bridge.webp",
+   "back": null
+  },
+  {
+   "id": "core-tiles-c05",
+   "name": "",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 5,
+   "rel": "/bloodborne/tiles/core-tiles-c05.webp",
+   "back": null
+  },
+  {
+   "id": "tomb-of-oedon",
+   "name": "Tomb of Oedon",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 6,
+   "rel": "/bloodborne/tiles/tomb-of-oedon.webp",
+   "back": null
+  },
+  {
+   "id": "alleyway",
+   "name": "Alleyway",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 7,
+   "rel": "/bloodborne/tiles/alleyway.webp",
+   "back": null
+  },
+  {
+   "id": "barred-window",
+   "name": "Barred Window",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 8,
+   "rel": "/bloodborne/tiles/barred-window.webp",
+   "back": null
+  },
+  {
+   "id": "graveyard",
+   "name": "Graveyard",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 9,
+   "rel": "/bloodborne/tiles/graveyard.webp",
+   "back": null
+  },
+  {
+   "id": "grand-cathedral",
+   "name": "Grand Cathedral",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 10,
+   "rel": "/bloodborne/tiles/grand-cathedral.webp",
+   "back": null
+  },
+  {
+   "id": "iosefka-s-clinic",
+   "name": "Iosefka's Clinic",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 11,
+   "rel": "/bloodborne/tiles/iosefka-s-clinic.webp",
+   "back": null
+  },
+  {
+   "id": "core-tiles-c12",
+   "name": "",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 12,
+   "rel": "/bloodborne/tiles/core-tiles-c12.webp",
+   "back": null
+  },
+  {
+   "id": "core-tiles-c13",
+   "name": "",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 13,
+   "rel": "/bloodborne/tiles/core-tiles-c13.webp",
+   "back": null
+  },
+  {
+   "id": "core-tiles-c14",
+   "name": "",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 14,
+   "rel": "/bloodborne/tiles/core-tiles-c14.webp",
+   "back": null
+  },
+  {
+   "id": "oedon-chapel",
+   "name": "Oedon Chapel",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 15,
+   "rel": "/bloodborne/tiles/oedon-chapel.webp",
+   "back": null
+  },
+  {
+   "id": "core-tiles-c16",
+   "name": "",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 16,
+   "rel": "/bloodborne/tiles/core-tiles-c16.webp",
+   "back": null
+  },
+  {
+   "id": "core-tiles-c17",
+   "name": "",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 17,
+   "rel": "/bloodborne/tiles/core-tiles-c17.webp",
+   "back": null
+  },
+  {
+   "id": "core-tiles-c18",
+   "name": "",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 18,
+   "rel": "/bloodborne/tiles/core-tiles-c18.webp",
+   "back": null
+  },
+  {
+   "id": "church-of-the-good-chalice",
+   "name": "Church of The Good Chalice",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-5",
+   "cell": 19,
+   "rel": "/bloodborne/tiles/church-of-the-good-chalice.webp",
+   "back": null
+  },
+  {
+   "id": "chalice-entrance",
+   "name": "Chalice Entrance",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 6,
+   "rel": "/bloodborne/tiles/chalice-entrance.webp",
+   "back": null
+  },
+  {
+   "id": "chalice-dungeon-map-tiles-c01",
+   "name": "",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 1,
+   "rel": "/bloodborne/tiles/chalice-dungeon-map-tiles-c01.webp",
+   "back": null
+  },
+  {
+   "id": "chalice-dungeon-map-tiles-c03",
+   "name": "",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 3,
+   "rel": "/bloodborne/tiles/chalice-dungeon-map-tiles-c03.webp",
+   "back": null
+  },
+  {
+   "id": "chalice-dungeon-map-tiles-c04",
+   "name": "",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 4,
+   "rel": "/bloodborne/tiles/chalice-dungeon-map-tiles-c04.webp",
+   "back": null
+  },
+  {
+   "id": "chalice-dungeon-map-tiles-c07",
+   "name": "",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 7,
+   "rel": "/bloodborne/tiles/chalice-dungeon-map-tiles-c07.webp",
+   "back": null
+  },
+  {
+   "id": "chalice-dungeon-map-tiles-c08",
+   "name": "",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 8,
+   "rel": "/bloodborne/tiles/chalice-dungeon-map-tiles-c08.webp",
+   "back": null
+  },
+  {
+   "id": "chalice-dungeon-map-tiles-c09",
+   "name": "",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 9,
+   "rel": "/bloodborne/tiles/chalice-dungeon-map-tiles-c09.webp",
+   "back": null
+  },
+  {
+   "id": "chalice-dungeon-map-tiles-c11",
+   "name": "",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 11,
+   "rel": "/bloodborne/tiles/chalice-dungeon-map-tiles-c11.webp",
+   "back": null
+  },
+  {
+   "id": "arena-gate",
+   "name": "Arena Gate",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/arena-gate.webp",
+   "back": null
+  },
+  {
+   "id": "arena-gate-lever",
+   "name": "Arena Gate Lever",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 10,
+   "rel": "/bloodborne/tiles/arena-gate-lever.webp",
+   "back": null
+  },
+  {
+   "id": "arena",
+   "name": "Arena",
+   "deck": "Chalice Dungeon Map Tiles",
+   "sheet": "chalice-dungeon-map-tiles",
+   "cell": 2,
+   "rel": "/bloodborne/tiles/arena.webp",
+   "back": null
+  },
+  {
+   "id": "mergo-s-loft",
+   "name": "Mergo's Loft",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-3",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/mergo-s-loft.webp",
+   "back": null
+  },
+  {
+   "id": "altar-of-despair-tile",
+   "name": "Altar of Despair Tile",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-2",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/altar-of-despair-tile.webp",
+   "back": null
+  },
+  {
+   "id": "byrgenwerth-tile",
+   "name": "Byrgenwerth Tile",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-6",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/byrgenwerth-tile.webp",
+   "back": null
+  },
+  {
+   "id": "yahar-gul-tile",
+   "name": "Yahar'gul Tile",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/yahar-gul-tile.webp",
+   "back": null
+  },
+  {
+   "id": "the-workshop-tile",
+   "name": "The Workshop Tile",
+   "deck": "Core Tiles",
+   "sheet": "core-tiles-4",
+   "cell": 0,
+   "rel": "/bloodborne/tiles/the-workshop-tile.webp",
+   "back": null
+  }
+ ],
+ "huntBoard": {
+  "face": {
+   "rel": "/bloodborne/sheets/sheet.webp",
+   "w": 4000,
+   "h": 4016
+  },
+  "back": {
+   "rel": "/bloodborne/sheets/sheet.webp",
+   "w": 4000,
+   "h": 4016
+  }
+ },
+ "huntTracker": {
+  "img": {
+   "rel": "/bloodborne/tokens/hunt-tracker-token.webp",
+   "w": 512,
+   "h": 512
+  }
+ },
+ "hunterDashboards": [
+  {
+   "guid": "06cae7",
+   "img": {
+    "rel": "/bloodborne/sheets/dashboard-06cae7.webp",
+    "w": 2043,
+    "h": 2048
+   }
+  },
+  {
+   "guid": "999b81",
+   "img": {
+    "rel": "/bloodborne/sheets/dashboard-999b81.webp",
+    "w": 2043,
+    "h": 2048
+   }
+  },
+  {
+   "guid": "b22b5b",
+   "img": {
+    "rel": "/bloodborne/sheets/dashboard-b22b5b.webp",
+    "w": 2045,
+    "h": 2048
+   }
+  },
+  {
+   "guid": "9d4af3",
+   "img": {
+    "rel": "/bloodborne/sheets/dashboard-9d4af3.webp",
+    "w": 2043,
+    "h": 2048
+   }
+  }
+ ]
+}

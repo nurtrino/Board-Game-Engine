@@ -1,0 +1,1280 @@
+{
+ "The Long Hunt": [
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "insightMissions": [
+    [
+     "5",
+     "6",
+     "7"
+    ],
+    [
+     "8",
+     "9",
+     "10",
+     "11"
+    ],
+    [
+     "12",
+     "13",
+     "14",
+     "15",
+     "16"
+    ]
+   ],
+   "introduction": "Of the monsters created by the Beast Plague, the Scourge Beasts are the most reviled. Once Human, these terrible monstrosities are fast, agile, and lethal. As of late, more and more of these beasts have begun appearing in Central Yharnam, and thus we have been tasked with discovering the source of their increasing numbers, as well eliminating as many as possible.",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Courtyard Lamp",
+    "Occupied House",
+    "Oedon Chapel",
+    "Ransacked House"
+   ],
+   "excludedTiles": [],
+   "extraCards": [],
+   "enemies": [
+    "Hunter Mob",
+    "Huntsman's Minion",
+    "Scourge Beast"
+   ],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23"
+   ],
+   "insightMissions": [
+    [
+     "24",
+     "25",
+     "26",
+     "27",
+     "28"
+    ],
+    [
+     "29",
+     "30",
+     "31",
+     "32",
+     "33",
+     "34"
+    ],
+    [
+     "35",
+     "36",
+     "37",
+     "38",
+     "39"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "Iosefka's Clinic",
+    "Oedon Chapel",
+    "The Great Bridge",
+    "Tomb of Oedon"
+   ],
+   "excludedTiles": [],
+   "extraCards": [
+    "17"
+   ],
+   "enemies": [
+    "Hunter Mob",
+    "Huntsman's Minion",
+    "Scourge Beast"
+   ],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 5
+   }
+  },
+  {
+   "huntMission": [
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "insightMissions": [
+    [
+     "45",
+     "46",
+     "47",
+     "48",
+     "49",
+     "50",
+     "51",
+     "52"
+    ],
+    [
+     "53",
+     "54",
+     "55"
+    ],
+    [
+     "56",
+     "57",
+     "58",
+     "59",
+     "60"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "Iosefka's Clinic",
+    "Oedon Chapel",
+    "The Great Bridge",
+    "Tomb of Oedon"
+   ],
+   "excludedTiles": [],
+   "extraCards": [
+    "17"
+   ],
+   "enemies": [
+    "Hunter Mob",
+    "Huntsman's Minion",
+    "Scourge Beast"
+   ],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 5
+   }
+  }
+ ],
+ "Fall of Old Yharnam": [
+  {
+   "huntMission": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+   ],
+   "insightMissions": [
+    [
+     "10",
+     "11",
+     "12"
+    ],
+    [
+     "13",
+     "14"
+    ],
+    [
+     "15",
+     "16",
+     "17"
+    ]
+   ],
+   "introduction": "Spiraling below the Cathedral Ward lies the hamlet known as Old Yharnam. Far removed, the town lies isolated from the greater city. Recently, however, rumors have emerged of a strange sickness, different from that of the Beast Plague, spreading through its streets. A group of hunters, notably those of the Powder Kegs covenant, were sent to investigate. Time has passed, and none have returned, thus we have been dispatched to discover what fate has befallen them.",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Alleyway",
+    "Courtyard Lamp",
+    "Graveyard",
+    "Occupied House",
+    "Ransacked House"
+   ],
+   "excludedTiles": [],
+   "extraCards": [
+    "1"
+   ],
+   "enemies": [],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 5
+   }
+  },
+  {
+   "huntMission": [
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25"
+   ],
+   "insightMissions": [
+    [
+     "26",
+     "27"
+    ],
+    [
+     "28",
+     "29",
+     "30",
+     "31",
+     "32",
+     "33"
+    ],
+    [
+     "34",
+     "35"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Alleyway",
+    "Barred Window",
+    "Courtyard Lamp",
+    "Graveyard",
+    "Occupied House"
+   ],
+   "excludedTiles": [],
+   "extraCards": [
+    "1"
+   ],
+   "enemies": [],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 5
+   }
+  },
+  {
+   "huntMission": [
+    "36",
+    "37",
+    "38",
+    "39",
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "insightMissions": [
+    [
+     "45",
+     "46",
+     "47"
+    ],
+    [
+     "48",
+     "49",
+     "50"
+    ],
+    [
+     "51",
+     "52",
+     "53",
+     "54"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Alleyway",
+    "Barred Window",
+    "Church of the Good Chalice",
+    "Ransacked House"
+   ],
+   "excludedTiles": [
+    "Grand Cathedral"
+   ],
+   "extraCards": [
+    "1"
+   ],
+   "enemies": [],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  }
+ ],
+ "Secrets of the Church": [
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "insightMissions": [
+    [
+     "6",
+     "7",
+     "8",
+     "9"
+    ],
+    [
+     "10",
+     "11",
+     "12"
+    ],
+    [
+     "13",
+     "14"
+    ]
+   ],
+   "introduction": "The Healing Church, while not formally affiliated with the Hunters, remains one of our strongest allies. Located in the district known as the Cathedral Ward, access is often barred on nights when the Hunt is called. This night, however, the great bells of the Grand Cathedral toll without end. Ominous, as all communication from within the Ward has ceased. With such strange events, you have been dispatched by the Workshop to investigate.",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Alleyway",
+    "Courtyard Lamp",
+    "The Great Bridge",
+    "Tomb of Oedon"
+   ],
+   "excludedTiles": [
+    "Grand Cathedral",
+    "Oedon Chapel"
+   ],
+   "extraCards": [],
+   "enemies": [
+    "Church Servant"
+   ],
+   "enemiesRandom": 3,
+   "excludedEnemies": [
+    "Church Servant"
+   ],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23"
+   ],
+   "insightMissions": [
+    [
+     "24",
+     "25"
+    ],
+    [
+     "26",
+     "27",
+     "28",
+     "29"
+    ],
+    [
+     "30",
+     "31",
+     "32",
+     "33",
+     "34"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "Occupied House"
+   ],
+   "excludedTiles": [
+    "Grand Cathedral",
+    "Oedon Chapel",
+    "The Great Bridge",
+    "Tomb of Oedon"
+   ],
+   "extraCards": [
+    "15"
+   ],
+   "enemies": [
+    "Church Giant"
+   ],
+   "enemiesRandom": 3,
+   "excludedEnemies": [
+    "Church Giant"
+   ],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "insightMissions": [
+    [
+     "6",
+     "7",
+     "8",
+     "9"
+    ],
+    [
+     "10",
+     "11",
+     "12"
+    ],
+    [
+     "13",
+     "14"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Courtyard Lamp",
+    "Graveyard",
+    "Ransacked House",
+    "Oedon Chapel"
+   ],
+   "excludedTiles": [
+    "Grand Cathedral"
+   ],
+   "extraCards": [],
+   "enemies": [
+    "Church Giant",
+    "Church Servant"
+   ],
+   "enemiesRandom": 1,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  }
+ ],
+ "Growing Madness": [
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "insightMissions": [
+    [
+     "6",
+     "7",
+     "8",
+     "9",
+     "10"
+    ],
+    [
+     "11",
+     "12",
+     "13"
+    ],
+    [
+     "14",
+     "15"
+    ]
+   ],
+   "introduction": "This night, a grand Hunt has been called: Hunter and townsfolk alike have taken to the streets to join in the great purging. Among them, the renowned Hunter, Father Gascoigne, has joined you in your task. Yet, something about this Hunt feels different... The scent of blood is heavy in the air. From above, the rays of the Blood Moon bathe the streets in a crimson red. All the while, an unnerving feeling lies just below the surface, as if something terrible is waiting to, be unleashed...",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "The Great Bridge",
+    "Occupied House",
+    "Oedon Chapel"
+   ],
+   "excludedTiles": [],
+   "extraCards": [],
+   "enemies": [
+    "Hunter Mob"
+   ],
+   "enemiesRandom": 2,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "17",
+    "18",
+    "19",
+    "20",
+    "21"
+   ],
+   "insightMissions": [
+    [
+     "22",
+     "23",
+     "24",
+     "25"
+    ],
+    [
+     "26",
+     "27",
+     "28",
+     "29",
+     "30"
+    ],
+    [
+     "31",
+     "32",
+     "33",
+     "34",
+     "35",
+     "36",
+     "37",
+     "38"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "The Great Bridge",
+    "Occupied House",
+    "Oedon Chapel"
+   ],
+   "excludedTiles": [],
+   "extraCards": [
+    "16"
+   ],
+   "enemies": [
+    "Hunter Mob"
+   ],
+   "enemiesRandom": 2,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "39",
+    "40",
+    "41",
+    "42"
+   ],
+   "insightMissions": [
+    [
+     "43",
+     "44",
+     "45",
+     "46",
+     "47",
+     "48",
+     "49"
+    ],
+    [
+     "50",
+     "51",
+     "52",
+     "53",
+     "54"
+    ],
+    [
+     "55",
+     "56",
+     "57",
+     "58"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "The Great Bridge",
+    "Occupied House",
+    "Oedon Chapel"
+   ],
+   "excludedTiles": [],
+   "extraCards": [
+    "20",
+    "23",
+    "38"
+   ],
+   "enemies": [
+    "Hunter Mob"
+   ],
+   "enemiesRandom": 2,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  }
+ ],
+ "Chalice Rites": [
+  {
+   "huntMission": [],
+   "insightMissions": [],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Chalice Entrance",
+   "startingTiles": [
+    "Arena Gate",
+    "Arena Gate Lever",
+    "Arena Gate Lever"
+   ],
+   "excludedTiles": [],
+   "extraCards": [],
+   "enemies": [],
+   "enemiesRandom": 3,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 1,
+    "plus": 4
+   }
+  }
+ ],
+ "Birth of Madness": [
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "insightMissions": [
+    [
+     "6",
+     "7",
+     "8"
+    ],
+    [
+     "9",
+     "10",
+     "11"
+    ],
+    [
+     "12",
+     "13"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Barred Window",
+    "Courtyard Lamp",
+    "Iosefka's Clinic",
+    "Ransacked House"
+   ],
+   "excludedTiles": [],
+   "extraCards": [],
+   "enemies": [
+    "Hunter Mob"
+   ],
+   "enemiesRandom": 2,
+   "excludedEnemies": [
+    "Mergo's Attendant",
+    "Mergo's Chief Attendant"
+   ],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22"
+   ],
+   "insightMissions": [
+    [
+     "23",
+     "24",
+     "25"
+    ],
+    [
+     "26",
+     "27"
+    ],
+    [
+     "28",
+     "29",
+     "30",
+     "31",
+     "32",
+     "6",
+     "7",
+     "8"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Barred Window",
+    "Iosefka's Clinic",
+    "Oedon Chapel",
+    "Tomb of Oedon"
+   ],
+   "excludedTiles": [],
+   "extraCards": [
+    "14",
+    "15"
+   ],
+   "enemies": [
+    "Mergo's Attendant",
+    "Mergo's Chief Attendant"
+   ],
+   "enemiesRandom": 1,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "35",
+    "36",
+    "37",
+    "38"
+   ],
+   "insightMissions": [
+    [
+     "39",
+     "40",
+     "41",
+     "42",
+     "43"
+    ],
+    [
+     "44",
+     "45"
+    ],
+    [
+     "46",
+     "47",
+     "48",
+     "49",
+     "50",
+     "51",
+     "52"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Grand Cathedral",
+    "Iosefka's Clinic",
+    "Oedon Chapel"
+   ],
+   "excludedTiles": [],
+   "extraCards": [
+    "33",
+    "34"
+   ],
+   "enemies": [
+    "Mergo's Attendant",
+    "Mergo's Chief Attendant"
+   ],
+   "enemiesRandom": 1,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 7
+   }
+  }
+ ],
+ "Celestial Truths": [
+  {
+   "huntMission": [
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10"
+   ],
+   "insightMissions": [
+    [
+     "11",
+     "12"
+    ],
+    [
+     "13",
+     "14",
+     "15"
+    ],
+    [
+     "16",
+     "17",
+     "18"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "Iosefka's Clinic",
+    "Oedon Chapel",
+    "Tomb of Oedon"
+   ],
+   "excludedTiles": [
+    "Altar of Despair Tile",
+    "Grand Cathedral",
+    "The Great Bridge"
+   ],
+   "extraCards": [
+    "1",
+    "2"
+   ],
+   "enemies": [
+    "Celestial Emissary",
+    "Church Giant",
+    "Church Servant"
+   ],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
+    "31"
+   ],
+   "insightMissions": [
+    [
+     "32",
+     "33",
+     "34",
+     "35",
+     "36"
+    ],
+    [
+     "37",
+     "38",
+     "39",
+     "40",
+     "41"
+    ],
+    [
+     "42",
+     "43",
+     "44",
+     "45",
+     "46",
+     "13",
+     "14",
+     "15"
+    ]
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "Iosefka's Clinic",
+    "Ransacked House",
+    "Tomb of Oedon"
+   ],
+   "excludedTiles": [
+    "Grand Cathedral",
+    "The Great Bridge"
+   ],
+   "extraCards": [
+    "2",
+    "4",
+    "19",
+    "20"
+   ],
+   "enemies": [
+    "Brainsucker",
+    "Celestial Emissary",
+    "Church Servant"
+   ],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  },
+  {
+   "huntMission": [
+    "49",
+    "50",
+    "51",
+    "52",
+    "53",
+    "54",
+    "56",
+    "57",
+    "58",
+    "59"
+   ],
+   "insightMissions": [
+    [
+     "60",
+     "61",
+     "62",
+     "63"
+    ],
+    [
+     "64",
+     "65",
+     "66",
+     "67",
+     "68"
+    ],
+    []
+   ],
+   "introduction": "TODO",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Barred Window",
+    "Grand Cathedral",
+    "Occupied House",
+    "Ransacked House"
+   ],
+   "excludedTiles": [
+    "Oedon Chapel",
+    "The Orphanage"
+   ],
+   "extraCards": [
+    "20",
+    "47",
+    "48"
+   ],
+   "enemies": [
+    "Brainsucker",
+    "Celestial Emissary",
+    "Church Giant"
+   ],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 6
+   }
+  }
+ ],
+ "The Forsaken Castle": [
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "12"
+   ],
+   "insightMissions": [],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Courtyard Lamp",
+    "Graveyard",
+    "Grand Cathedral",
+    "Iosefka's Clinic",
+    "Oedon Chapel"
+   ],
+   "excludedTiles": [],
+   "extraCards": [],
+   "enemies": [],
+   "enemiesRandom": 3,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 5
+   }
+  }
+ ],
+ "Martyr's Legacy": [],
+ "Queen's Legacy": [],
+ "Dark Rites": [
+  {
+   "huntMission": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+   ],
+   "insightMissions": [],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Passageway Lamp",
+   "startingTiles": [
+    ""
+   ],
+   "excludedTiles": [
+    "Mud Pit",
+    "Witch's Abode"
+   ],
+   "extraCards": [
+    "1"
+   ],
+   "enemies": [],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 3,
+    "cap": 7
+   }
+  }
+ ],
+ "The Eldritch Truth": [
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "insightMissions": [
+    [
+     "6",
+     "7",
+     "8",
+     "9"
+    ],
+    [
+     "10",
+     "11"
+    ],
+    [
+     "12",
+     "13",
+     "14"
+    ]
+   ],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Courtyard Lamp",
+    "Grand Cathedral",
+    "Iosefka's Clinic",
+    "Occupied House",
+    "Ransacked House"
+   ],
+   "excludedTiles": [
+    "Byrgenwerth Tile"
+   ],
+   "extraCards": [],
+   "enemies": [],
+   "enemiesRandom": 3,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 5
+   }
+  }
+ ],
+ "Den of Vipers": [
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "insightMissions": [
+    [
+     "6",
+     "7",
+     "8"
+    ],
+    [
+     "9",
+     "10"
+    ],
+    [
+     "11",
+     "12"
+    ]
+   ],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Passageway Lamp",
+   "startingTiles": [
+    "Decrepit Shack",
+    "Mud Pit"
+   ],
+   "excludedTiles": [
+    "Forbidden Graveyard"
+   ],
+   "extraCards": [],
+   "enemies": [],
+   "enemiesRandom": 0,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 3,
+    "cap": 11
+   }
+  }
+ ],
+ "The Unseen Village": [
+  {
+   "huntMission": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+   ],
+   "insightMissions": [
+    [
+     "10",
+     "11",
+     "12",
+     "13",
+     "14",
+     "15",
+     "16"
+    ],
+    [
+     "17",
+     "18",
+     "19"
+    ],
+    [
+     "20",
+     "21",
+     "22"
+    ]
+   ],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Central Lamp",
+   "startingTiles": [
+    "Graveyard",
+    "Iosefka's Clinic",
+    "Occupied House",
+    "Oedon Chapel",
+    "Tomb of Oedon"
+   ],
+   "excludedTiles": [
+    "Yahar'gul Tile"
+   ],
+   "extraCards": [],
+   "enemies": [],
+   "enemiesRandom": 3,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 2,
+    "cap": 5
+   }
+  }
+ ],
+ "Forbidden Woods": [
+  {
+   "huntMission": [],
+   "insightMissions": [],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Passageway Lamp",
+   "startingTiles": [
+    "Arena Gate",
+    "Arena Gate Lever",
+    "Arena Gate Lever"
+   ],
+   "excludedTiles": [],
+   "extraCards": [],
+   "enemies": [],
+   "enemiesRandom": 3,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 1,
+    "plus": 4
+   }
+  }
+ ],
+ "Forsaken Legacy": [
+  {
+   "huntMission": [],
+   "insightMissions": [],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Passageway Lamp",
+   "startingTiles": [
+    "Arena Gate",
+    "Arena Gate Lever",
+    "Arena Gate Lever"
+   ],
+   "excludedTiles": [],
+   "extraCards": [],
+   "enemies": [],
+   "enemiesRandom": 3,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 1,
+    "plus": 4
+   }
+  }
+ ],
+ "The Hunt's End": [
+  {
+   "huntMission": [],
+   "insightMissions": [],
+   "introduction": "This mode is not yet fully scripted.",
+   "startingTile": "Passageway Lamp",
+   "startingTiles": [
+    "Arena Gate",
+    "Arena Gate Lever",
+    "Arena Gate Lever"
+   ],
+   "excludedTiles": [],
+   "extraCards": [],
+   "enemies": [],
+   "enemiesRandom": 3,
+   "excludedEnemies": [],
+   "randomTiles": {
+    "perHunter": 1,
+    "plus": 4
+   }
+  }
+ ]
+}
