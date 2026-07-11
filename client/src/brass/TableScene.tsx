@@ -83,6 +83,8 @@ export const SEAT_HEX: Record<string, string> = {
   // Axis & Allies powers (rulebook piece colors)
   germany: '#5a5a5a', ussr: '#7a1f1f', japan: '#d07c28',
   uk: '#b5894e', italy: '#6b4a2b', usa: '#2e7d32',
+  // Dark Souls seats (class-agnostic: classes are picked in-game)
+  Ember: '#d0722e', Ash: '#c9c4b6', Moss: '#6f8a4d', Slate: '#5d6b7d',
 };
 
 /** Display label for a seat color key (A&A seats are power ids). */
