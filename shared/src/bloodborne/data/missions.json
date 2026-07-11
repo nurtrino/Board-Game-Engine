@@ -3995,6 +3995,19 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 4
+   },
+   "goal": {
+    "type": "insightThisChapter",
+    "params": {
+     "count": 2
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "2"
+     }
+    ]
    }
   },
   "2": {
@@ -4008,6 +4021,19 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 5
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Tomb of Oedon"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "3"
+     }
+    ]
    }
   },
   "3": {
@@ -4021,6 +4047,50 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 6
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "4"
+    },
+    {
+     "do": "fogGates",
+     "tile": "Tomb of Oedon"
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Church Servant",
+     "space": "tile:Tomb of Oedon",
+     "count": 1,
+     "respawnOnReset": true
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Church Giant",
+     "space": "tile:Tomb of Oedon",
+     "count": 1,
+     "respawnOnReset": true
+    },
+    {
+     "do": "custom",
+     "id": "extra-church-giant-if-3plus-hunters"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "3"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "5"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "4": {
@@ -4034,7 +4104,26 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 7
-   }
+   },
+   "onReveal": [
+    {
+     "do": "hpPool",
+     "tag": "3",
+     "tokens": 1
+    },
+    {
+     "do": "custom",
+     "id": "hp-pool-protects-church-servant-only"
+    },
+    {
+     "do": "custom",
+     "id": "church-servant-bonus-activation-round-end-lowest-hp"
+    },
+    {
+     "do": "custom",
+     "id": "church-giants-no-stagger-ability-becomes-special"
+    }
+   ]
   },
   "5": {
    "campaign": "secrets-of-the-church",
@@ -4047,7 +4136,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 8
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 2
+    },
+    {
+     "do": "reward",
+     "item": "Empty Phantasm Shell"
+    }
+   ]
   },
   "6": {
    "campaign": "secrets-of-the-church",
@@ -4060,6 +4159,37 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 9
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "7"
+    },
+    {
+     "do": "arena",
+     "tile": "The Great Bridge",
+     "enemy": "Hunter Mob",
+     "icon": "anySpawn",
+     "tag": "6",
+     "respawnOnReset": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "6"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "8"
+     },
+     {
+      "do": "reveal",
+      "card": "9"
+     }
+    ]
    }
   },
   "7": {
@@ -4073,7 +4203,31 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 10
-   }
+   },
+   "onReveal": [
+    {
+     "do": "hpPool",
+     "tag": "6",
+     "tokens": "2or3at3plus"
+    },
+    {
+     "do": "replaceAttack",
+     "tag": "6",
+     "slot": "ability",
+     "attack": {
+      "name": "Overrun",
+      "speed": "slow",
+      "damage": 2,
+      "isAbility": true,
+      "text": "All Hunters on The Great Bridge tile must Dodge ({slow}) or suffer 2 {dmg} and Stun.",
+      "flags": {
+       "dodgeOrSuffer": true,
+       "targetsAllOnTile": true,
+       "stun": true
+      }
+     }
+    }
+   ]
   },
   "8": {
    "campaign": "secrets-of-the-church",
@@ -4086,7 +4240,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 11
-   }
+   },
+   "onReveal": [
+    {
+     "do": "specialRule",
+     "rule": "8"
+    },
+    {
+     "do": "custom",
+     "id": "fog-gate-single-exit-great-bridge-far-side"
+    }
+   ]
   },
   "9": {
    "campaign": "secrets-of-the-church",
@@ -4099,7 +4263,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 12
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Hunter's Torch"
+    },
+    {
+     "do": "reward",
+     "item": "Evelyn"
+    }
+   ]
   },
   "10": {
    "campaign": "secrets-of-the-church",
@@ -4112,6 +4286,29 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 13
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "10",
+     "space": "space:Courtyard Lamp",
+     "pickup": "moveOut",
+     "onLose": "return"
+    }
+   ],
+   "goal": {
+    "type": "escortTokenTo",
+    "params": {
+     "id": "10",
+     "tile": "Alleyway"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "11"
+     }
+    ]
    }
   },
   "11": {
@@ -4125,6 +4322,34 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 14
+   },
+   "onReveal": [
+    {
+     "do": "spawnEnemy",
+     "enemy": "Huntsman's Minion",
+     "space": "space:Alleyway",
+     "count": 1,
+     "respawnOnReset": true
+    },
+    {
+     "do": "survivor",
+     "id": "11",
+     "space": "space:Alleyway",
+     "pickup": "interact"
+    }
+   ],
+   "goal": {
+    "type": "interactToken",
+    "params": {
+     "id": "11"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "12"
+     }
+    ]
    }
   },
   "12": {
@@ -4138,7 +4363,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 15
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Guidance"
+    }
+   ]
   },
   "13": {
    "campaign": "secrets-of-the-church",
@@ -4151,6 +4386,38 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 16
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "13",
+     "tokens": "nPlus1"
+    },
+    {
+     "do": "specialRule",
+     "rule": "13"
+    },
+    {
+     "do": "custom",
+     "id": "spawn-church-servant-every-enemy-and-lamp-space-except-central-lamp"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {
+     "id": "13"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "14"
+     }
+    ]
+   },
+   "hooks": {
+    "decrementOnSlay": "Church Servant",
+    "decFrom": "13"
    }
   },
   "14": {
@@ -4164,7 +4431,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 17
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Augur of Ebrietas"
+    },
+    {
+     "do": "reward",
+     "item": "Rosmarinus"
+    }
+   ]
   },
   "15": {
    "campaign": "secrets-of-the-church",
@@ -4177,7 +4454,8 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 18
-   }
+   },
+   "kindOverride": "special"
   },
   "16": {
    "campaign": "secrets-of-the-church",
@@ -4190,6 +4468,19 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 19
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Graveyard"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "17"
+     }
+    ]
    }
   },
   "17": {
@@ -4203,6 +4494,29 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 20
+   },
+   "onReveal": [
+    {
+     "do": "specialRule",
+     "rule": "17"
+    },
+    {
+     "do": "custom",
+     "id": "fog-gate-single-graveyard-exit-central-plaza"
+    }
+   ],
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "The Great Bridge"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "18"
+     }
+    ]
    }
   },
   "18": {
@@ -4216,6 +4530,46 @@
    "art": {
     "sheet": "birth-of-madness",
     "cell": 3
+   },
+   "onReveal": [
+    {
+     "do": "fogGates",
+     "tile": "The Great Bridge"
+    },
+    {
+     "do": "spawnBoss",
+     "boss": "Cleric Beast",
+     "space": "enemy3:The Great Bridge",
+     "tag": "18"
+    },
+    {
+     "do": "bossOverride",
+     "boss": "Cleric Beast",
+     "set": {
+      "respawnTo": "enemy3:The Great Bridge"
+     }
+    },
+    {
+     "do": "custom",
+     "id": "cleric-beast-starts-at-phase-2"
+    }
+   ],
+   "goal": {
+    "type": "slayBoss",
+    "params": {
+     "boss": "Cleric Beast"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "19"
+     },
+     {
+      "do": "reveal",
+      "card": "20"
+     }
+    ]
    }
   },
   "19": {
@@ -4229,6 +4583,28 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 22
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "require-4-insight-if-3plus-hunters"
+    }
+   ],
+   "goal": {
+    "type": "insightThisChapter",
+    "params": {
+     "count": 3
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "21"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "20": {
@@ -4242,7 +4618,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 23
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Beast Roar"
+    },
+    {
+     "do": "reward",
+     "item": "Cannon"
+    }
+   ]
   },
   "21": {
    "campaign": "secrets-of-the-church",
@@ -4255,7 +4641,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 24
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Messenger's Gift"
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Eye"
+    }
+   ]
   },
   "22": {
    "campaign": "secrets-of-the-church",
@@ -4268,6 +4664,46 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 25
+   },
+   "onReveal": [
+    {
+     "do": "fogGates",
+     "tile": "Tomb of Oedon"
+    },
+    {
+     "do": "spawnBoss",
+     "boss": "Father Gascoigne",
+     "space": "tile:Tomb of Oedon",
+     "tag": "22"
+    },
+    {
+     "do": "bossOverride",
+     "boss": "Father Gascoigne",
+     "set": {
+      "respawnTo": "tile:Tomb of Oedon"
+     }
+    },
+    {
+     "do": "custom",
+     "id": "gascoigne-starts-at-phase-2"
+    }
+   ],
+   "goal": {
+    "type": "slayBoss",
+    "params": {
+     "boss": "Father Gascoigne"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "20"
+     },
+     {
+      "do": "reveal",
+      "card": "23"
+     }
+    ]
    }
   },
   "23": {
@@ -4281,7 +4717,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 26
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Hunter"
+    },
+    {
+     "do": "reward",
+     "item": "Hunter's Blunderbuss"
+    }
+   ]
   },
   "24": {
    "campaign": "secrets-of-the-church",
@@ -4294,6 +4740,35 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 27
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "24",
+     "tokens": 0
+    },
+    {
+     "do": "specialRule",
+     "rule": "24"
+    },
+    {
+     "do": "custom",
+     "id": "survivor-and-church-giant-on-each-named-location-interact-to-claim"
+    }
+   ],
+   "goal": {
+    "type": "counterAtLeast",
+    "params": {
+     "id": "24",
+     "count": "nPlus1"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "25"
+     }
+    ]
    }
   },
   "25": {
@@ -4307,7 +4782,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 28
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 2
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Formless Oedon"
+    }
+   ]
   },
   "26": {
    "campaign": "secrets-of-the-church",
@@ -4320,6 +4805,32 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 29
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "27"
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Huntsman's Minion",
+     "space": "anySpawn:Occupied House",
+     "count": 1,
+     "respawnOnReset": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "26"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "28"
+     }
+    ]
    }
   },
   "27": {
@@ -4333,7 +4844,31 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 30
-   }
+   },
+   "onReveal": [
+    {
+     "do": "hpPool",
+     "tag": "26",
+     "tokens": 1
+    },
+    {
+     "do": "replaceAttack",
+     "tag": "26",
+     "slot": "special",
+     "attack": {
+      "name": "Arcing Sweep",
+      "speed": "slow",
+      "damage": 4,
+      "text": "Cannot be Staggered. Targets all Hunters in this space. Hunters hit are moved 1 space away and suffer Stun.",
+      "flags": {
+       "noStagger": true,
+       "targetsAllOnSpace": true,
+       "pushOneSpace": true,
+       "stun": true
+      }
+     }
+    }
+   ]
   },
   "28": {
    "campaign": "secrets-of-the-church",
@@ -4346,6 +4881,29 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 31
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "28",
+     "space": "space:Occupied House",
+     "pickup": "moveOut",
+     "onLose": "return"
+    }
+   ],
+   "goal": {
+    "type": "escortTokenTo",
+    "params": {
+     "id": "28",
+     "tile": "Oedon Chapel"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "29"
+     }
+    ]
    }
   },
   "29": {
@@ -4359,7 +4917,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 32
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Blood of Arianna"
+    }
+   ]
   },
   "30": {
    "campaign": "secrets-of-the-church",
@@ -4372,6 +4940,23 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 33
+   },
+   "goal": {
+    "type": "choice",
+    "params": {
+     "options": [
+      {
+       "label": "DEMAND THE INFORMATION... OR ELSE",
+       "reveal": "31"
+      },
+      {
+       "label": "AGREE TO ASSIST HIM",
+       "reveal": "33"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "31": {
@@ -4385,6 +4970,36 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 34
+   },
+   "onReveal": [
+    {
+     "do": "fogGates",
+     "tile": "Graveyard"
+    },
+    {
+     "do": "spawnNpc",
+     "enemy": "Alfred, Hunter of Vilebloods",
+     "space": "anySpawn:Graveyard",
+     "tag": "31",
+     "respawnOnReset": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "31"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "20"
+     },
+     {
+      "do": "reveal",
+      "card": "32"
+     }
+    ]
    }
   },
   "32": {
@@ -4398,7 +5013,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 35
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Blood Rapture"
+    }
+   ]
   },
   "33": {
    "campaign": "secrets-of-the-church",
@@ -4411,6 +5036,43 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 36
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "33",
+     "tokens": "nPlus2"
+    },
+    {
+     "do": "npcFollower",
+     "id": "33",
+     "space": "space:Graveyard"
+    },
+    {
+     "do": "specialRule",
+     "rule": "33"
+    },
+    {
+     "do": "custom",
+     "id": "alfred-decrements-token-per-new-tile-entered"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {
+     "id": "33"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "20"
+     },
+     {
+      "do": "reveal",
+      "card": "34"
+     }
+    ]
    }
   },
   "34": {
@@ -4424,7 +5086,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 37
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Executioner's Gloves"
+    }
+   ]
   },
   "35": {
    "campaign": "secrets-of-the-church",
@@ -4437,6 +5109,19 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 38
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Courtyard Lamp"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "36"
+     }
+    ]
    }
   },
   "36": {
@@ -4450,6 +5135,51 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 39
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "37"
+    },
+    {
+     "do": "fogGates",
+     "tile": "Courtyard Lamp"
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Church Servant",
+     "space": "space:Courtyard Lamp",
+     "count": 2,
+     "persistOnReset": true,
+     "healOnReset": true,
+     "noRespawn": true
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Church Giant",
+     "space": "space:Courtyard Lamp",
+     "count": 1,
+     "persistOnReset": true,
+     "healOnReset": true,
+     "noRespawn": true
+    },
+    {
+     "do": "custom",
+     "id": "remove-courtyard-fog-gates-on-3rd-hunt-track-reset"
+    }
+   ],
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Grand Cathedral"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "38"
+     }
+    ]
    }
   },
   "37": {
@@ -4463,6 +5193,33 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 40
+   },
+   "onReveal": [
+    {
+     "do": "specialRule",
+     "rule": "37"
+    },
+    {
+     "do": "custom",
+     "id": "connect-grand-cathedral-to-courtyard-lamp"
+    },
+    {
+     "do": "custom",
+     "id": "grand-cathedral-frenzy-and-penalties-unless-chapter-insight"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "36"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "removeFogGates",
+      "tile": "Courtyard Lamp"
+     }
+    ]
    }
   },
   "38": {
@@ -4476,6 +5233,41 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 41
+   },
+   "onReveal": [
+    {
+     "do": "fogGates",
+     "tile": "Grand Cathedral"
+    },
+    {
+     "do": "spawnBoss",
+     "boss": "Vicar Amelia",
+     "space": "tile:Grand Cathedral",
+     "tag": "38"
+    },
+    {
+     "do": "bossOverride",
+     "boss": "Vicar Amelia",
+     "set": {
+      "respawnTo": "tile:Grand Cathedral"
+     }
+    }
+   ],
+   "goal": {
+    "type": "slayBoss",
+    "params": {
+     "boss": "Vicar Amelia"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "39"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "39": {
@@ -4489,7 +5281,8 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 42
-   }
+   },
+   "kindOverride": "other"
   },
   "40": {
    "campaign": "secrets-of-the-church",
@@ -4502,6 +5295,36 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 43
+   },
+   "goal": {
+    "type": "branch",
+    "params": {
+     "cases": [
+      {
+       "ifInsightCardsAll": [
+        "12",
+        "29"
+       ],
+       "reveal": "41"
+      },
+      {
+       "ifInsightCard": "29",
+       "notInsightCard": "12",
+       "reveal": "45"
+      },
+      {
+       "ifInsightCard": "12",
+       "notInsightCard": "29",
+       "reveal": "49"
+      },
+      {
+       "else": true,
+       "reveal": "51"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "41": {
@@ -4515,6 +5338,19 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 44
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Graveyard"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "42"
+     }
+    ]
    }
   },
   "42": {
@@ -4528,6 +5364,41 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 45
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "43"
+    },
+    {
+     "do": "spawnNpc",
+     "enemy": "Adella",
+     "space": "anySpawn:Graveyard",
+     "tag": "42",
+     "persistOnReset": true,
+     "noRespawn": true
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Church Servant",
+     "space": "anySpawn:Graveyard",
+     "count": 1,
+     "persistOnReset": true,
+     "noRespawn": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "42"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "44"
+     }
+    ]
    }
   },
   "43": {
@@ -4541,7 +5412,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 46
-   }
+   },
+   "onReveal": [
+    {
+     "do": "specialRule",
+     "rule": "43"
+    },
+    {
+     "do": "custom",
+     "id": "adella-token-enemy-stat-card"
+    }
+   ]
   },
   "44": {
    "campaign": "secrets-of-the-church",
@@ -4554,7 +5435,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 47
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "echoes": 1
+    },
+    {
+     "do": "reward",
+     "item": "Blood of Adella"
+    }
+   ]
   },
   "45": {
    "campaign": "secrets-of-the-church",
@@ -4567,6 +5458,19 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 48
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Graveyard"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "46"
+     }
+    ]
    }
   },
   "46": {
@@ -4580,6 +5484,41 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 49
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "47"
+    },
+    {
+     "do": "spawnNpc",
+     "enemy": "Celestial Child",
+     "space": "anySpawn:Graveyard",
+     "tag": "46",
+     "persistOnReset": true,
+     "noRespawn": true
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Church Servant",
+     "space": "anySpawn:Graveyard",
+     "count": 1,
+     "persistOnReset": true,
+     "noRespawn": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "46"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "48"
+     }
+    ]
    }
   },
   "47": {
@@ -4593,7 +5532,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 50
-   }
+   },
+   "onReveal": [
+    {
+     "do": "specialRule",
+     "rule": "47"
+    },
+    {
+     "do": "custom",
+     "id": "celestial-child-token-enemy-stat-card"
+    }
+   ]
   },
   "48": {
    "campaign": "secrets-of-the-church",
@@ -4606,7 +5555,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 51
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Communion"
+    }
+   ]
   },
   "49": {
    "campaign": "secrets-of-the-church",
@@ -4619,6 +5578,33 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 52
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "43"
+    },
+    {
+     "do": "custom",
+     "id": "spawn-adella-and-1-church-servant-2-spaces-from-hunter-no-respawn"
+    }
+   ],
+   "goal": {
+    "type": "choice",
+    "params": {
+     "options": [
+      {
+       "label": "SLAY BOTH THE CHURCH SERVANT AND ADELLA",
+       "reveal": "44"
+      },
+      {
+       "label": "SLAY THE SERVANT AND LURE ADELLA INTO OEDON CHAPEL",
+       "reveal": "50"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "50": {
@@ -4632,7 +5618,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 53
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "echoes": 1
+    },
+    {
+     "do": "reward",
+     "item": "Blood of Adella"
+    }
+   ]
   },
   "51": {
    "campaign": "secrets-of-the-church",
@@ -4645,6 +5641,43 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 54
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "52"
+    },
+    {
+     "do": "arena",
+     "tile": "Oedon Chapel",
+     "enemy": "Church Servant",
+     "icon": "anySpawn",
+     "tag": "51",
+     "respawnOnReset": true,
+     "immuneToTileText": true
+    },
+    {
+     "do": "arena",
+     "tile": "Oedon Chapel",
+     "enemy": "Church Servant",
+     "icon": "anySpawn",
+     "tag": "51",
+     "respawnOnReset": true,
+     "immuneToTileText": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "51"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "53"
+     }
+    ]
    }
   },
   "52": {
@@ -4658,7 +5691,30 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 55
-   }
+   },
+   "onReveal": [
+    {
+     "do": "hpPool",
+     "tag": "51",
+     "tokens": "1or2at3plus"
+    },
+    {
+     "do": "replaceAttack",
+     "tag": "51",
+     "slot": "special",
+     "attack": {
+      "name": "Flamesprayer",
+      "speed": "medium",
+      "dice": 2,
+      "damage": 3,
+      "text": "Stagger. Targets all Hunters within 1 space.",
+      "flags": {
+       "stagger": true,
+       "targetsWithin1": true
+      }
+     }
+    }
+   ]
   },
   "53": {
    "campaign": "secrets-of-the-church",
@@ -4671,7 +5727,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 56
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "A Call Beyond"
+    },
+    {
+     "do": "reward",
+     "item": "Flamesprayer"
+    }
+   ]
   },
   "54": {
    "campaign": "secrets-of-the-church",
@@ -4684,6 +5750,35 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 57
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "54",
+     "tokens": 0
+    },
+    {
+     "do": "specialRule",
+     "rule": "54"
+    },
+    {
+     "do": "custom",
+     "id": "discard-echoes-in-dream-to-place-tokens"
+    }
+   ],
+   "goal": {
+    "type": "counterAtLeast",
+    "params": {
+     "id": "54",
+     "count": "nPlus2"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "55"
+     }
+    ]
    }
   },
   "55": {
@@ -4697,7 +5792,13 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 58
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Blood Stone Shard"
+    }
+   ]
   },
   "56": {
    "campaign": "secrets-of-the-church",
@@ -4710,6 +5811,23 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 59
+   },
+   "goal": {
+    "type": "branch",
+    "params": {
+     "cases": [
+      {
+       "ifInsightCard": "34",
+       "reveal": "60"
+      },
+      {
+       "else": true,
+       "reveal": "57"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "57": {
@@ -4723,6 +5841,37 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 60
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "58"
+    },
+    {
+     "do": "spawnNpc",
+     "enemy": "Alfred, Hunter of Vilebloods",
+     "space": "space:Central Lamp",
+     "tag": "57",
+     "persistOnReset": true,
+     "healOnReset": true
+    },
+    {
+     "do": "custom",
+     "id": "spawn-n-executioner-token-enemies-central-lamp"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "57"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "59"
+     }
+    ]
    }
   },
   "58": {
@@ -4736,7 +5885,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 61
-   }
+   },
+   "onReveal": [
+    {
+     "do": "specialRule",
+     "rule": "58"
+    },
+    {
+     "do": "custom",
+     "id": "executioner-token-enemy-stat-card"
+    }
+   ]
   },
   "59": {
    "campaign": "secrets-of-the-church",
@@ -4749,7 +5908,17 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 62
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 2
+    },
+    {
+     "do": "reward",
+     "item": "Executioner's Gloves"
+    }
+   ]
   },
   "60": {
    "campaign": "secrets-of-the-church",
@@ -4762,6 +5931,23 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 63
+   },
+   "goal": {
+    "type": "choice",
+    "params": {
+     "options": [
+      {
+       "label": "AID THE EXECUTIONERS IN PURGING THE CATHEDRAL WARD",
+       "reveal": "61"
+      },
+      {
+       "label": "DENY ALFRED'S REQUEST",
+       "reveal": "57"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "61": {
@@ -4775,6 +5961,35 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 64
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "61",
+     "tokens": 0
+    },
+    {
+     "do": "specialRule",
+     "rule": "61"
+    },
+    {
+     "do": "custom",
+     "id": "survivor-token-every-enemy-and-lamp-space-attack-to-claim"
+    }
+   ],
+   "goal": {
+    "type": "counterAtLeast",
+    "params": {
+     "id": "61",
+     "count": "nPlus2"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "62"
+     }
+    ]
    }
   },
   "62": {
@@ -4788,7 +6003,21 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 65
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "echoes": 1
+    },
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Beast"
+    }
+   ]
   },
   "Introduction": {
    "campaign": "secrets-of-the-church",
@@ -4814,7 +6043,28 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 1
-   }
+   },
+   "triggers": [
+    {
+     "on": "startOfHunt",
+     "reveal": "1"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "The Great Bridge",
+     "reveal": "6"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Courtyard Lamp",
+     "reveal": "10"
+    },
+    {
+     "on": "huntTrackSpace",
+     "space": 4,
+     "reveal": "13"
+    }
+   ]
   },
   "Chapter 2 - Setup": {
    "campaign": "secrets-of-the-church",
@@ -4827,6 +6077,44 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 2
+   },
+   "triggers": [
+    {
+     "on": "startOfHunt",
+     "reveal": "16"
+    },
+    {
+     "on": "startOfHunt",
+     "reveal": "24"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Occupied House",
+     "reveal": "26"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Graveyard",
+     "afterTrackSpace": 8,
+     "reveal": "30"
+    }
+   ],
+   "prePlace": {
+    "attach": [
+     {
+      "tile": "Oedon Chapel",
+      "to": "Central Lamp"
+     },
+     {
+      "tile": "The Great Bridge",
+      "to": "Oedon Chapel"
+     },
+     {
+      "tile": "Tomb of Oedon",
+      "to": "Oedon Chapel"
+     }
+    ],
+    "specialRuleCard": "15"
    }
   },
   "Chapter 3 - Setup": {
@@ -4840,7 +6128,27 @@
    "art": {
     "sheet": "secrets-of-the-church",
     "cell": 3
-   }
+   },
+   "triggers": [
+    {
+     "on": "startOfHunt",
+     "reveal": "35"
+    },
+    {
+     "on": "startOfHunt",
+     "reveal": "54"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Oedon Chapel",
+     "reveal": "40"
+    },
+    {
+     "on": "huntTrackSpace",
+     "space": 4,
+     "reveal": "56"
+    }
+   ]
   }
  },
  "fall-of-old-yharnam": {

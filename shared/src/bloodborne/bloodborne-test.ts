@@ -241,6 +241,7 @@ const botAnswerPending = (s: BbState): boolean => {
       return act(s, p.seat, { type: 'choose', pass: true });
     }
     case 'discard-for-stun': return act(s, p.seat, { type: 'choose', cardId: h.hand[0] });
+    case 'onkill-reward': return act(s, p.seat, { type: 'choose', use: true }) || act(s, p.seat, { type: 'choose', use: false });
     case 'dream-upgrades': return act(s, p.seat, { type: 'choose', upgradeId: s.upgradeRow[0] });
     case 'dream-incorporate': {
       const basic = h.deck.find((c) => BB_STAT_CARDS[c]?.basic);

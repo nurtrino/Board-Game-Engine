@@ -431,6 +431,7 @@ interface BbTrigger {
   tile?: string;
   reveal?: string;
   space?: number;
+  afterTrackSpace?: number; // endMoveOnTile gated behind a track position
   cases?: { ifInsightCard?: string; notInsightCard?: string; else?: boolean; reveal: string }[];
 }
 
@@ -656,7 +657,8 @@ export const bbMissionEvent = (s: BbState, ev: BbMissionEventArg): void => {
   for (const t of ch?.triggers ?? []) {
     if (!t.reveal || s.missions[t.reveal]?.revealed) continue;
     if (t.on === 'endMoveOnTile' && ev.type === 'endMove'
-      && tileDef(ev.tileId).name.toLowerCase() === (t.tile ?? '').toLowerCase()) {
+      && tileDef(ev.tileId).name.toLowerCase() === (t.tile ?? '').toLowerCase()
+      && s.huntTrack >= (t.afterTrackSpace ?? 0)) {
       revealMission(s, t.reveal);
     }
     // Hunt Track reaching a given space (e.g. the 1st reset at 4)

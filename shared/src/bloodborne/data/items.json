@@ -417,7 +417,9 @@
   "kind": "tool",
   "timing": "Hunter Turn",
   "text": "Deal 2 {dmg} to all Enemies in your space.",
-  "effects": {},
+  "effects": {
+   "custom": "damage-2-all-in-space"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 0
@@ -429,7 +431,9 @@
   "kind": "tool",
   "timing": "Hunter Turn",
   "text": "Deal 2 {dmg} to 1 Enemy in your space and move them up to 2 spaces away.",
-  "effects": {},
+  "effects": {
+   "custom": "damage-2-push-2"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 1
@@ -441,7 +445,10 @@
   "kind": "rune",
   "timing": "On Kill",
   "text": "Deal 2 {dmg} to 1 other Enemy within 1 space.",
-  "effects": {},
+  "effects": {
+   "onKill": true,
+   "custom": "kill-damage-2-within-1"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 2
@@ -453,7 +460,9 @@
   "kind": "tool",
   "timing": "Hunter Turn",
   "text": "Move all Enemies in your space up to 2 spaces away.",
-  "effects": {},
+  "effects": {
+   "custom": "push-all-2"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 3
@@ -466,7 +475,8 @@
   "timing": "Hunter Turn",
   "text": "Heal 1\nMay spend 1 Blood Echo to Heal +2.",
   "effects": {
-   "heal": 1
+   "heal": 1,
+   "custom": "echo-heal-2-more"
   },
   "art": {
    "sheet": "reward-deck",
@@ -495,6 +505,7 @@
   "timing": "On Kill",
   "text": "Draw 1\nHeal 1",
   "effects": {
+   "onKill": true,
    "draw": 1,
    "heal": 1
   },
@@ -509,7 +520,8 @@
   "kind": "tool",
   "text": "Place on an Attack Slot. May switch slot on Transform. While on slot, that Attack deals +1 {dmg}.",
   "effects": {
-   "dmgBonus": 1
+   "custom": "gem-slot",
+   "neverExhaust": true
   },
   "art": {
    "sheet": "reward-deck",
@@ -523,8 +535,7 @@
   "timing": "On Attack",
   "text": "Replace your Stat card's effect with: +1 {dmg}, Stagger.",
   "effects": {
-   "stagger": true,
-   "dmgBonus": 1
+   "custom": "combat-dmg1-stagger"
   },
   "art": {
    "sheet": "reward-deck",
@@ -552,8 +563,7 @@
   "timing": "On Attack",
   "text": "+1 {speed}\n+1 {dmg}",
   "effects": {
-   "dmgBonus": 1,
-   "speedBonus": 1
+   "custom": "combat-speed1-dmg1"
   },
   "art": {
    "sheet": "reward-deck",
@@ -566,7 +576,9 @@
   "kind": "tool",
   "timing": "Hunter Turn",
   "text": "Slay 1 Enemy within 2 spaces that has 2 or less remaining HP.",
-  "effects": {},
+  "effects": {
+   "custom": "execute-2hp-range-2"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 11
@@ -578,7 +590,9 @@
   "kind": "rune",
   "timing": "Hunter Turn",
   "text": "Discard 1 card from your hand to return 1 card from your discard.",
-  "effects": {},
+  "effects": {
+   "custom": "swap-discard"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 12
@@ -590,7 +604,9 @@
   "kind": "rune",
   "timing": "Hunter Turn",
   "text": "Refresh your Firearm.",
-  "effects": {},
+  "effects": {
+   "custom": "refresh-firearm"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 13
@@ -603,7 +619,8 @@
   "timing": "Hunter Turn",
   "text": "Clear 1 slot\nMove 2",
   "effects": {
-   "clearSlots": 1
+   "clearSlots": 1,
+   "custom": "move-2"
   },
   "art": {
    "sheet": "reward-deck",
@@ -616,7 +633,9 @@
   "kind": "tool",
   "timing": "Hunter Turn",
   "text": "Teleport to any {lamp} space.",
-  "effects": {},
+  "effects": {
+   "custom": "teleport-lamp"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 15
@@ -629,7 +648,7 @@
   "timing": "On Attack",
   "text": "Attack gains +1 {speed}. After Attack, may Transform Weapon for free.",
   "effects": {
-   "speedBonus": 1
+   "custom": "combat-speed1-free-transform"
   },
   "art": {
    "sheet": "reward-deck",
@@ -642,7 +661,9 @@
   "kind": "tool",
   "timing": "When a non-Boss Enemy moves into your space",
   "text": "That Enemy stops 1 space away and suffers 1 {dmg}.",
-  "effects": {},
+  "effects": {
+   "custom": "torch-sentry"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 17
@@ -668,7 +689,9 @@
   "kind": "tool",
   "timing": "Hunter Turn",
   "text": "Non-Boss Enemies do not Activate after your turn.",
-  "effects": {},
+  "effects": {
+   "custom": "suppress-all-activation"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 19
@@ -680,7 +703,9 @@
   "kind": "rune",
   "timing": "When you are slain",
   "text": "Keep 1 Blood Echo (It is immediately used when you go to the Dream).",
-  "effects": {},
+  "effects": {
+   "custom": "moon-keep-echo"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 20
@@ -693,7 +718,7 @@
   "timing": "On Attack",
   "text": "Attack gains Stagger, and may Stagger Attacks of the same Speed.",
   "effects": {
-   "stagger": true
+   "custom": "combat-stagger-ties"
   },
   "art": {
    "sheet": "reward-deck",
@@ -707,7 +732,7 @@
   "timing": "When you are Attacked",
   "text": "Automatically Dodge that Attack.",
   "effects": {
-   "dodge": true
+   "custom": "auto-dodge"
   },
   "art": {
    "sheet": "reward-deck",
@@ -731,7 +756,9 @@
   "kind": "tool",
   "timing": "Hunter Turn",
   "text": "Deal 2 {dmg} to 1 non-Boss Enemy within 1 space. It does not Activate.",
-  "effects": {},
+  "effects": {
+   "custom": "damage-2-suppress-within-1"
+  },
   "art": {
    "sheet": "reward-deck",
    "cell": 24

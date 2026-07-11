@@ -35,7 +35,7 @@ export default function BbPlay({ view, act, seat, error }: Props) {
   const [refreshPick, setRefreshPick] = useState(false);
   const [refreshSel, setRefreshSel] = useState<string[]>([]);
   const [roundDiscard, setRoundDiscard] = useState<string[]>([]);
-  const [targeting, setTargeting] = useState<{ what: 'consumable' | 'firearm'; ix: number; label: string } | null>(null);
+  const [targeting, setTargeting] = useState<{ what: 'consumable' | 'firearm' | 'reward'; ix: number; label: string } | null>(null);
   const [offerPick, setOfferPick] = useState<string[] | null>(null);
   const [startSide, setStartSide] = useState<0 | 1>(0);
   const [zoomCard, setZoomCard] = useState<{ sheet: string; cell: number; back?: boolean; title?: string } | null>(null);
@@ -203,6 +203,7 @@ export default function BbPlay({ view, act, seat, error }: Props) {
             onEnemy={(uid, isBoss) => {
               if (targeting) {
                 if (targeting.what === 'firearm') act({ type: 'use_firearm', target: uid });
+                else if (targeting.what === 'reward') act({ type: 'use_reward', rewardIx: targeting.ix, target: uid });
                 else act({ type: 'use_consumable', itemIx: targeting.ix, target: uid });
                 setTargeting(null);
                 return;
@@ -253,13 +254,24 @@ export default function BbPlay({ view, act, seat, error }: Props) {
                 title={bbIconText(BB_ITEMS[me.firearmId]?.text)}>
                 {BB_ITEMS[me.firearmId]?.name.toUpperCase() ?? 'FIREARM'} {me.firearmExhausted ? '· SPENT, TAP TO REFRESH' : '· READY'}
               </button>
-              {me.rewards.map((r, i) => (
-                <button key={i} className={'bb-chip' + (r.exhausted ? ' spent' : '')}
-                  onClick={() => act({ type: 'use_reward', rewardIx: i })} disabled={r.exhausted}
-                  title={bbIconText(BB_ITEMS[r.id]?.text)}>
-                  {BB_ITEMS[r.id]?.name.toUpperCase()}{r.exhausted ? ' · SPENT' : ''}
-                </button>
-              ))}
+              {me.rewards.map((r, i) => {
+                const rfx = (BB_ITEMS[r.id]?.effects ?? {}) as { custom?: string; onKill?: boolean };
+                return (
+                  <button key={i} className={'bb-chip' + (r.exhausted ? ' spent' : '')}
+                    onClick={() => {
+                      if (rfx.custom && ['damage-2-push-2', 'execute-2hp-range-2', 'damage-2-suppress-within-1'].includes(rfx.custom)) {
+                        setTargeting({ what: 'reward', ix: i, label: 'PICK AN ENEMY ON THE MAP' });
+                      } else if (rfx.custom === 'gem-slot' || rfx.custom === 'swap-discard' || rfx.custom === 'echo-heal-2-more' || rfx.custom === 'teleport-lamp') {
+                        setTargeting({ what: 'reward', ix: i, label: rfx.custom });
+                      } else {
+                        act({ type: 'use_reward', rewardIx: i });
+                      }
+                    }} disabled={r.exhausted || !!rfx.onKill}
+                    title={bbIconText(BB_ITEMS[r.id]?.text) + (rfx.onKill ? ' (OFFERED WHEN YOU KILL)' : '')}>
+                    {BB_ITEMS[r.id]?.name.toUpperCase()}{r.exhausted ? ' · SPENT' : rfx.onKill ? ' · ON KILL' : ''}
+                  </button>
+                );
+              })}
             </div>
             {me.consumables.length > 0 && (
               <div className="bb-gear-row">
@@ -468,13 +480,52 @@ export default function BbPlay({ view, act, seat, error }: Props) {
               .filter((sp) => sp.icons.includes('lamp') && !view.brokenLamps.includes(`${t.uid}:${sp.id}`))
               .map((sp) => (
                 <button key={`${t.uid}:${sp.id}`} className="bb-btn"
-                  onClick={() => { act({ type: 'use_consumable', itemIx: targeting.ix, target: `${t.uid}:${sp.id}` }); setTargeting(null); }}>
+                  onClick={() => {
+                    if (targeting.what === 'reward') act({ type: 'use_reward', rewardIx: targeting.ix, target: `${t.uid}:${sp.id}` });
+                    else act({ type: 'use_consumable', itemIx: targeting.ix, target: `${t.uid}:${sp.id}` });
+                    setTargeting(null);
+                  }}>
                   {(sp.named ?? BB_TILES[t.tileId]?.name ?? 'LAMP').toUpperCase()}
                 </button>
               )))}
             <button className="bb-btn ghost" onClick={() => setTargeting(null)}>CANCEL</button>
           </div>
         </div>
+      )}
+      {targeting && targeting.label === 'gem-slot' && (
+        <div className="bb-modal" onClick={() => setTargeting(null)}>
+          <div className="ig-glass bb-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="ig-lab">SEAT THE BLOOD STONE SHARD · +1 DAMAGE</div>
+            {weaponSide?.slots.map((sl, i) => (
+              <button key={i} className="bb-btn"
+                onClick={() => { act({ type: 'use_reward', rewardIx: targeting.ix, target: i }); setTargeting(null); }}>
+                {sl.name.toUpperCase()} · {'›'.repeat(RANK[sl.speed] ?? 1)} · {sl.damage}♦{me.gemSlot === i ? ' · GEM HERE' : ''}
+              </button>
+            ))}
+            <button className="bb-btn ghost" onClick={() => setTargeting(null)}>CANCEL</button>
+          </div>
+        </div>
+      )}
+      {targeting && targeting.label === 'echo-heal-2-more' && (
+        <div className="bb-modal" onClick={() => setTargeting(null)}>
+          <div className="ig-glass bb-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="ig-lab">BLOOD OF ADELLA</div>
+            <button className="bb-btn" onClick={() => { act({ type: 'use_reward', rewardIx: targeting.ix }); setTargeting(null); }}>HEAL 1</button>
+            <button className="bb-btn" disabled={me.echoes < 1}
+              onClick={() => { act({ type: 'use_reward', rewardIx: targeting.ix, target: 'echo' as unknown as number }); setTargeting(null); }}>
+              SPEND 1 ECHO · HEAL 3{me.echoes < 1 ? ' · NO ECHO' : ''}
+            </button>
+            <button className="bb-btn ghost" onClick={() => setTargeting(null)}>CANCEL</button>
+          </div>
+        </div>
+      )}
+      {targeting && targeting.label === 'swap-discard' && (
+        <SwapDiscardPicker me={me} manifest={manifest}
+          onPick={(discardId, retrieveId) => {
+            act({ type: 'use_reward', rewardIx: targeting.ix, target: `${discardId}|${retrieveId}` as unknown as number });
+            setTargeting(null);
+          }}
+          onCancel={() => setTargeting(null)} />
       )}
       {targeting && targeting.label === 'summon-ally' && (
         <div className="bb-modal" onClick={() => setTargeting(null)}>
@@ -575,7 +626,8 @@ function BbPrompt({ view, seat, act, pending, manifest, roundDiscard, setRoundDi
                     : pending.kind === 'reward-overflow' ? 'YOU CARRY TOO MANY · GIVE ONE AWAY?'
                       : pending.kind === 'mission-choice' ? 'THE MISSION DEMANDS A CHOICE'
                         : pending.kind === 'round-refresh' ? 'NEW ROUND · DISCARD ANY, THEN DRAW TO 3'
-                          : 'DECIDE';
+                          : pending.kind === 'onkill-reward' ? 'THE KILL FEEDS YOUR GEAR'
+                            : 'DECIDE';
 
   return (
     <div className="bb-modal">
@@ -739,6 +791,16 @@ function BbPrompt({ view, seat, act, pending, manifest, roundDiscard, setRoundDi
           </>
         )}
 
+        {pending.kind === 'onkill-reward' && (
+          <>
+            <div className="bb-head-note">
+              USE {BB_ITEMS[me.rewards[pending.rewardIx]?.id]?.name.toUpperCase()}? {bbIconText(BB_ITEMS[me.rewards[pending.rewardIx]?.id]?.text)}
+            </div>
+            <button className="bb-btn primary" onClick={() => act({ type: 'choose', use: true })}>USE IT</button>
+            <button className="bb-btn ghost" onClick={() => act({ type: 'choose', use: false })}>SAVE IT</button>
+          </>
+        )}
+
         {pending.kind === 'round-refresh' && (
           <>
             <div className="bb-hand small">
@@ -778,6 +840,30 @@ function deckList(view: BbView, seat: number): string[] {
     for (let i = 0; i < Math.max(0, inDeck); i++) out.push(id);
   }
   return out.length ? out : all;
+}
+
+function SwapDiscardPicker({ me, manifest, onPick, onCancel }: {
+  me: BbView['hunters'][number]; manifest: ReturnType<typeof useBbManifest>;
+  onPick: (discardId: string, retrieveId: string) => void; onCancel: () => void;
+}) {
+  const [give, setGive] = useState<string | null>(null);
+  return (
+    <div className="bb-modal" onClick={onCancel}>
+      <div className="ig-glass bb-modal-card" onClick={(e) => e.stopPropagation()}>
+        <div className="ig-lab">{give ? 'RETURN A CARD FROM YOUR DISCARD' : 'DISCARD A CARD FROM YOUR HAND'}</div>
+        <div className="bb-hand small">
+          {(give ? me.discard : me.hand).map((id, i) => (
+            <button key={`${id}${i}`} className="bb-card"
+              onClick={() => (give ? onPick(give, id) : setGive(id))}>
+              <div className="bb-card-art" style={bbCellCss(manifest, BB_STAT_CARDS[id]?.art.sheet ?? '', BB_STAT_CARDS[id]?.art.cell ?? 0)} />
+              <span className="bb-card-name">{(BB_STAT_CARDS[id]?.name ?? id).toUpperCase()}</span>
+            </button>
+          ))}
+        </div>
+        <button className="bb-btn ghost" onClick={onCancel}>CANCEL</button>
+      </div>
+    </div>
+  );
 }
 
 function ReturnPlacement({ view, seat, act, manifest }: {

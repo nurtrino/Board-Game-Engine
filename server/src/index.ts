@@ -1143,6 +1143,7 @@ function bbBotAct(room: Room): void {
         return attempt(p.seat, { type: 'choose', pass: true });
       }
       case 'discard-for-stun': return attempt(p.seat, { type: 'choose', cardId: h.hand[0] });
+      case 'onkill-reward': return attempt(p.seat, { type: 'choose', use: true }) || attempt(p.seat, { type: 'choose', use: false });
       case 'dream-upgrades': return attempt(p.seat, { type: 'choose', upgradeId: s.upgradeRow[0] });
       case 'dream-incorporate': {
         const basic = h.deck.find((c) => BB_STAT_CARDS[c]?.basic);

@@ -105,6 +105,7 @@ function myMove() {
         return act({ type: 'choose', pass: true });
       }
       case 'discard-for-stun': return act({ type: 'choose', cardId: me.hand[0] });
+      case 'onkill-reward': return act({ type: 'choose', use: true });
       case 'dream-upgrades': return act({ type: 'choose', upgradeId: view.upgradeRow[0] });
       case 'dream-incorporate': return act({ type: 'choose', discard: true });
       case 'return-placement': {

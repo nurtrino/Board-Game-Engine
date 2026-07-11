@@ -29,7 +29,7 @@ export type BbAction =
   | { type: 'attack'; cardId: string; slot: number; enemyUid?: number; bossUid?: number }
   | { type: 'use_consumable'; itemIx: number; target?: BbSpaceRef | number }
   | { type: 'use_firearm'; target?: number }
-  | { type: 'use_reward'; rewardIx: number; target?: number }
+  | { type: 'use_reward'; rewardIx: number; target?: number | string }
   | { type: 'refresh_firearm'; discard: string[]; echo?: boolean }
   | { type: 'mission_discard'; cards: string[] } // discard consumables on a tile (mission hooks)
   | { type: 'mission_spawn' } // discard 1 consumable to spawn (Long Hunt 18)
@@ -101,7 +101,12 @@ const hunterSuffer = (s: BbState, h: BbHunterState, dmg: number, opts: { block?:
 
 const slayHunter = (s: BbState, h: BbHunterState): void => {
   evt(s, `${BB_HUNTERS[h.hunterId!]?.name ?? 'HUNTER'} SLAIN`, h.seat, 'death');
+  // Caryll Rune: Moon — keep 1 echo, spent immediately in the Dream
+  const moon = h.rewards.find((r) => !r.exhausted && ((bbItem(r.id).effects ?? {}) as { custom?: string }).custom === 'moon-keep-echo');
+  const moonEcho = !!moon && h.echoes > 0;
+  if (moon && moonEcho) moon.exhausted = true;
   h.echoes = 0; // lost BEFORE upgrades (p. 23)
+  if (moonEcho) s.pending.push({ seat: h.seat, kind: 'dream-upgrades', picks: 1 });
   const wasActive = s.activeSeat === h.seat;
   if (wasActive) s.activationQueue = []; // sudden death (p. 17)
   s.combat = null;
@@ -151,6 +156,11 @@ const slayEnemy = (s: BbState, uid: number, bySeat: number | null): void => {
     const fx = def.sides[h.weaponSide].effects;
     if (fx?.onKillDraw) for (let i = 0; i < fx.onKillDraw; i++) { const c = drawStat(s, h); if (c) h.hand.push(c); }
     if (fx?.onKillHeal) h.hp = Math.min(BB_MAX_HP, h.hp + fx.onKillHeal);
+    // optional On Kill rewards (Beast rune, Blood Rapture) get a use window
+    h.rewards.forEach((r, ix) => {
+      const rfx = (bbItem(r.id).effects ?? {}) as { onKill?: boolean };
+      if (!r.exhausted && rfx.onKill) s.pending.push({ seat: bySeat, kind: 'onkill-reward', rewardIx: ix });
+    });
   }
   bbMissionEvent(s, { type: 'enemySlain', enemyType: e.type, missionTag: e.missionTag, bySeat, space });
 };
@@ -348,7 +358,8 @@ const combatResolve = (s: BbState): void => {
     const fx: BbEffects = card.effects ?? {};
     const slotFx = slotDef.effects ?? {};
     let dmg = slotDef.damage + (fx.dmgBonus ?? 0) + c.hunterDmgBonus;
-    const stagger = !!fx.stagger || !!slotFx.stagger;
+    if (h.gemSlot === c.attack.slot) dmg += 1; // Blood Stone Shard
+    const stagger = !!fx.stagger || !!slotFx.stagger || !!(c as unknown as { hunterStagger?: boolean }).hunterStagger;
     if (stagger && def.sides[h.weaponSide].effects?.staggerBonusDmg) dmg += def.sides[h.weaponSide].effects!.staggerBonusDmg!;
     if (flags.blockFromHunter) dmg = Math.max(0, dmg - Number(flags.blockFromHunter));
     hAtk = { rank: speedRank(slotDef.speed, (fx.speedBonus ?? 0) + c.hunterSpeedBonus), dmg, stagger };
@@ -392,8 +403,9 @@ const combatResolve = (s: BbState): void => {
           }
         }
         enemyGone = enemy ? !s.enemies.some((x) => x.uid === enemy.uid) : !s.bosses.some((x) => x.uid === boss!.uid);
-        // stagger cancels SLOWER opposing attacks (p. 21)
-        if (hAtk!.stagger && eAtk && !flags.noStagger && eAtk.rank < g.rank) enemyCancelled = true;
+        // stagger cancels SLOWER opposing attacks (p. 21); Oedon Writhe also ties
+        const tiesToo = !!(c as unknown as { staggerTies?: boolean }).staggerTies;
+        if (hAtk!.stagger && eAtk && !flags.noStagger && (eAtk.rank < g.rank || (tiesToo && eAtk.rank === g.rank))) enemyCancelled = true;
         if (enemyGone && eAtk && eAtk.rank < g.rank) enemyCancelled = true; // dead before acting
       } else if (target && missionInvulnerable(s, boss)) {
         evt(s, `${BB_BOSSES[boss!.type].name.toUpperCase()} CANNOT BE HARMED`, c.seat, 'invulnerable');
@@ -409,6 +421,14 @@ const combatResolve = (s: BbState): void => {
       }
       if (h.hp === 0) break;
     }
+  }
+  // Caryll Rune: Hunter — free transform after the attack
+  if ((c as unknown as { freeTransformAfter?: boolean }).freeTransformAfter && h.hp > 0) {
+    for (const cardIx of h.slots) if (cardIx) h.discard.push(cardIx);
+    h.weaponSide = h.weaponSide === 0 ? 1 : 0;
+    h.slots = new Array(hunterSlotCount(h)).fill(null);
+    h.gemSlot = null;
+    evt(s, 'TRICK WEAPON TRANSFORMED FREELY', c.seat, 'transform');
   }
   s.combat = null;
   bbMissionEvent(s, { type: 'combatEnd', seat: c.seat });
@@ -474,8 +494,11 @@ const buildActivationQueue = (s: BbState, seat: number): void => {
     const ix = s.enemySlots.indexOf(type);
     return ix === -1 ? 3 : ix;
   };
+  // Messenger's Gift: non-boss enemies skip the activation after this turn
+  const suppressedTurn = !!(h as unknown as { suppressActivation?: boolean }).suppressActivation;
   const list = s.enemies
     .filter((e) => inRange(e.space))
+    .filter((e) => !suppressedTurn && !(e as unknown as { suppressed?: boolean }).suppressed)
     .sort((a, b) => slotOrder(a.type) - slotOrder(b.type) || a.uid - b.uid);
   const bosses = s.bosses.filter((b) => inRange(b.space));
   s.activationQueue = [...list.map((e) => e.uid), ...bosses.map((b) => b.uid)];
@@ -498,6 +521,8 @@ const pumpActivation = (s: BbState): void => {
         if (!step) break;
         const sharing = s.hunters.some((x) => x.seat !== h.seat && x.space === piece.space);
         if (sharing && step !== h.space) break; // p. 16
+        if (enemy && s.hunters.some((x) => x.space === step) && torchSentry(s, enemy, step)) break;
+        if (!s.enemies.some((x) => x.uid === uid) && !s.bosses.some((x) => x.uid === uid)) break; // torch killed it
         piece.space = step;
         if (boss) bbMissionEvent(s, { type: 'bossMoved', boss: boss.type, tileUid: parseRef(boss.space).uid });
       }
@@ -514,6 +539,18 @@ const pumpActivation = (s: BbState): void => {
   }
 };
 
+/** push a piece N steps away from a space (deterministic farthest) */
+const pushAway = (s: BbState, e: BbEnemyOnMap, from: BbSpaceRef, steps: number): void => {
+  for (let i = 0; i < steps; i++) {
+    const opts = spaceNeighbors(s, e.space, 'enemy');
+    if (!opts.length) break;
+    const score = (ref: BbSpaceRef): number => bfsFrom(s, from, 'enemy').get(ref) ?? 0;
+    const best = [...opts].sort((a, b) => score(b) - score(a) || (a < b ? -1 : 1))[0];
+    if (score(best) <= score(e.space)) break;
+    e.space = best;
+  }
+};
+
 /** Ludwig's Rifle: when an enemy moves into a hunter's space, a ready rifle
  * fires automatically for 2 damage (card back), then exhausts. */
 const rifleSentry = (s: BbState, piece: BbEnemyOnMap | BbBossOnMap): void => {
@@ -526,6 +563,22 @@ const rifleSentry = (s: BbState, piece: BbEnemyOnMap | BbBossOnMap): void => {
     applyDamageToEnemy(s, piece, 2, h.seat);
     return;
   }
+};
+
+/** Hunter Torch: a ready torch stops a non-boss enemy 1 space short of the
+ * hunter and deals 1 damage (card back), then exhausts. Returns true when the
+ * enemy's entry was prevented. */
+const torchSentry = (s: BbState, e: BbEnemyOnMap, to: BbSpaceRef): boolean => {
+  for (const h of s.hunters) {
+    if (h.space !== to) continue;
+    const tool = h.rewards.find((r) => !r.exhausted && ((bbItem(r.id).effects ?? {}) as { custom?: string }).custom === 'torch-sentry');
+    if (!tool) continue;
+    tool.exhausted = true;
+    evt(s, 'THE HUNTER TORCH FLARES', h.seat, 'reward');
+    applyDamageToEnemy(s, e, 1, h.seat);
+    return true;
+  }
+  return false;
 };
 
 const stepToward = (s: BbState, from: BbSpaceRef, to: BbSpaceRef): BbSpaceRef | null => {
@@ -572,6 +625,7 @@ const startRound = (s: BbState): void => {
 };
 
 const endRound = (s: BbState): void => {
+  for (const e of s.enemies) delete (e as unknown as { suppressed?: boolean }).suppressed;
   bbMissionEvent(s, { type: 'roundEnd' });
   runBossBonusActivations(s);
   if (s.phase !== 'play') return;
@@ -614,6 +668,7 @@ const finishTurn = (s: BbState, died: boolean): void => {
   if (seat == null) return;
   const h = s.hunters[seat];
   if (!died && h.poison && h.space) hunterSuffer(s, h, 1); // p. 21
+  (h as unknown as { suppressActivation?: boolean }).suppressActivation = false;
   h.tookTurnThisRound = true;
   s.activeSeat = null;
   side(s).moving = null;
@@ -813,6 +868,7 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
       for (const c of h.slots) if (c) h.discard.push(c);
       h.weaponSide = h.weaponSide === 0 ? 1 : 0;
       h.slots = new Array(hunterSlotCount(h)).fill(null);
+      h.gemSlot = null; // the Blood Stone Shard may be re-seated freely
       // Repeating Pistol refreshes for free on Transform (card back)
       const gfx = (bbItem(h.firearmId).effects ?? {}) as { freeOnTransform?: boolean };
       if (gfx.freeOnTransform && h.firearmExhausted) h.firearmExhausted = false;
@@ -949,8 +1005,127 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
       const r = h.rewards[action.rewardIx];
       if (!r) err('No such reward');
       if (r.exhausted) err('Reward exhausted');
-      applyItemEffect(s, h, r.id, action.target);
-      r.exhausted = true;
+      const rfx = (bbItem(r.id).effects ?? {}) as BbEffects & { custom?: string; onKill?: boolean; neverExhaust?: boolean };
+      if (rfx.onKill) err('It answers only a kill, wait for the moment');
+      switch (rfx.custom) {
+        case 'damage-2-all-in-space': {
+          if (!h.space) err("You are in the Hunter's Dream");
+          const here = s.enemies.filter((e) => e.space === h.space);
+          if (!here.length) err('No enemy in your space');
+          for (const e of [...here]) applyDamageToEnemy(s, e, 2, seat);
+          break;
+        }
+        case 'damage-2-push-2': {
+          const e = s.enemies.find((x) => x.uid === Number(action.target) && x.space === h.space);
+          if (!e) err('Pick an enemy in your space');
+          applyDamageToEnemy(s, e, 2, seat);
+          const still = s.enemies.find((x) => x.uid === e.uid);
+          if (still) pushAway(s, still, h.space!, 2);
+          break;
+        }
+        case 'push-all-2': {
+          if (!h.space) err("You are in the Hunter's Dream");
+          for (const e of s.enemies.filter((x) => x.space === h.space)) pushAway(s, e, h.space!, 2);
+          break;
+        }
+        case 'echo-heal-2-more': {
+          h.hp = Math.min(BB_MAX_HP, h.hp + 1);
+          if (action.target === 'echo') {
+            if (h.echoes < 1) err('No blood echo to spend');
+            h.echoes -= 1;
+            h.hp = Math.min(BB_MAX_HP, h.hp + 2);
+          }
+          break;
+        }
+        case 'gem-slot': {
+          const slot = Number(action.target);
+          if (!(slot >= 0 && slot < h.slots.length)) err('Pick an attack slot for the gem');
+          h.gemSlot = slot;
+          break;
+        }
+        case 'combat-dmg1-stagger': {
+          if (s.combat?.seat !== seat || !s.combat.attack) err('Usable when you attack');
+          s.combat.hunterDmgBonus += 1;
+          (s.combat as unknown as { hunterStagger?: boolean }).hunterStagger = true;
+          break;
+        }
+        case 'combat-speed1-dmg1': {
+          if (s.combat?.seat !== seat) err('Usable during your combat');
+          s.combat.hunterSpeedBonus += 1;
+          s.combat.hunterDmgBonus += 1;
+          break;
+        }
+        case 'combat-speed1-free-transform': {
+          if (s.combat?.seat !== seat) err('Usable during your combat');
+          s.combat.hunterSpeedBonus += 1;
+          (s.combat as unknown as { freeTransformAfter?: boolean }).freeTransformAfter = true;
+          break;
+        }
+        case 'combat-stagger-ties': {
+          if (s.combat?.seat !== seat || !s.combat.attack) err('Usable when you attack');
+          (s.combat as unknown as { hunterStagger?: boolean; staggerTies?: boolean }).hunterStagger = true;
+          (s.combat as unknown as { staggerTies?: boolean }).staggerTies = true;
+          break;
+        }
+        case 'execute-2hp-range-2': {
+          const e = s.enemies.find((x) => x.uid === Number(action.target));
+          if (!e || !h.space) err('Pick an enemy within 2 spaces');
+          const d = bfsFrom(s, h.space, 'hunter').get(e.space) ?? 99;
+          if (d > 2) err('Out of range');
+          if (enemyHp(s, e) - e.damage > 2) err('It is not weak enough to execute');
+          slayEnemy(s, e.uid, seat);
+          break;
+        }
+        case 'swap-discard': {
+          const [discardId, retrieveId] = String(action.target ?? '').split('|');
+          if (!h.hand.includes(discardId)) err('Pick a hand card to discard');
+          if (!h.discard.includes(retrieveId)) err('Pick a discard card to return');
+          h.hand.splice(h.hand.indexOf(discardId), 1);
+          h.discard.push(discardId);
+          h.discard.splice(h.discard.indexOf(retrieveId), 1);
+          h.hand.push(retrieveId);
+          break;
+        }
+        case 'suppress-all-activation': {
+          if (s.activeSeat !== seat) err('Usable only on your turn');
+          (h as unknown as { suppressActivation?: boolean }).suppressActivation = true;
+          break;
+        }
+        case 'moon-keep-echo':
+          err('It answers only death itself');
+          break;
+        case 'auto-dodge': {
+          const head = s.pending[0];
+          if (!head || head.seat !== seat || (head.kind !== 'combat-dodge' && head.kind !== 'combat-rider')) err('Usable when you are attacked');
+          s.pending.shift();
+          if (head.kind === 'combat-dodge' && s.combat) {
+            s.combat.dodge = { cardId: '', slot: -1 };
+            r.exhausted = true;
+            evt(s, `${bbItem(r.id).name.toUpperCase()} · DODGED`, seat, 'reward');
+            combatResolve(s);
+            return s;
+          }
+          break;
+        }
+        case 'damage-2-suppress-within-1': {
+          const e = s.enemies.find((x) => x.uid === Number(action.target));
+          if (!e || !h.space) err('Pick a non-boss enemy within 1 space');
+          const d = bfsFrom(s, h.space, 'hunter').get(e.space) ?? 99;
+          if (d > 1) err('Out of range');
+          applyDamageToEnemy(s, e, 2, seat);
+          const still = s.enemies.find((x) => x.uid === e.uid);
+          if (still) (still as unknown as { suppressed?: boolean }).suppressed = true;
+          break;
+        }
+        case 'torch-sentry':
+          err('It burns on its own when an enemy closes in');
+          break;
+        default:
+          applyItemEffect(s, h, r.id, action.target);
+          break;
+      }
+      if (!rfx.neverExhaust) r.exhausted = true;
+      evt(s, `${bbItem(r.id).name.toUpperCase()} USED`, seat, 'reward');
       return s;
     }
 
@@ -1131,6 +1306,26 @@ const applyChoose = (s: BbState, seat: number, a: Record<string, unknown>): BbSt
       if (!h.hand.includes(cardId)) err('Pick a card to discard');
       discardStat(s, h, cardId);
       s.pending.shift();
+      return s;
+    }
+    case 'onkill-reward': {
+      const h = hunterOf(s, seat);
+      s.pending.shift();
+      if (!a.use) return s;
+      const r = h.rewards[head.rewardIx];
+      if (!r || r.exhausted) return s;
+      const rfx = (bbItem(r.id).effects ?? {}) as BbEffects & { custom?: string };
+      if (rfx.draw) for (let i = 0; i < rfx.draw; i++) { const c = drawStat(s, h); if (c) h.hand.push(c); }
+      if (rfx.heal) h.hp = Math.min(BB_MAX_HP, h.hp + rfx.heal);
+      if (rfx.custom === 'kill-damage-2-within-1' && h.space) {
+        // deal 2 to another enemy within 1 (deterministic: closest to death)
+        const near = s.enemies
+          .filter((e) => (bfsFrom(s, h.space!, 'hunter').get(e.space) ?? 99) <= 1)
+          .sort((x, y) => (enemyHp(s, x) - x.damage) - (enemyHp(s, y) - y.damage));
+        if (near.length) applyDamageToEnemy(s, near[0], 2, seat);
+      }
+      r.exhausted = true;
+      evt(s, `${bbItem(r.id).name.toUpperCase()} INVOKED`, seat, 'reward');
       return s;
     }
     case 'dream-upgrades': {

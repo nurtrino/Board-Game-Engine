@@ -87,6 +87,8 @@ export interface BbHunterState {
   consumables: string[];
   poison: boolean;
   frenzy: boolean;
+  /** Blood Stone Shard: attack slot carrying the gem (+1 dmg) */
+  gemSlot: number | null;
   /** slain before taking this round's turn -> skip it (p. 21) */
   skipTurn: boolean;
   /** returned from the Dream: must pick weapon side + lamp space on turn start */
@@ -111,7 +113,8 @@ export type BbPending =
   | { seat: number; kind: 'reward-overflow'; rewardId: string } // 3rd tool/rune: give away or set aside
   | { seat: number; kind: 'mission-choice'; card: string; options: string[] } // mission-card decisions
   | { seat: number; kind: 'discard-for-stun' }
-  | { seat: number; kind: 'round-refresh' }; // discard any, draw to 3 (p. 18)
+  | { seat: number; kind: 'round-refresh' } // discard any, draw to 3 (p. 18)
+  | { seat: number; kind: 'onkill-reward'; rewardIx: number }; // optional On Kill reward window
 
 // ---------- combat ----------
 
@@ -441,7 +444,7 @@ export const createBloodborne = (opts: BbCreateOptions): BbState => {
       seat: i, hunterId: null, hp: BB_MAX_HP, echoes: 0, space: null,
       weaponSide: 0, slots: [], deck: [], hand: [], discard: [],
       firearmId: '', firearmExhausted: false, rewards: [], consumables: [],
-      poison: false, frenzy: false, skipTurn: false, pendingReturn: false,
+      poison: false, frenzy: false, gemSlot: null, skipTurn: false, pendingReturn: false,
       tookTurnThisRound: false,
     });
   }

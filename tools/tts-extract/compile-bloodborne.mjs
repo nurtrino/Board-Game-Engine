@@ -263,6 +263,33 @@ const items = {};
   // items, kind 'other'.
   const rw = T('rewards.json').cells;
   const seenR = new Set();
+  // curated effects for every core Hunter Tool / Caryll Rune (card backs)
+  const REWARD_FX = {
+    'a-call-beyond': { custom: 'damage-2-all-in-space' },
+    'augur-of-ebrietas': { custom: 'damage-2-push-2' },
+    'rune-beast': { onKill: true, custom: 'kill-damage-2-within-1' },
+    'beast-roar': { custom: 'push-all-2' },
+    'blood-of-adella': { heal: 1, custom: 'echo-heal-2-more' },
+    'blood-of-arianna': { draw: 1, heal: 1 },
+    'rune-blood-rapture': { onKill: true, draw: 1, heal: 1 },
+    'blood-stone-shard': { custom: 'gem-slot', neverExhaust: true },
+    'rune-clawmark': { custom: 'combat-dmg1-stagger' },
+    'rune-communion': { heal: 2 },
+    'empty-phantasm-shell': { custom: 'combat-speed1-dmg1' },
+    'executioner-s-gloves': { custom: 'execute-2hp-range-2' },
+    'rune-eye': { custom: 'swap-discard' },
+    'rune-formless-oedon': { custom: 'refresh-firearm' },
+    'rune-guidance': { clearSlots: 1, custom: 'move-2' },
+    'hand-lantern': { custom: 'teleport-lamp' },
+    'rune-hunter': { custom: 'combat-speed1-free-transform' },
+    'hunter-torch': { custom: 'torch-sentry' },
+    'iosefka-s-blood-vial': { heal: 2 },
+    'messenger-s-gift': { custom: 'suppress-all-activation' },
+    'rune-moon': { custom: 'moon-keep-echo' },
+    'rune-oedon-writhe': { custom: 'combat-stagger-ties' },
+    'old-hunter-bone': { custom: 'auto-dodge' },
+    'tiny-tonitrus': { custom: 'damage-2-suppress-within-1' },
+  };
   for (const [cellKey, r] of Object.entries(rw)) {
     const cell = parseInt(String(cellKey).replace(/^c/, ''), 10);
     if (cell > 24) continue; // cells 25+ are expansion copies (icon groups)
@@ -271,7 +298,8 @@ const items = {};
     seenR.add(id);
     const noUse = /^no use/i.test((r.text ?? '').trim());
     const kind = /^caryll rune/i.test(r.name) || r.type === 'rune' ? 'rune' : noUse ? 'other' : 'tool';
-    items[id] = { id, name: r.name, kind, timing: r.timing, text: r.text ?? '', effects: parseEffects(r.text ?? '', 'item'), art: { sheet: 'reward-deck', cell } };
+    if (kind !== 'other' && !REWARD_FX[id]) warn(`reward ${id} has no curated effect`);
+    items[id] = { id, name: r.name, kind, timing: r.timing, text: r.text ?? '', effects: REWARD_FX[id] ?? parseEffects(r.text ?? '', 'item'), art: { sheet: 'reward-deck', cell } };
   }
 }
 write('items.json', items);
