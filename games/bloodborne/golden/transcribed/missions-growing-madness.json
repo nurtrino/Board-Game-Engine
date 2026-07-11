@@ -1,0 +1,523 @@
+{
+  "cards": {
+    "Introduction": {
+      "kind": "intro",
+      "title": "GROWING MADNESS - Introduction",
+      "story": "This night, a grand Hunt has been called: Hunter and townsfolk alike have taken to the streets to join in the great purging. Among them, the renowned Hunter, Father Gascoigne, has joined you in your task. Yet, something about this Hunt feels different... The scent of blood is heavy in the air. From above, the rays of the Blood Moon bathe the streets in a crimson red. All the while, an unnerving feeling lies just below the surface, as if something terrible is waiting to be unleashed...",
+      "body": "",
+      "goal": null,
+      "reveals": []
+    },
+    "Chapter 1 - Setup": {
+      "kind": "chapter",
+      "title": "GROWING MADNESS - Chapter 1 - Missions",
+      "story": null,
+      "body": "Start of the Hunt: Reveal card 1\nWhen the Hunt Track reaches the 1st {reset} space (mark this space with an Insight token): Reveal card 6\nEnd a move on the Occupied House tile: Reveal card 11\nEnd a move on the Oedon Chapel tile: Reveal card 14",
+      "goal": "Start of the Hunt: Reveal card 1",
+      "reveals": [1, 6, 11, 14]
+    },
+    "Chapter 2 - Setup": {
+      "kind": "chapter",
+      "title": "GROWING MADNESS - Chapter 2 - Missions",
+      "story": null,
+      "body": "Start of the Hunt: Reveal card 17\nWhen the Hunt Track reaches the 1st {reset} space (mark this space with an Insight token): Reveal card 22\nEnd a move on the Barred Window tile: Reveal card 26\nEnd a move on the Oedon Chapel tile: Reveal card 31",
+      "goal": "Start of the Hunt: Reveal card 17",
+      "reveals": [17, 22, 26, 31]
+    },
+    "Chapter 3 - Setup": {
+      "kind": "chapter",
+      "title": "GROWING MADNESS - Chapter 3 - Missions",
+      "story": null,
+      "body": "Start of the Hunt: Reveal card 39\nEnd a move on the Barred Window space: Reveal card 43\nEnd a move on the Grand Cathedral tile: Reveal card 50\nEnd a move on the Occupied House space: Reveal card 55",
+      "goal": "Start of the Hunt: Reveal card 39",
+      "reveals": [39, 43, 50, 55]
+    },
+    "1": {
+      "kind": "hunt",
+      "title": "ON THE HUNT",
+      "story": "Gascoigne steps forward, taking the lead. He lifts his head. \"Ah... Tonight there is something different in the air. Let there be no doubt. If it moves, you can be sure it's a beast... And even if it doesn't... Well, don't take any chances... Now, we hunt!\"",
+      "body": "Place {n} +2 Insight tokens on this card. Place Father Gascoigne's miniature on the Central Lamp space. When a Hunter moves out of his space, Gascoigne may be moved with them. After a Hunter in his space Attacks, deal that Enemy 1 additional {dmg} (no one gains a Blood Echo if this slays the Enemy). Each time an Enemy is slain in his space, remove 1 token.",
+      "goal": "When this card has no remaining tokens: Reveal card 2.",
+      "reveals": [2]
+    },
+    "2": {
+      "kind": "hunt",
+      "title": "ON THE HUNT",
+      "story": "Gascoigne's blows strike down his latest foe, but he does not stop. He rears back, bringing his mighty axe down again and again, blood splattering as he chops away. Suddenly, the bells of the Grand Cathedral, far across The Great Bridge, begin to chime. Gascoigne stops, drawn by their sound. \"More beasts... Can't you smell them? So many this night... So many left to kill...\" With this, he silently turns and departs...",
+      "body": "Remove Father Gascoigne from the map.",
+      "goal": "When a Hunter ends a move on The Great Bridge after collecting at least 2 Insight: Reveal card 3.",
+      "reveals": [3]
+    },
+    "3": {
+      "kind": "hunt",
+      "title": "ON THE HUNT",
+      "story": "Corpses litter the bridge, massacred-the wounds upon them evident of a Hunter Axe. These bodies do not bear the signs of the plague, but appear to have been cut down while fleeing... Suddenly, you hear a loud crash. From across The Great Bridge, a large bolder comes rolling.",
+      "body": "Reveal card 4.\nSurround The Great Bridge tile with Fog Gates. Spawn 1 Hunter Mob and 1 Huntsman's Minion on The Great Bridge {enemy?} space instead of the usual Enemy. They respawn to that space on {reset}.",
+      "goal": "Complete the Hunt at the end of a round if no Enemies remain on The Great Bridge tile: Reveal card 5.",
+      "reveals": [4, 5],
+      "uncertain": true,
+      "note": "Dark circular space icon (claw-like silhouette) not confidently identifiable as enemy1/2/3. 'bolder' is printed as-is on the card (sic)."
+    },
+    "4": {
+      "kind": "special",
+      "title": "BRIDGE GUARDS",
+      "story": null,
+      "body": "When this card is revealed, and each time Ability is flipped by the Huntsman's Minion, all Hunters on The Great Bridge must Dodge ({fast}) or suffer 3 {dmg}.\nPlace 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. Tokens are returned on {reset}.",
+      "goal": null,
+      "reveals": [],
+      "note": "Dodge icon is a single speed arrow, encoded {fast}."
+    },
+    "5": {
+      "kind": "insight-reward",
+      "title": "UNSETTLING SUSPICIONS",
+      "story": "Looking to the sky, you feel the rays of the Blood Moon casting down upon you, and even you cannot deny the bloodlust... A suspicion continues to grow in your mind, although you wish it didn't... You must locate Gascoigne.",
+      "body": "Distribute 2 Consumables and the Caryll Rune: Moon reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "6": {
+      "kind": "insight",
+      "title": "INNOCENT BYSTANDERS",
+      "story": "The night of the Hunt is dangerous for any wandering the streets of Yharnam, for even those free of the Beast Plague may become a target for not only the ravanous beasts, but also the mobs of townsfolk, so eager to partake in the Hunt...",
+      "body": "Reveal card 7.\nSpawn 1 Hunter Mob on the Central Lamp space. It cannot move from this space. Place 1 Survivor token on the Central Lamp space. On {reset}, if no Hunter is on this space, remove this token and discard this Mission (it can't be completed).",
+      "goal": "Slay this Hunter Mob: Reveal card 8.",
+      "reveals": [7, 8],
+      "note": "'ravanous' is printed as-is on the card (sic)."
+    },
+    "7": {
+      "kind": "special",
+      "title": "FRENZIED MOB",
+      "story": null,
+      "body": "Place 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. Tokens are returned on {reset}.\nReplace its Basic with:\nBASIC: RECKLESS ANGER {medium} {dmg} {dmg} Frenzy",
+      "goal": null,
+      "reveals": [],
+      "note": "Attack bar shows two speed arrows (encoded {medium}) and two damage drops."
+    },
+    "8": {
+      "kind": "insight",
+      "title": "SAFETY FROM THE HUNT",
+      "story": "You approach the figure, a bruised and bloodied man. \"Oh thank the heavens! You're a Hunter, right? A proper one? Then, please help. I'm trying to get someplace safe, wait out this terrible night. They've all gone mad!\"",
+      "body": "Do not remove the Survivor token.\nWhen a Hunter moves out of the space with the Survivor token, it may be moved with them.",
+      "goal": "Complete this Mission if you end a move on the Oedon Chapel tile with the token: Reveal card 9.\nComplete this Mission if you end a move with the token after a {reset} occurs: Reveal card 10.",
+      "reveals": [9, 10]
+    },
+    "9": {
+      "kind": "insight-reward",
+      "title": "SAFETY FROM THE HUNT",
+      "story": "\"Aye, this place should do! And none too soon, my friend. I've experienced many a'hunt, but this one... Something ain't right, I tell ya. This one won't end well, not this time... 'ere, take this, with my thanks.\"",
+      "body": "Distribute 1 Consumable and the Hand Lantern reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "10": {
+      "kind": "insight-reward",
+      "title": "UNCONTROLLED RAGE",
+      "story": "A sharp pain hits you from behind. You turn just in time to parry a blade held by the man, his eyes suddenly showing madness among the gleam of the moon. Overtaken by rage, you strike him down... It seems even Hunters are not immune to this frenzy.",
+      "body": "Hunter suffers 1 {dmg} and Frenzy, but gains 1 Blood Echo and the Caryll Rune: Blood Rapture reward. Discard the Survivor token.",
+      "goal": null,
+      "reveals": []
+    },
+    "11": {
+      "kind": "insight",
+      "title": "SUPPLIES FOR THE NIGHT",
+      "story": "\"Oh, you must be a Hunter. Must have had a fine time of it... Was out on the hunt myself, but now? I don't think I could stand if I wanted to... Say, you wouldn't be willing to help a fellow Yharnamite out, would you? I can even make it worth your while. Just need some supplies to last me through the night, that's all.\"",
+      "body": "Place {n} +1 Insight tokens on this card. Hunters ending a move on the Occupied House space may discard any number of their held Consumables. For each one discarded, remove 1 token from this card.",
+      "goal": "When this card has no remaining tokens: Reveal card 12.",
+      "reveals": [12]
+    },
+    "12": {
+      "kind": "insight",
+      "title": "SUPPLIES FOR THE NIGHT",
+      "story": "\"Splendid! Splendid! This should be right enough to get me through this Hunt. Now, as for your reward, don't think I forgot! It's just... Well, I had to leave my tools escaping one of the beasts out near the old graveyard... I'm sure they're still out there though... Probably.\"",
+      "body": "",
+      "goal": "Complete this Mission by Interacting on the Graveyard space: Reveal card 13.",
+      "reveals": [13]
+    },
+    "13": {
+      "kind": "insight-reward",
+      "title": "OUT ON THE HUNT",
+      "story": "When the Hunt is called, even the common towsfolk take to the streets to partake in the slaying of beasts. Of course, without the proper training, techniques, and tools, many often find themselves slaughtered by the creatures they seek.",
+      "body": "Distribute the Hunter Torch reward and the Flamesprayer firearm among the Hunters.",
+      "goal": null,
+      "reveals": [],
+      "note": "'towsfolk' is printed as-is on the card (sic)."
+    },
+    "14": {
+      "kind": "insight",
+      "title": "EILEEN THE CROW",
+      "story": "\"Oh, a Hunter? What a mess you've been caught up in. And tonight, of all nights... Heh heh. I am Eileen, a fellow Hunter, of sorts... You've seen the madness that has gripped those out this night, haven't you? They cannot be saved, so that leaves just the one option... And the reason why I am here. But you seem to still have your wits about. Why don't you show me just what you can do?\"",
+      "body": "Place {n} +2 Insight tokens on this card. While on the Oedon Chapel tile, Hunters may discard their held Blood Echoes. For each one discarded, remove 1 token from this card.",
+      "goal": "Complete this Mission when this card has no remaining tokens: Reveal card 15.",
+      "reveals": [15]
+    },
+    "15": {
+      "kind": "insight-reward",
+      "title": "PROVEN HUNTER",
+      "story": "\"Quite impressive. Perhaps you have what it takes to survive this Hunt after all... Here, a gift for the proven hunter. ...Good luck out there, heh heh.\"",
+      "body": "Distribute 2 Consumables and the Messenger's Gift reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "16": {
+      "kind": "special",
+      "title": "SPECIAL SETUP",
+      "story": null,
+      "body": "Before creating the tile deck, take The Great Bridge and Tomb of Oedon tiles.\nConnect The Great Bridge to the Central Lamp, then connect the Tomb of Oedon to The Great Bridge.\nSurround the Tomb of Oedon tile with Fog Gates. They cannot be crossed.",
+      "goal": null,
+      "reveals": []
+    },
+    "17": {
+      "kind": "hunt",
+      "title": "ON THE HUNT",
+      "story": "It may very well be that Gascoigne has succumbed to the effects of the Frenzy. If this is true, we cannot allow one of our own to continue this path of wanton slaughter... Unfortunately, it appears the passage leading forward has been barred. Given that The Great Bridge separates Central Yharnam from the Cathedral Ward, perhaps the servants of the Church might hold the key we need...",
+      "body": "When the Grand Cathedral tile is revealed, spawn 1 Church Giant and 1 Church Servant on its {enemy?} space. These Enemies are not removed on {reset}, and do not respawn.",
+      "goal": "Slay these Enemies: Reveal card 18.",
+      "reveals": [18],
+      "uncertain": true,
+      "note": "Dark circular space icon not confidently identifiable as enemy1/2/3 or lamp."
+    },
+    "18": {
+      "kind": "hunt",
+      "title": "ON THE HUNT",
+      "story": "On the corpse of the creatures you find the key you were searching for. With this, you can continue on the trail of Gascoigne... But while verifying your fears about the madness gripping the old Hunter is indeed important, we must also take care to see just how far said madness has spread to the townsfolk as well...",
+      "body": "The Fog Gate on the Tomb of Oedon can be crossed once the Hunters have collected at least 2 Insight this Chapter.",
+      "goal": "End a move on the Tomb of Oedon tile: Reveal card 19.",
+      "reveals": [19]
+    },
+    "19": {
+      "kind": "hunt",
+      "title": "ON THE HUNT",
+      "story": "The stench of death covers the massive graveyard. Bodies, both beasts and human alike, litter the ground. Moving onward, you come across the sight of Father Gascoigne, mindlessly chopping away at a pile of fresh corpses. \"Beasts all over the shop... You'll all be one of them... Sooner or later...\" Suddenly, he lunges forward to attack.",
+      "body": "Reveal card 20.\nSpawn Father Gascoigne on the Tomb of Oedon {enemy?} space. He respawns to that space on {reset}.",
+      "goal": "Complete the Hunt by slaying Father Gascoigne: Reveal card 21.",
+      "reveals": [20, 21],
+      "uncertain": true,
+      "note": "Dark circular space icon not confidently identifiable as enemy1/2/3 or lamp."
+    },
+    "20": {
+      "kind": "special",
+      "title": "TINY MUSIC BOX",
+      "story": null,
+      "body": "The Tiny Music Box reward gains the following effect:\nWhen Gascoigne Attacks: Gascoigne's Attack suffers -1 {fast}.",
+      "goal": null,
+      "reveals": [],
+      "note": "Icon is a single speed arrow, encoded {fast} (i.e. the Attack loses 1 speed arrow)."
+    },
+    "21": {
+      "kind": "insight-reward",
+      "title": "FUELED BY RAGE",
+      "story": "Staggering, with blood splattering from his mouth, Gascoigne falls to a knee. Suddenly, before you can react, a new vigor fills Gascoigne as he withdraws a Blood Vial and injects it into his leg. He rises once more, uttering a frenzied roar.",
+      "body": "Distribute the Caryll Rune: Beast reward and the Hunter Blunderbuss firearm among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "22": {
+      "kind": "insight",
+      "title": "BLOOD MOON'S INFLUENCE",
+      "story": "You are given pause as the red tint that has overtaken the city seems to grow an even deeper crimson. Casting your eyes to the sky, you face the terrible sight of the Blood Moon, seemingly so much larger than it should be... A ringing fills your ears as your head pounds and your vision blurs momentarily. As it subsides, you can almost feel an electricity in the air as the sound of chaos rises through the city. The madness is spreading...",
+      "body": "All Hunters suffer Frenzy.",
+      "goal": "Reveal cards 23 and 24.",
+      "reveals": [23, 24]
+    },
+    "23": {
+      "kind": "special",
+      "title": "FRENZIED MOB",
+      "story": null,
+      "body": "All Hunter Mobs replace their Basic with:\nBASIC: RECKLESS ANGER {medium} {dmg} {dmg} Frenzy",
+      "goal": null,
+      "reveals": [],
+      "note": "Attack bar shows two speed arrows (encoded {medium}) and two damage drops."
+    },
+    "24": {
+      "kind": "insight",
+      "title": "CONTROLLING THE MADNESS",
+      "story": "This madness would easily break those of lesser conviction. But we are Hunters, we are above such influences! While hunting those who have been afflicted, we must take care not to succumb as well. We must steel ourselves against this frenzy!",
+      "body": "After each {reset}, spawn 1 Hunter Mob (if available) on each {enemy?} space, beginning with those closest to Hunters. Place {n} +2 Insight tokens on this card. Each time a Hunter Mob is slain, unless the Hunter is Frenzied, remove 1 token.",
+      "goal": "Complete this Mission when this card has no remaining tokens: Reveal card 25.",
+      "reveals": [25],
+      "uncertain": true,
+      "note": "Dark circular space icon not confidently identifiable as enemy1/2/3 or lamp."
+    },
+    "25": {
+      "kind": "insight-reward",
+      "title": "INNER RESOLVE",
+      "story": "Standing above your fallen foes, you remember the teachings of Ludwig, First Hunter of the Healing Church, who focused his resolve inward to overcome the horrors of the Hunt.",
+      "body": "Distribute 1 Consumable and the Caryll Rune: Guidance reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "26": {
+      "kind": "insight",
+      "title": "MISSING PARENTS",
+      "story": "\"Are you a Hunter? Then, please, will you look for my mum? Daddy never came back from the Hunt, and she went to find him, but now she's gone, too. I'm all alone... and scared. She wears a red jeweled brooch. It's so big and beautiful. You won't miss it. Oh, I mustn't forget. If you find her, give her this music box. It plays one of daddy's favorite songs. And when daddy forgets us, we play it so he remembers. Mum's so silly, running off without it!\"",
+      "body": "Gain the Tiny Music Box reward.",
+      "goal": "Interact on the Graveyard space: Reveal card 27.",
+      "reveals": [27]
+    },
+    "27": {
+      "kind": "insight",
+      "title": "MISSING PARENTS",
+      "story": "Inside the graveyard you come across the corpse of a young Yharnam woman, a large red brooch around her neck. It would appear the girl's mother has become another unfortunate victim of the madness overtaking the city this night. While heavily mutilated, however, the corpse does not appear to bear signs of the Scourge...",
+      "body": "Gain 1 Insight token (Red Jeweled Brooch).",
+      "goal": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 28.",
+      "reveals": [28]
+    },
+    "28": {
+      "kind": "insight",
+      "title": "MISSING PARENTS",
+      "story": "As you near the house, you pull out the brooch. The light of the blood moon catches it, glinting off its center... A Blood Stone Shard, a rare item used to fortify weapons at the workshop. It would be right to return it to the girl, but such a find is rare indeed... From the barred window, the girl speaks: \"Brave Hunter... Did you find my mum...?\"",
+      "body": "Choose 1 to Complete this Mission:",
+      "goal": "Lie to the girl and keep the shard: Reveal card 29.\nTell her the truth: Reveal card 30.",
+      "reveals": [29, 30]
+    },
+    "29": {
+      "kind": "insight-reward",
+      "title": "STILL WAITING",
+      "story": "\"You couldn't find her...? Oh, okay... But isn't there something I can do? Maybe mum and dad are stuck out there, waiting for me to come to them... No. I'll be a good girl and wait for them...\"",
+      "body": "Distribute the Blood Stone Shard reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "30": {
+      "kind": "insight-reward",
+      "title": "LEFT ALONE",
+      "story": "\"Hunter... was it really her?...Mummy... mummy... Don't leave me alone...\" You lay the brooch on the window before slowly departing, the girl's sobs echoing through the night.",
+      "body": "Distribute the Caryll Rune: Eye reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "31": {
+      "kind": "insight",
+      "title": "OEDON CHAPEL",
+      "story": "The beams of the Blood Moon bathe the old Chapel in an eerie light, the scent of beast-warding incense filling your nose. From the shadows, the figure of a Hunter emerges, dressed in Crowfeather garb.",
+      "body": "",
+      "goal": "If you have Proven Hunter: Reveal card 33.\nOtherwise: Reveal card 32.",
+      "reveals": [33, 32]
+    },
+    "32": {
+      "kind": "insight",
+      "title": "EILEEN THE CROW",
+      "story": "\"Oh, a Hunter? What a mess you've been caught up in. And tonight, of all nights... Heh heh. I am Eileen, a fellow Hunter, of sorts... You've seen the madness that has gripped those out this night, haven't you? They cannot be saved, so that leaves just the one option... And the reason why I am here. But you seem to still have your wits about. Why don't you show me just what you can do?\"",
+      "body": "Place {n} +2 Insight tokens on this card. While on the Oedon Chapel tile, Hunters may discard their held Blood Echoes. For each one discarded, remove 1 token from this card.",
+      "goal": "Complete this Mission when this card has no remaining tokens: Reveal cards 15 and 33.",
+      "reveals": [15, 33]
+    },
+    "33": {
+      "kind": "insight",
+      "title": "HUNTER OF HUNTERS",
+      "story": "\"Well well, the Proven Hunter... Shouldn't you be out there, well, hunting? Heh, no matter... But before you go, a friendly warning to you: do not go near the old graveyard. Henryk, an old Hunter, has gone mad... And he's my mark.\"",
+      "body": "",
+      "goal": "End a move on the Graveyard tile: Reveal card 34.",
+      "reveals": [34]
+    },
+    "34": {
+      "kind": "insight",
+      "title": "HUNTER OF HUNTERS",
+      "story": "You enter the graveyard to the sounds of clashing weapons. Moving forth, you see Eileen locked in combat with another Hunter.",
+      "body": "Reveal card 35.\nSurround the Graveyard tile with Fog Gates. Spawn Old Hunter Henryk and Eileen the Crow (represented by their tokens) on its {enemy?} space.\nHenryk respawns to that space on {reset}.\nEileen is not hostile towards the Hunters.",
+      "goal": "Complete this Mission by slaying Henryk: Reveal card 36. If Eileen was slain before Henryk, reveal card 37 instead.",
+      "reveals": [35, 36, 37],
+      "uncertain": true,
+      "note": "Dark circular space icon (claw-like silhouette) not confidently identifiable as enemy1/2/3."
+    },
+    "35": {
+      "kind": "special",
+      "title": "AIDING THE CROW",
+      "story": null,
+      "body": "Place 3 Insight tokens on this card.\nAt the end of each Hunter Turn, flip an Enemy Action card. If Ability or Special, remove 1 Insight token from this card. If all tokens are removed, Eileen is slain. Remove her token from the map and discard this card.",
+      "goal": null,
+      "reveals": []
+    },
+    "36": {
+      "kind": "insight-reward",
+      "title": "EILEEN'S APPROVAL",
+      "story": "As Henryk falls to the ground, Eileen stands beside you. \"...I told you Henryk was my mark... But you have my thanks... Though, I would advise you: watch yourself this night, for it seems the madness is strong. Leave the hunting of Hunters to me.\"",
+      "body": "Distribute the Caryll Rune: Blood Rapture reward and the Rosmarinus firearm among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "37": {
+      "kind": "insight-reward",
+      "title": "PREY SLAUGHTERED: OLD HUNTER HENRYK",
+      "story": "Henryk falls to the ground, motionless. You rush to Eileen's side. She still lives, though her breaths are staggered and forced. \"This madness... It will eventually take us all... Heh heh... I'll be fine...Go. There is still more hunting to be done...\"",
+      "body": "Distribute the Beast Roar reward and the Rosmarinus firearm among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "38": {
+      "kind": "special",
+      "title": "SPECIAL SETUP",
+      "story": null,
+      "body": "Before creating the tile deck, take the The Great Bridge and Tomb of Oedon tiles.\nConnect The Great Bridge to the Central Lamp, then connect the Tomb of Oedon to The Great Bridge.\nSpawn Father Gascoigne (Phase 2) on the Tomb of Oedon {enemy?} space.",
+      "goal": null,
+      "reveals": [],
+      "uncertain": true,
+      "note": "'take the The Great Bridge' is printed as-is on the card (sic). Dark circular space icon not confidently identifiable as enemy1/2/3 or lamp."
+    },
+    "39": {
+      "kind": "hunt",
+      "title": "GROWING MADNESS",
+      "story": "Gascoigne rears up, convulsing as vigor flows through him. \"Beasts... Cannot... Slay me.\" You move to attack, but your blows seem to have little impact. Perhaps it is the influence of the Blood Moon, or some deeper force pushing him forward, but for now you decide to fall back and regroup before launching your attack. Gascoigne is still a veteran Hunter and should not be underestimated...",
+      "body": "Reveal card 40.",
+      "goal": "Collect at least 2 Insight this Chapter, or when the 3rd {reset} space of the Hunt Track is reached (mark this space with an Insight token): Reveal card 41.",
+      "reveals": [40, 41]
+    },
+    "40": {
+      "kind": "special",
+      "title": "BOUNDLESS FRENZY",
+      "story": null,
+      "body": "Gascoigne has 6 HP, but cannot be slain. If Gascoigne would be slain, instead, mark him with an Insight token. He no longer Activates or Pursues. He is not removed on {reset}, but Heals all {dmg} and removes the token. At the end of each round, if Gascoigne is not in a space with a Hunter, he moves 3 spaces towards the nearest Hunter with the lowest HP and Attacks. Otherwise, he Attacks the Hunter in his space with the lowest HP.",
+      "goal": null,
+      "reveals": []
+    },
+    "41": {
+      "kind": "hunt",
+      "title": "GROWING MADNESS",
+      "story": "Gascoigne staggers back, casting his weapons aside as he grips his head. Suddenly, his form erupts into that of a monstrous creature. No more than one of the beasts now... Let us end this. If we cannot stop this madness ourselves, we can at least delay its spread this awful night.",
+      "body": "Replace Father Gascoigne with Father Gascoigne Transformed.\nHeal all {dmg} from him and reset him to Phase 1. Discard Boundless Frenzy and the Tiny Music Box if in play.",
+      "goal": "Complete the Hunt by slaying Gascoigne: Reveal card 42.",
+      "reveals": [42]
+    },
+    "42": {
+      "kind": "other",
+      "title": "HUNT COMPLETED",
+      "story": "Gascoigne lets out a bloodied roar before falling to the ground... A shame to see this fate befall one of our own. Looking upward, you see the Blood Moon has begun to retreat from the sky, making way for the first lights of the dawn. Even now, you feel its terrible influence subsiding. With the rising of the sun, you know this Hunt will soon end... But you feel no victory here... While you have quelled a large number of those affected, preventing the spread of this frenzy, you cannot help but wonder what the rising of the next Blood Moon will bring...",
+      "body": "",
+      "goal": null,
+      "reveals": []
+    },
+    "43": {
+      "kind": "insight",
+      "title": "THE BARRED WINDOW",
+      "story": null,
+      "body": "",
+      "goal": "If you have Left Alone: Reveal card 47.\nIf you have Still Waiting: Reveal card 44.\nOtherwise: Reveal card 26.",
+      "reveals": [47, 44, 26]
+    },
+    "44": {
+      "kind": "insight",
+      "title": "STILL WAITING",
+      "story": "You knock on the barred window where previously you had encountered that young girl. A new voice answers you, sounding older than the previous one: \"A Hunter...? You haven't by chance... seen my little sister, have you? I told her to look after the house, but she's run off somewhere. She's still quite small and wears a big, white ribbon. Have you seen her out there anywhere?\"",
+      "body": "Spawn a Huntsman's Minion 4 spaces away from the Barred Window space (revealing tiles if needed) and mark it with an Insight token. It is not removed on {reset}, but Heals all {dmg}.",
+      "goal": "Slay this Huntsman's Minion: Reveal card 45.",
+      "reveals": [45]
+    },
+    "45": {
+      "kind": "insight",
+      "title": "STILL WAITING",
+      "story": "As the gigantic creature falls, you notice something off. Caught around its grotesque hands seems to be the tattered remains of a large, white ribbon, now stained a crimson red...",
+      "body": "Gain 1 Insight token (Bloodied White Ribbon).",
+      "goal": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 46.",
+      "reveals": [46]
+    },
+    "46": {
+      "kind": "insight-reward",
+      "title": "SOMETHING TO REMEMBER",
+      "story": "\"How... How did this happen... Why would she ever go outside...? At least... At least I'll have something to remember her by...\"",
+      "body": "Distribute the Caryll Rune: Communion reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "47": {
+      "kind": "insight",
+      "title": "LEFT ALONE",
+      "story": "In the distance, the shrill cry of a young child fills the night air...",
+      "body": "Place 1 Survivor token 4 spaces away from the Barred Window space (revealing tiles if needed).\nOn {reset}, if no Hunter is on this space, discard this token and this Mission (it can't be completed).",
+      "goal": "End a move on the space with the Survivor token, and have no Enemies Pursue into that space: Reveal card 48.",
+      "reveals": [48]
+    },
+    "48": {
+      "kind": "insight",
+      "title": "LEFT ALONE",
+      "story": "\"I... I didn't know what to do, Hunter... I have nowhere to go. Please... Help me.\" The girl breaks down in sobs. We cannot merely leave the child alone. We must get her someplace safe, at least for this night...",
+      "body": "Do not remove the Survivor token from the map. Any Hunter may pick up the token when they move out of its space. The token is moved to the Barred Window space if the Hunter teleports or goes to the Dream.",
+      "goal": "Complete this Mission by ending a move on the Grand Cathedral tile with the token: Reveal card 49.",
+      "reveals": [49]
+    },
+    "49": {
+      "kind": "insight-reward",
+      "title": "LED TO SAFETY",
+      "story": "Central Yharnam has been overtaken by madness this night, and it would appear even the usual vestiges of refuge cannot be trusted... This is the best we can provide for the time being, though whether the girl will survive... We can only hope.",
+      "body": "Distribute 1 Consumable and the Caryll Rune: Oedon Writhe reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "50": {
+      "kind": "insight",
+      "title": "GRAND CATHEDRAL",
+      "story": null,
+      "body": "",
+      "goal": "If you have Eileen's Approval: Reveal card 53.\nOtherwise: Reveal card 51.",
+      "reveals": [53, 51]
+    },
+    "51": {
+      "kind": "insight",
+      "title": "HUNTER OF HUNTERS",
+      "story": "As you enter the Grand Cathedral, you come across the sight of a Hunter, garbed in Crowfeather attire. She turns to you, her breathing haggard as she lets out a low laugh. \"Few can resist the intoxication of the Hunt. Look at you, just the same as all the rest. The Hunters must die. Your punishment is death! Death to Hunters!\" She cackles as she draws her blades. \"The nightmare must end!\"",
+      "body": "Surround the Grand Cathedral tile with Fog Gates. Spawn Eileen the Crow (represented by her token) on its {enemy?} space. She respawns to that space on {reset}.",
+      "goal": "Complete this Mission by slaying Eileen: Reveal card 52.",
+      "reveals": [52],
+      "uncertain": true,
+      "note": "Dark circular space icon not confidently identifiable as enemy1/2/3 or lamp."
+    },
+    "52": {
+      "kind": "insight-reward",
+      "title": "SLAYING THE SLAYER",
+      "story": "As she falls to the ground, blood pooling around her, she reaches toward you, fighting till the very end. \"All... Hunters...Must... Die...\" she cackles before falling silent.",
+      "body": "Distribute the Old Hunter Bone and the Caryll Rune: Clawmark reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "53": {
+      "kind": "insight",
+      "title": "HUNTER OF HUNTERS",
+      "story": "You come across the form of Eileen, slumped against the wall of the Cathedral. \"Oh, you... I'm afraid I've made a bit of a blunder... But that thing still lies in wait. Turn back. This is my score... to settle... I'm just... going to have... a short rest...\" she speaks before passing out. She seems stable. Cautiously, you enter the Cathedral.",
+      "body": "Surround the Grand Cathedral tile with Fog Gates. Spawn The Bloody Crow of Cainhurst (represented by their token) on its {enemy?} space. They respawn to that space on {reset}.",
+      "goal": "Complete this Mission by slaying the Bloody Crow of Cainhurst: Reveal card 54.",
+      "reveals": [54],
+      "uncertain": true,
+      "note": "Dark circular space icon not confidently identifiable as enemy1/2/3 or lamp."
+    },
+    "54": {
+      "kind": "insight-reward",
+      "title": "HUNTER OF HUNTERS",
+      "story": "Eileen lies against the wall, beaten but alive. \"Don't you ever listen to your elders? No matter, you did save my life... Hmm, I know... Here, for you. This too is Hunters' work, but bears no honor... A burden you may choose to carry.\"",
+      "body": "Distribute the Old Hunter Bone and the Caryll Rune: Hunter rewards among the Hunters.",
+      "goal": null,
+      "reveals": []
+    },
+    "55": {
+      "kind": "insight",
+      "title": "OCCUPIED HOUSE",
+      "story": null,
+      "body": "",
+      "goal": "If you have Out on the Hunt: Reveal card 56.\nOtherwise: Reveal card 11.",
+      "reveals": [56, 11]
+    },
+    "56": {
+      "kind": "insight",
+      "title": "VICTIM OF THE MADNESS",
+      "story": "You knock on the window, checking in on the civilian who aided you earlier, before the true madness of the night had begun. From inside, you hear stirring. Silence then falls before the door to the house is violently cast open. From inside, a beast comes charging toward you.",
+      "body": "Reveal card 57.\nSpawn 1 Scourge Beast on the Occupied House space. It respawns to that space on {reset}.",
+      "goal": "Complete this Mission by slaying this Scourge Beast: Reveal card 58.",
+      "reveals": [57, 58]
+    },
+    "57": {
+      "kind": "special",
+      "title": "FRENZIED",
+      "story": null,
+      "body": "Place 2 Insight tokens on this card. If 3+ Hunters, place 1 additional token. When the Scourge Beast would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}.\nReplace its Basic with:\nBASIC: FRENZIED SWIPES {slow} {dmg} {dmg} Frenzy",
+      "goal": null,
+      "reveals": [],
+      "note": "Attack bar shows three speed arrows (encoded {slow}) and two damage drops."
+    },
+    "58": {
+      "kind": "insight-reward",
+      "title": "THE SPREADING FRENZY",
+      "story": "Inspecting the house, your fears are confirmed: he was not slain by this monster, but succumbed to the scourge. The transformation is usually much slower, however... Did the frenzy quicken its spread? Of this, you wish not to think...",
+      "body": "Distribute 2 Consumables and the Tiny Tonitrus reward among the Hunters.",
+      "goal": null,
+      "reveals": []
+    }
+  }
+}

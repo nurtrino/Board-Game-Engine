@@ -1,0 +1,547 @@
+{
+ "cards": {
+  "1": {
+   "kind": "hunt",
+   "title": "Source of the Scourge",
+   "story": "We must take to the streets of Central Yharnam. The number of Scourge Beasts grows, and we must leave no area unchecked and uncleansed. We should also gather what information we can from the surviving townsfolk. Perhaps they can grant us insight into the cause of this sudden infestation...",
+   "body": "",
+   "goal": "End a move on the Central Lamp tile, after you have collected at least 2 Insight: Reveal card 2.",
+   "reveals": [2]
+  },
+  "2": {
+   "kind": "hunt",
+   "title": "Source of the Scourge",
+   "story": "Your senses flare at the sound of rapid-moving claws. You turn just in time as a Scourge Beast, much larger than the rest, leaps at you, its eyes glowing a haunting blue.",
+   "body": "Reveal card 3. Surround the Central Lamp tile with Fog Gates. Spawn 1 Scourge Beast on its {enemy1} space. It respawns to this space on {reset}.",
+   "goal": "Complete the Hunt by slaying this Scourge Beast: Reveal card 4.",
+   "reveals": [3, 4],
+   "uncertain": true,
+   "note": "Enemy icon encoding: {enemy1}=dark navy medallion, {enemy2}=silver-gray medallion, {enemy3}=dark brown medallion; numbering assigned by color, official icon numbering unverified. Text itself is certain."
+  },
+  "3": {
+   "kind": "special",
+   "title": "Pack Alpha",
+   "story": null,
+   "body": "Place {n} Insight tokens on this card. When the Scourge Beast would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}. Replace its Ability with: ABILITY: VICIOUS - Scourge Beast makes 1 Quick Swipe Attack. It cannot be Staggered, deals +1 {dmg}, and gains Stagger and Stun.",
+   "goal": null,
+   "reveals": []
+  },
+  "4": {
+   "kind": "insight-reward",
+   "title": "Prey Slaughtered: Scourge Alpha",
+   "story": "The beast lets out one final roar before slumping to the ground. In the distance, you spot a group of the creatures, seemingly watching the fight. Readying yourself for attack, you instead find them turning and bounding off, deeper into the district...",
+   "body": "Distribute the Blood Stone Shard and the Caryll Rune: Moon rewards among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "5": {
+   "kind": "insight",
+   "title": "On the Hunt",
+   "story": "Entering, you find a large mob of townsfolk, all gathered around a blazing pyre constructed in the center of the courtyard. Upon it lie the bodies of numerous Scourge Beasts. Suddenly, from behind, you hear shouting. \"More infected!\" as the mob begins to surround you.",
+   "body": "Reveal card 6. Surround the Courtyard Lamp tile with Fog Gates. Spawn 1 Hunter Mob on its {enemy1} space. It respawns to this space on {reset}.",
+   "goal": "Complete this Mission by slaying this Hunter Mob: Reveal card 7.",
+   "reveals": [6, 7],
+   "uncertain": true,
+   "note": "Enemy icon: dark navy medallion, encoded {enemy1}; numbering by color convention, unverified. Text itself is certain."
+  },
+  "6": {
+   "kind": "special",
+   "title": "Horde",
+   "story": null,
+   "body": "Place 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}.",
+   "goal": null,
+   "reveals": []
+  },
+  "7": {
+   "kind": "insight-reward",
+   "title": "On the Hunt",
+   "story": "Driven to frenzy by the early stages of the infection, the townsfolk are compelled to partake in the Hunt, believing that by eradicating the beasts the plague will be quelled as well... From their remains, you gather what useful supplies you can find.",
+   "body": "Distribute the Hand Lantern reward and the Ludwig's Rifle firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "8": {
+   "kind": "insight",
+   "title": "A Safe Haven",
+   "story": "You knock on the door. From inside, a frail and elderly voice addresses you. \"A Hunter? About time you showed up. It ain't safe out here for an old woman! Reckon you can take me someplace to wait out the night?\"",
+   "body": "Place 1 Survivor token on the Occupied House space. Any Hunter may pick up the token when they move out of that space. The token is returned to the Occupied House space if the Hunter teleports or goes to the Dream.",
+   "goal": "End a move on the Oedon Chapel tile with the token: Reveal card 9.",
+   "reveals": [9]
+  },
+  "9": {
+   "kind": "insight",
+   "title": "A Safe Haven",
+   "story": "The smell of beast-warding incense fills your nose as you enter the old chapel. The old woman thanks you for your kindness before taking refuge with another small band of townsfolk. Suddenly, the chapel's magnificent stained glass window shatters as a Scourge Beast crashes through.",
+   "body": "Reveal card 10. Surround the Oedon Chapel tile with Fog Gates. Spawn 1 Scourge Beast on its {enemy1} space. It respawns to that space on {reset}. It is immune to the effect of Oedon Chapel.",
+   "goal": "Complete this Mission by slaying this Scourge Beast: Reveal card 11.",
+   "reveals": [10, 11],
+   "uncertain": true,
+   "note": "Enemy icon: dark navy medallion, encoded {enemy1}; numbering by color convention, unverified. Text itself is certain."
+  },
+  "10": {
+   "kind": "special",
+   "title": "Ferocious",
+   "story": null,
+   "body": "Place 1 Insight token on this card. If 3+ Hunters, place 1 additional token. When the Scourge Beast would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}. Replace its Special with: SPECIAL: BLOOD FRENZY - {fast} {dmg}{dmg} - Deals +2 {dmg} if Scourge Beast has {dmg} on it. If Scourge Beast is slain, Hunter must Dodge ({slow}) or suffer 3 {dmg}.",
+   "goal": null,
+   "reveals": [],
+   "uncertain": true,
+   "note": "Attack stat line shows 3 arrow icons and 2 blood drops, encoded {fast} {dmg}{dmg}; the Dodge parenthetical shows a single arrowhead icon, encoded {slow}. Arrow speed mapping (3 arrows=fast, 1 arrow=slow) is assumed, not verified."
+  },
+  "11": {
+   "kind": "insight-reward",
+   "title": "Surviving the Night",
+   "story": "The warding incense usually repel such beasts during the Hunt. For them to not only attack the Chapel, but also appear unaffected by the incense... There is something greater than mere instinct driving them this night...",
+   "body": "Distribute 1 Consumable and the Caryll Rune: Clawmark reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "12": {
+   "kind": "insight",
+   "title": "Rescue",
+   "story": "As you enter the ransacked house, you catch sight of a young girl hiding in the corner from the monsters stalking her. Once these creatures are dispatched, she can be rescued...",
+   "body": "Place 1 Survivor token on the Ransacked House space.",
+   "goal": "Interact with the Survivor token: Reveal card 13.",
+   "reveals": [13]
+  },
+  "13": {
+   "kind": "insight",
+   "title": "Rescue",
+   "story": "You approach the girl cautiously. Suddenly, she bursts past you, darting out into the street, her eyes wide with fear.",
+   "body": "Move the Survivor token 4 spaces away. She may reveal tiles during this move. At the end of each turn, she moves 1 space away from the nearest Hunter, but no longer reveals tiles.",
+   "goal": "Complete this Mission by ending a move on the space with the Survivor token, and have no Enemies Pursue into that space: Reveal card 14.",
+   "reveals": [14],
+   "note": "Printed goal reads 'Reveal card14.' with the space missing between 'card' and '14'."
+  },
+  "14": {
+   "kind": "insight",
+   "title": "Rescue",
+   "story": "You grip the girl's arm, keeping her from further flight. \"I'm not infected! Please! Let me go!\" she pleads, tugging at your grip. Now that she is close, the girl does indeed reek of the beast stench, though whether this is from the plague, or the blood covering her, is undeterminable...",
+   "body": "Choose 1 to Complete this Mission:",
+   "goal": "Strike the girl down: Reveal card 15. Spare her and order her to flee: Reveal card 16.",
+   "reveals": [15, 16]
+  },
+  "15": {
+   "kind": "insight-reward",
+   "title": "Merciless Conviction",
+   "story": "Once claimed by the Beast Plague, there is no cure, and no mercy may be granted when it comes to the infected. Had you not taken the action you did, who knows what threat she may have potentially become? We cannot take chances.",
+   "body": "The Hunter that Completed this Mission gains 1 Blood Echo and the Caryll Rune: Blood Rapture reward.",
+   "goal": null,
+   "reveals": []
+  },
+  "16": {
+   "kind": "insight-reward",
+   "title": "Moment of Mercy",
+   "story": "You lock eyes with the young girl and glimpse her humanity and fear. \"Oedon Chapel\" is all you say before releasing your grip. Between sobs, she nods before darting off into the night.",
+   "body": "The Hunter that Completed this Mission gains 1 Consumable and the Caryll Rune: Eye reward.",
+   "goal": null,
+   "reveals": []
+  },
+  "17": {
+   "kind": "special",
+   "title": "Special Setup",
+   "story": null,
+   "body": "Before creating the tile deck, take the Graveyard, Tomb of Oedon, and 1 random, unused tile. Redraw the random tile if it does not have at least 2 exits. Connect the Graveyard to the Central Lamp. Connect the random tile to the opposite side of the Central Lamp, then connect the Tomb of Oedon to the random tile.",
+   "goal": null,
+   "reveals": []
+  },
+  "18": {
+   "kind": "hunt",
+   "title": "Source of the Scourge",
+   "story": "We have taken the first steps towards cleansing Central Yharnam of the Scourge infestation, but our efforts have not gone unnoticed. The Beasts have fled deeper into the district, and some seek to avoid us. Perhaps some bait can be used to lure them out...",
+   "body": "During their turn, Hunters may discard 1 Consumable to spawn 1 Scourge Beast in their space. Each time you slay a Scourge Beast, gain 1 Corpse token. Hunters may discard held tokens while on the Graveyard tile, placing them on this card.",
+   "goal": "When this card has {n}+1 Corpse tokens on it: Reveal card 19.",
+   "reveals": [19]
+  },
+  "19": {
+   "kind": "hunt",
+   "title": "Source of the Scourge",
+   "story": "Now that we have suitable bait, setting a trap for these instinctive beasts will be easy enough. As we prepare, we should also investigate the havens across the district, where the common folk gather during nights of the Hunt, to see just how far the infection has spread through Central Yharnam...",
+   "body": "",
+   "goal": "When the Hunters have collected at least 2 Insight this Chapter: Reveal card 20.",
+   "reveals": [20]
+  },
+  "20": {
+   "kind": "hunt",
+   "title": "Source of the Scourge",
+   "story": "From deep in the district, a piercing screech rends the night air. This is not the familiar roar of a Scourge Beast. With a loud crash, a monstrous figure lands upon our corpse-laden trap.",
+   "body": "Surround the Graveyard tile with Fog Gates. Spawn the Cleric Beast on its {enemy3} space. It respawns to this space on {reset}.",
+   "goal": "When the Cleric Beast enters Phase 2: Reveal cards 21 and 22.",
+   "reveals": [21, 22],
+   "uncertain": true,
+   "note": "Enemy icon: dark brown medallion, encoded {enemy3}; numbering by color convention, unverified. Text itself is certain. This card is printed on the birth-of-madness sheet, cell 0."
+  },
+  "21": {
+   "kind": "hunt",
+   "title": "Source of the Scourge",
+   "story": "The Beast has become enraged, lashing out with deadly force. If we continue this fight here, the damage to the city would be extreme-something we cannot afford. We must lure this creature someplace more isolated.",
+   "body": "Remove the Fog Gates from the Graveyard tile. Remove all Insight tokens from the Cleric Beast.",
+   "goal": "Complete the Hunt when the Cleric Beast enters the Tomb of Oedon tile: Reveal card 23.",
+   "reveals": [23]
+  },
+  "22": {
+   "kind": "special",
+   "title": "Unstoppable Fury",
+   "story": null,
+   "body": "The Cleric Beast cannot be damaged. The Cleric Beast respawns to the Graveyard {enemy3} space on {reset} instead of the usual Enemy. At the end of each round, the Cleric Beast makes 1 special bonus Activation, moving toward and Attacking the nearest Hunter with the lowest HP.",
+   "goal": null,
+   "reveals": [],
+   "uncertain": true,
+   "note": "Enemy icon: brown/tan medallion, encoded {enemy3}; numbering by color convention, unverified. Text itself is certain."
+  },
+  "23": {
+   "kind": "insight-reward",
+   "title": "Trapping the Beast",
+   "story": "We have successfully lured the monstrous creature to the Tomb of Oedon, far enough from the streets of the city so any major damage can be avoided. Hopefully, the beast's attention can be kept here for the time being...",
+   "body": "Distribute 1 Blood Echo and the Beast Roar reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "24": {
+   "kind": "insight",
+   "title": "Iosefka's Research",
+   "story": "A soft voice addresses you: \"A Hunter? I'm terribly sorry but... You may not enter. I am Iosefka. This is my clinic. And I cannot allow any chance of infection within! But... I might be able to aid you. I am working on a cure for this terrible plague, but I require blood samples from those freshly infected... Will you assist me?\"",
+   "body": "",
+   "goal": "Slay a Hunter Mob or Huntsman's Minion while it is on the Iosefka's Clinic tile: Reveal card 25.",
+   "reveals": [25]
+  },
+  "25": {
+   "kind": "insight",
+   "title": "Iosefka's Research",
+   "story": "You knock on the heavy wooden door. After a moment, you hear Iosefka. \"You have brought me samples? Immensely useful... Perhaps you can be of further use. I require the still-warm blood of one of those beasts... Lure one here, strike it down, and I'll handle the rest...\" As you leave, you can't help but feel an underlying ruthlessness has replaced the compassion in her tone.",
+   "body": "Reveal card 27.",
+   "goal": "Complete this Mission by slaying a Scourge Beast while it is on the Iosefka's Clinic tile: Reveal card 26.",
+   "reveals": [27, 26]
+  },
+  "26": {
+   "kind": "insight-reward",
+   "title": "Iosefka's Research",
+   "story": "Iosefka has researched the effects of the Beast Plague, invaluable information that we can put to use. More so, she has synthesized her own form of refined healing blood. She could prove to be quite useful in the Hunts to come...",
+   "body": "Distribute 1 Consumable and the Iosefka's Blood Vial reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "27": {
+   "kind": "insight",
+   "title": "Shelter at Iosefka's Clinic",
+   "story": "\"Hunter, I would ask one other task of you. Should you find any survivors out there, send them here, and I swear on my Hippocratic oath I will protect them, perhaps even cure them... And reward you for your efforts, of course.\"",
+   "body": "Hunters also gain 1 Survivor token when they pick up Consumables from {consumable} spaces. These tokens are lost if the Hunter teleports or goes to the Dream. Hunters ending a move on the Iosefka's Clinic tile place their held tokens on this card.",
+   "goal": "Complete this Mission when {n}+1 tokens have been placed on this card: Reveal card 28.",
+   "reveals": [28],
+   "note": "Printed goal reads 'tokenshave' with the space missing between 'tokens' and 'have'."
+  },
+  "28": {
+   "kind": "insight-reward",
+   "title": "Safe Refuge: Iosefka's Clinic",
+   "story": "\"They're safe with me now. And their treatment is going well. Stabilized... for the most part... Fascinating, really.... Here you are, as promised.\"",
+   "body": "Distribute the Messenger's Gift reward among the Hunters.",
+   "goal": "The Shelter at Oedon Chapel Insight Mission may no longer be completed.",
+   "reveals": []
+  },
+  "29": {
+   "kind": "insight",
+   "title": "Oedon Chapel",
+   "story": "As you approach the old Chapel, the smell of warding incense fills your nose. You cautiously press on the large wooden doors.",
+   "body": "",
+   "goal": "If you have Moment of Mercy: Reveal card 30. Otherwise: Reveal card 33.",
+   "reveals": [30, 33]
+  },
+  "30": {
+   "kind": "insight",
+   "title": "Massacre at Oedon Chapel",
+   "story": "The interior of the Chapel lies covered with blood. Corpses litter the ground. At the center, a figure lies hunched, feeding upon the remains. As it rises and turns to face you, you see it is garbed in the tattered clothes of the girl you chose to spare.",
+   "body": "Reveal card 31. Surround the Oedon Chapel tile with Fog Gates. Spawn 1 Female Beast Patient on the Oedon Chapel {enemy1} space. It respawns to that space on {reset}. It is immune to the effect of Oedon Chapel.",
+   "goal": "Complete this Mission by slaying this Beast Patient: Reveal card 32.",
+   "reveals": [31, 32],
+   "uncertain": true,
+   "note": "Enemy icon: dark navy medallion, encoded {enemy1}; numbering by color convention, unverified. Text itself is certain."
+  },
+  "31": {
+   "kind": "special",
+   "title": "Enraged",
+   "story": null,
+   "body": "Place 2 Insight tokens on this card. If 3+ Hunters, place 1 additional token. When the Beast Patient would be slain, instead, remove 1 token and Heal all {dmg} from it. All tokens are returned on {reset}. Replace its Special with: SPECIAL: RAVAGE - {fast} {dmg}{dmg}{dmg} - Stun. If Beast Patient is slain, Hunter must Dodge ({slow}) or suffer 3 {dmg}.",
+   "goal": null,
+   "reveals": [],
+   "uncertain": true,
+   "note": "Attack stat line shows 3 arrow icons and 3 blood drops, encoded {fast} {dmg}{dmg}{dmg}; the Dodge parenthetical shows a single arrowhead icon, encoded {slow}. Arrow speed mapping (3 arrows=fast, 1 arrow=slow) is assumed, not verified."
+  },
+  "32": {
+   "kind": "insight-reward",
+   "title": "Price of Weakness",
+   "story": "We must take this as a lesson: Even the slightest hesitation in our duties can lead to disaster. Mercy is not an option we can afford on the Hunt.",
+   "body": "Distribute 1 Consumable and the Caryll Rune: Formless Oedon reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "33": {
+   "kind": "insight",
+   "title": "Shelter at Oedon Chapel",
+   "story": "From the darkened corner of the Chapel, a hunched and robed figure addresses you: \"Ahh, a Hunter are ya? Good, good. I've been waiting for one of your ilk... If you spot anyone with their wits about 'em... Bring 'em to this 'ere Oedon Chapel. They'll be safe here.\"",
+   "body": "Hunters also gain 1 Survivor token when they pick up Consumables from {consumable} spaces. These tokens are lost if the Hunter teleports or goes to the Dream. Hunters ending a move on the Oedon Chapel tile place their held tokens on this card.",
+   "goal": "Complete this Mission when {n}+1 tokens have been placed on this card: Reveal card 34.",
+   "reveals": [34]
+  },
+  "34": {
+   "kind": "insight-reward",
+   "title": "Safe Refuge: Oedon Chapel",
+   "story": "Oedon Chapel, with its warding incense, offers protection to all during these nights of the Hunt.",
+   "body": "Distribute the Caryll Rune: Oedon Writhe reward among the Hunters.",
+   "goal": "The Shelter at Iosefka's Clinic Insight Mission may no longer be completed.",
+   "reveals": []
+  },
+  "35": {
+   "kind": "insight",
+   "title": "Last Minute Rescue",
+   "story": "As you enter the massive bridge, you hear the familiar gunshot of a Hunter's firearm. Rushing forth, you come across the sight of a Hunter slumped against a wall, firearm raised as a towering figure approaches.",
+   "body": "Reveal card 36. Surround The Great Bridge tile with Fog Gates. Spawn 1 Huntsman's Minion on the {enemy2} space instead of the usual Enemy. It respawns to that space on {reset}.",
+   "goal": "Slay this Huntsman's Minion: Reveal card 37.",
+   "reveals": [36, 37],
+   "uncertain": true,
+   "note": "Enemy icon: silver-gray medallion, encoded {enemy2}; numbering by color convention, unverified. Text itself is certain."
+  },
+  "36": {
+   "kind": "special",
+   "title": "Indomitable",
+   "story": null,
+   "body": "Place 1 Insight token on this card. When the Huntsman's Minion would be slain, instead, remove the token and Heal all {dmg} from it. Token is returned on {reset}. Replace its Special with: SPECIAL: IMMUNE TO PAIN - {slow} {dmg}{dmg}{dmg}{dmg} - Block 2 {dmg} from Hunter's Attack. Cannot be Staggered.",
+   "goal": null,
+   "reveals": [],
+   "uncertain": true,
+   "note": "Attack stat line shows 1 arrow icon and 4 blood drops, encoded {slow} {dmg}{dmg}{dmg}{dmg}. Arrow speed mapping (1 arrow=slow) is assumed, not verified."
+  },
+  "37": {
+   "kind": "insight",
+   "title": "Last Minute Rescue",
+   "story": "Checking over the Hunter, he still lives-but only barely. He is not a Hunter of the Dream, however. If he is to survive, we must get him someplace safe.",
+   "body": "Place 1 Survivor token on The Great Bridge space. Any Hunter may pick up the token when they move out of that space. It respawns to The Great Bridge {enemy2} if the Hunter teleports or goes to the Dream. Complete this Mission when:",
+   "goal": "Hunter ends a move on the Iosefka's Clinic tile with the token: Reveal card 38. Hunter ends a move on the Oedon Chapel tile with the token: Reveal card 39.",
+   "reveals": [38, 39],
+   "uncertain": true,
+   "note": "Icon after 'The Great Bridge' is the silver-gray medallion, encoded {enemy2}; numbering by color convention, unverified. Text itself is certain."
+  },
+  "38": {
+   "kind": "insight-reward",
+   "title": "Surviving the Hunt",
+   "story": "As you approach the clinic, Iosefka instructs you to lay the wounded Hunter near the door, then leave. She will handle it from here. Before departing, the weakened Hunter reaches for you, motioning for you to take his equipment.",
+   "body": "Distribute the Old Hunter's Bone reward and the Repeating Pistol firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "39": {
+   "kind": "insight-reward",
+   "title": "Ominous Warnings",
+   "story": "As you enter the old chapel, the Hunter comes to. He stands, although weakly. \"T-Thanks... Looks like my hunt has ended for now... But be warned, I believe there to be some greater threat out this night. Something greater drives these beasts forward, though what, I do not know...\"",
+   "body": "Distribute the Old Hunter's Bone reward and the Repeating Pistol firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "40": {
+   "kind": "hunt",
+   "title": "Source of the Scourge",
+   "story": "From deep within the Tomb of Oedon, the Cleric Beast emits a thundering roar. From all around Central Yharnam, howls of Scourge Beasts are heard in turn. It would appear this creature has taken up the role of \"pack leader\", summoning the beasts to it. As long as this creature lives, more Scourge Beasts will be drawn to it... The goal is clear.",
+   "body": "Reveal card 41. Surround the Tomb of Oedon tile with Fog Gates. Spawn the Cleric Beast on its {enemy1} space.",
+   "goal": "Complete the Hunt by slaying the Cleric Beast: Reveal card 44.",
+   "reveals": [41, 44],
+   "uncertain": true,
+   "note": "Enemy icon: dark navy medallion, encoded {enemy1}; numbering by color convention, unverified. Text itself is certain."
+  },
+  "41": {
+   "kind": "special",
+   "title": "Contained",
+   "story": "The Cleric Beast has been lured to the Tomb of Oedon. While it is distracted, let us use this time to complete the rest of the Hunt.",
+   "body": "Hunters may not enter the Tomb of Oedon. When the Hunters have collected at least 2 Insight this Chapter, or the 2nd {reset} space of the Hunt Track is reached (mark this space with an Insight token): Reveal cards 42 and 43.",
+   "goal": null,
+   "reveals": [42, 43]
+  },
+  "42": {
+   "kind": "special",
+   "title": "Unleashed",
+   "story": null,
+   "body": "Remove the \"Contained\" card and the Fog Gates from the Tomb of Oedon. At the end of each round, if the Cleric Beast is not in a space with a Hunter, it moves 4 spaces toward the nearest Hunter with the lowest HP and Attacks. Otherwise, it Attacks the Hunter with the lowest HP in its space. It is not removed on {reset}, but instead Heals all {dmg} and removes all Insight tokens.",
+   "goal": null,
+   "reveals": []
+  },
+  "43": {
+   "kind": "special",
+   "title": "Summon the Pack",
+   "story": null,
+   "body": "Each time the Cleric Beast flips Recovery, spawn 1 Scourge Beast in its space. These Scourge Beasts do not respawn on {reset}. Discard this card if the Hunters have, or gain, the Clearing the Pack card.",
+   "goal": null,
+   "reveals": []
+  },
+  "44": {
+   "kind": "other",
+   "title": "Hunt Completed",
+   "story": "The towering beast lets out one final shrill cry before collapsing to the ground. In the distance, howls and cries of Scourge Beasts, now retreating from Central Yharnam, fill the air. On the horizon, the rays of the sun begin to rise, bringing the dawn and marking the end of this Long Hunt. You know, soon though, the Blood Moon will rise once more, and a new threat will call you into yet another Hunt...",
+   "body": "",
+   "goal": null,
+   "reveals": []
+  },
+  "45": {
+   "kind": "insight",
+   "title": "Iosefka's Clinic",
+   "story": "You approach the large, barred doors of the clinic. Knocking upon them, a low female voice answers.",
+   "body": "",
+   "goal": "If you have both Iosefka's Research and Safe Refuge: Iosefka's Clinic: Reveal card 46. If you have Safe Refuge: Iosefka's Clinic but do not have Iosefka's Research: Reveal card 51. If you have Iosefka's Research but do not have Safe Refuge: Iosefka's Clinic: Reveal card 52. Otherwise: Reveal card 24.",
+   "reveals": [46, 51, 52, 24]
+  },
+  "46": {
+   "kind": "insight",
+   "title": "Truth Revealed",
+   "story": "Suddenly, the large wooden doors of the clinic burst open and a bloodied Yharnamite staggers out, collapsing to the ground. You recognize him as one of the survivors you escorted here this very night. \"You... Have to stop her... She's torturing us... It's horrific...\" he weakly pleads before running off. From the darkness of the doorway, a female figure emerges. \"A pity... But understand, what I do is for the greater good of Yharnam-No, mankind. What are a few lost lives? You can continue to aid me, Hunter, even pretend you saw nothing... and we may yet find a cure...\"",
+   "body": "Choose 1:",
+   "goal": "Attack Iosefka: Reveal card 47. Agree to aid her: Reveal card 49.",
+   "reveals": [47, 49]
+  },
+  "47": {
+   "kind": "insight",
+   "title": "Truth Revealed",
+   "story": "\"Can't anyone comprehend?! That'll be quite enough of you, then. Isn't it time someone put you out of your misery? Ah, well... I always wanted to try my hand on a Hunter.\"",
+   "body": "Surround the Iosefka's Clinic tile with Fog Gates. Spawn Iosefka (represented by her token) on its {enemy1} space. She respawns to that space on {reset}.",
+   "goal": "Complete this Mission by slaying Iosefka: Reveal card 48.",
+   "reveals": [48],
+   "uncertain": true,
+   "note": "Enemy icon: dark navy medallion, encoded {enemy1}; numbering by color convention, unverified. Text itself is certain."
+  },
+  "48": {
+   "kind": "insight-reward",
+   "title": "Prey Slaughtered: Iosefka",
+   "story": "\"Curse this oblivious fool...\" Iosefka mutters before slumping to the ground. Inspecting the interior of the clinic, you confirm the words of the fleeing survivor... What could have pushed her to such feats of madness?",
+   "body": "Distribute 1 Consumable and the Augur of Ebrietas reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "49": {
+   "kind": "insight",
+   "title": "The Greater Good",
+   "story": "\"I need more patients... There aren't many humans left, I know, but find me every last one you can. We must find a way to surpass our own stupidity. You're one of the bright ones. Don't you see how much this means? You can start by catching that fool that you let get away.\"",
+   "body": "Place 1 Survivor token on your space, then move it 4 spaces away. At the end of each turn, it moves 1 space away from the nearest Hunter. Interact on its space to capture it. It drops into their space if the Hunter teleports or goes to the Dream.",
+   "goal": "Complete this Mission by ending a move on the Iosefka's Clinic tile with the token: Reveal card 50.",
+   "reveals": [50]
+  },
+  "50": {
+   "kind": "insight-reward",
+   "title": "Further Experiments",
+   "story": "\"This time, I'll be trying old blood. I've achieved much. And I owe it all to you. Take this, as thanks.\"",
+   "body": "Distribute 1 Consumable and the Augur of Ebrietas reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "51": {
+   "kind": "insight",
+   "title": "Iosefka's Research",
+   "story": "You knock on the heavy wooden door. After a moment, you hear Iosefka. \"You again? Hmm... Perhaps you can be of further use. I require the still-warm blood of one of those beasts... Lure one here, strike it down, and I'll handle the rest...\" As you leave, you can't help but feel an underlying ruthlessness has replaced the compassion in her tone.",
+   "body": "",
+   "goal": "Complete this Mission by slaying a Scourge Beast while it is on the Iosefka's Clinic tile: Reveal card 26.",
+   "reveals": [26]
+  },
+  "52": {
+   "kind": "insight",
+   "title": "Shelter at Iosefka's Clinic",
+   "story": "\"Ah, the Hunter! I have a task for you! The infection spreads and the common folk need shelter... Send them here and I swear I will protect them, perhaps even cure them... And, of course, you will be rewarded as well.\"",
+   "body": "Hunters also gain 1 Survivor token when they pick up Consumables from {consumable} spaces. These tokens are lost if the Hunter teleports or goes to the Dream. Hunters ending a move on the Iosefka's Clinic tile place their held tokens on this card.",
+   "goal": "Complete this Mission when {n}+1 tokens have been placed on this card: Reveal card 28",
+   "reveals": [28]
+  },
+  "53": {
+   "kind": "insight",
+   "title": "The Great Bridge",
+   "story": "The Great Bridge, the connector between Central Yharnam and the Cathedral Ward...",
+   "body": "",
+   "goal": "If you have Ominous Warnings or Surviving the Hunt: Reveal card 54. Otherwise: Reveal card 35.",
+   "reveals": [54, 35]
+  },
+  "54": {
+   "kind": "insight",
+   "title": "Clearing the Pack",
+   "story": "You come across a small pack of Scourge Beasts. Surprisingly, rather than attack, they retreat, seemingly fleeing you. Perhaps it is the smell of blood, or some animal instinct instructing them to do so, but regardless of the reason, you will finish the purging of these beasts from Yharnam.",
+   "body": "Place {n}+2 Insight tokens on this card. Each time a Scourge Beast is slain, remove 1 token from this card.",
+   "goal": "Complete this Mission when this card has no remaining tokens: Reveal card 55.",
+   "reveals": [55]
+  },
+  "55": {
+   "kind": "insight-reward",
+   "title": "Clearing the Pack",
+   "story": "The Scourge Beasts have been eradicated from the district... At least, for now.",
+   "body": "Distribute the Executioner's Gloves reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "56": {
+   "kind": "insight",
+   "title": "Oedon Chapel",
+   "story": "You press open the large doors of the ancient chapel...",
+   "body": "",
+   "goal": "If you have Ominous Warnings: Reveal card 57. If you do not have Ominous Warnings, but have Safe Refuge: Oedon Chapel: Reveal card 59. Otherwise: Reveal card 33.",
+   "reveals": [57, 59, 33]
+  },
+  "57": {
+   "kind": "insight",
+   "title": "Redemption",
+   "story": "As you enter Oedon Chapel, the familiar sight of the Hunter you rescued greets you. He stands, reloading his pistol and drawing his weapon. \"Ah, you've returned... Perhaps I still have some fight left in me,\" he says, though suddenly gripping his side. \"Well... Perhaps with some assistance...\"",
+   "body": "Place {n}+1 Insight tokens on this card. Place 1 NPC token on the Oedon Chapel space. When a Hunter moves out of its space, it may be moved with them. Each time a Hunter Mob or Huntsman's Minion is slain in its space, remove 1 token from this card.",
+   "goal": "Complete this Mission when this card has no remaining tokens: Reveal card 58.",
+   "reveals": [58]
+  },
+  "58": {
+   "kind": "insight-reward",
+   "title": "Thrill of the Hunt",
+   "story": "\"The Hunt... How invigorating. Come! Let us purge these beasts!\"",
+   "body": "Distribute 1 Consumable and the Caryll Rune: Hunter reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "59": {
+   "kind": "insight",
+   "title": "Supplies for the Survivors",
+   "story": "Survivors gather around the lights and warding incense of the chapel. One approaches you. \"Noble Hunter, you've done so much for us this night... But I am sorry, I would ask just a bit more of your kindness...\"",
+   "body": "Place {n}+1 Insight tokens on this card. Hunters ending a move on the Oedon Chapel tile may discard any number of their held Consumables. For each one discarded, remove 1 token from this card.",
+   "goal": "Complete this Mission when this card has no remaining tokens: Reveal card 60.",
+   "reveals": [60]
+  },
+  "60": {
+   "kind": "insight-reward",
+   "title": "Protecting the Survivors",
+   "story": "\"Thank you, kind Hunter... While we cannot offer much, this seems far better suited to one such as yourself than us...\"",
+   "body": "Distribute the Empty Phantasm Shell reward and the Flamesprayer firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "Chapter 1 - Setup": {
+   "kind": "chapter",
+   "title": "The Long Hunt - Chapter 1",
+   "story": null,
+   "body": "SETUP - ENEMIES: Hunter Mob, Huntsman's Minion, Scourge Beast. TILES: Courtyard Lamp, Occupied House, Oedon Chapel, Ransacked House, {n} x2 Random (Max 6). MISSIONS - Start of the Hunt: Reveal card 1. End a move on the Courtyard Lamp tile: Reveal card 5. End a move on the Occupied House tile: Reveal card 8. End a move on the Ransacked House tile: Reveal card 12.",
+   "goal": "Start of the Hunt: Reveal card 1",
+   "reveals": [1, 5, 8, 12],
+   "note": "Setup list is on the card face (Chapter 1 - Setup); the missions list is on the back (Chapter 1 - Missions). Both sides transcribed into body."
+  },
+  "Chapter 2 - Setup": {
+   "kind": "chapter",
+   "title": "The Long Hunt - Chapter 2",
+   "story": null,
+   "body": "SETUP - ENEMIES: Hunter Mob, Huntsman's Minion, Scourge Beast. TILES: Graveyard, Iosefka's Clinic, Oedon Chapel, The Great Bridge, Tomb of Oedon, {n} x2 Random (Max 5). SPECIAL RULES CARDS: Long Hunt card 17. MISSIONS - Start of the Hunt: Reveal card 18. End a move on the Iosefka's Clinic tile: Reveal card 24. End a move on the Oedon Chapel tile: Reveal card 29. End a move on The Great Bridge tile: Reveal card 35.",
+   "goal": "Start of the Hunt: Reveal card 18",
+   "reveals": [18, 24, 29, 35],
+   "note": "Setup list is on the card face (Chapter 2 - Setup); the missions list is on the back (Chapter 2 - Missions). Both sides transcribed into body. Special Rules card 17 is placed during setup, not revealed via 'Reveal card' wording."
+  },
+  "Chapter 3 - Setup": {
+   "kind": "chapter",
+   "title": "The Long Hunt - Chapter 3",
+   "story": null,
+   "body": "SETUP - ENEMIES: Hunter Mob, Huntsman's Minion, Scourge Beast. TILES: Graveyard, Iosefka's Clinic, Oedon Chapel, The Great Bridge, Tomb of Oedon, {n} x2 Random (Max 5). SPECIAL RULES CARDS: Long Hunt card 17. MISSIONS - Start of the Hunt: Reveal card 40. End a move on the Iosefka's Clinic tile: Reveal card 45. End a move on The Great Bridge tile: Reveal card 53. End a move on the Oedon Chapel tile: Reveal card 56.",
+   "goal": "Start of the Hunt: Reveal card 40",
+   "reveals": [40, 45, 53, 56],
+   "note": "Setup list is on the card face (Chapter 3 - Setup); the missions list is on the back (Chapter 3 - Missions). Both sides transcribed into body. Special Rules card 17 is placed during setup, not revealed via 'Reveal card' wording."
+  },
+  "Introduction": {
+   "kind": "intro",
+   "title": "The Long Hunt - Introduction",
+   "story": "Of the monsters created by the Beast Plague, the Scourge Beasts are the most reviled. Once human, these terrible monstrosities are fast, agile, and lethal. As of late, more and more of these beasts have begun appearing in Central Yharnam, and thus we have been tasked with discovering the source of their increasing numbers, as well as eliminating as many as possible.",
+   "body": "",
+   "goal": null,
+   "reveals": []
+  }
+ }
+}

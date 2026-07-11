@@ -1,0 +1,490 @@
+{
+ "cards": {
+  "Introduction": {
+   "kind": "intro",
+   "title": "FALL OF OLD YHARNAM - Introduction",
+   "story": "Spiraling below the Cathedral Ward lies the hamlet known as Old Yharnam. Far removed, the town lies isolated from the greater city. Recently, however, rumors have emerged of a strange sickness, different from that of the Beast Plague, spreading through its streets. A group of hunters, notably those of the Powder Kegs covenant, were sent to investigate. Time has passed, and none have returned, thus we have been dispatched to discover what fate has befallen them.",
+   "body": "",
+   "goal": null,
+   "reveals": []
+  },
+  "Chapter 1 - Setup": {
+   "kind": "chapter",
+   "title": "FALL OF OLD YHARNAM - Chapter 1 - Missions",
+   "story": null,
+   "body": "Start of the Hunt: Reveal card 2\nEnd a move on the Courtyard Lamp tile: Reveal card 10\nEnd a move on the Occupied House tile: Reveal card 13\nWhen the Hunt Track reaches the 1st {reset} space (mark this with an Insight token): Reveal card 15",
+   "goal": "Start of the Hunt: Reveal card 2",
+   "reveals": [2, 10, 13, 15]
+  },
+  "Chapter 2 - Setup": {
+   "kind": "chapter",
+   "title": "FALL OF OLD YHARNAM - Chapter 2 - Missions",
+   "story": null,
+   "body": "Start of the Hunt: Reveal card 18\nStart of the Hunt: Reveal card 26\nEnd a move on the Alleyway tile: Reveal card 28\nEnd a move on the Barred Window tile: Reveal card 34",
+   "goal": "Start of the Hunt: Reveal card 18",
+   "reveals": [18, 26, 28, 34]
+  },
+  "Chapter 3 - Setup": {
+   "kind": "chapter",
+   "title": "FALL OF OLD YHARNAM - Chapter 3 - Missions",
+   "story": null,
+   "body": "Start of the Hunt, if you have Prey Slaughtered: Djura: Reveal card 41\nOtherwise: Reveal card 36\nStart of the Hunt: Reveal card 45\nEnd a move on the Barred Window tile: Reveal card 48\nWhen the Hunt Track reaches the 1st {reset} space (mark this with an Insight token): Reveal card 51",
+   "goal": "Start of the Hunt, if you have Prey Slaughtered: Djura: Reveal card 41. Otherwise: Reveal card 36",
+   "reveals": [41, 36, 45, 48, 51]
+  },
+  "1": {
+   "kind": "special",
+   "title": "ANTIDOTE",
+   "story": null,
+   "body": "While in the Hunter's Dream, Hunters may discard 1 Consumable and replace it with 1 Antidote card from the Consumables deck or discard pile. (Shuffle the deck afterward.)",
+   "goal": null,
+   "reveals": []
+  },
+  "2": {
+   "kind": "hunt",
+   "title": "MISSING POWDER KEGS",
+   "story": "Entering the old hamlet, you find its buildings and homes in disrepair and neglect, an eerie quiet seemingly overtaking its streets. While far less populated than the rest of Yharnam, this was once a thriving town, but you would almost swear it has been abandoned...",
+   "body": "",
+   "goal": "End a move on the Alleyway tile: Reveal card 3.",
+   "reveals": [3]
+  },
+  "3": {
+   "kind": "hunt",
+   "title": "MISSING POWDER KEGS",
+   "story": "Entering the row of houses, you see the form of a Hunter slumped against a wall. Even from this distance, his many wounds are plain. Standing before him is a beast, claw raised to strike.",
+   "body": "Place 1 Survivor token on the Alleyway space.",
+   "goal": "Interact with the Survivor token: Reveal card 4.",
+   "reveals": [4]
+  },
+  "4": {
+   "kind": "hunt",
+   "title": "MISSING POWDER KEGS",
+   "story": "You rush to the side of the fallen Hunter. Through staggered and pained breaths, he speaks. \"They sent others...? You must flee... The poison runs too deep... The district is lost... Get out...\" He chokes out before slumping over. We will not abandon our duty, however. We must find any remaining Powder Kegs and learn the extent of this outbreak.",
+   "body": "End a move on the Ransacked House tile: Reveal card 6 (Do not discard this card)\nEnd a move on the Graveyard tile: Reveal card 8 (Do not discard this card)",
+   "goal": "Complete the Hunt at the end of a round when you collect at least {n} +1 Insight: Reveal card 5.",
+   "reveals": [6, 8, 5]
+  },
+  "5": {
+   "kind": "insight-reward",
+   "title": "OLD YHARNAM OVERRUN",
+   "story": "How could the district have fallen so far without us knowing? The Powder Kegs sent here have been massacred and the hamlet is overrun by beasts. But worse still, the infected do not bear the usual signs of the Sickness... Is this some new plague?",
+   "body": "Distribute 1 Consumable and the Ludwig's Rifle firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "6": {
+   "kind": "insight",
+   "title": "DEN OF THE INFECTED",
+   "story": "A troublesome silence fills the dark house. As you explore, you hear the dragging of feet and low moans. From every corner, staggering infected shuffle out of the shadows.",
+   "body": "Surround the Ransacked House tile with Fog Gates. Spawn 2 Male Beast Patients and 1 Female Beast Patient instead of the usual Enemies.",
+   "goal": "Complete this Mission when no Enemies remain on the Ransacked House tile: Reveal card 7.",
+   "reveals": [7]
+  },
+  "7": {
+   "kind": "insight-reward",
+   "title": "DEN OF THE INFECTED",
+   "story": "Inspecting the house, you find the remains of one of the missing Powder Kegs. Given the bloody scene, it would appear he at least dispatched a great number of the beasts before succumbing to their blows.",
+   "body": "Distribute the Tiny Tonitrus reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "8": {
+   "kind": "insight",
+   "title": "MEDICAL AID",
+   "story": "You come upon a Hunter slumped against a collection of tombstones. Kneeling beside her, she looks to you. Through labored and congested voice she speaks. \"Antidote...\" She lets out a hacking cough as her head hangs low. She still lives, but we will need to act swiftly.",
+   "body": "Place 1 Survivor token on the Graveyard space.",
+   "goal": "Complete this Mission by Interacting with the Survivor token and discarding 1 Antidote Consumable and 1 Blood Echo: Reveal card 9.",
+   "reveals": [9]
+  },
+  "9": {
+   "kind": "insight-reward",
+   "title": "POISONOUS OUTBREAK",
+   "story": "\"T... Thank you... But you cannot allow this sickness to spread... Find Djura and the others... Burn it all... It's the only way...\" she forces out as a black ichor escapes her mouth. She leans back, convulsing slightly before falling silent and motionless.",
+   "body": "Distribute the Empty Phantasm Shell reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "10": {
+   "kind": "insight",
+   "title": "INFECTED TOWNSFOLK",
+   "story": "Entering the courtyard, you see a mass of townsfolk congregating in the open area. While you make moves to evade them, one notices you and shouts, alerting the others. Soon the mob descends upon you, torches and weapons at the ready.",
+   "body": "Reveal card 11. Surround the Courtyard Lamp tile with Fog Gates. Spawn 1 Hunter Mob on its {enemy?} space. It respawns to this space on {reset}.",
+   "goal": "Complete this Mission by slaying this Hunter Mob: Reveal card 12.",
+   "reveals": [11, 12],
+   "uncertain": true,
+   "note": "Enemy spawn medallion design unclear (dark navy circular medallion)."
+  },
+  "11": {
+   "kind": "special",
+   "title": "INFECTED",
+   "story": null,
+   "body": "Place 2 Insight tokens on this card. If 3+ Hunters, place 1 additional token. When the Hunter Mob would be slain, instead, remove 1 token and Heal all {dmg} from it. Tokens are returned on {reset}. Replace its Basic with:\nBASIC: INFECTED STRIKE {medium} {dmg}{dmg}\nPoison\nIf the Hunter is already Poisoned, their Attacks and Dodges suffer -1 {slow}.",
+   "goal": null,
+   "reveals": [],
+   "uncertain": true,
+   "note": "Attack line shows two bronze arrowheads (encoded {medium}) and two blood drops; the -1 penalty icon is a single large arrowhead (encoded {slow}, likely the die/speed icon)."
+  },
+  "12": {
+   "kind": "insight-reward",
+   "title": "MYSTERIOUS SYMPTOMS",
+   "story": "Inspecting the corpses of the fallen, you notice something strange. While some sickness has indeed ravaged them, the sores and pale-gray skin are not the usual trappings of the Beast Plague. Could it be some new illness has manifested itself?",
+   "body": "Distribute the Evelyn firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "13": {
+   "kind": "insight",
+   "title": "TRAPPED",
+   "story": "From a barred window, a girl's hand reaches out, grasping. \"Help! He's gone mad!\" She screams before being violently knocked back. Suddenly, the figure of one of the infected comes into view. You will need to force your way inside, and quickly, if you are to save this girl!",
+   "body": "Place 1 Insight token (Barred Door) on the Occupied House space. Hunters may Attack this token. Once it has been dealt 3 {dmg}, replace it with 1 Survivor token and spawn 1 Male Beast Patient in that space. It respawns to this space on {reset}.",
+   "goal": "Complete this Mission by Interacting with the Survivor token: Reveal card 14.",
+   "reveals": [14]
+  },
+  "14": {
+   "kind": "insight-reward",
+   "title": "SURVIVORS OF THE INFECTION",
+   "story": "It unfortunately appears the blow from the beast was lethal. The girl breathes her last as you kneel beside her. There is one solace at least... The infected do not attack their own... And that means if one survived, others might still remain as well...",
+   "body": "Distribute the Caryll Rune: Moon reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "15": {
+   "kind": "insight",
+   "title": "BLOOD-STARVED BEAST",
+   "story": "The slow rasping of large claws on cobblestone is heard as a large beast, sinewy and gaunt, emerges from a darkened alleyway. Bloodied flesh drapes its frame as dark ichor pools where it stands. Raising its head, it sniffs the air before letting out a thundering roar. The Hunters are now being hunted...",
+   "body": "Reveal card 16. Spawn the Blood-Starved Beast on the Central Lamp space. It is not removed on {reset}, but Heals all {dmg}.",
+   "goal": "Complete this Mission when the Blood-Starved Beast enters Phase 2: Reveal card 17.",
+   "reveals": [16, 17]
+  },
+  "16": {
+   "kind": "special",
+   "title": "BLOOD-STARVED BEAST",
+   "story": null,
+   "body": "The Blood-Starved Beast Moves and Pursues 2 spaces.\nAt the end of each round, it moves 3 spaces toward the nearest Hunter with the lowest HP and Attacks.\nRemove the Blood-Starved Beast from the map when it enters Phase 2.",
+   "goal": null,
+   "reveals": []
+  },
+  "17": {
+   "kind": "insight-reward",
+   "title": "A NEW FOE",
+   "story": "The creature lets out a shrill cry before bounding off, a trail of black blood in its wake. While you have encountered terrible creatures born of the Beast Plague, this one does not feel of similar origins... Could this be something altogether new?",
+   "body": "Distribute 1 Blood Echo and the Caryll Rune: Oedon Writhe reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "18": {
+   "kind": "hunt",
+   "title": "THE SPREADING PLAGUE",
+   "story": "The extent of this outbreak is concerning. These are not the typical signs of the Beast Plague, but something new altogether... Finding the remaining Powder Kegs has diminished in priority compared to discovering whatever we can about this new threat. If this is truly some new sickness, then all of Yharnam is potentially at risk.",
+   "body": "",
+   "goal": "End a move on the Occupied House tile: Reveal card 19.",
+   "reveals": [19]
+  },
+  "19": {
+   "kind": "hunt",
+   "title": "THE SPREADING PLAGUE",
+   "story": "Entering the row, you see the sight of a Hunter emerging from one of the houses. He stops upon seeing you, raising his Stake Driver defensively. \"You are no Powder Keg. Who are you?\" He cautiously approaches, keeping his distance as you answer. \"I see. So word has spread above. I am Djura. Unfortunately, I have not come upon any others...\" He looks back toward the doorway. \"I will finish here... But no threats remain... Check the rest of the hamlet. I will find you once I am finished.\"",
+   "body": "",
+   "goal": "End a move on the Graveyard tile after collecting at least 1 Insight this Chapter: Reveal card 20.",
+   "reveals": [20]
+  },
+  "20": {
+   "kind": "hunt",
+   "title": "THE SPREADING PLAGUE",
+   "story": "You come upon a Hunter standing over a pile of slain beasts, Saw Cleaver wet with blood. He turns to you, but does not seem aggressive. \"And just who are you?\" You explain your purpose. \"I see... Well, good you're here. There are only a few of us Powder Kegs left.\" He shakes his head. \"Old Yharnam is lost, and it is paramount we stop this outbreak, no matter the cost. Gather what you can, then find us at the center of the hamlet. Tonight, Old Yharnam must burn.\"",
+   "body": "",
+   "goal": "End a move on the Central Lamp tile after collecting at least 2 Insight this Chapter: Reveal card 21.",
+   "reveals": [21]
+  },
+  "21": {
+   "kind": "hunt",
+   "title": "THE SPREADING PLAGUE",
+   "story": "Smoke and heat engulf the area as, all around you, buildings have begun to burn. Emerging into the plaza, you hear the sounds of combat. Rushing forth, you find Djura and the Saw Cleaver Hunter from before locked in battle. \"You are a fool Djura! This place must be purged!\" the Saw Cleaver Hunter shouts as he strikes. Djura dodges and responds: \"You would slay those we protect! Can't you see what you're doing? The things you hunt, they're not beasts! They're people!\" The two move forward and clash once again.",
+   "body": "Choose 1:",
+   "goal": "Aid Djura: Reveal card 22.\nAid the Saw Cleaver Hunter: Reveal card 24.",
+   "reveals": [22, 24]
+  },
+  "22": {
+   "kind": "hunt",
+   "title": "THE SPREADING PLAGUE",
+   "story": "The Saw Cleaver Hunter lands a telling blow on Djura, sending him staggering to the ground. Seeing an opening, you move to strike, landing a surprise blow on the Saw Cleaver Hunter. \"What treachery is this? Have you succumbed to this madness as well!?\" He shouts before moving to counterattack.",
+   "body": "Spawn Djura's Ally (represented by his token) on the Central Lamp space. He is not removed on {reset}, but Heals all {dmg}.",
+   "goal": "Complete the Hunt by slaying Djura's Ally: Reveal card 23.",
+   "reveals": [23]
+  },
+  "23": {
+   "kind": "insight-reward",
+   "title": "PREY SLAUGHTERED: DJURA'S ALLY",
+   "story": "Your blows land true and strike the Hunter down. Djura slowly moves to his feet and staggers toward you. \"Good to see some remain untouched by bloodlust...\" He looks upon the fires surrounding you. \"But no time for chatter, we must move quickly...\"",
+   "body": "Distribute the Caryll Rune: Hunter reward and the Repeating Pistol firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "24": {
+   "kind": "hunt",
+   "title": "THE SPREADING PLAGUE",
+   "story": "Djura lands a telling blow on the Saw Cleaver Hunter, sending him staggering to the ground. Seeing an opening, you move to strike, landing a surprise blow on Djura. \"Urg! If you refuse to listen, then you leave me no other option!\" He shouts before moving to counterattack.",
+   "body": "Spawn Djura (represented by his token) on the Central Lamp space. He is not removed on {reset}, but Heals all {dmg}.",
+   "goal": "Complete the Hunt by slaying Djura: Reveal card 25.",
+   "reveals": [25]
+  },
+  "25": {
+   "kind": "insight-reward",
+   "title": "PREY SLAUGHTERED: DJURA",
+   "story": "Your blows land true and strike Djura down. The Saw Cleaver Hunter stands and staggers toward you. \"A fool... He would allow the infected to escape. He would doom us all.\" He readies himself. \"Come... We have work to do.\"",
+   "body": "Distribute the Caryll Rune: Hunter reward and the Hunter Blunderbuss firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "26": {
+   "kind": "insight",
+   "title": "BURNT REMINDERS",
+   "story": "The purity of flame has long been one of our strongest tools against the infected, both physically and as a display to the common folk of our might. Sometimes, they forget themselves. Let us create some reminders, that even in the face of a plague such as this, we do not waver.",
+   "body": "Place {n} +1 Insight tokens on this card. Each time you slay an Enemy while it is on the Central Lamp tile, remove 1 token from this card.",
+   "goal": "Complete this Mission when this card has no remaining tokens: Reveal card 27.",
+   "reveals": [27]
+  },
+  "27": {
+   "kind": "insight-reward",
+   "title": "BURNT REMINDERS",
+   "story": "The burning pyre roars into the night sky. Looking upon the bodies of the beasts, the potential impact of this outbreak sinks into you. Should this be allowed to spread to the whole of Yharnam, there is no telling the havok it could bring.",
+   "body": "Distribute 1 Consumable and the Hunter Torch reward among the Hunters.",
+   "goal": null,
+   "reveals": [],
+   "note": "\"havok\" spelled as printed on the card."
+  },
+  "28": {
+   "kind": "insight",
+   "title": "THOSE THAT REMAIN",
+   "story": "You come upon a small band of townsfolk, huddled together against the creature standing before them. One moves to feebly attack it and is immediately cut down. Your attack will not be so inept.",
+   "body": "Place 1 Survivor token on the Alleyway space.",
+   "goal": "Interact with the Survivor token: Reveal card 29.",
+   "reveals": [29]
+  },
+  "29": {
+   "kind": "insight",
+   "title": "THOSE THAT REMAIN",
+   "story": "The band of survivors shies away from you, cautiously watching you with fear in their eyes, as if you were another beast ready to strike. Before approaching, you recall the effects of the outbreak overtaking the district. The ruthless approach would be to cut them down where they stand and not risk spreading the plague... But is it not the very reason we Hunt but to protect the common folk?",
+   "body": "Choose 1:",
+   "goal": "Aid the Survivors: Reveal card 30.\nAttack the Survivors: Reveal card 32.",
+   "reveals": [30, 32]
+  },
+  "30": {
+   "kind": "insight",
+   "title": "THOSE THAT REMAIN",
+   "story": "Such a large group will undoubtedly attract attention... But we must do what we can to get them someplace safe, at least for now.",
+   "body": "When a Hunter moves out of the space with the Survivor token, it may be moved up to 2 spaces. After this move, all Enemies within 1 tile and not in a space with a Hunter move 1 space toward the token. If there are ever Enemies in the space with the token at the end of a Hunter Turn, the Survivors are slain. Return the token to the Alleyway space.",
+   "goal": "Complete this Mission when the token moves onto the Courtyard Lamp space: Reveal card 31.",
+   "reveals": [31]
+  },
+  "31": {
+   "kind": "insight-reward",
+   "title": "GUIDING THE SURVIVORS",
+   "story": "Old Yharnam has been devastated, and from what you have seen, only a handful of townsfolk still survive. This makes every one that you save all the more important as this terrible sickness runs rampant.",
+   "body": "Distribute 1 Consumable and the Caryll Rune: Guidance reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "32": {
+   "kind": "insight",
+   "title": "THOSE THAT REMAIN",
+   "story": "You cannot risk spread of this infection. They must all be purged.",
+   "body": "Place {n} +1 Survivor tokens in this space. Move each token 2 spaces away, in different directions where possible. They may reveal tiles during this move. At the end of each Hunter's turn, move these tokens 1 space away from the nearest Hunter. Hunters may Attack these tokens to remove them from the map.",
+   "goal": "Complete this Mission when all Survivor tokens have been slain: Reveal card 33.",
+   "reveals": [33]
+  },
+  "33": {
+   "kind": "insight-reward",
+   "title": "CULLING THE INFECTED",
+   "story": "The last of the survivors lets out a cry before you strike them down, silencing the last echo of life in the streets. The distant crackling of fires are the only sounds that remain as you somberly turn to depart. There is still much to be done.",
+   "body": "Distribute 1 Consumable and the Caryll Rune: Beast reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "34": {
+   "kind": "insight",
+   "title": "POWDER KEG INGENUITY",
+   "story": "From the streets, a Hunter staggers into view. \"Reinforcements... About time you showed up...\" He slumps against a nearby wagon, covered in tarps. \"Old Yharnam burns this night. All we can do now is aid the pyre, heh heh. For that, I need supplies: Oil, Wood, Powder, as much as you can find... Bring them to me, I'll handle the rest.\"",
+   "body": "Place {n} +2 Insight tokens on this card. Hunters ending a move on the Barred Window space may discard any number of their held Consumables. For each one discarded, remove 1 token from this card.",
+   "goal": "Complete this Mission when this card has no remaining tokens: Reveal card 35.",
+   "reveals": [35]
+  },
+  "35": {
+   "kind": "insight-reward",
+   "title": "POWDER KEG SUPPLIES",
+   "story": "\"Thank you, friend. I'll put these to good use...Trust me, you'll like my little project.\" As he moves, you see him gripping a deep wound at his side. \"Going to show these beasts just what it means to fight a Powder Keg, heh heh.\"",
+   "body": "Distribute the A Call Beyond reward and the Cannon firearm among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "36": {
+   "kind": "hunt",
+   "title": "ESCAPING THE PURGE",
+   "story": "Djura approaches you. \"The Church ordered us to seal off Old Yharnam, burn it all... and everyone... But we may still save the remaining uninfected, if we move swiftly. Gather whatever uninfected you can find. I will see if I can find a means of escape...\"",
+   "body": "Place 1 Survivor token on each space with a {consumable} or {enemy?} icon, and on new ones when revealed. Hunters may Interact on these spaces to remove the token and place it on this card.",
+   "goal": "When this card has {n} +1 tokens: Reveal card 37",
+   "reveals": [37],
+   "uncertain": true,
+   "note": "Two space icons shown: a green circular medallion (read as the consumable icon) and a dark navy circular medallion (enemy spawn medallion, design unclear)."
+  },
+  "37": {
+   "kind": "hunt",
+   "title": "ESCAPING THE PURGE",
+   "story": "Djura awaits your return, the remaining survivors having banded to him. \"These are all that remain...\" He shakes his head. \"No matter... My suspicions were confirmed, the main paths have all been destroyed. We'll need to find another way to get them out of here... I know of one way that may still exist... I shall gather those that remain in the Old Church. Gather what you must and meet us there. Let us escape before it's too late.\"",
+   "body": "",
+   "goal": "Gather at least 2 Insight this Chapter, then end a move on the Church of the Good Chalice tile: Reveal card 38.",
+   "reveals": [38]
+  },
+  "38": {
+   "kind": "hunt",
+   "title": "ESCAPING THE PURGE",
+   "story": "Numerous townsfolk lay slain within the courtyard of the ancient building. Entering, it reeks of the smell of blood and beast. From the altar, you hear a low growl and the rapping of claws across cobblestone floor. The gruesome beast from before can be seen, form wet with gore. With a roar, it bounds toward you.",
+   "body": "Reveal card 39. Surround the Church of the Good Chalice tile with Fog Gates. Spawn the Blood-Starved Beast on its {enemy?} space. It respawns to that space on {reset}.",
+   "goal": "Complete the Hunt by slaying the Blood-Starved Beast: Reveal card 40.",
+   "reveals": [39, 40],
+   "uncertain": true,
+   "note": "Enemy spawn medallion design unclear (dark navy circular medallion)."
+  },
+  "39": {
+   "kind": "special",
+   "title": "BLOOD-CRAZED",
+   "story": null,
+   "body": "Each time the Blood-Starved Beast slays a Hunter, it Heals {n}.\nAt the end of each round, it makes 1 bonus Activation, moving toward and Attacking the Hunter on its tile with the lowest remaining HP.\nAny Hunter on its tile may discard 1 Blood Echo to prevent this Activation.",
+   "goal": null,
+   "reveals": []
+  },
+  "40": {
+   "kind": "other",
+   "title": "HUNT COMPLETED",
+   "story": "Exiting the church, you see Djura leading a small band of survivors and Powder Kegs. \"Good to see you, friend...\" he says solemnly. \"I have one final favor to ask of you... I have decided to remain here. Old Yharnam is lost to the world above, but... There are still those here that require protection... Those above would not understand... Take the uninfected. Leave this place... And may you never return.\"",
+   "body": "",
+   "goal": null,
+   "reveals": []
+  },
+  "41": {
+   "kind": "hunt",
+   "title": "PURGING OLD YHARNAM",
+   "story": "The Hunter approaches you. \"Old Yharnam is lost to us. This ashen plague runs too deep. We have but one course of action if we are to contain the spread... It must all be burned. The other Powder Kegs are moving to root out the beasts and infected. While they work, let us do what we must.\"",
+   "body": "Place {n} +2 Insight tokens (Fire) on this card. While on a tile without a token, Hunters may Interact to remove 1 token from this card and place it on that tile.",
+   "goal": "When this card has no remaining tokens: Reveal card 42.",
+   "reveals": [42]
+  },
+  "42": {
+   "kind": "hunt",
+   "title": "PURGING OLD YHARNAM",
+   "story": "As you return, you find the remaining Powder Kegs gathering. All around, the night has been consumed with the glow of burning buildings, and the heavy smell of smoke and ash fills the air. \"We've moved to block off all the main paths out of the hamlet. None can be allowed to escape. There is but one grouping left: the old church in the heart of the hamlet. Gather what you may still need, then meet us there. Let us end this.\"",
+   "body": "",
+   "goal": "Gather at least 2 Insight this Chapter, then end a move on the Church of the Good Chalice tile: Reveal card 43.",
+   "reveals": [43]
+  },
+  "43": {
+   "kind": "hunt",
+   "title": "PURGING OLD YHARNAM",
+   "story": "Nearing the church, you happen upon a scene of carnage. Numerous Powder Kegs lay slain within the courtyard of the ancient building. Entering, it reeks of the smell of blood and beast. From the altar, you hear a low growl and the rapping of claws across the cobblestone floor. The gruesome beast from before can be seen, form wet with gore.",
+   "body": "Reveal card 39. Surround the Church of the Good Chalice tile with Fog Gates. Spawn the Blood-Starved Beast on its {enemy?} space. It respawns to that space on {reset}.",
+   "goal": "Complete the Hunt by slaying the Blood-Starved Beast: Reveal card 44.",
+   "reveals": [39, 44],
+   "uncertain": true,
+   "note": "Enemy spawn medallion design unclear (dark navy circular medallion)."
+  },
+  "44": {
+   "kind": "other",
+   "title": "HUNT COMPLETED",
+   "story": "Setting the last of the fires, you exit the church into the night air, now heavy with smoke and ash. All around, the once-great hamlet of Old Yharnam lies burning, and hopefully with it, whatever terrible plague that brought such devastation. While the events of this night are unfortunate indeed, we did what we had to... For the greater good of Yharnam.",
+   "body": "",
+   "goal": null,
+   "reveals": []
+  },
+  "45": {
+   "kind": "insight",
+   "title": "CHAOS AND FIRE",
+   "story": "Old Yharnam is burning, but it seems the sickness continues to spread among the infected, driving them into a greater frenzy.",
+   "body": "Reveal card 46. After each {reset}, spawn 1 Scourge Beast (if available) on each {enemy?} space, beginning with those closest to Hunters. Place {n} +2 Insight tokens on this card. Each time a Scourge Beast is slain, remove 1 token.",
+   "goal": "Complete this Mission when this card has no remaining tokens: Reveal card 47.",
+   "reveals": [46, 47],
+   "uncertain": true,
+   "note": "Enemy spawn medallion design unclear (dark navy circular medallion)."
+  },
+  "46": {
+   "kind": "special",
+   "title": "GROWING SICKNESS",
+   "story": null,
+   "body": "Replace all Scourge Beast's Basic with:\nBASIC: INFECTED CLAWS {fast} {dmg}{dmg}\nPoison",
+   "goal": null,
+   "reveals": [],
+   "uncertain": true,
+   "note": "Attack line shows three yellow-green arrowheads (encoded {fast}) and two blood drops."
+  },
+  "47": {
+   "kind": "insight-reward",
+   "title": "FIRE AND DEATH",
+   "story": "The district lies burning, and with it, many of the infected-townsfolk and beast alike. If we do not act to contain the spread, this fate could extend to the whole of Yharnam.",
+   "body": "Distribute 1 Consumable and the A Call Beyond reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "48": {
+   "kind": "insight",
+   "title": "REMAINING POWDER KEGS",
+   "story": null,
+   "body": "",
+   "goal": "If you have Powder Keg Supplies: Reveal card 49.\nOtherwise: Reveal card 34.",
+   "reveals": [49, 34]
+  },
+  "49": {
+   "kind": "insight",
+   "title": "MORE POWDER",
+   "story": "Despite his wound, the Powder Keg from before continues his work. \"You've returned. Good, good... I need one final component.\" His face takes on a pained expression as he grips his wound. \"Hurry now... Then we can show these beasts what for, heh.\"",
+   "body": "Interact on the Ransacked House space to gain 1 Insight token (Powder Keg Supplies). The token is lost if the Hunter goes to the Dream. While carrying the token, Hunter's Attacks suffer -1 {slow}.",
+   "goal": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 50.",
+   "reveals": [50],
+   "uncertain": true,
+   "note": "The -1 penalty icon is a single large arrowhead (encoded {slow}, likely the die/speed icon)."
+  },
+  "50": {
+   "kind": "insight-reward",
+   "title": "POWDER KEG RECKONING",
+   "story": "Finishing the mixture, the Hunter smiles and begins to limp off. \"Don't follow. This is my Hunt, heh heh.\" Shortly after you part, an explosion booms through the night, shaking the ground and leveling a large section of buildings... Powder Keg indeed.",
+   "body": "Distribute 1 Consumable and the Caryll Rune: Clawmark reward among the Hunters.",
+   "goal": null,
+   "reveals": []
+  },
+  "51": {
+   "kind": "insight",
+   "title": "VENGEANCE",
+   "story": "From someplace high above, you hear a voice call out, echoing through the streets. \"You would not see things as you should... This leaves me little choice in the matter...\" Suddenly, a whirling sound fills the air as a hail of bullets begins raining down upon you! From here, you see a large gatling gun mounted upon a looming tower. Perhaps you can find some pathway to it and put a stop to this...",
+   "body": "All Hunters must Dodge ({medium}) or suffer 2 {dmg}. Reveal card 52.",
+   "goal": "End a move on the Alleyway tile: Reveal card 53.",
+   "reveals": [52, 53],
+   "note": "Dodge icon shows two bronze arrowheads (encoded {medium})."
+  },
+  "52": {
+   "kind": "special",
+   "title": "GATLING GUN",
+   "story": null,
+   "body": "At the start of each Hunter's turn, flip an Enemy Action card. If Ability or Special, they must Dodge ({medium}) or suffer 2 {dmg}.\nThis effect is ignored by Hunters on the Church of the Good Chalice tile, or if any Hunter is on The Great Bridge tile.",
+   "goal": null,
+   "reveals": [],
+   "note": "Dodge icon shows two bronze arrowheads (encoded {medium})."
+  },
+  "53": {
+   "kind": "insight",
+   "title": "VENGEANCE",
+   "story": "You weave your way through the winding streets until you find a path leading to their vantage point. Let us find them and end this!",
+   "body": "Take The Great Bridge tile, place it to the side, and surround it with Fog Gates. Both The Great Bridge spaces are adjacent to the Alleyway space. If you have Prey Slaughtered: Djura's Ally, spawn Djura's Ally on the {enemy?} space. If you have Prey Slaughtered: Djura, spawn Djura on the {enemy?} space.",
+   "goal": "Complete this Mission and remove the Gatling Gun card by slaying the Enemy on The Great Bridge tile: Reveal card 54.",
+   "reveals": [54],
+   "uncertain": true,
+   "note": "Both spawn icons are a dark purple medallion with a clawed-hand design; medallion number unclear."
+  },
+  "54": {
+   "kind": "insight-reward",
+   "title": "HUNTER'S RECKONING",
+   "story": "Landing a staggering blow, you send your foe reeling back, topping off the side of The Great Bridge into the fiery streets below. While it's a shame this tool cannot be put to better use, at least it will no longer be used against you...",
+   "body": "Distribute the Old Hunter's Bone reward among the Hunters.",
+   "goal": null,
+   "reveals": [],
+   "note": "\"topping off the side\" as printed on the card (likely a misprint of \"toppling\")."
+  }
+ }
+}

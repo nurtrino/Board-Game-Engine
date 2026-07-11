@@ -1,0 +1,35 @@
+{
+ "basic": {
+  "0": { "name": "Basic", "stat": "vitality", "text": "Draw 1", "uncertain": true, "note": "No stat word printed; heart symbol on tan chip, purple card frame. Heart matches the dashboard HP area so classified vitality." },
+  "1": { "name": "Basic", "stat": "endurance", "text": "Dodge\nClear this slot", "uncertain": true, "note": "No stat word printed; teardrop symbol, green card frame. Classified endurance by symbol; could be skill." },
+  "2": { "name": "Basic", "stat": "skill", "text": "Stagger", "uncertain": true, "note": "No stat word printed; open-hand symbol, blue card frame. Classified skill by symbol; could be endurance." },
+  "3": { "name": "Basic", "stat": "strength", "text": "+1 {dmg}", "note": "Flexed-arm symbol, black card frame. Rulebook p22 example: the Basic Strength card raises Attack damage, matching this +1 {dmg} card." }
+ },
+ "upgrades": {
+  "0": { "name": "Invigorating", "stat": "endurance", "text": "Dodge\nHeal 1\nClear this or any other slot.", "uncertain": true, "note": "Teardrop symbol (same as Basic cell 1); stat word not printed." },
+  "1": { "name": "Tactical", "stat": "endurance", "text": "Dodge\nAttack or Dodge at +1 {speed}.\nClear this slot", "uncertain": true, "note": "Teardrop symbol. {speed} = single silver arrow icon (one speed step), distinct from the colored {fast}/{medium}/{slow} sets." },
+  "2": { "name": "Dash", "stat": "endurance", "text": "Dodge\nClear this slot\nWhen used to Move: Move 3 spaces.", "uncertain": true, "note": "Teardrop symbol." },
+  "3": { "name": "Quick Change", "stat": "endurance", "text": "Dodge\nMay Transform Weapon for free after Attack or Dodge.", "uncertain": true, "note": "Teardrop symbol." },
+  "4": { "name": "Counter Strike", "stat": "endurance", "text": "Dodge\nAfter Dodging: Deal 2 {dmg} to that Enemy.", "uncertain": true, "note": "Teardrop symbol." },
+  "5": { "name": "Cheap Shot", "stat": "skill", "text": "Stagger\nIf an Enemy in your space uses Ability, discard from hand: Deal them 2 {dmg}.", "uncertain": true, "note": "Open-hand symbol (same as Basic cell 2); stat word not printed." },
+  "6": { "name": "Unyielding", "stat": "skill", "text": "Stagger\nDraw 1", "uncertain": true, "note": "Open-hand symbol." },
+  "7": { "name": "Adaptive", "stat": "skill", "text": "Dodge\nStagger\nClear this slot", "uncertain": true, "note": "Open-hand symbol." },
+  "8": { "name": "Agile", "stat": "skill", "text": "Stagger\n+1 {speed}", "uncertain": true, "note": "Open-hand symbol. {speed} = single silver arrow icon." },
+  "9": { "name": "Visceral", "stat": "skill", "text": "Stagger\n+1 {dmg}", "uncertain": true, "note": "Open-hand symbol." },
+  "10": { "name": "Swift", "stat": "strength", "text": "+1 {dmg}\n+1 {speed}", "note": "Flexed-arm symbol (same as Basic cell 3, pinned to Strength by rulebook p22 example). {speed} = single silver arrow icon." },
+  "11": { "name": "Leaping", "stat": "strength", "text": "+1 {dmg}\nMay make a Move action before using this card to Attack.", "note": "Flexed-arm symbol." },
+  "12": { "name": "Poised", "stat": "strength", "text": "+1 {dmg}\nCannot suffer Stagger or Stun.", "note": "Flexed-arm symbol." },
+  "13": { "name": "Bloodthirsty", "stat": "strength", "text": "+1 {dmg}\nOn Kill:\nDraw 1\nHeal 1", "note": "Flexed-arm symbol." },
+  "14": { "name": "Rallying", "stat": "strength", "text": "+1 {dmg}\nAfter Attack:\nHeal 2", "note": "Flexed-arm symbol." },
+  "15": { "name": "Tireless", "stat": "vitality", "text": "Draw 2, then discard 1 card.\nRemove 1 {frenzy} or 1 {poison}.", "uncertain": true, "note": "Heart symbol (same as Basic cell 0). {frenzy} = spiral icon, {poison} = skull-in-droplet icon; both match the mod's Frenzy and Poison token art exactly." },
+  "16": { "name": "Defensive", "stat": "vitality", "text": "Block 2 {dmg}", "uncertain": true, "note": "Heart symbol." },
+  "17": { "name": "Indomitable", "stat": "vitality", "text": "Draw 1\nCannot suffer Frenzy, Poison, Stagger, or Stun.", "uncertain": true, "note": "Heart symbol." },
+  "18": { "name": "Rapid", "stat": "vitality", "text": "Dodge\nDraw 1\nClear this slot", "uncertain": true, "note": "Heart symbol." },
+  "19": { "name": "Second Wind", "stat": "vitality", "text": "When used for non-Attack action:\nHeal 2", "uncertain": true, "note": "Heart symbol." }
+ },
+ "enemyAction": {
+  "0": { "kind": "ability" },
+  "1": { "kind": "basic" },
+  "2": { "kind": "special" }
+ }
+}

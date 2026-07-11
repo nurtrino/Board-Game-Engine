@@ -1,0 +1,310 @@
+{
+  "cells": {
+    "0": {
+      "name": "CENTRAL LAMP",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.16, "y": 0.5 }, "named": null, "icons": [] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.5 }, "named": "CENTRAL LAMP", "icons": ["lamp"] },
+        { "id": "c", "center": { "x": 0.84, "y": 0.5 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"], ["b", "c"]],
+      "exits": [
+        { "space": "b", "edge": "N" },
+        { "space": "b", "edge": "S" },
+        { "space": "a", "edge": "W" },
+        { "space": "c", "edge": "E" }
+      ],
+      "specialText": "Interact on the Central Lamp space: Teleport to any [lamp icon] space or inside any Fog Gate.",
+      "note": "Enemy medallion legend used across this file: enemy1 = purple ring with splayed clawed hand; enemy2 = copper/red ring with pale barbed talon/thorned limb on dark field; enemy3 = pale bone/gold ring with curled larva-beast (antennae, segmented body). consumable = dark green ring containing a rack of vials. lamp = blue lantern medallion. No skull-design medallion was observed on any core tile."
+    },
+    "1": {
+      "name": "RANSACKED HOUSE",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.27 }, "named": "RANSACKED HOUSE", "icons": ["enemy3", "enemy1"] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.62 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "a", "edge": "W" },
+        { "space": "a", "edge": "E" },
+        { "space": "b", "edge": "S" }
+      ],
+      "specialText": null,
+      "uncertain": true,
+      "note": "House interior tile. W/E exits are lit doorways with arrow signs at y~0.37 (house style, not the usual blue-brick notch). S exit is the central staircase at x~0.5. The two dark thorn-filled pits flanking the bottom corridor read as decorative/inaccessible, not spaces."
+    },
+    "2": {
+      "name": "COURTYARD LAMP",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.16, "y": 0.5 }, "named": null, "icons": [] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.5 }, "named": "COURTYARD LAMP", "icons": ["lamp"] },
+        { "id": "c", "center": { "x": 0.84, "y": 0.5 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"], ["b", "c"]],
+      "exits": [
+        { "space": "a", "edge": "W" },
+        { "space": "b", "edge": "S" },
+        { "space": "c", "edge": "E" }
+      ],
+      "specialText": null
+    },
+    "3": {
+      "name": "OCCUPIED HOUSE",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.3 }, "named": null, "icons": ["enemy3"] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.8 }, "named": "OCCUPIED HOUSE", "icons": [] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "a", "edge": "N" },
+        { "space": "a", "edge": "W" },
+        { "space": "a", "edge": "E" },
+        { "space": "b", "edge": "S" }
+      ],
+      "specialText": null,
+      "note": "Top space is an open cobbled yard; bottom space is the house interior (beds/keypads art) with the printed name. S exit is a full-width staircase along the entire bottom edge, recorded as one centered exit. enemy3 = curled larva-beast medallion."
+    },
+    "4": {
+      "name": "THE GREAT BRIDGE",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.28 }, "named": "THE GREAT BRIDGE", "icons": ["enemy1", "consumable"] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.75 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "a", "edge": "N" },
+        { "space": "b", "edge": "S" }
+      ],
+      "specialText": "Hunters may not move out of spaces containing Enemies while on this tile.",
+      "note": "Vertical bridge over a chasm; both side edges are open air with no exits. enemy1 = purple clawed-hand medallion; consumable = green vial-rack medallion at top-right."
+    },
+    "5": {
+      "name": null,
+      "spaces": [
+        { "id": "a", "center": { "x": 0.26, "y": 0.32 }, "named": null, "icons": ["consumable"] },
+        { "id": "b", "center": { "x": 0.76, "y": 0.32 }, "named": null, "icons": [] },
+        { "id": "c", "center": { "x": 0.5, "y": 0.8 }, "named": null, "icons": ["enemy3"] }
+      ],
+      "adjacency": [["a", "b"], ["a", "c"], ["b", "c"]],
+      "exits": [
+        { "space": "b", "edge": "E" },
+        { "space": "c", "edge": "S" }
+      ],
+      "specialText": null,
+      "note": "T-shaped dividers: vertical line at x~0.51 from the top edge down to a horizontal line at y~0.60. consumable = green vial-rack medallion (top-left); enemy3 = curled larva-beast medallion (bottom-center)."
+    },
+    "6": {
+      "name": "TOMB OF OEDON",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.3 }, "named": "TOMB OF OEDON", "icons": ["consumable"] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.78 }, "named": null, "icons": ["lamp"] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "b", "edge": "S" }
+      ],
+      "specialText": "Instead of drawing a random [consumable icon], draw 3 and select 1. Shuffle the others back into the deck.",
+      "note": "Dead-end lamp tile; only exit is the bottom-center stair. Name printed just above the divider, on the upper space."
+    },
+    "7": {
+      "name": "ALLEYWAY",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.17, "y": 0.5 }, "named": null, "icons": [] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.5 }, "named": "ALLEYWAY", "icons": ["enemy1"] },
+        { "id": "c", "center": { "x": 0.85, "y": 0.5 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"], ["b", "c"]],
+      "exits": [
+        { "space": "a", "edge": "W" },
+        { "space": "c", "edge": "E" }
+      ],
+      "specialText": null,
+      "note": "Name printed across the top of the tile; it labels the central space. enemy1 = purple clawed-hand medallion at tile center."
+    },
+    "8": {
+      "name": "BARRED WINDOW",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.3, "y": 0.32 }, "named": "BARRED WINDOW", "icons": [] },
+        { "id": "b", "center": { "x": 0.8, "y": 0.5 }, "named": null, "icons": ["consumable"] },
+        { "id": "c", "center": { "x": 0.3, "y": 0.78 }, "named": null, "icons": ["enemy2"] }
+      ],
+      "adjacency": [["a", "b"], ["a", "c"], ["b", "c"]],
+      "exits": [
+        { "space": "b", "edge": "E" },
+        { "space": "c", "edge": "S" }
+      ],
+      "specialText": null,
+      "note": "L-shaped dividers: vertical line at x~0.59 (y~0.24 to bottom) and horizontal line at y~0.56 (left edge to the vertical line). b is the full-height right column. enemy2 = copper ring with barbed talon; consumable = green vial-rack medallion."
+    },
+    "9": {
+      "name": "GRAVEYARD",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.17 }, "named": null, "icons": [] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.52 }, "named": "GRAVEYARD", "icons": ["consumable", "enemy2"] },
+        { "id": "c", "center": { "x": 0.5, "y": 0.86 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"], ["b", "c"]],
+      "exits": [
+        { "space": "a", "edge": "N" },
+        { "space": "b", "edge": "W" },
+        { "space": "b", "edge": "E" },
+        { "space": "c", "edge": "S" }
+      ],
+      "specialText": null,
+      "note": "Three horizontal strips (dividers at y~0.33 and y~0.72). consumable = green vial-rack (left); enemy2 = copper barbed-talon medallion (right); both on the middle space. Large dead tree art at center."
+    },
+    "10": {
+      "name": "GRAND CATHEDRAL",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.22 }, "named": "GRAND CATHEDRAL", "icons": [] },
+        { "id": "b", "center": { "x": 0.32, "y": 0.52 }, "named": null, "icons": ["lamp"] },
+        { "id": "c", "center": { "x": 0.68, "y": 0.52 }, "named": null, "icons": ["consumable"] },
+        { "id": "d", "center": { "x": 0.5, "y": 0.85 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"], ["a", "c"], ["b", "c"], ["b", "d"], ["c", "d"]],
+      "exits": [
+        { "space": "d", "edge": "S" }
+      ],
+      "specialText": "Interact on any space: Heal 2",
+      "note": "Cathedral interior: altar space across the top, middle band split by a vertical divider at x~0.5, entrance space across the bottom. Only exit is the bottom-center doorway (bright stained-glass floor path)."
+    },
+    "11": {
+      "name": "IOSEFKA'S CLINIC",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.4 }, "named": "IOSEFKA'S CLINIC", "icons": ["lamp"] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.85 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "a", "edge": "W" },
+        { "space": "a", "edge": "E" },
+        { "space": "b", "edge": "S" }
+      ],
+      "specialText": "Once during their turn, the Hunter may suffer 1 [blood-drop icon] to draw 1 card.",
+      "uncertain": true,
+      "note": "Clinic interior (top ~2/3) plus cobbled yard below; divider is the short white line at the interior steps. W/E exits are lit doorways with arrow signs at y~0.5 (house style, same as tile 1). Large double cabinet on the north wall is furniture, not an exit."
+    },
+    "12": {
+      "name": null,
+      "spaces": [
+        { "id": "a", "center": { "x": 0.22, "y": 0.5 }, "named": null, "icons": ["enemy2"] },
+        { "id": "b", "center": { "x": 0.78, "y": 0.5 }, "named": null, "icons": ["consumable"] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "a", "edge": "N" },
+        { "space": "a", "edge": "W" },
+        { "space": "b", "edge": "S" },
+        { "space": "b", "edge": "E" }
+      ],
+      "specialText": null,
+      "uncertain": true,
+      "note": "Central square pit (gallows well) blocks the middle; the walkable ring around it is cut by two divider segments: one from the top edge to the pit at x~0.565, one from the pit to the bottom edge at x~0.425. This yields two wrap-around spaces: a = west half, b = east half. Top-edge exit (x~0.5) lies west of the top cut -> a; bottom-edge exit (x~0.5) lies east of the bottom cut -> b. enemy2 = copper barbed-talon (bottom-left); consumable = green vial-rack (top-right)."
+    },
+    "13": {
+      "name": null,
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.17 }, "named": null, "icons": ["consumable"] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.5 }, "named": null, "icons": ["enemy2"] },
+        { "id": "c", "center": { "x": 0.5, "y": 0.83 }, "named": null, "icons": ["enemy3"] }
+      ],
+      "adjacency": [["a", "b"], ["b", "c"]],
+      "exits": [
+        { "space": "b", "edge": "W" },
+        { "space": "b", "edge": "E" },
+        { "space": "c", "edge": "S" }
+      ],
+      "specialText": null,
+      "note": "Three horizontal strips (dividers at y~0.33 and y~0.67). consumable = green vial-rack (top); enemy2 = copper barbed-talon (middle); enemy3 = curled larva-beast (bottom)."
+    },
+    "14": {
+      "name": null,
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.25 }, "named": null, "icons": [] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.75 }, "named": null, "icons": ["consumable", "enemy1"] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "a", "edge": "N" },
+        { "space": "b", "edge": "S" }
+      ],
+      "specialText": null,
+      "note": "Divided at mid-height by two stone walls jutting from the left and right edges (spiked mace traps on them) with a short white divider segment bridging the central gap. consumable = green vial-rack (left, below the wall); enemy1 = purple clawed-hand (center-bottom)."
+    },
+    "15": {
+      "name": "OEDON CHAPEL",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.25 }, "named": "OEDON CHAPEL", "icons": ["lamp"] },
+        { "id": "b", "center": { "x": 0.3, "y": 0.68 }, "named": null, "icons": [] },
+        { "id": "c", "center": { "x": 0.7, "y": 0.68 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"], ["a", "c"], ["b", "c"]],
+      "exits": [
+        { "space": "a", "edge": "N" },
+        { "space": "b", "edge": "W" },
+        { "space": "c", "edge": "E" }
+      ],
+      "specialText": "Enemy Attacks suffer -1 [attack/range icon] while on this tile.",
+      "note": "Chapel interior: top nave space with lamp, bottom split into left/right by a vertical divider at x~0.5 (horizontal divider at y~0.42). Exits are teal-brick passages at top-center, left-middle and right-middle. The special-rule icon is a small grey arrowhead (attack-value symbol)."
+    },
+    "16": {
+      "name": null,
+      "spaces": [
+        { "id": "a", "center": { "x": 0.25, "y": 0.3 }, "named": null, "icons": ["enemy3"] },
+        { "id": "b", "center": { "x": 0.75, "y": 0.3 }, "named": null, "icons": ["enemy1"] },
+        { "id": "c", "center": { "x": 0.5, "y": 0.82 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"], ["a", "c"], ["b", "c"]],
+      "exits": [
+        { "space": "a", "edge": "W" },
+        { "space": "b", "edge": "E" },
+        { "space": "c", "edge": "S" }
+      ],
+      "specialText": null,
+      "note": "Upper half split by a central stone pillar/shrine (wall from the top edge to y~0.42) continued by a white divider down to the horizontal divider at y~0.63; bottom is one full-width space. enemy3 = curled larva-beast (top-left); enemy1 = purple clawed-hand (top-right)."
+    },
+    "17": {
+      "name": null,
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.3 }, "named": null, "icons": ["consumable"] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.8 }, "named": null, "icons": ["enemy1"] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "a", "edge": "W" },
+        { "space": "a", "edge": "E" },
+        { "space": "b", "edge": "S" }
+      ],
+      "specialText": null,
+      "note": "Single horizontal divider at y~0.57. Lit shrine with candles at top-center is behind a fence (no N exit). consumable = green vial-rack (center); enemy1 = purple clawed-hand (bottom-center)."
+    },
+    "18": {
+      "name": null,
+      "spaces": [
+        { "id": "a", "center": { "x": 0.28, "y": 0.5 }, "named": null, "icons": ["enemy2"] },
+        { "id": "b", "center": { "x": 0.78, "y": 0.45 }, "named": null, "icons": ["enemy3"] }
+      ],
+      "adjacency": [["a", "b"]],
+      "exits": [
+        { "space": "a", "edge": "W" },
+        { "space": "b", "edge": "E" }
+      ],
+      "specialText": null,
+      "note": "Single vertical divider at x~0.55 from near the top edge down to the dark market-stall clutter at bottom-right. enemy2 = copper barbed-talon (left); enemy3 = curled larva-beast (right)."
+    },
+    "19": {
+      "name": "CHURCH OF THE GOOD CHALICE",
+      "spaces": [
+        { "id": "a", "center": { "x": 0.5, "y": 0.27 }, "named": "CHURCH OF THE GOOD CHALICE", "icons": ["consumable", "consumable"] },
+        { "id": "b", "center": { "x": 0.5, "y": 0.55 }, "named": null, "icons": ["lamp"] },
+        { "id": "c", "center": { "x": 0.5, "y": 0.85 }, "named": null, "icons": [] }
+      ],
+      "adjacency": [["a", "b"], ["b", "c"]],
+      "exits": [
+        { "space": "c", "edge": "S" }
+      ],
+      "specialText": "When Interacting: 1 [consumable icon] may be used to gain 1 Blood Echo.",
+      "note": "Dead-end church interior: altar with corpse at top flanked by two consumable (green vial-rack) medallions, lamp in the middle space, entrance space at bottom with the only exit (bright doorway, bottom-center)."
+    }
+  }
+}

@@ -1,0 +1,404 @@
+{
+ "cells": {
+  "6": {
+   "deck": "Blood-Starved Beast Phase 1",
+   "name": "Lunging Slash",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 2,
+   "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space."
+  },
+  "7": {
+   "deck": "Blood-Starved Beast Phase 1",
+   "name": "Lunging Slash",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 2,
+   "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space."
+  },
+  "8": {
+   "deck": "Blood-Starved Beast Phase 1",
+   "name": "Crippling Poison",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 3,
+   "text": "Poison\nIf already Poisoned, Hunter cannot Dodge, and their Attack deals -1 {dmg} and loses Stagger."
+  },
+  "9": {
+   "deck": "Blood-Starved Beast Phase 1",
+   "name": "Rage Combo",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 4,
+   "text": "Cannot be Dodged.\nIf Staggered, Hunter's Attack deals +1 {dmg}."
+  },
+  "10": {
+   "deck": "Blood-Starved Beast Phase 1",
+   "name": "Poison Blast",
+   "kind": "ability",
+   "speed": null,
+   "damage": null,
+   "text": "Unless they Dodge ({fast}), each Hunter within 1 space suffers Poison. If already Poisoned, they suffer Stagger and Stun.\nFlip another Boss Action."
+  },
+  "11": {
+   "deck": "Blood-Starved Beast Phase 2",
+   "name": "Lunging Slash",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 2,
+   "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space."
+  },
+  "12": {
+   "deck": "Blood-Starved Beast Phase 2",
+   "name": "Crippling Poison",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 3,
+   "text": "If not in play, search the Blood-Starved Beast's deck and play Poison Aura.\nPoison\nIf already Poisoned, the Hunter cannot Dodge, and their Attack deals -1 {dmg} and loses Stagger."
+  },
+  "13": {
+   "deck": "Blood-Starved Beast Phase 2",
+   "name": "Quick Lunge",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": "Poison\nAfter this Attack, move Blood-Starved Beast 1 space away. If the Hunter Dodged this Attack, they may move into the Blood-Starved Beast's space."
+  },
+  "14": {
+   "deck": "Blood-Starved Beast Phase 2",
+   "name": "Pin & Maul",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 4,
+   "text": "Stagger\nStun\nCannot be Dodged."
+  },
+  "15": {
+   "deck": "Blood-Starved Beast Phase 2",
+   "name": "Poison Aura",
+   "kind": "ability",
+   "speed": null,
+   "damage": null,
+   "text": "ONGOING\n(Place to the side, do not re-shuffle into the deck)\nAll Hunters ending their turn in the Blood-Starved Beast's space suffer Poison. While in its space, Poisoned Hunter's Attacks and Dodges suffer -1 {slow}.\nFlip another Boss Action."
+  },
+  "16": {
+   "deck": "Cleric Beast Phase 1",
+   "name": "Overhead Slam",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 4,
+   "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token."
+  },
+  "17": {
+   "deck": "Cleric Beast Phase 1",
+   "name": "Overhead Slam",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 4,
+   "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token."
+  },
+  "18": {
+   "deck": "Cleric Beast Phase 1",
+   "name": "Grab",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 3,
+   "text": "Stagger\nThe Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token on Cleric Beast."
+  },
+  "19": {
+   "deck": "Cleric Beast Phase 1",
+   "name": "Lunging Swipe",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 4,
+   "text": "Cannot be Dodged.\nAfter this Attack, move Cleric Beast 1 space away. Before this Attack, the Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token."
+  },
+  "20": {
+   "deck": "Cleric Beast Phase 1",
+   "name": "Recovery",
+   "kind": "ability",
+   "speed": null,
+   "damage": null,
+   "text": "Remove all Insight tokens on Cleric Beast's card.\nBlock 2 {dmg} from Hunter's Attack.\nShuffle Cleric Beast's Action deck."
+  },
+  "21": {
+   "deck": "Cleric Beast Phase 2",
+   "name": "Overhead Slam",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 4,
+   "text": "Targets all Hunters in this space.\nBefore this Attack, 1 Hunter in this space may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token."
+  },
+  "22": {
+   "deck": "Cleric Beast Phase 2",
+   "name": "Grab & Toss",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 3,
+   "text": "Stagger\nStun\nMove the Hunter 1 space away. Hunter may Exhaust their Firearm to place 1 Insight token on Cleric Beast's card. This Attack deals -1 {dmg} per Insight token on Cleric Beast."
+  },
+  "23": {
+   "deck": "Cleric Beast Phase 2",
+   "name": "Crushing Slam",
+   "kind": "attack",
+   "speed": "slow",
+   "damage": 6,
+   "text": "Cannot be Staggered.\nIf they Dodge, Hunter's Attack deals +1 {dmg}. All other Hunters in this space must Dodge ({slow}) or suffer 2 {dmg}.\nDeals -1 {dmg} per Insight token on Cleric Beast."
+  },
+  "24": {
+   "deck": "Cleric Beast Phase 2",
+   "name": "Jumping Smash",
+   "kind": "ability",
+   "speed": null,
+   "damage": null,
+   "text": "All Hunters in this space must Dodge ({slow}) or suffer 2 {dmg} and Stun.\nFlip another Boss Action."
+  },
+  "25": {
+   "deck": "Cleric Beast Phase 2",
+   "name": "Recovery",
+   "kind": "ability",
+   "speed": null,
+   "damage": null,
+   "text": "Remove all Insight tokens on Cleric Beast's card.\nBlock 2 {dmg} from Hunter's Attack.\nShuffle Cleric Beast's Action deck."
+  },
+  "26": {
+   "deck": "Father Gascoigne Phase 1",
+   "name": "Axe Slash",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 2,
+   "text": "If Gascoigne deals any {dmg}, he Heals 1."
+  },
+  "27": {
+   "deck": "Father Gascoigne Phase 1",
+   "name": "Axe Slash",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 2,
+   "text": "If Gascoigne deals any {dmg}, he Heals 1."
+  },
+  "28": {
+   "deck": "Father Gascoigne Phase 1",
+   "name": "Scattergun Burst",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": "Stagger\nAll other Hunters in this space suffer 1 {dmg} unless they Dodge ({fast})."
+  },
+  "29": {
+   "deck": "Father Gascoigne Phase 1",
+   "name": "Spark Uppercut",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 3,
+   "text": "Stun\nCannot be Staggered.\nCan only be Dodged with {medium} slots."
+  },
+  "30": {
+   "deck": "Father Gascoigne Phase 1",
+   "name": "Charged Swing",
+   "kind": "attack",
+   "speed": "slow",
+   "damage": 4,
+   "text": "Stun\nIf Dodged or Staggered, Hunter's Attack deals +1 {dmg}.\nAll other Hunters in this space must Dodge ({slow}) or suffer 2 {dmg}."
+  },
+  "31": {
+   "deck": "Father Gascoigne Phase 2",
+   "name": "Axe Sweep",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 2,
+   "text": "All other Hunters in this space suffer 1 {dmg} unless they Dodge ({medium})."
+  },
+  "32": {
+   "deck": "Father Gascoigne Phase 2",
+   "name": "Axe Sweep",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 2,
+   "text": "All other Hunters in this space suffer 1 {dmg} unless they Dodge ({medium})."
+  },
+  "33": {
+   "deck": "Father Gascoigne Phase 2",
+   "name": "Scattergun Burst",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": "Stagger\nAll other Hunters in this space suffer 1 {dmg} unless they Dodge ({fast})."
+  },
+  "34": {
+   "deck": "Father Gascoigne Phase 2",
+   "name": "Jump Attack",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 4,
+   "text": "Stagger\nStun\nCan only be Dodged with {medium} slots. If Dodged, Hunter's Attack deals +1 {dmg}."
+  },
+  "35": {
+   "deck": "Father Gascoigne Phase 2",
+   "name": "Charged Spin",
+   "kind": "attack",
+   "speed": "slow",
+   "damage": 3,
+   "text": "Even if this Attack is Dodged or Staggered, at {slow} Hunter must Dodge ({slow}) or suffer 3 additional {dmg}."
+  },
+  "36": {
+   "deck": "Father Gascoigne Transformed Phase 1",
+   "name": "Claw Slash",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": null
+  },
+  "37": {
+   "deck": "Father Gascoigne Transformed Phase 1",
+   "name": "Claw Slash",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": null
+  },
+  "38": {
+   "deck": "Father Gascoigne Transformed Phase 1",
+   "name": "Claw Combo",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": "Even if this Attack is Dodged or Staggered, at {medium} Hunter must Dodge ({medium}) or suffer 2 additional {dmg}."
+  },
+  "39": {
+   "deck": "Father Gascoigne Transformed Phase 1",
+   "name": "Overhead Smash",
+   "kind": "attack",
+   "speed": "slow",
+   "damage": 3,
+   "text": "Stun\nTargets all Hunters in this space."
+  },
+  "40": {
+   "deck": "Father Gascoigne Transformed Phase 1",
+   "name": "Pin & Maul",
+   "kind": "attack",
+   "speed": "slow",
+   "damage": 4,
+   "text": "Stun\nCannot be Dodged."
+  },
+  "41": {
+   "deck": "Father Gascoigne Transformed Phase 2",
+   "name": "Claw Slash",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": "Stagger\nDeals +1 {dmg} for each {slow} faster than Hunter's Attack."
+  },
+  "42": {
+   "deck": "Father Gascoigne Transformed Phase 2",
+   "name": "Double Slash",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": "Stagger\nEven if this Attack is Dodged or Staggered, at {medium} Hunter must Dodge ({medium}) or suffer 2 additional {dmg}."
+  },
+  "43": {
+   "deck": "Father Gascoigne Transformed Phase 2",
+   "name": "Overhead Smash",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 3,
+   "text": "Stagger\nStun\nTargets all Hunters in this space."
+  },
+  "44": {
+   "deck": "Father Gascoigne Transformed Phase 2",
+   "name": "Aerial Dive",
+   "kind": "ability",
+   "speed": null,
+   "damage": null,
+   "text": "Remove Gascoigne from the map. At the end of the Hunter Turn/Enemy Activation, return him to this space. All Hunters in this space must Dodge ({fast}) or suffer 2 {dmg}."
+  },
+  "45": {
+   "deck": "Father Gascoigne Transformed Phase 2",
+   "name": "Bestial Roar",
+   "kind": "ability",
+   "speed": null,
+   "damage": null,
+   "text": "All Hunters in this space suffer Stun.\nGascoigne Blocks 2 {dmg}."
+  },
+  "46": {
+   "deck": "Vicar Amelia Phase 1",
+   "name": "Gnashing Grab",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 3,
+   "text": "Stagger\nStun"
+  },
+  "47": {
+   "deck": "Vicar Amelia Phase 1",
+   "name": "Cross Sweep",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 3,
+   "text": "Cannot be Staggered.\nTargets all Hunters in this space."
+  },
+  "48": {
+   "deck": "Vicar Amelia Phase 1",
+   "name": "Timed Slash",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 3,
+   "text": "Can only be Dodged with {medium} slots."
+  },
+  "49": {
+   "deck": "Vicar Amelia Phase 1",
+   "name": "Timed Slash",
+   "kind": "attack",
+   "speed": "slow",
+   "damage": 3,
+   "text": "Can only be Dodged with {slow} slots."
+  },
+  "50": {
+   "deck": "Vicar Amelia Phase 1",
+   "name": "Uppercut Sweep",
+   "kind": "attack",
+   "speed": "slow",
+   "damage": 4,
+   "text": "Stun\nStagger\nCannot be Staggered.\nStaggers Attacks of the same Speed.\nMove the Hunter 1 space away."
+  },
+  "51": {
+   "deck": "Vicar Amelia Phase 2",
+   "name": "Quick Bite",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 2,
+   "text": "Stun\nCannot be Staggered.\nDeals {dmg} before Attacks of the same Speed."
+  },
+  "52": {
+   "deck": "Vicar Amelia Phase 2",
+   "name": "Tantrum Combo",
+   "kind": "attack",
+   "speed": "fast",
+   "damage": 3,
+   "text": "Stagger\nAfter resolving all Attacks, Amelia Activates again.\nIf Dodged, Hunter's Attack deals +1 {dmg}."
+  },
+  "53": {
+   "deck": "Vicar Amelia Phase 2",
+   "name": "Timed Slash",
+   "kind": "attack",
+   "speed": "medium",
+   "damage": 3,
+   "text": "Can only be Dodged with {medium} slots."
+  },
+  "54": {
+   "deck": "Vicar Amelia Phase 2",
+   "name": "Axe-Handle Smash",
+   "kind": "attack",
+   "speed": "slow",
+   "damage": 4,
+   "text": "Stun\nCannot be Staggered.\nAll other Hunters in this space suffer 2 {dmg} unless they Dodge ({slow})."
+  },
+  "55": {
+   "deck": "Vicar Amelia Phase 2",
+   "name": "Healing Prayer",
+   "kind": "ability",
+   "speed": null,
+   "damage": null,
+   "text": "At {slow}, before Hunter's Attack, Heal Amelia 3 and move her 2 spaces away.\nShuffle Amelia's Boss Action deck."
+  }
+ }
+}

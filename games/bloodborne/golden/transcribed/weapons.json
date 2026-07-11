@@ -1,0 +1,303 @@
+{
+  "cells": {
+    "0": {
+      "face": {
+        "name": "Ludwig's Uncanny Holy Blade",
+        "ability": "Each time you Clear a slot, deal 1 {dmg} to 1 Enemy in your space",
+        "slots": [
+          { "name": "QUICK STAB", "speed": "fast", "damage": 1 },
+          { "name": "QUICK STAB", "speed": "fast", "damage": 1 },
+          { "name": "HEAVY SLASH", "speed": "slow", "damage": 3 }
+        ]
+      },
+      "back": {
+        "name": "Ludwig's Uncanny Holy Blade",
+        "ability": "After Attacking with Combo Strike: May Transform Weapon for free",
+        "slots": [
+          { "name": "COMBO STRIKE", "speed": "medium", "damage": 2 },
+          { "name": "IMPALING THRUST", "speed": "medium", "damage": 3 }
+        ]
+      }
+    },
+    "1": {
+      "face": {
+        "name": "Tonitrus",
+        "ability": "After Transforming: next Attack this round gains +1 {arrow} and +1 {dmg}",
+        "slots": [
+          { "name": "BLUDGEON", "speed": "medium", "damage": 2 },
+          { "name": "BLUDGEON", "speed": "medium", "damage": 2 },
+          { "name": "HEAVY SLAM", "speed": "slow", "damage": 3 }
+        ],
+        "note": "{arrow} is a single silver/gray arrow icon (a generic +1 speed-arrow pip, not the red slow icon). Face and back of this dashboard are identical (same ability, same slots)."
+      },
+      "back": {
+        "name": "Tonitrus",
+        "ability": "After Transforming: next Attack this round gains +1 {arrow} and +1 {dmg}",
+        "slots": [
+          { "name": "BLUDGEON", "speed": "medium", "damage": 2 },
+          { "name": "BLUDGEON", "speed": "medium", "damage": 2 },
+          { "name": "HEAVY SLAM", "speed": "slow", "damage": 3 }
+        ],
+        "note": "{arrow} is a single silver/gray arrow icon (a generic +1 speed-arrow pip, not the red slow icon). Identical to face side; reminder strip repeats the same ability and slots."
+      }
+    },
+    "2": {
+      "face": {
+        "name": "Reiterpallasch",
+        "ability": "When Dodging at the same Speed as the Enemy Attack, deal 2 {dmg} to that Enemy",
+        "slots": [
+          { "name": "QUICK STAB", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "DEADLY THRUST", "speed": "slow", "damage": 3 }
+        ]
+      },
+      "back": {
+        "name": "Reiterpallasch",
+        "ability": "Place 1 card facedown on Quicksilver Shot: Deal 2 {dmg} to 1 Enemy in your space",
+        "slots": [
+          { "name": "RIPOSTE", "speed": "fast", "damage": 1 },
+          { "name": "QUICKSILVER SHOT", "speed": "medium", "damage": 2 },
+          { "name": "DEADLY THRUST", "speed": "slow", "damage": 3 }
+        ]
+      }
+    },
+    "3": {
+      "face": {
+        "name": "Burial Blade",
+        "ability": "Before Attacking, may move any Enemies within 2 spaces into your space",
+        "slots": [
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "ARCING CLEAVE", "speed": "slow", "damage": 3 },
+          { "name": "ARCING CLEAVE", "speed": "slow", "damage": 3 }
+        ]
+      },
+      "back": {
+        "name": "Burial Blade",
+        "ability": "At Attack Speed, deal 1 {dmg} to all other Enemies within 1 space",
+        "slots": [
+          { "name": "QUICK CARVE", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 }
+        ]
+      }
+    },
+    "4": {
+      "face": {
+        "name": "Rifle Spear",
+        "ability": "Attacks deal +1 {dmg} for each Move action taken this round",
+        "slots": [
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "IMPALE", "speed": "slow", "damage": 3 }
+        ]
+      },
+      "back": {
+        "name": "Rifle Spear",
+        "ability": "Enemy moves into space: Place 1 card facedown in 1 slot to deal them 2 {dmg}",
+        "slots": [
+          { "name": "THRUST", "speed": "medium", "damage": 2 },
+          { "name": "THRUST", "speed": "medium", "damage": 2 },
+          { "name": "THRUST", "speed": "medium", "damage": 2 }
+        ]
+      }
+    },
+    "5": {
+      "face": {
+        "name": "Stake Driver",
+        "ability": "After Attacking with Primed Slash: May Transform Weapon for free",
+        "slots": [
+          { "name": "THRUST", "speed": "medium", "damage": 2 },
+          { "name": "PRIMED SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SKEWER", "speed": "slow", "damage": 3 }
+        ]
+      },
+      "back": {
+        "name": "Stake Driver",
+        "ability": "After Attack: Move all Enemies within 1 space up to 2 spaces away",
+        "slots": [
+          { "name": "DETONATE", "speed": "slow", "damage": 4, "text": "Deals 2 {dmg} to all other Enemies within 1 space." }
+        ]
+      }
+    },
+    "6": {
+      "face": {
+        "name": "Beast Claw",
+        "ability": "On Attack: If you have 3 or less HP, Attack gains +1 {arrow} and +1 {dmg}",
+        "slots": [
+          { "name": "QUICK SLASH", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "FRENZIED CUT", "speed": "slow", "damage": 3 }
+        ],
+        "note": "{arrow} is a single silver/gray arrow icon (a generic +1 speed-arrow pip, not the red slow icon)."
+      },
+      "back": {
+        "name": "Beast Claw",
+        "ability": "On Kill: Heal 2 and Move 2",
+        "slots": [
+          { "name": "QUICK SLASH", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "HEAVY CARVE", "speed": "slow", "damage": 3 }
+        ]
+      }
+    },
+    "7": {
+      "face": {
+        "name": "Chikage",
+        "ability": "On Attack: May suffer 1 {dmg} to gain +1 {arrow} or +1 {dmg}",
+        "slots": [
+          { "name": "QUICK CUT", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 }
+        ],
+        "note": "{arrow} is a single silver/gray arrow icon (a generic +1 speed-arrow pip, not the red slow icon)."
+      },
+      "back": {
+        "name": "Chikage",
+        "ability": "When you Dodge: Heal 1 and deal 1 {dmg} to 1 Enemy in your space",
+        "slots": [
+          { "name": "QUICK CUT", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 }
+        ]
+      }
+    },
+    "8": {
+      "face": {
+        "name": "Saw Cleaver",
+        "ability": "Attacks with Stagger also deal +1 {dmg}",
+        "slots": [
+          { "name": "QUICK CUT", "speed": "fast", "damage": 1 },
+          { "name": "QUICK CUT", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 }
+        ]
+      },
+      "back": {
+        "name": "Saw Cleaver",
+        "ability": "On Kill: Draw 1 and Heal 1",
+        "slots": [
+          { "name": "QUICK CUT", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "HEAVY CARVE", "speed": "slow", "damage": 3 }
+        ]
+      }
+    },
+    "9": {
+      "face": {
+        "name": "Threaded Cane",
+        "ability": "When you Dodge: Deal 1 {dmg} to all Enemies within 1 space",
+        "slots": [
+          { "name": "QUICK LASH", "speed": "fast", "damage": 1 },
+          { "name": "FLAY", "speed": "medium", "damage": 2 },
+          { "name": "FLAY", "speed": "medium", "damage": 2 }
+        ]
+      },
+      "back": {
+        "name": "Threaded Cane",
+        "ability": "Stagger can affect Enemy Attacks of the same Speed",
+        "slots": [
+          { "name": "QUICK CUT", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "DEADLY THRUST", "speed": "slow", "damage": 3 }
+        ]
+      }
+    },
+    "10": {
+      "face": {
+        "name": "Hunter Axe",
+        "ability": "After Attacking with Rally Strike: Heal 1 for each {dmg} you dealt",
+        "slots": [
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "RALLY STRIKE", "speed": "medium", "damage": 2 }
+        ]
+      },
+      "back": {
+        "name": "Hunter Axe",
+        "ability": "On Kill: Deal 2 {dmg} to 1 Enemy within 1 space",
+        "slots": [
+          { "name": "ARCING SWING", "speed": "medium", "damage": 2 },
+          { "name": "HEAVY CLEAVE", "speed": "slow", "damage": 3 },
+          { "name": "HEAVY CLEAVE", "speed": "slow", "damage": 3 }
+        ]
+      }
+    },
+    "11": {
+      "face": {
+        "name": "Ludwig's Holy Blade",
+        "ability": "After Attacking with Combo Slash: May Transform Weapon for free",
+        "slots": [
+          { "name": "COMBO SLASH", "speed": "medium", "damage": 2 },
+          { "name": "OVERHEAD SLAM", "speed": "slow", "damage": 4 }
+        ]
+      },
+      "back": {
+        "name": "Ludwig's Holy Blade",
+        "ability": "Each time you Clear a slot, deal 1 {dmg} to 1 Enemy in your space",
+        "slots": [
+          { "name": "QUICK STAB", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 }
+        ]
+      }
+    },
+    "12": {
+      "face": {
+        "name": "Kirkhammer",
+        "ability": "Each time you Clear a slot, deal 1 {dmg} to 1 Enemy in your space",
+        "slots": [
+          { "name": "QUICK STAB", "speed": "fast", "damage": 1 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 }
+        ]
+      },
+      "back": {
+        "name": "Kirkhammer",
+        "ability": "Attacking with Crushing Slam: Cannot be Staggered, but cannot Dodge",
+        "slots": [
+          { "name": "HEAVY SWING", "speed": "slow", "damage": 3 },
+          { "name": "CRUSHING SLAM", "speed": "slow", "damage": 4 }
+        ]
+      }
+    },
+    "13": {
+      "face": {
+        "name": "Logarius' Wheel",
+        "ability": "On Attack: Heal 1",
+        "slots": [
+          { "name": "BASH", "speed": "medium", "damage": 2 },
+          { "name": "SLAM", "speed": "slow", "damage": 3 },
+          { "name": "SLAM", "speed": "slow", "damage": 3 }
+        ]
+      },
+      "back": {
+        "name": "Logarius' Wheel",
+        "ability": "On Attack: May suffer up to 2 {dmg} to deal that much additional {dmg}",
+        "slots": [
+          { "name": "EMPOWERED BASH", "speed": "medium", "damage": 2 },
+          { "name": "EMPOWERED SLAM", "speed": "slow", "damage": 3 },
+          { "name": "EMPOWERED SLAM", "speed": "slow", "damage": 3 }
+        ]
+      }
+    },
+    "14": {
+      "face": {
+        "name": "Blade of Mercy",
+        "ability": "Stagger can affect Enemy Attacks of the same Speed",
+        "slots": [
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "SLASH", "speed": "medium", "damage": 2 },
+          { "name": "HEAVY SLASH", "speed": "slow", "damage": 3 }
+        ]
+      },
+      "back": {
+        "name": "Blade of Mercy",
+        "ability": "Combo Finisher deals +1 {dmg} for each Filled Attack Slot",
+        "slots": [
+          { "name": "QUICK CUT", "speed": "fast", "damage": 1 },
+          { "name": "QUICK CUT", "speed": "fast", "damage": 1 },
+          { "name": "COMBO FINISHER", "speed": "fast", "damage": 1 }
+        ]
+      }
+    }
+  }
+}
