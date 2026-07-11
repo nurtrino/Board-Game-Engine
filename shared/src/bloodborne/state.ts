@@ -649,6 +649,8 @@ export interface BbView {
   tileDeckCount: number;
   /** movement in progress (device shows remaining steps) */
   moving: { seat: number; left: number } | null;
+  /** active mission hooks (device surfaces bait / offering buttons) */
+  missionHooks: Record<string, Record<string, unknown>>;
 }
 
 export const bbViewFor = (s: BbState, viewer: number | null | 'dev'): BbView => {
@@ -701,5 +703,6 @@ export const bbViewFor = (s: BbState, viewer: number | null | 'dev'): BbView => 
       const m = (s as unknown as { moving?: { seat: number; left: number } | null }).moving;
       return m ? { seat: m.seat, left: m.left } : null;
     })(),
+    missionHooks: ((s as unknown as { missionState?: { hooks?: Record<string, Record<string, unknown>> } }).missionState?.hooks) ?? {},
   };
 };

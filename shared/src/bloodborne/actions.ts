@@ -17,7 +17,7 @@ import { bbMissionOnReveal, bbMissionEvent, bbMissionInteractables, missionState
 // ---------- actions ----------
 
 export type BbAction =
-  | { type: 'pick_hunter'; hunterId: string }
+  | { type: 'pick_hunter'; hunterId: string; side?: 0 | 1 }
   | { type: 'begin_turn' }
   | { type: 'move'; cardId: string }
   | { type: 'step'; to: BbSpaceRef }
@@ -30,7 +30,7 @@ export type BbAction =
   | { type: 'use_consumable'; itemIx: number; target?: BbSpaceRef | number }
   | { type: 'use_firearm'; target?: number }
   | { type: 'use_reward'; rewardIx: number; target?: number }
-  | { type: 'refresh_firearm'; discard: string[] }
+  | { type: 'refresh_firearm'; discard: string[]; echo?: boolean }
   | { type: 'mission_discard'; cards: string[] } // discard consumables on a tile (mission hooks)
   | { type: 'mission_spawn' } // discard 1 consumable to spawn (Long Hunt 18)
   | { type: 'end_turn' }
@@ -330,13 +330,18 @@ const combatResolve = (s: BbState): void => {
   const boss = c.bossUid != null ? s.bosses.find((x) => x.uid === c.bossUid) : null;
   if (!enemy && !boss) { s.combat = null; return; }
   const act = enemyActionDef(s);
-  const flags = (act as unknown as { flags?: Record<string, unknown> }).flags ?? {};
+  const stripped = !!(c as unknown as { stripEffects?: boolean }).stripEffects;
+  const firearmCancel = !!(c as unknown as { firearmCancel?: boolean }).firearmCancel;
+  const flags = stripped ? {} : (act as unknown as { flags?: Record<string, unknown> }).flags ?? {};
   const enemyIsAbility = isAbilityAction(act, c.enemyAction!.kind);
   const blockPending = (c as unknown as { blockPending?: number }).blockPending ?? 0;
 
-  // hunter attack numbers
-  let hAtk: { rank: number; dmg: number; stagger: boolean } | null = null;
-  if (c.attack) {
+  // hunter attack numbers (a stat card in a slot, or a firearm attack)
+  let hAtk: { rank: number; dmg: number; stagger: boolean; splash?: number } | null = null;
+  const gunAttack = (c as unknown as { firearmAttack?: { speed: BbSpeed; damage: number; stagger?: boolean; splash?: number } }).firearmAttack;
+  if (gunAttack) {
+    hAtk = { rank: speedRank(gunAttack.speed, c.hunterSpeedBonus), dmg: gunAttack.damage + c.hunterDmgBonus, stagger: !!gunAttack.stagger, splash: gunAttack.splash };
+  } else if (c.attack) {
     const def = BB_HUNTERS[h.hunterId!];
     const slotDef = def.sides[h.weaponSide].slots[c.attack.slot];
     const card = bbStatCard(c.attack.cardId);
@@ -350,11 +355,11 @@ const combatResolve = (s: BbState): void => {
   }
   // enemy attack numbers
   let eAtk: { rank: number; dmg: number } | null = null;
-  if (!enemyIsAbility) {
+  if (!enemyIsAbility && !firearmCancel) {
     let dmg = act.damage + c.enemyDmgBonus;
     if (flags.bonusIfSelfDamaged && (enemy?.damage ?? boss?.damage ?? 0) > 0) dmg += Number(flags.bonusIfSelfDamaged);
     eAtk = { rank: speedRank(act.speed, c.enemySpeedBonus), dmg };
-  } else if (act.speed != null) {
+  } else if (enemyIsAbility && act.speed != null && !firearmCancel) {
     eAtk = { rank: speedRank(act.speed, c.enemySpeedBonus) + 0.25, dmg: 0 }; // before hunter's attack on tie (FAQ)
   }
 
@@ -380,6 +385,12 @@ const combatResolve = (s: BbState): void => {
       const target = enemy ?? boss;
       if (target && !missionInvulnerable(s, boss)) {
         applyDamageToEnemy(s, target, hAtk!.dmg, c.seat, act);
+        // Flamesprayer splash: 1 dmg to all OTHER enemies in the space
+        if (hAtk!.splash && h.space) {
+          for (const other of [...s.enemies]) {
+            if (other.space === h.space && other.uid !== enemy?.uid) applyDamageToEnemy(s, other, hAtk!.splash!, c.seat);
+          }
+        }
         enemyGone = enemy ? !s.enemies.some((x) => x.uid === enemy.uid) : !s.bosses.some((x) => x.uid === boss!.uid);
         // stagger cancels SLOWER opposing attacks (p. 21)
         if (hAtk!.stagger && eAtk && !flags.noStagger && eAtk.rank < g.rank) enemyCancelled = true;
@@ -391,11 +402,9 @@ const combatResolve = (s: BbState): void => {
     // enemy side (same rank = simultaneous: both apply, p. 20)
     if (enemyActs) {
       if (!enemyIsAbility) {
-        // enemy stagger from abilities (Feral Rage buff) cancels slower hunter attacks
-        if (c.enemyStagger && hAtk && hAtk.rank < g.rank) { /* hunter already resolved if faster */ }
         hunterSuffer(s, h, eAtk!.dmg, { block: blockPending });
-        if (h.hp > 0) resolveRider(s, act, 'attack');
-      } else {
+        if (h.hp > 0 && !stripped) resolveRider(s, act, 'attack');
+      } else if (!stripped) {
         resolveRider(s, act, 'ability'); // speed-listed ability fires now
       }
       if (h.hp === 0) break;
@@ -494,12 +503,28 @@ const pumpActivation = (s: BbState): void => {
       }
     }
     if (piece.space === h.space) {
-      startCombat(s, { seat: h.seat, enemyUid: enemy?.uid, bossUid: boss?.uid });
+      rifleSentry(s, piece);
+      const stillHere = enemy ? s.enemies.some((x) => x.uid === enemy.uid) : s.bosses.some((x) => x.uid === boss!.uid);
+      if (stillHere && piece.space === h.space) startCombat(s, { seat: h.seat, enemyUid: enemy?.uid, bossUid: boss?.uid });
     }
   }
   if (s.activationQueue.length === 0 && !s.combat && s.pending.length === 0 && side(s).turnEnding && s.phase === 'play') {
     side(s).turnEnding = false;
     finishTurn(s, false);
+  }
+};
+
+/** Ludwig's Rifle: when an enemy moves into a hunter's space, a ready rifle
+ * fires automatically for 2 damage (card back), then exhausts. */
+const rifleSentry = (s: BbState, piece: BbEnemyOnMap | BbBossOnMap): void => {
+  for (const h of s.hunters) {
+    if (h.space !== piece.space || h.firearmExhausted) continue;
+    const fx = (bbItem(h.firearmId).effects ?? {}) as { custom?: string };
+    if (fx.custom !== 'rifle-sentry') continue;
+    h.firearmExhausted = true;
+    evt(s, "LUDWIG'S RIFLE FIRES", h.seat, 'firearm');
+    applyDamageToEnemy(s, piece, 2, h.seat);
+    return;
   }
 };
 
@@ -568,7 +593,10 @@ const runBossBonusActivations = (s: BbState): void => {
     const alive = s.hunters.filter((h) => h.space);
     if (!alive.length) continue;
     const target = alive.sort((a, c) => a.hp - c.hp || a.seat - c.seat)[0]; // lowest HP (worst case)
-    const steps = mod.bonusActivationRoundEnd === 'moveFourTowardLowestHpAndAttack' ? 4 : 1;
+    const spec = mod.bonusActivationRoundEnd as unknown;
+    const steps = typeof spec === 'object' && spec != null && 'steps' in (spec as Record<string, unknown>)
+      ? Number((spec as { steps: number }).steps)
+      : spec === 'moveFourTowardLowestHpAndAttack' ? 4 : 1;
     for (let i = 0; i < steps && b.space !== target.space; i++) {
       const st = stepToward(s, b.space, target.space!);
       if (!st) break;
@@ -657,6 +685,7 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
       if (s.pickedHunters.includes(action.hunterId)) err('Hunter already taken');
       h.hunterId = action.hunterId;
       h.firearmId = def.firearmId;
+      h.weaponSide = action.side === 1 ? 1 : 0; // free choice of start side (p. 8)
       s.pickedHunters.push(action.hunterId);
       evt(s, `${def.name.toUpperCase()} JOINS THE HUNT`, seat, 'pick');
       if (s.hunters.every((x) => x.hunterId)) {
@@ -784,6 +813,9 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
       for (const c of h.slots) if (c) h.discard.push(c);
       h.weaponSide = h.weaponSide === 0 ? 1 : 0;
       h.slots = new Array(hunterSlotCount(h)).fill(null);
+      // Repeating Pistol refreshes for free on Transform (card back)
+      const gfx = (bbItem(h.firearmId).effects ?? {}) as { freeOnTransform?: boolean };
+      if (gfx.freeOnTransform && h.firearmExhausted) h.firearmExhausted = false;
       evt(s, 'TRICK WEAPON TRANSFORMED', seat, 'transform');
       return s;
     }
@@ -848,7 +880,49 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
       const h = hunterOf(s, seat);
       if (s.phase !== 'play') err('The game is not in play');
       if (h.firearmExhausted) err('Firearm exhausted');
-      applyItemEffect(s, h, h.firearmId, action.target);
+      const gunFx = (bbItem(h.firearmId).effects ?? {}) as BbEffects & { custom?: string; attack?: { speed: BbSpeed; damage: number; stagger?: boolean; splash?: number } };
+      const c = s.combat;
+      switch (gunFx.custom) {
+        case 'stagger-basic': {
+          // reaction: cancels an enemy Basic Attack outright
+          if (!c || c.seat !== seat || !c.enemyAction) err('Fire when an enemy makes a Basic Attack');
+          if (c.bossUid != null) err('Bosses do not make Basic Attacks');
+          if (c.enemyAction.kind !== 'basic') err('That is not a Basic Attack');
+          (c as unknown as { firearmCancel?: boolean }).firearmCancel = true;
+          break;
+        }
+        case 'degrade-attack': {
+          if (!c || c.seat !== seat || !c.enemyAction) err('Fire when a non-boss enemy attacks');
+          if (c.bossUid != null) err('Bosses shrug off the mist');
+          c.enemySpeedBonus -= 1;
+          (c as unknown as { stripEffects?: boolean }).stripEffects = true;
+          break;
+        }
+        case 'firearm-attack':
+          err('Use it as your attack when a combat starts');
+          break;
+        case 'blunderbuss': {
+          if (s.activeSeat !== seat) err('Usable only on your turn');
+          if (!h.space) err("You are in the Hunter's Dream");
+          const uid = Number(action.target);
+          const e = s.enemies.find((x) => x.uid === uid && x.space === h.space);
+          if (!e) err('Pick a non-boss enemy in your space');
+          applyDamageToEnemy(s, e, 1, seat);
+          const still = s.enemies.find((x) => x.uid === uid);
+          if (still) {
+            const away = spaceNeighbors(s, still.space, 'enemy')
+              .sort((a, b) => (bfsFrom(s, h.space!, 'enemy').get(b) ?? 0) - (bfsFrom(s, h.space!, 'enemy').get(a) ?? 0));
+            if (away.length) still.space = away[0];
+          }
+          break;
+        }
+        case 'rifle-sentry':
+          err('It fires on its own when an enemy enters your space');
+          break;
+        default:
+          applyItemEffect(s, h, h.firearmId, action.target);
+          break;
+      }
       h.firearmExhausted = true;
       evt(s, `${bbItem(h.firearmId).name.toUpperCase()} FIRED`, seat, 'firearm');
       return s;
@@ -856,9 +930,16 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
     case 'refresh_firearm': {
       const h = requireTurn(s, seat);
       if (!h.firearmExhausted) err('Firearm is ready');
-      const cost = bbItem(h.firearmId).effects?.refresh === 'discard2' ? 2 : 1;
-      if (action.discard.length !== cost) err(`Discard ${cost} card${cost > 1 ? 's' : ''} to refresh`);
-      for (const c of action.discard) discardStat(s, h, c);
+      const fx = (bbItem(h.firearmId).effects ?? {}) as { refresh?: string; echoRefresh?: boolean };
+      if (action.echo) {
+        if (!fx.echoRefresh) err('That firearm does not refresh with echoes');
+        if (h.echoes < 1) err('No blood echo to spend');
+        h.echoes -= 1;
+      } else {
+        const cost = fx.refresh === 'discard2' ? 2 : 1;
+        if (action.discard.length !== cost) err(`Discard ${cost} card${cost > 1 ? 's' : ''} to refresh`);
+        for (const c of action.discard) discardStat(s, h, c);
+      }
       h.firearmExhausted = false;
       return s;
     }
@@ -960,6 +1041,18 @@ const applyChoose = (s: BbState, seat: number, a: Record<string, unknown>): BbSt
     case 'combat-attack': {
       const h = hunterOf(s, seat);
       if (a.pass) {
+        s.pending.shift();
+        combatFlip(s);
+        if (s.combat) maybeQueueDodge(s);
+        return s;
+      }
+      if (a.firearm) {
+        // Cannon / Flamesprayer: the firearm IS the attack (card backs)
+        const gunFx = (bbItem(h.firearmId).effects ?? {}) as { custom?: string; attack?: { speed: BbSpeed; damage: number; stagger?: boolean; splash?: number } };
+        if (h.firearmExhausted) err('Firearm exhausted');
+        if (gunFx.custom !== 'firearm-attack' || !gunFx.attack) err('That firearm cannot make an attack');
+        h.firearmExhausted = true;
+        if (s.combat) (s.combat as unknown as { firearmAttack?: typeof gunFx.attack }).firearmAttack = gunFx.attack;
         s.pending.shift();
         combatFlip(s);
         if (s.combat) maybeQueueDodge(s);

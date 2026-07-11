@@ -91,6 +91,7 @@ const evt = (s: BbState, text: string, kind = 'mission'): void => {
 
 const nTokens = (s: BbState, spec: unknown): number => {
   if (typeof spec === 'number') return spec;
+  if (typeof spec === 'string' && /^\d+$/.test(spec)) return +spec;
   switch (spec) {
     case 'n': return s.partySize;
     case 'nPlus1': return s.partySize + 1;
@@ -217,7 +218,8 @@ export const applyMissionEffects = (s: BbState, card: string, effects: Fx[]): vo
         const space = findSpace(s, String(fx.space));
         if (!BB_ENEMIES[id] || !space) { surface(s, card, `spawnEnemy ${fx.enemy}`); break; }
         const n = Number(fx.count ?? 1) * (fx.perHunter ? s.partySize : 1);
-        for (let i = 0; i < n; i++) spawnEnemy(s, id, space, card);
+        // mission tag makes it survive/respawn on reset (resetMap keeps tagged)
+        for (let i = 0; i < n; i++) spawnEnemy(s, id, space, fx.respawnOnReset === false ? undefined : card);
         break;
       }
       case 'spawnNpc': {
@@ -424,17 +426,33 @@ const resolveBranch = (s: BbState, number: string): void => {
 
 // ---------- chapter start ----------
 
+interface BbTrigger {
+  on: string;
+  tile?: string;
+  reveal?: string;
+  space?: number;
+  cases?: { ifInsightCard?: string; notInsightCard?: string; else?: boolean; reveal: string }[];
+}
+
 export const bbMissionOnReveal = (s: BbState, hook: 'chapter-start'): void => {
   if (hook !== 'chapter-start') return;
   resetMissionState(s);
   const defs = defsFor(s);
   const chKey = `Chapter ${s.chapter} - Setup`;
-  const ch = defs[chKey] as (BbMissionDef & { triggers?: { on: string; tile?: string; reveal: string }[] }) | undefined;
+  const ch = defs[chKey] as (BbMissionDef & { triggers?: BbTrigger[] }) | undefined;
   const chDef = BB_CAMPAIGNS[s.campaignId].chapters[s.chapter - 1];
   // special-rules cards flip faceup at setup (p. 10)
   for (const n of chDef.extraCards ?? []) revealMission(s, n);
   for (const t of ch?.triggers ?? []) {
-    if (t.on === 'startOfHunt') revealMission(s, t.reveal);
+    if (t.on === 'startOfHunt' && t.reveal) revealMission(s, t.reveal);
+    if (t.on === 'startOfHuntBranch') {
+      for (const c of t.cases ?? []) {
+        const has = (n?: string): boolean => (n ? s.insightCards.includes(n) : false);
+        let match = c.else ? true : has(c.ifInsightCard);
+        if (match && c.notInsightCard && has(c.notInsightCard)) match = false;
+        if (match) { revealMission(s, c.reveal); break; }
+      }
+    }
   }
 };
 
@@ -604,10 +622,10 @@ export const bbMissionEvent = (s: BbState, ev: BbMissionEventArg): void => {
         done = inst.tokens <= 0;
         break;
       case 'insightThisChapter':
-        done = ms.insightThisChapter >= Number(P.count ?? 0);
+        done = ms.insightThisChapter >= nTokens(s, P.count ?? 0);
         break;
       case 'insightThisChapterOrTrack':
-        done = ms.insightThisChapter >= Number(P.count ?? 0)
+        done = ms.insightThisChapter >= nTokens(s, P.count ?? 0)
           || (ev.type === 'trackAdvanced' && ev.space >= Number(P.trackSpace ?? 99))
           || s.huntTrack >= Number(P.trackSpace ?? 99);
         break;
@@ -634,11 +652,20 @@ export const bbMissionEvent = (s: BbState, ev: BbMissionEventArg): void => {
 
   // --- unrevealed trigger cards (chapter card table) ---
   const chKey = `Chapter ${s.chapter} - Setup`;
-  const ch = defs[chKey] as (BbMissionDef & { triggers?: { on: string; tile?: string; reveal: string }[] }) | undefined;
+  const ch = defs[chKey] as (BbMissionDef & { triggers?: BbTrigger[] }) | undefined;
   for (const t of ch?.triggers ?? []) {
+    if (!t.reveal || s.missions[t.reveal]?.revealed) continue;
     if (t.on === 'endMoveOnTile' && ev.type === 'endMove'
-      && tileDef(ev.tileId).name.toLowerCase() === (t.tile ?? '').toLowerCase()
-      && !s.missions[t.reveal]?.revealed) {
+      && tileDef(ev.tileId).name.toLowerCase() === (t.tile ?? '').toLowerCase()) {
+      revealMission(s, t.reveal);
+    }
+    // Hunt Track reaching a given space (e.g. the 1st reset at 4)
+    if ((t.on === 'huntTrackSpace' || t.on === 'huntTrackFirstReset')
+      && ((ev.type === 'trackAdvanced' && ev.space >= (t.space ?? 4)) || s.huntTrack >= (t.space ?? 4))) {
+      revealMission(s, t.reveal);
+    }
+    if (t.on === 'tileRevealed' && ev.type === 'tileRevealed'
+      && tileDef(ev.tileId).name.toLowerCase() === (t.tile ?? '').toLowerCase()) {
       revealMission(s, t.reveal);
     }
   }

@@ -35,6 +35,9 @@ export default function BbPlay({ view, act, seat, error }: Props) {
   const [refreshPick, setRefreshPick] = useState(false);
   const [refreshSel, setRefreshSel] = useState<string[]>([]);
   const [roundDiscard, setRoundDiscard] = useState<string[]>([]);
+  const [targeting, setTargeting] = useState<{ what: 'consumable' | 'firearm'; ix: number; label: string } | null>(null);
+  const [offerPick, setOfferPick] = useState<string[] | null>(null);
+  const [startSide, setStartSide] = useState<0 | 1>(0);
   const [zoomCard, setZoomCard] = useState<{ sheet: string; cell: number; back?: boolean; title?: string } | null>(null);
 
   const myTurn = view.activeSeat === seat;
@@ -57,6 +60,11 @@ export default function BbPlay({ view, act, seat, error }: Props) {
           <span className="ig-lab">BLOODBORNE · {view.campaignId.replace(/-/g, ' ').toUpperCase()} · CHAPTER {view.chapter}</span>
           <span className="bb-head-note">{me.hunterId ? 'WAITING FOR THE OTHER HUNTERS' : 'CHOOSE YOUR HUNTER'}</span>
         </div>
+        <div className="bb-actions ig-glass" style={{ margin: '8px 12px 0' }}>
+          <span className="bb-head-note">TRICK WEAPON STARTS ON</span>
+          <button className={'bb-btn' + (startSide === 0 ? ' primary' : '')} onClick={() => setStartSide(0)}>FIRST FORM</button>
+          <button className={'bb-btn' + (startSide === 1 ? ' primary' : '')} onClick={() => setStartSide(1)}>TRANSFORMED FORM</button>
+        </div>
         <div className="bb-picker">
           {[...core, ...expansion].map((h) => {
             const taken = view.pickedHunters.includes(h.id);
@@ -65,8 +73,8 @@ export default function BbPlay({ view, act, seat, error }: Props) {
               <button key={h.id} data-testid={`bb-pick-${h.id}`}
                 className={'bb-pick-card' + (taken ? ' taken' : '') + (mine ? ' mine' : '')}
                 disabled={taken || !!me.hunterId}
-                onClick={() => act({ type: 'pick_hunter', hunterId: h.id })}>
-                <div className="bb-pick-art" style={bbCellCss(manifest, 'sheet-2', (h.art as { weaponCell?: number }).weaponCell ?? 0)} />
+                onClick={() => act({ type: 'pick_hunter', hunterId: h.id, side: startSide })}>
+                <div className="bb-pick-art" style={bbCellCss(manifest, 'sheet-2', (h.art as { weaponCell?: number }).weaponCell ?? 0, startSide === 1)} />
                 <span className="bb-pick-name">{h.name.toUpperCase()}</span>
                 {h.set !== 'core' && <span className="bb-pick-tag">EXPANSION</span>}
                 {taken && !mine && <span className="bb-pick-tag">TAKEN</span>}
@@ -193,9 +201,21 @@ export default function BbPlay({ view, act, seat, error }: Props) {
               if (moving) act({ type: 'step_reveal', edge });
             }}
             onEnemy={(uid, isBoss) => {
+              if (targeting) {
+                if (targeting.what === 'firearm') act({ type: 'use_firearm', target: uid });
+                else act({ type: 'use_consumable', itemIx: targeting.ix, target: uid });
+                setTargeting(null);
+                return;
+              }
               if (canAct && selCard && emptySlots.length) setAttackPick(isBoss ? { bossUid: uid } : { enemyUid: uid });
             }}
           />
+          {targeting && targeting.label !== 'teleport-lamp' && targeting.label !== 'summon-ally' && (
+            <div className="bb-special-chips">
+              <span className="bb-chip">{targeting.label}</span>
+              <button className="bb-chip" onClick={() => setTargeting(null)}>CANCEL</button>
+            </div>
+          )}
           {view.specialRules.length > 0 && (
             <div className="bb-special-chips">
               {view.specialRules.slice(0, 4).map((r) => (
@@ -225,9 +245,12 @@ export default function BbPlay({ view, act, seat, error }: Props) {
             <div className="bb-gear-row">
               <button className={'bb-chip' + (me.firearmExhausted ? ' spent' : '')} data-testid="bb-firearm"
                 onClick={() => {
-                  if (me.firearmExhausted) setRefreshPick(true);
+                  if (me.firearmExhausted) { setRefreshPick(true); return; }
+                  const gun = (BB_ITEMS[me.firearmId]?.effects ?? {}) as { custom?: string };
+                  if (gun.custom === 'blunderbuss') setTargeting({ what: 'firearm', ix: 0, label: 'PICK AN ENEMY IN YOUR SPACE' });
                   else act({ type: 'use_firearm' });
-                }}>
+                }}
+                title={bbIconText(BB_ITEMS[me.firearmId]?.text)}>
                 {BB_ITEMS[me.firearmId]?.name.toUpperCase() ?? 'FIREARM'} {me.firearmExhausted ? '· SPENT, TAP TO REFRESH' : '· READY'}
               </button>
               {me.rewards.map((r, i) => (
@@ -243,12 +266,48 @@ export default function BbPlay({ view, act, seat, error }: Props) {
                 {me.consumables.map((c, i) => (
                   <button key={i} className="bb-chip consumable" data-testid={`bb-consumable-${i}`}
                     title={bbIconText(BB_ITEMS[c]?.text)}
-                    onClick={() => act({ type: 'use_consumable', itemIx: i })}>
+                    onClick={() => {
+                      const fx = (BB_ITEMS[c]?.effects ?? {}) as { custom?: string };
+                      if (fx.custom && ['damage-1-range-1', 'damage-2-same-space', 'move-enemy-2', 'suppress-activation'].includes(fx.custom)) {
+                        setTargeting({ what: 'consumable', ix: i, label: 'PICK AN ENEMY ON THE MAP' });
+                      } else if (fx.custom === 'teleport-lamp' || fx.custom === 'summon-ally') {
+                        setTargeting({ what: 'consumable', ix: i, label: fx.custom });
+                      } else {
+                        act({ type: 'use_consumable', itemIx: i });
+                      }
+                    }}>
                     {BB_ITEMS[c]?.name.toUpperCase()}
                   </button>
                 ))}
               </div>
             )}
+            {(() => {
+              // mission hooks: bait spawns + consumable offerings (engine-legal only)
+              const hooks = Object.entries(view.missionHooks ?? {});
+              const bait = hooks.some(([card, hk]) => (hk as { discardConsumableSpawns?: string }).discardConsumableSpawns
+                && view.missions[card]?.revealed && !view.missions[card]?.completed);
+              const myTile = me.space ? view.tiles.find((t) => t.uid === Number(me.space!.split(':')[0])) : null;
+              const myTileName = myTile ? (BB_TILES[myTile.tileId]?.name ?? '').toLowerCase() : '';
+              const offer = hooks.find(([card, hk]) => {
+                const t = (hk as { discardConsumablesOnTileDecrements?: string }).discardConsumablesOnTileDecrements;
+                return t && t.toLowerCase() === myTileName && view.missions[card]?.revealed && !view.missions[card]?.completed;
+              });
+              if (!bait && !offer) return null;
+              return (
+                <div className="bb-gear-row">
+                  {bait && canAct && me.consumables.length > 0 && (
+                    <button className="bb-chip" data-testid="bb-mission-spawn" onClick={() => act({ type: 'mission_spawn' })}>
+                      SET BAIT · DISCARD 1 CONSUMABLE
+                    </button>
+                  )}
+                  {offer && canAct && me.consumables.length > 0 && (
+                    <button className="bb-chip" data-testid="bb-mission-offer" onClick={() => setOfferPick([])}>
+                      OFFER CONSUMABLES HERE
+                    </button>
+                  )}
+                </div>
+              );
+            })()}
           </div>
 
           {/* hand */}
@@ -330,6 +389,12 @@ export default function BbPlay({ view, act, seat, error }: Props) {
               act({ type: 'refresh_firearm', discard: refreshSel.map((i) => me.hand[+i]) });
               setRefreshPick(false); setRefreshSel([]);
             }}>REFRESH</button>
+            {(BB_ITEMS[me.firearmId]?.effects as { echoRefresh?: boolean } | undefined)?.echoRefresh && (
+              <button className="bb-btn" disabled={me.echoes < 1} onClick={() => {
+                act({ type: 'refresh_firearm', discard: [], echo: true });
+                setRefreshPick(false); setRefreshSel([]);
+              }}>SPEND 1 BLOOD ECHO{me.echoes < 1 ? ' · NONE HELD' : ''}</button>
+            )}
           </div>
         </div>
       )}
@@ -390,6 +455,60 @@ export default function BbPlay({ view, act, seat, error }: Props) {
             </div>
             <a className="bb-btn ghost" href="/bloodborne/rulebook.pdf" target="_blank" rel="noreferrer">FULL RULEBOOK</a>
             <button className="bb-btn ghost" onClick={() => setShowIntro(false)}>CLOSE</button>
+          </div>
+        </div>
+      )}
+
+      {/* consumable lamp / ally target pickers */}
+      {targeting && targeting.label === 'teleport-lamp' && (
+        <div className="bb-modal" onClick={() => setTargeting(null)}>
+          <div className="ig-glass bb-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="ig-lab">TELEPORT TO A LAMP</div>
+            {view.tiles.flatMap((t) => (BB_TILES[t.tileId]?.spaces ?? [])
+              .filter((sp) => sp.icons.includes('lamp') && !view.brokenLamps.includes(`${t.uid}:${sp.id}`))
+              .map((sp) => (
+                <button key={`${t.uid}:${sp.id}`} className="bb-btn"
+                  onClick={() => { act({ type: 'use_consumable', itemIx: targeting.ix, target: `${t.uid}:${sp.id}` }); setTargeting(null); }}>
+                  {(sp.named ?? BB_TILES[t.tileId]?.name ?? 'LAMP').toUpperCase()}
+                </button>
+              )))}
+            <button className="bb-btn ghost" onClick={() => setTargeting(null)}>CANCEL</button>
+          </div>
+        </div>
+      )}
+      {targeting && targeting.label === 'summon-ally' && (
+        <div className="bb-modal" onClick={() => setTargeting(null)}>
+          <div className="ig-glass bb-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="ig-lab">CALL A HUNTER TO YOUR SIDE</div>
+            {view.hunters.filter((h) => h.seat !== seat && h.space).map((h) => (
+              <button key={h.seat} className="bb-btn"
+                onClick={() => { act({ type: 'use_consumable', itemIx: targeting.ix, target: h.seat }); setTargeting(null); }}>
+                {bbHunterName(h.hunterId).toUpperCase()}
+              </button>
+            ))}
+            <button className="bb-btn ghost" onClick={() => setTargeting(null)}>CANCEL</button>
+          </div>
+        </div>
+      )}
+
+      {/* mission consumable offering */}
+      {offerPick && (
+        <div className="bb-modal" onClick={() => setOfferPick(null)}>
+          <div className="ig-glass bb-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="ig-lab">OFFER CONSUMABLES · PICK ANY</div>
+            <div className="bb-gear-row">
+              {me.consumables.map((c, i) => (
+                <button key={i} className={'bb-chip consumable' + (offerPick.includes(`${i}`) ? ' sel' : '')}
+                  onClick={() => setOfferPick(offerPick.includes(`${i}`) ? offerPick.filter((x) => x !== `${i}`) : [...offerPick, `${i}`])}>
+                  {BB_ITEMS[c]?.name.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <button className="bb-btn primary" disabled={offerPick.length === 0}
+              onClick={() => { act({ type: 'mission_discard', cards: offerPick.map((i) => me.consumables[+i]) }); setOfferPick(null); }}>
+              OFFER {offerPick.length}
+            </button>
+            <button className="bb-btn ghost" onClick={() => setOfferPick(null)}>CANCEL</button>
           </div>
         </div>
       )}
@@ -490,12 +609,32 @@ function BbPrompt({ view, seat, act, pending, manifest, roundDiscard, setRoundDi
                 ))}
               </div>
             )}
+            {!me.firearmExhausted && (BB_ITEMS[me.firearmId]?.effects as { custom?: string } | undefined)?.custom === 'firearm-attack' && (
+              <button className="bb-btn" onClick={() => act({ type: 'choose', firearm: true })}>
+                FIRE THE {BB_ITEMS[me.firearmId]?.name.toUpperCase()}
+              </button>
+            )}
             <button className="bb-btn ghost" data-testid="bb-combat-pass" onClick={() => act({ type: 'choose', pass: true })}>DO NOT ATTACK</button>
           </>
         )}
 
         {(pending.kind === 'combat-dodge' || pending.kind === 'combat-rider') && (
           <>
+            {pending.kind === 'combat-dodge' && !me.firearmExhausted && combat?.bossUid == null && (() => {
+              const gun = (BB_ITEMS[me.firearmId]?.effects ?? {}) as { custom?: string };
+              const isBasic = combat?.enemyAction?.kind === 'basic';
+              if (gun.custom === 'stagger-basic' && isBasic) {
+                return <button className="bb-btn" onClick={() => act({ type: 'use_firearm' })}>
+                  FIRE · STAGGER THE ATTACK
+                </button>;
+              }
+              if (gun.custom === 'degrade-attack') {
+                return <button className="bb-btn" onClick={() => act({ type: 'use_firearm' })}>
+                  FIRE · -1 SPEED, NO EFFECTS
+                </button>;
+              }
+              return null;
+            })()}
             {dodgeCards.length > 0 ? (
               <>
                 <div className="bb-hand small">

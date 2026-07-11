@@ -2071,6 +2071,47 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 4
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "1",
+     "tokens": "nPlus2"
+    },
+    {
+     "do": "npcFollower",
+     "id": "1",
+     "space": "space:Central Lamp"
+    },
+    {
+     "do": "specialRule",
+     "rule": "1"
+    },
+    {
+     "do": "custom",
+     "id": "gascoigne-attack-aura"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {},
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "2"
+     }
+    ]
+   },
+   "hooks": {
+    "decrementOnSlayTypesAtNpc": [
+     "Hunter Mob",
+     "Huntsman's Minion",
+     "Scourge Beast",
+     "Male Beast Patient",
+     "Female Beast Patient"
+    ],
+    "decFrom": "1"
    }
   },
   "2": {
@@ -2084,6 +2125,26 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 5
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "remove-gascoigne-npc-token"
+    }
+   ],
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "The Great Bridge",
+     "insight": 2
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "3"
+     }
+    ]
    }
   },
   "3": {
@@ -2097,6 +2158,44 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 6
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "4"
+    },
+    {
+     "do": "arena",
+     "tile": "The Great Bridge",
+     "enemy": "Hunter Mob",
+     "icon": "anySpawn",
+     "tag": "3",
+     "respawnOnReset": true
+    },
+    {
+     "do": "arena",
+     "tile": "The Great Bridge",
+     "enemy": "Huntsman's Minion",
+     "icon": "anySpawn",
+     "tag": "3",
+     "respawnOnReset": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "3"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "5"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "4": {
@@ -2110,7 +2209,18 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 7
-   }
+   },
+   "onReveal": [
+    {
+     "do": "hpPool",
+     "tag": "3",
+     "tokens": "1or2at3plus"
+    },
+    {
+     "do": "custom",
+     "id": "bridge-dodge-on-ability-flip"
+    }
+   ]
   },
   "5": {
    "campaign": "growing-madness",
@@ -2123,7 +2233,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 8
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 2
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Moon"
+    }
+   ]
   },
   "6": {
    "campaign": "growing-madness",
@@ -2136,6 +2256,45 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 9
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "7"
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Hunter Mob",
+     "space": "space:Central Lamp"
+    },
+    {
+     "do": "custom",
+     "id": "mob-rooted-cannot-move"
+    },
+    {
+     "do": "survivor",
+     "id": "6",
+     "space": "space:Central Lamp",
+     "pickup": "moveOut",
+     "onLose": "return"
+    },
+    {
+     "do": "custom",
+     "id": "survivor-and-mission-lost-on-reset-if-unattended"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "6"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "8"
+     }
+    ]
    }
   },
   "7": {
@@ -2149,7 +2308,28 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 10
-   }
+   },
+   "onReveal": [
+    {
+     "do": "hpPool",
+     "tag": "6",
+     "tokens": "1or2at3plus"
+    },
+    {
+     "do": "replaceAttack",
+     "tag": "6",
+     "slot": "basic",
+     "attack": {
+      "name": "Reckless Anger",
+      "speed": "medium",
+      "damage": 2,
+      "text": "Frenzy.",
+      "flags": {
+       "frenzy": true
+      }
+     }
+    }
+   ]
   },
   "8": {
    "campaign": "growing-madness",
@@ -2162,6 +2342,26 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 11
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "reveal-10-if-move-ends-carrying-token-after-reset"
+    }
+   ],
+   "goal": {
+    "type": "escortTokenTo",
+    "params": {
+     "id": "6",
+     "tile": "Oedon Chapel"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "9"
+     }
+    ]
    }
   },
   "9": {
@@ -2175,7 +2375,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 12
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Hand Lantern"
+    }
+   ]
   },
   "10": {
    "campaign": "growing-madness",
@@ -2188,7 +2398,21 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 13
-   }
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "suffer-1-dmg-frenzy-discard-survivor-token"
+    },
+    {
+     "do": "reward",
+     "echoes": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Blood Rapture"
+    }
+   ]
   },
   "11": {
    "campaign": "growing-madness",
@@ -2201,6 +2425,32 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 14
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "11",
+     "tokens": "nPlus1"
+    },
+    {
+     "do": "specialRule",
+     "rule": "11"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {},
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "12"
+     }
+    ]
+   },
+   "hooks": {
+    "discardConsumablesOnTileDecrements": "Occupied House",
+    "decFrom": "11"
    }
   },
   "12": {
@@ -2214,6 +2464,27 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 15
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "12",
+     "space": "space:Graveyard",
+     "pickup": "interact"
+    }
+   ],
+   "goal": {
+    "type": "interactToken",
+    "params": {
+     "id": "12"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "13"
+     }
+    ]
    }
   },
   "13": {
@@ -2227,7 +2498,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 16
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Hunter Torch"
+    },
+    {
+     "do": "reward",
+     "item": "Flamesprayer"
+    }
+   ]
   },
   "14": {
    "campaign": "growing-madness",
@@ -2240,6 +2521,32 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 17
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "14",
+     "tokens": "nPlus2"
+    },
+    {
+     "do": "specialRule",
+     "rule": "14"
+    },
+    {
+     "do": "custom",
+     "id": "echo-discard-decrements"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {},
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "15"
+     }
+    ]
    }
   },
   "15": {
@@ -2253,7 +2560,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 18
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 2
+    },
+    {
+     "do": "reward",
+     "item": "Messenger's Gift"
+    }
+   ]
   },
   "16": {
    "campaign": "growing-madness",
@@ -2266,7 +2583,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 19
-   }
+   },
+   "onReveal": [
+    {
+     "do": "fogGates",
+     "tile": "Tomb of Oedon"
+    },
+    {
+     "do": "tileLock",
+     "tile": "Tomb of Oedon"
+    }
+   ]
   },
   "17": {
    "campaign": "growing-madness",
@@ -2279,6 +2606,25 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 20
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "spawn-church-giant-and-servant-on-grand-cathedral-reveal"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "17"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "18"
+     }
+    ]
    }
   },
   "18": {
@@ -2292,6 +2638,29 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 21
+   },
+   "onReveal": [
+    {
+     "do": "specialRule",
+     "rule": "18"
+    }
+   ],
+   "goal": {
+    "type": "insightThisChapter",
+    "params": {
+     "count": 2
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "removeFogGates",
+      "tile": "Tomb of Oedon"
+     },
+     {
+      "do": "tileUnlock",
+      "tile": "Tomb of Oedon"
+     }
+    ]
    }
   },
   "19": {
@@ -2305,6 +2674,41 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 22
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "20"
+    },
+    {
+     "do": "spawnBoss",
+     "boss": "Father Gascoigne",
+     "space": "anySpawn:Tomb of Oedon",
+     "tag": "19"
+    },
+    {
+     "do": "bossOverride",
+     "boss": "Father Gascoigne",
+     "set": {
+      "respawnTo": "anySpawn:Tomb of Oedon"
+     }
+    }
+   ],
+   "goal": {
+    "type": "slayBoss",
+    "params": {
+     "boss": "Father Gascoigne"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "21"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "20": {
@@ -2318,7 +2722,13 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 23
-   }
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "tiny-music-box-slows-gascoigne"
+    }
+   ]
   },
   "21": {
    "campaign": "growing-madness",
@@ -2331,7 +2741,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 24
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Beast"
+    },
+    {
+     "do": "reward",
+     "item": "Hunter Blunderbuss"
+    }
+   ]
   },
   "22": {
    "campaign": "growing-madness",
@@ -2344,7 +2764,21 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 25
-   }
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "all-hunters-suffer-frenzy"
+    },
+    {
+     "do": "reveal",
+     "card": "23"
+    },
+    {
+     "do": "reveal",
+     "card": "24"
+    }
+   ]
   },
   "23": {
    "campaign": "growing-madness",
@@ -2357,7 +2791,13 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 26
-   }
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "all-hunter-mobs-reckless-anger"
+    }
+   ]
   },
   "24": {
    "campaign": "growing-madness",
@@ -2370,6 +2810,36 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 27
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "24",
+     "tokens": "nPlus2"
+    },
+    {
+     "do": "specialRule",
+     "rule": "24"
+    },
+    {
+     "do": "custom",
+     "id": "spawn-hunter-mob-each-enemy-space-after-reset"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {},
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "25"
+     }
+    ]
+   },
+   "hooks": {
+    "decrementOnSlay": "Hunter Mob",
+    "decFrom": "24"
    }
   },
   "25": {
@@ -2383,7 +2853,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 28
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Guidance"
+    }
+   ]
   },
   "26": {
    "campaign": "growing-madness",
@@ -2396,6 +2876,31 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 29
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Tiny Music Box"
+    },
+    {
+     "do": "survivor",
+     "id": "26",
+     "space": "space:Graveyard",
+     "pickup": "interact"
+    }
+   ],
+   "goal": {
+    "type": "interactToken",
+    "params": {
+     "id": "26"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "27"
+     }
+    ]
    }
   },
   "27": {
@@ -2409,6 +2914,24 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 30
+   },
+   "onReveal": [
+    {
+     "do": "insight"
+    }
+   ],
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Barred Window"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "28"
+     }
+    ]
    }
   },
   "28": {
@@ -2422,6 +2945,23 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 31
+   },
+   "goal": {
+    "type": "choice",
+    "params": {
+     "options": [
+      {
+       "label": "LIE TO THE GIRL AND KEEP THE SHARD",
+       "reveal": "29"
+      },
+      {
+       "label": "TELL HER THE TRUTH",
+       "reveal": "30"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "29": {
@@ -2435,7 +2975,13 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 32
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Blood Stone Shard"
+    }
+   ]
   },
   "30": {
    "campaign": "growing-madness",
@@ -2448,7 +2994,13 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 33
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Eye"
+    }
+   ]
   },
   "31": {
    "campaign": "growing-madness",
@@ -2461,6 +3013,23 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 34
+   },
+   "goal": {
+    "type": "branch",
+    "params": {
+     "cases": [
+      {
+       "ifInsightCard": "15",
+       "reveal": "33"
+      },
+      {
+       "else": true,
+       "reveal": "32"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "32": {
@@ -2474,6 +3043,36 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 35
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "32",
+     "tokens": "nPlus2"
+    },
+    {
+     "do": "specialRule",
+     "rule": "32"
+    },
+    {
+     "do": "custom",
+     "id": "echo-discard-decrements"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {},
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "15"
+     },
+     {
+      "do": "reveal",
+      "card": "33"
+     }
+    ]
    }
   },
   "33": {
@@ -2487,6 +3086,19 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 36
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Graveyard"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "34"
+     }
+    ]
    }
   },
   "34": {
@@ -2500,6 +3112,43 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 37
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "35"
+    },
+    {
+     "do": "arena",
+     "tile": "Graveyard",
+     "enemy": "Old Hunter Henryk",
+     "icon": "anySpawn",
+     "tag": "34",
+     "respawnOnReset": true
+    },
+    {
+     "do": "survivor",
+     "id": "34-eileen",
+     "space": "anySpawn:Graveyard",
+     "pickup": "interact"
+    },
+    {
+     "do": "custom",
+     "id": "reveal-37-instead-if-eileen-slain-first"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "34"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "36"
+     }
+    ]
    }
   },
   "35": {
@@ -2513,7 +3162,22 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 38
-   }
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "35",
+     "tokens": 3
+    },
+    {
+     "do": "specialRule",
+     "rule": "35"
+    },
+    {
+     "do": "custom",
+     "id": "action-flip-each-hunter-turn-eileen-timer"
+    }
+   ]
   },
   "36": {
    "campaign": "growing-madness",
@@ -2526,7 +3190,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 39
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Blood Rapture"
+    },
+    {
+     "do": "reward",
+     "item": "Rosmarinus"
+    }
+   ]
   },
   "37": {
    "campaign": "growing-madness",
@@ -2539,7 +3213,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 40
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Beast Roar"
+    },
+    {
+     "do": "reward",
+     "item": "Rosmarinus"
+    }
+   ]
   },
   "38": {
    "campaign": "growing-madness",
@@ -2552,7 +3236,19 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 41
-   }
+   },
+   "onReveal": [
+    {
+     "do": "spawnBoss",
+     "boss": "Father Gascoigne",
+     "space": "anySpawn:Tomb of Oedon",
+     "tag": "38"
+    },
+    {
+     "do": "custom",
+     "id": "gascoigne-starts-phase-2"
+    }
+   ]
   },
   "39": {
    "campaign": "growing-madness",
@@ -2565,6 +3261,26 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 42
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "40"
+    }
+   ],
+   "goal": {
+    "type": "insightThisChapterOrTrack",
+    "params": {
+     "count": 2,
+     "trackSpace": 12
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "41"
+     }
+    ]
    }
   },
   "40": {
@@ -2578,7 +3294,22 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 43
-   }
+   },
+   "onReveal": [
+    {
+     "do": "bossOverride",
+     "boss": "Father Gascoigne",
+     "set": {
+      "invulnerable": true,
+      "healOnReset": true,
+      "bonusActivationRoundEnd": "moveFourTowardLowestHpAndAttack"
+     }
+    },
+    {
+     "do": "custom",
+     "id": "gascoigne-6hp-no-activate-no-pursue-move-3"
+    }
+   ]
   },
   "41": {
    "campaign": "growing-madness",
@@ -2591,6 +3322,28 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 44
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "swap-to-gascoigne-transformed-heal-phase-1-discard-40-and-music-box"
+    }
+   ],
+   "goal": {
+    "type": "slayBoss",
+    "params": {
+     "boss": "Father Gascoigne Transformed"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "42"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "42": {
@@ -2617,6 +3370,27 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 46
+   },
+   "goal": {
+    "type": "branch",
+    "params": {
+     "cases": [
+      {
+       "ifInsightCard": "30",
+       "reveal": "47"
+      },
+      {
+       "ifInsightCard": "29",
+       "reveal": "44"
+      },
+      {
+       "else": true,
+       "reveal": "26"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "44": {
@@ -2630,6 +3404,25 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 47
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "spawn-marked-minion-4-spaces-from-barred-window"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "44"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "45"
+     }
+    ]
    }
   },
   "45": {
@@ -2643,6 +3436,24 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 48
+   },
+   "onReveal": [
+    {
+     "do": "insight"
+    }
+   ],
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Barred Window"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "46"
+     }
+    ]
    }
   },
   "46": {
@@ -2656,7 +3467,13 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 49
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Communion"
+    }
+   ]
   },
   "47": {
    "campaign": "growing-madness",
@@ -2669,6 +3486,40 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 50
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "47",
+     "space": "space:Barred Window",
+     "pickup": "moveOut",
+     "onLose": "return"
+    },
+    {
+     "do": "tokenFlee",
+     "id": "47",
+     "distance": 4,
+     "revealTiles": true,
+     "movesAwayPerTurn": 0
+    },
+    {
+     "do": "custom",
+     "id": "discard-token-and-mission-on-reset-if-unattended"
+    }
+   ],
+   "goal": {
+    "type": "endMoveOnToken",
+    "params": {
+     "id": "47",
+     "noPursuit": true
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "48"
+     }
+    ]
    }
   },
   "48": {
@@ -2682,6 +3533,20 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 51
+   },
+   "goal": {
+    "type": "escortTokenTo",
+    "params": {
+     "id": "47",
+     "tile": "Grand Cathedral"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "49"
+     }
+    ]
    }
   },
   "49": {
@@ -2695,7 +3560,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 52
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Oedon Writhe"
+    }
+   ]
   },
   "50": {
    "campaign": "growing-madness",
@@ -2708,6 +3583,23 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 53
+   },
+   "goal": {
+    "type": "branch",
+    "params": {
+     "cases": [
+      {
+       "ifInsightCard": "36",
+       "reveal": "53"
+      },
+      {
+       "else": true,
+       "reveal": "51"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "51": {
@@ -2721,6 +3613,29 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 54
+   },
+   "onReveal": [
+    {
+     "do": "arena",
+     "tile": "Grand Cathedral",
+     "enemy": "Eileen the Crow",
+     "icon": "anySpawn",
+     "tag": "51",
+     "respawnOnReset": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "51"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "52"
+     }
+    ]
    }
   },
   "52": {
@@ -2734,7 +3649,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 55
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Old Hunter Bone"
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Clawmark"
+    }
+   ]
   },
   "53": {
    "campaign": "growing-madness",
@@ -2747,6 +3672,29 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 56
+   },
+   "onReveal": [
+    {
+     "do": "arena",
+     "tile": "Grand Cathedral",
+     "enemy": "Bloody Crow of Cainhurst",
+     "icon": "anySpawn",
+     "tag": "53",
+     "respawnOnReset": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "53"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "54"
+     }
+    ]
    }
   },
   "54": {
@@ -2760,7 +3708,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 57
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Old Hunter Bone"
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Hunter"
+    }
+   ]
   },
   "55": {
    "campaign": "growing-madness",
@@ -2773,6 +3731,23 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 58
+   },
+   "goal": {
+    "type": "branch",
+    "params": {
+     "cases": [
+      {
+       "ifInsightCard": "13",
+       "reveal": "56"
+      },
+      {
+       "else": true,
+       "reveal": "11"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "56": {
@@ -2786,6 +3761,34 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 59
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "57"
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Scourge Beast",
+     "space": "space:Occupied House"
+    },
+    {
+     "do": "custom",
+     "id": "scourge-beast-respawns-on-reset"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "56"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "58"
+     }
+    ]
    }
   },
   "57": {
@@ -2799,7 +3802,28 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 60
-   }
+   },
+   "onReveal": [
+    {
+     "do": "hpPool",
+     "tag": "56",
+     "tokens": "2or3at3plus"
+    },
+    {
+     "do": "replaceAttack",
+     "tag": "56",
+     "slot": "basic",
+     "attack": {
+      "name": "Frenzied Swipes",
+      "speed": "fast",
+      "damage": 2,
+      "text": "Frenzy.",
+      "flags": {
+       "frenzy": true
+      }
+     }
+    }
+   ]
   },
   "58": {
    "campaign": "growing-madness",
@@ -2812,7 +3836,17 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 61
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 2
+    },
+    {
+     "do": "reward",
+     "item": "Tiny Tonitrus"
+    }
+   ]
   },
   "Introduction": {
    "campaign": "growing-madness",
@@ -2838,7 +3872,28 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 1
-   }
+   },
+   "triggers": [
+    {
+     "on": "startOfHunt",
+     "reveal": "1"
+    },
+    {
+     "on": "huntTrackSpace",
+     "space": 4,
+     "reveal": "6"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Occupied House",
+     "reveal": "11"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Oedon Chapel",
+     "reveal": "14"
+    }
+   ]
   },
   "Chapter 2 - Setup": {
    "campaign": "growing-madness",
@@ -2851,6 +3906,39 @@
    "art": {
     "sheet": "growing-madness",
     "cell": 2
+   },
+   "triggers": [
+    {
+     "on": "startOfHunt",
+     "reveal": "17"
+    },
+    {
+     "on": "huntTrackSpace",
+     "space": 4,
+     "reveal": "22"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Barred Window",
+     "reveal": "26"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Oedon Chapel",
+     "reveal": "31"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Tomb of Oedon",
+     "reveal": "19"
+    }
+   ],
+   "prePlace": {
+    "chain": [
+     "The Great Bridge",
+     "Tomb of Oedon"
+    ],
+    "specialRuleCard": "16"
    }
   },
   "Chapter 3 - Setup": {
@@ -2864,6 +3952,34 @@
    "art": {
     "sheet": "birth-of-madness",
     "cell": 6
+   },
+   "triggers": [
+    {
+     "on": "startOfHunt",
+     "reveal": "39"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Barred Window",
+     "reveal": "43"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Grand Cathedral",
+     "reveal": "50"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Occupied House",
+     "reveal": "55"
+    }
+   ],
+   "prePlace": {
+    "chain": [
+     "The Great Bridge",
+     "Tomb of Oedon"
+    ],
+    "specialRuleCard": "38"
    }
   }
  },
@@ -3739,7 +4855,13 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 4
-   }
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "dream-swap-consumable-for-antidote"
+    }
+   ]
   },
   "2": {
    "campaign": "fall-of-old-yharnam",
@@ -3752,6 +4874,19 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 5
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Alleyway"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "3"
+     }
+    ]
    }
   },
   "3": {
@@ -3765,6 +4900,27 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 6
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "3",
+     "space": "space:Alleyway",
+     "pickup": "interact"
+    }
+   ],
+   "goal": {
+    "type": "interactToken",
+    "params": {
+     "id": "3"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "4"
+     }
+    ]
    }
   },
   "4": {
@@ -3778,6 +4934,22 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 7
+   },
+   "goal": {
+    "type": "insightThisChapter",
+    "params": {
+     "count": "nPlus1"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "5"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "5": {
@@ -3791,7 +4963,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 8
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Ludwig's Rifle"
+    }
+   ]
   },
   "6": {
    "campaign": "fall-of-old-yharnam",
@@ -3804,6 +4986,36 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 9
+   },
+   "onReveal": [
+    {
+     "do": "fogGates",
+     "tile": "Ransacked House"
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Male Beast Patient",
+     "space": "anySpawn:Ransacked House",
+     "count": 2
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Female Beast Patient",
+     "space": "anySpawn:Ransacked House"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "6"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "7"
+     }
+    ]
    }
   },
   "7": {
@@ -3817,7 +5029,13 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 10
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Tiny Tonitrus"
+    }
+   ]
   },
   "8": {
    "campaign": "fall-of-old-yharnam",
@@ -3830,6 +5048,31 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 11
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "8",
+     "space": "space:Graveyard",
+     "pickup": "interact"
+    },
+    {
+     "do": "custom",
+     "id": "pay-1-antidote-and-1-blood-echo-on-rescue"
+    }
+   ],
+   "goal": {
+    "type": "interactToken",
+    "params": {
+     "id": "8"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "9"
+     }
+    ]
    }
   },
   "9": {
@@ -3843,7 +5086,13 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 12
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Empty Phantasm Shell"
+    }
+   ]
   },
   "10": {
    "campaign": "fall-of-old-yharnam",
@@ -3856,6 +5105,33 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 13
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "11"
+    },
+    {
+     "do": "arena",
+     "tile": "Courtyard Lamp",
+     "enemy": "Hunter Mob",
+     "icon": "anySpawn",
+     "tag": "10",
+     "respawnOnReset": true
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "10"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "12"
+     }
+    ]
    }
   },
   "11": {
@@ -3869,7 +5145,28 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 14
-   }
+   },
+   "onReveal": [
+    {
+     "do": "hpPool",
+     "tag": "10",
+     "tokens": "2or3at3plus"
+    },
+    {
+     "do": "replaceAttack",
+     "tag": "10",
+     "slot": "basic",
+     "attack": {
+      "name": "Infected Strike",
+      "speed": "medium",
+      "damage": 2,
+      "text": "Poison. If the Hunter is already Poisoned, their Attacks and Dodges suffer -1 {slow}.",
+      "flags": {
+       "poison": true
+      }
+     }
+    }
+   ]
   },
   "12": {
    "campaign": "fall-of-old-yharnam",
@@ -3882,7 +5179,13 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 15
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Evelyn"
+    }
+   ]
   },
   "13": {
    "campaign": "fall-of-old-yharnam",
@@ -3895,6 +5198,36 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 16
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "barred-door-token-3dmg-to-open"
+    },
+    {
+     "do": "survivor",
+     "id": "13",
+     "space": "space:Occupied House",
+     "pickup": "interact"
+    },
+    {
+     "do": "spawnEnemy",
+     "enemy": "Male Beast Patient",
+     "space": "space:Occupied House"
+    }
+   ],
+   "goal": {
+    "type": "interactToken",
+    "params": {
+     "id": "13"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "14"
+     }
+    ]
    }
   },
   "14": {
@@ -3908,7 +5241,13 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 17
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Moon"
+    }
+   ]
   },
   "15": {
    "campaign": "fall-of-old-yharnam",
@@ -3921,6 +5260,38 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 18
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "16"
+    },
+    {
+     "do": "spawnBoss",
+     "boss": "Blood-Starved Beast",
+     "space": "space:Central Lamp",
+     "tag": "15"
+    },
+    {
+     "do": "bossOverride",
+     "boss": "Blood-Starved Beast",
+     "set": {
+      "healOnReset": true
+     }
+    }
+   ],
+   "goal": {
+    "type": "bossPhase2",
+    "params": {
+     "boss": "Blood-Starved Beast"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "17"
+     }
+    ]
    }
   },
   "16": {
@@ -3934,7 +5305,21 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 19
-   }
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "bsb-moves-and-pursues-2-spaces"
+    },
+    {
+     "do": "custom",
+     "id": "bsb-round-end-move-3-toward-lowest-hp-and-attack"
+    },
+    {
+     "do": "custom",
+     "id": "bsb-removed-from-map-on-phase-2"
+    }
+   ]
   },
   "17": {
    "campaign": "fall-of-old-yharnam",
@@ -3947,7 +5332,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 20
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "echoes": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Oedon Writhe"
+    }
+   ]
   },
   "18": {
    "campaign": "fall-of-old-yharnam",
@@ -3960,6 +5355,19 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 21
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Occupied House"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "19"
+     }
+    ]
    }
   },
   "19": {
@@ -3973,6 +5381,20 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 22
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Graveyard",
+     "insight": 1
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "20"
+     }
+    ]
    }
   },
   "20": {
@@ -3986,6 +5408,20 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 23
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Central Lamp",
+     "insight": 2
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "21"
+     }
+    ]
    }
   },
   "21": {
@@ -3999,6 +5435,23 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 24
+   },
+   "goal": {
+    "type": "choice",
+    "params": {
+     "options": [
+      {
+       "label": "AID DJURA",
+       "reveal": "22"
+      },
+      {
+       "label": "AID THE SAW CLEAVER HUNTER",
+       "reveal": "24"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "22": {
@@ -4012,6 +5465,34 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 25
+   },
+   "onReveal": [
+    {
+     "do": "spawnNpc",
+     "enemy": "Djura's Ally",
+     "space": "space:Central Lamp",
+     "tag": "22"
+    },
+    {
+     "do": "custom",
+     "id": "djuras-ally-persists-on-reset-heals-all"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "22"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "23"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "23": {
@@ -4025,7 +5506,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 26
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Hunter"
+    },
+    {
+     "do": "reward",
+     "item": "Repeating Pistol"
+    }
+   ]
   },
   "24": {
    "campaign": "fall-of-old-yharnam",
@@ -4038,6 +5529,34 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 27
+   },
+   "onReveal": [
+    {
+     "do": "spawnNpc",
+     "enemy": "Old Hunter Djura",
+     "space": "space:Central Lamp",
+     "tag": "24"
+    },
+    {
+     "do": "custom",
+     "id": "djura-persists-on-reset-heals-all"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "24"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "25"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "25": {
@@ -4051,7 +5570,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 28
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Hunter"
+    },
+    {
+     "do": "reward",
+     "item": "Hunter Blunderbuss"
+    }
+   ]
   },
   "26": {
    "campaign": "fall-of-old-yharnam",
@@ -4064,6 +5593,34 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 29
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "26",
+     "tokens": "nPlus1"
+    },
+    {
+     "do": "specialRule",
+     "rule": "26"
+    },
+    {
+     "do": "custom",
+     "id": "decrement-on-any-enemy-slain-on-central-lamp-tile"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {
+     "id": "26"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "27"
+     }
+    ]
    }
   },
   "27": {
@@ -4077,7 +5634,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 30
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Hunter Torch"
+    }
+   ]
   },
   "28": {
    "campaign": "fall-of-old-yharnam",
@@ -4090,6 +5657,27 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 31
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "28",
+     "space": "space:Alleyway",
+     "pickup": "interact"
+    }
+   ],
+   "goal": {
+    "type": "interactToken",
+    "params": {
+     "id": "28"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "29"
+     }
+    ]
    }
   },
   "29": {
@@ -4103,6 +5691,23 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 32
+   },
+   "goal": {
+    "type": "choice",
+    "params": {
+     "options": [
+      {
+       "label": "AID THE SURVIVORS",
+       "reveal": "30"
+      },
+      {
+       "label": "ATTACK THE SURVIVORS",
+       "reveal": "32"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "30": {
@@ -4116,6 +5721,33 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 33
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "30",
+     "space": "space:Alleyway",
+     "pickup": "moveOut",
+     "onLose": "return"
+    },
+    {
+     "do": "custom",
+     "id": "survivor-band-push-move-2-enemies-lured-slain-if-caught"
+    }
+   ],
+   "goal": {
+    "type": "escortTokenTo",
+    "params": {
+     "id": "30",
+     "tile": "Courtyard Lamp"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "31"
+     }
+    ]
    }
   },
   "31": {
@@ -4129,7 +5761,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 34
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Guidance"
+    }
+   ]
   },
   "32": {
    "campaign": "fall-of-old-yharnam",
@@ -4142,6 +5784,31 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 35
+   },
+   "onReveal": [
+    {
+     "do": "placeTokens",
+     "count": "nPlus1",
+     "where": "space:Alleyway",
+     "token": "survivor"
+    },
+    {
+     "do": "custom",
+     "id": "fleeing-survivor-tokens-attackable-move-2-then-1-per-turn"
+    }
+   ],
+   "goal": {
+    "type": "slayTagged",
+    "params": {
+     "tag": "32"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "33"
+     }
+    ]
    }
   },
   "33": {
@@ -4155,7 +5822,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 36
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Beast"
+    }
+   ]
   },
   "34": {
    "campaign": "fall-of-old-yharnam",
@@ -4168,6 +5845,34 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 37
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "34",
+     "tokens": "nPlus2"
+    },
+    {
+     "do": "specialRule",
+     "rule": "34"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {
+     "id": "34"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "35"
+     }
+    ]
+   },
+   "hooks": {
+    "discardConsumablesOnTileDecrements": "Barred Window",
+    "decFrom": "34"
    }
   },
   "35": {
@@ -4181,7 +5886,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 38
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "A Call Beyond"
+    },
+    {
+     "do": "reward",
+     "item": "Cannon"
+    }
+   ]
   },
   "36": {
    "campaign": "fall-of-old-yharnam",
@@ -4194,6 +5909,26 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 39
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "survivor-token-on-each-consumable-or-enemy-icon-space-interact-to-collect"
+    }
+   ],
+   "goal": {
+    "type": "counterAtLeast",
+    "params": {
+     "id": "36",
+     "count": "nPlus1"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "37"
+     }
+    ]
    }
   },
   "37": {
@@ -4207,6 +5942,20 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 40
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Church of the Good Chalice",
+     "insight": 2
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "38"
+     }
+    ]
    }
   },
   "38": {
@@ -4220,6 +5969,45 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 41
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "39"
+    },
+    {
+     "do": "fogGates",
+     "tile": "Church of the Good Chalice"
+    },
+    {
+     "do": "spawnBoss",
+     "boss": "Blood-Starved Beast",
+     "space": "anySpawn:Church of the Good Chalice",
+     "tag": "38"
+    },
+    {
+     "do": "bossOverride",
+     "boss": "Blood-Starved Beast",
+     "set": {
+      "respawnTo": "anySpawn:Church of the Good Chalice"
+     }
+    }
+   ],
+   "goal": {
+    "type": "slayBoss",
+    "params": {
+     "boss": "Blood-Starved Beast"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "40"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "39": {
@@ -4233,7 +6021,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 42
-   }
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "bsb-heals-n-when-it-slays-a-hunter"
+    },
+    {
+     "do": "custom",
+     "id": "bsb-round-end-bonus-activation-on-tile-lowest-hp-preventable-by-blood-echo"
+    }
+   ]
   },
   "40": {
    "campaign": "fall-of-old-yharnam",
@@ -4259,6 +6057,34 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 44
+   },
+   "onReveal": [
+    {
+     "do": "counter",
+     "id": "41",
+     "tokens": "nPlus2"
+    },
+    {
+     "do": "specialRule",
+     "rule": "41"
+    },
+    {
+     "do": "custom",
+     "id": "interact-to-place-fire-token-on-tile-without-one"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {
+     "id": "41"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "42"
+     }
+    ]
    }
   },
   "42": {
@@ -4272,6 +6098,20 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 45
+   },
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Church of the Good Chalice",
+     "insight": 2
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "43"
+     }
+    ]
    }
   },
   "43": {
@@ -4285,6 +6125,45 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 46
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "39"
+    },
+    {
+     "do": "fogGates",
+     "tile": "Church of the Good Chalice"
+    },
+    {
+     "do": "spawnBoss",
+     "boss": "Blood-Starved Beast",
+     "space": "anySpawn:Church of the Good Chalice",
+     "tag": "43"
+    },
+    {
+     "do": "bossOverride",
+     "boss": "Blood-Starved Beast",
+     "set": {
+      "respawnTo": "anySpawn:Church of the Good Chalice"
+     }
+    }
+   ],
+   "goal": {
+    "type": "slayBoss",
+    "params": {
+     "boss": "Blood-Starved Beast"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "44"
+     },
+     {
+      "do": "completeHunt"
+     }
+    ]
    }
   },
   "44": {
@@ -4311,6 +6190,42 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 48
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "46"
+    },
+    {
+     "do": "counter",
+     "id": "45",
+     "tokens": "nPlus2"
+    },
+    {
+     "do": "specialRule",
+     "rule": "45"
+    },
+    {
+     "do": "custom",
+     "id": "spawn-scourge-beast-on-each-enemy-space-after-each-reset"
+    }
+   ],
+   "goal": {
+    "type": "counterExhausted",
+    "params": {
+     "id": "45"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "47"
+     }
+    ]
+   },
+   "hooks": {
+    "decrementOnSlay": "Scourge Beast",
+    "decFrom": "45"
    }
   },
   "46": {
@@ -4324,7 +6239,27 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 49
-   }
+   },
+   "onReveal": [
+    {
+     "do": "replaceAttack",
+     "tag": "45",
+     "slot": "basic",
+     "attack": {
+      "name": "Infected Claws",
+      "speed": "fast",
+      "damage": 2,
+      "text": "Poison",
+      "flags": {
+       "poison": true
+      }
+     }
+    },
+    {
+     "do": "custom",
+     "id": "replace-basic-of-all-scourge-beasts-not-only-tagged"
+    }
+   ]
   },
   "47": {
    "campaign": "fall-of-old-yharnam",
@@ -4337,7 +6272,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 50
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "A Call Beyond"
+    }
+   ]
   },
   "48": {
    "campaign": "fall-of-old-yharnam",
@@ -4350,6 +6295,23 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 51
+   },
+   "goal": {
+    "type": "branch",
+    "params": {
+     "cases": [
+      {
+       "ifInsightCard": "35",
+       "reveal": "49"
+      },
+      {
+       "else": true,
+       "reveal": "34"
+      }
+     ]
+    },
+    "completesMission": true,
+    "onComplete": []
    }
   },
   "49": {
@@ -4363,6 +6325,33 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 52
+   },
+   "onReveal": [
+    {
+     "do": "survivor",
+     "id": "49",
+     "space": "space:Ransacked House",
+     "pickup": "interact",
+     "onLose": "return"
+    },
+    {
+     "do": "custom",
+     "id": "carrying-powder-attacks-suffer-minus-1-die"
+    }
+   ],
+   "goal": {
+    "type": "escortTokenTo",
+    "params": {
+     "id": "49",
+     "tile": "Barred Window"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "50"
+     }
+    ]
    }
   },
   "50": {
@@ -4376,7 +6365,17 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 53
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "consumables": 1
+    },
+    {
+     "do": "reward",
+     "item": "Caryll Rune: Clawmark"
+    }
+   ]
   },
   "51": {
    "campaign": "fall-of-old-yharnam",
@@ -4389,6 +6388,29 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 54
+   },
+   "onReveal": [
+    {
+     "do": "reveal",
+     "card": "52"
+    },
+    {
+     "do": "custom",
+     "id": "all-hunters-dodge-medium-or-suffer-2-dmg"
+    }
+   ],
+   "goal": {
+    "type": "endMoveOnTile",
+    "params": {
+     "tile": "Alleyway"
+    },
+    "completesMission": false,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "53"
+     }
+    ]
    }
   },
   "52": {
@@ -4402,7 +6424,13 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 55
-   }
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "gatling-gun-start-of-turn-flip-enemy-action-dodge-or-2-dmg-safe-on-church-or-if-hunter-on-great-bridge"
+    }
+   ]
   },
   "53": {
    "campaign": "fall-of-old-yharnam",
@@ -4415,6 +6443,37 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 56
+   },
+   "onReveal": [
+    {
+     "do": "custom",
+     "id": "place-great-bridge-tile-aside-fog-gates-both-spaces-adjacent-to-alleyway-space"
+    },
+    {
+     "do": "custom",
+     "id": "spawn-djuras-ally-if-card-23-or-old-hunter-djura-if-card-25-on-enemy1-space"
+    }
+   ],
+   "goal": {
+    "type": "slayTypeOnTile",
+    "params": {
+     "enemies": [
+      "Djura's Ally",
+      "Old Hunter Djura"
+     ],
+     "tile": "The Great Bridge"
+    },
+    "completesMission": true,
+    "onComplete": [
+     {
+      "do": "reveal",
+      "card": "54"
+     },
+     {
+      "do": "custom",
+      "id": "remove-gatling-gun-card-52"
+     }
+    ]
    }
   },
   "54": {
@@ -4428,7 +6487,13 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 57
-   }
+   },
+   "onReveal": [
+    {
+     "do": "reward",
+     "item": "Old Hunter Bone"
+    }
+   ]
   },
   "Introduction": {
    "campaign": "fall-of-old-yharnam",
@@ -4454,7 +6519,39 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 1
-   }
+   },
+   "triggers": [
+    {
+     "on": "startOfHunt",
+     "reveal": "2"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Courtyard Lamp",
+     "reveal": "10"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Occupied House",
+     "reveal": "13"
+    },
+    {
+     "on": "huntTrackFirstReset",
+     "reveal": "15"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Ransacked House",
+     "reveal": "6",
+     "afterCard": "4"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Graveyard",
+     "reveal": "8",
+     "afterCard": "4"
+    }
+   ]
   },
   "Chapter 2 - Setup": {
    "campaign": "fall-of-old-yharnam",
@@ -4467,7 +6564,27 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 2
-   }
+   },
+   "triggers": [
+    {
+     "on": "startOfHunt",
+     "reveal": "18"
+    },
+    {
+     "on": "startOfHunt",
+     "reveal": "26"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Alleyway",
+     "reveal": "28"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Barred Window",
+     "reveal": "34"
+    }
+   ]
   },
   "Chapter 3 - Setup": {
    "campaign": "fall-of-old-yharnam",
@@ -4480,7 +6597,35 @@
    "art": {
     "sheet": "fall-of-old-yharnam",
     "cell": 3
-   }
+   },
+   "triggers": [
+    {
+     "on": "startOfHuntBranch",
+     "cases": [
+      {
+       "ifInsightCard": "25",
+       "reveal": "41"
+      },
+      {
+       "else": true,
+       "reveal": "36"
+      }
+     ]
+    },
+    {
+     "on": "startOfHunt",
+     "reveal": "45"
+    },
+    {
+     "on": "endMoveOnTile",
+     "tile": "Barred Window",
+     "reveal": "48"
+    },
+    {
+     "on": "huntTrackFirstReset",
+     "reveal": "51"
+    }
+   ]
   }
  }
 }

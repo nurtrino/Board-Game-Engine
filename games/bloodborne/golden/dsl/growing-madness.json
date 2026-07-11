@@ -1,0 +1,288 @@
+{
+  "_comment": "Hand-authored mission DSL for Growing Madness, encoded from games/bloodborne/golden/transcribed/missions-growing-madness.json (verbatim text). Spawn-space icons on this campaign's cards were transcribed as uncertain ({enemy?}) throughout, so all arena/boss spawns use 'anySpawn:<Tile>' (every core tile has exactly one spawn icon). ARROW INVERSION: this campaign's transcription notes encoded 1 arrow as {fast} and 3 arrows as {slow}; the correct mapping is 3 arrows = fast, 1 arrow = slow. Affected cards are corrected here and listed in _fixups. Insight-card branch mapping: Proven Hunter = 15, Still Waiting = 29, Left Alone = 30, Out on the Hunt = 13, Eileen's Approval = 36.",
+
+  "_fixups": [
+    { "card": "4", "note": "Transcription encoded the Dodge as {fast} (single arrow). Single arrow = SLOW under the correct mapping; the dodge in custom 'bridge-dodge-on-ability-flip' must be resolved as Dodge ({slow}) or suffer 3 {dmg}." },
+    { "card": "20", "note": "Transcription encoded 'suffers -1 {fast}' (single arrow icon). The icon means the Attack loses 1 speed arrow, i.e. becomes one step slower; implement custom 'tiny-music-box-slows-gascoigne' as -1 speed arrow on Gascoigne's Attacks." },
+    { "card": "57", "note": "Transcription encoded FRENZIED SWIPES as {slow} (three arrows). Three arrows = FAST under the correct mapping; replaceAttack speed is encoded 'fast' here, inverting the transcription." },
+    { "card": "7", "note": "No inversion needed: two arrows = medium either way (RECKLESS ANGER encoded speed 'medium'). Same for card 23." }
+  ],
+
+  "_unsupported": [
+    { "card": "Chapter 1 - Setup", "need": "huntTrackSpace trigger — reveal when the Hunt Track reaches the 1st {reset} space (track space 4); interpreter only dispatches startOfHunt / endMoveOnTile triggers", "printedText": "When the Hunt Track reaches the 1st {reset} space (mark this space with an Insight token): Reveal card 6" },
+    { "card": "Chapter 2 - Setup", "need": "huntTrackSpace trigger — same as Chapter 1 (track space 4)", "printedText": "When the Hunt Track reaches the 1st {reset} space (mark this space with an Insight token): Reveal card 22" },
+    { "card": "1", "need": "NPC damage aura: after a Hunter in Gascoigne's space Attacks, deal that Enemy 1 extra {dmg} with no Blood Echo on kill. Also decrementOnSlayTypesAtNpc cannot say 'any Enemy' — an explicit list of the five core mobile enemy types is encoded as an approximation", "printedText": "After a Hunter in his space Attacks, deal that Enemy 1 additional {dmg} (no one gains a Blood Echo if this slays the Enemy). Each time an Enemy is slain in his space, remove 1 token." },
+    { "card": "2", "need": "removeToken effect — remove the Gascoigne npc-follower token placed by card 1", "printedText": "Remove Father Gascoigne from the map." },
+    { "card": "3", "need": "end-of-round 'no Enemies remain on tile' hunt completion (approximated with slayTagged); per-enemy tags inside one fog arena — the Hunter Mob and Huntsman's Minion both carry tag 3", "printedText": "Complete the Hunt at the end of a round if no Enemies remain on The Great Bridge tile: Reveal card 5." },
+    { "card": "4", "need": "dodge aura: on reveal and each time the Huntsman's Minion flips Ability, all Hunters on The Great Bridge Dodge ({slow}, see _fixups) or suffer 3 {dmg}. Also hpPool applies to the whole tag; printed pool is for the Hunter Mob only while tag 3 also contains the Minion", "printedText": "When this card is revealed, and each time Ability is flipped by the Huntsman's Minion, all Hunters on The Great Bridge must Dodge ({fast}) or suffer 3 {dmg}." },
+    { "card": "6", "need": "rooted enemy (spawned Hunter Mob cannot move); reset-loss rule — on {reset} with no Hunter on the space, remove the Survivor token and discard the mission", "printedText": "It cannot move from this space. [...] On {reset}, if no Hunter is on this space, remove this token and discard this Mission (it can't be completed)." },
+    { "card": "8", "need": "second concurrent goal — end a move carrying the token after a {reset} has occurred reveals 10 instead of 9 (goal slot only holds one goal)", "printedText": "Complete this Mission if you end a move with the token after a {reset} occurs: Reveal card 10." },
+    { "card": "10", "need": "hunter penalty on reveal (suffer 1 {dmg} and Frenzy) and discarding the Survivor token", "printedText": "Hunter suffers 1 {dmg} and Frenzy, but gains 1 Blood Echo and the Caryll Rune: Blood Rapture reward. Discard the Survivor token." },
+    { "card": "14", "need": "Blood Echo discard decrements the counter — discardConsumablesOnTileDecrements hook covers Consumables only", "printedText": "While on the Oedon Chapel tile, Hunters may discard their held Blood Echoes. For each one discarded, remove 1 token from this card." },
+    { "card": "17", "need": "tileRevealed-triggered spawn: 1 Church Giant + 1 Church Servant on the Grand Cathedral spawn space when that tile is revealed, tagged 17, persistent through {reset}, no respawn", "printedText": "When the Grand Cathedral tile is revealed, spawn 1 Church Giant and 1 Church Servant on its {enemy?} space. These Enemies are not removed on {reset}, and do not respawn." },
+    { "card": "20", "need": "reward modifier: Tiny Music Box gains 'when Gascoigne Attacks, his Attack loses 1 speed arrow' (see _fixups)", "printedText": "When Gascoigne Attacks: Gascoigne's Attack suffers -1 {fast}." },
+    { "card": "22", "need": "apply Frenzy to all Hunters", "printedText": "All Hunters suffer Frenzy." },
+    { "card": "23", "need": "type-wide replaceAttack — ALL Hunter Mobs replace Basic with RECKLESS ANGER (medium, 2 {dmg}, Frenzy); replaceAttack only targets a mission tag", "printedText": "All Hunter Mobs replace their Basic with:\nBASIC: RECKLESS ANGER {medium} {dmg} {dmg} Frenzy" },
+    { "card": "24", "need": "post-{reset} spawning (1 Hunter Mob on each enemy space, nearest Hunters first) and a conditional decrement qualifier — decrementOnSlay cannot check 'unless the Hunter is Frenzied' (hook encoded without the qualifier)", "printedText": "After each {reset}, spawn 1 Hunter Mob (if available) on each {enemy?} space, beginning with those closest to Hunters. [...] Each time a Hunter Mob is slain, unless the Hunter is Frenzied, remove 1 token." },
+    { "card": "27", "need": "carried-token condition — completion requires the Hunter holding the Red Jeweled Brooch Insight token to end the move on Barred Window (encoded as plain endMoveOnTile)", "printedText": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 28." },
+    { "card": "32", "need": "Blood Echo discard decrements the counter (same gap as card 14)", "printedText": "While on the Oedon Chapel tile, Hunters may discard their held Blood Echoes. For each one discarded, remove 1 token from this card." },
+    { "card": "34", "need": "alternate completion — if Eileen was slain (card 35 timer) before Henryk, completing reveals 37 instead of 36; Eileen ally token is represented as an inert interact survivor token", "printedText": "Complete this Mission by slaying Henryk: Reveal card 36. If Eileen was slain before Henryk, reveal card 37 instead." },
+    { "card": "35", "need": "end-of-each-Hunter-Turn Enemy Action card flip; Ability/Special removes 1 token; at 0 tokens Eileen is slain, her token removed and this card discarded", "printedText": "At the end of each Hunter Turn, flip an Enemy Action card. If Ability or Special, remove 1 Insight token from this card. If all tokens are removed, Eileen is slain. Remove her token from the map and discard this card." },
+    { "card": "38", "need": "spawnBoss at Phase 2 (spawnBoss always creates Phase 1)", "printedText": "Spawn Father Gascoigne (Phase 2) on the Tomb of Oedon {enemy?} space." },
+    { "card": "40", "need": "boss HP cap of 6; 'would be slain → mark with Insight token instead'; no Activate/Pursue; round-end bonus move is 3 spaces (encoded bonusActivationRoundEnd 'moveFourTowardLowestHpAndAttack', off by one space) and attacks lowest-HP Hunter in his space when adjacent", "printedText": "Gascoigne has 6 HP, but cannot be slain. If Gascoigne would be slain, instead, mark him with an Insight token. He no longer Activates or Pursues. He is not removed on {reset}, but Heals all {dmg} and removes the token. At the end of each round, if Gascoigne is not in a space with a Hunter, he moves 3 spaces towards the nearest Hunter with the lowest HP and Attacks. Otherwise, he Attacks the Hunter in his space with the lowest HP." },
+    { "card": "41", "need": "boss replacement — swap Father Gascoigne for Father Gascoigne Transformed (heal all, Phase 1) and discard card 40 (Boundless Frenzy) and the Tiny Music Box if in play", "printedText": "Replace Father Gascoigne with Father Gascoigne Transformed.\nHeal all {dmg} from him and reset him to Phase 1. Discard Boundless Frenzy and the Tiny Music Box if in play." },
+    { "card": "44", "need": "spawn an enemy 4 spaces away from a named space revealing tiles as needed, marked with an Insight token, tagged 44, persistent through {reset} but healing all {dmg}", "printedText": "Spawn a Huntsman's Minion 4 spaces away from the Barred Window space (revealing tiles if needed) and mark it with an Insight token. It is not removed on {reset}, but Heals all {dmg}." },
+    { "card": "45", "need": "carried-token condition — the Bloodied White Ribbon bearer must end the move on Barred Window (encoded as plain endMoveOnTile, same gap as card 27)", "printedText": "Complete this Mission by ending a move on the Barred Window space with the token: Reveal card 46." },
+    { "card": "47", "need": "reset-loss rule — on {reset} with no Hunter on the token's space, discard the token and the mission", "printedText": "On {reset}, if no Hunter is on this space, discard this token and this Mission (it can't be completed)." },
+    { "card": "56", "need": "spawnEnemy has no respawnOnReset — the Scourge Beast respawns to the Occupied House space on {reset} (arena not used because no Fog Gates are printed)", "printedText": "Spawn 1 Scourge Beast on the Occupied House space. It respawns to that space on {reset}." }
+  ],
+
+  "Chapter 1 - Setup": { "triggers": [
+    { "on": "startOfHunt", "reveal": "1" },
+    { "on": "huntTrackSpace", "space": 4, "reveal": "6" },
+    { "on": "endMoveOnTile", "tile": "Occupied House", "reveal": "11" },
+    { "on": "endMoveOnTile", "tile": "Oedon Chapel", "reveal": "14" }
+  ]},
+  "Chapter 2 - Setup": { "triggers": [
+    { "on": "startOfHunt", "reveal": "17" },
+    { "on": "huntTrackSpace", "space": 4, "reveal": "22" },
+    { "on": "endMoveOnTile", "tile": "Barred Window", "reveal": "26" },
+    { "on": "endMoveOnTile", "tile": "Oedon Chapel", "reveal": "31" },
+    { "on": "endMoveOnTile", "tile": "Tomb of Oedon", "reveal": "19" }
+  ], "prePlace": { "chain": ["The Great Bridge", "Tomb of Oedon"], "specialRuleCard": "16" } },
+  "Chapter 3 - Setup": { "triggers": [
+    { "on": "startOfHunt", "reveal": "39" },
+    { "on": "endMoveOnTile", "tile": "Barred Window", "reveal": "43" },
+    { "on": "endMoveOnTile", "tile": "Grand Cathedral", "reveal": "50" },
+    { "on": "endMoveOnTile", "tile": "Occupied House", "reveal": "55" }
+  ], "prePlace": { "chain": ["The Great Bridge", "Tomb of Oedon"], "specialRuleCard": "38" } },
+
+  "1": {
+    "onReveal": [
+      { "do": "counter", "id": "1", "tokens": "nPlus2" },
+      { "do": "npcFollower", "id": "1", "space": "space:Central Lamp" },
+      { "do": "specialRule", "rule": "1" },
+      { "do": "custom", "id": "gascoigne-attack-aura" }
+    ],
+    "goal": { "type": "counterExhausted", "params": {}, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "2" } ] },
+    "hooks": { "decrementOnSlayTypesAtNpc": ["Hunter Mob", "Huntsman's Minion", "Scourge Beast", "Male Beast Patient", "Female Beast Patient"], "decFrom": "1" }
+  },
+  "2": {
+    "onReveal": [ { "do": "custom", "id": "remove-gascoigne-npc-token" } ],
+    "goal": { "type": "endMoveOnTile", "params": { "tile": "The Great Bridge", "insight": 2 }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "3" } ] }
+  },
+  "3": {
+    "onReveal": [
+      { "do": "reveal", "card": "4" },
+      { "do": "arena", "tile": "The Great Bridge", "enemy": "Hunter Mob", "icon": "anySpawn", "tag": "3", "respawnOnReset": true },
+      { "do": "arena", "tile": "The Great Bridge", "enemy": "Huntsman's Minion", "icon": "anySpawn", "tag": "3", "respawnOnReset": true }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "3" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "5" }, { "do": "completeHunt" } ] }
+  },
+  "4": { "onReveal": [
+    { "do": "hpPool", "tag": "3", "tokens": "1or2at3plus" },
+    { "do": "custom", "id": "bridge-dodge-on-ability-flip" }
+  ]},
+  "5": { "onReveal": [ { "do": "reward", "consumables": 2 }, { "do": "reward", "item": "Caryll Rune: Moon" } ] },
+
+  "6": {
+    "onReveal": [
+      { "do": "reveal", "card": "7" },
+      { "do": "spawnEnemy", "enemy": "Hunter Mob", "space": "space:Central Lamp" },
+      { "do": "custom", "id": "mob-rooted-cannot-move" },
+      { "do": "survivor", "id": "6", "space": "space:Central Lamp", "pickup": "moveOut", "onLose": "return" },
+      { "do": "custom", "id": "survivor-and-mission-lost-on-reset-if-unattended" }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "6" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "8" } ] }
+  },
+  "7": { "onReveal": [
+    { "do": "hpPool", "tag": "6", "tokens": "1or2at3plus" },
+    { "do": "replaceAttack", "tag": "6", "slot": "basic", "attack": { "name": "Reckless Anger", "speed": "medium", "damage": 2, "text": "Frenzy.", "flags": { "frenzy": true } } }
+  ]},
+  "8": {
+    "onReveal": [ { "do": "custom", "id": "reveal-10-if-move-ends-carrying-token-after-reset" } ],
+    "goal": { "type": "escortTokenTo", "params": { "id": "6", "tile": "Oedon Chapel" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "9" } ] }
+  },
+  "9": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Hand Lantern" } ] },
+  "10": { "onReveal": [
+    { "do": "custom", "id": "suffer-1-dmg-frenzy-discard-survivor-token" },
+    { "do": "reward", "echoes": 1 },
+    { "do": "reward", "item": "Caryll Rune: Blood Rapture" }
+  ]},
+
+  "11": {
+    "onReveal": [ { "do": "counter", "id": "11", "tokens": "nPlus1" }, { "do": "specialRule", "rule": "11" } ],
+    "goal": { "type": "counterExhausted", "params": {}, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "12" } ] },
+    "hooks": { "discardConsumablesOnTileDecrements": "Occupied House", "decFrom": "11" }
+  },
+  "12": {
+    "onReveal": [ { "do": "survivor", "id": "12", "space": "space:Graveyard", "pickup": "interact" } ],
+    "goal": { "type": "interactToken", "params": { "id": "12" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "13" } ] }
+  },
+  "13": { "onReveal": [ { "do": "reward", "item": "Hunter Torch" }, { "do": "reward", "item": "Flamesprayer" } ] },
+
+  "14": {
+    "onReveal": [ { "do": "counter", "id": "14", "tokens": "nPlus2" }, { "do": "specialRule", "rule": "14" }, { "do": "custom", "id": "echo-discard-decrements" } ],
+    "goal": { "type": "counterExhausted", "params": {}, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "15" } ] }
+  },
+  "15": { "onReveal": [ { "do": "reward", "consumables": 2 }, { "do": "reward", "item": "Messenger's Gift" } ] },
+
+  "16": { "onReveal": [ { "do": "fogGates", "tile": "Tomb of Oedon" }, { "do": "tileLock", "tile": "Tomb of Oedon" } ] },
+
+  "17": {
+    "onReveal": [ { "do": "custom", "id": "spawn-church-giant-and-servant-on-grand-cathedral-reveal" } ],
+    "goal": { "type": "slayTagged", "params": { "tag": "17" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "18" } ] }
+  },
+  "18": {
+    "onReveal": [ { "do": "specialRule", "rule": "18" } ],
+    "goal": { "type": "insightThisChapter", "params": { "count": 2 }, "completesMission": false, "onComplete": [ { "do": "removeFogGates", "tile": "Tomb of Oedon" }, { "do": "tileUnlock", "tile": "Tomb of Oedon" } ] }
+  },
+  "19": {
+    "onReveal": [
+      { "do": "reveal", "card": "20" },
+      { "do": "spawnBoss", "boss": "Father Gascoigne", "space": "anySpawn:Tomb of Oedon", "tag": "19" },
+      { "do": "bossOverride", "boss": "Father Gascoigne", "set": { "respawnTo": "anySpawn:Tomb of Oedon" } }
+    ],
+    "goal": { "type": "slayBoss", "params": { "boss": "Father Gascoigne" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "21" }, { "do": "completeHunt" } ] }
+  },
+  "20": { "onReveal": [ { "do": "custom", "id": "tiny-music-box-slows-gascoigne" } ] },
+  "21": { "onReveal": [ { "do": "reward", "item": "Caryll Rune: Beast" }, { "do": "reward", "item": "Hunter Blunderbuss" } ] },
+
+  "22": { "onReveal": [
+    { "do": "custom", "id": "all-hunters-suffer-frenzy" },
+    { "do": "reveal", "card": "23" },
+    { "do": "reveal", "card": "24" }
+  ]},
+  "23": { "onReveal": [ { "do": "custom", "id": "all-hunter-mobs-reckless-anger" } ] },
+  "24": {
+    "onReveal": [
+      { "do": "counter", "id": "24", "tokens": "nPlus2" },
+      { "do": "specialRule", "rule": "24" },
+      { "do": "custom", "id": "spawn-hunter-mob-each-enemy-space-after-reset" }
+    ],
+    "goal": { "type": "counterExhausted", "params": {}, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "25" } ] },
+    "hooks": { "decrementOnSlay": "Hunter Mob", "decFrom": "24" }
+  },
+  "25": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Guidance" } ] },
+
+  "26": {
+    "onReveal": [
+      { "do": "reward", "item": "Tiny Music Box" },
+      { "do": "survivor", "id": "26", "space": "space:Graveyard", "pickup": "interact" }
+    ],
+    "goal": { "type": "interactToken", "params": { "id": "26" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "27" } ] }
+  },
+  "27": {
+    "onReveal": [ { "do": "insight" } ],
+    "goal": { "type": "endMoveOnTile", "params": { "tile": "Barred Window" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "28" } ] }
+  },
+  "28": { "goal": { "type": "choice", "params": { "options": [
+      { "label": "LIE TO THE GIRL AND KEEP THE SHARD", "reveal": "29" },
+      { "label": "TELL HER THE TRUTH", "reveal": "30" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "29": { "onReveal": [ { "do": "reward", "item": "Blood Stone Shard" } ] },
+  "30": { "onReveal": [ { "do": "reward", "item": "Caryll Rune: Eye" } ] },
+
+  "31": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCard": "15", "reveal": "33" },
+      { "else": true, "reveal": "32" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "32": {
+    "onReveal": [ { "do": "counter", "id": "32", "tokens": "nPlus2" }, { "do": "specialRule", "rule": "32" }, { "do": "custom", "id": "echo-discard-decrements" } ],
+    "goal": { "type": "counterExhausted", "params": {}, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "15" }, { "do": "reveal", "card": "33" } ] }
+  },
+  "33": { "goal": { "type": "endMoveOnTile", "params": { "tile": "Graveyard" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "34" } ] } },
+  "34": {
+    "onReveal": [
+      { "do": "reveal", "card": "35" },
+      { "do": "arena", "tile": "Graveyard", "enemy": "Old Hunter Henryk", "icon": "anySpawn", "tag": "34", "respawnOnReset": true },
+      { "do": "survivor", "id": "34-eileen", "space": "anySpawn:Graveyard", "pickup": "interact" },
+      { "do": "custom", "id": "reveal-37-instead-if-eileen-slain-first" }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "34" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "36" } ] }
+  },
+  "35": { "onReveal": [
+    { "do": "counter", "id": "35", "tokens": 3 },
+    { "do": "specialRule", "rule": "35" },
+    { "do": "custom", "id": "action-flip-each-hunter-turn-eileen-timer" }
+  ]},
+  "36": { "onReveal": [ { "do": "reward", "item": "Caryll Rune: Blood Rapture" }, { "do": "reward", "item": "Rosmarinus" } ] },
+  "37": { "onReveal": [ { "do": "reward", "item": "Beast Roar" }, { "do": "reward", "item": "Rosmarinus" } ] },
+
+  "38": { "onReveal": [
+    { "do": "spawnBoss", "boss": "Father Gascoigne", "space": "anySpawn:Tomb of Oedon", "tag": "38" },
+    { "do": "custom", "id": "gascoigne-starts-phase-2" }
+  ]},
+  "39": {
+    "onReveal": [ { "do": "reveal", "card": "40" } ],
+    "goal": { "type": "insightThisChapterOrTrack", "params": { "count": 2, "trackSpace": 12 }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "41" } ] }
+  },
+  "40": { "onReveal": [
+    { "do": "bossOverride", "boss": "Father Gascoigne", "set": { "invulnerable": true, "healOnReset": true, "bonusActivationRoundEnd": "moveFourTowardLowestHpAndAttack" } },
+    { "do": "custom", "id": "gascoigne-6hp-no-activate-no-pursue-move-3" }
+  ]},
+  "41": {
+    "onReveal": [ { "do": "custom", "id": "swap-to-gascoigne-transformed-heal-phase-1-discard-40-and-music-box" } ],
+    "goal": { "type": "slayBoss", "params": { "boss": "Father Gascoigne Transformed" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "42" }, { "do": "completeHunt" } ] }
+  },
+  "42": {},
+
+  "43": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCard": "30", "reveal": "47" },
+      { "ifInsightCard": "29", "reveal": "44" },
+      { "else": true, "reveal": "26" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "44": {
+    "onReveal": [ { "do": "custom", "id": "spawn-marked-minion-4-spaces-from-barred-window" } ],
+    "goal": { "type": "slayTagged", "params": { "tag": "44" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "45" } ] }
+  },
+  "45": {
+    "onReveal": [ { "do": "insight" } ],
+    "goal": { "type": "endMoveOnTile", "params": { "tile": "Barred Window" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "46" } ] }
+  },
+  "46": { "onReveal": [ { "do": "reward", "item": "Caryll Rune: Communion" } ] },
+
+  "47": {
+    "onReveal": [
+      { "do": "survivor", "id": "47", "space": "space:Barred Window", "pickup": "moveOut", "onLose": "return" },
+      { "do": "tokenFlee", "id": "47", "distance": 4, "revealTiles": true, "movesAwayPerTurn": 0 },
+      { "do": "custom", "id": "discard-token-and-mission-on-reset-if-unattended" }
+    ],
+    "goal": { "type": "endMoveOnToken", "params": { "id": "47", "noPursuit": true }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "48" } ] }
+  },
+  "48": { "goal": { "type": "escortTokenTo", "params": { "id": "47", "tile": "Grand Cathedral" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "49" } ] } },
+  "49": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Oedon Writhe" } ] },
+
+  "50": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCard": "36", "reveal": "53" },
+      { "else": true, "reveal": "51" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "51": {
+    "onReveal": [ { "do": "arena", "tile": "Grand Cathedral", "enemy": "Eileen the Crow", "icon": "anySpawn", "tag": "51", "respawnOnReset": true } ],
+    "goal": { "type": "slayTagged", "params": { "tag": "51" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "52" } ] }
+  },
+  "52": { "onReveal": [ { "do": "reward", "item": "Old Hunter Bone" }, { "do": "reward", "item": "Caryll Rune: Clawmark" } ] },
+  "53": {
+    "onReveal": [ { "do": "arena", "tile": "Grand Cathedral", "enemy": "Bloody Crow of Cainhurst", "icon": "anySpawn", "tag": "53", "respawnOnReset": true } ],
+    "goal": { "type": "slayTagged", "params": { "tag": "53" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "54" } ] }
+  },
+  "54": { "onReveal": [ { "do": "reward", "item": "Old Hunter Bone" }, { "do": "reward", "item": "Caryll Rune: Hunter" } ] },
+
+  "55": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCard": "13", "reveal": "56" },
+      { "else": true, "reveal": "11" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "56": {
+    "onReveal": [
+      { "do": "reveal", "card": "57" },
+      { "do": "spawnEnemy", "enemy": "Scourge Beast", "space": "space:Occupied House" },
+      { "do": "custom", "id": "scourge-beast-respawns-on-reset" }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "56" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "58" } ] }
+  },
+  "57": { "onReveal": [
+    { "do": "hpPool", "tag": "56", "tokens": "2or3at3plus" },
+    { "do": "replaceAttack", "tag": "56", "slot": "basic", "attack": { "name": "Frenzied Swipes", "speed": "fast", "damage": 2, "text": "Frenzy.", "flags": { "frenzy": true } } }
+  ]},
+  "58": { "onReveal": [ { "do": "reward", "consumables": 2 }, { "do": "reward", "item": "Tiny Tonitrus" } ] }
+}

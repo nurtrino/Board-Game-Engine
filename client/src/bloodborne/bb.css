@@ -120,6 +120,7 @@
   padding: 6px 10px; font-size: 11px; letter-spacing: 0.05em; cursor: pointer;
 }
 .bb-chip.spent { opacity: 0.5; }
+.bb-chip.sel { border-color: #d8b258; box-shadow: 0 0 8px rgba(216, 178, 88, 0.3); }
 .bb-chip.consumable { border-color: #2f5c3a; }
 
 .bb-hand { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px; flex: 1; align-items: flex-end; min-height: 0; }

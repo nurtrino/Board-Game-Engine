@@ -199,16 +199,41 @@ write('bosses.json', bosses);
 const fc = T('firearms-consumables.json');
 const items = {};
 {
-  // firearms: dedupe by printed name; count refresh cost from text
+  // firearms: dedupe by printed name; refresh cost from the face text, the
+  // combat effect curated from the card BACKS (read directly; see spec §8):
+  //  - Hunter Pistol / Evelyn / Repeating Pistol: reaction, auto-Stagger a
+  //    Basic Attack. Evelyn also refreshes for 1 echo; Repeating also free on
+  //    Transform.
+  //  - Cannon: firearm Attack (slow, 3). Flamesprayer: firearm Attack
+  //    (medium, 2, Stagger) + 1 dmg to all other enemies in the space.
+  //  - Hunter Blunderbuss: Hunter Turn, 1 dmg to a non-boss enemy here +
+  //    knock 1 away. Ludwig's Rifle: reaction, 2 dmg to an enemy entering
+  //    your space. Rosmarinus: reaction, enemy attack -1 speed + no effects.
+  const FIREARM_FX = {
+    'hunter-pistol': { custom: 'stagger-basic', backText: 'When an Enemy makes a Basic Attack: Automatically Stagger that Enemy' },
+    'evelyn': { custom: 'stagger-basic', echoRefresh: true, backText: 'When an Enemy makes a Basic Attack: Automatically Stagger that Enemy' },
+    'repeating-pistol': { custom: 'stagger-basic', freeOnTransform: true, backText: 'When an Enemy makes a Basic Attack: Automatically Stagger that Enemy' },
+    'cannon': { custom: 'firearm-attack', attack: { speed: 'slow', damage: 3 }, backText: 'May be used to make the following Attack: ({slow} {dmg}{dmg}{dmg})' },
+    'flamesprayer': { custom: 'firearm-attack', attack: { speed: 'medium', damage: 2, stagger: true, splash: 1 }, backText: 'May be used to make the following Attack: ({medium} {dmg}{dmg}) Stagger. Deal 1 {dmg} to all other Enemies in this space' },
+    'hunter-blunderbuss': { custom: 'blunderbuss', backText: 'Hunter Turn: Deal 1 {dmg} to 1 non-Boss Enemy in your space and move them 1 space away' },
+    'ludwig-s-rifle': { custom: 'rifle-sentry', backText: 'When an Enemy moves into your space: Deal 2 {dmg} to that Enemy' },
+    'rosmarinus': { custom: 'degrade-attack', backText: 'When a non-Boss Enemy Attacks: That Attack suffers -1 {speed} and loses all effects' },
+  };
   const seen = new Set();
   for (const [cell, f] of Object.entries(fc.firearms)) {
     const id = slug(f.name);
     if (seen.has(id)) continue;
     seen.add(id);
     const refresh = /discard 2/i.test(f.text) ? 'discard2' : 'discard1';
-    items[id] = { id, name: f.name, kind: 'firearm', timing: f.timing ?? 'Hunter Turn', text: f.text, effects: { refresh, custom: firearmCustom(f.name) }, art: { sheet: 'firearm-deck', cell: +cell } };
+    const fx = FIREARM_FX[id] ?? {};
+    if (!FIREARM_FX[id]) warn(`firearm ${id} has no curated effect`);
+    items[id] = {
+      id, name: f.name, kind: 'firearm', timing: f.timing ?? 'Hunter Turn',
+      text: `${fx.backText ?? ''}${fx.backText ? '. ' : ''}${f.text}`,
+      effects: { refresh, ...fx },
+      art: { sheet: 'firearm-deck', cell: parseInt(String(cell).replace(/^c/, ''), 10) },
+    };
   }
-  function firearmCustom(name) { return `fire-${slug(name)}`; }
 
   // consumables: unique defs + deck counts from the mod's 36-card deck
   const decks = G('decks.json');
@@ -225,22 +250,28 @@ const items = {};
     'pebble': { custom: 'move-enemy-2' }, 'beckoning-bell': { custom: 'summon-ally' },
     'pungent-blood-cocktail': { custom: 'suppress-activation' }, 'numbing-mist': { custom: 'strip-enemy-effects' },
   };
-  for (const [cell, c] of Object.entries(fc.consumables)) {
+  for (const [cellKey, c] of Object.entries(fc.consumables)) {
+    const cell = parseInt(String(cellKey).replace(/^c/, ''), 10);
     const id = slug(c.name);
-    items[id] = { id, name: c.name, kind: 'consumable', timing: c.timing, text: c.text, effects: CONS_FX[id] ?? {}, count: counts[cell] ?? 2, art: { sheet: 'consumable-deck', cell: +cell } };
+    items[id] = { id, name: c.name, kind: 'consumable', timing: c.timing, text: c.text, effects: CONS_FX[id] ?? {}, count: counts[cell] ?? 2, art: { sheet: 'consumable-deck', cell } };
     if (!CONS_FX[id]) warn(`consumable ${id} has no curated effect`);
   }
 
-  // rewards (tools + runes) — text from the backs pass
+  // rewards (tools + runes) — text from the backs pass. Cell keys are 'cNN'.
+  // Non-rune rewards are Hunter Tools (rulebook p. 17: rewards are only Tools
+  // or Runes); 'No Use' cards (Ritual Materials, Tiny Music Box) are mission
+  // items, kind 'other'.
   const rw = T('rewards.json').cells;
   const seenR = new Set();
-  for (const [cell, r] of Object.entries(rw)) {
-    if (+cell > 24) continue; // cells 25+ are expansion copies (icon groups)
+  for (const [cellKey, r] of Object.entries(rw)) {
+    const cell = parseInt(String(cellKey).replace(/^c/, ''), 10);
+    if (cell > 24) continue; // cells 25+ are expansion copies (icon groups)
     const id = slug(r.name.replace(/^CARYLL RUNE:\s*/i, 'rune-'));
     if (seenR.has(id)) continue;
     seenR.add(id);
-    const kind = r.type === 'rune' ? 'rune' : r.type === 'tool' ? 'tool' : (/^caryll rune/i.test(r.name) ? 'rune' : 'tool');
-    items[id] = { id, name: r.name, kind, timing: r.timing, text: r.text ?? '', effects: parseEffects(r.text ?? '', 'item'), art: { sheet: 'reward-deck', cell: +cell } };
+    const noUse = /^no use/i.test((r.text ?? '').trim());
+    const kind = /^caryll rune/i.test(r.name) || r.type === 'rune' ? 'rune' : noUse ? 'other' : 'tool';
+    items[id] = { id, name: r.name, kind, timing: r.timing, text: r.text ?? '', effects: parseEffects(r.text ?? '', 'item'), art: { sheet: 'reward-deck', cell } };
   }
 }
 write('items.json', items);

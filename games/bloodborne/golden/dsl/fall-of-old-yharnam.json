@@ -1,0 +1,273 @@
+{
+  "_comment": "Hand-authored mission DSL for Fall of Old Yharnam, encoded from games/bloodborne/golden/transcribed/missions-fall-of-old-yharnam.json (verbatim text). Conventions follow dsl/the-long-hunt.json. Enemy names use engine data names (transcribed/enemies.json): card text 'Djura' = 'Old Hunter Djura', 'Djura's Ally' exists as printed. Reward 'Old Hunter's Bone' (card 54 printed) = data 'Old Hunter Bone'. The three cards this campaign's chapter tables reveal on 'Hunt Track reaches the 1st {reset} space' use trigger on=huntTrackFirstReset (hunt board resets at 4/8/12/15, so first reset = track space 4) and the Chapter 3 conditional start uses on=startOfHuntBranch; both trigger kinds need interpreter support and are listed in _unsupported. Counters attach to the card number itself (counter/decFrom/dropTo = own card). Anything the interpreter cannot express is a {do:custom} effect with a kebab id plus an _unsupported entry; customs surface as special-rule chips, never dropped.",
+
+  "_unsupported": [
+    { "card": "Chapter 1 - Setup", "need": "chapter trigger type 'huntTrackFirstReset' (reveal when hunt track reaches space 4, the 1st reset); interpreter only handles startOfHunt/endMoveOnTile triggers", "printedText": "When the Hunt Track reaches the 1st {reset} space (mark this with an Insight token): Reveal card 15" },
+    { "card": "Chapter 3 - Setup", "need": "chapter trigger type 'startOfHuntBranch' (conditional start-of-hunt reveal on owned insight card 25 'PREY SLAUGHTERED: DJURA'); without it neither 41 nor 36 is revealed and the chapter 3 hunt chain cannot start", "printedText": "Start of the Hunt, if you have Prey Slaughtered: Djura: Reveal card 41\nOtherwise: Reveal card 36" },
+    { "card": "Chapter 3 - Setup", "need": "chapter trigger type 'huntTrackFirstReset' (reveal 51 at first reset space)", "printedText": "When the Hunt Track reaches the 1st {reset} space (mark this with an Insight token): Reveal card 51" },
+    { "card": "1", "need": "Hunter's Dream consumable-for-Antidote swap (custom dream-swap-consumable-for-antidote)", "printedText": "While in the Hunter's Dream, Hunters may discard 1 Consumable and replace it with 1 Antidote card from the Consumables deck or discard pile. (Shuffle the deck afterward.)" },
+    { "card": "4", "need": "insightThisChapter goal with party-size count: interpreter does Number(P.count) so 'nPlus1' is NaN; route P.count through nTokens. Also 'at the end of a round' timing is not enforced (goal completes on the insight event itself), and the two reveal triggers printed on card 4 are encoded as Chapter 1 endMoveOnTile triggers with afterCard:'4' documentation only - they can fire before card 4 is revealed", "printedText": "End a move on the Ransacked House tile: Reveal card 6 (Do not discard this card)\nEnd a move on the Graveyard tile: Reveal card 8 (Do not discard this card)\nComplete the Hunt at the end of a round when you collect at least {n} +1 Insight: Reveal card 5." },
+    { "card": "8", "need": "interact cost payment (custom pay-1-antidote-and-1-blood-echo-on-rescue): the interactToken goal completes without discarding 1 Antidote Consumable and 1 Blood Echo", "printedText": "Complete this Mission by Interacting with the Survivor token and discarding 1 Antidote Consumable and 1 Blood Echo: Reveal card 9." },
+    { "card": "11", "need": "Poison status effect (attack flags {poison:true} are authored but combat has no poison implementation, nor the -1 die penalty for already-Poisoned Hunters)", "printedText": "BASIC: INFECTED STRIKE {medium} {dmg}{dmg}\nPoison\nIf the Hunter is already Poisoned, their Attacks and Dodges suffer -1 {slow}." },
+    { "card": "13", "need": "attackable Barred Door token gating (custom barred-door-token-3dmg-to-open): survivor + Male Beast Patient should only appear after the door token takes 3 damage; encoded approximation places both at reveal. Also spawnEnemy has no respawnOnReset flag for the beast", "printedText": "Place 1 Insight token (Barred Door) on the Occupied House space. Hunters may Attack this token. Once it has been dealt 3 {dmg}, replace it with 1 Survivor token and spawn 1 Male Beast Patient in that space. It respawns to this space on {reset}." },
+    { "card": "16", "need": "boss movement overrides (customs bsb-moves-and-pursues-2-spaces, bsb-round-end-move-3-toward-lowest-hp-and-attack, bsb-removed-from-map-on-phase-2): BbBossMod has no move/pursue speed field, bonusActivationRoundEnd enum only has move-4 (this card is move 3), and there is no despawn-on-phase-2 effect", "printedText": "The Blood-Starved Beast Moves and Pursues 2 spaces.\nAt the end of each round, it moves 3 spaces toward the nearest Hunter with the lowest HP and Attacks.\nRemove the Blood-Starved Beast from the map when it enters Phase 2." },
+    { "card": "22", "need": "enemy-level persist-and-heal on reset (custom djuras-ally-persists-on-reset-heals-all): no per-enemy healOnReset equivalent of the boss mod", "printedText": "Spawn Djura's Ally (represented by his token) on the Central Lamp space. He is not removed on {reset}, but Heals all {dmg}." },
+    { "card": "24", "need": "enemy-level persist-and-heal on reset (custom djura-persists-on-reset-heals-all)", "printedText": "Spawn Djura (represented by his token) on the Central Lamp space. He is not removed on {reset}, but Heals all {dmg}." },
+    { "card": "26", "need": "decrement hook for ANY enemy slain on a given tile (custom decrement-on-any-enemy-slain-on-central-lamp-tile): decrementOnSlay is enemy-type-scoped, decrementOnSlayTypesAtNpc needs an NPC token; until implemented counterExhausted never fires", "printedText": "Place {n} +1 Insight tokens on this card. Each time you slay an Enemy while it is on the Central Lamp tile, remove 1 token from this card." },
+    { "card": "30", "need": "push-escort behaviour (custom survivor-band-push-move-2-enemies-lured-slain-if-caught): token moves up to 2 when a Hunter moves out, lures enemies within 1 tile, is slain and returned to Alleyway if enemies share its space at end of turn. Approximated as a carried survivor (fresh token id 30, onLose return); the goal is the Courtyard Lamp SPACE but escortTokenTo is tile-level", "printedText": "When a Hunter moves out of the space with the Survivor token, it may be moved up to 2 spaces. After this move, all Enemies within 1 tile and not in a space with a Hunter move 1 space toward the token. If there are ever Enemies in the space with the token at the end of a Hunter Turn, the Survivors are slain. Return the token to the Alleyway space." },
+    { "card": "32", "need": "attackable fleeing survivor tokens (custom fleeing-survivor-tokens-attackable-move-2-then-1-per-turn): the custom must spawn them as mission-tagged killable entities (tag '32') so the slayTagged goal can fire; placeTokens only drops visual survivor tokens", "printedText": "Place {n} +1 Survivor tokens in this space. Move each token 2 spaces away, in different directions where possible. They may reveal tiles during this move. At the end of each Hunter's turn, move these tokens 1 space away from the nearest Hunter. Hunters may Attack these tokens to remove them from the map." },
+    { "card": "34", "need": "space-level discard point: hook discardConsumablesOnTileDecrements is tile-level but the card says the Barred Window SPACE (minor fidelity loss)", "printedText": "Hunters ending a move on the Barred Window space may discard any number of their held Consumables. For each one discarded, remove 1 token from this card." },
+    { "card": "36", "need": "survivor tokens on every {consumable}/{enemy} icon space including newly revealed tiles, collected to the card by Interact (custom survivor-token-on-each-consumable-or-enemy-icon-space-interact-to-collect): the custom must increment inst.vars.delivered so the counterAtLeast goal can fire; no existing hook expresses interact-to-card collection", "printedText": "Place 1 Survivor token on each space with a {consumable} or {enemy?} icon, and on new ones when revealed. Hunters may Interact on these spaces to remove the token and place it on this card." },
+    { "card": "39", "need": "phase-2 special rules (customs bsb-heals-n-when-it-slays-a-hunter, bsb-round-end-bonus-activation-on-tile-lowest-hp-preventable-by-blood-echo): heal-on-hunter-slain, tile-scoped lowest-HP bonus activation, and Blood Echo prevention have no effects", "printedText": "Each time the Blood-Starved Beast slays a Hunter, it Heals {n}.\nAt the end of each round, it makes 1 bonus Activation, moving toward and Attacking the Hunter on its tile with the lowest remaining HP.\nAny Hunter on its tile may discard 1 Blood Echo to prevent this Activation." },
+    { "card": "41", "need": "interact-to-place fire tokens (custom interact-to-place-fire-token-on-tile-without-one): no hook decrements the counter on Interact; until implemented counterExhausted never fires and chapter 3 (Djura-slain path) cannot advance", "printedText": "Place {n} +2 Insight tokens (Fire) on this card. While on a tile without a token, Hunters may Interact to remove 1 token from this card and place it on that tile." },
+    { "card": "45", "need": "reset-spawn wave (custom spawn-scourge-beast-on-each-enemy-space-after-each-reset): after each {reset} spawn 1 Scourge Beast per {enemy} space, nearest Hunters first; spawned beasts should carry mission tag '45' so card 46's replaceAttack and the decrementOnSlay hook cover them", "printedText": "After each {reset}, spawn 1 Scourge Beast (if available) on each {enemy?} space, beginning with those closest to Hunters." },
+    { "card": "46", "need": "type-wide attack replacement + Poison (custom replace-basic-of-all-scourge-beasts-not-only-tagged): replaceAttack is mission-tag-scoped (authored on tag '45'), but the card replaces the Basic of ALL Scourge Beasts; Poison flag also unimplemented (see card 11)", "printedText": "Replace all Scourge Beast's Basic with:\nBASIC: INFECTED CLAWS {fast} {dmg}{dmg}\nPoison" },
+    { "card": "49", "need": "carry penalty (custom carrying-powder-attacks-suffer-minus-1-die); token-lost-on-Dream approximated as onLose return (re-obtainable at Ransacked House, matching the repeatable Interact); goal is the Barred Window SPACE but escortTokenTo is tile-level", "printedText": "The token is lost if the Hunter goes to the Dream. While carrying the token, Hunter's Attacks suffer -1 {slow}." },
+    { "card": "51", "need": "one-shot party dodge check on reveal (custom all-hunters-dodge-medium-or-suffer-2-dmg)", "printedText": "All Hunters must Dodge ({medium}) or suffer 2 {dmg}." },
+    { "card": "52", "need": "ongoing gatling gun rule (custom gatling-gun-start-of-turn-flip-enemy-action-dodge-or-2-dmg-safe-on-church-or-if-hunter-on-great-bridge)", "printedText": "At the start of each Hunter's turn, flip an Enemy Action card. If Ability or Special, they must Dodge ({medium}) or suffer 2 {dmg}.\nThis effect is ignored by Hunters on the Church of the Good Chalice tile, or if any Hunter is on The Great Bridge tile." },
+    { "card": "53", "need": "side-placed tile with custom adjacency (custom place-great-bridge-tile-aside-fog-gates-both-spaces-adjacent-to-alleyway-space), conditional NPC spawn on owned insight card (custom spawn-djuras-ally-if-card-23-or-old-hunter-djura-if-card-25-on-enemy1-space; onReveal has no conditional construct), and discarding the Gatling Gun special card on completion (custom remove-gatling-gun-card-52)", "printedText": "Take The Great Bridge tile, place it to the side, and surround it with Fog Gates. Both The Great Bridge spaces are adjacent to the Alleyway space. If you have Prey Slaughtered: Djura's Ally, spawn Djura's Ally on the {enemy?} space. If you have Prey Slaughtered: Djura, spawn Djura on the {enemy?} space.\nComplete this Mission and remove the Gatling Gun card by slaying the Enemy on The Great Bridge tile: Reveal card 54." }
+  ],
+
+  "Chapter 1 - Setup": { "triggers": [
+    { "on": "startOfHunt", "reveal": "2" },
+    { "on": "endMoveOnTile", "tile": "Courtyard Lamp", "reveal": "10" },
+    { "on": "endMoveOnTile", "tile": "Occupied House", "reveal": "13" },
+    { "on": "huntTrackFirstReset", "reveal": "15" },
+    { "on": "endMoveOnTile", "tile": "Ransacked House", "reveal": "6", "afterCard": "4" },
+    { "on": "endMoveOnTile", "tile": "Graveyard", "reveal": "8", "afterCard": "4" }
+  ]},
+  "Chapter 2 - Setup": { "triggers": [
+    { "on": "startOfHunt", "reveal": "18" },
+    { "on": "startOfHunt", "reveal": "26" },
+    { "on": "endMoveOnTile", "tile": "Alleyway", "reveal": "28" },
+    { "on": "endMoveOnTile", "tile": "Barred Window", "reveal": "34" }
+  ]},
+  "Chapter 3 - Setup": { "triggers": [
+    { "on": "startOfHuntBranch", "cases": [
+      { "ifInsightCard": "25", "reveal": "41" },
+      { "else": true, "reveal": "36" }
+    ]},
+    { "on": "startOfHunt", "reveal": "45" },
+    { "on": "endMoveOnTile", "tile": "Barred Window", "reveal": "48" },
+    { "on": "huntTrackFirstReset", "reveal": "51" }
+  ]},
+
+  "1": { "onReveal": [ { "do": "custom", "id": "dream-swap-consumable-for-antidote" } ] },
+
+  "2": { "goal": { "type": "endMoveOnTile", "params": { "tile": "Alleyway" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "3" } ] } },
+  "3": {
+    "onReveal": [ { "do": "survivor", "id": "3", "space": "space:Alleyway", "pickup": "interact" } ],
+    "goal": { "type": "interactToken", "params": { "id": "3" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "4" } ] }
+  },
+  "4": { "goal": { "type": "insightThisChapter", "params": { "count": "nPlus1" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "5" }, { "do": "completeHunt" } ] } },
+  "5": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Ludwig's Rifle" } ] },
+
+  "6": {
+    "onReveal": [
+      { "do": "fogGates", "tile": "Ransacked House" },
+      { "do": "spawnEnemy", "enemy": "Male Beast Patient", "space": "anySpawn:Ransacked House", "count": 2 },
+      { "do": "spawnEnemy", "enemy": "Female Beast Patient", "space": "anySpawn:Ransacked House" }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "6" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "7" } ] }
+  },
+  "7": { "onReveal": [ { "do": "reward", "item": "Tiny Tonitrus" } ] },
+
+  "8": {
+    "onReveal": [
+      { "do": "survivor", "id": "8", "space": "space:Graveyard", "pickup": "interact" },
+      { "do": "custom", "id": "pay-1-antidote-and-1-blood-echo-on-rescue" }
+    ],
+    "goal": { "type": "interactToken", "params": { "id": "8" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "9" } ] }
+  },
+  "9": { "onReveal": [ { "do": "reward", "item": "Empty Phantasm Shell" } ] },
+
+  "10": {
+    "onReveal": [
+      { "do": "reveal", "card": "11" },
+      { "do": "arena", "tile": "Courtyard Lamp", "enemy": "Hunter Mob", "icon": "anySpawn", "tag": "10", "respawnOnReset": true }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "10" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "12" } ] }
+  },
+  "11": { "onReveal": [
+    { "do": "hpPool", "tag": "10", "tokens": "2or3at3plus" },
+    { "do": "replaceAttack", "tag": "10", "slot": "basic", "attack": { "name": "Infected Strike", "speed": "medium", "damage": 2, "text": "Poison. If the Hunter is already Poisoned, their Attacks and Dodges suffer -1 {slow}.", "flags": { "poison": true } } }
+  ]},
+  "12": { "onReveal": [ { "do": "reward", "item": "Evelyn" } ] },
+
+  "13": {
+    "onReveal": [
+      { "do": "custom", "id": "barred-door-token-3dmg-to-open" },
+      { "do": "survivor", "id": "13", "space": "space:Occupied House", "pickup": "interact" },
+      { "do": "spawnEnemy", "enemy": "Male Beast Patient", "space": "space:Occupied House" }
+    ],
+    "goal": { "type": "interactToken", "params": { "id": "13" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "14" } ] }
+  },
+  "14": { "onReveal": [ { "do": "reward", "item": "Caryll Rune: Moon" } ] },
+
+  "15": {
+    "onReveal": [
+      { "do": "reveal", "card": "16" },
+      { "do": "spawnBoss", "boss": "Blood-Starved Beast", "space": "space:Central Lamp", "tag": "15" },
+      { "do": "bossOverride", "boss": "Blood-Starved Beast", "set": { "healOnReset": true } }
+    ],
+    "goal": { "type": "bossPhase2", "params": { "boss": "Blood-Starved Beast" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "17" } ] }
+  },
+  "16": { "onReveal": [
+    { "do": "custom", "id": "bsb-moves-and-pursues-2-spaces" },
+    { "do": "custom", "id": "bsb-round-end-move-3-toward-lowest-hp-and-attack" },
+    { "do": "custom", "id": "bsb-removed-from-map-on-phase-2" }
+  ]},
+  "17": { "onReveal": [ { "do": "reward", "echoes": 1 }, { "do": "reward", "item": "Caryll Rune: Oedon Writhe" } ] },
+
+  "18": { "goal": { "type": "endMoveOnTile", "params": { "tile": "Occupied House" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "19" } ] } },
+  "19": { "goal": { "type": "endMoveOnTile", "params": { "tile": "Graveyard", "insight": 1 }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "20" } ] } },
+  "20": { "goal": { "type": "endMoveOnTile", "params": { "tile": "Central Lamp", "insight": 2 }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "21" } ] } },
+  "21": { "goal": { "type": "choice", "params": { "options": [
+      { "label": "AID DJURA", "reveal": "22" },
+      { "label": "AID THE SAW CLEAVER HUNTER", "reveal": "24" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "22": {
+    "onReveal": [
+      { "do": "spawnNpc", "enemy": "Djura's Ally", "space": "space:Central Lamp", "tag": "22" },
+      { "do": "custom", "id": "djuras-ally-persists-on-reset-heals-all" }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "22" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "23" }, { "do": "completeHunt" } ] }
+  },
+  "23": { "onReveal": [ { "do": "reward", "item": "Caryll Rune: Hunter" }, { "do": "reward", "item": "Repeating Pistol" } ] },
+  "24": {
+    "onReveal": [
+      { "do": "spawnNpc", "enemy": "Old Hunter Djura", "space": "space:Central Lamp", "tag": "24" },
+      { "do": "custom", "id": "djura-persists-on-reset-heals-all" }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "24" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "25" }, { "do": "completeHunt" } ] }
+  },
+  "25": { "onReveal": [ { "do": "reward", "item": "Caryll Rune: Hunter" }, { "do": "reward", "item": "Hunter Blunderbuss" } ] },
+
+  "26": {
+    "onReveal": [
+      { "do": "counter", "id": "26", "tokens": "nPlus1" },
+      { "do": "specialRule", "rule": "26" },
+      { "do": "custom", "id": "decrement-on-any-enemy-slain-on-central-lamp-tile" }
+    ],
+    "goal": { "type": "counterExhausted", "params": { "id": "26" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "27" } ] }
+  },
+  "27": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Hunter Torch" } ] },
+
+  "28": {
+    "onReveal": [ { "do": "survivor", "id": "28", "space": "space:Alleyway", "pickup": "interact" } ],
+    "goal": { "type": "interactToken", "params": { "id": "28" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "29" } ] }
+  },
+  "29": { "goal": { "type": "choice", "params": { "options": [
+      { "label": "AID THE SURVIVORS", "reveal": "30" },
+      { "label": "ATTACK THE SURVIVORS", "reveal": "32" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "30": {
+    "onReveal": [
+      { "do": "survivor", "id": "30", "space": "space:Alleyway", "pickup": "moveOut", "onLose": "return" },
+      { "do": "custom", "id": "survivor-band-push-move-2-enemies-lured-slain-if-caught" }
+    ],
+    "goal": { "type": "escortTokenTo", "params": { "id": "30", "tile": "Courtyard Lamp" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "31" } ] }
+  },
+  "31": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Guidance" } ] },
+  "32": {
+    "onReveal": [
+      { "do": "placeTokens", "count": "nPlus1", "where": "space:Alleyway", "token": "survivor" },
+      { "do": "custom", "id": "fleeing-survivor-tokens-attackable-move-2-then-1-per-turn" }
+    ],
+    "goal": { "type": "slayTagged", "params": { "tag": "32" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "33" } ] }
+  },
+  "33": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Beast" } ] },
+
+  "34": {
+    "onReveal": [ { "do": "counter", "id": "34", "tokens": "nPlus2" }, { "do": "specialRule", "rule": "34" } ],
+    "goal": { "type": "counterExhausted", "params": { "id": "34" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "35" } ] },
+    "hooks": { "discardConsumablesOnTileDecrements": "Barred Window", "decFrom": "34" }
+  },
+  "35": { "onReveal": [ { "do": "reward", "item": "A Call Beyond" }, { "do": "reward", "item": "Cannon" } ] },
+
+  "36": {
+    "onReveal": [ { "do": "custom", "id": "survivor-token-on-each-consumable-or-enemy-icon-space-interact-to-collect" } ],
+    "goal": { "type": "counterAtLeast", "params": { "id": "36", "count": "nPlus1" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "37" } ] }
+  },
+  "37": { "goal": { "type": "endMoveOnTile", "params": { "tile": "Church of the Good Chalice", "insight": 2 }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "38" } ] } },
+  "38": {
+    "onReveal": [
+      { "do": "reveal", "card": "39" },
+      { "do": "fogGates", "tile": "Church of the Good Chalice" },
+      { "do": "spawnBoss", "boss": "Blood-Starved Beast", "space": "anySpawn:Church of the Good Chalice", "tag": "38" },
+      { "do": "bossOverride", "boss": "Blood-Starved Beast", "set": { "respawnTo": "anySpawn:Church of the Good Chalice" } }
+    ],
+    "goal": { "type": "slayBoss", "params": { "boss": "Blood-Starved Beast" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "40" }, { "do": "completeHunt" } ] }
+  },
+  "39": { "onReveal": [
+    { "do": "custom", "id": "bsb-heals-n-when-it-slays-a-hunter" },
+    { "do": "custom", "id": "bsb-round-end-bonus-activation-on-tile-lowest-hp-preventable-by-blood-echo" }
+  ]},
+  "40": {},
+
+  "41": {
+    "onReveal": [
+      { "do": "counter", "id": "41", "tokens": "nPlus2" },
+      { "do": "specialRule", "rule": "41" },
+      { "do": "custom", "id": "interact-to-place-fire-token-on-tile-without-one" }
+    ],
+    "goal": { "type": "counterExhausted", "params": { "id": "41" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "42" } ] }
+  },
+  "42": { "goal": { "type": "endMoveOnTile", "params": { "tile": "Church of the Good Chalice", "insight": 2 }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "43" } ] } },
+  "43": {
+    "onReveal": [
+      { "do": "reveal", "card": "39" },
+      { "do": "fogGates", "tile": "Church of the Good Chalice" },
+      { "do": "spawnBoss", "boss": "Blood-Starved Beast", "space": "anySpawn:Church of the Good Chalice", "tag": "43" },
+      { "do": "bossOverride", "boss": "Blood-Starved Beast", "set": { "respawnTo": "anySpawn:Church of the Good Chalice" } }
+    ],
+    "goal": { "type": "slayBoss", "params": { "boss": "Blood-Starved Beast" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "44" }, { "do": "completeHunt" } ] }
+  },
+  "44": {},
+
+  "45": {
+    "onReveal": [
+      { "do": "reveal", "card": "46" },
+      { "do": "counter", "id": "45", "tokens": "nPlus2" },
+      { "do": "specialRule", "rule": "45" },
+      { "do": "custom", "id": "spawn-scourge-beast-on-each-enemy-space-after-each-reset" }
+    ],
+    "goal": { "type": "counterExhausted", "params": { "id": "45" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "47" } ] },
+    "hooks": { "decrementOnSlay": "Scourge Beast", "decFrom": "45" }
+  },
+  "46": { "onReveal": [
+    { "do": "replaceAttack", "tag": "45", "slot": "basic", "attack": { "name": "Infected Claws", "speed": "fast", "damage": 2, "text": "Poison", "flags": { "poison": true } } },
+    { "do": "custom", "id": "replace-basic-of-all-scourge-beasts-not-only-tagged" }
+  ]},
+  "47": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "A Call Beyond" } ] },
+
+  "48": { "goal": { "type": "branch", "params": { "cases": [
+      { "ifInsightCard": "35", "reveal": "49" },
+      { "else": true, "reveal": "34" }
+    ] }, "completesMission": true, "onComplete": [] } },
+  "49": {
+    "onReveal": [
+      { "do": "survivor", "id": "49", "space": "space:Ransacked House", "pickup": "interact", "onLose": "return" },
+      { "do": "custom", "id": "carrying-powder-attacks-suffer-minus-1-die" }
+    ],
+    "goal": { "type": "escortTokenTo", "params": { "id": "49", "tile": "Barred Window" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "50" } ] }
+  },
+  "50": { "onReveal": [ { "do": "reward", "consumables": 1 }, { "do": "reward", "item": "Caryll Rune: Clawmark" } ] },
+
+  "51": {
+    "onReveal": [
+      { "do": "reveal", "card": "52" },
+      { "do": "custom", "id": "all-hunters-dodge-medium-or-suffer-2-dmg" }
+    ],
+    "goal": { "type": "endMoveOnTile", "params": { "tile": "Alleyway" }, "completesMission": false, "onComplete": [ { "do": "reveal", "card": "53" } ] }
+  },
+  "52": { "onReveal": [ { "do": "custom", "id": "gatling-gun-start-of-turn-flip-enemy-action-dodge-or-2-dmg-safe-on-church-or-if-hunter-on-great-bridge" } ] },
+  "53": {
+    "onReveal": [
+      { "do": "custom", "id": "place-great-bridge-tile-aside-fog-gates-both-spaces-adjacent-to-alleyway-space" },
+      { "do": "custom", "id": "spawn-djuras-ally-if-card-23-or-old-hunter-djura-if-card-25-on-enemy1-space" }
+    ],
+    "goal": { "type": "slayTypeOnTile", "params": { "enemies": ["Djura's Ally", "Old Hunter Djura"], "tile": "The Great Bridge" }, "completesMission": true, "onComplete": [ { "do": "reveal", "card": "54" }, { "do": "custom", "id": "remove-gatling-gun-card-52" } ] }
+  },
+  "54": { "onReveal": [ { "do": "reward", "item": "Old Hunter Bone" } ] }
+}
