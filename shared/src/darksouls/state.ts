@@ -66,6 +66,19 @@ export interface DsActFlags {
   buff: 'warrior' | 'sorcerer' | 'pyromancer' | null; // next-attack heroics
   mercExtra: boolean;        // Mercenary heroic: one extra free attack
   deprivedSwap: boolean;     // Deprived heroic: Andre-style swap window
+  /** (Great) Magic Weapon: attacks are magical this activation; 2 = +1 damage too */
+  magicWeapon?: 0 | 1 | 2;
+}
+
+/** A cast defence bonus (Sacred Oath, Magic Barrier, Stone Greatshield,
+ * Sunlight Straight Sword): extra defence dice until the printed expiry. */
+export interface DsDefBuff {
+  block?: Partial<Record<DsDieColor, number>>;
+  resist?: Partial<Record<DsDieColor, number>>;
+  /** enemyPhaseEnd = "during the next enemy activation" (the boss activation
+   * in a boss fight); charActivationStart = "until the next character activation" */
+  expires: 'enemyPhaseEnd' | 'charActivationStart';
+  label: string;
 }
 
 export interface DsCharacter {
@@ -83,6 +96,8 @@ export interface DsCharacter {
   handR: DsEquipped | null;
   backup: DsEquipped[];
   conditions: DsCondition[];
+  /** cast defence bonuses (spell DSL); optional so pre-DSL saves rehydrate */
+  defBuffs?: DsDefBuff[];
   nodeId: string | null; // only while in an encounter
   arc: 'front' | 'left' | 'right' | 'back' | null; // only while on a boss node
   act: DsActFlags | null; // set during own activation
@@ -153,6 +168,9 @@ export interface DsBossUnit {
   nodeId: string | null;
   facing: [number, number] | null; // direction vector in tile px space
   inPlay: boolean;
+  /** character-inflicted condition tokens (decision log 13, reconciled);
+   * optional so pre-DSL saves rehydrate */
+  conditions?: DsCondition[];
 }
 
 export interface DsBossRun {
@@ -193,6 +211,9 @@ export interface DsSummon {
   discard: number[]; // index 0 = most recent flip
   /** Run for Cover: extra dodge dice during the next boss activation */
   dodgeBuff: number;
+  /** boss-inflicted condition tokens (decision log 17, reconciled);
+   * optional so pre-DSL saves rehydrate */
+  conditions?: DsCondition[];
 }
 
 // ---------- pendings & script ----------
@@ -211,7 +232,9 @@ export type DsPendingKind =
   | 'emberAssign'     // Ember card: whose board gets the token
   | 'trap'            // suffer or dodge (traps / push damage; never blockable)
   | 'summonOffer'     // fog-gate victory: normal souls XOR a summon (add-ons p.7)
-  | 'summonMove';     // shift icon: the players position the summon (add-ons p.9)
+  | 'summonMove'      // shift icon: the players position the summon (add-ons p.9)
+  | 'spellTarget'     // spell DSL: pick the character/enemy/node a cast affects
+  | 'entryPlace';     // encounter start: each player picks their entry node (core p.19/p.28)
 
 export interface DsPendingOption { key: string; label: string }
 
@@ -366,6 +389,13 @@ export function dsDefenceDice(ch: DsCharacter, kind: 'block' | 'resist'): Partia
     const card = DS_TREASURE_BY_ID[eq.cardId];
     const dice = card.defence?.[kind] ?? {};
     for (const [c, n] of Object.entries(dice)) {
+      if (n) pool[c as DsDieColor] = (pool[c as DsDieColor] ?? 0) + n;
+    }
+  }
+  // cast defence bonuses (spell DSL: Sacred Oath / Magic Barrier / Stone
+  // Greatshield / Sunlight Straight Sword) add dice until they expire
+  for (const buff of ch.defBuffs ?? []) {
+    for (const [c, n] of Object.entries(buff[kind] ?? {})) {
       if (n) pool[c as DsDieColor] = (pool[c as DsDieColor] ?? 0) + n;
     }
   }
@@ -563,7 +593,7 @@ export function dsMakeCharacter(seat: number, classId: string): DsCharacter {
     stamina: 0, damage: 0,
     estus: true, luck: true, heroic: true, ember: false,
     armour: null, handL: null, handR: null, backup: [],
-    conditions: [],
+    conditions: [], defBuffs: [],
     nodeId: null, arc: null, act: null,
   };
   // auto-equip starting gear: armour -> armour slot; the rest fills hands then backup

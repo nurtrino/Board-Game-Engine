@@ -253,10 +253,27 @@ function BossPanel({ view, manifest }: { view: DsView; manifest: DsManifest }) {
           />
         ))}
       </div>
+      {boss.units.some((u) => u.inPlay && (u.conditions?.length ?? 0) > 0) && (
+        <div className="ds-boss-conds">
+          {boss.units.filter((u) => u.inPlay).flatMap((u) => (u.conditions ?? []).map((c) => (
+            <em key={`${u.key}${c}`} className="ds-tag cond">
+              {boss.units.length > 1 ? `${u.key.toUpperCase()} · ` : ''}{c.toUpperCase()}
+            </em>
+          )))}
+        </div>
+      )}
       <div className="ds-boss-deck">
         <span>DECK {boss.deckCount}</span>
         <span>DISCARD {boss.discard.length}</span>
       </div>
+      {boss.revealed.length > 0 && (
+        <div className="ds-boss-intel">
+          <span className="ig-lab">GRAVESTONE INTEL</span>
+          {boss.revealed.map((cell) => (
+            <b key={cell}>{bossCardName(def, String(cell)) ?? `CARD ${cell}`}</b>
+          ))}
+        </div>
+      )}
       {(cardName || art) && (
         <div className="ds-boss-card">
           {art && (

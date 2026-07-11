@@ -8,7 +8,7 @@ import {
   DS_LEVEL_COSTS_CAMPAIGN, DS_LEVEL_COSTS_STANDARD,
   dsTileGraph, dsNodeDistance,
   type DsView, type DsCharacter, type DsArc, type DsStat,
-  type DsTreasureCard, type DsEnemyModel, type DsBossUnit,
+  type DsTreasureCard, type DsEnemyModel, type DsBossUnit, type DsSpellEffect,
 } from '@bge/shared';
 
 // view characters carry resolved stats + names
@@ -181,6 +181,10 @@ export function parseIcons(action: { icons?: string[] }): ParsedIcons {
     else if (icon.startsWith('repeat:')) p.repeat = Number(icon.slice(7));
     else if (icon.startsWith('shift:')) p.shift += Number(icon.split(':')[1]);
     else if (['bleed', 'poison', 'frostbite', 'stagger'].includes(icon)) p.conditions.push(icon);
+    // glyph aliases (sheet-crop verified, mirrors the reducer's parseIcons):
+    // shield-bash IS the stagger icon; dot-in-arc IS the node icon
+    else if (icon === 'shield-bash') p.conditions.push('stagger');
+    else if (icon === 'dot-in-arc') p.node = true;
   }
   return p;
 }
@@ -205,6 +209,57 @@ export interface AttackChoice {
   icons: ParsedIcons;
   reason: string | null;
   targets: AttackTarget[];
+  /** spell DSL cast (no dice): the summary shown instead of dice chips; the
+   * engine resolves targets via a spellTarget pending, so no pick mode */
+  cast?: string;
+}
+
+/** Plain-words summary for a cast option (printed text when the card has it,
+ * otherwise derived from the verified icon reading). */
+function castSummary(action: { text?: string; effect?: DsSpellEffect }, icons: ParsedIcons): string {
+  if (action.text) return action.text;
+  const fx = action.effect!;
+  if (fx.kind === 'afflict') {
+    const what = [...icons.conditions, ...(icons.push ? ['push'] : [])].join(' + ') || 'afflict';
+    if (fx.node) return `${what} every enemy on one node within range`;
+    if ((fx.targets ?? 1) > 1) return `${what} up to ${fx.targets} enemies within range`;
+    return `${what} one target within range`;
+  }
+  if (fx.kind === 'shift') return `Shift ${fx.nodes}: free movement`;
+  if (fx.kind === 'rapport') return `An enemy sharing a node with another enemy suffers ${fx.damage}`;
+  return 'See the card';
+}
+
+/** Mirror of doCastSpell's pre-payment target validation. */
+function castTargetReason(v: DsView, ch: DsVChar, fx: DsSpellEffect, icons: ParsedIcons, range: number): string | null {
+  const enc = v.encounter;
+  if (!enc || !ch.nodeId) return null; // covered by the activation gate
+  const inRange = (nodeId: string) => dsNodeDistance(enc.faceId, ch.nodeId!, nodeId) <= range;
+  const charsInRange = v.characters.filter((c) => c.nodeId && inRange(c.nodeId));
+  switch (fx.kind) {
+    case 'grant':
+      if (fx.who === 'self') return null;
+      if (charsInRange.length === 0) return 'NO CHARACTER IN RANGE';
+      if (fx.who === 'allOthers' && charsInRange.every((c) => c.seat === ch.seat)) return 'NO OTHER CHARACTER IN RANGE';
+      return null;
+    case 'afflict': {
+      const enemies = enc.enemies.filter((e) => enemyAlive(e) && inRange(e.nodeId));
+      if (fx.node) return enemies.length > 0 ? null : 'NO ENEMY IN RANGE';
+      if (enemies.length > 0) return null;
+      const bossConds = v.boss
+        ? icons.conditions.filter((c) => v.boss!.id !== 'boreal-outrider-knight' || (c !== 'stagger' && c !== 'frostbite'))
+        : [];
+      if (bossConds.length > 0 && v.boss!.units.some((u) => u.inPlay && u.nodeId && inRange(u.nodeId))) return null;
+      return 'NO TARGET IN RANGE';
+    }
+    case 'rapport': {
+      const alive = enc.enemies.filter(enemyAlive);
+      const legal = alive.some((e) => inRange(e.nodeId) && alive.filter((o) => o.nodeId === e.nodeId).length >= 2);
+      return legal ? null : 'NEEDS AN ENEMY SHARING A NODE WITH ANOTHER';
+    }
+    default:
+      return null; // buff / defenceBuff / shift always land
+  }
 }
 
 export function attackChoices(v: DsView, seat: number): AttackChoice[] {
@@ -237,12 +292,21 @@ export function attackChoices(v: DsView, seat: number): AttackChoice[] {
         reason: null, targets: [],
       };
       const diceCount = Object.values(action.dice ?? {}).reduce((n, x) => n + (x ?? 0), 0);
-      if (diceCount === 0) { choice.reason = 'TEXT ACTION · NOT EXECUTABLE'; out.push(choice); return; }
+      const fx = action.effect;
+      if (diceCount === 0 && !fx) { choice.reason = 'NOT ENCODED · REPORT THIS CARD'; out.push(choice); return; }
+      if (fx) choice.cast = castSummary(action, icons);
       if (gate) { choice.reason = gate; out.push(choice); return; }
       if (act!.stage === 'post') { choice.reason = 'ATTACK WINDOW CLOSED'; out.push(choice); return; }
       if (act!.attacked.includes(hand) && !usingMerc) { choice.reason = 'HAND ALREADY ATTACKED'; out.push(choice); return; }
       if (!meetsReqsEquipped(ch, eq)) { choice.reason = 'STAT REQUIREMENT NOT MET'; out.push(choice); return; }
       if (!canSpend(ch, cost)) { choice.reason = `NOT ENOUGH STAMINA · NEEDS ${cost}`; out.push(choice); return; }
+      if (fx) {
+        // spell DSL cast: mirror doCastSpell's target validation; the engine
+        // resolves the actual pick via a spellTarget pending
+        choice.reason = castTargetReason(v, ch, fx, icons, range);
+        out.push(choice);
+        return;
+      }
 
       // legal targets
       if (enc && ch.nodeId) {
@@ -310,6 +374,89 @@ export function swapReason(v: DsView, seat: number): string | null {
 }
 
 export const endReason = (v: DsView, seat: number): string | null => activationGate(v, seat);
+
+// ---------- backup swap combos (mirror of doSwapBackup) ----------
+
+export interface SwapOption {
+  label: string;
+  handCardId?: string;
+  backupCardId?: string;
+  reason: string | null;
+}
+
+/** Every legal swap_backup payload as an explicit option: bring a backup
+ * weapon into a free hand, trade it for a named hand card, or stow a hand
+ * card. Mirrors doSwapBackup exactly (two-handed + stat checks). */
+export function swapOptions(v: DsView, seat: number): SwapOption[] {
+  const ch = v.characters[seat];
+  const out: SwapOption[] = [];
+  const bothFull = ch.handL != null && ch.handR != null;
+  for (const b of ch.backup) {
+    const inCard = DS_TREASURE_BY_ID[b.cardId];
+    const statFail = !meetsReqsEquipped(ch, b) ? 'STAT REQUIREMENT NOT MET' : null;
+    if (!bothFull) {
+      // engine fills the free hand when no hand card is named
+      const other = ch.handL ?? ch.handR;
+      let reason = statFail;
+      if (!reason && inCard.twoHanded && other) reason = 'TWO-HANDED · OTHER HAND MUST BE EMPTY';
+      if (!reason && other && DS_TREASURE_BY_ID[other.cardId].twoHanded) reason = 'OTHER HAND HOLDS A TWO-HANDER';
+      out.push({ label: `BRING IN ${inCard.name.toUpperCase()}`, backupCardId: b.cardId, reason });
+    } else {
+      for (const slot of ['handL', 'handR'] as const) {
+        const h = ch[slot]!;
+        const staying = slot === 'handL' ? ch.handR : ch.handL;
+        let reason = statFail;
+        if (!reason && inCard.twoHanded && staying) reason = 'TWO-HANDED · OTHER HAND MUST BE EMPTY';
+        if (!reason && staying && DS_TREASURE_BY_ID[staying.cardId].twoHanded) reason = 'OTHER HAND HOLDS A TWO-HANDER';
+        out.push({
+          label: `${inCard.name.toUpperCase()} FOR ${DS_TREASURE_BY_ID[h.cardId].name.toUpperCase()}`,
+          handCardId: h.cardId, backupCardId: b.cardId, reason,
+        });
+      }
+    }
+  }
+  for (const slot of ['handL', 'handR'] as const) {
+    const h = ch[slot];
+    if (!h) continue;
+    out.push({ label: `STOW ${DS_TREASURE_BY_ID[h.cardId].name.toUpperCase()}`, handCardId: h.cardId, reason: null });
+  }
+  return out;
+}
+
+// ---------- dash through (campaign, mirror of doDash) ----------
+
+export interface DashPlan {
+  reason: string | null;
+  targets: { id: string | 'bonfire'; label: string }[];
+}
+
+export function dashPlan(v: DsView, seat: number): DashPlan {
+  if (!v.campaign) return { reason: 'CAMPAIGN ONLY', targets: [] };
+  const gate = activationGate(v, seat);
+  if (gate) return { reason: gate, targets: [] };
+  if (v.boss) return { reason: 'NO DASHING FROM A BOSS FIGHT', targets: [] };
+  const enc = v.encounter!;
+  if (!enc.tileId) return { reason: 'NOWHERE TO DASH FROM', targets: [] };
+  if (enc.enemyPhases < 1) return { reason: 'THE ENEMIES ACT ONCE FIRST', targets: [] };
+  const i = v.tiles.findIndex((t) => t.id === enc.tileId);
+  if (i < 0) return { reason: 'NOWHERE TO DASH FROM', targets: [] };
+  const targets: DashPlan['targets'] = [];
+  if (i === 0) targets.push({ id: 'bonfire', label: 'BACK TO THE BONFIRE' });
+  else targets.push({ id: v.tiles[i - 1].id, label: `BACK · LEVEL ${v.tiles[i - 1].level} TILE` });
+  if (i + 1 < v.tiles.length) targets.push({ id: v.tiles[i + 1].id, label: `ONWARD · LEVEL ${v.tiles[i + 1].level} TILE` });
+  return { reason: null, targets };
+}
+
+// ---------- upgrade removal (mirror of doRemoveUpgrade) ----------
+
+export function removeUpgradeReason(v: DsView, seat: number, upgradeId: string): string | null {
+  const g = globalGate(v, seat);
+  if (g) return g;
+  if (!atBonfire(v)) return 'ONLY AT BLACKSMITH ANDRE';
+  const up = DS_TREASURE_BY_ID[upgradeId];
+  if (up?.slot === 'weapon-upgrade') return 'WEAPON UPGRADES ARE PERMANENT';
+  return null;
+}
 
 // ---------- bonfire mirrors ----------
 

@@ -159,6 +159,7 @@
 .ds-tag { padding: 1px 5px; border-radius: 5px; background: var(--glass-2); border: 1px solid var(--brd); letter-spacing: .06em; }
 .ds-tag.magic { color: #9ec1f0; border-color: #2b5fb8; }
 .ds-tag.cond { color: #e2a4c6; border-color: #c46a9a; }
+.ds-cast-text { color: var(--ink-2, #b8c2cc); font-size: 11px; line-height: 1.3; display: block; max-width: 100%; }
 
 /* ---------- prompts (centered) ---------- */
 

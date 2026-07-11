@@ -149,14 +149,23 @@
           "icons": [
             "magic"
           ],
-          "text": "Your attacks are magical this activation"
+          "text": "Your attacks are magical this activation",
+          "effect": {
+            "kind": "buff",
+            "magical": true
+          }
         },
         {
           "staminaCost": 2,
           "icons": [
             "magic"
           ],
-          "text": "Your attacks gain +1 damage and are magical this activation"
+          "text": "Your attacks gain +1 damage and are magical this activation",
+          "effect": {
+            "kind": "buff",
+            "magical": true,
+            "damage": 1
+          }
         }
       ],
       "defence": {
@@ -193,11 +202,22 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "One character within range gains 1 stamina and 1 health"
+          "text": "One character within range gains 1 stamina and 1 health",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "stamina": 1,
+            "health": 1
+          }
         },
         {
           "staminaCost": 3,
-          "text": "One character within range gains 4 health"
+          "text": "One character within range gains 4 health",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "health": 4
+          }
         }
       ],
       "defence": {
@@ -234,7 +254,13 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "One character within range gains 1 stamina and 1 health"
+          "text": "One character within range gains 1 stamina and 1 health",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "stamina": 1,
+            "health": 1
+          }
         }
       ],
       "defence": {
@@ -474,14 +500,21 @@
           "staminaCost": 1,
           "icons": [
             "poison"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict"
+          }
         },
         {
           "staminaCost": 3,
           "icons": [
             "node",
             "poison"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict",
+            "node": true
+          }
         }
       ],
       "defence": {
@@ -520,14 +553,21 @@
           "staminaCost": 0,
           "icons": [
             "stagger"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict"
+          }
         },
         {
           "staminaCost": 2,
           "icons": [
             "stagger",
             "stagger"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict",
+            "targets": 2
+          }
         }
       ],
       "defence": {
@@ -1197,7 +1237,10 @@
           "staminaCost": 0,
           "icons": [
             "bleed"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict"
+          }
         }
       ],
       "defence": {
@@ -3119,7 +3162,12 @@
         },
         {
           "staminaCost": 0,
-          "text": "Gain 2 stamina"
+          "text": "Gain 2 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "self",
+            "stamina": 2
+          }
         }
       ],
       "defence": {
@@ -3177,7 +3225,18 @@
         },
         {
           "staminaCost": 0,
-          "text": "[block: 1 black][resist: 1 black] Party bonus during the next enemy activation"
+          "text": "[block: 1 black][resist: 1 black] Party bonus during the next enemy activation",
+          "effect": {
+            "kind": "defenceBuff",
+            "who": "party",
+            "block": {
+              "black": 1
+            },
+            "resist": {
+              "black": 1
+            },
+            "until": "enemyPhaseEnd"
+          }
         }
       ],
       "defence": {
@@ -3701,11 +3760,21 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "All characters within range gain 1 stamina"
+          "text": "All characters within range gain 1 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "all",
+            "stamina": 1
+          }
         },
         {
           "staminaCost": 3,
-          "text": "One character within range gains 6 stamina"
+          "text": "One character within range gains 6 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "stamina": 6
+          }
         }
       ],
       "defence": {
@@ -4602,7 +4671,15 @@
       "actions": [
         {
           "staminaCost": 2,
-          "text": "During the next enemy activation, you gain [1 black die in a shield circle = 1 black block die]"
+          "text": "During the next enemy activation, you gain [1 black die in a shield circle = 1 black block die]",
+          "effect": {
+            "kind": "defenceBuff",
+            "who": "self",
+            "block": {
+              "black": 1
+            },
+            "until": "enemyPhaseEnd"
+          }
         }
       ],
       "defence": {
@@ -5157,7 +5234,10 @@
           "staminaCost": 2,
           "icons": [
             "bleed"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict"
+          }
         }
       ],
       "defence": {
@@ -5312,7 +5392,11 @@
           "icons": [
             "stagger",
             "node"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict",
+            "node": true
+          }
         }
       ],
       "defence": {
@@ -5924,7 +6008,12 @@
       "actions": [
         {
           "staminaCost": 4,
-          "text": "All characters within range gain 4 health"
+          "text": "All characters within range gain 4 health",
+          "effect": {
+            "kind": "grant",
+            "who": "all",
+            "health": 4
+          }
         }
       ],
       "defence": {
@@ -7907,11 +7996,21 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "All characters within range gain 1 stamina"
+          "text": "All characters within range gain 1 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "all",
+            "stamina": 1
+          }
         },
         {
           "staminaCost": 2,
-          "text": "All characters within range gain 1 health"
+          "text": "All characters within range gain 1 health",
+          "effect": {
+            "kind": "grant",
+            "who": "all",
+            "health": 1
+          }
         }
       ],
       "defence": {
@@ -8067,7 +8166,12 @@
         },
         {
           "staminaCost": 0,
-          "text": "One character within range gains 2 stamina"
+          "text": "One character within range gains 2 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "stamina": 2
+          }
         }
       ],
       "defence": {
@@ -8127,7 +8231,12 @@
         },
         {
           "staminaCost": 0,
-          "text": "All characters within range gain 2 stamina"
+          "text": "All characters within range gain 2 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "all",
+            "stamina": 2
+          }
         }
       ],
       "defence": {
@@ -8168,7 +8277,12 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "One character within range gains 1 stamina"
+          "text": "One character within range gains 1 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "stamina": 1
+          }
         }
       ],
       "defence": {
@@ -8212,11 +8326,21 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "One character within range gains 6 stamina"
+          "text": "One character within range gains 6 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "stamina": 6
+          }
         },
         {
           "staminaCost": 3,
-          "text": "All other characters within range gain 6 stamina"
+          "text": "All other characters within range gain 6 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "allOthers",
+            "stamina": 6
+          }
         }
       ],
       "defence": {
@@ -8253,11 +8377,21 @@
       "actions": [
         {
           "staminaCost": 2,
-          "text": "Up to two characters within range gain 2 stamina"
+          "text": "Up to two characters within range gain 2 stamina",
+          "effect": {
+            "kind": "grant",
+            "who": "upTo2",
+            "stamina": 2
+          }
         },
         {
           "staminaCost": 4,
-          "text": "Up to two characters within range gain 2 health"
+          "text": "Up to two characters within range gain 2 health",
+          "effect": {
+            "kind": "grant",
+            "who": "upTo2",
+            "health": 2
+          }
         }
       ],
       "defence": {
@@ -8659,7 +8793,11 @@
           "staminaCost": 0,
           "icons": [
             "shift:2"
-          ]
+          ],
+          "effect": {
+            "kind": "shift",
+            "nodes": 2
+          }
         }
       ],
       "defence": {
@@ -8720,7 +8858,11 @@
           "staminaCost": 0,
           "icons": [
             "shift:2"
-          ]
+          ],
+          "effect": {
+            "kind": "shift",
+            "nodes": 2
+          }
         }
       ],
       "defence": {
@@ -8761,14 +8903,24 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "All characters within range gain 2 health"
+          "text": "All characters within range gain 2 health",
+          "effect": {
+            "kind": "grant",
+            "who": "all",
+            "health": 2
+          }
         },
         {
           "staminaCost": 3,
           "icons": [
             "range:1"
           ],
-          "text": "All characters within range gain 2 health"
+          "text": "All characters within range gain 2 health",
+          "effect": {
+            "kind": "grant",
+            "who": "all",
+            "health": 2
+          }
         }
       ],
       "defence": {
@@ -8808,7 +8960,15 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "Until the next character activation, all characters within range gain [shield icon containing 1 blue hex]"
+          "text": "Until the next character activation, all characters within range gain [shield icon containing 1 blue hex]",
+          "effect": {
+            "kind": "defenceBuff",
+            "who": "allInRange",
+            "block": {
+              "blue": 1
+            },
+            "until": "charActivationStart"
+          }
         }
       ],
       "defence": {
@@ -8848,7 +9008,15 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "Until the next character activation, all characters within range gain [dark hexagonal badge containing 1 blue hex]"
+          "text": "Until the next character activation, all characters within range gain [dark hexagonal badge containing 1 blue hex]",
+          "effect": {
+            "kind": "defenceBuff",
+            "who": "allInRange",
+            "resist": {
+              "blue": 1
+            },
+            "until": "charActivationStart"
+          }
         }
       ],
       "defence": {
@@ -8979,11 +9147,21 @@
       "actions": [
         {
           "staminaCost": 2,
-          "text": "One character within range gains 6 health"
+          "text": "One character within range gains 6 health",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "health": 6
+          }
         },
         {
           "staminaCost": 4,
-          "text": "All characters on one node within range gain 6 health"
+          "text": "All characters on one node within range gain 6 health",
+          "effect": {
+            "kind": "grant",
+            "who": "oneNode",
+            "health": 6
+          }
         }
       ],
       "defence": {
@@ -9022,14 +9200,21 @@
           "staminaCost": 1,
           "icons": [
             "push"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict"
+          }
         },
         {
           "staminaCost": 3,
           "icons": [
             "push",
             "dot-in-arc"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict",
+            "node": true
+          }
         }
       ],
       "defence": {
@@ -9336,7 +9521,10 @@
           "staminaCost": 0,
           "icons": [
             "poison"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict"
+          }
         }
       ],
       "defence": {
@@ -9595,7 +9783,10 @@
           "staminaCost": 1,
           "icons": [
             "shield-bash"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict"
+          }
         }
       ],
       "defence": {
@@ -9986,7 +10177,10 @@
           "staminaCost": 1,
           "icons": [
             "shield-bash"
-          ]
+          ],
+          "effect": {
+            "kind": "afflict"
+          }
         }
       ],
       "defence": {
@@ -10268,7 +10462,11 @@
       "actions": [
         {
           "staminaCost": 3,
-          "text": "Choose an enemy in a node with another enemy; the chosen enemy suffers 3 damage"
+          "text": "Choose an enemy in a node with another enemy; the chosen enemy suffers 3 damage",
+          "effect": {
+            "kind": "rapport",
+            "damage": 3
+          }
         }
       ],
       "defence": {
@@ -10975,11 +11173,21 @@
       "actions": [
         {
           "staminaCost": 0,
-          "text": "One character within range gains 1 health"
+          "text": "One character within range gains 1 health",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "health": 1
+          }
         },
         {
           "staminaCost": 3,
-          "text": "One character within range gains 3 health"
+          "text": "One character within range gains 3 health",
+          "effect": {
+            "kind": "grant",
+            "who": "one",
+            "health": 3
+          }
         }
       ],
       "defence": {

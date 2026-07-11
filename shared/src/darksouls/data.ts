@@ -116,12 +116,31 @@ export const DS_L4_DECKS: Record<string, string> = {
 
 // ---------- treasures ----------
 
+/** Structured encoding of a printed text/icon-only card action (the "spell
+ * DSL", decision log 11). Every field mirrors the printed card; the ambiguous
+ * glyphs were re-verified against sheet crops (Force's twin stagger icons,
+ * Atonement's node dot, Sacred Oath shield-frame = block vs Magic Barrier
+ * hexagon-frame = resist, shield-bash = the stagger glyph). */
+export type DsSpellEffect =
+  | { kind: 'grant'; who: 'one' | 'self' | 'all' | 'allOthers' | 'upTo2' | 'oneNode'; stamina?: number; health?: number }
+  | { kind: 'buff'; magical: true; damage?: number } // caster's attacks this activation
+  | {
+    kind: 'defenceBuff'; who: 'self' | 'allInRange' | 'party';
+    block?: Partial<Record<'black' | 'blue' | 'orange', number>>;
+    resist?: Partial<Record<'black' | 'blue' | 'orange', number>>;
+    until: 'enemyPhaseEnd' | 'charActivationStart';
+  }
+  | { kind: 'afflict'; targets?: number; node?: boolean } // conditions/push come from the action's icons
+  | { kind: 'shift'; nodes: number }
+  | { kind: 'rapport'; damage: number }; // enemy sharing a node with another enemy suffers N
+
 export interface DsTreasureAction {
   staminaCost: number;
   dice?: Partial<Record<'black' | 'blue' | 'orange', number>>;
   flatModifier?: number;
   icons?: string[];
   text?: string;
+  effect?: DsSpellEffect;
 }
 
 export interface DsTreasureCard {

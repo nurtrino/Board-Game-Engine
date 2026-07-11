@@ -6,8 +6,8 @@
 
 import {
   createDarkSouls, dsViewFor, dsRollDodgeDie, dsDrawL4, dsNodeBlocked,
-  dsOccupancy, dsCanSpendStamina, dsStatValue, dsCombatDistance,
-  type DsState, type DsPending,
+  dsOccupancy, dsCanSpendStamina, dsStatValue, dsCombatDistance, dsDefenceDice,
+  type DsState, type DsPending, type DsCharacter,
 } from './state.js';
 import { applyDarkSoulsAction, _dsInternals, type DsAction } from './actions.js';
 import {
@@ -307,6 +307,11 @@ function enterFirstEncounter(s: DsState): void {
   drain(s);
 }
 
+/** answer only the entry-placement pendings (stop at the next kind) */
+function placeDrain(s: DsState): void {
+  drain(s, (st) => st.pendings.length === 0 || st.pendings[0].kind !== 'entryPlace');
+}
+
 // ---------- 2. directed rules tests ----------
 
 console.log('--- directed rules tests ---');
@@ -315,7 +320,9 @@ console.log('--- directed rules tests ---');
 {
   const s = mkGame({ seed: 7 });
   act(s, 0, { type: 'travel', tileId: s.tiles[0].id });
-  ok(s.pendings.length > 0 && s.pendings[0].kind === 'leadCharacter', 'encounter start pends leadCharacter (core p.19)');
+  ok(s.pendings.length > 0 && ['entryPlace', 'leadCharacter'].includes(s.pendings[0].kind)
+    && s.pendings.some((p) => p.kind === 'leadCharacter'),
+  'encounter start pends entry placement then leadCharacter (core p.19)');
   const r = act(s, 0, { type: 'end_activation' });
   ok(!r.ok, 'non-choose actions are rejected while a decision is pending');
   const wrongSeat = act(s, 1, { type: 'choose', pick: s.pendings[0].options[0].key });
@@ -439,7 +446,8 @@ console.log('--- directed rules tests ---');
 // death: cache drop on the kill node + retrieval; spark decrement (core p.19)
 {
   const s = mkGame({ seed: 23 });
-  act(s, 0, { type: 'travel', tileId: s.tiles[0].id }); // no drain: wipe before combat
+  act(s, 0, { type: 'travel', tileId: s.tiles[0].id }); // wipe before combat
+  placeDrain(s);
   s.soulCache = 7;
   const sparks = s.sparks;
   const tileId = s.encounter!.tileId!;
@@ -481,6 +489,7 @@ console.log('--- directed rules tests ---');
 {
   const s = mkGame({ seed: 25 });
   act(s, 0, { type: 'travel', tileId: s.tiles[0].id });
+  placeDrain(s);
   s.sparks = 0;
   _dsInternals.applyCharDamage(s, 0, 99, { attack: true, source: 'test' });
   ok(s.phase === 'gameOver' && s.winner === false, 'a death at 0 sparks loses the game (core p.8)');
@@ -490,11 +499,13 @@ console.log('--- directed rules tests ---');
 {
   const s = mkGame({ seed: 27 });
   act(s, 0, { type: 'travel', tileId: s.tiles[0].id });
+  placeDrain(s);
   s.soulCache = 5;
   _dsInternals.applyCharDamage(s, 0, 99, { attack: true, source: 'test' });
   const firstDrop = s.droppedSouls;
   ok(firstDrop?.amount === 5, 'first wipe drops 5 souls');
   act(s, 0, { type: 'travel', tileId: s.tiles[0].id });
+  placeDrain(s);
   s.soulCache = 2;
   _dsInternals.applyCharDamage(s, 1, 99, { attack: true, source: 'test' });
   ok(s.droppedSouls?.amount === 2, 'second wipe discards the old drop and drops the new cache');
@@ -823,6 +834,7 @@ console.log('--- directed rules tests ---');
     && c.nodes.length >= 8 && c.nodes.includes(c.dpadNode)),
   'all 6 Blasted Nodes cards carry decoded node lists; the d-pad eye is itself blasted (golden)');
   _dsInternals.startBossFight(s, 'old-iron-king', 'mega');
+  s.pendings = []; // entry placement is exercised in its own test; park models by hand
   const run = s.boss!;
   // deterministic: the Fire Beam signature flips first (signatures are always in the deck)
   run.deck = ['beam:1', ...run.deck.filter((c) => c !== 'beam:1')];
@@ -833,6 +845,7 @@ console.log('--- directed rules tests ---');
   s.characters[0].nodeId = targetNode;
   s.characters[1].nodeId = dsTileGraph('mega-old-iron-king-back').face.nodes
     .find((n) => !pattern.nodes.includes(n.id))!.id;
+  _dsInternals.pump(s);
   drain(s, (st) => st.pendings.some((p) => p.kind === 'defence'));
   const defs = s.pendings.filter((p) => p.kind === 'defence');
   ok(defs.length === 1 && defs[0].seat === 0 && defs[0].data.damage === 5 && defs[0].data.magical === true,
@@ -850,6 +863,7 @@ console.log('--- directed rules tests ---');
     && c.nodes.length >= 9 && !c.nodes.includes(c.dpadNode)),
   'all 8 Fiery Ruin cards carry decoded node lists; the landing node is never aflame (golden)');
   _dsInternals.startBossFight(s, 'black-dragon-kalameet', 'mega');
+  s.pendings = []; // entry placement is exercised in its own test; park models by hand
   const run = s.boss!;
   run.deck = ['1', ...run.deck.filter((c) => c !== '1')]; // Hellfire Blast signature
   const pattern = decoded.find((c) => c.cell === run.strafeDeck![0])!;
@@ -857,6 +871,7 @@ console.log('--- directed rules tests ---');
   s.characters[0].nodeId = targetNode;
   s.characters[1].nodeId = dsTileGraph('mega-black-dragon-kalameet-back').face.nodes
     .find((n) => !pattern.nodes.includes(n.id) && n.id !== pattern.dpadNode)!.id;
+  _dsInternals.pump(s);
   drain(s, (st) => st.pendings.some((p) => p.kind === 'defence'));
   const defs = s.pendings.filter((p) => p.kind === 'defence');
   ok(defs.length === 1 && defs[0].seat === 0 && defs[0].data.damage === 5 && defs[0].data.magical === true,
@@ -893,6 +908,7 @@ console.log('--- directed rules tests ---');
   ok(s.summon?.id === 'eygon-of-carim' && s.summonEarned === null && s.summon.health === 9,
     'Eygon of Carim answers the mini-boss summons with his health dial set (add-ons p.8)');
   ok(s.summon!.deck.length === 4, 'summon behaviour deck = all four cards, shuffled (add-ons p.8)');
+  drain(s, (st) => st.pendings.some((p) => p.kind === 'summonMove'));
   ok(s.pendings.some((p) => p.kind === 'summonMove'),
     'Battle Ready: Eygon may move before the first enemy activation (data card)');
   drain(s);
@@ -959,6 +975,258 @@ console.log('--- directed rules tests ---');
   ok(v.characters[0].stats.str === dsStatValue(s.characters[0], 'str'), 'view derives stat values');
   ok(v.treasureDeckCount === s.treasureDeck.length, 'view exposes deck count, not order');
   ok(v.head === null && v.busy === false, 'quiet state: no pending head, no playback');
+}
+
+// ---------- spell DSL (decision log 11, reconciled) ----------
+
+/** Cleric + sorcerer at Tier 3 meet every spell requirement in the mod. */
+function mkCasters(seed: number): DsState {
+  const s = createDarkSouls({
+    scenarioId: 'standard', partySize: 2, classIds: ['cleric', 'sorcerer'],
+    miniBoss: 'winged-knight', mainBoss: 'dancer-of-the-boreal-valley', seed,
+  });
+  for (const ch of s.characters) ch.tiers = { str: 3, dex: 3, int: 3, fai: 3 };
+  return s;
+}
+
+/** ...parked in a live first-tile encounter with pendings drained (bumps the
+ * seed deterministically past instantly-cleared draws). */
+function mkCasterGame(seed: number): DsState {
+  for (let k = 0; k < 20; k++) {
+    const s = mkCasters(seed + k * 1000);
+    act(s, 0, { type: 'travel', tileId: s.tiles[0].id });
+    drain(s);
+    if (s.phase === 'encounter' && (s.encounter?.enemies.length ?? 0) > 0) return s;
+  }
+  throw new Error('mkCasterGame: no live encounter in 20 seeds');
+}
+
+/** Hand `seat` the turn with `cardId` in the left hand and a clean bar. */
+function giveTurn(s: DsState, seat: number, cardId: string): DsCharacter {
+  const ch = s.characters[seat];
+  s.encounter!.turn = 'characters';
+  s.encounter!.activeSeat = seat;
+  s.script = [];
+  s.pendings = [];
+  ch.act = {
+    walkUsed: false, stage: 'start', movedBefore: false, attacked: [],
+    swapWindow: true, freeMoves: 0, buff: null, mercExtra: false, deprivedSwap: false, magicWeapon: 0,
+  };
+  ch.handL = { cardId, upgrades: [] };
+  ch.stamina = 0; ch.damage = 0;
+  return ch;
+}
+
+// Heal: "One character within range gains 4 health" — two candidates pend a
+// spellTarget choice; the cast consumes the hand action
+{
+  const s = mkCasterGame(101);
+  const ch = giveTurn(s, 0, 'heal');
+  const ally = s.characters[1];
+  ally.nodeId = ch.nodeId;
+  ally.damage = 5; ally.stamina = 0;
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 1 });
+  ok(r.ok, `Heal cast accepted (${r.error ?? 'ok'})`);
+  ok(s.pendings[0]?.kind === 'spellTarget' && s.pendings[0].options.length === 2,
+    'two characters in range pend a spellTarget pick');
+  const c = act(s, 0, { type: 'choose', pick: 'seat:1' });
+  ok(c.ok && ally.damage === 1, `Heal removes 4 red cubes (${ally.damage} left)`);
+  ok(ch.act!.attacked.includes('L'), 'casting consumes the hand action (core p.22)');
+  const again = act(s, 0, { type: 'attack', hand: 'L', option: 0 });
+  ok(!again.ok, 'the hand item acts once per activation (core p.22)');
+}
+
+// a unique target auto-resolves without a pending (Sacred Chime heal)
+{
+  const s = mkCasterGame(102);
+  const ch = giveTurn(s, 0, 'sacred-chime');
+  const g = dsTileGraph(s.encounter!.faceId);
+  const far = g.face.nodes.find((n) => dsNodeDistance(s.encounter!.faceId, ch.nodeId!, n.id) > 2)!;
+  s.characters[1].nodeId = far.id;
+  ch.damage = 4;
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 1 }); // one within range gains 3 health
+  ok(r.ok && s.pendings.length === 0 && ch.damage === 1,
+    `a unique in-range target resolves without a pending (${ch.damage} damage left)`);
+}
+
+// Talisman: "All characters within range gain 1 stamina"
+{
+  const s = mkCasterGame(103);
+  const ch = giveTurn(s, 0, 'talisman');
+  const ally = s.characters[1];
+  ally.nodeId = ch.nodeId;
+  ch.stamina = 5; ally.stamina = 5;
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 0 });
+  ok(r.ok && ch.stamina === 4 && ally.stamina === 4,
+    `Talisman clears one black cube from everyone in range (${ch.stamina}/${ally.stamina})`);
+}
+
+// Great Magic Weapon: attacks are magical (+1 damage on the [2] option) this activation
+{
+  const s = mkCasterGame(104);
+  const ch = giveTurn(s, 0, 'great-magic-weapon');
+  const weapon = Object.values(DS_TREASURE_BY_ID).find((c) => c.kind === 'weapon' && !c.twoHanded
+    && (c.actions?.[0]?.dice?.black ?? 0) > 0
+    && Object.values(c.requirements).every((v) => v <= 20))!;
+  ch.handR = { cardId: weapon.id, upgrades: [] };
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 1 });
+  ok(r.ok && ch.act!.magicWeapon === 2, 'Great Magic Weapon [2]: magical + 1 damage this activation');
+  const en = s.encounter!.enemies[0];
+  en.nodeId = ch.nodeId!;
+  const logLen = s.log.length;
+  const atk = act(s, 0, { type: 'attack', hand: 'R', option: 0, targetUid: en.uid });
+  drain(s);
+  ok(atk.ok && s.log.slice(logLen).some((l) => l.text.includes('magical')),
+    `the buffed weapon attack resolves as magical (${atk.error ?? 'ok'})`);
+}
+
+// Force [2]: two stagger icons = up to two targets, chained pick with a skip
+{
+  const s = mkCasterGame(105);
+  const ch = giveTurn(s, 0, 'force');
+  const enc = s.encounter!;
+  if (enc.enemies.length < 2) {
+    enc.enemies.push({ ...enc.enemies[0], uid: 900, conditions: [] });
+  }
+  const [e1, e2] = enc.enemies;
+  e1.nodeId = ch.nodeId!; e2.nodeId = ch.nodeId!;
+  e1.conditions = []; e2.conditions = [];
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 1 });
+  ok(r.ok && s.pendings[0]?.kind === 'spellTarget', `Force [2] pends the first target (${r.error ?? 'ok'})`);
+  act(s, 0, { type: 'choose', pick: `uid:${e1.uid}` });
+  const second = s.pendings[0];
+  ok(second?.kind === 'spellTarget' && second.options.some((o) => o.key === 'skip'),
+    'the second stagger chains with a skip option');
+  act(s, 0, { type: 'choose', pick: `uid:${e2.uid}` });
+  ok(e1.conditions.includes('stagger') && e2.conditions.includes('stagger'),
+    'both chosen enemies are staggered');
+}
+
+// Sacred Oath: +1 blue block die for all in range until the next character activation
+{
+  const s = mkCasterGame(106);
+  const ch = giveTurn(s, 0, 'sacred-oath');
+  const ally = s.characters[1];
+  ally.nodeId = ch.nodeId;
+  const blueBefore = dsDefenceDice(ch, 'block').blue ?? 0;
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 0 });
+  ok(r.ok && (ch.defBuffs?.length ?? 0) === 1 && (ally.defBuffs?.length ?? 0) === 1,
+    `Sacred Oath buffs everyone in range (${r.error ?? 'ok'})`);
+  ok((dsDefenceDice(ch, 'block').blue ?? 0) === blueBefore + 1, 'the blue block die shows in the defence pool');
+  ok(ch.defBuffs![0].expires === 'charActivationStart' && ch.defBuffs![0].resist === undefined,
+    'Sacred Oath is block-only, until the next character activation');
+}
+
+// Stone Greatshield: +1 black block die during the next enemy activation, then it expires
+{
+  const s = mkCasterGame(107);
+  const ch = giveTurn(s, 0, 'stone-greatshield');
+  ch.handR = null;
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 0 });
+  ok(r.ok && ch.defBuffs?.[0]?.expires === 'enemyPhaseEnd',
+    `Stone Greatshield grants its die through the next enemy activation (${r.error ?? 'ok'})`);
+  act(s, 0, { type: 'end_activation' });
+  drain(s);
+  ok((ch.defBuffs?.length ?? 0) === 0, 'the buff expires once the enemy activation ends');
+}
+
+// Atonement [3]: push every enemy on a node within range (no damage)
+{
+  const s = mkCasterGame(108);
+  const ch = giveTurn(s, 0, 'atonement');
+  const enc = s.encounter!;
+  const g = dsTileGraph(enc.faceId);
+  const adjacent = g.adj[ch.nodeId!][0];
+  for (const e of enc.enemies) e.nodeId = adjacent;
+  const woundsBefore = enc.enemies.map((e) => e.wounds).join(',');
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 1 });
+  drain(s);
+  ok(r.ok, `Atonement node push accepted (${r.error ?? 'ok'})`);
+  ok(enc.enemies.every((e) => dsNodeDistance(enc.faceId, ch.nodeId!, e.nodeId)
+    > dsNodeDistance(enc.faceId, ch.nodeId!, adjacent) || e.nodeId === adjacent),
+  'pushed enemies move away from the caster (cornered ones stay)');
+  ok(enc.enemies.map((e) => e.wounds).join(',') === woundsBefore, 'the push deals no damage');
+}
+
+// Rapport: only an enemy sharing a node with another enemy; 3 damage direct
+{
+  const s = mkCasterGame(109);
+  const ch = giveTurn(s, 1, 'rapport');
+  const enc = s.encounter!;
+  const g = dsTileGraph(enc.faceId);
+  // spread the enemies out: no shared node -> the cast is rejected before payment
+  enc.enemies.forEach((e, i) => { e.nodeId = g.face.nodes[i].id; });
+  const stam = ch.stamina;
+  const rejected = act(s, 1, { type: 'attack', hand: 'L', option: 0 });
+  ok(!rejected.ok && ch.stamina === stam, 'Rapport rejects with no shared-node enemy, costing nothing');
+  if (enc.enemies.length < 2) enc.enemies.push({ ...enc.enemies[0], uid: 901, conditions: [] });
+  const [e1, e2] = enc.enemies;
+  e1.nodeId = ch.nodeId!; e2.nodeId = ch.nodeId!;
+  const r = act(s, 1, { type: 'attack', hand: 'L', option: 0 });
+  if (s.pendings[0]?.kind === 'spellTarget') act(s, 1, { type: 'choose', pick: `uid:${e1.uid}` });
+  ok(r.ok && (e1.wounds >= 3 || !enc.enemies.includes(e1)),
+    `Rapport deals 3 direct damage (${r.error ?? 'ok'})`);
+}
+
+// Carthus Curved Sword [0] third option: shift 2 = two free moves
+{
+  const s = mkCasterGame(110);
+  const ch = giveTurn(s, 1, 'carthus-curved-sword');
+  const r = act(s, 1, { type: 'attack', hand: 'L', option: 2 });
+  ok(r.ok && ch.act!.freeMoves === 2, `the printed shift grants 2 free moves (${r.error ?? 'ok'})`);
+}
+
+// conditions stick to bosses now (decision log 13, reconciled): Kukris bleed
+{
+  const s = mkCasters(111);
+  _dsInternals.startBossFight(s, 'winged-knight', 'mini');
+  drain(s);
+  const ch = giveTurn(s, 0, 'kukris');
+  const unit = s.boss!.units[0];
+  ch.nodeId = unit.nodeId!;
+  ch.arc = 'front';
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 0 });
+  ok(r.ok && unit.conditions?.includes('bleed'), `Kukris sticks Bleed to the boss (${r.error ?? 'ok'})`);
+  const hp = unit.health;
+  _dsInternals.applyBossDamage(s, 'boss', 2, null);
+  ok(unit.health === hp - 4 && !unit.conditions?.includes('bleed'),
+    `boss bleed bursts for +2 then clears (took ${hp - unit.health})`);
+}
+
+// Force staggers a boss; the Boreal Outrider shrugs stagger off entirely
+{
+  const s = mkCasters(112);
+  _dsInternals.startBossFight(s, 'winged-knight', 'mini');
+  drain(s);
+  const ch = giveTurn(s, 0, 'force');
+  const unit = s.boss!.units[0];
+  ch.nodeId = unit.nodeId!;
+  ch.arc = 'front';
+  const r = act(s, 0, { type: 'attack', hand: 'L', option: 0 });
+  ok(r.ok && unit.conditions?.includes('stagger'), `Force staggers the boss (${r.error ?? 'ok'})`);
+
+  const s2 = mkCasters(113);
+  _dsInternals.startBossFight(s2, 'boreal-outrider-knight', 'mini');
+  drain(s2);
+  const ch2 = giveTurn(s2, 0, 'force');
+  const unit2 = s2.boss!.units[0];
+  ch2.nodeId = unit2.nodeId!;
+  ch2.arc = 'front';
+  const r2 = act(s2, 0, { type: 'attack', hand: 'L', option: 0 });
+  ok(!r2.ok, 'the Boreal Outrider never gains stagger — the cast has no target (data card)');
+}
+
+// every effect-bearing action in the golden is executable: none return the
+// old text-only rejection
+{
+  let missing = 0;
+  for (const card of Object.values(DS_TREASURE_BY_ID)) {
+    for (const a of card.actions ?? []) {
+      const dice = Object.values(a.dice ?? {}).reduce((n, x) => n + (x ?? 0), 0);
+      if (dice === 0 && !a.effect) missing += 1;
+    }
+  }
+  ok(missing === 0, `every no-dice printed action carries a structured effect (${missing} missing)`);
 }
 
 // ---------- summary ----------

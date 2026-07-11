@@ -649,13 +649,13 @@ silent or ambiguous. Numbered for cross-reference from code comments
 8. Rest clears endurance bar.
 9. Cornered push: stay + damage, Kirk spikes bleed all pushed.
 10. Character node-AoE hits enemies only.
-11. Text-only card actions rejected v1, upgrade text executes +N damage / gain Bleed only - LARGEST KNOWN GAP (25 spells).
+11. Text-only card actions rejected v1, upgrade text executes +N damage / gain Bleed only - LARGEST KNOWN GAP (25 spells). — UPDATE (reconciled): all 43 no-dice printed actions now carry a structured `effect` in the treasures golden (the spell DSL): grants (heal/stamina to one / self / all / allOthers / upTo2 / oneNode within printed range), magic-weapon attack buffs ((Great) Magic Weapon: attacks magical this activation, +1 damage on the [2] option), timed defence-dice buffs (Sacred Oath +1 blue block, Magic Barrier +1 blue resist, Stone Greatshield +1 black block, Sunlight Straight Sword party block+resist), condition/push afflictions incl. node-wide (Poison Mist, Force, Aural Decoy, Atonement, Kukris, Dung Pie, shield bashes), shift-only movement (Carthus Curved Sword, Lucerne), and Rapport's direct 3 damage to an enemy sharing a node. Casting shares the attack economy (one use per hand item, grouped movement, same stamina modifiers) and is rejected before payment when no legal target exists; a unique target auto-resolves; real choices go through a `spellTarget` pending (chained second pick with skip for Force / Bountiful Light). Ambiguous glyphs were re-verified against sheet crops: Force prints one/two stagger icons; Atonement's [3] is push + node dot; the crest/large-leather "shield bash" IS the stagger glyph; Sacred Oath's badge is a blue die in a SHIELD frame (block) while Magic Barrier's is a HEXAGON frame (resist). Defence buffs expire per the printed wording — "during the next enemy activation" clears when the enemy phase (or boss activation) ends, "until the next character activation" clears when the next character activation starts — and all buffs clear with the encounter.
 12. Shift = free move credits, repeat pays once rolls N, enemy repeat = whole behaviour.
-13. Character conditions do not stick to bosses v1.
+13. Character conditions do not stick to bosses v1. — UPDATE (reconciled): condition tokens now stick to boss units and to the summon. On a boss: bleed = +2 on its next wound then clears, poison = 1 damage at the end of its activation, stagger = -1 damage on its attacks, frostbite = -1 node of movement; poison/frostbite/stagger clear when its activation ends (core p.21 applied 1:1). The Boreal Outrider never gains frostbite/stagger (data card note) — a stagger-only cast at it has no legal target. Bosses are still never pushed by characters. The summon mirrors the same rules (boss attacks apply their printed conditions through its auto-defence; its stagger -1 / frostbite -1 apply to its own attack and Shift; ticks resolve at the end of the boss activation round).
 14. OIK beam/Kalameet strafe approximated by bands. — UPDATE (reconciled): the goldens now carry exact per-card node lists for OIK's 6 Blasted Nodes and Kalameet's 8 Fiery Ruin cards (`{tile, nodes[], dpadNode}`, `bosses.json _meta.resolved`); the engine consumes them directly (`beamPattern`/`strafePattern`). OIK surfaces at the card's d-pad eye (itself blasted); Kalameet lands on the card's d-pad node (never itself aflame). The band approximation is deleted — nothing about the beam/strafe remains graphical (the 3 Fire Beam behaviour cards target exclusively through the Blasted Nodes deck per oik p.13).
 15. Dancer reshuffle = remaining deck only.
 16. Mimic ambush 1-in-3, printed mimic chests ambush even module-off.
-17. Summons module non-functional pending decks. — UPDATE (reconciled): Eygon of Carim (mini) and Witch Beatrice (main) transcribed from the addon25 sheet (cells 55-64) into the golden `summons` section; the module is functional: fog-gate zero-souls trade (`summonOffer` pending), spawn on an entry node at boss setup, activation after every character activation, 4-card always-all deck with unshuffled recycle, Shift = player-positioned move pending (host seat), Distract = virtual Aggro for the next boss activation, Run for Cover = dodge dice vs the next activation, weak-arc bonus die shared once per flipped card (Beatrice's Curse upgrades hers to blue), summon death despawns without a bonfire reset. New v1 sub-judgments: summon defence is auto-played (dodge when dodging is its only defence, else block/resist), a pushed summon auto-relocates to the first free adjacent node with no push damage, printed stagger vs bosses is not applied (see 13), and a party wipe loses the consumed summon.
+17. Summons module non-functional pending decks. — UPDATE (reconciled): Eygon of Carim (mini) and Witch Beatrice (main) transcribed from the addon25 sheet (cells 55-64) into the golden `summons` section; the module is functional: fog-gate zero-souls trade (`summonOffer` pending), spawn on an entry node at boss setup, activation after every character activation, 4-card always-all deck with unshuffled recycle, Shift = player-positioned move pending (host seat), Distract = virtual Aggro for the next boss activation, Run for Cover = dodge dice vs the next activation, weak-arc bonus die shared once per flipped card (Beatrice's Curse upgrades hers to blue), summon death despawns without a bonfire reset. New v1 sub-judgments: summon defence is auto-played (dodge when dodging is its only defence, else block/resist), a pushed summon auto-relocates to the first free adjacent node with no push damage, printed stagger vs bosses is not applied (see 13 — SUPERSEDED: conditions now stick per 13's update, including the summon's own), and a party wipe loses the consumed summon.
 18. Invasion tokens engine-virtual and visible, re-arm on dash-out, identity once per game.
 19. Campaign multi-boss +1 spark lump at final boss, capped.
 20. Legendary injection = transmuted deck at mini reset / section 1->2.
@@ -666,3 +666,117 @@ silent or ambiguous. Numbered for cross-reference from code comments
 25. Arena drops key arena:<bossId>, tile drops auto-collect on next clear.
 26. Boss faces entry door initially, move-0 turns in place.
 27. Continue = pacing ack, treasure pendings survive endings.
+
+28. Spell target picks pend via `spellTarget` (unique target auto-resolves; Force/Bountiful Light chain a second pick with skip); cast shares the attack economy.
+29. Entry placement is the players' choice: one `entryPlace` pending per character (seat order, upfront) and one for the summon (host); a one-node doorway places silently; a node that fills re-pends at the front with fresh options.
+
+## 8. Rulebook UI-coverage audit (ship gate 1)
+
+Audit date 2026-07-10, engine suite 164 green. Method per playbook section
+6.4b: every player decision, optional cost, choice of amount, and piece of
+public information was extracted from the six digests (full re-read), then
+mapped to a concrete control or display; the `DsAction` union and
+`DsPendingKind` list were swept in reverse for fields the UI never sends.
+
+Legend:
+- FULL - the choice/info lives on a device control or TV display exactly as printed.
+- ENGINE - the rule is enforced/resolved by the engine with no player-facing choice because none is meaningful (dominated option, unique legal outcome, or data makes it impossible).
+- SIMPLIFIED - deliberately narrowed from the printed freedom; recorded in the decision log.
+- MISSING - a printed choice the port does not offer (with the reason).
+
+### 8.1 Setup and lobby
+
+| Rule point | Coverage | Where |
+|---|---|---|
+| Scenario, party size 1-4, mini/main boss pick, mega finale, Darkroot mix + treasure, mimics/invaders/summons toggles | FULL | SelectGame create panel (7 option rows) |
+| Class pick (10 classes) | FULL | device ClassPickScreen, real board scans, taken classes greyed |
+| Starting equipment arrangement | ENGINE | auto-equip (armour, then hands, then backup); freely rearranged at the bonfire before the first travel (ManageOverlay) |
+| Tile layout around the bonfire (core p.8) | SIMPLIFIED | linear chain bonfire, t1..t4, fog gate (decision log 1); the fog-gate tie choice therefore never arises |
+
+### 8.2 Bonfire phase (device)
+
+| Rule point | Coverage | Where |
+|---|---|---|
+| Buy treasure (1 soul; 2 campaign) | FULL | Andre panel, cost on the button, deck count shown |
+| Drawn treasure: who equips / stash | FULL | treasureKeep pending (card art + per-seat equip options) |
+| Equipment changes at Andre | FULL | tap any card, ManageOverlay (equip to armour/handL/handR/backup/inventory, stat gates mirrored) |
+| Install upgrades / remove armour upgrades (weapon upgrades permanent) | FULL | ManageOverlay INSTALL ON / REMOVE rows (remove greys with WEAPON UPGRADES ARE PERMANENT) |
+| Level up any stat (2/4/8; campaign 4/8/16/20) | FULL | Firekeeper tier table, per-cell cost buttons, greyed when unaffordable |
+| Restore Luck (1 soul) | FULL | Firekeeper panel |
+| Buy sparks (campaign, 2 souls/member, cap) | FULL | Firekeeper panel |
+| Sell treasure (campaign, 1 soul) | FULL | ManageOverlay SELL row |
+| Rest (spark -1, resets tiles) | FULL | REST host-gated (seat 0 confirms, decision log 22) |
+| Ember assignment | FULL | emberAssign pending |
+| Travel / return to bonfire any time out of encounter | FULL | TravelStrip (bonfire + tile buttons, fog-gate flag, invader token flag) |
+| Enter the boss any time after fog clear | FULL | ENTER FOG GATE (primary when live) |
+| Open chests / re-engage a waiting mimic | FULL | TravelStrip chest buttons |
+| Campaign player join/leave mid-campaign (1 spark) | MISSING | the room's seat roster is fixed at create; flagged as owner question (rooms-as-saves model) |
+
+### 8.3 Encounter activation (device)
+
+| Rule point | Coverage | Where |
+|---|---|---|
+| Entry-node placement (core p.19/p.28) | FULL | entryPlace pending per character, map-tap or buttons (decision log 29) |
+| Lead character / Aggro token | FULL | leadCharacter pending |
+| First activation of the game | ENGINE | firstActivation token starts at seat 0 and rotates; subsequent order is clockwise per rules |
+| Backup swap window (start of activation) | FULL | SWAP BACKUP opens an explicit combo picker (bring in / trade / stow, two-handed + stat reasons) |
+| Walk (once) / runs (1 stamina) with node choice | FULL | WALK / RUN then glowing map nodes; movement grouping enforced with inline reasons |
+| Barrel smash (+1 stamina) | FULL | barrel nodes included in move plans at the printed cost |
+| Attack: hand, option, target | FULL | per-option rail buttons (dice chips, range, icon tags) then target picker / map tap |
+| Node-AoE attacks | FULL | an enemy target on the node selects the node; AoE hits enemies only (decision log 10) |
+| Spell casts (43 printed text/icon actions) | FULL | CAST buttons with printed text; targets via spellTarget pending (decision log 28) |
+| Shift icons | SIMPLIFIED | free-move credits, position free within the activation (decision log 12) |
+| Estus / heroic actions | FULL | rail buttons; reactive heroics (Knight/Assassin) offered in postRoll pendings |
+| Luck reroll | FULL | postRoll pending |
+| End activation | FULL | explicit END ACTIVATION, primary when it is the only act |
+| Campaign dash-through | FULL | DASH THROUGH buttons per connected tile (gated until one enemy phase) |
+
+### 8.4 Reactions and party decisions (pendings)
+
+| Rule point | Coverage | Where |
+|---|---|---|
+| Block/resist vs dodge | FULL | defence pending with live dice pools (incl. cast defence buffs); "suffer" equals rolling a 0-die block |
+| Optional pre-dodge move | FULL | dodgeMove pending (map or buttons) |
+| Trap / push damage (never blockable) | FULL | trap pending (suffer / dodge) |
+| Push destinations, node overflow | FULL | pushDest / nodeOverflow pendings |
+| Enemy activation ties, enemy move ties | FULL | enemyTieOrder / enemyMoveTie pendings (only when meaningful, decision log 4) |
+| Nearest-target taunt ties | ENGINE | impossible by data: taunt values are a complete permutation (classes 1-10, Eygon 11, Beatrice 0) |
+| Boundary arc choice, arc rotation on a boss node | FULL | arcChoice pending; CIRCLE TO THE ARC buttons |
+| Summon offer (souls XOR phantom) | FULL | summonOffer pending |
+| Summon entry placement + Shift positioning | FULL | entryPlace (host) + summonMove pendings |
+
+### 8.5 Public information (TV + device)
+
+| Rule point | Coverage | Where |
+|---|---|---|
+| Sparks, souls, dropped-souls cache | FULL | device header + TV bonfire panel; the dropped cache is marked in the log with its node |
+| Endurance bars (black from left, red from right), estus/luck/heroic/ember | FULL | device cube bar + TV per-character healthbar chips |
+| Conditions on characters/enemies/bosses/summon | FULL | device party chips + node map; TV boss panel condition chips (added this audit) |
+| Aggro + first-activation tokens | FULL | TV chips + device AGGRO tag + red map dot |
+| Enemy data cards (threat/range/dodge/defence/behaviour) | FULL | node-map + SHOW DECK sheets |
+| Encounter card contents, trap values once flipped, terrain, chest states | FULL | TV 3D tile + device map glyphs (T/G/B/C legend) |
+| Tile progress (unexplored/revealed/cleared/completed, fog gate, invasion tokens) | FULL | TravelStrip + TV tile strip |
+| Boss health dials, heat-up, deck/discard counts, flipped behaviour card | FULL | TV boss panel (mod dial art, KING mats, paired O&S) |
+| Gravestone intel (revealed boss cards) | FULL | TV boss panel GRAVESTONE INTEL row (added this audit) |
+| Weak/attack arcs of the top discard | FULL | TV arena arc rings + facing tick |
+| OIK beam / Kalameet strafe patterns + lava region | FULL | decoded node lists play out on the TV; forbidden nodes enforced |
+| Four Kings dials 1-4, summons remaining, Take a Breather | FULL | KING ONE-FOUR mats; log narration |
+| Summon dial, deck/discard, Distract state | FULL | device summon chip + TV log; Distract narrated |
+| Campaign tracking sheet | ENGINE | the room IS the persistent save (rooms-as-saves) |
+
+### 8.6 Reverse sweep (action union to UI)
+
+Every `DsAction` variant and field is reachable from a device control:
+pick_class, buy/sell treasure, equip_move (all five destinations),
+install/remove upgrade, level_up (per stat), restore_luck, buy_spark, rest,
+travel (incl. bonfire), enter_fog_gate, open_chest (per node), walk/run
+(nodeId + arcStep), swap_backup (both ids via the combo picker), attack
+(hand/option/targetUid/targetUnit; nodeId is redundant by decision log 10),
+use_estus, heroic_action, end_activation, dash_through (per tile), choose
+(all 16 pending kinds render), continue (TV pacing ack). No field is
+auto-picked by the client anymore (the SWAP BACKUP auto-pick and the missing
+dash/remove-upgrade/spell affordances were closed during this audit).
+
+Known deliberate non-offerings: campaign mid-campaign roster changes (8.2,
+owner question), tile-layout freedom (8.1, decision log 1), Go Beyond Death
+(excluded, absent content).

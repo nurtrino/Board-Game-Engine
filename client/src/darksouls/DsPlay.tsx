@@ -9,7 +9,7 @@
 
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import {
-  DS_CLASSES, DS_CLASS_IDS, DS_TREASURE_BY_ID, DS_BOSSES, DS_ENCOUNTER_BY_ID,
+  DS_CLASSES, DS_CLASS_IDS, DS_TREASURE_BY_ID, DS_BOSSES, DS_ENCOUNTER_BY_ID, DS_SUMMONS,
   dsDefenceDice, dsDodgeDiceCount,
   type DsView, type DsAction, type DsPending, type DsStat, type DsArc,
   type DsTreasureCard,
@@ -22,9 +22,10 @@ import {
 import { DsNodeMap, type MapPick } from './DsNodeMap';
 import {
   activationGate, atBonfire, attackChoices, buyReason, buySparkReason, canSpend, cleanCopy,
-  dodgeStamina, endReason, enemyAlive, enemyDef, equipMoveReason, equipWindowOpen, estusReason,
-  fogGateReason, freeBoxes, globalGate, heroicReason, levelInfo, movePlan, openableChests,
-  restReason, restoreLuckReason, sellReason, swapReason, travelTargets, upgradeTargets,
+  dashPlan, dodgeStamina, endReason, enemyAlive, enemyDef, equipMoveReason, equipWindowOpen,
+  estusReason, fogGateReason, freeBoxes, globalGate, heroicReason, levelInfo, movePlan,
+  openableChests, removeUpgradeReason, restReason, restoreLuckReason, sellReason, swapOptions,
+  swapReason, travelTargets, upgradeTargets,
   ENDURANCE_BOXES, LUCK_RESTORE_COST, SELLBACK_SOULS, SPARK_COST, TREASURE_COST,
   type AttackChoice, type DsVChar, type EquipSlotKey, type MovePlan,
 } from './dsPlayRules';
@@ -252,7 +253,9 @@ function PendingOverlay({ view, seat, act, mapPickHost }: {
   // publish node picks onto the shared map for spatial decisions
   useEffect(() => {
     if (!head || head.seat !== seat) { mapPickHost(null); return; }
-    const nodeKeys = head.options.filter((o) => o.key.startsWith('node:'));
+    // plain node picks only: summonMove keys carry an arc suffix (node:id:arc)
+    // and stay button-driven — one node maps to four arc options
+    const nodeKeys = head.options.filter((o) => o.key.startsWith('node:') && o.key.indexOf(':', 5) < 0);
     if (nodeKeys.length > 0) {
       mapPickHost({
         nodes: new Set(nodeKeys.map((o) => o.key.slice(5))),
@@ -396,6 +399,7 @@ function PromptBody({ view, seat, head, act }: { view: DsView; seat: number; hea
   const KIND_LABEL: Partial<Record<DsPending['kind'], string>> = {
     leadCharacter: 'AGGRO', pushDest: 'PUSH PLACEMENT', nodeOverflow: 'NODE FULL',
     enemyTieOrder: 'ACTIVATION ORDER', enemyMoveTie: 'ENEMY MOVE', arcChoice: 'ARC CHOICE',
+    spellTarget: 'CAST TARGET', entryPlace: 'ENTER THE ROOM',
   };
   return (
     <>
@@ -463,6 +467,7 @@ function ClassPickScreen({ view, seat, act }: { view: DsView; seat: number; act:
 type PickMode =
   | { kind: 'walk' | 'run'; plan: MovePlan }
   | { kind: 'attack'; choice: AttackChoice }
+  | { kind: 'swap' }
   | null;
 
 function EncounterRail({ view, seat, act, setPick, pickMode }: {
@@ -483,6 +488,11 @@ function EncounterRail({ view, seat, act, setPick, pickMode }: {
     && attacks.every((a) => a.reason != null);
 
   const startAttack = (choice: AttackChoice) => {
+    if (choice.cast != null) {
+      // spell DSL cast: the engine pends the target pick (spellTarget)
+      act({ type: 'attack', hand: choice.hand, option: choice.option });
+      return;
+    }
     if (choice.targets.length === 1) {
       const t = choice.targets[0];
       act(t.kind === 'enemy'
@@ -492,6 +502,29 @@ function EncounterRail({ view, seat, act, setPick, pickMode }: {
     }
     setPick({ kind: 'attack', choice });
   };
+
+  if (pickMode?.kind === 'swap') {
+    return (
+      <div className="ds-rail-body">
+        <div className="ds-picking ig-glass">
+          <span className="ig-lab">SWAP BACKUP</span>
+          <b>PICK THE TRADE</b>
+          {swapOptions(view, seat).map((o, i) => (
+            <button key={i} className="ds-btn" disabled={Boolean(o.reason)} onClick={() => {
+              act({ type: 'swap_backup', handCardId: o.handCardId, backupCardId: o.backupCardId });
+              setPick(null);
+            }}>
+              <span className="ds-btn-main"><b>{o.label}</b></span>
+              <Reason text={o.reason} />
+            </button>
+          ))}
+          <button className="ds-btn ghost" onClick={() => setPick(null)}>
+            <span className="ds-btn-main"><b>CANCEL</b></span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (pickMode) {
     return (
@@ -544,7 +577,9 @@ function EncounterRail({ view, seat, act, setPick, pickMode }: {
           reason={a.reason}
           detail={(
             <>
-              <DieChips dice={a.dice} flat={a.flat} />
+              {a.cast != null
+                ? <span className="ds-cast-text">{cleanCopy(a.cast)}</span>
+                : <DieChips dice={a.dice} flat={a.flat} />}
               <em className="ds-tag">R{a.range >= 9999 ? '∞' : a.range}</em>
               {a.icons.magic && <em className="ds-tag magic">MAGIC</em>}
               {a.icons.node && <em className="ds-tag">NODE</em>}
@@ -564,7 +599,19 @@ function EncounterRail({ view, seat, act, setPick, pickMode }: {
         detail={cls.heroicAction.text.length > 96 ? `${cls.heroicAction.text.slice(0, 93)}…` : cls.heroicAction.text}
         onClick={() => act({ type: 'heroic_action' })} />
       <RailBtn label="SWAP BACKUP" reason={swap} detail="Trade a hand weapon with backup"
-        onClick={() => act({ type: 'swap_backup', handCardId: undefined, backupCardId: ch.backup[0]?.cardId })} />
+        onClick={() => setPick({ kind: 'swap' })} />
+      {view.campaign && (() => {
+        const dash = dashPlan(view, seat);
+        if (dash.reason) {
+          return <RailBtn label="DASH THROUGH" reason={dash.reason}
+            detail="Flee the tile · it resets face down" onClick={() => {}} />;
+        }
+        return dash.targets.map((t) => (
+          <RailBtn key={t.id} label={`DASH THROUGH · ${t.label}`} reason={null}
+            detail="Flee the tile · it resets face down"
+            onClick={() => act({ type: 'dash_through', tileId: t.id })} />
+        ));
+      })()}
       <RailBtn label="END ACTIVATION" reason={end} primary={onlyEndLeft}
         detail="Pass to the enemies"
         onClick={() => act({ type: 'end_activation' })} />
@@ -723,12 +770,16 @@ const SLOT_LABEL: Record<Exclude<EquipSlotKey, 'inventory'>, string> = {
 function ManageOverlay({ view, seat, cardId, act, onClose }: {
   view: DsView; seat: number; cardId: string; act: Act; onClose: () => void;
 }) {
+  const ch = view.characters[seat];
   const card: DsTreasureCard | undefined = DS_TREASURE_BY_ID[cardId];
   if (!card) return null;
   const window = equipWindowOpen(view, seat);
   const isUpgrade = card.kind === 'upgrade';
   const targets = isUpgrade ? upgradeTargets(view, seat, cardId) : [];
   const inInventory = view.inventory.includes(cardId);
+  const equippedHere = [ch.armour, ch.handL, ch.handR, ...ch.backup]
+    .find((e) => e != null && e.cardId === cardId);
+  const installed = equippedHere?.upgrades ?? [];
   const sell = sellReason(view, seat);
   const req = card.requirements ?? { str: 0, dex: 0, int: 0, fai: 0 };
   const reqText = STAT_ROWS.filter((st) => (req[st] ?? 0) > 0).map((st) => `${STAT_LABEL[st]} ${req[st]}`).join(' · ');
@@ -767,6 +818,16 @@ function ManageOverlay({ view, seat, cardId, act, onClose }: {
                   <Reason text={!inInventory ? 'UPGRADE MUST BE IN THE INVENTORY' : t.reason} />
                 </button>
               ))}
+              {installed.map((upId) => {
+                const reason = removeUpgradeReason(view, seat, upId);
+                return (
+                  <button key={upId} className="ds-choice slim" disabled={Boolean(reason)}
+                    onClick={() => { act({ type: 'remove_upgrade', upgradeId: upId, targetCardId: cardId }); onClose(); }}>
+                    <b>REMOVE {DS_TREASURE_BY_ID[upId].name.toUpperCase()} · BACK TO THE INVENTORY</b>
+                    <Reason text={reason} />
+                  </button>
+                );
+              })}
               {view.campaign && inInventory && (
                 <button className="ds-choice slim" disabled={Boolean(sell)}
                   onClick={() => { act({ type: 'sell_treasure', cardId }); onClose(); }}>
@@ -874,8 +935,24 @@ function PartyChips({ view, seat }: { view: DsView; seat: number }) {
           {view.aggroSeat === c.seat && (view.phase === 'encounter' || view.phase === 'bossEncounter') && <em>AGGRO</em>}
           {!c.estus && <em className="dim">NO ESTUS</em>}
           {c.ember && <em className="ember">EMBER</em>}
+          {c.conditions.map((cond) => <em key={cond} className="dim">{cond.toUpperCase()}</em>)}
+          {(c.defBuffs ?? []).map((b, i) => <em key={`b${i}`}>{b.label.toUpperCase()}</em>)}
+          {(c.act?.magicWeapon ?? 0) > 0 && <em>MAGIC WEAPON</em>}
         </span>
       ))}
+      {view.summon && DS_SUMMONS[view.summon.id] && (
+        <span className="ds-party-chip ig-glass">
+          <b>{DS_SUMMONS[view.summon.id].name.toUpperCase()}</b>
+          <small className="ig-num">HP {view.summon.health}/{view.summon.maxHealth}</small>
+          <em>SUMMON</em>
+        </span>
+      )}
+      {!view.summon && view.summonEarned && (
+        <span className="ds-party-chip ig-glass">
+          <b>SUMMON SIGN</b>
+          <small className="ig-num">AN ALLY WAITS AT THE {view.summonEarned === 'mini' ? 'MINI' : 'MAIN'} BOSS</small>
+        </span>
+      )}
     </div>
   );
 }
@@ -893,7 +970,7 @@ function EncounterScreen({ view, seat, act }: { view: DsView; seat: number; act:
     if (activationGate(view, seat)) setPickMode(null);
   }, [view, seat]);
 
-  const mapPick: MapPick | null = pendingPick ?? (pickMode ? {
+  const mapPick: MapPick | null = pendingPick ?? (pickMode && pickMode.kind !== 'swap' ? {
     nodes: new Set(
       pickMode.kind === 'attack'
         ? pickMode.choice.targets.map((t) => t.nodeId)

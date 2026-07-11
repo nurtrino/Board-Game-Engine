@@ -21,7 +21,7 @@ import {
   DS_INVADER_ADVANCED, DS_INVADER_STANDARD, DS_SUMMONS, DS_TREASURE_BY_ID,
   dsEntryNodes, dsNodeDistance, dsNodesOfTerrain, dsSummonPool, dsTileGraph,
   dsTreasureDeckCards, dsUpgradeDamageBonus, dsUpgradeGrantsBleed,
-  type DsBossCard, type DsBossOp, type DsEnemyBehavior, type DsSummonOp,
+  type DsBossCard, type DsBossOp, type DsEnemyBehavior, type DsSpellEffect, type DsSummonOp,
   type DsTreasureAction,
 } from './data.js';
 import {
@@ -364,7 +364,7 @@ function applyRest(s: DsState, forced: boolean): void {
     ch.luck = true;
     ch.stamina = 0;
     ch.damage = 0;
-    ch.conditions = [];
+    ch.conditions = []; ch.defBuffs = [];
     if (forced) ch.ember = false;
   }
   for (const tile of s.tiles) {
@@ -529,22 +529,26 @@ function startEncounter(s: DsState, tile: DsTile, backward: boolean): void {
   s.script.push({ t: 'enemyPhase' });
 }
 
+/** The players place their own models on the entry nodes (core p.19/p.28,
+ * 3-model cap). One pending per character, queued upfront in seat order so
+ * every placement resolves before the leadCharacter pending; a node that
+ * fills mid-sequence re-pends with fresh options. A one-node doorway places
+ * everyone silently. */
 function placePartyAtEntry(s: DsState, entryEdge: string): void {
   const enc = s.encounter!;
-  const entries = dsEntryNodes(enc.faceId, entryEdge);
-  let i = 0;
-  for (const ch of s.characters) {
-    // 3-model cap on entry nodes (core p.19)
-    let node = entries[i % entries.length];
-    let guard = 0;
-    while (dsOccupancy(s, node) >= DS_NODE_MODEL_CAP && guard++ < entries.length * 2) {
-      i++;
-      node = entries[i % entries.length];
+  for (const ch of s.characters) { ch.nodeId = null; ch.arc = null; }
+  const all = dsEntryNodes(enc.faceId, entryEdge);
+  if (all.length <= 1) {
+    for (const ch of s.characters) {
+      ch.nodeId = all[0];
+      afterCharEnters(s, ch, { viaDodge: false });
     }
-    ch.nodeId = node;
-    ch.arc = null;
-    i++;
-    afterCharEnters(s, ch, { viaDodge: false });
+    return;
+  }
+  for (const ch of s.characters) {
+    dsPushPending(s, ch.seat, 'entryPlace',
+      `${DS_CLASSES[ch.classId].name}: choose your entry node (core p.19).`,
+      all.map((n) => ({ key: `node:${n}`, label: `Node ${n}` })), { entryEdge });
   }
 }
 
@@ -824,6 +828,11 @@ function parseIcons(action: DsTreasureAction): ParsedIcons {
       if (parts[2] === 'after') p.shiftAfter += Number(parts[1]);
       else p.shiftBefore += Number(parts[1]);
     } else if (['bleed', 'poison', 'frostbite', 'stagger'].includes(icon)) p.conditions.push(icon as DsCondition);
+    // sheet-crop verified glyph aliases: the shield-bash glyph IS the stagger
+    // icon (crest/large-leather shield) and the dot-in-arc glyph IS the node
+    // icon (Atonement's node-wide push)
+    else if (icon === 'shield-bash') p.conditions.push('stagger');
+    else if (icon === 'dot-in-arc') p.node = true;
   }
   return p;
 }
@@ -843,14 +852,15 @@ function doAttack(s: DsState, seat: number, a: { hand: 'L' | 'R'; option: number
   const card = DS_TREASURE_BY_ID[eq.cardId];
   const option = card.actions?.[a.option];
   if (!option) return err('No such attack option.');
+  if (option.effect) return doCastSpell(s, seat, a.hand, option); // spell DSL (decision log 11)
   if (!option.dice || Object.keys(option.dice).length === 0) {
-    return err('Text-only card actions are not executable in v1 (spec judgment).');
+    return err('This printed action has no encoded effect (report it — every card should).');
   }
   if (!dsMeetsReqsEquipped(ch, eq)) return err('Stat requirements not met.');
 
   const icons = parseIcons(option);
   const usingMerc = act.mercExtra;
-  const isMagic = icons.magic; // magic buffs only apply to magic attacks
+  const isMagic = icons.magic || (act.magicWeapon ?? 0) > 0; // (Great) Magic Weapon makes every attack magical
 
   // range
   let range = icons.range ?? card.range ?? 0;
@@ -926,7 +936,9 @@ function doAttack(s: DsState, seat: number, a: { hand: 'L' | 'R'; option: number
     log(s, 'Weak arc! One extra black die.', 'dice', undefined, seat);
   }
 
-  const flat = (option.flatModifier ?? 0) + eq.upgrades.reduce((n, u) => n + dsUpgradeDamageBonus(DS_TREASURE_BY_ID[u]), 0);
+  const flat = (option.flatModifier ?? 0)
+    + eq.upgrades.reduce((n, u) => n + dsUpgradeDamageBonus(DS_TREASURE_BY_ID[u]), 0)
+    + ((act.magicWeapon ?? 0) === 2 ? 1 : 0); // Great Magic Weapon: +1 damage
   const conditions = [...icons.conditions];
   if (eq.upgrades.some((u) => dsUpgradeGrantsBleed(DS_TREASURE_BY_ID[u]))) conditions.push('bleed');
 
@@ -949,6 +961,238 @@ function doAttack(s: DsState, seat: number, a: { hand: 'L' | 'R'; option: number
     });
   }
   return OK;
+}
+
+// ---------- spell DSL (decision log 11, reconciled) ----------
+
+/** Boreal Outrider never gains frostbite/stagger (its data card note). */
+function bossConditionFilter(bossId: string, conds: DsCondition[]): DsCondition[] {
+  return bossId === 'boreal-outrider-knight'
+    ? conds.filter((c) => c !== 'frostbite' && c !== 'stagger')
+    : conds;
+}
+
+function applySpellGrant(s: DsState, target: DsCharacter, fx: Extract<DsSpellEffect, { kind: 'grant' }>, casterSeat: number): void {
+  if (fx.stamina) dsGainStamina(target, fx.stamina);
+  if (fx.health) dsHealDamage(target, fx.health);
+  const parts: string[] = [];
+  if (fx.stamina) parts.push(`${fx.stamina} stamina`);
+  if (fx.health) parts.push(`${fx.health} health`);
+  log(s, `${DS_CLASSES[target.classId].name} gains ${parts.join(' and ')}.`, undefined, target.nodeId ?? undefined, casterSeat);
+}
+
+function applySpellAfflictEnemy(s: DsState, casterSeat: number, uid: number, conditions: DsCondition[], push: boolean): void {
+  const enc = s.encounter!;
+  const en = enc.enemies.find((e) => e.uid === uid);
+  if (!en) return;
+  for (const c of conditions) addCondition(s, en.conditions, c, enemyName(en));
+  if (push) {
+    const caster = s.characters[casterSeat];
+    queuePushEnemy(s, en.uid, { mode: 'awayFrom', fromNodeId: caster.nodeId ?? en.nodeId, chooserSeat: casterSeat });
+  }
+}
+
+function applySpellAfflictBoss(s: DsState, unitKey: string, conditions: DsCondition[]): void {
+  const run = s.boss;
+  if (!run) return;
+  const unit = run.units.find((u) => u.key === unitKey);
+  if (!unit?.inPlay) return;
+  for (const c of bossConditionFilter(run.id, conditions)) {
+    addCondition(s, (unit.conditions ??= []), c, DS_BOSSES[run.id].name);
+  }
+}
+
+/** Resolve one spell target pick; shared by the auto-resolve path (a unique
+ * target never pends) and the `spellTarget` pending. Chains the second pick
+ * for Force's twin stagger and Bountiful Light's "up to two". */
+function resolveSpellPick(s: DsState, data: Record<string, unknown>, pick: string): void {
+  const fx = data.fx as DsSpellEffect;
+  const casterSeat = data.casterSeat as number;
+  const conditions = (data.conditions as DsCondition[] | undefined) ?? [];
+  const push = Boolean(data.push);
+  const cardName = (data.cardName as string | undefined) ?? 'The spell';
+  if (pick === 'skip') return;
+  if (pick.startsWith('seat:') && fx.kind === 'grant') {
+    applySpellGrant(s, s.characters[Number(pick.slice(5))], fx, casterSeat);
+  } else if (pick.startsWith('node:')) {
+    const node = pick.slice(5);
+    if (fx.kind === 'grant') {
+      for (const c of s.characters) if (c.nodeId === node) applySpellGrant(s, c, fx, casterSeat);
+    } else {
+      // node afflicts hit enemies only (decision log 10)
+      const uids = (s.encounter?.enemies ?? []).filter((e) => e.nodeId === node).map((e) => e.uid);
+      for (const uid of uids) applySpellAfflictEnemy(s, casterSeat, uid, conditions, push);
+    }
+  } else if (pick.startsWith('uid:')) {
+    const uid = Number(pick.slice(4));
+    if (fx.kind === 'rapport') applyEnemyDamage(s, uid, fx.damage, casterSeat);
+    else applySpellAfflictEnemy(s, casterSeat, uid, conditions, push);
+  } else if (pick.startsWith('unit:')) {
+    applySpellAfflictBoss(s, pick.slice(5), conditions);
+  }
+  const remaining = (data.remaining as number | undefined) ?? 1;
+  if (remaining > 1) {
+    const opts = ((data.options as DsPendingOption[] | undefined) ?? []).filter((o) => o.key !== pick);
+    if (opts.length > 0) {
+      dsPushPending(s, casterSeat, 'spellTarget', `${cardName}: a second target?`,
+        [...opts, { key: 'skip', label: 'No second target' }],
+        { ...data, options: opts, remaining: remaining - 1 });
+    }
+  }
+}
+
+/** Cast a text/icon-only card action through its structured effect. Same
+ * action economy as an attack: one use per hand item per activation, grouped
+ * movement, stamina cost with the same modifiers. An impossible cast (no
+ * legal target) is rejected before anything is paid. */
+function doCastSpell(s: DsState, seat: number, hand: 'L' | 'R', option: DsTreasureAction): DsActionResult {
+  const fx = option.effect!;
+  const ch = activeChar(s, seat);
+  if (!ch) return err('Not your activation.');
+  const act = ch.act!;
+  if (act.stage === 'post') return err('Movement groups entirely before or after attacks (core p.22).');
+  const eq = hand === 'L' ? ch.handL : ch.handR;
+  if (!eq) return err('That hand is empty.');
+  if (act.attacked.includes(hand) && !act.mercExtra) return err('One attack per hand weapon per activation (core p.22).');
+  const card = DS_TREASURE_BY_ID[eq.cardId];
+  if (!dsMeetsReqsEquipped(ch, eq)) return err('Stat requirements not met.');
+  const icons = parseIcons(option);
+  const usingMerc = act.mercExtra;
+  const range = icons.range ?? card.range ?? 0;
+  let cost = option.staminaCost;
+  if (act.buff === 'sorcerer' && icons.magic) cost = Math.max(0, cost - 3);
+  if (usingMerc) cost = 0;
+  if (ch.conditions.includes('stagger')) cost += 1; // core p.21
+  if (s.boss?.id === 'gargoyle' && s.boss.heatedUp && bossUnitAt(s, ch.nodeId!)) cost += 1; // Flying High
+  if (!dsCanSpendStamina(ch, cost)) return err('Not enough stamina.');
+
+  const enc = s.encounter!;
+  const inRange = (nodeId: string) => dsNodeDistance(enc.faceId, ch.nodeId!, nodeId) <= range;
+  const charsInRange = s.characters.filter((c) => c.nodeId && inRange(c.nodeId));
+  const aliveEnemies = enc.enemies.filter((e) => e.wounds < enemyHealth(e));
+
+  // pre-validate the target space: reject before paying, auto-resolve a
+  // unique target, pend a real choice
+  let pend: { prompt: string; options: DsPendingOption[]; remaining: number } | null = null;
+  let autoPick: string | null = null;
+  switch (fx.kind) {
+    case 'grant': {
+      if (fx.who === 'self') break;
+      if (charsInRange.length === 0) return err('No character within range.');
+      if (fx.who === 'oneNode') {
+        const nodes = [...new Set(charsInRange.map((c) => c.nodeId!))].sort();
+        if (nodes.length === 1) autoPick = `node:${nodes[0]}`;
+        else {
+          pend = {
+            prompt: `${card.name}: choose the node.`,
+            options: nodes.map((n) => ({ key: `node:${n}`, label: `Node ${n}` })), remaining: 1,
+          };
+        }
+        break;
+      }
+      if (fx.who === 'allOthers' && charsInRange.every((c) => c.seat === seat)) return err('No other character within range.');
+      if (fx.who === 'one' || fx.who === 'upTo2') {
+        if (charsInRange.length === 1) autoPick = `seat:${charsInRange[0].seat}`;
+        else {
+          pend = {
+            prompt: `${card.name}: choose who receives it.`,
+            options: charsInRange.map((c) => ({ key: `seat:${c.seat}`, label: DS_CLASSES[c.classId].name })),
+            remaining: fx.who === 'upTo2' ? 2 : 1,
+          };
+        }
+      }
+      break;
+    }
+    case 'afflict': {
+      if (fx.node) {
+        const nodes = [...new Set(aliveEnemies.filter((e) => inRange(e.nodeId)).map((e) => e.nodeId))].sort();
+        if (nodes.length === 0) return err('No enemy within range.');
+        if (nodes.length === 1) autoPick = `node:${nodes[0]}`;
+        else {
+          pend = {
+            prompt: `${card.name}: choose the node.`,
+            options: nodes.map((n) => ({ key: `node:${n}`, label: `Node ${n}` })), remaining: 1,
+          };
+        }
+        break;
+      }
+      const opts: DsPendingOption[] = aliveEnemies.filter((e) => inRange(e.nodeId))
+        .map((e) => ({ key: `uid:${e.uid}`, label: `${enemyName(e)} (${e.nodeId})` }));
+      if (icons.conditions.length > 0 && s.boss && bossConditionFilter(s.boss.id, icons.conditions).length > 0) {
+        for (const u of s.boss.units) {
+          if (u.inPlay && u.nodeId && inRange(u.nodeId)) opts.push({ key: `unit:${u.key}`, label: bossUnitName(s, u.key) });
+        }
+      }
+      if (opts.length === 0) return err('No target within range.');
+      if (opts.length === 1) autoPick = opts[0].key;
+      else pend = { prompt: `${card.name}: choose the target.`, options: opts, remaining: fx.targets ?? 1 };
+      break;
+    }
+    case 'rapport': {
+      const opts: DsPendingOption[] = aliveEnemies
+        .filter((e) => inRange(e.nodeId) && aliveEnemies.filter((o) => o.nodeId === e.nodeId).length >= 2)
+        .map((e) => ({ key: `uid:${e.uid}`, label: `${enemyName(e)} (${e.nodeId})` }));
+      if (opts.length === 0) return err('Rapport needs an enemy sharing a node with another enemy.');
+      if (opts.length === 1) autoPick = opts[0].key;
+      else pend = { prompt: 'Rapport: choose the enemy.', options: opts, remaining: 1 };
+      break;
+    }
+    default: break; // buff / defenceBuff / shift always land
+  }
+
+  // pay & bookkeeping (mirrors doAttack)
+  dsSpendStamina(ch, cost);
+  if (usingMerc) act.mercExtra = false;
+  else act.attacked.push(hand);
+  if (act.stage === 'pre') { act.stage = 'attack'; act.movedBefore = true; }
+  else if (act.stage === 'start') { act.stage = 'attack'; act.movedBefore = false; }
+  act.swapWindow = false;
+  act.deprivedSwap = false;
+  log(s, `${DS_CLASSES[ch.classId].name} uses ${card.name}.`, 'attack', ch.nodeId ?? undefined, seat);
+
+  const data = {
+    fx, casterSeat: seat, conditions: icons.conditions, push: icons.push, cardName: card.name,
+  } as Record<string, unknown>;
+  if (pend) {
+    dsPushPending(s, seat, 'spellTarget', pend.prompt, pend.options,
+      { ...data, options: pend.options, remaining: pend.remaining });
+    return OK;
+  }
+  if (autoPick) { resolveSpellPick(s, data, autoPick); return OK; }
+
+  switch (fx.kind) {
+    case 'buff':
+      act.magicWeapon = Math.max(act.magicWeapon ?? 0, fx.damage ? 2 : 1) as 0 | 1 | 2;
+      log(s, `${card.name}: attacks are magical${fx.damage ? ` and gain +${fx.damage} damage` : ''} this activation.`, undefined, undefined, seat);
+      break;
+    case 'defenceBuff': {
+      const targets = fx.who === 'self' ? [ch] : fx.who === 'party' ? s.characters : charsInRange;
+      for (const c of targets) {
+        (c.defBuffs ??= []).push({ block: fx.block, resist: fx.resist, expires: fx.until, label: card.name });
+      }
+      log(s, `${card.name}: bonus defence dice ${fx.until === 'enemyPhaseEnd' ? 'during the next enemy activation' : 'until the next character activation'}.`, undefined, undefined, seat);
+      break;
+    }
+    case 'shift':
+      act.freeMoves += fx.nodes;
+      log(s, `${card.name}: ${fx.nodes} free moves.`, 'move', ch.nodeId ?? undefined, seat);
+      break;
+    case 'grant': {
+      const targets = fx.who === 'all' ? charsInRange
+        : fx.who === 'allOthers' ? charsInRange.filter((c) => c.seat !== seat)
+          : [ch]; // 'self'
+      for (const t of targets) applySpellGrant(s, t, fx, seat);
+      break;
+    }
+    default: break;
+  }
+  return OK;
+}
+
+function bossUnitName(s: DsState, unitKey: string): string {
+  const def = DS_BOSSES[s.boss!.id];
+  if (unitKey === 'boss' || unitKey === 'mimic') return def.name;
+  return `${def.name} (${unitKey})`;
 }
 
 function charConditions(ch: DsCharacter): DsCondition[] { return ch.conditions; }
@@ -1025,7 +1269,7 @@ function doDash(s: DsState, seat: number, tileId: string | 'bonfire'): DsActionR
   tile.faceUp = false;
   tile.cleared = false;
   if (enc.invaderRun) tile.invaderToken = true; // the invader lies in wait again
-  for (const c of s.characters) { c.nodeId = null; c.arc = null; c.act = null; c.conditions = []; }
+  for (const c of s.characters) { c.nodeId = null; c.arc = null; c.act = null; c.conditions = []; c.defBuffs = []; }
   s.encounter = null;
   s.phase = 'bonfire';
   s.pendings = [];
@@ -1242,18 +1486,17 @@ function startBossFight(s: DsState, bossId: string, tier: 'mini' | 'main' | 'meg
     s.summonEarned = null;
     const pool = dsSummonPool(tier as 'mini' | 'main');
     const sdef = pool[dsRandInt(s, pool.length)];
-    const node = entries.find((n) => dsOccupancy(s, n) < DS_NODE_MODEL_CAP) ?? entries[0];
     s.summon = {
       id: sdef.id, health: sdef.data.health, maxHealth: sdef.data.health,
-      nodeId: node, arc: null,
+      nodeId: null, arc: null,
       deck: dsShuffle(s, sdef.behaviors.map((c) => c.cell)), discard: [],
       dodgeBuff: 0,
     };
-    log(s, `${sdef.name} answers the summons!`, 'phase', node);
-    if (sdef.data.battleReadyShift) {
-      queueSummonMove(s, sdef.data.battleReadyShift,
-        `${sdef.data.specialName}: ${sdef.name} may move before the first enemy activation.`);
-    }
+    log(s, `${sdef.name} answers the summons!`, 'phase');
+    // the phantom is placed on an entry node like a character, by the party
+    // (add-ons p.8; host decides, decision log 22)
+    dsPushPending(s, 0, 'entryPlace', `Place ${sdef.name} on an entry node (add-ons p.8).`,
+      entries.map((n) => ({ key: `node:${n}`, label: `Node ${n}` })), { unit: 'summon', entryEdge });
   }
   s.script.push({ t: 'bossPhase' });
 }
@@ -1276,6 +1519,55 @@ function pushPendingFront(s: DsState, seat: number, kind: DsPending['kind'], pro
 
 function resolveChoice(s: DsState, p: DsPending, pick: string): void {
   switch (p.kind) {
+    case 'spellTarget': {
+      resolveSpellPick(s, p.data, pick);
+      return;
+    }
+    case 'entryPlace': {
+      const node = pick.slice(5);
+      if (p.data.unit === 'summon') {
+        const su = s.summon;
+        if (!su || !s.encounter) return;
+        const sdef = DS_SUMMONS[su.id];
+        if (dsOccupancy(s, node) >= DS_NODE_MODEL_CAP) {
+          const open = dsEntryNodes(s.encounter.faceId, p.data.entryEdge as string)
+            .filter((n) => dsOccupancy(s, n) < DS_NODE_MODEL_CAP);
+          if (open.length === 0) { su.nodeId = node; return; } // cap unreachable with 4+1 models on 2+ nodes
+          dsPushPending(s, 0, 'entryPlace', `Place ${sdef.name} on an entry node (add-ons p.8).`,
+            open.map((n) => ({ key: `node:${n}`, label: `Node ${n}` })), p.data);
+          return;
+        }
+        su.nodeId = node;
+        log(s, `${sdef.name} takes the field.`, 'move', node);
+        if (sdef.data.battleReadyShift) {
+          queueSummonMove(s, sdef.data.battleReadyShift,
+            `${sdef.data.specialName}: ${sdef.name} may move before the first enemy activation.`);
+        }
+        return;
+      }
+      const ch = s.characters[p.seat];
+      // the node may have filled since the options were computed (earlier
+      // placements) — re-pend at the FRONT with the still-open nodes
+      if (dsOccupancy(s, node) >= DS_NODE_MODEL_CAP) {
+        const open = dsEntryNodes(s.encounter!.faceId, p.data.entryEdge as string)
+          .filter((n) => dsOccupancy(s, n) < DS_NODE_MODEL_CAP);
+        if (open.length === 0) return; // unreachable: 4 chars never fill 2+ entry nodes
+        if (open.length === 1) {
+          ch.nodeId = open[0];
+          ch.arc = null;
+          afterCharEnters(s, ch, { viaDodge: false });
+          return;
+        }
+        pushPendingFront(s, p.seat, 'entryPlace', p.prompt,
+          open.map((n) => ({ key: `node:${n}`, label: `Node ${n}` })), p.data);
+        return;
+      }
+      ch.nodeId = node;
+      ch.arc = null;
+      log(s, `${DS_CLASSES[ch.classId].name} steps in.`, 'move', node, ch.seat);
+      afterCharEnters(s, ch, { viaDodge: false });
+      return;
+    }
     case 'leadCharacter': {
       s.aggroSeat = Number(pick.slice(5));
       log(s, `${DS_CLASSES[s.characters[s.aggroSeat].classId].name} holds the Aggro token.`, undefined, undefined, s.aggroSeat);
@@ -1639,6 +1931,11 @@ function applyBossDamage(s: DsState, unitKey: string, dmg: number, bySeat: numbe
   const def = DS_BOSSES[run.id];
   let total = dmg;
   if (run.id === 'titanite-demon' && total >= 3) total -= 1; // Titanite Construct
+  if (unit.conditions?.includes('bleed') && total > 0) {
+    total += 2; // bleed bursts on the next wound, then clears (core p.21)
+    unit.conditions = unit.conditions.filter((c) => c !== 'bleed');
+    log(s, `${def.name} bleeds for +2.`);
+  }
   if (total <= 0) { log(s, `${def.name} shrugs it off.`, 'attack', unit.nodeId ?? undefined); return; }
   unit.health = Math.max(0, unit.health - total);
   log(s, `${def.name}${run.units.length > 1 ? ` (${unitKey})` : ''} takes ${total} damage (${unit.health}/${unit.maxHealth}).`, 'attack', unit.nodeId ?? undefined, bySeat ?? undefined);
@@ -1756,7 +2053,7 @@ function encounterVictory(s: DsState): void {
   const card = enc.encounterId ? DS_ENCOUNTER_BY_ID[enc.encounterId] : null;
   // clear ALL black and red cubes for everyone (core p.19)
   for (const ch of s.characters) {
-    ch.stamina = 0; ch.damage = 0; ch.conditions = [];
+    ch.stamina = 0; ch.damage = 0; ch.conditions = []; ch.defBuffs = [];
     ch.act = null; ch.arc = null;
   }
   const souls = (card?.level === 4 ? DS_SOULS_PER_L4 : DS_SOULS_PER_ENCOUNTER) * s.options.partySize;
@@ -1827,7 +2124,7 @@ function bossDefeated(s: DsState): void {
     const tile = s.tiles[tileIndex(s, s.encounter!.tileId!)];
     tile.mimicAmbush = 'dead';
     tile.mimicNode = null;
-    for (const ch of s.characters) { ch.stamina = 0; ch.damage = 0; ch.conditions = []; ch.act = null; ch.arc = null; }
+    for (const ch of s.characters) { ch.stamina = 0; ch.damage = 0; ch.conditions = []; ch.defBuffs = []; ch.act = null; ch.arc = null; }
     s.boss = null;
     s.encounter = null;
     s.phase = 'bonfire';
@@ -1837,7 +2134,7 @@ function bossDefeated(s: DsState): void {
   }
   // boss victory: cubes clear; +1 soul per character per remaining spark (core p.19)
   for (const ch of s.characters) {
-    ch.stamina = 0; ch.damage = 0; ch.conditions = []; ch.act = null; ch.arc = null; ch.nodeId = null;
+    ch.stamina = 0; ch.damage = 0; ch.conditions = []; ch.defBuffs = []; ch.act = null; ch.arc = null; ch.nodeId = null;
   }
   const souls = s.sparks * s.options.partySize;
   s.soulCache += souls;
@@ -2260,13 +2557,19 @@ function stepSummonOp(s: DsState, step: DsStep): 'done' | 'retry' {
         run.weakArcUsed = true;
         log(s, `Weak arc! ${sdef.name} adds a ${color} die.`, 'dice');
       }
-      const total = rolled.reduce((n, d) => n + d.value, 0);
+      let total = rolled.reduce((n, d) => n + d.value, 0);
+      if (su.conditions?.includes('stagger')) total = Math.max(0, total - 1); // core p.21
       const bdef = DS_BOSSES[run.id];
       const data = bdef.paired ? bdef.pairedData![unit.key as 'ornstein' | 'smough'] : bdef.data!;
       const dmg = Math.max(0, total - (op.type === 'magical' ? data.resist : data.block));
       log(s, `${sdef.name} attacks ${bdef.name}: ${total} ${op.type} — ${dmg} through.`, 'dice', unit.nodeId ?? undefined);
-      // printed stagger vs a boss is not applied (decision log 13)
       applyBossDamage(s, unit.key, dmg, null);
+      // printed conditions stick to the boss (decision log 13, reconciled)
+      if ((op as { stagger?: boolean }).stagger && unit.inPlay) {
+        for (const c of bossConditionFilter(run.id, ['stagger'])) {
+          addCondition(s, (unit.conditions ??= []), c, bdef.name);
+        }
+      }
       return 'done';
     }
     case 'distract': {
@@ -2290,6 +2593,8 @@ function stepSummonOp(s: DsState, step: DsStep): 'done' | 'retry' {
 function queueSummonMove(s: DsState, distance: number, prompt: string): void {
   const su = activeSummon(s);
   if (!su || !su.nodeId) return;
+  if (su.conditions?.includes('frostbite')) distance = Math.max(0, distance - 1); // core p.21
+  if (distance === 0) return;
   const g = dsTileGraph(s.encounter!.faceId);
   const seen = new Set<string>([su.nodeId]);
   const reachable: string[] = [];
@@ -2341,7 +2646,7 @@ function pushSummonFrom(s: DsState, fromNodeId: string, source: string): void {
 
 /** Summons roll their printed defence dice against boss damage (add-ons p.6).
  * Auto-played: dodge when dodging is the summon's defence, else block/resist. */
-function summonDefend(s: DsState, ctx: { damage: number; magical: boolean; dodge: number; push: boolean; source: string }): void {
+function summonDefend(s: DsState, ctx: { damage: number; magical: boolean; dodge: number; push: boolean; source: string; conditions?: DsCondition[] }): void {
   const su = activeSummon(s);
   if (!su) return;
   const sdef = DS_SUMMONS[su.id];
@@ -2365,6 +2670,11 @@ function summonDefend(s: DsState, ctx: { damage: number; magical: boolean; dodge
     taken = Math.max(0, taken - blocked);
     log(s, `${sdef.name} ${ctx.magical ? 'resists' : 'blocks'} ${Math.min(blocked, ctx.damage)}.`, 'dice', su.nodeId ?? undefined);
   }
+  if (taken > 0 && su.conditions?.includes('bleed')) {
+    taken += 2; // bleed bursts on the next wound, then clears (core p.21)
+    su.conditions = su.conditions.filter((c) => c !== 'bleed');
+    log(s, `${sdef.name} bleeds for +2.`);
+  }
   if (taken > 0) {
     su.health -= taken;
     log(s, `${sdef.name} suffers ${taken}.`, 'attack', su.nodeId ?? undefined);
@@ -2374,6 +2684,8 @@ function summonDefend(s: DsState, ctx: { damage: number; magical: boolean; dodge
     s.summon = null;
     return;
   }
+  // hit effects apply even at 0 damage (core p.20); decision log 17 reconciled
+  for (const c of ctx.conditions ?? []) addCondition(s, (su.conditions ??= []), c, sdef.name);
   if (ctx.push && su.nodeId) pushSummonFrom(s, su.nodeId, ctx.source);
 }
 
@@ -2514,6 +2826,10 @@ function stepEnemyEndAct(s: DsState, step: DsStep): 'done' | 'retry' {
 function stepEndEnemyPhase(s: DsState): 'done' | 'retry' {
   const enc = s.encounter!;
   enc.enemyPhases += 1;
+  // "during the next enemy activation" defence buffs expire here
+  for (const c of s.characters) {
+    if (c.defBuffs?.length) c.defBuffs = c.defBuffs.filter((b) => b.expires !== 'enemyPhaseEnd');
+  }
   if (enc.enemies.length === 0 && !s.boss) { encounterVictory(s); return 'done'; }
   s.script.unshift({ t: 'charTurn' });
   return 'done';
@@ -2527,9 +2843,14 @@ function stepCharTurn(s: DsState): 'done' | 'retry' {
   // activation start: +2 stamina, take the Aggro token (core p.22)
   dsGainStamina(ch, DS_ACTIVATION_STAMINA);
   s.aggroSeat = ch.seat;
+  // "until the next character activation" defence buffs expire now
+  for (const c of s.characters) {
+    if (c.defBuffs?.length) c.defBuffs = c.defBuffs.filter((b) => b.expires !== 'charActivationStart');
+  }
   ch.act = {
     walkUsed: false, stage: 'start', movedBefore: false, attacked: [],
     swapWindow: true, freeMoves: 0, buff: null, mercExtra: false, deprivedSwap: false,
+    magicWeapon: 0,
   };
   log(s, `${DS_CLASSES[ch.classId].name}'s activation.`, 'phase', ch.nodeId ?? undefined, ch.seat);
   return 'done';
@@ -2793,10 +3114,16 @@ function finishCharAttack(s: DsState, ch: DsCharacter, rolled: Rolled, ctx: Reco
       if (!unit || !unit.inPlay) continue;
       const data = def.paired ? def.pairedData![tg.unitKey as 'ornstein' | 'smough'] : def.data!;
       const dmg = Math.max(0, total - (magical ? data.resist : data.block));
-      // Boreal Outrider never gains frostbite/stagger; bosses never pushed by characters
+      // bosses never pushed by characters; condition tokens DO stick
+      // (decision log 13, reconciled) except Boreal's frostbite/stagger immunity
       applyBossDamage(s, tg.unitKey!, dmg, ch.seat);
-      if (s.boss && s.boss.id !== 'boreal-outrider-knight') {
-        void conditions; // condition tokens on bosses: engine v1 applies none of the character-inflicted conditions to bosses except via future data support
+      if (conditions.length > 0 && s.boss) {
+        const still = s.boss.units.find((u) => u.key === tg.unitKey);
+        if (still?.inPlay) {
+          for (const c of bossConditionFilter(s.boss.id, conditions)) {
+            addCondition(s, (still.conditions ??= []), c, bossUnitName(s, still.key));
+          }
+        }
       }
     }
   }
@@ -3084,7 +3411,8 @@ function bossMove(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBoss
   // some decoded cards (OIK Fire Beam move-0) print no target ring: nearest
   const mode = op.toward ?? 'nearest';
   if (step.leftMove == null) {
-    step.leftMove = op.distance;
+    // frostbite: one fewer node of movement (core p.21)
+    step.leftMove = Math.max(0, op.distance - (unit.conditions?.includes('frostbite') ? 1 : 0));
     step.lockTok = bossTargetTok(s, unit.nodeId, mode);
   }
   const target = tokModel(s, (step.lockTok ?? null) as DsAllyTok | null);
@@ -3236,6 +3564,7 @@ function bossAttack(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBo
   if (run.id === 'old-iron-king' && run.fireBeamBuff && op.style === 'template') {
     damage += 1; dodge += 1; // Old Iron Rage (oik p.12)
   }
+  if (unit.conditions?.includes('stagger')) damage = Math.max(0, damage - 1); // core p.21
   const range = step.range as number | 'infinite' | 'special' | null;
   const inRange = (nodeId: string): boolean => {
     if (unit.nodeId == null) return true; // template attacks from flight
@@ -3292,7 +3621,7 @@ function bossAttack(s: DsState, step: DsStep, unit: DsBossUnit, op: Extract<DsBo
   if (hitSummon) {
     summonDefend(s, {
       damage, magical: op.type === 'magical', dodge,
-      push: Boolean(op.push), source: def.name,
+      push: Boolean(op.push), source: def.name, conditions: conds,
     });
   }
   for (const ch of targets) {
@@ -3330,6 +3659,30 @@ function stepAfterBossCard(s: DsState, step: DsStep): 'done' | 'retry' {
   // summon one-activation effects expire with the boss activation (add-ons p.9)
   s.distract = false;
   if (s.summon) s.summon.dodgeBuff = 0;
+  // condition tokens on the boss tick like an enemy's: poison deals 1 at the
+  // end of its activation, then poison/frostbite/stagger clear (core p.21)
+  for (const u of run.units) {
+    if (!u.inPlay || !u.conditions?.length) continue;
+    if (u.conditions.includes('poison')) applyBossDamage(s, u.key, 1, null);
+    u.conditions = u.conditions.filter((c) => !DS_CONDITIONS[c].clearsAtActivationEnd);
+  }
+  if (s.summon?.conditions?.length) {
+    const su = s.summon;
+    if (su.conditions!.includes('poison')) {
+      su.health -= 1;
+      log(s, `${DS_SUMMONS[su.id].name} suffers 1 (poison).`, 'attack', su.nodeId ?? undefined);
+      if (su.health <= 0) {
+        log(s, `${DS_SUMMONS[su.id].name} falls — the phantom fades, the party fights on (add-ons p.9).`, 'phase', su.nodeId ?? undefined);
+        s.summon = null;
+      }
+    }
+    if (s.summon) s.summon.conditions = s.summon.conditions!.filter((c) => !DS_CONDITIONS[c].clearsAtActivationEnd);
+  }
+  // "during the next enemy activation" defence buffs expire with the boss
+  // activation (the boss IS the enemy activation of a boss fight)
+  for (const c of s.characters) {
+    if (c.defBuffs?.length) c.defBuffs = c.defBuffs.filter((b) => b.expires !== 'enemyPhaseEnd');
+  }
   s.script.unshift({ t: 'charTurn' });
   return 'done';
 }
