@@ -1,0 +1,1684 @@
+/*
+ * Dark Souls presentation layer: "Kindled Iron".
+ *
+ * The legacy stylesheets still define the gameplay geometry. Every rule here
+ * is route-scoped so the TV and player device can remain mounted in the same
+ * SPA session without their shared ds-* utility names leaking into each other.
+ */
+
+/* ========================================================================== */
+/* Player device                                                              */
+/* ========================================================================== */
+
+.ds-page {
+  --ds-coal: #070809;
+  --ds-panel: rgba(11, 12, 13, 0.94);
+  --ds-panel-raised: rgba(18, 19, 20, 0.96);
+  --ds-line: rgba(218, 207, 188, 0.16);
+  --ds-line-strong: rgba(218, 207, 188, 0.28);
+  --ds-ivory: #eee9df;
+  --ds-muted: #aaa398;
+  --ds-faint: #756f66;
+  --ds-ember: #d6a052;
+  --ds-ember-hot: #f0bd68;
+  --ds-blood: #b64b3e;
+  --ds-steel: #8298ab;
+  --ds-display: "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
+  --glass: var(--ds-panel);
+  --glass-2: var(--ds-panel-raised);
+  --glass-3: #202224;
+  --brd: var(--ds-line);
+  --brd-2: var(--ds-line-strong);
+  --ink: var(--ds-ivory);
+  --ink-2: var(--ds-muted);
+  --ink-3: var(--ds-faint);
+  --r: 10px;
+  isolation: isolate;
+  gap: 10px;
+  padding: 12px 14px 14px;
+  color: var(--ds-ivory);
+  background:
+    radial-gradient(circle at 21% 12%, rgba(202, 92, 38, 0.13), transparent 31%),
+    radial-gradient(circle at 78% 88%, rgba(111, 68, 34, 0.10), transparent 34%),
+    linear-gradient(rgba(3, 4, 4, 0.76), rgba(3, 4, 4, 0.91)),
+    url('/dark-souls/mat-blank.webp') center / cover fixed,
+    var(--ds-coal);
+}
+
+.ds-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0.34;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) 0 0 / 64px 64px,
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px) 0 0 / 64px 64px;
+  mask-image: radial-gradient(circle at 50% 35%, #000, transparent 84%);
+}
+
+.ds-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.84);
+}
+
+.ds-page .ig-glass {
+  background: var(--ds-panel);
+  border: 1px solid var(--ds-line);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.26);
+}
+
+.ds-page .ig-lab {
+  color: var(--ds-faint);
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: 0.13em;
+}
+
+/* Header ------------------------------------------------------------------- */
+
+.ds-page .ds-head {
+  min-height: 58px;
+  gap: 12px;
+  padding: 0 0 9px;
+  border-bottom: 1px solid var(--ds-line);
+}
+
+.ds-page .ds-head-brand {
+  position: relative;
+  min-width: 174px;
+  padding-left: 38px;
+  justify-content: center;
+}
+
+.ds-page .ds-head-brand::after {
+  content: '';
+  position: absolute;
+  left: 38px;
+  right: 2px;
+  bottom: 1px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--ds-ember), transparent);
+  opacity: 0.48;
+}
+
+.ds-page .ds-head-flame {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  transform: translateY(-50%);
+  background: url('/dark-souls/token-ember.png') center / contain no-repeat;
+  filter: drop-shadow(0 0 10px rgba(219, 124, 54, 0.48));
+}
+
+.ds-page .ds-head-brand b {
+  font-family: var(--ds-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+  text-transform: capitalize;
+}
+
+.ds-page .ds-head-turn {
+  position: relative;
+  min-height: 42px;
+  padding: 10px 22px;
+  overflow: hidden;
+  border-radius: 8px;
+  border-color: var(--ds-line);
+  color: #d8d2c8;
+  font-size: 12px;
+  letter-spacing: 0.13em;
+  box-shadow: none;
+}
+
+.ds-page .ds-head-turn::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--ds-ember);
+  opacity: 0.35;
+}
+
+.ds-page .ds-head-turn.mine {
+  color: var(--ds-ember-hot);
+  background: linear-gradient(90deg, rgba(214, 160, 82, 0.13), rgba(12, 13, 14, 0.96));
+  box-shadow: inset 0 0 24px rgba(214, 160, 82, 0.04), 0 0 22px rgba(214, 160, 82, 0.08);
+}
+
+.ds-page .ds-head-turn.mine::before {
+  opacity: 1;
+  box-shadow: 0 0 12px var(--ds-ember);
+}
+
+.ds-page .ds-head-right {
+  gap: 6px;
+  align-items: center;
+}
+
+.ds-page .ds-chip {
+  border-radius: 8px;
+}
+
+.ds-page .ds-resource {
+  display: grid;
+  grid-template-columns: 25px auto;
+  grid-template-rows: auto auto;
+  min-width: 78px;
+  min-height: 44px;
+  padding: 5px 9px 5px 7px;
+  column-gap: 6px;
+  align-items: center;
+}
+
+.ds-page .ds-resource::before {
+  content: '';
+  grid-row: 1 / 3;
+  width: 23px;
+  height: 23px;
+  justify-self: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.ds-page .ds-resource.souls::before {
+  background-image: url('/dark-souls/token-souls-5.png');
+}
+
+.ds-page .ds-resource.sparks::before {
+  background-image: url('/dark-souls/token-bonfire.png');
+  filter: drop-shadow(0 0 7px rgba(224, 116, 46, 0.45));
+}
+
+.ds-page .ds-resource.deck::before {
+  width: 17px;
+  height: 22px;
+  border: 1px solid rgba(218, 207, 188, 0.45);
+  border-radius: 2px;
+  background:
+    linear-gradient(135deg, transparent 45%, rgba(214, 160, 82, 0.34) 46% 54%, transparent 55%),
+    #171819;
+  box-shadow: 3px 3px 0 -1px #0a0b0c, 3px 3px 0 var(--ds-line-strong);
+}
+
+.ds-page .ds-resource small,
+.ds-page .ds-resource b {
+  line-height: 1;
+  text-align: left;
+}
+
+.ds-page .ds-resource small {
+  align-self: end;
+  font-size: 9px;
+  color: var(--ds-faint);
+}
+
+.ds-page .ds-resource b {
+  align-self: start;
+  color: var(--ds-ivory);
+  font-size: 14px;
+}
+
+.ds-page .ds-chip.tool {
+  min-width: 58px;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: var(--ds-muted);
+  background: rgba(13, 14, 15, 0.96);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.ds-page .ds-chip.tool:hover {
+  color: var(--ds-ember-hot);
+  background: #1a1b1c;
+  border-color: rgba(214, 160, 82, 0.42);
+}
+
+/* Party status rail -------------------------------------------------------- */
+
+.ds-page .ds-party {
+  min-height: 38px;
+  gap: 7px;
+  padding-bottom: 1px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-line-strong) transparent;
+}
+
+.ds-page .ds-party-chip {
+  position: relative;
+  min-height: 36px;
+  gap: 8px;
+  padding: 5px 12px 5px 14px;
+  overflow: hidden;
+  border-radius: 7px;
+  background: rgba(9, 10, 11, 0.9);
+  box-shadow: none;
+}
+
+.ds-page .ds-party-chip::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: currentColor;
+  opacity: 0.75;
+}
+
+.ds-page .ds-party-chip.me {
+  background: linear-gradient(90deg, rgba(214, 160, 82, 0.09), rgba(9, 10, 11, 0.94));
+}
+
+.ds-page .ds-party-chip b {
+  color: var(--ds-ivory);
+  font-size: 11px;
+}
+
+.ds-page .ds-party-chip small {
+  color: var(--ds-muted);
+  font-size: 10px;
+}
+
+.ds-page .ds-party-chip em {
+  padding: 2px 5px;
+  border: 1px solid rgba(182, 75, 62, 0.28);
+  border-radius: 4px;
+  background: rgba(182, 75, 62, 0.09);
+  color: #de8d82;
+  font-size: 8px;
+}
+
+/* Main play shell ---------------------------------------------------------- */
+
+.ds-page .ds-main {
+  display: grid;
+  gap: 12px;
+  min-height: 0;
+}
+
+.ds-page .ds-main-encounter {
+  grid-template-columns: minmax(300px, 0.9fr) minmax(380px, 1.25fr) minmax(280px, 0.8fr);
+}
+
+.ds-page .ds-main-bonfire {
+  grid-template-columns: minmax(360px, 1fr) minmax(400px, 1.3fr) minmax(280px, 0.75fr);
+}
+
+.ds-page .ds-col {
+  gap: 10px;
+}
+
+.ds-page .ds-col.mat,
+.ds-page .ds-col.rail,
+.ds-page .ds-col.mid {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--ds-line);
+  border-radius: 10px;
+  background: linear-gradient(155deg, rgba(18, 18, 18, 0.96), rgba(7, 8, 9, 0.96));
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.28);
+}
+
+.ds-page .ds-col.mat,
+.ds-page .ds-col.rail {
+  padding: 14px;
+}
+
+.ds-page .ds-col.mat::before,
+.ds-page .ds-col.rail::before,
+.ds-page .ds-col.mid::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: -1px;
+  left: 18px;
+  right: 18px;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(214, 160, 82, 0.65), transparent);
+}
+
+.ds-page .ds-col.mat {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  flex: initial;
+  overflow: hidden;
+}
+
+.ds-page .ds-col.mat::after {
+  content: '';
+  position: absolute;
+  inset: 23% -10% -18%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.14;
+  background: url('/dark-souls/logo.webp') center / 110% auto no-repeat;
+  filter: sepia(0.25) saturate(0.7);
+  mask-image: linear-gradient(transparent, #000 35%, transparent 90%);
+}
+
+.ds-page .ds-col.mat > * {
+  position: relative;
+  z-index: 1;
+}
+
+.ds-page .ds-character-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 46px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ds-line);
+}
+
+.ds-page .ds-character-head h3 {
+  margin-top: 2px;
+  color: var(--ds-ivory);
+  font-family: var(--ds-display);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.035em;
+  text-transform: capitalize;
+}
+
+.ds-page .ds-character-vitals {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ds-page .ds-character-vitals > span {
+  display: grid;
+  gap: 1px;
+  text-align: center;
+}
+
+.ds-page .ds-character-vitals small {
+  color: var(--ds-faint);
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+}
+
+.ds-page .ds-character-vitals b {
+  color: var(--ds-ivory);
+  font-size: 15px;
+}
+
+.ds-page .ds-character-vitals i {
+  width: 1px;
+  height: 24px;
+  background: var(--ds-line);
+}
+
+.ds-page .ds-mat-row {
+  display: grid;
+  grid-template-columns: 10.5% minmax(0, 1fr);
+  align-items: stretch;
+  align-self: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.ds-page .ds-main-encounter .ds-mat-row {
+  max-width: 360px;
+}
+
+.ds-page .ds-main-bonfire .ds-mat-row {
+  max-width: 440px;
+}
+
+.ds-page .ds-mat {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2048 / 1553;
+  overflow: visible;
+  border-width: 1px;
+  border-radius: 7px;
+  filter: saturate(0.82) contrast(1.03);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.58);
+}
+
+.ds-page .ds-mat.mine {
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255,255,255,.07);
+}
+
+.ds-page .ds-endur {
+  width: 100%;
+  height: auto;
+  align-self: stretch;
+  border-radius: 6px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.58);
+}
+
+.ds-page .ds-endur-art {
+  width: 645%;
+  height: 15.5%;
+  background-size: 100% 100%;
+  transform: rotate(90deg) translateY(-100%);
+}
+
+.ds-page .ds-cube {
+  border-color: rgba(238, 233, 223, 0.34);
+  border-radius: 2px;
+}
+
+.ds-page .ds-cube.black {
+  background: linear-gradient(145deg, #34373b, #0b0c0e);
+}
+
+.ds-page .ds-cube.red {
+  background: linear-gradient(145deg, #c65343, #681a14);
+}
+
+.ds-page .ds-endur-tags .ig-lab {
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: rgba(4, 5, 6, 0.82);
+  color: #c1bbb1;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+}
+
+.ds-page .ds-char-sum {
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ds-line);
+}
+
+.ds-page .ds-stat {
+  min-width: 45px;
+  min-height: 39px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border-color: var(--ds-line);
+  background: #0e0f10;
+  color: var(--ds-ivory);
+  font-size: 14px;
+}
+
+.ds-page .ds-stat small {
+  color: var(--ds-faint);
+  font-size: 8px;
+}
+
+.ds-page .ds-cond {
+  padding: 5px 8px;
+  border-radius: 5px;
+  color: #d69ab8;
+  font-size: 9px;
+}
+
+.ds-page .ds-cond.aggro {
+  color: #edafa7;
+}
+
+/* Encounter map ----------------------------------------------------------- */
+
+.ds-page .ds-col.map {
+  flex: initial;
+}
+
+.ds-page .ds-map {
+  padding: 12px;
+  border: 1px solid var(--ds-line);
+  border-radius: 10px;
+  background: linear-gradient(160deg, rgba(14, 15, 16, 0.97), rgba(5, 6, 7, 0.98));
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.3);
+}
+
+.ds-page .ds-map::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 22px;
+  right: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(130, 152, 171, 0.7), transparent);
+}
+
+.ds-page .ds-map.targeting {
+  border-color: rgba(214, 160, 82, 0.56);
+  box-shadow: inset 0 0 45px rgba(214, 160, 82, 0.04), 0 0 28px rgba(214, 160, 82, 0.08);
+}
+
+.ds-page .ds-map-head {
+  min-height: 54px;
+  margin: 0 2px 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ds-line);
+}
+
+.ds-page .ds-map-head b {
+  font-family: var(--ds-display);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.035em;
+}
+
+.ds-page .ds-map-head small {
+  color: var(--ds-ember);
+  font-size: 9px;
+}
+
+.ds-page .ds-map-card {
+  width: 38px;
+  height: 56px;
+  border-radius: 4px;
+}
+
+.ds-page .ds-map-svg {
+  border-radius: 7px;
+  border: 1px solid rgba(218, 207, 188, 0.12);
+  background: #060708;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.38), 0 10px 28px rgba(0,0,0,.3);
+}
+
+.ds-page .ds-map-art {
+  opacity: 0.94;
+  filter: saturate(0.76) contrast(1.12) brightness(0.78);
+}
+
+.ds-page .ds-map-node {
+  stroke: rgba(238, 233, 223, 0.48);
+}
+
+.ds-page .ds-map-node.ds-map-pick {
+  fill: rgba(214, 160, 82, 0.24);
+  stroke: var(--ds-ember-hot);
+}
+
+.ds-page .ds-map-roster {
+  min-height: 41px;
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.ds-page .ds-map-roster > span {
+  min-width: 132px;
+  padding: 5px 9px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, rgba(104, 33, 27, 0.5), rgba(18, 12, 12, 0.55));
+}
+
+.ds-page .ds-map-roster b,
+.ds-page .ds-map-roster small {
+  font-size: 9px;
+}
+
+.ds-page .ds-map-legend {
+  margin-top: 5px;
+  color: var(--ds-faint);
+  font-size: 9px;
+}
+
+.ds-page .ds-map-entity[role='button']:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 8px var(--ds-ember-hot));
+}
+
+/* Command rail ------------------------------------------------------------ */
+
+.ds-page .ds-col.rail {
+  flex: initial;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.ds-page .ds-rail-body {
+  gap: 7px;
+  padding: 1px 5px 6px 1px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-line-strong) transparent;
+}
+
+.ds-page .ds-rail-lab {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  margin: 5px 0 0;
+  color: var(--ds-faint);
+}
+
+.ds-page .ds-rail-lab::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  margin-left: 9px;
+  background: linear-gradient(90deg, var(--ds-line), transparent);
+}
+
+.ds-page .ds-btn {
+  position: relative;
+  min-height: 48px;
+  gap: 4px;
+  padding: 9px 11px 9px 13px;
+  overflow: hidden;
+  border-color: var(--ds-line);
+  border-radius: 7px;
+  background: linear-gradient(145deg, #17191a, #101112);
+  color: var(--ds-ivory);
+  transition: border-color .15s ease, background .15s ease, transform .15s ease;
+}
+
+.ds-page .ds-btn::before {
+  content: '';
+  position: absolute;
+  inset: 8px auto 8px 0;
+  width: 2px;
+  background: var(--ds-steel);
+  opacity: 0.34;
+}
+
+.ds-page .ds-btn:hover:not(:disabled) {
+  transform: translateX(2px);
+  border-color: rgba(218, 207, 188, 0.32);
+  background: linear-gradient(145deg, #202223, #131415);
+}
+
+.ds-page .ds-btn:hover:not(:disabled)::before {
+  opacity: 0.92;
+}
+
+.ds-page .ds-btn:focus-visible,
+.ds-page .ds-choice:focus-visible,
+.ds-page .ds-tile:focus-visible,
+.ds-page .ds-tabs button:focus-visible,
+.ds-page .ds-pick-card:focus-visible,
+.ds-page .ds-chip.tool:focus-visible,
+.ds-page .ds-mini-btn:focus-visible {
+  outline: 2px solid var(--ds-ember-hot);
+  outline-offset: 2px;
+}
+
+.ds-page .ds-btn:disabled {
+  opacity: 0.58;
+  background: #0d0e0f;
+}
+
+.ds-page .ds-btn:disabled::before {
+  background: #55514b;
+  opacity: 0.25;
+}
+
+.ds-page .ds-btn.primary {
+  border-color: rgba(214, 160, 82, 0.72);
+  background: linear-gradient(145deg, rgba(114, 72, 30, 0.82), rgba(42, 29, 16, 0.96));
+  box-shadow: 0 8px 24px rgba(129, 78, 30, 0.15);
+}
+
+.ds-page .ds-btn.primary::before {
+  background: var(--ds-ember-hot);
+  opacity: 1;
+  box-shadow: 0 0 10px var(--ds-ember);
+}
+
+.ds-page .ds-btn.ghost {
+  background: transparent;
+  border-style: dashed;
+}
+
+.ds-page .ds-btn-main b {
+  font-size: 12px;
+  letter-spacing: 0.075em;
+}
+
+.ds-page .ds-cost {
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(214, 160, 82, 0.08);
+  color: var(--ds-ember-hot);
+  font-size: 10px;
+}
+
+.ds-page .ds-btn-detail {
+  color: var(--ds-muted);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.ds-page .ds-reason {
+  color: #c9776c;
+  font-size: 9px;
+}
+
+.ds-page .ds-main-encounter .ds-col.rail > .ds-rail-body > .ds-btn:last-child {
+  position: sticky;
+  z-index: 3;
+  bottom: 0;
+  box-shadow: 0 -12px 22px rgba(7, 8, 9, 0.9);
+}
+
+.ds-page .ds-gate {
+  min-height: 44px;
+  padding: 11px;
+  border-radius: 6px;
+  color: var(--ds-muted);
+  font-size: 10px;
+}
+
+.ds-page .ds-picking {
+  gap: 9px;
+  padding: 12px;
+  border-radius: 7px;
+}
+
+.ds-page .ds-board-pick-hint {
+  min-height: 62px;
+  border-radius: 6px;
+  border-color: rgba(214, 160, 82, 0.35);
+  background: rgba(214, 160, 82, 0.07);
+}
+
+.ds-page .ds-die {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background-image: linear-gradient(145deg, rgba(255,255,255,.35), transparent 42%, rgba(0,0,0,.35));
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.28), 0 1px 2px rgba(0,0,0,.5);
+}
+
+.ds-page .ds-tag {
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 9px;
+}
+
+/* Bonfire hub ------------------------------------------------------------- */
+
+.ds-page .ds-col.mid {
+  flex: initial;
+  padding: 13px;
+  overflow: hidden;
+}
+
+.ds-page .ds-travel {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 3px 2px 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ds-page .ds-travel::before {
+  content: '';
+  position: absolute;
+  inset: 31% -8% 9%;
+  pointer-events: none;
+  opacity: 0.12;
+  background: url('/dark-souls/token-bonfire.png') center / min(34vh, 270px) no-repeat;
+  filter: saturate(0.82) sepia(0.18) drop-shadow(0 0 35px rgba(218, 104, 34, 0.22));
+}
+
+.ds-page .ds-travel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.ds-page .ds-travel-row {
+  grid-template-columns: repeat(5, minmax(68px, 1fr));
+  gap: 7px;
+  margin-top: 5px;
+}
+
+.ds-page .ds-tile {
+  height: clamp(100px, 17vh, 138px);
+  border-radius: 7px;
+  border-color: var(--ds-line);
+  background: #0b0c0d;
+  transition: border-color .15s ease, transform .15s ease;
+}
+
+.ds-page .ds-tile:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--ds-line-strong);
+  background: #111213;
+}
+
+.ds-page .ds-tile:disabled {
+  opacity: 0.62;
+  filter: saturate(0.55);
+}
+
+.ds-page .ds-tile.here {
+  border-color: var(--ds-ember);
+  box-shadow: 0 0 0 1px rgba(214, 160, 82, 0.26), 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.ds-page .ds-tile.here::before {
+  content: 'HERE';
+  position: absolute;
+  z-index: 4;
+  top: 6px;
+  left: 7px;
+  color: var(--ds-ember-hot);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.ds-page .ds-tile::after {
+  background: linear-gradient(180deg, rgba(4, 5, 6, 0.04) 18%, rgba(4, 5, 6, 0.95) 100%);
+}
+
+.ds-page .ds-tile-copy {
+  padding: 9px;
+}
+
+.ds-page .ds-tile b {
+  font-size: 11px;
+}
+
+.ds-page .ds-tile small {
+  color: #b6b0a7;
+  font-size: 8px;
+}
+
+.ds-page .ds-travel-actions {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.ds-page .ds-rest {
+  min-height: 76px;
+  padding: 11px 12px;
+  border-radius: 7px;
+  border-color: rgba(182, 75, 62, 0.24);
+  background: linear-gradient(90deg, rgba(62, 25, 21, 0.38), rgba(10, 11, 12, 0.94));
+  box-shadow: none;
+}
+
+.ds-page .ds-rest small {
+  color: var(--ds-muted);
+  font-size: 11px;
+}
+
+.ds-page .ds-rest .ds-btn {
+  width: 170px;
+}
+
+.ds-page .ds-tabs {
+  gap: 2px;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ds-line);
+}
+
+.ds-page .ds-tabs button {
+  min-height: 40px;
+  padding: 8px 5px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 4px 4px 0 0;
+  color: var(--ds-faint);
+  font-size: 10px;
+}
+
+.ds-page .ds-tabs button.on {
+  border-color: var(--ds-ember);
+  background: rgba(214, 160, 82, 0.07);
+  color: var(--ds-ivory);
+}
+
+.ds-page .ds-tiers {
+  font-size: 12px;
+}
+
+.ds-page .ds-tiers th {
+  color: var(--ds-faint);
+  font-size: 9px;
+}
+
+.ds-page .ds-tiers td {
+  height: 38px;
+  border-color: var(--ds-line);
+}
+
+.ds-page .ds-tiers td.now {
+  background: rgba(214, 160, 82, 0.12);
+  color: var(--ds-ember-hot);
+}
+
+.ds-page .ds-mini-btn {
+  min-height: 34px;
+  border-radius: 5px;
+  background: #141617;
+}
+
+/* Class selection --------------------------------------------------------- */
+
+.ds-page .ds-pick {
+  gap: 14px;
+}
+
+.ds-page .ds-pick::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.16;
+  pointer-events: none;
+  background: url('/dark-souls/logo.webp') center 35% / min(78vw, 960px) auto no-repeat;
+  mask-image: radial-gradient(ellipse at center, #000 15%, transparent 68%);
+}
+
+.ds-page .ds-pick-head {
+  min-height: 68px;
+  padding: 2px 112px 11px 4px;
+  border-bottom: 1px solid var(--ds-line);
+}
+
+.ds-page .ds-pick-head h2 {
+  margin-top: 3px;
+  color: var(--ds-ivory);
+  font-family: var(--ds-display);
+  font-size: clamp(25px, 2.4vw, 34px);
+  font-weight: 500;
+  letter-spacing: 0.035em;
+}
+
+.ds-page .ds-pick-head > .ig-lab {
+  max-width: 330px;
+  padding: 8px 10px;
+  border-left: 1px solid var(--ds-ember);
+  background: rgba(11, 12, 13, 0.72);
+  color: var(--ds-muted);
+  line-height: 1.45;
+  text-align: right;
+}
+
+.ds-page .ds-pick-grid {
+  gap: 12px;
+}
+
+.ds-page .ds-pick-card {
+  position: relative;
+  border-width: 1px;
+  border-radius: 8px;
+  background: #0c0d0e;
+  box-shadow: 0 13px 28px rgba(0, 0, 0, 0.28);
+  transition: transform .18s ease, border-color .18s ease, filter .18s ease;
+}
+
+.ds-page .ds-pick-card::before {
+  content: '';
+  position: absolute;
+  z-index: 4;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--ds-ember);
+  opacity: 0;
+}
+
+.ds-page .ds-pick-card:hover:not(:disabled) {
+  transform: translateY(-4px);
+  border-color: rgba(214, 160, 82, 0.48);
+}
+
+.ds-page .ds-pick-card:hover:not(:disabled)::before,
+.ds-page .ds-pick-card.mine::before {
+  opacity: 1;
+}
+
+.ds-page .ds-pick-card:disabled {
+  opacity: 0.43;
+  filter: grayscale(0.72);
+}
+
+.ds-page .ds-pick-card.mine {
+  box-shadow: 0 0 0 1px currentColor, 0 14px 32px rgba(0, 0, 0, 0.38);
+}
+
+.ds-page .ds-pick-art {
+  position: relative;
+  filter: saturate(0.72) contrast(1.05) brightness(0.88);
+}
+
+.ds-page .ds-pick-name {
+  min-height: 55px;
+  padding: 8px 10px 9px;
+  border-top: 1px solid var(--ds-line);
+  background: linear-gradient(135deg, #151617, #0d0e0f);
+}
+
+.ds-page .ds-pick-name b {
+  font-family: var(--ds-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+}
+
+.ds-page .ds-pick-name small,
+.ds-page .ds-pick-name em {
+  color: var(--ds-muted);
+  font-size: 9px;
+}
+
+.ds-page .ds-setup-tools {
+  top: 17px;
+  right: 18px;
+}
+
+/* Prompts, overlays, and terminal states ---------------------------------- */
+
+.ds-page .ds-prompt-veil {
+  padding: 24px;
+  background: rgba(2, 3, 3, 0.82);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.ds-page .ds-prompt {
+  position: relative;
+  max-width: 520px;
+  padding: 20px 22px 22px;
+  border-radius: 9px;
+  border-color: rgba(218, 207, 188, 0.23);
+  background: linear-gradient(155deg, rgba(23, 24, 25, 0.99), rgba(8, 9, 10, 0.99));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.72);
+}
+
+.ds-page .ds-prompt::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ds-ember), transparent);
+}
+
+.ds-page .ds-prompt.wide {
+  max-width: 680px;
+}
+
+.ds-page .ds-prompt h3 {
+  margin: 5px 0 12px;
+  font-family: var(--ds-display);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.ds-page .ds-prompt-note {
+  color: var(--ds-muted);
+  font-size: 12px;
+}
+
+.ds-page .ds-choice {
+  min-height: 48px;
+  padding: 11px 13px;
+  border-radius: 7px;
+  border-color: var(--ds-line-strong);
+  background: #17191a;
+}
+
+.ds-page .ds-choice:hover:not(:disabled) {
+  background: #222425;
+  border-color: rgba(214, 160, 82, 0.46);
+}
+
+.ds-page .ds-choice.primary {
+  border-color: var(--ds-ember);
+  background: rgba(94, 61, 29, 0.45);
+}
+
+.ds-page .ds-choice b {
+  font-size: 12px;
+}
+
+.ds-page .ds-choice small {
+  color: var(--ds-muted);
+  font-size: 11px;
+}
+
+.ds-page .ds-wait,
+.ds-page .ds-spatial-prompt {
+  border-radius: 8px;
+  background: rgba(9, 10, 11, 0.97);
+  box-shadow: 0 18px 48px rgba(0,0,0,.58);
+}
+
+.ds-page .ds-spatial-prompt {
+  min-height: 62px;
+  border-color: rgba(214, 160, 82, 0.58);
+}
+
+.ds-page .ds-error {
+  border-radius: 7px;
+  background: rgba(73, 25, 20, 0.96);
+  box-shadow: 0 16px 42px rgba(0,0,0,.48);
+}
+
+.ds-page .ds-over {
+  position: relative;
+  isolation: isolate;
+}
+
+.ds-page .ds-over::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  opacity: 0.25;
+  background: url('/dark-souls/logo.webp') center / min(80vw, 980px) auto no-repeat;
+  mask-image: radial-gradient(ellipse, #000 15%, transparent 70%);
+}
+
+.ds-page .ds-over h1 {
+  color: var(--ds-ember-hot);
+  font-family: var(--ds-display);
+  font-size: clamp(42px, 6vw, 82px);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 36px rgba(214, 160, 82, 0.22);
+}
+
+.ds-page .ds-over p {
+  max-width: 560px;
+  color: var(--ds-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ds-page .ds-card,
+.ds-page .ds-deck-sheets img {
+  border-radius: 6px;
+}
+
+/* Player breakpoints ------------------------------------------------------ */
+
+@media (max-width: 1180px) {
+  .ds-page {
+    gap: 8px;
+    padding: 9px 10px 11px;
+  }
+
+  .ds-page .ds-main-encounter {
+    grid-template-columns: minmax(270px, .88fr) minmax(330px, 1.2fr) minmax(250px, .78fr);
+  }
+
+  .ds-page .ds-main-bonfire {
+    grid-template-columns: minmax(300px, .95fr) minmax(330px, 1.2fr) minmax(255px, .78fr);
+  }
+
+  .ds-page .ds-main-encounter .ds-mat-row,
+  .ds-page .ds-main-bonfire .ds-mat-row {
+    max-width: 330px;
+  }
+
+  .ds-page .ds-col.mat,
+  .ds-page .ds-col.rail {
+    padding: 11px;
+  }
+
+  .ds-page .ds-col.mid {
+    padding: 10px;
+  }
+
+  .ds-page .ds-head-brand {
+    min-width: 150px;
+  }
+
+  .ds-page .ds-resource {
+    min-width: 69px;
+    padding-right: 7px;
+  }
+
+  .ds-page .ds-btn {
+    min-height: 46px;
+    padding: 8px 10px 8px 12px;
+  }
+}
+
+@media (max-height: 740px) and (min-width: 901px) {
+  .ds-page .ds-head {
+    min-height: 51px;
+  }
+
+  .ds-page .ds-party {
+    min-height: 34px;
+  }
+
+  .ds-page .ds-party-chip {
+    min-height: 32px;
+  }
+
+  .ds-page .ds-character-head {
+    min-height: 41px;
+  }
+
+  .ds-page .ds-main-bonfire .ds-mat-row {
+    max-width: 390px;
+  }
+
+  .ds-page .ds-tile {
+    height: clamp(88px, 15vh, 112px);
+  }
+}
+
+@media (max-width: 900px) {
+  .ds-page {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 10px;
+  }
+
+  .ds-page .ds-head {
+    display: grid;
+    grid-template-columns: minmax(130px, 1fr) auto;
+    min-height: auto;
+  }
+
+  .ds-page .ds-head-turn {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+  }
+
+  .ds-page .ds-head-right {
+    justify-content: flex-end;
+  }
+
+  .ds-page .ds-resource {
+    min-width: 58px;
+    grid-template-columns: 18px auto;
+    padding-inline: 5px;
+  }
+
+  .ds-page .ds-resource::before {
+    width: 17px;
+    height: 17px;
+  }
+
+  .ds-page .ds-resource.deck::before {
+    width: 13px;
+    height: 17px;
+  }
+
+  .ds-page .ds-resource small {
+    font-size: 7px;
+  }
+
+  .ds-page .ds-resource b {
+    font-size: 11px;
+  }
+
+  .ds-page .ds-main {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .ds-page .ds-col.mat,
+  .ds-page .ds-col.mid,
+  .ds-page .ds-col.map,
+  .ds-page .ds-col.rail {
+    flex: 0 0 auto;
+    min-height: 460px;
+  }
+
+  .ds-page .ds-col.rail {
+    max-height: none;
+  }
+
+  .ds-page .ds-rail-body {
+    overflow: visible;
+  }
+
+  .ds-page .ds-mat-row {
+    max-width: min(440px, 100%) !important;
+  }
+
+  .ds-page .ds-pick {
+    flex: 0 0 auto;
+    min-height: auto;
+  }
+
+  .ds-page .ds-pick-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+  }
+
+  .ds-page .ds-pick-card {
+    min-height: 330px;
+  }
+}
+
+@media (max-width: 620px) {
+  .ds-page .ds-head {
+    grid-template-columns: 1fr;
+  }
+
+  .ds-page .ds-head-right {
+    grid-row: 2;
+    justify-content: stretch;
+    overflow-x: auto;
+  }
+
+  .ds-page .ds-head-turn {
+    grid-row: 3;
+  }
+
+  .ds-page .ds-head-right > * {
+    flex: 1 0 auto;
+  }
+
+  .ds-page .ds-pick-head {
+    display: block;
+    padding-right: 90px;
+  }
+
+  .ds-page .ds-pick-head > .ig-lab {
+    margin-top: 8px;
+    text-align: left;
+  }
+
+  .ds-page .ds-pick-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ds-page .ds-pick-card {
+    min-height: 480px;
+  }
+
+  .ds-page .ds-travel-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ds-page .ds-rest {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ds-page .ds-rest .ds-btn {
+    width: 100%;
+  }
+
+  .ds-page .ds-prompt-card-row,
+  .ds-page .ds-prompt-row {
+    flex-direction: column;
+  }
+}
+
+/* ========================================================================== */
+/* Shared TV                                                                 */
+/* ========================================================================== */
+
+.ds-tv {
+  --ds-tv-panel: rgba(9, 10, 10, 0.91);
+  --ds-tv-line: rgba(218, 207, 188, 0.19);
+  --ds-tv-ivory: #eee9df;
+  --ds-tv-muted: #a69f95;
+  --ds-tv-ember: #d6a052;
+  --ds-tv-display: "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
+}
+
+.ds-tv::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: inset 0 0 105px rgba(0, 0, 0, 0.64);
+}
+
+.ds-tv .ig-glass {
+  background: var(--ds-tv-panel);
+  border: 1px solid var(--ds-tv-line);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34);
+}
+
+.ds-tv .ig-lab {
+  color: #777168;
+  font-size: 0.61rem;
+  letter-spacing: 0.14em;
+}
+
+.ds-tv .ds-stage {
+  top: 1.1rem;
+  left: 1.1rem;
+  min-width: 340px;
+  padding: .72rem .92rem .76rem;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.ds-tv .ds-stage::before,
+.ds-tv .ds-boss::before,
+.ds-tv .ds-encounter-panel::before,
+.ds-tv .ds-bonfire::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(214, 160, 82, 0.66), transparent);
+}
+
+.ds-tv .ds-stage-line {
+  margin-top: 4px;
+  color: var(--ds-tv-ivory);
+  font-family: var(--ds-tv-display);
+  font-size: .92rem;
+  font-weight: 500;
+  letter-spacing: .045em;
+}
+
+.ds-tv .ds-stage-sub {
+  color: var(--ds-tv-muted);
+  font-size: .68rem;
+}
+
+.ds-tv .ds-turn {
+  top: 1.1rem;
+  min-height: 38px;
+  padding: .55rem 1rem;
+  border-radius: 7px;
+  border-color: rgba(214, 160, 82, 0.26);
+  color: var(--ds-tv-ivory);
+  background: rgba(9, 10, 10, 0.93);
+  font-size: .78rem;
+}
+
+.ds-tv .ds-turn .ig-prompt-ring {
+  border-color: var(--ds-tv-ember);
+  box-shadow: 0 0 10px rgba(214, 160, 82, 0.48);
+}
+
+.ds-tv .ds-boss,
+.ds-tv .ds-encounter-panel,
+.ds-tv .ds-bonfire {
+  top: 1.1rem;
+  right: 1.1rem;
+  overflow: hidden;
+  border-radius: 9px;
+  background: linear-gradient(155deg, rgba(18, 17, 16, .94), rgba(7, 8, 9, .94));
+}
+
+.ds-tv .ds-boss-head b,
+.ds-tv .ds-encounter-card-row b {
+  color: var(--ds-tv-ivory);
+  font-family: var(--ds-tv-display);
+  font-weight: 500;
+  letter-spacing: .03em;
+}
+
+.ds-tv .ds-enemy-row {
+  border-radius: 5px;
+  background: rgba(83, 29, 24, .27);
+}
+
+.ds-tv .ds-strip {
+  left: 1.1rem;
+  bottom: 6.25rem;
+  padding: .48rem;
+  border-radius: 8px;
+}
+
+.ds-tv .ds-strip-tile {
+  min-width: 142px;
+  min-height: 38px;
+  border-radius: 5px;
+  background: rgba(15, 16, 16, .88);
+}
+
+.ds-tv .ds-strip-tile.here {
+  border-color: var(--ds-tv-ember);
+  box-shadow: inset 2px 0 0 var(--ds-tv-ember);
+}
+
+.ds-tv .ds-announce {
+  bottom: 8.1rem;
+}
+
+.ds-tv .ds-announce-card {
+  padding: .68rem 1.5rem;
+  border-radius: 7px;
+  background: rgba(7, 8, 8, .92);
+}
+
+.ds-tv .ds-announce-text {
+  color: var(--ds-tv-ivory);
+  font-family: var(--ds-tv-display);
+  font-size: 1.02rem;
+}
+
+.ds-tv .ds-chips {
+  width: min(1120px, calc(100vw - 7.5rem));
+  max-width: none;
+  gap: .55rem;
+}
+
+.ds-tv .ds-chip {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: 268px;
+  border-radius: 7px;
+  background: rgba(8, 9, 9, .91);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 12px 30px rgba(0,0,0,.32);
+}
+
+.ds-tv .ds-chip.on {
+  box-shadow: inset 0 2px 0 var(--seat), 0 14px 32px rgba(0, 0, 0, 0.35);
+}
+
+.ds-tv .ds-chip-name {
+  overflow: hidden;
+  color: var(--ds-tv-ivory);
+  font-size: .7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-tv .ds-chip-tags em.ds-cond {
+  color: #d98174;
+}
+
+.ds-tv .ds-cube.sta {
+  background: linear-gradient(145deg, #2f3336, #090a0b);
+}
+
+.ds-tv .ds-cube.dmg {
+  background: linear-gradient(145deg, #c54b3b, #671b15);
+}
+
+.ds-tv .ds-mute {
+  left: 1.1rem;
+  bottom: 1.1rem;
+  border-radius: 7px;
+}
+
+.ds-tv .ds-fog-label h2,
+.ds-tv .ds-end h1 {
+  font-family: var(--ds-tv-display);
+  font-weight: 400;
+}
+
+.ds-tv .ds-end h1 {
+  letter-spacing: .22em;
+  text-indent: .22em;
+}
+
+@media (max-width: 1180px) {
+  .ds-tv .ds-stage {
+    min-width: 290px;
+    max-width: 330px;
+  }
+
+  .ds-tv .ds-boss,
+  .ds-tv .ds-encounter-panel,
+  .ds-tv .ds-bonfire {
+    width: 270px;
+  }
+
+  .ds-tv .ds-turn {
+    top: 5.45rem;
+  }
+
+  .ds-tv .ds-chips {
+    width: calc(100vw - 7rem);
+  }
+
+  .ds-tv .ds-chip-tags em {
+    display: none;
+  }
+}
+
+@media (max-height: 720px) {
+  .ds-tv .ds-strip {
+    bottom: 5.55rem;
+    gap: .22rem;
+  }
+
+  .ds-tv .ds-strip-tile {
+    min-height: 32px;
+    padding-block: 2px;
+  }
+
+  .ds-tv .ds-chips {
+    bottom: .72rem;
+  }
+
+  .ds-tv .ds-announce {
+    bottom: 7.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-page *,
+  .ds-page *::before,
+  .ds-page *::after,
+  .ds-tv *,
+  .ds-tv *::before,
+  .ds-tv *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

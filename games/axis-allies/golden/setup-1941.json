@@ -16,18 +16,8 @@
   ],
   "burma": [
    {
-    "power": "china",
-    "key": "infantry",
-    "count": 1
-   },
-   {
     "power": "uk",
     "key": "infantry",
-    "count": 1
-   },
-   {
-    "power": "usa",
-    "key": "fighter",
     "count": 1
    }
   ],
@@ -129,11 +119,6 @@
    }
   ],
   "formosa": [
-   {
-    "power": "japan",
-    "key": "infantry",
-    "count": 1
-   },
    {
     "power": "japan",
     "key": "fighter",
@@ -455,7 +440,7 @@
    {
     "power": "japan",
     "key": "infantry",
-    "count": 2
+    "count": 3
    }
   ],
   "norway": [
@@ -552,11 +537,6 @@
    }
   ],
   "kwangtung": [
-   {
-    "power": "china",
-    "key": "infantry",
-    "count": 1
-   },
    {
     "power": "uk",
     "key": "infantry",
@@ -679,7 +659,7 @@
    {
     "power": "japan",
     "key": "infantry",
-    "count": 2
+    "count": 3
    },
    {
     "power": "japan",
@@ -960,7 +940,7 @@
   ],
   "fukien": [
    {
-    "power": "japan",
+    "power": "china",
     "key": "infantry",
     "count": 1
    }
@@ -976,6 +956,18 @@
    {
     "power": "usa",
     "key": "destroyer",
+    "count": 1
+   }
+  ],
+  "yunnan": [
+   {
+    "power": "china",
+    "key": "infantry",
+    "count": 1
+   },
+   {
+    "power": "china",
+    "key": "fighter",
     "count": 1
    }
   ]

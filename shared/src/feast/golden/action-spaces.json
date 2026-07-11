@@ -1,0 +1,1222 @@
+[
+  {
+    "id": "build-shed",
+    "order": 1,
+    "name": "Build a Shed",
+    "group": "Build Houses",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 365,
+      "width": 500,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.073,
+      "width": 0.2,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "build-stone-house",
+    "order": 2,
+    "name": "Build a Stone House",
+    "group": "Build Houses",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 365,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.073,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "build-long-house",
+    "order": 3,
+    "name": "Build a Long House",
+    "group": "Build Houses",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 365,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.073,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "build-house-and-ship",
+    "order": 4,
+    "name": "Build a House and Ship",
+    "group": "Build Houses",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 360,
+      "width": 565,
+      "height": 430
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.072,
+      "width": 0.226,
+      "height": 0.086
+    }
+  },
+  {
+    "id": "build-whaling-boat",
+    "order": 5,
+    "name": "Build a Whaling Boat",
+    "group": "Build Ships",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 580,
+      "width": 500,
+      "height": 160
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.116,
+      "width": 0.2,
+      "height": 0.032
+    }
+  },
+  {
+    "id": "build-knarr",
+    "order": 6,
+    "name": "Build a Knarr",
+    "group": "Build Ships",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 580,
+      "width": 510,
+      "height": 160
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.116,
+      "width": 0.204,
+      "height": 0.032
+    }
+  },
+  {
+    "id": "build-longship",
+    "order": 7,
+    "name": "Build a Longship",
+    "group": "Build Ships",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 580,
+      "width": 510,
+      "height": 160
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.116,
+      "width": 0.204,
+      "height": 0.032
+    }
+  },
+  {
+    "id": "hunt-game-1",
+    "order": 8,
+    "name": "Hunting Game",
+    "group": "Hunting",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 785,
+      "width": 500,
+      "height": 200
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.157,
+      "width": 0.2,
+      "height": 0.04
+    }
+  },
+  {
+    "id": "take-stockfish",
+    "order": 9,
+    "name": "Take 1 Stockfish",
+    "group": "Hunting",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 1010,
+      "width": 500,
+      "height": 135
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.202,
+      "width": 0.2,
+      "height": 0.027
+    }
+  },
+  {
+    "id": "hunt-game-2",
+    "order": 10,
+    "name": "Hunting Game",
+    "group": "Hunting",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 785,
+      "width": 510,
+      "height": 200
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.157,
+      "width": 0.204,
+      "height": 0.04
+    }
+  },
+  {
+    "id": "lay-snare",
+    "order": 11,
+    "name": "Laying a Snare",
+    "group": "Hunting",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 1010,
+      "width": 510,
+      "height": 210
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.202,
+      "width": 0.204,
+      "height": 0.042
+    }
+  },
+  {
+    "id": "whaling-major",
+    "order": 12,
+    "name": "Whaling (1-3 Boats)",
+    "group": "Hunting",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 785,
+      "width": 510,
+      "height": 425
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.157,
+      "width": 0.204,
+      "height": 0.085
+    }
+  },
+  {
+    "id": "whaling-minor",
+    "order": 13,
+    "name": "Whaling (1 Boat)",
+    "group": "Hunting",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 785,
+      "width": 565,
+      "height": 425
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.157,
+      "width": 0.226,
+      "height": 0.085
+    }
+  },
+  {
+    "id": "buy-stockfish",
+    "order": 14,
+    "name": "Buy 2 Stockfish",
+    "group": "Livestock Market",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 1250,
+      "width": 500,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.25,
+      "width": 0.2,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "buy-salt-meat",
+    "order": 15,
+    "name": "Buy 2 Salt Meat",
+    "group": "Livestock Market",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 1420,
+      "width": 500,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.284,
+      "width": 0.2,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "buy-sheep",
+    "order": 16,
+    "name": "Buy a Sheep",
+    "group": "Livestock Market",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 1250,
+      "width": 510,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.25,
+      "width": 0.204,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "buy-cattle-milk",
+    "order": 17,
+    "name": "Buy Cattle and Milk",
+    "group": "Livestock Market",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 1420,
+      "width": 510,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.284,
+      "width": 0.204,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "livestock-choice",
+    "order": 18,
+    "name": "Sheep or Cattle",
+    "group": "Livestock Market",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 1245,
+      "width": 510,
+      "height": 325
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.249,
+      "width": 0.204,
+      "height": 0.065
+    }
+  },
+  {
+    "id": "buy-cattle-sheep",
+    "order": 19,
+    "name": "Buy Cattle and Sheep",
+    "group": "Livestock Market",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 1245,
+      "width": 565,
+      "height": 325
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.249,
+      "width": 0.226,
+      "height": 0.065
+    }
+  },
+  {
+    "id": "weekly-beans",
+    "order": 20,
+    "name": "Beans and Silver",
+    "group": "Weekly Market",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 1610,
+      "width": 500,
+      "height": 155
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.322,
+      "width": 0.2,
+      "height": 0.031
+    }
+  },
+  {
+    "id": "weekly-flax-stockfish",
+    "order": 21,
+    "name": "Flax, Stockfish, and Silver",
+    "group": "Weekly Market",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 1610,
+      "width": 510,
+      "height": 155
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.322,
+      "width": 0.204,
+      "height": 0.031
+    }
+  },
+  {
+    "id": "weekly-feast",
+    "order": 22,
+    "name": "Fruit, Oil, Salt Meat, and Silver",
+    "group": "Weekly Market",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 1610,
+      "width": 510,
+      "height": 155
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.322,
+      "width": 0.204,
+      "height": 0.031
+    }
+  },
+  {
+    "id": "weekly-livestock",
+    "order": 23,
+    "name": "Spices and Livestock Produce",
+    "group": "Weekly Market",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 1600,
+      "width": 565,
+      "height": 350
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.32,
+      "width": 0.226,
+      "height": 0.07
+    }
+  },
+  {
+    "id": "produce-milk",
+    "order": 24,
+    "name": "Produce Milk",
+    "group": "Products",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 1790,
+      "width": 500,
+      "height": 175
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.358,
+      "width": 0.2,
+      "height": 0.035
+    }
+  },
+  {
+    "id": "produce-mead",
+    "order": 25,
+    "name": "Mead and Silver",
+    "group": "Products",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 1790,
+      "width": 510,
+      "height": 175
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.358,
+      "width": 0.204,
+      "height": 0.035
+    }
+  },
+  {
+    "id": "produce-wool",
+    "order": 26,
+    "name": "Produce Wool",
+    "group": "Products",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 1790,
+      "width": 510,
+      "height": 175
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.358,
+      "width": 0.204,
+      "height": 0.035
+    }
+  },
+  {
+    "id": "craft-linen",
+    "order": 27,
+    "name": "Craft Linen",
+    "group": "Crafting",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 2010,
+      "width": 500,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.402,
+      "width": 0.2,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "craft-rune-stone",
+    "order": 28,
+    "name": "Craft Rune Stone",
+    "group": "Crafting",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 2190,
+      "width": 500,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.438,
+      "width": 0.2,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "craft-clothing",
+    "order": 29,
+    "name": "Craft Clothing",
+    "group": "Crafting",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 2010,
+      "width": 510,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.402,
+      "width": 0.204,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "craft-chest",
+    "order": 30,
+    "name": "Craft a Chest",
+    "group": "Crafting",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 2190,
+      "width": 510,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.438,
+      "width": 0.204,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "forge",
+    "order": 31,
+    "name": "Forge a Special Tile or Jewelry",
+    "group": "Crafting",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 2010,
+      "width": 510,
+      "height": 150
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.402,
+      "width": 0.204,
+      "height": 0.03
+    }
+  },
+  {
+    "id": "craft-runes-and-chests",
+    "order": 32,
+    "name": "Craft 2 Rune Stones and 2 Chests",
+    "group": "Crafting",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 2190,
+      "width": 510,
+      "height": 165
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.438,
+      "width": 0.204,
+      "height": 0.033
+    }
+  },
+  {
+    "id": "master-crafting",
+    "order": 33,
+    "name": "Master Crafting",
+    "group": "Crafting",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 2000,
+      "width": 565,
+      "height": 360
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.4,
+      "width": 0.226,
+      "height": 0.072
+    }
+  },
+  {
+    "id": "mountain-2",
+    "order": 34,
+    "name": "Take up to 2 Mountain Items",
+    "group": "Mountains and Trade",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 2410,
+      "width": 500,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.482,
+      "width": 0.2,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "mountain-1-upgrade-1",
+    "order": 35,
+    "name": "Take 1 Mountain Item and Upgrade 1 Good",
+    "group": "Mountains and Trade",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 2610,
+      "width": 500,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.522,
+      "width": 0.2,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "upgrade-2",
+    "order": 36,
+    "name": "Upgrade up to 2 Goods",
+    "group": "Mountains and Trade",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 2820,
+      "width": 500,
+      "height": 140
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.564,
+      "width": 0.2,
+      "height": 0.028
+    }
+  },
+  {
+    "id": "wood-per-player",
+    "order": 37,
+    "name": "Wood per Player and 1 Ore",
+    "group": "Mountains and Trade",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 2410,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.482,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "mountain-3-upgrade-1",
+    "order": 38,
+    "name": "Take 3 Mountain Items and Upgrade 1 Good",
+    "group": "Mountains and Trade",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 2610,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.522,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "upgrade-3",
+    "order": 39,
+    "name": "Upgrade up to 3 Goods",
+    "group": "Mountains and Trade",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 2820,
+      "width": 510,
+      "height": 140
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.564,
+      "width": 0.204,
+      "height": 0.028
+    }
+  },
+  {
+    "id": "mountain-3-plus-2",
+    "order": 40,
+    "name": "Take 3 + 2 Mountain Items",
+    "group": "Mountains and Trade",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 2410,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.482,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "upgrade-3-weapons-4",
+    "order": 41,
+    "name": "Upgrade 3 Goods and Draw 4 Weapons",
+    "group": "Mountains and Trade",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 2610,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.522,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "upgrade-4",
+    "order": 42,
+    "name": "Upgrade up to 4 Goods",
+    "group": "Mountains and Trade",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 2820,
+      "width": 510,
+      "height": 140
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.564,
+      "width": 0.204,
+      "height": 0.028
+    }
+  },
+  {
+    "id": "mountain-4-double-2",
+    "order": 43,
+    "name": "Take 4 Mountain Items and Double-Upgrade 2 Goods",
+    "group": "Mountains and Trade",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 2390,
+      "width": 565,
+      "height": 380
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.478,
+      "width": 0.226,
+      "height": 0.076
+    }
+  },
+  {
+    "id": "mountain-2x4-or-double-3",
+    "order": 44,
+    "name": "Take 2 from up to 4 Strips or Double-Upgrade 3 Goods",
+    "group": "Mountains and Trade",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 2800,
+      "width": 565,
+      "height": 445
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.56,
+      "width": 0.226,
+      "height": 0.089
+    }
+  },
+  {
+    "id": "overseas-trade-1",
+    "order": 45,
+    "name": "Overseas Trading",
+    "group": "Sailing",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 3260,
+      "width": 500,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.652,
+      "width": 0.2,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "overseas-trade-2",
+    "order": 46,
+    "name": "Overseas Trading",
+    "group": "Sailing",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 3260,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.652,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "special-sale",
+    "order": 47,
+    "name": "Special Sale",
+    "group": "Sailing",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 3260,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.652,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "raid",
+    "order": 48,
+    "name": "Raiding",
+    "group": "Raiding, Pillaging, and Plundering",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 3490,
+      "width": 500,
+      "height": 205
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.698,
+      "width": 0.2,
+      "height": 0.041
+    }
+  },
+  {
+    "id": "pillage-2",
+    "order": 49,
+    "name": "Pillaging",
+    "group": "Raiding, Pillaging, and Plundering",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 3490,
+      "width": 510,
+      "height": 205
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.698,
+      "width": 0.204,
+      "height": 0.041
+    }
+  },
+  {
+    "id": "pillage-3",
+    "order": 50,
+    "name": "Pillaging",
+    "group": "Raiding, Pillaging, and Plundering",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 3490,
+      "width": 510,
+      "height": 205
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.698,
+      "width": 0.204,
+      "height": 0.041
+    }
+  },
+  {
+    "id": "plunder",
+    "order": 51,
+    "name": "Plundering",
+    "group": "Raiding, Pillaging, and Plundering",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 3475,
+      "width": 565,
+      "height": 410
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.695,
+      "width": 0.226,
+      "height": 0.082
+    }
+  },
+  {
+    "id": "explore-short",
+    "order": 52,
+    "name": "Explore Shetland or Faroe Islands",
+    "group": "Exploration",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 3740,
+      "width": 500,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.748,
+      "width": 0.2,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "explore-medium",
+    "order": 53,
+    "name": "Explore Iceland, Greenland, or Bear Island",
+    "group": "Exploration",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 3740,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.748,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "explore-long",
+    "order": 54,
+    "name": "Explore Baffin Island, Labrador, or Newfoundland",
+    "group": "Exploration",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 3740,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.748,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "draw-occupation",
+    "order": 55,
+    "name": "Draw an Occupation and Take 1 Silver",
+    "group": "Emigration and Occupation",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 4030,
+      "width": 500,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.806,
+      "width": 0.2,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "play-occupation-paid",
+    "order": 56,
+    "name": "Play 1 Occupation for Stone or Ore",
+    "group": "Emigration and Occupation",
+    "column": 1,
+    "workers": 1,
+    "artBoundsPx": {
+      "x": 335,
+      "y": 4230,
+      "width": 500,
+      "height": 180
+    },
+    "artBounds": {
+      "x": 0.134,
+      "y": 0.846,
+      "width": 0.2,
+      "height": 0.036
+    }
+  },
+  {
+    "id": "emigrate-2",
+    "order": 57,
+    "name": "Emigrate",
+    "group": "Emigration and Occupation",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 4030,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.806,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "play-occupations-2",
+    "order": 58,
+    "name": "Play up to 2 Occupations",
+    "group": "Emigration and Occupation",
+    "column": 2,
+    "workers": 2,
+    "artBoundsPx": {
+      "x": 860,
+      "y": 4230,
+      "width": 510,
+      "height": 180
+    },
+    "artBounds": {
+      "x": 0.344,
+      "y": 0.846,
+      "width": 0.204,
+      "height": 0.036
+    }
+  },
+  {
+    "id": "emigrate-3",
+    "order": 59,
+    "name": "Emigrate",
+    "group": "Emigration and Occupation",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 4030,
+      "width": 510,
+      "height": 170
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.806,
+      "width": 0.204,
+      "height": 0.034
+    }
+  },
+  {
+    "id": "play-occupations-4",
+    "order": 60,
+    "name": "Play up to 4 Occupations",
+    "group": "Emigration and Occupation",
+    "column": 3,
+    "workers": 3,
+    "artBoundsPx": {
+      "x": 1390,
+      "y": 4230,
+      "width": 510,
+      "height": 180
+    },
+    "artBounds": {
+      "x": 0.556,
+      "y": 0.846,
+      "width": 0.204,
+      "height": 0.036
+    }
+  },
+  {
+    "id": "upgrade-boat-and-emigrate",
+    "order": 61,
+    "name": "Upgrade a Whaling Boat and Emigrate",
+    "group": "Emigration and Occupation",
+    "column": 4,
+    "workers": 4,
+    "artBoundsPx": {
+      "x": 1915,
+      "y": 4020,
+      "width": 565,
+      "height": 390
+    },
+    "artBounds": {
+      "x": 0.766,
+      "y": 0.804,
+      "width": 0.226,
+      "height": 0.078
+    }
+  }
+]

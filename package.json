@@ -16,12 +16,19 @@
     "dev": "npm run dev -w server",
     "build": "npm run build -w client",
     "start": "npm run build -w client && npm run dev -w server",
-    "test": "npm run test -w shared"
+    "test": "npm run test -w shared && npm run test -w server && npm run test -w client",
+    "test:server": "npm run test -w server",
+    "test:axis": "npm run test:axis -w shared",
+    "test:feast": "npm run test:feast -w shared",
+    "test:seti": "npm run test:seti -w shared",
+    "test:seti:ui": "npm run test:seti -w client",
+    "typecheck": "tsc -p client/tsconfig.json --noEmit && tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --strict --esModuleInterop --skipLibCheck --forceConsistentCasingInFileNames --resolveJsonModule shared/src/index.ts server/src/index.ts"
   },
   "devDependencies": {
     "@gltf-transform/core": "^4.4.1",
     "@gltf-transform/extensions": "^4.4.1",
     "@gltf-transform/functions": "^4.4.1",
+    "@types/three": "0.169.0",
     "meshoptimizer": "^1.2.0",
     "sharp": "^0.35.3"
   }

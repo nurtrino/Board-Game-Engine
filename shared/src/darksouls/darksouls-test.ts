@@ -851,6 +851,10 @@ console.log('--- directed rules tests ---');
   ok(defs.length === 1 && defs[0].seat === 0 && defs[0].data.damage === 5 && defs[0].data.magical === true,
     'the beam hits exactly the character on a decoded blasted node, 5 magical (oik p.13)');
   ok(run.units[0].nodeId === pattern.dpadNode, 'OIK surfaces at the card\'s d-pad eye node');
+  const eye = dsTileGraph('mega-old-iron-king-back').nodeById[pattern.dpadNode];
+  ok(run.units[0].facing?.[0] === dsTileGraph('mega-old-iron-king-back').face.sizePx[0] / 2 - eye.x
+    && run.units[0].facing?.[1] === dsTileGraph('mega-old-iron-king-back').face.sizePx[1] / 2 - eye.y,
+  'OIK faces the board centre after surfacing (oik p.13)');
   ok(run.beamDiscard![0] === pattern.cell, 'the Blasted Nodes card is discarded');
   drain(s);
 }

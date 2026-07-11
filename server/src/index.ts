@@ -19,6 +19,7 @@ import {
   createDarkSouls, dsViewFor, applyDarkSoulsAction,
   createFeast, feastViewFor, applyFeastAction, feastActingSeat, feastBotAction,
   createBloodborne, bbViewFor, applyBloodborneAction, bbPostProcess,
+  createSeti, setiViewFor, applySetiAction,
   BB_STAT_CARDS, BB_HUNTERS, BB_MISSIONS, bbLampSpaces, bbSpaceNeighbors, bbTileDef, bbWorldExits,
   DS_CLASSES, DS_CLASS_IDS, DS_TREASURE_BY_ID, dsNodeDistance, dsTileGraph, dsNodeBlocked, dsOccupancy,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
@@ -28,6 +29,7 @@ import {
   type DsState, type DsAction, type DsPending, type DsStat,
   type FeastState, type FeastAction, type FeastSeatColor,
   type BbState, type BbAction, type BbPending,
+  type SetiState, type SetiAction, type SetiSeatColor,
   type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat, type DuneSeat, type Faction,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo, type GameOptions, type AxisSeat, type PolitikSeat,
 } from '@bge/shared';
@@ -46,7 +48,7 @@ import { bearerToken, canDeleteSave } from './save-auth.js';
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState | PolitikState | DsState | FeastState | BbState;
+type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState | PolitikState | DsState | FeastState | BbState | SetiState;
 
 const engines = {
   brass: {
@@ -171,6 +173,21 @@ const engines = {
       }
     },
     soloSeats: 4, // a lone table gets a full hunting party
+  },
+  seti: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number, options?: GameOptions): GameState => {
+      const difficulty = Number(options?.soloDifficulty);
+      return createSeti(seated as { name: string; color: SetiSeatColor }[], seed, {
+        soloDifficulty: Number.isInteger(difficulty) && difficulty >= 1 && difficulty <= 5
+          ? difficulty as 1 | 2 | 3 | 4 | 5
+          : 3,
+        promoCards: options?.promoCards === true,
+      });
+    },
+    view: (state: GameState, viewer: number | null | 'dev') => setiViewFor(state as SetiState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applySetiAction(state as SetiState, seat, action as SetiAction),
+    minSeats: 1,
+    soloSeats: 1,
   },
 } as const;
 
@@ -1129,6 +1146,7 @@ function bbBotAct(room: Room): void {
     const h = s.hunters[p.seat];
     switch (p.kind) {
       case 'round-refresh': return attempt(p.seat, { type: 'round_refresh', discard: [] });
+      case 'combat-reaction': return attempt(p.seat, { type: 'choose', pass: true });
       case 'combat-attack': {
         const slot = h.slots.findIndex((x) => x === null);
         const card = h.hand.find((c) => !BB_STAT_CARDS[c]?.effects.dodge) ?? h.hand[0];

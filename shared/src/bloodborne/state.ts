@@ -11,7 +11,7 @@ import { mulberry32 } from '../brass/rng.js';
 import { BB_SEATS, BB_MAX_HP, BB_HAND_SIZE, BB_UPGRADE_ROW, BB_ENEMY_ACTION_DECK, type BbSeat, type BbSpeed, type BbStat, type BbEnemyActionKind } from './config.js';
 import {
   BB_TILES, BB_CAMPAIGNS, BB_HUNTERS, BB_UPGRADE_CARDS, BB_BASIC_CARDS,
-  BB_CONSUMABLES, BB_ENEMIES, BB_HUNT_TRACK,
+  BB_CONSUMABLES, BB_ENEMIES, BB_HUNT_TRACK, BB_MISSIONS,
   type BbTileDef, type BbCampaignDef, type BbChapterDef, type BbHunterDef, type BbStatCardDef,
 } from './data.js';
 
@@ -104,8 +104,9 @@ export interface BbHunterState {
 
 export type BbPending =
   | { seat: number; kind: 'combat-attack' } // may attack back: pick card+slot or pass
+  | { seat: number; kind: 'combat-reaction' } // use optional On Attack items/firearm reactions, then pass
   | { seat: number; kind: 'combat-dodge'; speed: BbSpeed | number } // may dodge: pick dodge card+slot or pass
-  | { seat: number; kind: 'combat-rider'; rider: string; speed?: BbSpeed; damage?: number } // curated rider prompts (dodge-or-suffer etc.)
+  | { seat: number; kind: 'combat-rider'; rider: string; speed?: BbSpeed; damage?: number; stun?: boolean; poison?: boolean; frenzy?: boolean; push?: number; source?: BbSpaceRef } // curated rider/AoE Dodge prompts
   | { seat: number; kind: 'dream-upgrades'; picks: number } // echoes to spend, pick from row
   | { seat: number; kind: 'dream-incorporate'; upgradeId: string } // swap 1-for-1 or discard
   | { seat: number; kind: 'return-placement' } // pick weapon side + lamp space
@@ -122,6 +123,9 @@ export interface BbCombat {
   seat: number;
   enemyUid: number | null; // null when fighting a boss
   bossUid: number | null;
+  /** Space occupied by the attacker when combat began; retained for AoE even
+   * if the piece is slain simultaneously before collateral resolves. */
+  sourceSpace: BbSpaceRef | null;
   /** hunter's committed attack, if any */
   attack: { cardId: string; slot: number } | null;
   /** flipped enemy action */
@@ -134,6 +138,8 @@ export interface BbCombat {
   hunterSpeedBonus: number;
   enemyDmgBonus: number;
   hunterDmgBonus: number;
+  /** immediate Block accumulated from stat cards/items in this combat */
+  blockPending: number;
   enemyStagger: boolean;
   resolved: boolean;
 }
@@ -303,8 +309,9 @@ export const spaceNeighbors = (s: BbState, ref: BbSpaceRef, mode: 'hunter' | 'en
 export const bfsFrom = (s: BbState, from: BbSpaceRef, mode: 'hunter' | 'enemy'): Map<BbSpaceRef, number> => {
   const dist = new Map<BbSpaceRef, number>([[from, 0]]);
   const q = [from];
-  while (q.length) {
-    const cur = q.shift()!;
+  // Indexing instead of shifting keeps traversal linear as campaign maps grow.
+  for (let head = 0; head < q.length; head++) {
+    const cur = q[head];
     for (const nb of spaceNeighbors(s, cur, mode)) {
       if (!dist.has(nb)) {
         dist.set(nb, dist.get(cur)! + 1);
@@ -365,6 +372,7 @@ export const drawConsumable = (s: BbState): string | null => {
 
 export const flipEnemyAction = (s: BbState): BbEnemyActionKind => {
   if (s.enemyActionDeck.length === 0) {
+    if (s.enemyActionDiscard.length === 0) throw new Error('enemy action deck is empty');
     s.enemyActionDeck = bbShuffle(s, s.enemyActionDiscard);
     s.enemyActionDiscard = [];
   }
@@ -392,7 +400,16 @@ export const bbChapterDef = (s: BbState): BbChapterDef => {
 export const createBloodborne = (opts: BbCreateOptions): BbState => {
   const campaign = BB_CAMPAIGNS[opts.campaignId];
   if (!campaign) throw new Error(`unknown campaign ${opts.campaignId}`);
-  const partySize = Math.min(Math.max(opts.partySize, 1), 4);
+  if (!Number.isInteger(opts.partySize) || opts.partySize < 1 || opts.partySize > 4) {
+    throw new Error('partySize must be an integer from 1 to 4');
+  }
+  const chapter = opts.chapter ?? 1;
+  if (!Number.isInteger(chapter) || chapter < 1 || chapter > campaign.chapters.length) {
+    throw new Error(`chapter must be an integer from 1 to ${campaign.chapters.length}`);
+  }
+  const seed = opts.seed ?? 1;
+  if (!Number.isFinite(seed) || !Number.isInteger(seed)) throw new Error('seed must be a finite integer');
+  const partySize = opts.partySize;
   const s: BbState = {
     game: 'bloodborne',
     phase: 'setup',
@@ -400,7 +417,7 @@ export const createBloodborne = (opts: BbCreateOptions): BbState => {
     seats: BB_SEATS.slice(0, partySize).map((color, i) => ({ name: `Hunter ${i + 1}`, color })),
     partySize,
     campaignId: opts.campaignId,
-    chapter: opts.chapter ?? 1,
+    chapter,
     hunters: [],
     pickedHunters: [],
     huntTrack: 0,
@@ -435,7 +452,7 @@ export const createBloodborne = (opts: BbCreateOptions): BbState => {
     pending: [],
     combat: null,
     lastEvent: { seq: 0, text: 'CHOOSE YOUR HUNTERS' },
-    seed: opts.seed ?? 1,
+    seed,
     rolls: 0,
     campaignStore: null,
   };
@@ -465,9 +482,15 @@ export const setupChapter = (s: BbState): void => {
   });
   const chosen = [...fixed];
   const randomPool = bbShuffle(s, pool.filter((id) => !chosen.includes(id) && (BB_ENEMIES[id].core ?? false)));
+  const requestedRandom = Math.min(Math.max(ch.enemiesRandom ?? 0, 0), Math.max(0, 3 - chosen.length));
+  for (let i = 0; i < requestedRandom && randomPool.length; i++) chosen.push(randomPool.shift()!);
+  // Some legacy campaign transcriptions omit their printed fixed roster. Keep
+  // the three hunt-board slots playable, while tests surface those omissions.
   while (chosen.length < 3 && randomPool.length) chosen.push(randomPool.shift()!);
+  if (chosen.length !== 3) throw new Error(`campaign ${s.campaignId} chapter ${s.chapter} does not define three enemies`);
   const order = bbShuffle(s, chosen);
   s.enemySlots = [order[0], order[1], order[2]] as [string, string, string];
+  s.enemySides = {};
   for (const id of order) s.enemySides[id] = bbRnd(s) < 0.5 ? 0 : 1; // random side (p. 10)
 
   // --- enemy action deck ---
@@ -475,16 +498,42 @@ export const setupChapter = (s: BbState): void => {
   s.enemyActionDiscard = [];
 
   // --- upgrade deck + row ---
-  s.upgradeDeck = bbShuffle(s, Object.keys(BB_UPGRADE_CARDS).flatMap((id) => [id, id, id]));
+  const carriedDecks = s.campaignStore?.hunterDecks ?? {};
+  const upgradePool = Object.keys(BB_UPGRADE_CARDS).flatMap((id) => [id, id, id]);
+  for (const deck of Object.values(carriedDecks)) {
+    for (const id of deck) {
+      if (!BB_UPGRADE_CARDS[id]) continue;
+      const ix = upgradePool.indexOf(id);
+      if (ix !== -1) upgradePool.splice(ix, 1);
+    }
+  }
+  s.upgradeDeck = bbShuffle(s, upgradePool);
   s.upgradeRow = [];
   refillUpgradeRow(s);
 
   // --- consumables ---
-  s.consumableDeck = bbShuffle(s, BB_CONSUMABLES.deck);
+  if (s.campaignStore) {
+    s.insightCards = [...s.campaignStore.insightCards];
+    for (const h of s.hunters) {
+      h.firearmId = s.campaignStore.firearms[h.seat] ?? h.firearmId;
+      h.rewards = (s.campaignStore.rewards[h.seat] ?? h.rewards.map((r) => r.id)).map((id) => ({ id, exhausted: false }));
+      h.consumables = [...(s.campaignStore.consumables[h.seat] ?? h.consumables)];
+    }
+  }
+  const consumablePool = [...BB_CONSUMABLES.deck];
+  for (const h of s.hunters) {
+    for (const id of h.consumables) {
+      const ix = consumablePool.indexOf(id);
+      if (ix !== -1) consumablePool.splice(ix, 1);
+    }
+  }
+  s.consumableDeck = bbShuffle(s, consumablePool);
   s.consumableDiscard = [];
 
-  // --- tile deck: named + random, minus exclusions (Lua campaigns table) ---
+  // --- tile deck + printed setup layouts ---
   const tileByName = (n: string): string | undefined => Object.keys(BB_TILES).find((k) => norm(BB_TILES[k].name) === norm(n));
+  const setupCard = BB_MISSIONS[s.campaignId]?.[`Chapter ${s.chapter} - Setup`];
+  const prePlace = setupCard?.prePlace;
   const named = ch.startingTiles.filter((n) => n).map((n) => {
     const id = tileByName(n);
     if (!id) throw new Error(`unknown starting tile ${n}`);
@@ -493,15 +542,79 @@ export const setupChapter = (s: BbState): void => {
   const startId = tileByName(ch.startingTile);
   if (!startId) throw new Error(`unknown starting tile ${ch.startingTile}`);
   const excluded = (ch.excludedTiles ?? []).map(tileByName).filter(Boolean) as string[];
-  const pool2 = Object.keys(BB_TILES).filter((id) => BB_TILES[id].set === 'core' && id !== startId && !named.includes(id) && !excluded.includes(id));
+  const prePlacedByToken = new Map<string, string>();
+  const reserveNamed = (name: string): void => {
+    if (name === 'random2exit') return;
+    const id = tileByName(name);
+    if (!id) throw new Error(`unknown pre-placed tile ${name}`);
+    prePlacedByToken.set(name, id);
+  };
+  for (const token of prePlace?.chain ?? []) reserveNamed(token);
+  for (const spec of prePlace?.attach ?? []) reserveNamed(spec.tile);
+  const reservedNamed = new Set(prePlacedByToken.values());
+  const pool2 = Object.keys(BB_TILES).filter((id) => BB_TILES[id].set === 'core' && id !== startId && !named.includes(id) && !excluded.includes(id) && !reservedNamed.has(id));
+  if (prePlace?.chain?.includes('random2exit')) {
+    const eligible = bbShuffle(s, pool2.filter((id) => BB_TILES[id].exits.length >= 2));
+    const id = eligible[0];
+    if (!id) throw new Error(`campaign ${s.campaignId} chapter ${s.chapter} has no unused tile with at least two exits`);
+    prePlacedByToken.set('random2exit', id);
+  }
+  const prePlacedIds = new Set(prePlacedByToken.values());
+  const deckNamed = named.filter((id) => !prePlacedIds.has(id));
+  const tileRandomPool = pool2.filter((id) => !prePlacedIds.has(id));
   const nRandom = Math.min(ch.randomTiles.perHunter * s.partySize + (ch.randomTiles.plus ?? 0), ch.randomTiles.cap ?? 99);
-  const randoms = bbShuffle(s, pool2).slice(0, nRandom);
-  s.tileDeck = bbShuffle(s, [...named, ...randoms]);
+  const randoms = bbShuffle(s, tileRandomPool).slice(0, nRandom);
+  s.tileDeck = bbShuffle(s, [...deckNamed, ...randoms]);
 
-  // --- starting tile on the grid, hunters on it ---
+  // --- starting tile and setup-card tiles on the grid ---
   const start: BbPlacedTile = { uid: s.nextUid++, tileId: startId, rot: 0, x: 0, y: 0 };
   s.tiles = [start];
   populateTile(s, start);
+  const placedByToken = new Map<string, BbPlacedTile>([[ch.startingTile, start], ['Central Lamp', start]]);
+  const placeAttached = (token: string, parent: BbPlacedTile, preferredEdge?: 'N' | 'E' | 'S' | 'W'): { tile: BbPlacedTile; parentEdge: 'N' | 'E' | 'S' | 'W' } => {
+    const tileId = prePlacedByToken.get(token);
+    if (!tileId) throw new Error(`missing pre-placed tile ${token}`);
+    const edgeOrder: ('N' | 'E' | 'S' | 'W')[] = ['N', 'E', 'S', 'W'];
+    const parentEdges = worldExits(parent).map((e) => e.edge);
+    const ordered = preferredEdge
+      ? [preferredEdge, ...edgeOrder.filter((edge) => edge !== preferredEdge)]
+      : edgeOrder;
+    for (const edge of ordered) {
+      if (!parentEdges.includes(edge)) continue;
+      const [dx, dy] = edgeDelta(edge);
+      const x = parent.x + dx, y = parent.y + dy;
+      if (tileAt(s, x, y)) continue;
+      for (let rot = 0 as 0 | 1 | 2 | 3; rot < 4; rot = (rot + 1) as 0 | 1 | 2 | 3) {
+        if (!BB_TILES[tileId].exits.some((exit) => rotEdge(exit.edge, rot) === facing(edge))) continue;
+        const tile: BbPlacedTile = { uid: s.nextUid++, tileId, rot, x, y };
+        s.tiles.push(tile);
+        populateTile(s, tile);
+        placedByToken.set(token, tile);
+        placedByToken.set(BB_TILES[tileId].name, tile);
+        return { tile, parentEdge: edge };
+      }
+    }
+    throw new Error(`cannot connect pre-placed tile ${BB_TILES[tileId].name} to ${BB_TILES[parent.tileId].name}`);
+  };
+  const chain = prePlace?.chain ?? [];
+  if (chain.length > 0) {
+    if (chain.includes('random2exit') && chain.length === 3) {
+      // Long Hunt card 17: Graveyard touches one side of Central Lamp; the
+      // random tile touches the opposite side, with Tomb beyond it.
+      const first = placeAttached(chain[0], start);
+      const middle = placeAttached(chain[1], start, facing(first.parentEdge));
+      placeAttached(chain[2], middle.tile);
+    } else {
+      let parent = start;
+      for (const token of chain) parent = placeAttached(token, parent).tile;
+    }
+  }
+  for (const spec of prePlace?.attach ?? []) {
+    const parent = placedByToken.get(spec.to)
+      ?? [...placedByToken.entries()].find(([name]) => norm(name) === norm(spec.to))?.[1];
+    if (!parent) throw new Error(`pre-place parent ${spec.to} is not on the map`);
+    placeAttached(spec.tile, parent);
+  }
   const lampSpace = tileDef(startId).spaces.find((sp) => sp.icons.includes('lamp')) ?? tileDef(startId).spaces[0];
   for (const h of s.hunters) h.space = spaceRef(start.uid, lampSpace.id);
 
@@ -516,12 +629,21 @@ export const setupChapter = (s: BbState): void => {
     }
     h.hp = BB_MAX_HP;
     h.echoes = 0;
+    h.firearmExhausted = false;
+    for (const r of h.rewards) r.exhausted = false;
+    h.poison = false;
+    h.frenzy = false;
+    h.gemSlot = null;
+    h.skipTurn = false;
+    h.pendingReturn = false;
+    h.tookTurnThisRound = false;
     h.slots = new Array(hunterSlotCount(h)).fill(null);
   }
 
   // --- hunt track ---
   s.huntTrack = 0;
   s.finalRound = false;
+  s.insightCollected = 0;
   s.round = 1;
   s.phase = 'play';
   s.lastEvent = { seq: s.lastEvent.seq + 1, text: `CHAPTER ${s.chapter} · THE HUNT BEGINS` };
@@ -555,12 +677,22 @@ export const populateTile = (s: BbState, t: BbPlacedTile): void => {
 /** spawn with the 4-mini pool rule (p. 15): beyond 4 on the map, relocate the
  * farthest-from-any-hunter mini of that type instead */
 export const spawnEnemy = (s: BbState, type: string, space: BbSpaceRef, missionTag?: string): void => {
+  if (!BB_ENEMIES[type]) throw new Error(`unknown enemy ${type}`);
+  const at = parseRef(space);
+  const placed = s.tiles.find((t) => t.uid === at.uid);
+  if (!placed || !tileDef(placed.tileId).spaces.some((sp) => sp.id === at.space)) throw new Error(`unknown map space ${space}`);
   const onMap = s.enemies.filter((e) => e.type === type);
   if (onMap.length >= 4) {
     let best: BbEnemyOnMap | null = null, bestD = -1;
-    for (const e of onMap) {
+    // Ordinary spawn icons never steal a mission-critical miniature. If all
+    // four copies are mission pieces, that ordinary spawn is skipped.
+    // A mission batch asking for multiple copies must consume distinct spare
+    // minis. Relocating a copy already carrying this tag would merely move the
+    // first requested piece again and silently reduce the requested count.
+    const movable = onMap.filter((e) => !e.missionTag);
+    for (const e of movable) {
       const d = Math.min(...s.hunters.filter((h) => h.space).map((h) => bfsFrom(s, e.space, 'enemy').get(h.space!) ?? 999), 999);
-      if (d > bestD) { bestD = d; best = e; }
+      if (d > bestD || (d === bestD && best != null && e.uid < best.uid)) { bestD = d; best = e; }
     }
     if (best) { best.space = space; best.damage = 0; best.missionTag = missionTag; }
     return;
@@ -578,7 +710,9 @@ export const resetMap = (s: BbState): void => {
       if (sp.icons.includes('consumable') && !s.consumableTokens.includes(ref)) s.consumableTokens.push(ref);
     }
   }
-  for (const e of missionEnemies) s.enemies.push({ ...e, damage: 0 });
+  // Mission rules decide whether surviving special enemies heal/respawn; the
+  // mission reset hook runs immediately after this base population pass.
+  for (const e of missionEnemies) s.enemies.push({ ...e });
   const spawns: { ref: BbSpaceRef; type: string; d: number }[] = [];
   for (const t of s.tiles) {
     if (s.fogGates.includes(t.uid)) continue;

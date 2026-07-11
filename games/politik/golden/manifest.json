@@ -1,0 +1,26 @@
+{
+  "source": "TTS workshop 3460664356",
+  "saveName": "Politik",
+  "ttsVersion": "v14.2.1",
+  "objectCount": 903,
+  "counts": {
+    "politik": 412,
+    "landscapes": 54,
+    "landscapeCover": 1,
+    "obligations": 24,
+    "startups": 12,
+    "nations": 12,
+    "broadcastStations": 5,
+    "startingPropaganda": 24
+  },
+  "sourceGuids": {
+    "board": "3a55e6",
+    "rulebook": "b18209",
+    "politics": "d2135c",
+    "landscapes": "652542",
+    "obligations": "d75693",
+    "startups": "2629ce",
+    "nations": "6306fe",
+    "broadcastStations": "510885"
+  }
+}

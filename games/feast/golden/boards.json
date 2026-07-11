@@ -1,0 +1,7938 @@
+{
+  "formatVersion": 1,
+  "legend": {
+    " ": "outside",
+    ".": "open",
+    "N": "negative-1",
+    "I": "income",
+    "B": "bonus",
+    "X": "forbidden"
+  },
+  "boards": [
+    {
+      "id": "home-short",
+      "name": "Home Board - Short Game",
+      "kind": "home",
+      "faceCode": "short",
+      "image": "/feast/home-short.webp",
+      "imagePx": [
+        2354,
+        1500
+      ],
+      "artGrid": {
+        "originPx": [
+          26,
+          106
+        ],
+        "cellPx": [
+          87.08,
+          87.08
+        ],
+        "rows": 12,
+        "cols": 13,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.011045,
+          0.070667
+        ],
+        "normalizedCell": [
+          0.036992,
+          0.058053
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 11,
+          "colMin": 0,
+          "colMax": 12
+        }
+      },
+      "layout": [
+        "NNNNNNNNNNNI.",
+        "NNNNNNNNNNIN.",
+        "NNNNNNNNNINN.",
+        "NNNNNNNNINNN ",
+        "NNNNNNNINNNN ",
+        "B.....INNNNN ",
+        ".....I.NNNNN ",
+        "..B.I.BNNNNN ",
+        "...I...NNNNN ",
+        ".BI....NNNNN ",
+        ".I...B.NNNNN ",
+        "I......N     "
+      ],
+      "expectedNegativeCount": 86,
+      "expectedPoints": 0,
+      "incomeTracks": [
+        {
+          "id": "home-income",
+          "entries": [
+            {
+              "value": 0,
+              "cell": {
+                "row": 11,
+                "col": 0
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 10,
+                "col": 1
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 9,
+                "col": 2
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 8,
+                "col": 3
+              }
+            },
+            {
+              "value": 3,
+              "cell": {
+                "row": 7,
+                "col": 4
+              }
+            },
+            {
+              "value": 4,
+              "cell": {
+                "row": 6,
+                "col": 5
+              }
+            },
+            {
+              "value": 5,
+              "cell": {
+                "row": 5,
+                "col": 6
+              }
+            },
+            {
+              "value": 6,
+              "cell": {
+                "row": 4,
+                "col": 7
+              }
+            },
+            {
+              "value": 7,
+              "cell": {
+                "row": 3,
+                "col": 8
+              }
+            },
+            {
+              "value": 9,
+              "cell": {
+                "row": 2,
+                "col": 9
+              }
+            },
+            {
+              "value": 12,
+              "cell": {
+                "row": 1,
+                "col": 10
+              }
+            },
+            {
+              "value": 15,
+              "cell": {
+                "row": 0,
+                "col": 11
+              }
+            },
+            {
+              "value": 18,
+              "cell": null
+            }
+          ]
+        }
+      ],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 5,
+            "col": 0
+          },
+          "rewards": [
+            {
+              "kind": "resource",
+              "id": "ore",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 7,
+            "col": 2
+          },
+          "rewards": [
+            {
+              "kind": "resource",
+              "id": "wood",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 7,
+            "col": 6
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "rune-stone",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 9,
+            "col": 1
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "mead",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 10,
+            "col": 5
+          },
+          "rewards": [
+            {
+              "kind": "resource",
+              "id": "stone",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "037bf4",
+      "sourceSide": "primary",
+      "points": 0,
+      "negativeCount": 86,
+      "gridNegativeCount": 86,
+      "printedNegativeCount": 86,
+      "grid": {
+        "rows": 12,
+        "cols": 13,
+        "layout": [
+          "NNNNNNNNNNNI.",
+          "NNNNNNNNNNIN.",
+          "NNNNNNNNNINN.",
+          "NNNNNNNNINNN ",
+          "NNNNNNNINNNN ",
+          "B.....INNNNN ",
+          ".....I.NNNNN ",
+          "..B.I.BNNNNN ",
+          "...I...NNNNN ",
+          ".BI....NNNNN ",
+          ".I...B.NNNNN ",
+          "I......N     "
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 11,
+            "type": "income"
+          },
+          {
+            "row": 0,
+            "col": 12,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 10,
+            "type": "income"
+          },
+          {
+            "row": 1,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 12,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 9,
+            "type": "income"
+          },
+          {
+            "row": 2,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 12,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 8,
+            "type": "income"
+          },
+          {
+            "row": 3,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "income"
+          },
+          {
+            "row": 4,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 0,
+            "type": "bonus"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "income"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "income"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 2,
+            "type": "bonus"
+          },
+          {
+            "row": 7,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 4,
+            "type": "income"
+          },
+          {
+            "row": 7,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "bonus"
+          },
+          {
+            "row": 7,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 3,
+            "type": "income"
+          },
+          {
+            "row": 8,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 1,
+            "type": "bonus"
+          },
+          {
+            "row": 9,
+            "col": 2,
+            "type": "income"
+          },
+          {
+            "row": 9,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 1,
+            "type": "income"
+          },
+          {
+            "row": 10,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 5,
+            "type": "bonus"
+          },
+          {
+            "row": 10,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 11,
+            "col": 0,
+            "type": "income"
+          },
+          {
+            "row": 11,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 7,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 0
+          },
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 4
+          },
+          {
+            "row": 0,
+            "col": 5
+          },
+          {
+            "row": 0,
+            "col": 6
+          },
+          {
+            "row": 0,
+            "col": 7
+          },
+          {
+            "row": 0,
+            "col": 8
+          },
+          {
+            "row": 0,
+            "col": 9
+          },
+          {
+            "row": 0,
+            "col": 10
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 5
+          },
+          {
+            "row": 1,
+            "col": 6
+          },
+          {
+            "row": 1,
+            "col": 7
+          },
+          {
+            "row": 1,
+            "col": 8
+          },
+          {
+            "row": 1,
+            "col": 9
+          },
+          {
+            "row": 1,
+            "col": 11
+          },
+          {
+            "row": 2,
+            "col": 0
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 2,
+            "col": 2
+          },
+          {
+            "row": 2,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 4
+          },
+          {
+            "row": 2,
+            "col": 5
+          },
+          {
+            "row": 2,
+            "col": 6
+          },
+          {
+            "row": 2,
+            "col": 7
+          },
+          {
+            "row": 2,
+            "col": 8
+          },
+          {
+            "row": 2,
+            "col": 10
+          },
+          {
+            "row": 2,
+            "col": 11
+          },
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 4
+          },
+          {
+            "row": 3,
+            "col": 5
+          },
+          {
+            "row": 3,
+            "col": 6
+          },
+          {
+            "row": 3,
+            "col": 7
+          },
+          {
+            "row": 3,
+            "col": 9
+          },
+          {
+            "row": 3,
+            "col": 10
+          },
+          {
+            "row": 3,
+            "col": 11
+          },
+          {
+            "row": 4,
+            "col": 0
+          },
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 2
+          },
+          {
+            "row": 4,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 4
+          },
+          {
+            "row": 4,
+            "col": 5
+          },
+          {
+            "row": 4,
+            "col": 6
+          },
+          {
+            "row": 4,
+            "col": 8
+          },
+          {
+            "row": 4,
+            "col": 9
+          },
+          {
+            "row": 4,
+            "col": 10
+          },
+          {
+            "row": 4,
+            "col": 11
+          },
+          {
+            "row": 5,
+            "col": 7
+          },
+          {
+            "row": 5,
+            "col": 8
+          },
+          {
+            "row": 5,
+            "col": 9
+          },
+          {
+            "row": 5,
+            "col": 10
+          },
+          {
+            "row": 5,
+            "col": 11
+          },
+          {
+            "row": 6,
+            "col": 7
+          },
+          {
+            "row": 6,
+            "col": 8
+          },
+          {
+            "row": 6,
+            "col": 9
+          },
+          {
+            "row": 6,
+            "col": 10
+          },
+          {
+            "row": 6,
+            "col": 11
+          },
+          {
+            "row": 7,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 8
+          },
+          {
+            "row": 7,
+            "col": 9
+          },
+          {
+            "row": 7,
+            "col": 10
+          },
+          {
+            "row": 7,
+            "col": 11
+          },
+          {
+            "row": 8,
+            "col": 7
+          },
+          {
+            "row": 8,
+            "col": 8
+          },
+          {
+            "row": 8,
+            "col": 9
+          },
+          {
+            "row": 8,
+            "col": 10
+          },
+          {
+            "row": 8,
+            "col": 11
+          },
+          {
+            "row": 9,
+            "col": 7
+          },
+          {
+            "row": 9,
+            "col": 8
+          },
+          {
+            "row": 9,
+            "col": 9
+          },
+          {
+            "row": 9,
+            "col": 10
+          },
+          {
+            "row": 9,
+            "col": 11
+          },
+          {
+            "row": 10,
+            "col": 7
+          },
+          {
+            "row": 10,
+            "col": 8
+          },
+          {
+            "row": 10,
+            "col": 9
+          },
+          {
+            "row": 10,
+            "col": 10
+          },
+          {
+            "row": 10,
+            "col": 11
+          },
+          {
+            "row": 11,
+            "col": 7
+          }
+        ],
+        "forbiddenCells": []
+      }
+    },
+    {
+      "id": "home-long",
+      "name": "Home Board - Long Game",
+      "kind": "home",
+      "faceCode": "long",
+      "image": "/feast/home-long.webp",
+      "imagePx": [
+        2354,
+        1500
+      ],
+      "artGrid": {
+        "originPx": [
+          26,
+          106
+        ],
+        "cellPx": [
+          87.08,
+          87.08
+        ],
+        "rows": 12,
+        "cols": 13,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.011045,
+          0.070667
+        ],
+        "normalizedCell": [
+          0.036992,
+          0.058053
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 11,
+          "colMin": 0,
+          "colMax": 12
+        }
+      },
+      "layout": [
+        "NNNNNNNNNNNI.",
+        "NNNNNNNNNNIN.",
+        "NNNNNNNNNINN.",
+        "NNNNNNNNINNN ",
+        "NNNNNNNINNNN ",
+        "B.....INNNNN ",
+        ".....I.NNNNN ",
+        "..B.I.BNNNNN ",
+        "...I...NNNNN ",
+        ".BI....NNNNN ",
+        ".I...B.NNNNN ",
+        "I......N     "
+      ],
+      "expectedNegativeCount": 86,
+      "expectedPoints": 0,
+      "incomeTracks": [
+        {
+          "id": "home-income",
+          "entries": [
+            {
+              "value": 0,
+              "cell": {
+                "row": 11,
+                "col": 0
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 10,
+                "col": 1
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 9,
+                "col": 2
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 8,
+                "col": 3
+              }
+            },
+            {
+              "value": 3,
+              "cell": {
+                "row": 7,
+                "col": 4
+              }
+            },
+            {
+              "value": 4,
+              "cell": {
+                "row": 6,
+                "col": 5
+              }
+            },
+            {
+              "value": 5,
+              "cell": {
+                "row": 5,
+                "col": 6
+              }
+            },
+            {
+              "value": 6,
+              "cell": {
+                "row": 4,
+                "col": 7
+              }
+            },
+            {
+              "value": 7,
+              "cell": {
+                "row": 3,
+                "col": 8
+              }
+            },
+            {
+              "value": 9,
+              "cell": {
+                "row": 2,
+                "col": 9
+              }
+            },
+            {
+              "value": 12,
+              "cell": {
+                "row": 1,
+                "col": 10
+              }
+            },
+            {
+              "value": 15,
+              "cell": {
+                "row": 0,
+                "col": 11
+              }
+            },
+            {
+              "value": 18,
+              "cell": null
+            }
+          ]
+        }
+      ],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 5,
+            "col": 0
+          },
+          "rewards": [
+            {
+              "kind": "resource",
+              "id": "ore",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 7,
+            "col": 2
+          },
+          "rewards": [
+            {
+              "kind": "resource",
+              "id": "wood",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 7,
+            "col": 6
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "rune-stone",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 9,
+            "col": 1
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "mead",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 10,
+            "col": 5
+          },
+          "rewards": [
+            {
+              "kind": "resource",
+              "id": "stone",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "037bf4",
+      "sourceSide": "secondary",
+      "points": 0,
+      "negativeCount": 86,
+      "gridNegativeCount": 86,
+      "printedNegativeCount": 86,
+      "grid": {
+        "rows": 12,
+        "cols": 13,
+        "layout": [
+          "NNNNNNNNNNNI.",
+          "NNNNNNNNNNIN.",
+          "NNNNNNNNNINN.",
+          "NNNNNNNNINNN ",
+          "NNNNNNNINNNN ",
+          "B.....INNNNN ",
+          ".....I.NNNNN ",
+          "..B.I.BNNNNN ",
+          "...I...NNNNN ",
+          ".BI....NNNNN ",
+          ".I...B.NNNNN ",
+          "I......N     "
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 11,
+            "type": "income"
+          },
+          {
+            "row": 0,
+            "col": 12,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 10,
+            "type": "income"
+          },
+          {
+            "row": 1,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 12,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 9,
+            "type": "income"
+          },
+          {
+            "row": 2,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 12,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 8,
+            "type": "income"
+          },
+          {
+            "row": 3,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "income"
+          },
+          {
+            "row": 4,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 0,
+            "type": "bonus"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "income"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "income"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 2,
+            "type": "bonus"
+          },
+          {
+            "row": 7,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 4,
+            "type": "income"
+          },
+          {
+            "row": 7,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "bonus"
+          },
+          {
+            "row": 7,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 3,
+            "type": "income"
+          },
+          {
+            "row": 8,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 1,
+            "type": "bonus"
+          },
+          {
+            "row": 9,
+            "col": 2,
+            "type": "income"
+          },
+          {
+            "row": 9,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 9,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 9,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 1,
+            "type": "income"
+          },
+          {
+            "row": 10,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 5,
+            "type": "bonus"
+          },
+          {
+            "row": 10,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 10,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 10,
+            "col": 11,
+            "type": "negative-1"
+          },
+          {
+            "row": 11,
+            "col": 0,
+            "type": "income"
+          },
+          {
+            "row": 11,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 11,
+            "col": 7,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 0
+          },
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 4
+          },
+          {
+            "row": 0,
+            "col": 5
+          },
+          {
+            "row": 0,
+            "col": 6
+          },
+          {
+            "row": 0,
+            "col": 7
+          },
+          {
+            "row": 0,
+            "col": 8
+          },
+          {
+            "row": 0,
+            "col": 9
+          },
+          {
+            "row": 0,
+            "col": 10
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 5
+          },
+          {
+            "row": 1,
+            "col": 6
+          },
+          {
+            "row": 1,
+            "col": 7
+          },
+          {
+            "row": 1,
+            "col": 8
+          },
+          {
+            "row": 1,
+            "col": 9
+          },
+          {
+            "row": 1,
+            "col": 11
+          },
+          {
+            "row": 2,
+            "col": 0
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 2,
+            "col": 2
+          },
+          {
+            "row": 2,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 4
+          },
+          {
+            "row": 2,
+            "col": 5
+          },
+          {
+            "row": 2,
+            "col": 6
+          },
+          {
+            "row": 2,
+            "col": 7
+          },
+          {
+            "row": 2,
+            "col": 8
+          },
+          {
+            "row": 2,
+            "col": 10
+          },
+          {
+            "row": 2,
+            "col": 11
+          },
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 4
+          },
+          {
+            "row": 3,
+            "col": 5
+          },
+          {
+            "row": 3,
+            "col": 6
+          },
+          {
+            "row": 3,
+            "col": 7
+          },
+          {
+            "row": 3,
+            "col": 9
+          },
+          {
+            "row": 3,
+            "col": 10
+          },
+          {
+            "row": 3,
+            "col": 11
+          },
+          {
+            "row": 4,
+            "col": 0
+          },
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 2
+          },
+          {
+            "row": 4,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 4
+          },
+          {
+            "row": 4,
+            "col": 5
+          },
+          {
+            "row": 4,
+            "col": 6
+          },
+          {
+            "row": 4,
+            "col": 8
+          },
+          {
+            "row": 4,
+            "col": 9
+          },
+          {
+            "row": 4,
+            "col": 10
+          },
+          {
+            "row": 4,
+            "col": 11
+          },
+          {
+            "row": 5,
+            "col": 7
+          },
+          {
+            "row": 5,
+            "col": 8
+          },
+          {
+            "row": 5,
+            "col": 9
+          },
+          {
+            "row": 5,
+            "col": 10
+          },
+          {
+            "row": 5,
+            "col": 11
+          },
+          {
+            "row": 6,
+            "col": 7
+          },
+          {
+            "row": 6,
+            "col": 8
+          },
+          {
+            "row": 6,
+            "col": 9
+          },
+          {
+            "row": 6,
+            "col": 10
+          },
+          {
+            "row": 6,
+            "col": 11
+          },
+          {
+            "row": 7,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 8
+          },
+          {
+            "row": 7,
+            "col": 9
+          },
+          {
+            "row": 7,
+            "col": 10
+          },
+          {
+            "row": 7,
+            "col": 11
+          },
+          {
+            "row": 8,
+            "col": 7
+          },
+          {
+            "row": 8,
+            "col": 8
+          },
+          {
+            "row": 8,
+            "col": 9
+          },
+          {
+            "row": 8,
+            "col": 10
+          },
+          {
+            "row": 8,
+            "col": 11
+          },
+          {
+            "row": 9,
+            "col": 7
+          },
+          {
+            "row": 9,
+            "col": 8
+          },
+          {
+            "row": 9,
+            "col": 9
+          },
+          {
+            "row": 9,
+            "col": 10
+          },
+          {
+            "row": 9,
+            "col": 11
+          },
+          {
+            "row": 10,
+            "col": 7
+          },
+          {
+            "row": 10,
+            "col": 8
+          },
+          {
+            "row": 10,
+            "col": 9
+          },
+          {
+            "row": 10,
+            "col": 10
+          },
+          {
+            "row": 10,
+            "col": 11
+          },
+          {
+            "row": 11,
+            "col": 7
+          }
+        ],
+        "forbiddenCells": []
+      }
+    },
+    {
+      "id": "shetland",
+      "name": "Shetland",
+      "kind": "exploration",
+      "faceCode": "A",
+      "image": "/feast/exploration/shetland.webp",
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "artGrid": {
+        "originPx": [
+          109,
+          136
+        ],
+        "cellPx": [
+          85,
+          85
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.109,
+          0.136
+        ],
+        "normalizedCell": [
+          0.085,
+          0.085
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "    ...  ",
+        "NNNN.B.  ",
+        "NBNN..NN.",
+        "NNNN...B.",
+        "    NN...",
+        "..I NN.B.",
+        ".I. .NN..",
+        "I.B   NNN",
+        " ..   NN."
+      ],
+      "expectedNegativeCount": 24,
+      "expectedPoints": 6,
+      "incomeTracks": [
+        {
+          "id": "income",
+          "entries": [
+            {
+              "value": 0,
+              "cell": {
+                "row": 7,
+                "col": 0
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 6,
+                "col": 1
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 5,
+                "col": 2
+              }
+            },
+            {
+              "value": 3,
+              "cell": null
+            }
+          ]
+        }
+      ],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 1,
+            "col": 5
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "silverware",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 2,
+            "col": 1
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "game-meat",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 3,
+            "col": 7
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "oil",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 5,
+            "col": 7
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "cabbage",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 7,
+            "col": 2
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "beans",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "15d0ed",
+      "sourceSide": "primary",
+      "points": 6,
+      "negativeCount": 24,
+      "gridNegativeCount": 24,
+      "printedNegativeCount": 24,
+      "grid": {
+        "rows": 9,
+        "cols": 9,
+        "layout": [
+          "    ...  ",
+          "NNNN.B.  ",
+          "NBNN..NN.",
+          "NNNN...B.",
+          "    NN...",
+          "..I NN.B.",
+          ".I. .NN..",
+          "I.B   NNN",
+          " ..   NN."
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "bonus"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "bonus"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 7,
+            "type": "bonus"
+          },
+          {
+            "row": 3,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "income"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "bonus"
+          },
+          {
+            "row": 5,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "income"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 7,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 0,
+            "type": "income"
+          },
+          {
+            "row": 7,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 2,
+            "type": "bonus"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 8,
+            "type": "open"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 0
+          },
+          {
+            "row": 2,
+            "col": 2
+          },
+          {
+            "row": 2,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 6
+          },
+          {
+            "row": 2,
+            "col": 7
+          },
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 4
+          },
+          {
+            "row": 4,
+            "col": 5
+          },
+          {
+            "row": 5,
+            "col": 4
+          },
+          {
+            "row": 5,
+            "col": 5
+          },
+          {
+            "row": 6,
+            "col": 5
+          },
+          {
+            "row": 6,
+            "col": 6
+          },
+          {
+            "row": 7,
+            "col": 6
+          },
+          {
+            "row": 7,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 8
+          },
+          {
+            "row": 8,
+            "col": 6
+          },
+          {
+            "row": 8,
+            "col": 7
+          }
+        ],
+        "forbiddenCells": []
+      }
+    },
+    {
+      "id": "bear-island",
+      "name": "Bear Island",
+      "kind": "exploration",
+      "faceCode": "A-reverse",
+      "image": "/feast/exploration/bear-island.webp",
+      "imagePx": [
+        1003,
+        1000
+      ],
+      "artGrid": {
+        "originPx": [
+          203,
+          139
+        ],
+        "cellPx": [
+          85.7,
+          85.7
+        ],
+        "rows": 9,
+        "cols": 8,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.202393,
+          0.139
+        ],
+        "normalizedCell": [
+          0.085444,
+          0.0857
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 7
+        }
+      },
+      "layout": [
+        "   NNNN ",
+        " NNNINNN",
+        "NNNI.N.N",
+        "..I.B.N.",
+        " IX..N.B",
+        " .....NN",
+        " .....B ",
+        "   .N.. ",
+        "    NN  "
+      ],
+      "expectedNegativeCount": 22,
+      "expectedPoints": 12,
+      "incomeTracks": [
+        {
+          "id": "income",
+          "entries": [
+            {
+              "value": 1,
+              "cell": {
+                "row": 4,
+                "col": 1
+              }
+            },
+            {
+              "value": 3,
+              "cell": {
+                "row": 3,
+                "col": 2
+              }
+            },
+            {
+              "value": 4,
+              "cell": {
+                "row": 2,
+                "col": 3
+              }
+            },
+            {
+              "value": 5,
+              "cell": {
+                "row": 1,
+                "col": 4
+              }
+            }
+          ]
+        }
+      ],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 3,
+            "col": 4
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "game-meat",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 4,
+            "col": 7
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "stockfish",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 6,
+            "col": 6
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "rune-stone",
+              "amount": 1
+            },
+            {
+              "kind": "resource",
+              "id": "ore",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "15d0ed",
+      "sourceSide": "secondary",
+      "points": 12,
+      "negativeCount": 22,
+      "gridNegativeCount": 22,
+      "printedNegativeCount": 22,
+      "grid": {
+        "rows": 9,
+        "cols": 8,
+        "layout": [
+          "   NNNN ",
+          " NNNINNN",
+          "NNNI.N.N",
+          "..I.B.N.",
+          " IX..N.B",
+          " .....NN",
+          " .....B ",
+          "   .N.. ",
+          "    NN  "
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "income"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "income"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "income"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "bonus"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 7,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 1,
+            "type": "income"
+          },
+          {
+            "row": 4,
+            "col": 2,
+            "type": "forbidden"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "bonus"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "bonus"
+          },
+          {
+            "row": 7,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 5,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 4
+          },
+          {
+            "row": 0,
+            "col": 5
+          },
+          {
+            "row": 0,
+            "col": 6
+          },
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 5
+          },
+          {
+            "row": 1,
+            "col": 6
+          },
+          {
+            "row": 1,
+            "col": 7
+          },
+          {
+            "row": 2,
+            "col": 0
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 2,
+            "col": 2
+          },
+          {
+            "row": 2,
+            "col": 5
+          },
+          {
+            "row": 2,
+            "col": 7
+          },
+          {
+            "row": 3,
+            "col": 6
+          },
+          {
+            "row": 4,
+            "col": 5
+          },
+          {
+            "row": 5,
+            "col": 6
+          },
+          {
+            "row": 5,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 4
+          },
+          {
+            "row": 8,
+            "col": 4
+          },
+          {
+            "row": 8,
+            "col": 5
+          }
+        ],
+        "forbiddenCells": [
+          {
+            "row": 4,
+            "col": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "faroe-islands",
+      "name": "Faroe Islands",
+      "kind": "exploration",
+      "faceCode": "B",
+      "image": "/feast/exploration/faroe-islands.webp",
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "artGrid": {
+        "originPx": [
+          96,
+          154
+        ],
+        "cellPx": [
+          85,
+          85
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.096,
+          0.154
+        ],
+        "normalizedCell": [
+          0.085,
+          0.085
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "     NBIN",
+        "  NN  I.N",
+        " NB..IX.B",
+        " ...INNNN",
+        "   I..NX.",
+        "..IX BNN ",
+        "BI.. ..N ",
+        "I... .BN ",
+        "     ..N "
+      ],
+      "expectedNegativeCount": 16,
+      "expectedPoints": 4,
+      "incomeTracks": [
+        {
+          "id": "income",
+          "entries": [
+            {
+              "value": 0,
+              "cell": {
+                "row": 7,
+                "col": 0
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 6,
+                "col": 1
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 5,
+                "col": 2
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 4,
+                "col": 3
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 3,
+                "col": 4
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 2,
+                "col": 5
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 1,
+                "col": 6
+              }
+            },
+            {
+              "value": 3,
+              "cell": {
+                "row": 0,
+                "col": 7
+              }
+            },
+            {
+              "value": 4,
+              "cell": null
+            }
+          ]
+        }
+      ],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 0,
+            "col": 6
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "sheep",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 2,
+            "col": 2
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "oil",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 2,
+            "col": 8
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "milk",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 5,
+            "col": 5
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "flax",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 6,
+            "col": 0
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "peas",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 7,
+            "col": 6
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "hide",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "d62e9b",
+      "sourceSide": "primary",
+      "points": 4,
+      "negativeCount": 16,
+      "gridNegativeCount": 16,
+      "printedNegativeCount": 16,
+      "grid": {
+        "rows": 9,
+        "cols": 9,
+        "layout": [
+          "     NBIN",
+          "  NN  I.N",
+          " NB..IX.B",
+          " ...INNNN",
+          "   I..NX.",
+          "..IX BNN ",
+          "BI.. ..N ",
+          "I... .BN ",
+          "     ..N "
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 6,
+            "type": "bonus"
+          },
+          {
+            "row": 0,
+            "col": 7,
+            "type": "income"
+          },
+          {
+            "row": 0,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "income"
+          },
+          {
+            "row": 1,
+            "col": 7,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "bonus"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "income"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "forbidden"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 8,
+            "type": "bonus"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "income"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "income"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "forbidden"
+          },
+          {
+            "row": 4,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "income"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "forbidden"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "bonus"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 0,
+            "type": "bonus"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "income"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 0,
+            "type": "income"
+          },
+          {
+            "row": 7,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "bonus"
+          },
+          {
+            "row": 7,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 7,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 5
+          },
+          {
+            "row": 0,
+            "col": 8
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 8
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 5
+          },
+          {
+            "row": 3,
+            "col": 6
+          },
+          {
+            "row": 3,
+            "col": 7
+          },
+          {
+            "row": 3,
+            "col": 8
+          },
+          {
+            "row": 4,
+            "col": 6
+          },
+          {
+            "row": 5,
+            "col": 6
+          },
+          {
+            "row": 5,
+            "col": 7
+          },
+          {
+            "row": 6,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 7
+          },
+          {
+            "row": 8,
+            "col": 7
+          }
+        ],
+        "forbiddenCells": [
+          {
+            "row": 2,
+            "col": 6
+          },
+          {
+            "row": 4,
+            "col": 7
+          },
+          {
+            "row": 5,
+            "col": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "baffin-island",
+      "name": "Baffin Island",
+      "kind": "exploration",
+      "faceCode": "B-reverse",
+      "image": "/feast/exploration/baffin-island.webp",
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "artGrid": {
+        "originPx": [
+          117,
+          137
+        ],
+        "cellPx": [
+          85.3,
+          85.3
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.117,
+          0.137
+        ],
+        "normalizedCell": [
+          0.0853,
+          0.0853
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "N.NNB    ",
+        "NN.NNN...",
+        " .N.NN.B.",
+        " NXN.I  .",
+        " ...INN  ",
+        "...INNNBN",
+        " .I.NN   ",
+        ".I..N..  ",
+        "I.. N.B.N"
+      ],
+      "expectedNegativeCount": 24,
+      "expectedPoints": 12,
+      "incomeTracks": [
+        {
+          "id": "income",
+          "entries": [
+            {
+              "value": 0,
+              "cell": {
+                "row": 8,
+                "col": 0
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 7,
+                "col": 1
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 6,
+                "col": 2
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 5,
+                "col": 3
+              }
+            },
+            {
+              "value": 4,
+              "cell": {
+                "row": 4,
+                "col": 4
+              }
+            },
+            {
+              "value": 6,
+              "cell": {
+                "row": 3,
+                "col": 5
+              }
+            }
+          ]
+        }
+      ],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 0,
+            "col": 4
+          },
+          "rewards": [
+            {
+              "kind": "resource",
+              "id": "ore",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 2,
+            "col": 7
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "whale-meat",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 5,
+            "col": 7
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "oil",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 8,
+            "col": 6
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "skin-and-bones",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "d62e9b",
+      "sourceSide": "secondary",
+      "points": 12,
+      "negativeCount": 24,
+      "gridNegativeCount": 24,
+      "printedNegativeCount": 24,
+      "grid": {
+        "rows": 9,
+        "cols": 9,
+        "layout": [
+          "N.NNB    ",
+          "NN.NNN...",
+          " .N.NN.B.",
+          " NXN.I  .",
+          " ...INN  ",
+          "...INNNBN",
+          " .I.NN   ",
+          ".I..N..  ",
+          "I.. N.B.N"
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "type": "bonus"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 7,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "bonus"
+          },
+          {
+            "row": 2,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "forbidden"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "income"
+          },
+          {
+            "row": 3,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "income"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "income"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "bonus"
+          },
+          {
+            "row": 5,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "income"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 1,
+            "type": "income"
+          },
+          {
+            "row": 7,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 0,
+            "type": "income"
+          },
+          {
+            "row": 8,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 6,
+            "type": "bonus"
+          },
+          {
+            "row": 8,
+            "col": 7,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 8,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 0
+          },
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 5
+          },
+          {
+            "row": 2,
+            "col": 2
+          },
+          {
+            "row": 2,
+            "col": 4
+          },
+          {
+            "row": 2,
+            "col": 5
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 5
+          },
+          {
+            "row": 4,
+            "col": 6
+          },
+          {
+            "row": 5,
+            "col": 4
+          },
+          {
+            "row": 5,
+            "col": 5
+          },
+          {
+            "row": 5,
+            "col": 6
+          },
+          {
+            "row": 5,
+            "col": 8
+          },
+          {
+            "row": 6,
+            "col": 4
+          },
+          {
+            "row": 6,
+            "col": 5
+          },
+          {
+            "row": 7,
+            "col": 4
+          },
+          {
+            "row": 8,
+            "col": 4
+          },
+          {
+            "row": 8,
+            "col": 8
+          }
+        ],
+        "forbiddenCells": [
+          {
+            "row": 3,
+            "col": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "iceland",
+      "name": "Iceland",
+      "kind": "exploration",
+      "faceCode": "C",
+      "image": "/feast/exploration/iceland.webp",
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "artGrid": {
+        "originPx": [
+          190,
+          227
+        ],
+        "cellPx": [
+          85.6,
+          85.6
+        ],
+        "rows": 8,
+        "cols": 8,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.19,
+          0.227
+        ],
+        "normalizedCell": [
+          0.0856,
+          0.0856
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 7,
+          "colMin": 0,
+          "colMax": 7
+        }
+      },
+      "layout": [
+        ".N N NNI",
+        "N. .NNIN",
+        " .B.NINN",
+        "....INNN",
+        "B..INNNN",
+        "..IN...N",
+        ".INN.B. ",
+        "  NN.   "
+      ],
+      "expectedNegativeCount": 24,
+      "expectedPoints": 16,
+      "incomeTracks": [
+        {
+          "id": "income",
+          "entries": [
+            {
+              "value": 1,
+              "cell": {
+                "row": 6,
+                "col": 1
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 5,
+                "col": 2
+              }
+            },
+            {
+              "value": 3,
+              "cell": {
+                "row": 4,
+                "col": 3
+              }
+            },
+            {
+              "value": 4,
+              "cell": {
+                "row": 3,
+                "col": 4
+              }
+            },
+            {
+              "value": 5,
+              "cell": {
+                "row": 2,
+                "col": 5
+              }
+            },
+            {
+              "value": 6,
+              "cell": {
+                "row": 1,
+                "col": 6
+              }
+            },
+            {
+              "value": 7,
+              "cell": {
+                "row": 0,
+                "col": 7
+              }
+            },
+            {
+              "value": 8,
+              "cell": null
+            }
+          ]
+        }
+      ],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 2,
+            "col": 2
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "stockfish",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 4,
+            "col": 0
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "oil",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 6,
+            "col": 5
+          },
+          "rewards": [
+            {
+              "kind": "resource",
+              "id": "ore",
+              "amount": 1
+            },
+            {
+              "kind": "resource",
+              "id": "stone",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "e2186a",
+      "sourceSide": "primary",
+      "points": 16,
+      "negativeCount": 24,
+      "gridNegativeCount": 24,
+      "printedNegativeCount": 24,
+      "grid": {
+        "rows": 8,
+        "cols": 8,
+        "layout": [
+          ".N N NNI",
+          "N. .NNIN",
+          " .B.NINN",
+          "....INNN",
+          "B..INNNN",
+          "..IN...N",
+          ".INN.B. ",
+          "  NN.   "
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 7,
+            "type": "income"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "income"
+          },
+          {
+            "row": 1,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "bonus"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "income"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "income"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 0,
+            "type": "bonus"
+          },
+          {
+            "row": 4,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "income"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "income"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "income"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "bonus"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 4,
+            "type": "open"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 5
+          },
+          {
+            "row": 0,
+            "col": 6
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 5
+          },
+          {
+            "row": 1,
+            "col": 7
+          },
+          {
+            "row": 2,
+            "col": 4
+          },
+          {
+            "row": 2,
+            "col": 6
+          },
+          {
+            "row": 2,
+            "col": 7
+          },
+          {
+            "row": 3,
+            "col": 5
+          },
+          {
+            "row": 3,
+            "col": 6
+          },
+          {
+            "row": 3,
+            "col": 7
+          },
+          {
+            "row": 4,
+            "col": 4
+          },
+          {
+            "row": 4,
+            "col": 5
+          },
+          {
+            "row": 4,
+            "col": 6
+          },
+          {
+            "row": 4,
+            "col": 7
+          },
+          {
+            "row": 5,
+            "col": 3
+          },
+          {
+            "row": 5,
+            "col": 7
+          },
+          {
+            "row": 6,
+            "col": 2
+          },
+          {
+            "row": 6,
+            "col": 3
+          },
+          {
+            "row": 7,
+            "col": 2
+          },
+          {
+            "row": 7,
+            "col": 3
+          }
+        ],
+        "forbiddenCells": []
+      }
+    },
+    {
+      "id": "labrador",
+      "name": "Labrador",
+      "kind": "exploration",
+      "faceCode": "C-reverse",
+      "image": "/feast/exploration/labrador.webp",
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "artGrid": {
+        "originPx": [
+          114,
+          140
+        ],
+        "cellPx": [
+          85.5,
+          85.5
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.114,
+          0.14
+        ],
+        "normalizedCell": [
+          0.0855,
+          0.0855
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "   NN    ",
+        "   NNN   ",
+        "   N.N   ",
+        "   BNN.N ",
+        "  NNNNNNN",
+        "NNN.NNNNN",
+        ".N.NBNXN ",
+        "NBN.N.NNN",
+        " N N.NBNN"
+      ],
+      "expectedNegativeCount": 40,
+      "expectedPoints": 36,
+      "incomeTracks": [],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 3,
+            "col": 3
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "game-meat",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 6,
+            "col": 4
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "chest",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 7,
+            "col": 1
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "linen",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 8,
+            "col": 6
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "stockfish",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "e2186a",
+      "sourceSide": "secondary",
+      "points": 36,
+      "negativeCount": 40,
+      "gridNegativeCount": 40,
+      "printedNegativeCount": 40,
+      "grid": {
+        "rows": 9,
+        "cols": 9,
+        "layout": [
+          "   NN    ",
+          "   NNN   ",
+          "   N.N   ",
+          "   BNN.N ",
+          "  NNNNNNN",
+          "NNN.NNNNN",
+          ".N.NBNXN ",
+          "NBN.N.NNN",
+          " N N.NBNN"
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "bonus"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "bonus"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "forbidden"
+          },
+          {
+            "row": 6,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 1,
+            "type": "bonus"
+          },
+          {
+            "row": 7,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 8,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 6,
+            "type": "bonus"
+          },
+          {
+            "row": 8,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 8,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 5
+          },
+          {
+            "row": 2,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 5
+          },
+          {
+            "row": 3,
+            "col": 4
+          },
+          {
+            "row": 3,
+            "col": 5
+          },
+          {
+            "row": 3,
+            "col": 7
+          },
+          {
+            "row": 4,
+            "col": 2
+          },
+          {
+            "row": 4,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 4
+          },
+          {
+            "row": 4,
+            "col": 5
+          },
+          {
+            "row": 4,
+            "col": 6
+          },
+          {
+            "row": 4,
+            "col": 7
+          },
+          {
+            "row": 4,
+            "col": 8
+          },
+          {
+            "row": 5,
+            "col": 0
+          },
+          {
+            "row": 5,
+            "col": 1
+          },
+          {
+            "row": 5,
+            "col": 2
+          },
+          {
+            "row": 5,
+            "col": 4
+          },
+          {
+            "row": 5,
+            "col": 5
+          },
+          {
+            "row": 5,
+            "col": 6
+          },
+          {
+            "row": 5,
+            "col": 7
+          },
+          {
+            "row": 5,
+            "col": 8
+          },
+          {
+            "row": 6,
+            "col": 1
+          },
+          {
+            "row": 6,
+            "col": 3
+          },
+          {
+            "row": 6,
+            "col": 5
+          },
+          {
+            "row": 6,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 0
+          },
+          {
+            "row": 7,
+            "col": 2
+          },
+          {
+            "row": 7,
+            "col": 4
+          },
+          {
+            "row": 7,
+            "col": 6
+          },
+          {
+            "row": 7,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 8
+          },
+          {
+            "row": 8,
+            "col": 1
+          },
+          {
+            "row": 8,
+            "col": 3
+          },
+          {
+            "row": 8,
+            "col": 5
+          },
+          {
+            "row": 8,
+            "col": 7
+          },
+          {
+            "row": 8,
+            "col": 8
+          }
+        ],
+        "forbiddenCells": [
+          {
+            "row": 6,
+            "col": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "greenland",
+      "name": "Greenland",
+      "kind": "exploration",
+      "faceCode": "D",
+      "image": "/feast/exploration/greenland.webp",
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "artGrid": {
+        "originPx": [
+          110,
+          211
+        ],
+        "cellPx": [
+          86,
+          86
+        ],
+        "rows": 8,
+        "cols": 8,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.11,
+          0.211
+        ],
+        "normalizedCell": [
+          0.086,
+          0.086
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 7,
+          "colMin": 0,
+          "colMax": 7
+        }
+      },
+      "layout": [
+        "NNN..INN",
+        "...XINNN",
+        " B.INNNI",
+        " ..NNNI ",
+        ".N.NNI..",
+        " NNNIX.B",
+        "  .I... ",
+        "    ... "
+      ],
+      "expectedNegativeCount": 20,
+      "expectedPoints": 12,
+      "incomeTracks": [
+        {
+          "id": "upper-income",
+          "entries": [
+            {
+              "value": 0,
+              "cell": {
+                "row": 2,
+                "col": 3
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 1,
+                "col": 4
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 0,
+                "col": 5
+              }
+            },
+            {
+              "value": 3,
+              "cell": null
+            }
+          ]
+        },
+        {
+          "id": "lower-income",
+          "entries": [
+            {
+              "value": 0,
+              "cell": {
+                "row": 6,
+                "col": 3
+              }
+            },
+            {
+              "value": 1,
+              "cell": {
+                "row": 5,
+                "col": 4
+              }
+            },
+            {
+              "value": 2,
+              "cell": {
+                "row": 4,
+                "col": 5
+              }
+            },
+            {
+              "value": 3,
+              "cell": {
+                "row": 3,
+                "col": 6
+              }
+            },
+            {
+              "value": 4,
+              "cell": {
+                "row": 2,
+                "col": 7
+              }
+            },
+            {
+              "value": 5,
+              "cell": null
+            }
+          ]
+        }
+      ],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 2,
+            "col": 1
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "whale-meat",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 5,
+            "col": 7
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "stockfish",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "2c7a52",
+      "sourceSide": "primary",
+      "points": 12,
+      "negativeCount": 20,
+      "gridNegativeCount": 20,
+      "printedNegativeCount": 20,
+      "grid": {
+        "rows": 8,
+        "cols": 8,
+        "layout": [
+          "NNN..INN",
+          "...XINNN",
+          " B.INNNI",
+          " ..NNNI ",
+          ".N.NNI..",
+          " NNNIX.B",
+          "  .I... ",
+          "    ... "
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 5,
+            "type": "income"
+          },
+          {
+            "row": 0,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "forbidden"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "income"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "bonus"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "income"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "income"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "income"
+          },
+          {
+            "row": 4,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "income"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "income"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "forbidden"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "bonus"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "income"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "open"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 0
+          },
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 6
+          },
+          {
+            "row": 0,
+            "col": 7
+          },
+          {
+            "row": 1,
+            "col": 5
+          },
+          {
+            "row": 1,
+            "col": 6
+          },
+          {
+            "row": 1,
+            "col": 7
+          },
+          {
+            "row": 2,
+            "col": 4
+          },
+          {
+            "row": 2,
+            "col": 5
+          },
+          {
+            "row": 2,
+            "col": 6
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 4
+          },
+          {
+            "row": 3,
+            "col": 5
+          },
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 4
+          },
+          {
+            "row": 5,
+            "col": 1
+          },
+          {
+            "row": 5,
+            "col": 2
+          },
+          {
+            "row": 5,
+            "col": 3
+          }
+        ],
+        "forbiddenCells": [
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 5,
+            "col": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "newfoundland",
+      "name": "Newfoundland",
+      "kind": "exploration",
+      "faceCode": "D-reverse",
+      "image": "/feast/exploration/newfoundland.webp",
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "artGrid": {
+        "originPx": [
+          114,
+          138
+        ],
+        "cellPx": [
+          85.5,
+          85.5
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.114,
+          0.138
+        ],
+        "normalizedCell": [
+          0.0855,
+          0.0855
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "  NNN    ",
+        "  NN     ",
+        " NBN NN  ",
+        " .N.NNN  ",
+        ".N.N.NNN ",
+        "NBN.N.NNN",
+        ".N.NNNBN ",
+        "NNN.NNNNN",
+        "     N NN"
+      ],
+      "expectedNegativeCount": 40,
+      "expectedPoints": 38,
+      "incomeTracks": [],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 2,
+            "col": 2
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "skin-and-bones",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 5,
+            "col": 1
+          },
+          "rewards": [
+            {
+              "kind": "special",
+              "id": "cloakpin",
+              "amount": 1
+            }
+          ],
+          "finite": true
+        },
+        {
+          "cell": {
+            "row": 6,
+            "col": 6
+          },
+          "rewards": [
+            {
+              "kind": "building",
+              "id": "stone-house",
+              "amount": 1
+            }
+          ],
+          "finite": true
+        }
+      ],
+      "sourceGuid": "2c7a52",
+      "sourceSide": "secondary",
+      "points": 38,
+      "negativeCount": 40,
+      "gridNegativeCount": 40,
+      "printedNegativeCount": 40,
+      "grid": {
+        "rows": 9,
+        "cols": 9,
+        "layout": [
+          "  NNN    ",
+          "  NN     ",
+          " NBN NN  ",
+          " .N.NNN  ",
+          ".N.N.NNN ",
+          "NBN.N.NNN",
+          ".N.NNNBN ",
+          "NNN.NNNNN",
+          "     N NN"
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "bonus"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 4,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 4,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 1,
+            "type": "bonus"
+          },
+          {
+            "row": 5,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 5,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 5,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 6,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 6,
+            "col": 6,
+            "type": "bonus"
+          },
+          {
+            "row": 6,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 7,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 7,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 8,
+            "col": 8,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 2,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 5
+          },
+          {
+            "row": 2,
+            "col": 6
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 4
+          },
+          {
+            "row": 3,
+            "col": 5
+          },
+          {
+            "row": 3,
+            "col": 6
+          },
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 5
+          },
+          {
+            "row": 4,
+            "col": 6
+          },
+          {
+            "row": 4,
+            "col": 7
+          },
+          {
+            "row": 5,
+            "col": 0
+          },
+          {
+            "row": 5,
+            "col": 2
+          },
+          {
+            "row": 5,
+            "col": 4
+          },
+          {
+            "row": 5,
+            "col": 6
+          },
+          {
+            "row": 5,
+            "col": 7
+          },
+          {
+            "row": 5,
+            "col": 8
+          },
+          {
+            "row": 6,
+            "col": 1
+          },
+          {
+            "row": 6,
+            "col": 3
+          },
+          {
+            "row": 6,
+            "col": 4
+          },
+          {
+            "row": 6,
+            "col": 5
+          },
+          {
+            "row": 6,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 0
+          },
+          {
+            "row": 7,
+            "col": 1
+          },
+          {
+            "row": 7,
+            "col": 2
+          },
+          {
+            "row": 7,
+            "col": 4
+          },
+          {
+            "row": 7,
+            "col": 5
+          },
+          {
+            "row": 7,
+            "col": 6
+          },
+          {
+            "row": 7,
+            "col": 7
+          },
+          {
+            "row": 7,
+            "col": 8
+          },
+          {
+            "row": 8,
+            "col": 5
+          },
+          {
+            "row": 8,
+            "col": 7
+          },
+          {
+            "row": 8,
+            "col": 8
+          }
+        ],
+        "forbiddenCells": []
+      }
+    },
+    {
+      "id": "shed",
+      "name": "Shed",
+      "kind": "building",
+      "faceCode": null,
+      "image": "/feast/buildings/shed.webp",
+      "imagePx": [
+        1531,
+        600
+      ],
+      "artGrid": {
+        "rows": 2,
+        "cols": 3,
+        "uniform": false,
+        "calibrationKind": "six-explicit-resource-centers",
+        "cellCentersPx": [
+          [
+            208,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            513,
+            315
+          ],
+          [
+            1004,
+            315
+          ],
+          [
+            1175,
+            315
+          ],
+          [
+            1342,
+            315
+          ]
+        ],
+        "normalizedOrigin": null,
+        "normalizedCell": null,
+        "normalizedCellCenters": [
+          [
+            0.135859,
+            0.525
+          ],
+          [
+            0.23514,
+            0.525
+          ],
+          [
+            0.335075,
+            0.525
+          ],
+          [
+            0.655781,
+            0.525
+          ],
+          [
+            0.767472,
+            0.525
+          ],
+          [
+            0.876551,
+            0.525
+          ]
+        ],
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 1,
+          "colMin": 0,
+          "colMax": 2
+        }
+      },
+      "layout": [
+        "NNN",
+        "NNN"
+      ],
+      "expectedNegativeCount": 6,
+      "expectedPoints": 8,
+      "incomeTracks": [],
+      "bonuses": [],
+      "designatedResources": [
+        {
+          "cell": {
+            "row": 0,
+            "col": 0
+          },
+          "allowed": [
+            "wood"
+          ]
+        },
+        {
+          "cell": {
+            "row": 0,
+            "col": 1
+          },
+          "allowed": [
+            "wood"
+          ]
+        },
+        {
+          "cell": {
+            "row": 0,
+            "col": 2
+          },
+          "allowed": [
+            "wood"
+          ]
+        },
+        {
+          "cell": {
+            "row": 1,
+            "col": 0
+          },
+          "allowed": [
+            "stone"
+          ]
+        },
+        {
+          "cell": {
+            "row": 1,
+            "col": 1
+          },
+          "allowed": [
+            "stone"
+          ]
+        },
+        {
+          "cell": {
+            "row": 1,
+            "col": 2
+          },
+          "allowed": [
+            "stone"
+          ]
+        }
+      ],
+      "sourceGuid": "5bcac9",
+      "sourceSide": "primary",
+      "points": 8,
+      "negativeCount": 6,
+      "gridNegativeCount": 6,
+      "printedNegativeCount": 6,
+      "grid": {
+        "rows": 2,
+        "cols": 3,
+        "layout": [
+          "NNN",
+          "NNN"
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 0
+          },
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 2
+          }
+        ],
+        "forbiddenCells": []
+      }
+    },
+    {
+      "id": "stone-house",
+      "name": "Stone House",
+      "kind": "building",
+      "faceCode": null,
+      "image": "/feast/buildings/stone-house.webp",
+      "imagePx": [
+        1531,
+        600
+      ],
+      "artGrid": {
+        "originPx": [
+          895,
+          89
+        ],
+        "cellPx": [
+          121.3,
+          122.2
+        ],
+        "rows": 4,
+        "cols": 5,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.584585,
+          0.148333
+        ],
+        "normalizedCell": [
+          0.079229,
+          0.203667
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 3,
+          "colMin": 0,
+          "colMax": 4
+        }
+      },
+      "layout": [
+        " N.  ",
+        "N.BN ",
+        " N..N",
+        "  N.N"
+      ],
+      "expectedNegativeCount": 7,
+      "expectedPoints": 10,
+      "incomeTracks": [],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 1,
+            "col": 2
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "hide",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "designatedResources": [
+        {
+          "area": "resource-pasture",
+          "allowed": [
+            "wood"
+          ],
+          "negativeValue": -1,
+          "count": 1,
+          "artCenterPx": [
+            270,
+            305
+          ]
+        },
+        {
+          "area": "resource-pasture",
+          "allowed": [
+            "stone"
+          ],
+          "negativeValue": -1,
+          "count": 1,
+          "artCenterPx": [
+            455,
+            305
+          ]
+        }
+      ],
+      "totalNegativeCountIncludingResources": 9,
+      "sourceGuid": "993898",
+      "sourceSide": "primary",
+      "points": 10,
+      "negativeCount": 7,
+      "gridNegativeCount": 7,
+      "printedNegativeCount": 9,
+      "grid": {
+        "rows": 4,
+        "cols": 5,
+        "layout": [
+          " N.  ",
+          "N.BN ",
+          " N..N",
+          "  N.N"
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "bonus"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "type": "open"
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "type": "negative-1"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 2,
+            "col": 4
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 4
+          }
+        ],
+        "forbiddenCells": []
+      }
+    },
+    {
+      "id": "long-house",
+      "name": "Long House",
+      "kind": "building",
+      "faceCode": null,
+      "image": "/feast/buildings/long-house.webp",
+      "imagePx": [
+        1920,
+        750
+      ],
+      "artGrid": {
+        "originPx": [
+          108,
+          263
+        ],
+        "cellPx": [
+          151.6,
+          151.5
+        ],
+        "rows": 3,
+        "cols": 11,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.05625,
+          0.350667
+        ],
+        "normalizedCell": [
+          0.078958,
+          0.202
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 2,
+          "colMin": 0,
+          "colMax": 10
+        }
+      },
+      "layout": [
+        ".N.N.N.N.NB",
+        "NBNXN.NXN.N",
+        ".N.N.B.N.N."
+      ],
+      "expectedNegativeCount": 15,
+      "expectedPoints": 17,
+      "incomeTracks": [],
+      "bonuses": [
+        {
+          "cell": {
+            "row": 0,
+            "col": 10
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "peas",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 1,
+            "col": 1
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "oil",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "cell": {
+            "row": 2,
+            "col": 5
+          },
+          "rewards": [
+            {
+              "kind": "good",
+              "id": "beans",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sourceGuid": "8b9cf7",
+      "sourceSide": "primary",
+      "points": 17,
+      "negativeCount": 15,
+      "gridNegativeCount": 15,
+      "printedNegativeCount": 15,
+      "grid": {
+        "rows": 3,
+        "cols": 11,
+        "layout": [
+          ".N.N.N.N.NB",
+          "NBNXN.NXN.N",
+          ".N.N.B.N.N."
+        ],
+        "legend": {
+          " ": "outside",
+          ".": "open",
+          "N": "negative-1",
+          "I": "income",
+          "B": "bonus",
+          "X": "forbidden"
+        },
+        "cells": [
+          {
+            "row": 0,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 5,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 0,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 0,
+            "col": 10,
+            "type": "bonus"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "type": "bonus"
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "type": "forbidden"
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 6,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 7,
+            "type": "forbidden"
+          },
+          {
+            "row": 1,
+            "col": 8,
+            "type": "negative-1"
+          },
+          {
+            "row": 1,
+            "col": 9,
+            "type": "open"
+          },
+          {
+            "row": 1,
+            "col": 10,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 0,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "type": "bonus"
+          },
+          {
+            "row": 2,
+            "col": 6,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 7,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 8,
+            "type": "open"
+          },
+          {
+            "row": 2,
+            "col": 9,
+            "type": "negative-1"
+          },
+          {
+            "row": 2,
+            "col": 10,
+            "type": "open"
+          }
+        ],
+        "negativeCells": [
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 5
+          },
+          {
+            "row": 0,
+            "col": 7
+          },
+          {
+            "row": 0,
+            "col": 9
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 6
+          },
+          {
+            "row": 1,
+            "col": 8
+          },
+          {
+            "row": 1,
+            "col": 10
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 2,
+            "col": 3
+          },
+          {
+            "row": 2,
+            "col": 7
+          },
+          {
+            "row": 2,
+            "col": 9
+          }
+        ],
+        "forbiddenCells": [
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 7
+          }
+        ]
+      }
+    }
+  ]
+}

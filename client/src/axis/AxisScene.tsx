@@ -6,14 +6,17 @@
 // so the mod's mesh scales apply unchanged.
 
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import * as THREE from 'three';
 import { useProgress } from '@react-three/drei';
-import { AXIS_MAP, POWERS, CHINA_COLOR, type UnitStack, type PowerKey, type UnitKey } from '@bge/shared';
+import {
+  AXIS_MAP, POWERS, CHINA_COLOR, enumerateAxisPhysicalPieces,
+  type UnitStack, type PowerKey, type UnitKey,
+} from '@bge/shared';
 // region polygon helpers are imported lazily inside components (regions.ts
 // imports SPACE_CENTER from this module — a static import would be a cycle)
 type RegionsMod = typeof import('./regions');
@@ -39,15 +42,39 @@ export interface AxisManifest {
 let cachedManifest: AxisManifest | null = null;
 export function useAxisManifest(): AxisManifest | null {
   const [m, setM] = useState<AxisManifest | null>(cachedManifest);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (cachedManifest) return;
-    fetch('/axis/axis-manifest.json').then((r) => r.json()).then((j) => { cachedManifest = j; setM(j); });
-  }, []);
+    const controller = new AbortController();
+    let retry: number | undefined;
+    fetch('/axis/axis-manifest.json', { signal: controller.signal })
+      .then((r) => {
+        if (!r.ok) throw new Error(`Axis manifest failed (${r.status})`);
+        return r.json();
+      })
+      .then((j: AxisManifest) => {
+        cachedManifest = j;
+        setM(j);
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) return;
+        console.warn('Axis assets did not load; retrying.', error);
+        retry = window.setTimeout(() => setAttempt((n) => n + 1), 2500);
+      });
+    return () => {
+      controller.abort();
+      if (retry !== undefined) window.clearTimeout(retry);
+    };
+  }, [attempt]);
   return m;
 }
 
 export function meshFor(manifest: AxisManifest, power: string | null, unit: string) {
-  return manifest.units.find((u) => u.unit === unit && (u.nation === power || (u.nation == null && (unit === 'factory' || unit === 'aaGun'))))
+  // China has no dedicated fighter OBJ in the source mod. The Flying Tigers
+  // used American aircraft, so use the USA sculpt and keep the caller's China
+  // tint instead of falling through to whichever nation's fighter loads first.
+  const sculptPower = power === 'china' && unit === 'fighter' ? 'usa' : power;
+  return manifest.units.find((u) => u.unit === unit && (u.nation === sculptPower || (u.nation == null && (unit === 'factory' || unit === 'aaGun'))))
     ?? manifest.units.find((u) => u.unit === unit);
 }
 
@@ -64,11 +91,12 @@ const PIECE_TINT: Record<string, [number, number, number]> = {
   usa: [0.03, 0.085, 0.028], // dark forest green
   china: [0.66, 0.79, 0.50],
 };
+const NEUTRAL_PIECE_TINT: [number, number, number] = [0.76, 0.76, 0.76];
 export function tintFor(power: string | null | undefined, unit?: string): [number, number, number] {
   // AA guns and industrial complexes are light gray and change hands
   // (rulebook p9) — never nation-colored
-  if (unit === 'aaGun' || unit === 'factory') return [0.76, 0.76, 0.76];
-  return PIECE_TINT[power ?? ''] ?? [0.76, 0.76, 0.76];
+  if (unit === 'aaGun' || unit === 'factory') return NEUTRAL_PIECE_TINT;
+  return PIECE_TINT[power ?? ''] ?? NEUTRAL_PIECE_TINT;
 }
 
 const SPACE_CENTER: Record<string, [number, number]> = {};
@@ -95,8 +123,15 @@ export function useSceneReady(): boolean {
 }
 
 function MapPlane({ onRegionTap }: { onRegionTap?: (id: string) => void }) {
-  const tex = useLoader(THREE.TextureLoader, '/axis/map.jpg');
-  useMemo(() => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 16; }, [tex]);
+  const { gl } = useThree();
+  // The source scan is 9500×4956, which expands to roughly 180 MB in GPU
+  // memory. The 4096px derivative still exceeds the rendered detail of a 4K
+  // display while keeping the board responsive on integrated/mobile GPUs.
+  const tex = useLoader(THREE.TextureLoader, '/axis/map-4096.jpg');
+  useMemo(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());
+  }, [tex, gl]);
   const w = ART_W * S, h = ART_H * S;
   return (
     <group>
@@ -122,6 +157,11 @@ function MapPlane({ onRegionTap }: { onRegionTap?: (id: string) => void }) {
   );
 }
 
+// Geometry normalization is expensive, so do it once per source mesh and share
+// the immutable result across every on-board piece. Materials remain per piece
+// so selection glow never leaks to another stack.
+const normalizedGeometry = new Map<string, THREE.BufferGeometry>();
+
 // One OBJ per (mesh URL, tint) — geometry cached by useLoader, materials per tint.
 export function useAxisObj(url: string, tint: number[] | null) {
   const obj = useLoader(OBJLoader, url);
@@ -136,9 +176,16 @@ export function useAxisObj(url: string, tint: number[] | null) {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
       if (m.geometry) {
-        m.geometry.deleteAttribute('normal');
-        m.geometry = mergeVertices(m.geometry);
-        m.geometry.computeVertexNormals();
+        const source = m.geometry as THREE.BufferGeometry;
+        let geometry = normalizedGeometry.get(source.uuid);
+        if (!geometry) {
+          const clean = source.clone();
+          clean.deleteAttribute('normal');
+          geometry = mergeVertices(clean);
+          geometry.computeVertexNormals();
+          normalizedGeometry.set(source.uuid, geometry);
+        }
+        m.geometry = geometry;
       }
       m.material = new THREE.MeshStandardMaterial({ color, roughness: 0.55, metalness: 0.12 });
     });
@@ -160,23 +207,38 @@ export function useAxisObj(url: string, tint: number[] | null) {
   }, [obj, tint]);
 }
 
-function UnitMesh({ url, tint, x, z, scale, rotY = 0, selected = false, onTap }: {
+function UnitMesh({ url, tint, x, z, scale, rotY = 0, selected = false, damaged = false, onTap }: {
   url: string; tint: number[] | null; x: number; z: number; scale: number; rotY?: number;
-  selected?: boolean; onTap?: () => void;
+  selected?: boolean; damaged?: boolean; onTap?: () => void;
 }) {
   const { clone, minY, midX, midZ, span, broadside } = useAxisObj(url, tint);
   const ref = useRef<THREE.Group>(null);
+  const materials = useMemo(() => {
+    const out: THREE.MeshStandardMaterial[] = [];
+    clone.traverse((o) => {
+      const material = (o as THREE.Mesh).material;
+      const list = Array.isArray(material) ? material : material ? [material] : [];
+      for (const item of list) if ((item as THREE.MeshStandardMaterial).emissive) out.push(item as THREE.MeshStandardMaterial);
+    });
+    return out;
+  }, [clone]);
+  useEffect(() => () => {
+    // This clone is mounted through <primitive>, so R3F does not own its
+    // per-piece materials. Geometry is shared separately and stays cached.
+    for (const material of materials) material.dispose();
+  }, [materials]);
+  useEffect(() => {
+    if (selected) return;
+    for (const material of materials) {
+      if (damaged) material.emissive.setRGB(0.24, 0.035, 0.008);
+      else material.emissive.setRGB(0, 0, 0);
+    }
+  }, [selected, damaged, materials]);
   // selection glow: pulse the emissive channel of every material (HOI4 pick)
   useFrame(({ clock }) => {
-    const g = ref.current;
-    if (!g) return;
-    const k = selected ? 0.45 + Math.sin(clock.elapsedTime * 5) * 0.25 : 0;
-    g.traverse((o) => {
-      const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
-      if (m && m.emissive) {
-        m.emissive.setRGB(k, k * 0.82, k * 0.3);
-      }
-    });
+    if (!selected || !ref.current) return;
+    const k = 0.45 + Math.sin(clock.elapsedTime * 5) * 0.25;
+    for (const material of materials) material.emissive.setRGB(k, k * 0.82, k * 0.3);
   });
   // clamp footprint so stacks stay inside their territories at close zoom
   const s = Math.min(scale, span > 0 ? 1.7 / span : scale);
@@ -215,9 +277,52 @@ function CountChip({ n, x, z, lift = 0.02 }: { n: number; x: number; z: number; 
     t.colorSpace = THREE.SRGBColorSpace;
     return t;
   }, [n]);
+  useEffect(() => () => tex.dispose(), [tex]);
   return (
     <mesh position={[x, BOARD_Y + lift, z]} rotation={[-Math.PI / 2, 0, 0]}>
       <circleGeometry args={[0.42, 24]} />
+      <meshBasicMaterial map={tex} transparent />
+    </mesh>
+  );
+}
+
+/** Small per-sculpt badge: damage and carried units must remain visually tied
+ * to the same physical hull whose ordinal the controller taps. */
+function PieceStatusChip({ label, tone, x, z, onTap }: {
+  label: string;
+  tone: 'damage' | 'cargo';
+  x: number;
+  z: number;
+  onTap?: () => void;
+}) {
+  const tex = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 128;
+    const g = canvas.getContext('2d')!;
+    g.fillStyle = tone === 'damage' ? 'rgba(111,18,8,0.96)' : 'rgba(15,54,78,0.96)';
+    g.beginPath();
+    g.arc(64, 64, 59, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = tone === 'damage' ? '#ff9a65' : '#82d9ff';
+    g.lineWidth = 8;
+    g.stroke();
+    g.fillStyle = '#fff8e8';
+    g.font = 'bold 54px system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText(label, 64, 67);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }, [label, tone]);
+  useEffect(() => () => tex.dispose(), [tex]);
+  return (
+    <mesh
+      position={[x, BOARD_Y + 0.075, z]}
+      rotation={[-Math.PI / 2, 0, 0]}
+      onClick={onTap ? (event) => { event.stopPropagation(); onTap(); } : undefined}
+    >
+      <circleGeometry args={[0.25, 20]} />
       <meshBasicMaterial map={tex} transparent />
     </mesh>
   );
@@ -243,33 +348,54 @@ function ControlDisc({ power, x, z }: { power: string; x: number; z: number }) {
 // layout: stacks in a space fan around the center; up to 3 meshes shown per
 // stack with a count chip beside them when count > shown
 const UNIT_ORDER = ['factory', 'aaGun', 'infantry', 'artillery', 'tank', 'fighter', 'bomber', 'battleship', 'carrier', 'cruiser', 'destroyer', 'submarine', 'transport'];
+const pieceLayoutCache = new Map<string, [number, number][]>();
 
-export function SpacePieces({ manifest, spaceId, stacks, selectedKeys, onStackTap }: {
+function pieceLayout(spaceId: string, count: number): [number, number][] {
+  if (!regionsMod || count <= 0) return [];
+  const key = `${spaceId}:${count}`;
+  const cached = pieceLayoutCache.get(key);
+  if (cached) return cached;
+  const points = regionsMod.layoutPoints(spaceId, count, 118) as [number, number][];
+  pieceLayoutCache.set(key, points);
+  return points;
+}
+
+export function SpacePieces({ manifest, spaceId, stacks, selectedPieces, onUnitTap }: {
   manifest: AxisManifest; spaceId: string; stacks: UnitStack[];
-  // selection: set of `${power}:${key}` stack keys that glow
-  selectedKeys?: Set<string>;
-  onStackTap?: (spaceId: string, power: string, key: string) => void;
+  // Selection uses an available-piece ordinal within each power/unit type.
+  selectedPieces?: Set<string>;
+  onUnitTap?: (spaceId: string, power: string, key: string, ordinal: number) => void;
 }) {
   const center = SPACE_CENTER[spaceId];
   if (!center) return null;
   const [cx, cz] = px2r(center[0], center[1]);
-  const ordered = [...stacks].sort((a, b) => UNIT_ORDER.indexOf(a.key) - UNIT_ORDER.indexOf(b.key));
-  const total = ordered.reduce((n, st) => n + st.count, 0);
+  const physical = enumerateAxisPhysicalPieces(stacks);
+  const piecesByStack = new Map<number, typeof physical>();
+  for (const piece of physical) {
+    const group = piecesByStack.get(piece.stackIndex) ?? [];
+    group.push(piece);
+    piecesByStack.set(piece.stackIndex, group);
+  }
+  const ordered = stacks
+    .map((stack, stackIndex) => ({ stack, stackIndex }))
+    .sort((a, b) => UNIT_ORDER.indexOf(a.stack.key) - UNIT_ORDER.indexOf(b.stack.key));
+  const total = ordered.reduce((n, item) => n + item.stack.count, 0);
   // every unit stands on the board (owner: no stacking unless the region
   // truly cannot fit them); the polygon layout keeps them inside the borders
   const MAX_PHYSICAL = 40;
   const want = Math.min(total, MAX_PHYSICAL);
-  const polyPts = regionsMod ? regionsMod.layoutPoints(spaceId, want, 118) : [];
+  const polyPts = pieceLayout(spaceId, want);
   const roomFor = polyPts.length; // how many the printed borders can hold
   const cols = Math.max(2, Math.ceil(Math.sqrt(ordered.length)));
   const step = 0.95;
   let cursor = 0;
   return (
     <group>
-      {ordered.map((st, i) => {
+      {ordered.map(({ stack: st, stackIndex }, i) => {
         const def = meshFor(manifest, st.power, st.key);
         if (!def?.mesh) return null;
         const stackKey = `${st.power}:${st.key}`;
+        const stackPieces = piecesByStack.get(stackIndex) ?? [];
         // place each unit of the stack on its own point while room remains;
         // overflow collapses back to one sculpt + a count chip
         const slots: [number, number][] = [];
@@ -285,19 +411,40 @@ export function SpacePieces({ manifest, spaceId, stacks, selectedKeys, onStackTa
         const overflow = st.count - slots.length;
         const [lx, lz] = slots[slots.length - 1];
         return (
-          <group key={`${st.power}-${st.key}-${i}`}>
-            {slots.map(([x, z], k) => (
-              <UnitMesh
-                key={k}
-                url={def.mesh}
-                tint={tintFor(st.power, st.key)}
-                x={x}
-                z={z}
-                scale={def.scale ?? 1}
-                selected={selectedKeys?.has(stackKey) ?? false}
-                onTap={onStackTap ? () => onStackTap(spaceId, st.power, st.key) : undefined}
-              />
-            ))}
+          <group key={`${st.power}-${st.key}-${stackIndex}`}>
+            {slots.map(([x, z], k) => {
+              const piece = stackPieces[k];
+              const ordinal = piece?.ordinal ?? null;
+              const pieceKey = ordinal == null ? null : `${stackKey}:${ordinal}`;
+              const tap = ordinal != null && onUnitTap
+                ? () => onUnitTap(spaceId, st.power, st.key, ordinal)
+                : undefined;
+              const cargoCount = piece?.cargo?.reduce((sum, cargo) => sum + cargo.count, 0) ?? 0;
+              return (
+                <group key={k}>
+                  <UnitMesh
+                    url={def.mesh}
+                    tint={tintFor(st.power, st.key)}
+                    x={x}
+                    z={z}
+                    scale={def.scale ?? 1}
+                    selected={pieceKey != null && (selectedPieces?.has(pieceKey) ?? false)}
+                    damaged={piece?.damaged ?? false}
+                    onTap={tap}
+                  />
+                  {piece?.damaged && <PieceStatusChip label="!" tone="damage" x={x - 0.38} z={z - 0.32} onTap={tap} />}
+                  {cargoCount > 0 && (
+                    <PieceStatusChip
+                      label={`${st.key === 'carrier' ? 'F' : 'C'}${cargoCount}`}
+                      tone="cargo"
+                      x={x + 0.38}
+                      z={z - 0.32}
+                      onTap={tap}
+                    />
+                  )}
+                </group>
+              );
+            })}
             {overflow > 0 && <CountChip n={overflow + 1} x={lx + 0.62} z={lz + 0.5} />}
           </group>
         );
@@ -504,28 +651,32 @@ function ArrowMesh({ arrow }: { arrow: OrderArrow }) {
 export interface FocusTarget { x: number; z: number; dist: number }
 
 /** Orbit camera with a drivable focus: set `focus` to fly the camera there. */
-function Rig({ focus }: { focus: FocusTarget | null }) {
+function Rig({ focus, fixedFrame = false }: { focus: FocusTarget | null; fixedFrame?: boolean }) {
   const ref = useRef<OrbitControlsImpl>(null);
   const goal = useRef<FocusTarget | null>(null);
+  const destination = useRef(new THREE.Vector3());
   useEffect(() => { goal.current = focus; }, [focus]);
   useFrame(({ camera }) => {
     const g = goal.current;
     const ctl = ref.current;
     if (!g || !ctl) return;
     const t = ctl.target;
-    t.lerp(new THREE.Vector3(g.x, 0, g.z), 0.06);
-    const dir = new THREE.Vector3().subVectors(camera.position, t);
-    const targetPos = new THREE.Vector3(g.x + 0.0001, g.dist, g.z + g.dist * 0.55);
-    camera.position.lerp(targetPos, 0.05);
-    void dir;
+    const target = destination.current;
+    target.set(g.x, 0, g.z);
+    t.lerp(target, 0.06);
+    target.set(g.x + 0.0001, g.dist, g.z + g.dist * 0.55);
+    camera.position.lerp(target, 0.05);
     ctl.update();
-    if (camera.position.distanceTo(targetPos) < 0.4) goal.current = null;
+    if (camera.position.distanceTo(target) < 0.4) goal.current = null;
   });
   return (
     <OrbitControls
       ref={ref}
       target={[ART_W * S / 2, 0, -ART_H * S / 2]}
       enableDamping
+      enableRotate={!fixedFrame}
+      enablePan={!fixedFrame}
+      enableZoom={!fixedFrame}
       dampingFactor={0.08}
       minDistance={6}
       maxDistance={110}
@@ -534,7 +685,7 @@ function Rig({ focus }: { focus: FocusTarget | null }) {
   );
 }
 
-export function AxisTable({ manifest, board, control, focus, picks, onPick, staged, arrows, selectedKeys, onStackTap, onRegionTap, children }: {
+export function AxisTable({ manifest, board, control, focus, picks, onPick, staged, arrows, selectedPieces, onUnitTap, onRegionTap, paused, fixedFrame, children }: {
   manifest: AxisManifest;
   board: Record<string, UnitStack[]>;
   control: Record<string, PowerKey | 'china' | null>;
@@ -543,9 +694,12 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
   onPick?: (id: string) => void;
   staged?: StagedStack[];
   arrows?: OrderArrow[];
-  selectedKeys?: Record<string, Set<string>>; // spaceId -> stack keys glowing
-  onStackTap?: (spaceId: string, power: string, key: string) => void;
+  selectedPieces?: Record<string, Set<string>>; // spaceId -> individual piece ids glowing
+  onUnitTap?: (spaceId: string, power: string, key: string, ordinal: number) => void;
   onRegionTap?: (id: string) => void; // tap anywhere inside a region
+  paused?: boolean;
+  /** Personal devices use guided camera flights with no manual orbit. */
+  fixedFrame?: boolean;
   children?: React.ReactNode;
 }) {
   const occupied = useMemo(() => {
@@ -558,9 +712,10 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
   }, [control]);
   return (
     <Canvas
+      frameloop={paused ? 'never' : 'always'}
       camera={{ position: [ART_W * S / 2, 66, 12], fov: 40 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true }}
+      dpr={[1, 1.5]}
+      gl={{ antialias: true, powerPreference: 'high-performance' }}
       style={{ position: 'absolute', inset: 0, background: '#04060a' }}
       onCreated={({ scene }) => { (window as unknown as { __scene?: unknown }).__scene = scene; }}
     >
@@ -582,8 +737,8 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
               manifest={manifest}
               spaceId={spaceId}
               stacks={stacks}
-              selectedKeys={selectedKeys?.[spaceId]}
-              onStackTap={onStackTap}
+              selectedPieces={selectedPieces?.[spaceId]}
+              onUnitTap={onUnitTap}
             />
           ) : null,
         )}
@@ -600,7 +755,7 @@ export function AxisTable({ manifest, board, control, focus, picks, onPick, stag
         })}
         {children}
       </Suspense>
-      <Rig focus={focus} />
+      <Rig focus={focus} fixedFrame={fixedFrame} />
     </Canvas>
   );
 }

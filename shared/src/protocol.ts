@@ -19,6 +19,9 @@ import type { DsAction } from './darksouls/actions.js';
 import type { FeastAction, FeastSeatColor, FeastView } from './feast/types.js';
 import type { BbView, BbSeat } from './bloodborne/state.js';
 import type { BbAction } from './bloodborne/actions.js';
+import type { SetiView } from './seti/state.js';
+import type { SetiAction } from './seti/actions.js';
+import type { SetiSeatColor } from './seti/data.js';
 import { SEAT_COLORS } from './brass/state.js';
 import { TTR_COLORS } from './ttr/state.js';
 import { TREK_SEATS } from './trek/state.js';
@@ -29,9 +32,10 @@ import { POLITIK_SEATS } from './politik/state.js';
 import { DS_SEATS } from './darksouls/state.js';
 import { FEAST_SEATS } from './feast/state.js';
 import { BB_SEATS } from './bloodborne/state.js';
+import { SETI_SEATS } from './seti/data.js';
 
 /** Any seat color across games. */
-export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat | AxisSeat | PolitikSeat | DsSeat | FeastSeatColor | BbSeat;
+export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat | AxisSeat | PolitikSeat | DsSeat | FeastSeatColor | BbSeat | SetiSeatColor;
 
 /** Per-game lobby facts: seat colors in pick order + max players. */
 export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: number }> = {
@@ -45,10 +49,11 @@ export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: num
   darksouls: { colors: DS_SEATS, max: 4 },
   feast: { colors: FEAST_SEATS, max: 4 },
   bloodborne: { colors: BB_SEATS, max: 4 },
+  seti: { colors: SETI_SEATS, max: 4 },
 };
 
-export type GameView = BrassView | TtrView | TrekView | DtView | DuneView | AxisView | PolitikView | DsView | FeastView | BbView;
-export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction | AxisAction | PolitikAction | DsAction | FeastAction | BbAction;
+export type GameView = BrassView | TtrView | TrekView | DtView | DuneView | AxisView | PolitikView | DsView | FeastView | BbView | SetiView;
+export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction | AxisAction | PolitikAction | DsAction | FeastAction | BbAction | SetiAction;
 
 /** Per-game create options chosen on the create screen (scenario, variants). */
 export type GameOptions = Record<string, string | number | boolean>;

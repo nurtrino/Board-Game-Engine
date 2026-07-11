@@ -1,387 +1,2146 @@
 {
- "saw-cleaver-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
+ "version": 2,
+ "format": "glb",
+ "compression": [
+  "EXT_meshopt_compression",
+  "EXT_texture_webp"
+ ],
+ "models": {
+  "alfred-hunter-of-vilebloods": {
+   "file": "/bloodborne/minis/alfred-hunter-of-vilebloods.glb",
+   "aliases": [],
+   "parts": 8,
+   "primitives": 12,
+   "vertices": 80092,
+   "sourceVertices": 80818,
+   "triangles": 101477,
+   "textures": 32,
+   "materials": 12,
+   "alphaMaterials": 6,
+   "normalMaterials": 11,
+   "metalRoughMaterials": 9,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.731134,
+     -0.025,
+     -0.5
+    ],
+    "max": [
+     0.5,
+     1.877617,
+     0.698917
+    ],
+    "size": [
+     1.231134,
+     1.902618,
+     1.198917
+    ]
+   },
+   "reconstructedVertices": 80818,
+   "sourceTextures": 32,
+   "sourceMaterials": 12,
+   "sourceAlphaMaterials": 6,
+   "sourceNormalMaterials": 11,
+   "sourceMetalRoughMaterials": 9,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2784860,
+   "sha256": "b98e77e025a1e9e3f4c522aa463b1ce73f444646575f0855a5f06ed21afa71fe"
+  },
+  "annalise-queen-of-the-vilebloods": {
+   "file": "/bloodborne/minis/annalise-queen-of-the-vilebloods.glb",
+   "aliases": [],
+   "parts": 5,
+   "primitives": 6,
+   "vertices": 26591,
+   "sourceVertices": 29101,
+   "triangles": 42677,
+   "textures": 15,
+   "materials": 6,
+   "alphaMaterials": 2,
+   "normalMaterials": 5,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.8,
+     -0.025,
+     -0.8
+    ],
+    "max": [
+     0.8,
+     2.047498,
+     0.8
+    ],
+    "size": [
+     1.6,
+     2.072498,
+     1.6
+    ]
+   },
+   "reconstructedVertices": 29101,
+   "sourceTextures": 15,
+   "sourceMaterials": 6,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 5,
+   "sourceMetalRoughMaterials": 5,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1318772,
+   "sha256": "9a8909673a8aa3e05b51d45b34bec663edbd56d185a0c98426df5f0525fd276c"
+  },
+  "beast-claw-hunter": {
+   "file": "/bloodborne/minis/beast-claw-hunter.glb",
+   "aliases": [
+    "beast-claw-weapon"
+   ],
+   "parts": 8,
+   "primitives": 12,
+   "vertices": 42459,
+   "sourceVertices": 42949,
+   "triangles": 63857,
+   "textures": 29,
+   "materials": 11,
+   "alphaMaterials": 4,
+   "normalMaterials": 10,
+   "metalRoughMaterials": 8,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.5,
+     -0.025,
+     -0.506107
+    ],
+    "max": [
+     0.5,
+     1.792033,
+     0.5
+    ],
+    "size": [
+     1.0,
+     1.817033,
+     1.006107
+    ]
+   },
+   "reconstructedVertices": 42949,
+   "sourceTextures": 29,
+   "sourceMaterials": 12,
+   "sourceAlphaMaterials": 5,
+   "sourceNormalMaterials": 11,
+   "sourceMetalRoughMaterials": 9,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2682880,
+   "sha256": "f53fc29f642cd5a2287b95cea6e74eca68946c3c4ec409b231580047b7201bb3"
+  },
+  "beast-possessed-soul": {
+   "file": "/bloodborne/minis/beast-possessed-soul.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 4,
+   "vertices": 47006,
+   "sourceVertices": 47431,
+   "triangles": 55153,
+   "textures": 11,
+   "materials": 4,
+   "alphaMaterials": 1,
+   "normalMaterials": 4,
+   "metalRoughMaterials": 3,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.827601,
+     -0.025,
+     -1.473843
+    ],
+    "max": [
+     0.8,
+     2.872475,
+     1.311554
+    ],
+    "size": [
+     1.627601,
+     2.897475,
+     2.785397
+    ]
+   },
+   "reconstructedVertices": 47431,
+   "sourceTextures": 11,
+   "sourceMaterials": 4,
+   "sourceAlphaMaterials": 1,
+   "sourceNormalMaterials": 4,
+   "sourceMetalRoughMaterials": 3,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1323112,
+   "sha256": "b04b6c493b5facea10417100e69f2fe797e8fa791e02b33d60ba8b68872ca762"
+  },
+  "blade-of-mercy-hunter": {
+   "file": "/bloodborne/minis/blade-of-mercy-hunter.glb",
+   "aliases": [
+    "blade-of-mercy-weapon"
+   ],
+   "parts": 7,
+   "primitives": 7,
+   "vertices": 41226,
+   "sourceVertices": 44526,
+   "triangles": 69122,
+   "textures": 17,
+   "materials": 6,
+   "alphaMaterials": 1,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.126475,
+     -0.025,
+     -0.782534
+    ],
+    "max": [
+     1.167419,
+     1.814863,
+     0.75333
+    ],
+    "size": [
+     2.293894,
+     1.839863,
+     1.535864
+    ]
+   },
+   "reconstructedVertices": 44526,
+   "sourceTextures": 17,
+   "sourceMaterials": 7,
+   "sourceAlphaMaterials": 1,
+   "sourceNormalMaterials": 7,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1854296,
+   "sha256": "9ad09f381790c7da508b92dcc225d822a21d48e38bb61191ed7f45d97d6e52a8"
+  },
+  "blood-starved-beast": {
+   "file": "/bloodborne/minis/blood-starved-beast.glb",
+   "aliases": [],
+   "parts": 7,
+   "primitives": 7,
+   "vertices": 26950,
+   "sourceVertices": 27731,
+   "triangles": 37117,
+   "textures": 8,
+   "materials": 3,
+   "alphaMaterials": 1,
+   "normalMaterials": 3,
+   "metalRoughMaterials": 2,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -2.003433,
+     -0.033643,
+     -1.6
+    ],
+    "max": [
+     1.914383,
+     2.746903,
+     1.674427
+    ],
+    "size": [
+     3.917815,
+     2.780546,
+     3.274427
+    ]
+   },
+   "reconstructedVertices": 27731,
+   "sourceTextures": 8,
+   "sourceMaterials": 7,
+   "sourceAlphaMaterials": 3,
+   "sourceNormalMaterials": 7,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1048576,
+   "sha256": "a57a6ed5eab10803901fd9742062a6a730d1b08ade910bde5084eea37966d311"
+  },
+  "bloody-crow-of-cainhurst": {
+   "file": "/bloodborne/minis/bloody-crow-of-cainhurst.glb",
+   "aliases": [],
+   "parts": 7,
+   "primitives": 7,
+   "vertices": 36835,
+   "sourceVertices": 40419,
+   "triangles": 56175,
+   "textures": 20,
+   "materials": 7,
+   "alphaMaterials": 3,
+   "normalMaterials": 7,
+   "metalRoughMaterials": 6,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.06007,
+     -0.025,
+     -1.222984
+    ],
+    "max": [
+     0.555297,
+     1.822849,
+     1.360801
+    ],
+    "size": [
+     1.615368,
+     1.847849,
+     2.583785
+    ]
+   },
+   "reconstructedVertices": 40419,
+   "sourceTextures": 20,
+   "sourceMaterials": 7,
+   "sourceAlphaMaterials": 3,
+   "sourceNormalMaterials": 7,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1842232,
+   "sha256": "157ac1cbc5437d96d08c3e52df3e0b45cb491b888be102e637561c1e496f3e0c"
+  },
+  "burial-blade-hunter": {
+   "file": "/bloodborne/minis/burial-blade-hunter.glb",
+   "aliases": [
+    "burial-blade-weapon"
+   ],
+   "parts": 6,
+   "primitives": 6,
+   "vertices": 61882,
+   "sourceVertices": 64806,
+   "triangles": 91582,
+   "textures": 17,
+   "materials": 6,
+   "alphaMaterials": 3,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.75472,
+     -0.025,
+     -1.344539
+    ],
+    "max": [
+     0.821537,
+     2.253433,
+     0.738562
+    ],
+    "size": [
+     1.576257,
+     2.278433,
+     2.083101
+    ]
+   },
+   "reconstructedVertices": 64806,
+   "sourceTextures": 17,
+   "sourceMaterials": 6,
+   "sourceAlphaMaterials": 3,
+   "sourceNormalMaterials": 6,
+   "sourceMetalRoughMaterials": 5,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2881408,
+   "sha256": "a9df08e2b9bb41cd00bb63226a867760c0ba72aeb271bc00f1fa5626d8425f58"
+  },
+  "chikage-hunter": {
+   "file": "/bloodborne/minis/chikage-hunter.glb",
+   "aliases": [
+    "chikage-weapon"
+   ],
+   "parts": 7,
+   "primitives": 11,
+   "vertices": 65014,
+   "sourceVertices": 66743,
+   "triangles": 66974,
+   "textures": 28,
+   "materials": 11,
+   "alphaMaterials": 4,
+   "normalMaterials": 10,
+   "metalRoughMaterials": 7,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.532078,
+     -0.025,
+     -0.809588
+    ],
+    "max": [
+     0.62508,
+     2.076426,
+     0.503089
+    ],
+    "size": [
+     1.157158,
+     2.101426,
+     1.312676
+    ]
+   },
+   "reconstructedVertices": 66762,
+   "sourceTextures": 28,
+   "sourceMaterials": 11,
+   "sourceAlphaMaterials": 4,
+   "sourceNormalMaterials": 10,
+   "sourceMetalRoughMaterials": 7,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2390896,
+   "sha256": "671b7d829f326f44babc9125db61d4309de90632f0081883d8b676f7a6d15759"
+  },
+  "church-giant": {
+   "file": "/bloodborne/minis/church-giant.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 5,
+   "vertices": 23844,
+   "sourceVertices": 25483,
+   "triangles": 30889,
+   "textures": 14,
+   "materials": 5,
+   "alphaMaterials": 2,
+   "normalMaterials": 5,
+   "metalRoughMaterials": 4,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.724482,
+     -0.025,
+     -3.426454
+    ],
+    "max": [
+     2.307237,
+     4.260174,
+     1.270885
+    ],
+    "size": [
+     4.031719,
+     4.285174,
+     4.697339
+    ]
+   },
+   "reconstructedVertices": 25483,
+   "sourceTextures": 14,
+   "sourceMaterials": 5,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 5,
+   "sourceMetalRoughMaterials": 4,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2660720,
+   "sha256": "a36d3daa5a8f2fd2959e67caeea6f72e708b32ea45ce466c0662c05d73f22348"
+  },
+  "church-servant": {
+   "file": "/bloodborne/minis/church-servant.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 10,
+   "vertices": 26850,
+   "sourceVertices": 27209,
+   "triangles": 38758,
+   "textures": 30,
+   "materials": 10,
+   "alphaMaterials": 2,
+   "normalMaterials": 10,
+   "metalRoughMaterials": 9,
+   "emissiveMaterials": 1,
+   "bounds": {
+    "min": [
+     -0.8,
+     -0.025,
+     -0.8
+    ],
+    "max": [
+     0.8,
+     2.665985,
+     0.8
+    ],
+    "size": [
+     1.6,
+     2.690985,
+     1.6
+    ]
+   },
+   "reconstructedVertices": 27209,
+   "sourceTextures": 30,
+   "sourceMaterials": 10,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 10,
+   "sourceMetalRoughMaterials": 9,
+   "sourceEmissiveMaterials": 1,
+   "bytes": 1966624,
+   "sha256": "85752d5b6605154a45712bf83250b2b9e18c559442a05239ef29439562809dd8"
+  },
+  "cleric-beast": {
+   "file": "/bloodborne/minis/cleric-beast.glb",
+   "aliases": [],
+   "parts": 40,
+   "primitives": 40,
+   "vertices": 101494,
+   "sourceVertices": 119052,
+   "triangles": 89117,
+   "textures": 14,
+   "materials": 5,
+   "alphaMaterials": 3,
+   "normalMaterials": 5,
+   "metalRoughMaterials": 4,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -2.706896,
+     -0.025,
+     -2.432543
+    ],
+    "max": [
+     3.666284,
+     5.411292,
+     2.743544
+    ],
+    "size": [
+     6.37318,
+     5.436293,
+     5.176086
+    ]
+   },
+   "reconstructedVertices": 119052,
+   "sourceTextures": 14,
+   "sourceMaterials": 40,
+   "sourceAlphaMaterials": 33,
+   "sourceNormalMaterials": 40,
+   "sourceMetalRoughMaterials": 39,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2207600,
+   "sha256": "a3f3c95421fb1fd9ba40136c45c9673e0b18c755cc926a0e9c42ce804ce73ee8"
+  },
+  "djura-s-ally": {
+   "file": "/bloodborne/minis/djura-s-ally.glb",
+   "aliases": [],
+   "parts": 9,
+   "primitives": 13,
+   "vertices": 71564,
+   "sourceVertices": 73560,
+   "triangles": 78401,
+   "textures": 35,
+   "materials": 13,
+   "alphaMaterials": 5,
+   "normalMaterials": 12,
+   "metalRoughMaterials": 10,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.580311,
+     -0.025,
+     -0.620002
+    ],
+    "max": [
+     0.624688,
+     1.776157,
+     0.748148
+    ],
+    "size": [
+     1.204999,
+     1.801157,
+     1.36815
+    ]
+   },
+   "reconstructedVertices": 73560,
+   "sourceTextures": 35,
+   "sourceMaterials": 13,
+   "sourceAlphaMaterials": 5,
+   "sourceNormalMaterials": 12,
+   "sourceMetalRoughMaterials": 10,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2650340,
+   "sha256": "8e5f229532ce5324139ee620c62c3009ffaf80b48fc0d54e31330d9312b4578d"
+  },
+  "ebrietas-daughter-of-the-cosmos": {
+   "file": "/bloodborne/minis/ebrietas-daughter-of-the-cosmos.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 6,
+   "vertices": 44716,
+   "sourceVertices": 88341,
+   "triangles": 70986,
+   "textures": 19,
+   "materials": 6,
+   "alphaMaterials": 0,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 6,
+   "emissiveMaterials": 2,
+   "bounds": {
+    "min": [
+     -3.365776,
+     -0.025,
+     -2.440421
+    ],
+    "max": [
+     3.361108,
+     4.039213,
+     3.189444
+    ],
+    "size": [
+     6.726884,
+     4.064213,
+     5.629866
+    ]
+   },
+   "reconstructedVertices": 88341,
+   "sourceTextures": 19,
+   "sourceMaterials": 6,
+   "sourceAlphaMaterials": 0,
+   "sourceNormalMaterials": 6,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 2,
+   "bytes": 2550064,
+   "sha256": "c048c42bcec511e465ad39d2824edcab67c5771feceb4edeb3f8b28af2b2b390"
+  },
+  "eileen-the-crow": {
+   "file": "/bloodborne/minis/eileen-the-crow.glb",
+   "aliases": [],
+   "parts": 7,
+   "primitives": 7,
+   "vertices": 47202,
+   "sourceVertices": 50779,
+   "triangles": 76554,
+   "textures": 20,
+   "materials": 7,
+   "alphaMaterials": 2,
+   "normalMaterials": 7,
+   "metalRoughMaterials": 6,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.126475,
+     -0.025,
+     -0.881524
+    ],
+    "max": [
+     1.167419,
+     1.814863,
+     0.75333
+    ],
+    "size": [
+     2.293894,
+     1.839863,
+     1.634854
+    ]
+   },
+   "reconstructedVertices": 50779,
+   "sourceTextures": 20,
+   "sourceMaterials": 7,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 7,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2132676,
+   "sha256": "83a25500d9a32363da5290ad1aeef4d7aca22dd79e055bedc6ae9aaeb233c6de"
+  },
+  "father-gascoigne": {
+   "file": "/bloodborne/minis/father-gascoigne.glb",
+   "aliases": [],
+   "parts": 20,
+   "primitives": 20,
+   "vertices": 47884,
+   "sourceVertices": 63746,
+   "triangles": 68273,
+   "textures": 26,
+   "materials": 9,
+   "alphaMaterials": 6,
+   "normalMaterials": 9,
+   "metalRoughMaterials": 8,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.709478,
+     -0.025,
+     -0.7
+    ],
+    "max": [
+     0.858122,
+     2.04106,
+     0.837216
+    ],
+    "size": [
+     1.5676,
+     2.06606,
+     1.537216
+    ]
+   },
+   "reconstructedVertices": 63746,
+   "sourceTextures": 26,
+   "sourceMaterials": 20,
+   "sourceAlphaMaterials": 17,
+   "sourceNormalMaterials": 20,
+   "sourceMetalRoughMaterials": 19,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2353644,
+   "sha256": "59d658c1ae902d81ebbc4a98f5de70700a4c4f234f1cb5a1d77d3f71937e9665"
+  },
+  "father-gascoigne-transformed": {
+   "file": "/bloodborne/minis/father-gascoigne-transformed.glb",
+   "aliases": [],
+   "parts": 16,
+   "primitives": 16,
+   "vertices": 51911,
+   "sourceVertices": 67973,
+   "triangles": 75808,
+   "textures": 20,
+   "materials": 7,
+   "alphaMaterials": 6,
+   "normalMaterials": 7,
+   "metalRoughMaterials": 6,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.059389,
+     -0.025,
+     -1.495089
+    ],
+    "max": [
+     1.087125,
+     2.618048,
+     0.9
+    ],
+    "size": [
+     2.146514,
+     2.643048,
+     2.395089
+    ]
+   },
+   "reconstructedVertices": 67973,
+   "sourceTextures": 20,
+   "sourceMaterials": 16,
+   "sourceAlphaMaterials": 15,
+   "sourceNormalMaterials": 16,
+   "sourceMetalRoughMaterials": 15,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2015884,
+   "sha256": "0b629926cd968f25f2c936695f2402e1ac356053831dae9b51e3fe87702b768a"
+  },
+  "female-beast-patient": {
+   "file": "/bloodborne/minis/female-beast-patient.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 3,
+   "vertices": 5409,
+   "sourceVertices": 5505,
+   "triangles": 7043,
+   "textures": 8,
+   "materials": 3,
+   "alphaMaterials": 2,
+   "normalMaterials": 3,
+   "metalRoughMaterials": 2,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.823531,
+     -0.025,
+     -1.198718
+    ],
+    "max": [
+     0.81993,
+     2.340497,
+     0.8
+    ],
+    "size": [
+     1.643462,
+     2.365497,
+     1.998718
+    ]
+   },
+   "reconstructedVertices": 5505,
+   "sourceTextures": 8,
+   "sourceMaterials": 3,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 3,
+   "sourceMetalRoughMaterials": 2,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1325912,
+   "sha256": "3bd9188cae1ae431335d7072bd57285f84fd977488103ed150811bbac4677dad"
+  },
+  "gehrman-the-first-hunter": {
+   "file": "/bloodborne/minis/gehrman-the-first-hunter.glb",
+   "aliases": [],
+   "parts": 19,
+   "primitives": 19,
+   "vertices": 45270,
+   "sourceVertices": 45523,
+   "triangles": 63615,
+   "textures": 28,
+   "materials": 10,
+   "alphaMaterials": 6,
+   "normalMaterials": 9,
+   "metalRoughMaterials": 9,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.237187,
+     -0.025,
+     -0.984963
+    ],
+    "max": [
+     1.357151,
+     2.477701,
+     0.922934
+    ],
+    "size": [
+     2.594338,
+     2.502701,
+     1.907897
+    ]
+   },
+   "reconstructedVertices": 45523,
+   "sourceTextures": 28,
+   "sourceMaterials": 19,
+   "sourceAlphaMaterials": 15,
+   "sourceNormalMaterials": 18,
+   "sourceMetalRoughMaterials": 18,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2593128,
+   "sha256": "b7cf60a325a88edb823549dc081bc32e46743a2ccf0b361231444694487f9acc"
+  },
+  "hunter-axe-hunter": {
+   "file": "/bloodborne/minis/hunter-axe-hunter.glb",
+   "aliases": [
+    "hunter-axe-weapon"
+   ],
+   "parts": 7,
+   "primitives": 9,
+   "vertices": 47784,
+   "sourceVertices": 48252,
+   "triangles": 76010,
+   "textures": 23,
+   "materials": 9,
+   "alphaMaterials": 1,
+   "normalMaterials": 8,
+   "metalRoughMaterials": 6,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.642974,
+     -0.025,
+     -1.169515
+    ],
+    "max": [
+     0.691748,
+     2.151598,
+     0.5
+    ],
+    "size": [
+     1.334722,
+     2.176598,
+     1.669515
+    ]
+   },
+   "reconstructedVertices": 48252,
+   "sourceTextures": 23,
+   "sourceMaterials": 9,
+   "sourceAlphaMaterials": 1,
+   "sourceNormalMaterials": 8,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2137952,
+   "sha256": "67b7cc2d1b744e9e2ecf3831f4bc4709e26c61cd52b4ba8385906122067483d8"
+  },
+  "hunter-mob": {
+   "file": "/bloodborne/minis/hunter-mob.glb",
+   "aliases": [],
+   "parts": 4,
+   "primitives": 36,
+   "vertices": 64692,
+   "sourceVertices": 67773,
+   "triangles": 73275,
+   "textures": 62,
+   "materials": 21,
+   "alphaMaterials": 7,
+   "normalMaterials": 21,
+   "metalRoughMaterials": 20,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.559207,
+     -0.04371,
+     -1.0
+    ],
+    "max": [
+     1.668066,
+     3.020947,
+     1.0
+    ],
+    "size": [
+     3.227273,
+     3.064658,
+     2.0
+    ]
+   },
+   "reconstructedVertices": 67773,
+   "sourceTextures": 62,
+   "sourceMaterials": 36,
+   "sourceAlphaMaterials": 15,
+   "sourceNormalMaterials": 36,
+   "sourceMetalRoughMaterials": 35,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 5996160,
+   "sha256": "d569a9b81cb6af776f7aa049e2cb06f45c3d785c439870cc342c89d00a8fb2f2"
+  },
+  "huntsman-s-minion": {
+   "file": "/bloodborne/minis/huntsman-s-minion.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 5,
+   "vertices": 12036,
+   "sourceVertices": 18375,
+   "triangles": 17231,
+   "textures": 14,
+   "materials": 5,
+   "alphaMaterials": 3,
+   "normalMaterials": 5,
+   "metalRoughMaterials": 4,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.304467,
+     -0.025,
+     -1.0
+    ],
+    "max": [
+     1.343785,
+     2.657528,
+     1.613211
+    ],
+    "size": [
+     2.648252,
+     2.682528,
+     2.613211
+    ]
+   },
+   "reconstructedVertices": 18375,
+   "sourceTextures": 14,
+   "sourceMaterials": 5,
+   "sourceAlphaMaterials": 3,
+   "sourceNormalMaterials": 5,
+   "sourceMetalRoughMaterials": 4,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1510064,
+   "sha256": "0593df56c332b13c1ce0b667ca79407b23bc61875331ee88780dd52c6a95c0a1"
+  },
+  "kirkhammer-hunter": {
+   "file": "/bloodborne/minis/kirkhammer-hunter.glb",
+   "aliases": [
+    "kirkhammer-weapon"
+   ],
+   "parts": 7,
+   "primitives": 7,
+   "vertices": 44663,
+   "sourceVertices": 45625,
+   "triangles": 70605,
+   "textures": 17,
+   "materials": 6,
+   "alphaMaterials": 2,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.5,
+     -0.025,
+     -1.19198
+    ],
+    "max": [
+     0.5,
+     1.952405,
+     0.623792
+    ],
+    "size": [
+     1.0,
+     1.977405,
+     1.815772
+    ]
+   },
+   "reconstructedVertices": 45625,
+   "sourceTextures": 17,
+   "sourceMaterials": 7,
+   "sourceAlphaMaterials": 3,
+   "sourceNormalMaterials": 7,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2024500,
+   "sha256": "c200a5f14995ff7576b25b5d52b39d1031bd6fac12e650233f6b49eb1c211547"
+  },
+  "large-nightmare-apostle": {
+   "file": "/bloodborne/minis/large-nightmare-apostle.glb",
+   "aliases": [],
+   "parts": 3,
+   "primitives": 3,
+   "vertices": 10127,
+   "sourceVertices": 10219,
+   "triangles": 12014,
+   "textures": 8,
+   "materials": 3,
+   "alphaMaterials": 1,
+   "normalMaterials": 3,
+   "metalRoughMaterials": 2,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -4.716918,
+     -0.025,
+     -2.0
+    ],
+    "max": [
+     4.804827,
+     4.810875,
+     3.535921
+    ],
+    "size": [
+     9.521744,
+     4.835875,
+     5.535921
+    ]
+   },
+   "reconstructedVertices": 10219,
+   "sourceTextures": 8,
+   "sourceMaterials": 3,
+   "sourceAlphaMaterials": 1,
+   "sourceNormalMaterials": 3,
+   "sourceMetalRoughMaterials": 2,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1151544,
+   "sha256": "9ab85fd9bf5869182e29ccb23d34816b6608ee4fdb8afee0543a97abc032c1cc"
+  },
+  "logarius-wheel-hunter": {
+   "file": "/bloodborne/minis/logarius-wheel-hunter.glb",
+   "aliases": [
+    "logarius-wheel-weapon"
+   ],
+   "parts": 6,
+   "primitives": 6,
+   "vertices": 73504,
+   "sourceVertices": 74764,
+   "triangles": 95436,
+   "textures": 17,
+   "materials": 6,
+   "alphaMaterials": 4,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.751003,
+     -0.025,
+     -0.5
+    ],
+    "max": [
+     0.900886,
+     1.919925,
+     0.799038
+    ],
+    "size": [
+     1.651888,
+     1.944925,
+     1.299038
+    ]
+   },
+   "reconstructedVertices": 74764,
+   "sourceTextures": 17,
+   "sourceMaterials": 6,
+   "sourceAlphaMaterials": 4,
+   "sourceNormalMaterials": 6,
+   "sourceMetalRoughMaterials": 5,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2449896,
+   "sha256": "1e720c36d501bcc458f922de288e3fe60890c3cca3090db3aea2ed8c515c3d24"
+  },
+  "ludwigs-holy-blade-hunter": {
+   "file": "/bloodborne/minis/ludwigs-holy-blade-hunter.glb",
+   "aliases": [
+    "ludwigs-holy-blade-weapon"
+   ],
+   "parts": 7,
+   "primitives": 9,
+   "vertices": 27803,
+   "sourceVertices": 27946,
+   "triangles": 45631,
+   "textures": 22,
+   "materials": 9,
+   "alphaMaterials": 2,
+   "normalMaterials": 8,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.5,
+     -0.025,
+     -0.575071
+    ],
+    "max": [
+     0.5,
+     2.255117,
+     0.997492
+    ],
+    "size": [
+     1.0,
+     2.280117,
+     1.572563
+    ]
+   },
+   "reconstructedVertices": 27946,
+   "sourceTextures": 22,
+   "sourceMaterials": 9,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 8,
+   "sourceMetalRoughMaterials": 5,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1953720,
+   "sha256": "3e4422203a52cd5ffa1faf779045050223e6c1b82529f5cf2b4a8815db3c77b1"
+  },
+  "ludwigs-uncanny-holy-blade-hunter": {
+   "file": "/bloodborne/minis/ludwigs-uncanny-holy-blade-hunter.glb",
+   "aliases": [
+    "ludwigs-uncanny-holy-blade-weapon"
+   ],
+   "parts": 10,
+   "primitives": 13,
+   "vertices": 54881,
+   "sourceVertices": 66826,
+   "triangles": 74029,
+   "textures": 31,
+   "materials": 12,
+   "alphaMaterials": 6,
+   "normalMaterials": 11,
+   "metalRoughMaterials": 9,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.789126,
+     -0.025,
+     -0.80463
+    ],
+    "max": [
+     0.5,
+     1.777718,
+     0.586402
+    ],
+    "size": [
+     1.289126,
+     1.802718,
+     1.391032
+    ]
+   },
+   "reconstructedVertices": 66826,
+   "sourceTextures": 32,
+   "sourceMaterials": 13,
+   "sourceAlphaMaterials": 7,
+   "sourceNormalMaterials": 12,
+   "sourceMetalRoughMaterials": 10,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2321556,
+   "sha256": "957d1180fb43f9df7ea40a8e4ce8d27780da6694d55f189f17321bd61b1ed3d8"
+  },
+  "male-beast-patient": {
+   "file": "/bloodborne/minis/male-beast-patient.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 5,
+   "vertices": 32121,
+   "sourceVertices": 28148,
+   "triangles": 19750,
+   "textures": 14,
+   "materials": 5,
+   "alphaMaterials": 4,
+   "normalMaterials": 5,
+   "metalRoughMaterials": 4,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.7,
+     -0.025,
+     -0.76706
+    ],
+    "max": [
+     0.7,
+     1.854375,
+     0.7
+    ],
+    "size": [
+     1.4,
+     1.879376,
+     1.46706
+    ]
+   },
+   "reconstructedVertices": 32202,
+   "sourceTextures": 14,
+   "sourceMaterials": 5,
+   "sourceAlphaMaterials": 4,
+   "sourceNormalMaterials": 5,
+   "sourceMetalRoughMaterials": 4,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1368828,
+   "sha256": "db1195b8d6295df833fa36db1e6501a76e51b41b430de53e8c73ed616a793743"
+  },
+  "martyr-logarius": {
+   "file": "/bloodborne/minis/martyr-logarius.glb",
+   "aliases": [],
+   "parts": 24,
+   "primitives": 24,
+   "vertices": 41783,
+   "sourceVertices": 42170,
+   "triangles": 51036,
+   "textures": 24,
+   "materials": 8,
+   "alphaMaterials": 3,
+   "normalMaterials": 8,
+   "metalRoughMaterials": 7,
+   "emissiveMaterials": 1,
+   "bounds": {
+    "min": [
+     -1.323522,
+     -0.025522,
+     -1.311503
+    ],
+    "max": [
+     1.559449,
+     3.956894,
+     1.577665
+    ],
+    "size": [
+     2.882971,
+     3.982416,
+     2.889168
+    ]
+   },
+   "reconstructedVertices": 42170,
+   "sourceTextures": 24,
+   "sourceMaterials": 24,
+   "sourceAlphaMaterials": 19,
+   "sourceNormalMaterials": 24,
+   "sourceMetalRoughMaterials": 23,
+   "sourceEmissiveMaterials": 1,
+   "bytes": 2758476,
+   "sha256": "f0cbcf74b5571de700324899a6fd898ff3249cf663f47b0adfd8f8fd4aaf307f"
+  },
+  "mergo-s-wet-nurse": {
+   "file": "/bloodborne/minis/mergo-s-wet-nurse.glb",
+   "aliases": [],
+   "parts": 65,
+   "primitives": 65,
+   "vertices": 88284,
+   "sourceVertices": 88879,
+   "triangles": 107920,
+   "textures": 17,
+   "materials": 6,
+   "alphaMaterials": 4,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -4.246222,
+     -0.025,
+     -4.53427
+    ],
+    "max": [
+     3.615645,
+     4.05533,
+     2.035725
+    ],
+    "size": [
+     7.861867,
+     4.08033,
+     6.569994
+    ]
+   },
+   "reconstructedVertices": 88879,
+   "sourceTextures": 17,
+   "sourceMaterials": 65,
+   "sourceAlphaMaterials": 58,
+   "sourceNormalMaterials": 65,
+   "sourceMetalRoughMaterials": 64,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2741516,
+   "sha256": "1a0ebeec99548af994ce8f2086cc4fd63a956c351e0ef2f8d8f0ca214eb964b9"
+  },
+  "moon-presence": {
+   "file": "/bloodborne/minis/moon-presence.glb",
+   "aliases": [],
+   "parts": 4,
+   "primitives": 4,
+   "vertices": 71667,
+   "sourceVertices": 76268,
+   "triangles": 125376,
+   "textures": 9,
+   "materials": 3,
+   "alphaMaterials": 0,
+   "normalMaterials": 2,
+   "metalRoughMaterials": 2,
+   "emissiveMaterials": 2,
+   "bounds": {
+    "min": [
+     -4.314578,
+     -0.178508,
+     -3.553231
+    ],
+    "max": [
+     2.308637,
+     6.422495,
+     8.63726
+    ],
+    "size": [
+     6.623215,
+     6.601003,
+     12.190491
+    ]
+   },
+   "reconstructedVertices": 76268,
+   "sourceTextures": 9,
+   "sourceMaterials": 4,
+   "sourceAlphaMaterials": 0,
+   "sourceNormalMaterials": 3,
+   "sourceMetalRoughMaterials": 3,
+   "sourceEmissiveMaterials": 3,
+   "bytes": 1754916,
+   "sha256": "53e2730ee73aec452f0302af2f4e10a405e73f30502627735755dcad4b6426a7"
+  },
+  "old-hunter-djura": {
+   "file": "/bloodborne/minis/old-hunter-djura.glb",
+   "aliases": [],
+   "parts": 10,
+   "primitives": 14,
+   "vertices": 51214,
+   "sourceVertices": 51666,
+   "triangles": 69602,
+   "textures": 38,
+   "materials": 14,
+   "alphaMaterials": 8,
+   "normalMaterials": 14,
+   "metalRoughMaterials": 10,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.565548,
+     -0.025,
+     -0.714607
+    ],
+    "max": [
+     0.5,
+     1.835247,
+     0.5
+    ],
+    "size": [
+     1.065548,
+     1.860247,
+     1.214607
+    ]
+   },
+   "reconstructedVertices": 51666,
+   "sourceTextures": 38,
+   "sourceMaterials": 14,
+   "sourceAlphaMaterials": 8,
+   "sourceNormalMaterials": 14,
+   "sourceMetalRoughMaterials": 10,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 3192652,
+   "sha256": "6bcba58bea8f80284d7a5d33284f093b11e56aef8b244bc47d12100372d685d4"
+  },
+  "old-hunter-henryk": {
+   "file": "/bloodborne/minis/old-hunter-henryk.glb",
+   "aliases": [],
+   "parts": 9,
+   "primitives": 12,
+   "vertices": 62766,
+   "sourceVertices": 63469,
+   "triangles": 88729,
+   "textures": 32,
+   "materials": 12,
+   "alphaMaterials": 5,
+   "normalMaterials": 11,
+   "metalRoughMaterials": 9,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.653961,
+     -0.025,
+     -0.62254
+    ],
+    "max": [
+     0.5,
+     1.81504,
+     0.601189
+    ],
+    "size": [
+     1.153961,
+     1.84004,
+     1.223728
+    ]
+   },
+   "reconstructedVertices": 63469,
+   "sourceTextures": 32,
+   "sourceMaterials": 12,
+   "sourceAlphaMaterials": 5,
+   "sourceNormalMaterials": 11,
+   "sourceMetalRoughMaterials": 9,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2971180,
+   "sha256": "0493cc643e16adfb8f8661173bec588078fd13a51be2516d110d752cf1998915"
+  },
+  "pthumerian-descendant": {
+   "file": "/bloodborne/minis/pthumerian-descendant.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 6,
+   "vertices": 20249,
+   "sourceVertices": 20743,
+   "triangles": 28620,
+   "textures": 16,
+   "materials": 6,
+   "alphaMaterials": 3,
+   "normalMaterials": 5,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.397033,
+     -0.025,
+     -1.130089
+    ],
+    "max": [
+     1.382737,
+     2.989341,
+     2.61487
+    ],
+    "size": [
+     2.77977,
+     3.014341,
+     3.744959
+    ]
+   },
+   "reconstructedVertices": 20743,
+   "sourceTextures": 15,
+   "sourceMaterials": 6,
+   "sourceAlphaMaterials": 3,
+   "sourceNormalMaterials": 5,
+   "sourceMetalRoughMaterials": 5,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1597552,
+   "sha256": "fade32de3a791d9eb1409ad754173b9e183be98e779e26ab1d334d69412b0825"
+  },
+  "reiterpallasch-hunter": {
+   "file": "/bloodborne/minis/reiterpallasch-hunter.glb",
+   "aliases": [
+    "reiterpallasch-weapon"
+   ],
+   "parts": 7,
+   "primitives": 7,
+   "vertices": 42708,
+   "sourceVertices": 43464,
+   "triangles": 65869,
+   "textures": 20,
+   "materials": 7,
+   "alphaMaterials": 2,
+   "normalMaterials": 7,
+   "metalRoughMaterials": 6,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.529893,
+     -0.025,
+     -1.148837
+    ],
+    "max": [
+     0.502388,
+     1.793408,
+     0.5
+    ],
+    "size": [
+     1.032282,
+     1.818408,
+     1.648837
+    ]
+   },
+   "reconstructedVertices": 43464,
+   "sourceTextures": 20,
+   "sourceMaterials": 7,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 7,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2098452,
+   "sha256": "53b02cd05884d64ab1426b2d276f2cb40c1ef55f5c831f5f72568a145a4ea574"
+  },
+  "rifle-spear-hunter": {
+   "file": "/bloodborne/minis/rifle-spear-hunter.glb",
+   "aliases": [
+    "rifle-spear-weapon"
+   ],
+   "parts": 9,
+   "primitives": 13,
+   "vertices": 53407,
+   "sourceVertices": 53664,
+   "triangles": 76533,
+   "textures": 33,
+   "materials": 13,
+   "alphaMaterials": 2,
+   "normalMaterials": 11,
+   "metalRoughMaterials": 9,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.5,
+     -0.025,
+     -1.049888
+    ],
+    "max": [
+     0.595984,
+     1.867379,
+     0.5
+    ],
+    "size": [
+     1.095984,
+     1.892379,
+     1.549888
+    ]
+   },
+   "reconstructedVertices": 53664,
+   "sourceTextures": 33,
+   "sourceMaterials": 13,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 11,
+   "sourceMetalRoughMaterials": 9,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2328636,
+   "sha256": "7655fc17e131a4bdf9bdcb3c80dcb92778280dd0dd8381be2f45b623c9ebb959"
+  },
+  "rom-the-vacuous-spider": {
+   "file": "/bloodborne/minis/rom-the-vacuous-spider.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 4,
+   "vertices": 71326,
+   "sourceVertices": 73332,
+   "triangles": 103436,
+   "textures": 13,
+   "materials": 4,
+   "alphaMaterials": 1,
+   "normalMaterials": 4,
+   "metalRoughMaterials": 4,
+   "emissiveMaterials": 1,
+   "bounds": {
+    "min": [
+     -2.0,
+     -0.205622,
+     -3.437905
+    ],
+    "max": [
+     2.0,
+     3.079237,
+     7.045199
+    ],
+    "size": [
+     4.0,
+     3.284859,
+     10.483103
+    ]
+   },
+   "reconstructedVertices": 73332,
+   "sourceTextures": 13,
+   "sourceMaterials": 4,
+   "sourceAlphaMaterials": 1,
+   "sourceNormalMaterials": 4,
+   "sourceMetalRoughMaterials": 4,
+   "sourceEmissiveMaterials": 1,
+   "bytes": 2713356,
+   "sha256": "0cd14220c0dd9aa1f0eace3eb218946ac7c1b57068fba533ca698bdfa84954d3"
+  },
+  "saw-cleaver-hunter": {
+   "file": "/bloodborne/minis/saw-cleaver-hunter.glb",
+   "aliases": [
+    "saw-cleaver-weapon"
+   ],
+   "parts": 8,
+   "primitives": 10,
+   "vertices": 55075,
+   "sourceVertices": 55568,
+   "triangles": 84387,
+   "textures": 26,
+   "materials": 10,
+   "alphaMaterials": 1,
+   "normalMaterials": 9,
+   "metalRoughMaterials": 7,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.540893,
+     -0.025,
+     -0.674604
+    ],
+    "max": [
+     0.5,
+     1.848055,
+     0.5
+    ],
+    "size": [
+     1.040893,
+     1.873055,
+     1.174604
+    ]
+   },
+   "reconstructedVertices": 55568,
+   "sourceTextures": 26,
+   "sourceMaterials": 10,
+   "sourceAlphaMaterials": 1,
+   "sourceNormalMaterials": 9,
+   "sourceMetalRoughMaterials": 7,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2419264,
+   "sha256": "e700624954505cb58ad5015bc02d8fb963bbcc2fbca6f0567843c1b8d7460734"
+  },
+  "scourge-beast": {
+   "file": "/bloodborne/minis/scourge-beast.glb",
+   "aliases": [],
+   "parts": 7,
+   "primitives": 7,
+   "vertices": 15807,
+   "sourceVertices": 15919,
+   "triangles": 15636,
+   "textures": 8,
+   "materials": 3,
+   "alphaMaterials": 2,
+   "normalMaterials": 3,
+   "metalRoughMaterials": 2,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.5,
+     -0.152714,
+     -2.200719
+    ],
+    "max": [
+     1.5,
+     1.911002,
+     1.5
+    ],
+    "size": [
+     3.0,
+     2.063716,
+     3.700719
+    ]
+   },
+   "reconstructedVertices": 15919,
+   "sourceTextures": 8,
+   "sourceMaterials": 7,
+   "sourceAlphaMaterials": 6,
+   "sourceNormalMaterials": 7,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 959616,
+   "sha256": "c79ebd3b5684399554a14b17425216a10d6a83ba817e8e371a6d376de50478f3"
+  },
+  "shadows-of-yharnam": {
+   "file": "/bloodborne/minis/shadows-of-yharnam.glb",
+   "aliases": [],
+   "parts": 4,
+   "primitives": 14,
+   "vertices": 55705,
+   "sourceVertices": 56013,
+   "triangles": 76193,
+   "textures": 19,
+   "materials": 7,
+   "alphaMaterials": 3,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 6,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.974838,
+     -0.025,
+     -1.60346
+    ],
+    "max": [
+     1.575437,
+     2.226989,
+     1.0
+    ],
+    "size": [
+     3.550274,
+     2.25199,
+     2.60346
+    ]
+   },
+   "reconstructedVertices": 56028,
+   "sourceTextures": 19,
+   "sourceMaterials": 14,
+   "sourceAlphaMaterials": 9,
+   "sourceNormalMaterials": 13,
+   "sourceMetalRoughMaterials": 13,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1526832,
+   "sha256": "d335e8e2109b2cfd66fdbfc1d8561190e43d9db93632015cce2fc6229db8caea"
+  },
+  "stake-driver-hunter": {
+   "file": "/bloodborne/minis/stake-driver-hunter.glb",
+   "aliases": [
+    "stake-driver-weapon"
+   ],
+   "parts": 9,
+   "primitives": 12,
+   "vertices": 50720,
+   "sourceVertices": 51482,
+   "triangles": 69787,
+   "textures": 32,
+   "materials": 12,
+   "alphaMaterials": 5,
+   "normalMaterials": 11,
+   "metalRoughMaterials": 9,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.593294,
+     -0.025,
+     -0.591737
+    ],
+    "max": [
+     0.5,
+     1.779887,
+     0.5
+    ],
+    "size": [
+     1.093294,
+     1.804887,
+     1.091737
+    ]
+   },
+   "reconstructedVertices": 51482,
+   "sourceTextures": 32,
+   "sourceMaterials": 12,
+   "sourceAlphaMaterials": 5,
+   "sourceNormalMaterials": 11,
+   "sourceMetalRoughMaterials": 9,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2401628,
+   "sha256": "92a7694a9859689e2952d357aac06e6ac1064045f71cc9cdaacf651c73d1de55"
+  },
+  "the-one-reborn": {
+   "file": "/bloodborne/minis/the-one-reborn.glb",
+   "aliases": [],
+   "parts": 3,
+   "primitives": 7,
+   "vertices": 100198,
+   "sourceVertices": 101925,
+   "triangles": 142055,
+   "textures": 17,
+   "materials": 6,
+   "alphaMaterials": 0,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 5,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -3.0,
+     -0.025001,
+     -4.891903
+    ],
+    "max": [
+     3.32109,
+     4.698164,
+     3.730364
+    ],
+    "size": [
+     6.32109,
+     4.723165,
+     8.622267
+    ]
+   },
+   "reconstructedVertices": 101925,
+   "sourceTextures": 17,
+   "sourceMaterials": 7,
+   "sourceAlphaMaterials": 0,
+   "sourceNormalMaterials": 7,
+   "sourceMetalRoughMaterials": 6,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 4117468,
+   "sha256": "284b07fecb323a462861482818d3258eb1987fae53d37c9b517dc0dd3ef0872d"
+  },
+  "threaded-cane-hunter": {
+   "file": "/bloodborne/minis/threaded-cane-hunter.glb",
+   "aliases": [
+    "threaded-cane-weapon"
+   ],
+   "parts": 9,
+   "primitives": 11,
+   "vertices": 56557,
+   "sourceVertices": 57435,
+   "triangles": 87133,
+   "textures": 28,
+   "materials": 11,
+   "alphaMaterials": 3,
+   "normalMaterials": 10,
+   "metalRoughMaterials": 7,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.505427,
+     -0.025,
+     -0.5
+    ],
+    "max": [
+     0.762952,
+     1.801964,
+     0.647776
+    ],
+    "size": [
+     1.268379,
+     1.826964,
+     1.147776
+    ]
+   },
+   "reconstructedVertices": 57435,
+   "sourceTextures": 28,
+   "sourceMaterials": 11,
+   "sourceAlphaMaterials": 3,
+   "sourceNormalMaterials": 10,
+   "sourceMetalRoughMaterials": 7,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2403372,
+   "sha256": "8963f4e13b99d2a9e032e896f276d24967f79c2f776317cc378a3a746d0a6acc"
+  },
+  "tonitrus-hunter": {
+   "file": "/bloodborne/minis/tonitrus-hunter.glb",
+   "aliases": [
+    "tonitrus-weapon"
+   ],
+   "parts": 9,
+   "primitives": 12,
+   "vertices": 59092,
+   "sourceVertices": 59621,
+   "triangles": 86695,
+   "textures": 28,
+   "materials": 12,
+   "alphaMaterials": 2,
+   "normalMaterials": 10,
+   "metalRoughMaterials": 7,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -0.577574,
+     -0.025,
+     -0.862749
+    ],
+    "max": [
+     0.5,
+     1.830633,
+     0.5
+    ],
+    "size": [
+     1.077574,
+     1.855633,
+     1.362749
+    ]
+   },
+   "reconstructedVertices": 59621,
+   "sourceTextures": 28,
+   "sourceMaterials": 12,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 10,
+   "sourceMetalRoughMaterials": 7,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 2481256,
+   "sha256": "bf03d7c4e5ffc2a47339ebaf82d200c15e866a8d464de10a757f09f93ca58171"
+  },
+  "undead-giant": {
+   "file": "/bloodborne/minis/undead-giant.glb",
+   "aliases": [],
+   "parts": 24,
+   "primitives": 24,
+   "vertices": 42413,
+   "sourceVertices": 55307,
+   "triangles": 67784,
+   "textures": 27,
+   "materials": 9,
+   "alphaMaterials": 1,
+   "normalMaterials": 9,
+   "metalRoughMaterials": 8,
+   "emissiveMaterials": 1,
+   "bounds": {
+    "min": [
+     -1.364841,
+     -0.025,
+     -2.744148
+    ],
+    "max": [
+     1.244755,
+     4.251147,
+     2.656119
+    ],
+    "size": [
+     2.609596,
+     4.276147,
+     5.400268
+    ]
+   },
+   "reconstructedVertices": 55307,
+   "sourceTextures": 26,
+   "sourceMaterials": 24,
+   "sourceAlphaMaterials": 4,
+   "sourceNormalMaterials": 24,
+   "sourceMetalRoughMaterials": 23,
+   "sourceEmissiveMaterials": 1,
+   "bytes": 3151796,
+   "sha256": "6b390791fdf1a29ee140675a6f24274883a13936468ecb2fd9eaf88c0cd403de"
+  },
+  "vicar-amelia": {
+   "file": "/bloodborne/minis/vicar-amelia.glb",
+   "aliases": [],
+   "parts": 21,
+   "primitives": 21,
+   "vertices": 47303,
+   "sourceVertices": 47597,
+   "triangles": 61518,
+   "textures": 18,
+   "materials": 6,
+   "alphaMaterials": 3,
+   "normalMaterials": 6,
+   "metalRoughMaterials": 6,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -2.087103,
+     -0.025,
+     -4.700403
+    ],
+    "max": [
+     2.158927,
+     5.754692,
+     4.361085
+    ],
+    "size": [
+     4.24603,
+     5.779692,
+     9.061488
+    ]
+   },
+   "reconstructedVertices": 47597,
+   "sourceTextures": 18,
+   "sourceMaterials": 21,
+   "sourceAlphaMaterials": 17,
+   "sourceNormalMaterials": 21,
+   "sourceMetalRoughMaterials": 21,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1814552,
+   "sha256": "008da26b60604e3ba6dc1f10817799b0504c8d8746f2a958349b653ac00a1bdd"
+  },
+  "watchdog-of-the-old-lords": {
+   "file": "/bloodborne/minis/watchdog-of-the-old-lords.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 4,
+   "vertices": 51009,
+   "sourceVertices": 65420,
+   "triangles": 89430,
+   "textures": 12,
+   "materials": 4,
+   "alphaMaterials": 1,
+   "normalMaterials": 3,
+   "metalRoughMaterials": 3,
+   "emissiveMaterials": 2,
+   "bounds": {
+    "min": [
+     -2.198375,
+     -0.025,
+     -2.450392
+    ],
+    "max": [
+     2.053088,
+     3.683897,
+     4.136555
+    ],
+    "size": [
+     4.251463,
+     3.708897,
+     6.586947
+    ]
+   },
+   "reconstructedVertices": 65420,
+   "sourceTextures": 12,
+   "sourceMaterials": 4,
+   "sourceAlphaMaterials": 1,
+   "sourceNormalMaterials": 3,
+   "sourceMetalRoughMaterials": 3,
+   "sourceEmissiveMaterials": 2,
+   "bytes": 2140988,
+   "sha256": "b6efbb0829f58b7fb070077eb1d63101e231e6dd5eecc448dc09850c8cea31e7"
+  },
+  "witch-of-hemwick": {
+   "file": "/bloodborne/minis/witch-of-hemwick.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 4,
+   "vertices": 18502,
+   "sourceVertices": 18666,
+   "triangles": 22823,
+   "textures": 10,
+   "materials": 4,
+   "alphaMaterials": 2,
+   "normalMaterials": 3,
+   "metalRoughMaterials": 3,
+   "emissiveMaterials": 1,
+   "bounds": {
+    "min": [
+     -0.6,
+     -0.025,
+     -1.168901
+    ],
+    "max": [
+     0.6,
+     1.329838,
+     0.6
+    ],
+    "size": [
+     1.2,
+     1.354838,
+     1.768901
+    ]
+   },
+   "reconstructedVertices": 18666,
+   "sourceTextures": 10,
+   "sourceMaterials": 4,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 3,
+   "sourceMetalRoughMaterials": 3,
+   "sourceEmissiveMaterials": 1,
+   "bytes": 1300392,
+   "sha256": "ea76b779dc7f08edcd9cd4db3edc4d7794994641ea72e0b54d0f5fbf640cfd4d"
+  },
+  "yharnam-pthumerian-queen": {
+   "file": "/bloodborne/minis/yharnam-pthumerian-queen.glb",
+   "aliases": [],
+   "parts": 2,
+   "primitives": 3,
+   "vertices": 41049,
+   "sourceVertices": 57809,
+   "triangles": 57783,
+   "textures": 8,
+   "materials": 3,
+   "alphaMaterials": 2,
+   "normalMaterials": 3,
+   "metalRoughMaterials": 2,
+   "emissiveMaterials": 0,
+   "bounds": {
+    "min": [
+     -1.350727,
+     -0.025,
+     -1.0
+    ],
+    "max": [
+     1.35249,
+     2.371282,
+     2.616213
+    ],
+    "size": [
+     2.703217,
+     2.396282,
+     3.616213
+    ]
+   },
+   "reconstructedVertices": 57809,
+   "sourceTextures": 8,
+   "sourceMaterials": 3,
+   "sourceAlphaMaterials": 2,
+   "sourceNormalMaterials": 3,
+   "sourceMetalRoughMaterials": 2,
+   "sourceEmissiveMaterials": 0,
+   "bytes": 1333072,
+   "sha256": "cd09fe4344e5a64f801b9a27da0dfe91fe782bd355add3d0cc334cc60b633810"
+  }
  },
- "saw-cleaver-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
+ "aliases": {
+  "beast-claw-weapon": "beast-claw-hunter",
+  "blade-of-mercy-weapon": "blade-of-mercy-hunter",
+  "burial-blade-weapon": "burial-blade-hunter",
+  "chikage-weapon": "chikage-hunter",
+  "hunter-axe-weapon": "hunter-axe-hunter",
+  "kirkhammer-weapon": "kirkhammer-hunter",
+  "logarius-wheel-weapon": "logarius-wheel-hunter",
+  "ludwigs-holy-blade-weapon": "ludwigs-holy-blade-hunter",
+  "ludwigs-uncanny-holy-blade-weapon": "ludwigs-uncanny-holy-blade-hunter",
+  "reiterpallasch-weapon": "reiterpallasch-hunter",
+  "rifle-spear-weapon": "rifle-spear-hunter",
+  "saw-cleaver-weapon": "saw-cleaver-hunter",
+  "stake-driver-weapon": "stake-driver-hunter",
+  "threaded-cane-weapon": "threaded-cane-hunter",
+  "tonitrus-weapon": "tonitrus-hunter"
  },
- "threaded-cane-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
+ "standees": {
+  "iosefka": {
+   "file": "/bloodborne/minis/iosefka-standee.webp",
+   "width": 583,
+   "height": 1024,
+   "bytes": 61130,
+   "sha256": "23347df1afe4a4c05c31520cca9bdf9b1d4eb4ef5a546a2de0db5624368a1b12"
+  }
  },
- "threaded-cane-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
+ "runtime": {
+  "hunters": {
+   "ludwig-s-uncanny-holy-blade": "ludwigs-uncanny-holy-blade-hunter",
+   "tonitrus": "tonitrus-hunter",
+   "reiterpallasch": "reiterpallasch-hunter",
+   "burial-blade": "burial-blade-hunter",
+   "rifle-spear": "rifle-spear-hunter",
+   "stake-driver": "stake-driver-hunter",
+   "beast-claw": "beast-claw-hunter",
+   "chikage": "chikage-hunter",
+   "saw-cleaver": "saw-cleaver-hunter",
+   "threaded-cane": "threaded-cane-hunter",
+   "hunter-axe": "hunter-axe-hunter",
+   "ludwig-s-holy-blade": "ludwigs-holy-blade-hunter",
+   "kirkhammer": "kirkhammer-hunter",
+   "logarius-wheel": "logarius-wheel-hunter",
+   "blade-of-mercy": "blade-of-mercy-hunter"
+  },
+  "enemies": {
+   "eileen-the-crow": "eileen-the-crow",
+   "iosefka": null,
+   "old-hunter-henryk": "old-hunter-henryk",
+   "huntsman-s-minion": "huntsman-s-minion",
+   "hunter-mob": "hunter-mob",
+   "scourge-beast": "scourge-beast",
+   "male-beast-patient": "male-beast-patient",
+   "female-beast-patient": "female-beast-patient",
+   "church-giant": "church-giant",
+   "old-hunter-djura": "old-hunter-djura",
+   "alfred-hunter-of-vilebloods": "alfred-hunter-of-vilebloods",
+   "djura-s-ally": "djura-s-ally",
+   "church-servant": "church-servant",
+   "bloody-crow-of-cainhurst": "bloody-crow-of-cainhurst"
+  },
+  "bosses": {
+   "blood-starved-beast": "blood-starved-beast",
+   "cleric-beast": "cleric-beast",
+   "father-gascoigne": "father-gascoigne",
+   "father-gascoigne-transformed": "father-gascoigne-transformed",
+   "vicar-amelia": "vicar-amelia",
+   "large-nightmare-apostle": "large-nightmare-apostle",
+   "rom-the-vacuous-spider": "rom-the-vacuous-spider",
+   "beast-possessed-soul": "beast-possessed-soul",
+   "pthumerian-descendant": "pthumerian-descendant",
+   "undead-giant": "undead-giant",
+   "watchdog-of-the-old-lords": "watchdog-of-the-old-lords",
+   "yharnam-pthumerian-queen": "yharnam-pthumerian-queen",
+   "shadows-of-yharnam": "shadows-of-yharnam",
+   "witch-of-hemwick": "witch-of-hemwick",
+   "annalise-queen-of-the-vilebloods": "annalise-queen-of-the-vilebloods",
+   "martyr-logarius": "martyr-logarius",
+   "gehrman-the-first-hunter": "gehrman-the-first-hunter",
+   "moon-presence": "moon-presence",
+   "mergo-s-wet-nurse": "mergo-s-wet-nurse",
+   "ebrietas-daughter-of-the-cosmos": "ebrietas-daughter-of-the-cosmos",
+   "the-one-reborn": "the-one-reborn"
+  }
  },
- "hunter-axe-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "hunter-axe-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "ludwigs-holy-blade-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "ludwigs-holy-blade-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "kirkhammer-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "kirkhammer-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "blade-of-mercy-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "blade-of-mercy-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "logarius-wheel-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "logarius-wheel-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "tonitrus-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "tonitrus-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "beast-claw-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "beast-claw-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "stake-driver-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "stake-driver-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "rifle-spear-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "rifle-spear-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "chikage-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "chikage-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "ludwigs-uncanny-holy-blade-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "ludwigs-uncanny-holy-blade-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "burial-blade-weapon": {
-  "verts": 0,
-  "tex": [
-   1024,
-   1024
-  ]
- },
- "burial-blade-hunter": {
-  "verts": 0,
-  "tex": [
-   1024,
-   1024
-  ]
- },
- "reiterpallasch-weapon": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "reiterpallasch-hunter": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "ebrietas-daughter-of-the-cosmos": {
-  "verts": 0,
-  "tex": [
-   2048,
-   2048
-  ]
- },
- "mergo-s-wet-nurse": {
-  "verts": 0,
-  "tex": [
-   2048,
-   2048
-  ]
- },
- "martyr-logarius": {
-  "verts": 0,
-  "tex": [
-   4096,
-   2048
-  ]
- },
- "annalise-queen-of-the-vilebloods": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "blood-starved-beast": {
-  "verts": 0,
-  "tex": [
-   4096,
-   2048
-  ]
- },
- "vicar-amelia": {
-  "verts": 0,
-  "tex": [
-   4096,
-   4096
-  ]
- },
- "cleric-beast": {
-  "verts": 0,
-  "tex": [
-   4096,
-   2048
-  ]
- },
- "father-gascoigne": {
-  "verts": 0,
-  "tex": [
-   4096,
-   2048
-  ]
- },
- "father-gascoigne-transformed": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "watchdog-of-the-old-lords": {
-  "verts": 0,
-  "tex": [
-   4096,
-   2048
-  ]
- },
- "undead-giant": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "yharnam-pthumerian-queen": {
-  "verts": 0,
-  "tex": [
-   2048,
-   2048
-  ]
- },
- "pthumerian-descendant": {
-  "verts": 0,
-  "tex": [
-   2048,
-   2048
-  ]
- },
- "beast-possessed-soul": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "large-nightmare-apostle": {
-  "verts": 0,
-  "tex": [
-   2048,
-   2048
-  ]
- },
- "the-one-reborn": {
-  "verts": 0,
-  "tex": [
-   2048,
-   2048
-  ]
- },
- "moon-presence": {
-  "verts": 0,
-  "tex": [
-   2048,
-   2048
-  ]
- },
- "shadows-of-yharnam": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "rom-the-vacuous-spider": {
-  "verts": 0,
-  "tex": [
-   4096,
-   4096
-  ]
- },
- "old-hunter-henryk": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "bloody-crow-of-cainhurst": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "eileen-the-crow": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "alfred-hunter-of-vilebloods": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "djura-s-ally": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
- },
- "old-hunter-djura": {
-  "verts": 0,
-  "tex": [
-   2048,
-   1024
-  ]
+ "totals": {
+  "models": 49,
+  "aliases": 15,
+  "standees": 1,
+  "bytes": 109765946,
+  "vertices": 2358644,
+  "triangles": 3245904,
+  "materials": 377,
+  "alphaMaterials": 142,
+  "normalMaterials": 355,
+  "metalRoughMaterials": 296,
+  "emissiveMaterials": 11
  }
 }

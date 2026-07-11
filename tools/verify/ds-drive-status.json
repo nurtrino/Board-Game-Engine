@@ -1,0 +1,16 @@
+{
+ "roomId": "MNXD",
+ "phase": "gameOver",
+ "partyAt": "t3",
+ "stage": "preMini",
+ "faceId": "room5b",
+ "enemies": 2,
+ "turn": "enemies",
+ "boss": null,
+ "winner": false,
+ "log": [
+  "Assassin suffers 4 damage (Silver Knight Greatbowman).",
+  "Assassin dies — the party is defeated.",
+  "No sparks remain. The flame gutters out — the game is lost."
+ ]
+}

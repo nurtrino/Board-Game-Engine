@@ -1,0 +1,1375 @@
+{
+  "sheets": {
+    "occupation-b": {
+      "id": "occupation-b",
+      "sheetId": 3,
+      "cols": 10,
+      "rows": 7,
+      "uniqueBack": false,
+      "faceSourceUrl": "http://i.imgur.com/7JvbhqO.jpg",
+      "backSourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+      "face": "/feast/cards/occupation-b.webp",
+      "back": "/feast/cards/occupation-b-back.webp",
+      "image": "/feast/cards/occupation-b.webp"
+    },
+    "occupation-c": {
+      "id": "occupation-c",
+      "sheetId": 4,
+      "cols": 10,
+      "rows": 7,
+      "uniqueBack": false,
+      "faceSourceUrl": "http://i.imgur.com/wMSnZmh.jpg",
+      "backSourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+      "face": "/feast/cards/occupation-c.webp",
+      "back": "/feast/cards/occupation-c-back.webp",
+      "image": "/feast/cards/occupation-c.webp"
+    },
+    "occupation-a": {
+      "id": "occupation-a",
+      "sheetId": 5,
+      "cols": 10,
+      "rows": 7,
+      "uniqueBack": false,
+      "faceSourceUrl": "http://i.imgur.com/cezWiAp.jpg",
+      "backSourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+      "face": "/feast/cards/occupation-a.webp",
+      "back": "/feast/cards/occupation-a-back.webp",
+      "image": "/feast/cards/occupation-a.webp"
+    },
+    "occupation-starting": {
+      "id": "occupation-starting",
+      "sheetId": 6,
+      "cols": 10,
+      "rows": 7,
+      "uniqueBack": false,
+      "faceSourceUrl": "http://i.imgur.com/PnsxQbf.jpg",
+      "backSourceUrl": "http://i.imgur.com/UlHFBIl.jpg",
+      "face": "/feast/cards/occupation-starting.webp",
+      "back": "/feast/cards/occupation-starting-back.webp",
+      "image": "/feast/cards/occupation-starting.webp"
+    },
+    "weapons": {
+      "id": "weapons",
+      "sheetId": 2,
+      "cols": 10,
+      "rows": 7,
+      "uniqueBack": true,
+      "faceSourceUrl": "http://i.imgur.com/3cbv1Y7.jpg",
+      "backSourceUrl": "http://i.imgur.com/h1Dqask.jpg",
+      "face": "/feast/cards/weapons.webp",
+      "back": "/feast/cards/weapons-back.webp",
+      "image": "/feast/cards/weapons.webp"
+    }
+  },
+  "occupationDecks": [
+    {
+      "id": "A-dark",
+      "guid": "fa2877",
+      "deck": "A",
+      "starting": false,
+      "expected": 57,
+      "sheet": 5,
+      "cells": [
+        0,
+        56
+      ],
+      "cards": [
+        {
+          "guid": "fa2877",
+          "cardId": 500,
+          "sheet": 5,
+          "cell": 0
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 501,
+          "sheet": 5,
+          "cell": 1
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 502,
+          "sheet": 5,
+          "cell": 2
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 503,
+          "sheet": 5,
+          "cell": 3
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 504,
+          "sheet": 5,
+          "cell": 4
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 505,
+          "sheet": 5,
+          "cell": 5
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 506,
+          "sheet": 5,
+          "cell": 6
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 507,
+          "sheet": 5,
+          "cell": 7
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 508,
+          "sheet": 5,
+          "cell": 8
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 509,
+          "sheet": 5,
+          "cell": 9
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 510,
+          "sheet": 5,
+          "cell": 10
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 511,
+          "sheet": 5,
+          "cell": 11
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 512,
+          "sheet": 5,
+          "cell": 12
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 513,
+          "sheet": 5,
+          "cell": 13
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 514,
+          "sheet": 5,
+          "cell": 14
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 515,
+          "sheet": 5,
+          "cell": 15
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 516,
+          "sheet": 5,
+          "cell": 16
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 517,
+          "sheet": 5,
+          "cell": 17
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 518,
+          "sheet": 5,
+          "cell": 18
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 519,
+          "sheet": 5,
+          "cell": 19
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 520,
+          "sheet": 5,
+          "cell": 20
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 521,
+          "sheet": 5,
+          "cell": 21
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 522,
+          "sheet": 5,
+          "cell": 22
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 523,
+          "sheet": 5,
+          "cell": 23
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 524,
+          "sheet": 5,
+          "cell": 24
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 525,
+          "sheet": 5,
+          "cell": 25
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 526,
+          "sheet": 5,
+          "cell": 26
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 527,
+          "sheet": 5,
+          "cell": 27
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 528,
+          "sheet": 5,
+          "cell": 28
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 529,
+          "sheet": 5,
+          "cell": 29
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 530,
+          "sheet": 5,
+          "cell": 30
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 531,
+          "sheet": 5,
+          "cell": 31
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 532,
+          "sheet": 5,
+          "cell": 32
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 533,
+          "sheet": 5,
+          "cell": 33
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 534,
+          "sheet": 5,
+          "cell": 34
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 535,
+          "sheet": 5,
+          "cell": 35
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 536,
+          "sheet": 5,
+          "cell": 36
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 537,
+          "sheet": 5,
+          "cell": 37
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 538,
+          "sheet": 5,
+          "cell": 38
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 539,
+          "sheet": 5,
+          "cell": 39
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 540,
+          "sheet": 5,
+          "cell": 40
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 541,
+          "sheet": 5,
+          "cell": 41
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 542,
+          "sheet": 5,
+          "cell": 42
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 543,
+          "sheet": 5,
+          "cell": 43
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 544,
+          "sheet": 5,
+          "cell": 44
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 545,
+          "sheet": 5,
+          "cell": 45
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 546,
+          "sheet": 5,
+          "cell": 46
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 547,
+          "sheet": 5,
+          "cell": 47
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 548,
+          "sheet": 5,
+          "cell": 48
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 549,
+          "sheet": 5,
+          "cell": 49
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 550,
+          "sheet": 5,
+          "cell": 50
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 551,
+          "sheet": 5,
+          "cell": 51
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 552,
+          "sheet": 5,
+          "cell": 52
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 553,
+          "sheet": 5,
+          "cell": 53
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 554,
+          "sheet": 5,
+          "cell": 54
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 555,
+          "sheet": 5,
+          "cell": 55
+        },
+        {
+          "guid": "fa2877",
+          "cardId": 556,
+          "sheet": 5,
+          "cell": 56
+        }
+      ]
+    },
+    {
+      "id": "B-dark",
+      "guid": "8d76cb",
+      "deck": "B",
+      "starting": false,
+      "expected": 44,
+      "sheet": 3,
+      "cells": [
+        0,
+        43
+      ],
+      "cards": [
+        {
+          "guid": "9c7115",
+          "cardId": 300,
+          "sheet": 3,
+          "cell": 0
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 301,
+          "sheet": 3,
+          "cell": 1
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 302,
+          "sheet": 3,
+          "cell": 2
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 303,
+          "sheet": 3,
+          "cell": 3
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 304,
+          "sheet": 3,
+          "cell": 4
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 305,
+          "sheet": 3,
+          "cell": 5
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 306,
+          "sheet": 3,
+          "cell": 6
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 307,
+          "sheet": 3,
+          "cell": 7
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 308,
+          "sheet": 3,
+          "cell": 8
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 309,
+          "sheet": 3,
+          "cell": 9
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 310,
+          "sheet": 3,
+          "cell": 10
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 311,
+          "sheet": 3,
+          "cell": 11
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 312,
+          "sheet": 3,
+          "cell": 12
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 313,
+          "sheet": 3,
+          "cell": 13
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 314,
+          "sheet": 3,
+          "cell": 14
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 315,
+          "sheet": 3,
+          "cell": 15
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 316,
+          "sheet": 3,
+          "cell": 16
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 317,
+          "sheet": 3,
+          "cell": 17
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 318,
+          "sheet": 3,
+          "cell": 18
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 319,
+          "sheet": 3,
+          "cell": 19
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 320,
+          "sheet": 3,
+          "cell": 20
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 321,
+          "sheet": 3,
+          "cell": 21
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 322,
+          "sheet": 3,
+          "cell": 22
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 323,
+          "sheet": 3,
+          "cell": 23
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 324,
+          "sheet": 3,
+          "cell": 24
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 325,
+          "sheet": 3,
+          "cell": 25
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 326,
+          "sheet": 3,
+          "cell": 26
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 327,
+          "sheet": 3,
+          "cell": 27
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 328,
+          "sheet": 3,
+          "cell": 28
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 329,
+          "sheet": 3,
+          "cell": 29
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 330,
+          "sheet": 3,
+          "cell": 30
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 331,
+          "sheet": 3,
+          "cell": 31
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 332,
+          "sheet": 3,
+          "cell": 32
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 333,
+          "sheet": 3,
+          "cell": 33
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 334,
+          "sheet": 3,
+          "cell": 34
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 335,
+          "sheet": 3,
+          "cell": 35
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 336,
+          "sheet": 3,
+          "cell": 36
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 337,
+          "sheet": 3,
+          "cell": 37
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 338,
+          "sheet": 3,
+          "cell": 38
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 339,
+          "sheet": 3,
+          "cell": 39
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 340,
+          "sheet": 3,
+          "cell": 40
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 341,
+          "sheet": 3,
+          "cell": 41
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 342,
+          "sheet": 3,
+          "cell": 42
+        },
+        {
+          "guid": "8d76cb",
+          "cardId": 343,
+          "sheet": 3,
+          "cell": 43
+        }
+      ]
+    },
+    {
+      "id": "C-dark",
+      "guid": "deaab0",
+      "deck": "C",
+      "starting": false,
+      "expected": 44,
+      "sheet": 4,
+      "cells": [
+        0,
+        43
+      ],
+      "cards": [
+        {
+          "guid": "deaab0",
+          "cardId": 400,
+          "sheet": 4,
+          "cell": 0
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 401,
+          "sheet": 4,
+          "cell": 1
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 402,
+          "sheet": 4,
+          "cell": 2
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 403,
+          "sheet": 4,
+          "cell": 3
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 404,
+          "sheet": 4,
+          "cell": 4
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 405,
+          "sheet": 4,
+          "cell": 5
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 406,
+          "sheet": 4,
+          "cell": 6
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 407,
+          "sheet": 4,
+          "cell": 7
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 408,
+          "sheet": 4,
+          "cell": 8
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 409,
+          "sheet": 4,
+          "cell": 9
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 410,
+          "sheet": 4,
+          "cell": 10
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 411,
+          "sheet": 4,
+          "cell": 11
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 412,
+          "sheet": 4,
+          "cell": 12
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 413,
+          "sheet": 4,
+          "cell": 13
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 414,
+          "sheet": 4,
+          "cell": 14
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 415,
+          "sheet": 4,
+          "cell": 15
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 416,
+          "sheet": 4,
+          "cell": 16
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 417,
+          "sheet": 4,
+          "cell": 17
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 418,
+          "sheet": 4,
+          "cell": 18
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 419,
+          "sheet": 4,
+          "cell": 19
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 420,
+          "sheet": 4,
+          "cell": 20
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 421,
+          "sheet": 4,
+          "cell": 21
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 422,
+          "sheet": 4,
+          "cell": 22
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 423,
+          "sheet": 4,
+          "cell": 23
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 424,
+          "sheet": 4,
+          "cell": 24
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 425,
+          "sheet": 4,
+          "cell": 25
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 426,
+          "sheet": 4,
+          "cell": 26
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 427,
+          "sheet": 4,
+          "cell": 27
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 428,
+          "sheet": 4,
+          "cell": 28
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 429,
+          "sheet": 4,
+          "cell": 29
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 430,
+          "sheet": 4,
+          "cell": 30
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 431,
+          "sheet": 4,
+          "cell": 31
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 432,
+          "sheet": 4,
+          "cell": 32
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 433,
+          "sheet": 4,
+          "cell": 33
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 434,
+          "sheet": 4,
+          "cell": 34
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 435,
+          "sheet": 4,
+          "cell": 35
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 436,
+          "sheet": 4,
+          "cell": 36
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 437,
+          "sheet": 4,
+          "cell": 37
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 438,
+          "sheet": 4,
+          "cell": 38
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 439,
+          "sheet": 4,
+          "cell": 39
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 440,
+          "sheet": 4,
+          "cell": 40
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 441,
+          "sheet": 4,
+          "cell": 41
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 442,
+          "sheet": 4,
+          "cell": 42
+        },
+        {
+          "guid": "deaab0",
+          "cardId": 443,
+          "sheet": 4,
+          "cell": 43
+        }
+      ]
+    },
+    {
+      "id": "a-starting",
+      "guid": "8fd527",
+      "deck": "A",
+      "starting": true,
+      "expected": 15,
+      "sheet": 6,
+      "cells": [
+        0,
+        14
+      ],
+      "cards": [
+        {
+          "guid": "8fd527",
+          "cardId": 600,
+          "sheet": 6,
+          "cell": 0
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 601,
+          "sheet": 6,
+          "cell": 1
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 602,
+          "sheet": 6,
+          "cell": 2
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 603,
+          "sheet": 6,
+          "cell": 3
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 604,
+          "sheet": 6,
+          "cell": 4
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 605,
+          "sheet": 6,
+          "cell": 5
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 606,
+          "sheet": 6,
+          "cell": 6
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 607,
+          "sheet": 6,
+          "cell": 7
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 608,
+          "sheet": 6,
+          "cell": 8
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 609,
+          "sheet": 6,
+          "cell": 9
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 610,
+          "sheet": 6,
+          "cell": 10
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 611,
+          "sheet": 6,
+          "cell": 11
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 612,
+          "sheet": 6,
+          "cell": 12
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 613,
+          "sheet": 6,
+          "cell": 13
+        },
+        {
+          "guid": "8fd527",
+          "cardId": 614,
+          "sheet": 6,
+          "cell": 14
+        }
+      ]
+    },
+    {
+      "id": "b-starting",
+      "guid": "114b22",
+      "deck": "B",
+      "starting": true,
+      "expected": 15,
+      "sheet": 6,
+      "cells": [
+        15,
+        29
+      ],
+      "cards": [
+        {
+          "guid": "b6ddff",
+          "cardId": 615,
+          "sheet": 6,
+          "cell": 15
+        },
+        {
+          "guid": "af67f3",
+          "cardId": 616,
+          "sheet": 6,
+          "cell": 16
+        },
+        {
+          "guid": "0d32ef",
+          "cardId": 617,
+          "sheet": 6,
+          "cell": 17
+        },
+        {
+          "guid": "528cc3",
+          "cardId": 618,
+          "sheet": 6,
+          "cell": 18
+        },
+        {
+          "guid": "fd2090",
+          "cardId": 619,
+          "sheet": 6,
+          "cell": 19
+        },
+        {
+          "guid": "ee720d",
+          "cardId": 620,
+          "sheet": 6,
+          "cell": 20
+        },
+        {
+          "guid": "e4bbd1",
+          "cardId": 621,
+          "sheet": 6,
+          "cell": 21
+        },
+        {
+          "guid": "c6d8df",
+          "cardId": 622,
+          "sheet": 6,
+          "cell": 22
+        },
+        {
+          "guid": "ac414d",
+          "cardId": 623,
+          "sheet": 6,
+          "cell": 23
+        },
+        {
+          "guid": "91c862",
+          "cardId": 624,
+          "sheet": 6,
+          "cell": 24
+        },
+        {
+          "guid": "c7ca02",
+          "cardId": 625,
+          "sheet": 6,
+          "cell": 25
+        },
+        {
+          "guid": "e18628",
+          "cardId": 626,
+          "sheet": 6,
+          "cell": 26
+        },
+        {
+          "guid": "037808",
+          "cardId": 627,
+          "sheet": 6,
+          "cell": 27
+        },
+        {
+          "guid": "4cb866",
+          "cardId": 628,
+          "sheet": 6,
+          "cell": 28
+        },
+        {
+          "guid": "32b459",
+          "cardId": 629,
+          "sheet": 6,
+          "cell": 29
+        }
+      ]
+    },
+    {
+      "id": "c-starting",
+      "guid": "aa2575",
+      "deck": "C",
+      "starting": true,
+      "expected": 15,
+      "sheet": 6,
+      "cells": [
+        30,
+        44
+      ],
+      "cards": [
+        {
+          "guid": "a44024",
+          "cardId": 630,
+          "sheet": 6,
+          "cell": 30
+        },
+        {
+          "guid": "8ac28b",
+          "cardId": 631,
+          "sheet": 6,
+          "cell": 31
+        },
+        {
+          "guid": "101639",
+          "cardId": 632,
+          "sheet": 6,
+          "cell": 32
+        },
+        {
+          "guid": "c0478c",
+          "cardId": 633,
+          "sheet": 6,
+          "cell": 33
+        },
+        {
+          "guid": "ab41c6",
+          "cardId": 634,
+          "sheet": 6,
+          "cell": 34
+        },
+        {
+          "guid": "da27b2",
+          "cardId": 635,
+          "sheet": 6,
+          "cell": 35
+        },
+        {
+          "guid": "221649",
+          "cardId": 636,
+          "sheet": 6,
+          "cell": 36
+        },
+        {
+          "guid": "8f3a92",
+          "cardId": 637,
+          "sheet": 6,
+          "cell": 37
+        },
+        {
+          "guid": "cb3a8a",
+          "cardId": 638,
+          "sheet": 6,
+          "cell": 38
+        },
+        {
+          "guid": "2560a6",
+          "cardId": 639,
+          "sheet": 6,
+          "cell": 39
+        },
+        {
+          "guid": "6deecd",
+          "cardId": 640,
+          "sheet": 6,
+          "cell": 40
+        },
+        {
+          "guid": "5da883",
+          "cardId": 641,
+          "sheet": 6,
+          "cell": 41
+        },
+        {
+          "guid": "a1b4a6",
+          "cardId": 642,
+          "sheet": 6,
+          "cell": 42
+        },
+        {
+          "guid": "9269b3",
+          "cardId": 643,
+          "sheet": 6,
+          "cell": 43
+        },
+        {
+          "guid": "70ce17",
+          "cardId": 644,
+          "sheet": 6,
+          "cell": 44
+        }
+      ]
+    }
+  ],
+  "weapons": [
+    {
+      "id": "bow",
+      "guid": "e37910",
+      "sheet": 2,
+      "cell": 0,
+      "count": 12,
+      "guids": [
+        "53c037",
+        "077ffc",
+        "53c037",
+        "53c037",
+        "53c037",
+        "53c037",
+        "53c037",
+        "53c037",
+        "53c037",
+        "53c037",
+        "53c037",
+        "77e1a0"
+      ]
+    },
+    {
+      "id": "spear",
+      "guid": "b5a15d",
+      "sheet": 2,
+      "cell": 1,
+      "count": 12,
+      "guids": [
+        "f58684",
+        "3254fb",
+        "f58684",
+        "f58684",
+        "f58684",
+        "f58684",
+        "f58684",
+        "f58684",
+        "f58684",
+        "f58684",
+        "f58684",
+        "884cc3"
+      ]
+    },
+    {
+      "id": "long-sword",
+      "guid": "e65482",
+      "sheet": 2,
+      "cell": 2,
+      "count": 11,
+      "guids": [
+        "c6ffb8",
+        "887223",
+        "3594a3",
+        "c6ffb8",
+        "02948e",
+        "c6ffb8",
+        "c6ffb8",
+        "2aa578",
+        "c6ffb8",
+        "07f12b",
+        "c6ffb8"
+      ]
+    },
+    {
+      "id": "snare",
+      "guid": "397e8e",
+      "sheet": 2,
+      "cell": 3,
+      "count": 12,
+      "guids": [
+        "f7f934",
+        "5d0b4a",
+        "9a68c4",
+        "f7f934",
+        "536fbe",
+        "f7f934",
+        "f7f934",
+        "e6d72f",
+        "f7f934",
+        "a6631c",
+        "f7f934",
+        "9e583e"
+      ]
+    }
+  ]
+}

@@ -72,6 +72,12 @@ export {
 export * from './feast/types.js';
 export * from './feast/data.js';
 export * from './feast/placement.js';
+export * from './feast/occupationRules.js';
+export * from './feast/occupationRuntime.js';
+export * from './feast/occupationExecutor.js';
+export * from './feast/occupationDecisions.js';
+export * from './feast/occupationDeferred.js';
+export * from './feast/occupationPipeline.js';
 export * from './feast/state.js';
 export * from './feast/actions.js';
 // Bloodborne: The Board Game — all public names are Bb/BB_/bb-prefixed.
@@ -94,4 +100,13 @@ export {
   type BbCampaignDef, type BbChapterDef, type BbItemDef, type BbStatCardDef,
   type BbAttackDef, type BbEffects, type BbMissionDef,
 } from './bloodborne/data.js';
+
+// SETI: Search for Extraterrestrial Intelligence. Every public symbol is
+// Seti/SETI_/seti-prefixed so this full rules engine remains collision-free.
+export * from './seti/data.js';
+export * from './seti/projectCatalog.js';
+export * from './seti/projectRuntime.js';
+export * from './seti/projectExecutor.js';
+export * from './seti/state.js';
+export * from './seti/actions.js';
 export { BB_MAX_HP, BB_MAX_ECHOES, BB_SPEED_RANK, type BbSpeed, type BbStat } from './bloodborne/config.js';

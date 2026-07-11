@@ -83,6 +83,28 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
 }
 
+/* ---------- regular encounter panel (top right) ---------- */
+
+.ds-encounter-panel {
+  position: absolute; top: 1rem; right: 1rem; z-index: 7;
+  width: 292px; padding: 0.72rem 0.78rem; border-radius: 14px;
+  background: linear-gradient(145deg, rgba(18,13,12,.9), rgba(6,8,12,.82));
+}
+.ds-encounter-card-row { display: flex; align-items: center; gap: 0.72rem; }
+.ds-encounter-card-row > div { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ds-encounter-card-row b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #eee8dc; font-size: 0.92rem; letter-spacing: .035em; text-transform: uppercase; }
+.ds-encounter-card-row small { color: #c99480; font-size: 0.6rem; font-weight: 700; letter-spacing: .11em; }
+.ds-card-art.encounter { width: 55px; height: 82px; }
+.ds-enemy-roster { display: flex; flex-direction: column; gap: 5px; margin-top: 0.62rem; padding-top: 0.55rem; border-top: 1px solid rgba(255,255,255,.09); }
+.ds-enemy-row { display: grid; grid-template-columns: minmax(0, 1fr) 92px; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 8px; background: rgba(88,28,22,.2); border: 1px solid rgba(199,91,71,.13); }
+.ds-enemy-name { min-width: 0; display: flex; flex-direction: column; }
+.ds-enemy-name b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e8ded5; font-size: 0.7rem; letter-spacing: .035em; text-transform: uppercase; }
+.ds-enemy-name small { color: #a99d97; font-size: 0.52rem; letter-spacing: .075em; }
+.ds-enemy-health { display: flex; align-items: center; gap: 5px; }
+.ds-enemy-health > span { flex: 1; height: 5px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.09); }
+.ds-enemy-health i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #7f1f18, #dc5945); box-shadow: 0 0 8px rgba(220,89,69,.38); transition: width .45s ease; }
+.ds-enemy-health b { min-width: 27px; text-align: right; color: #efb0a3; font-size: .67rem; }
+
 /* ---------- bonfire panel ---------- */
 
 .ds-bonfire {

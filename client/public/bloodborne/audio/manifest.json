@@ -1,0 +1,506 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-11T22:30:00.000Z",
+  "tracks": [
+    {
+      "id": "amygdala",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Amygdala",
+      "file": "/bloodborne/audio/tracks/amygdala.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 210.72,
+      "bytes": 7290172,
+      "sha256": "00c1cd1367b72d3ff17bb508a4916e032773e0229d2e2f7da3849fb012292144",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "large-nightmare-apostle"
+    },
+    {
+      "id": "blood-starved-beast",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Blood-starved Beast",
+      "file": "/bloodborne/audio/tracks/blood-starved-beast.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 282.6,
+      "bytes": 10030602,
+      "sha256": "8be1780004b7b10336d121fe148196a27cb169b6c4e7fd8bf21d100c6bd1ce52",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "blood-starved-beast"
+    },
+    {
+      "id": "bloodborne",
+      "roles": [
+        "victory"
+      ],
+      "title": "Bloodborne",
+      "file": "/bloodborne/audio/tracks/bloodborne.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 158.88,
+      "bytes": 5252856,
+      "sha256": "f2748a287a284b55c0f268518c96cc834c496ff457b377a8fb9a7360daba3a0e",
+      "loop": false,
+      "gain": 0.44,
+      "crossfadeMs": 2800,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "celestial-emissary",
+      "roles": [
+        "exploration"
+      ],
+      "title": "Celestial Emissary",
+      "file": "/bloodborne/audio/tracks/celestial-emissary.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 176.616,
+      "bytes": 5664320,
+      "sha256": "8140a988d5b0fa255a6723c91d10065679ad7e1538def931cc1bc88fa989c9c4",
+      "loop": true,
+      "gain": 0.44,
+      "crossfadeMs": 2800,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "cleric-beast",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Cleric Beast",
+      "file": "/bloodborne/audio/tracks/cleric-beast.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 186.192,
+      "bytes": 6193619,
+      "sha256": "4654051382481494bdfb7bdd9ae3a8043ab6b06f9557e57b87ea70533a61588e",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "cleric-beast"
+    },
+    {
+      "id": "darkbeast",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Darkbeast",
+      "file": "/bloodborne/audio/tracks/darkbeast.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 297.336,
+      "bytes": 10132977,
+      "sha256": "cc7ffb7cbd2d7290271138ba812040ecc480f3940c693686a8920d1232b47901",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "beast-possessed-soul"
+    },
+    {
+      "id": "ebrietas-daughter-of-the-cosmos",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Ebrietas, Daughter of the Cosmos",
+      "file": "/bloodborne/audio/tracks/ebrietas-daughter-of-the-cosmos.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 238.656,
+      "bytes": 8228670,
+      "sha256": "c10a1eed1f41cb4238699edffdb2ad71e520426eab77ee634e6e8bfbff38b875",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "ebrietas-daughter-of-the-cosmos"
+    },
+    {
+      "id": "hail-the-nightmare",
+      "roles": [
+        "defeat"
+      ],
+      "title": "Hail the Nightmare",
+      "file": "/bloodborne/audio/tracks/hail-the-nightmare.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 176.544,
+      "bytes": 5367127,
+      "sha256": "dff31d6ddb875f2f8c4b36e37c818614b93c280fbdc8026e0c049afb0c2b165b",
+      "loop": false,
+      "gain": 0.44,
+      "crossfadeMs": 2800,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "hunters-dream",
+      "roles": [
+        "dream"
+      ],
+      "title": "Hunter's Dream",
+      "file": "/bloodborne/audio/tracks/hunters-dream.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 215.616,
+      "bytes": 6617571,
+      "sha256": "124e60d1b01e01d2415340a38658e37c9a23a44c475b57e0fbe276fc9e2452ed",
+      "loop": true,
+      "gain": 0.44,
+      "crossfadeMs": 2800,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "lullaby-for-mergo",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Lullaby for Mergo",
+      "file": "/bloodborne/audio/tracks/lullaby-for-mergo.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 230.712,
+      "bytes": 6817711,
+      "sha256": "a9be9525959855d25bf88a64f429db76e276650e498c5855fbfe9a92f8027299",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "mergo-s-wet-nurse"
+    },
+    {
+      "id": "micolash-nightmare-host",
+      "roles": [
+        "enemy-encounter"
+      ],
+      "title": "Micolash, Nightmare Host",
+      "file": "/bloodborne/audio/tracks/micolash-nightmare-host.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 224.208,
+      "bytes": 7959608,
+      "sha256": "e625c732a97c3b2f44df691d7ab4a19abd85fab35a64264e72aba4f7f9b683d7",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "moon-presence",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Moon Presence",
+      "file": "/bloodborne/audio/tracks/moon-presence.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 165.744,
+      "bytes": 5482227,
+      "sha256": "cad8c1bb1f1e84f869651000523c9fb8f7c5f444d6fb650c15df43a3fb3b6ad3",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "moon-presence"
+    },
+    {
+      "id": "moonlit-melody",
+      "roles": [
+        "exploration"
+      ],
+      "title": "Moonlit Melody",
+      "file": "/bloodborne/audio/tracks/moonlit-melody.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 210.264,
+      "bytes": 6496684,
+      "sha256": "e911cbb17549169e4ebb6f121e6f02ddd3773a111fc404cc34fd4df49f6b3d86",
+      "loop": true,
+      "gain": 0.44,
+      "crossfadeMs": 2800,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "of-the-pthumerian-line",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Of the Pthumerian Line",
+      "file": "/bloodborne/audio/tracks/of-the-pthumerian-line.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 226.32,
+      "bytes": 7586742,
+      "sha256": "7f54a95f6b23e34327b808cf489174c502fa59b8db8fd87f4980347064b1d88e",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "pthumerian-descendant"
+    },
+    {
+      "id": "omen",
+      "roles": [
+        "menu"
+      ],
+      "title": "Omen",
+      "file": "/bloodborne/audio/tracks/omen.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 128.304,
+      "bytes": 3954449,
+      "sha256": "b3c2f842907b9e8bace86d0e93d82692ce421ac8373f2fe4dd84802f7c4d7c74",
+      "loop": true,
+      "gain": 0.44,
+      "crossfadeMs": 2800,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "queen-of-the-vilebloods",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Queen of the Vilebloods",
+      "file": "/bloodborne/audio/tracks/queen-of-the-vilebloods.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 233.64,
+      "bytes": 7759357,
+      "sha256": "eae00527456120e7607221fe44bb824d871bb4d808fdaba5a20efe3c963f7d87",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "annalise-queen-of-the-vilebloods"
+    },
+    {
+      "id": "queen-of-the-vilebloods-yharnam",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Queen of the Vilebloods",
+      "file": "/bloodborne/audio/tracks/queen-of-the-vilebloods.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 233.64,
+      "bytes": 7759357,
+      "sha256": "eae00527456120e7607221fe44bb824d871bb4d808fdaba5a20efe3c963f7d87",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "yharnam-pthumerian-queen"
+    },
+    {
+      "id": "rom-the-vacuous-spider",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Rom, the Vacuous Spider",
+      "file": "/bloodborne/audio/tracks/rom-the-vacuous-spider.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 212.856,
+      "bytes": 6906453,
+      "sha256": "92a5aa252b08b8d93e6e1f6e801d7eb8da3e6672330b8478c509981df28e1bd2",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "rom-the-vacuous-spider"
+    },
+    {
+      "id": "soothing-hymn",
+      "roles": [
+        "victory"
+      ],
+      "title": "Soothing Hymn",
+      "file": "/bloodborne/audio/tracks/soothing-hymn.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 125.568,
+      "bytes": 3657123,
+      "sha256": "49cadfa94218b28cde96d82ba0b4350f22df6e81f6ed82ade76f36a2c4ae544c",
+      "loop": false,
+      "gain": 0.44,
+      "crossfadeMs": 2800,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "terror",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Terror",
+      "file": "/bloodborne/audio/tracks/terror.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 233.112,
+      "bytes": 7994809,
+      "sha256": "da1a7c5340b2be19639e007b94ee9742752d4030e5ed9ac6869066d303f5772c",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "the-first-hunter",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "The First Hunter",
+      "file": "/bloodborne/audio/tracks/the-first-hunter.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 312.456,
+      "bytes": 10500588,
+      "sha256": "c34c91b72bb82ee083dc2cd2d0f69826020430afc03bbb6528b884d5f70e6eb3",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "gehrman-the-first-hunter"
+    },
+    {
+      "id": "the-hunter",
+      "roles": [
+        "enemy-encounter"
+      ],
+      "title": "The Hunter",
+      "file": "/bloodborne/audio/tracks/the-hunter.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 206.568,
+      "bytes": 7274423,
+      "sha256": "39a6baa18559e2ba65b095fd5e5264e52fffdaa35ace9c9c8d509a53d21bab02",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "the-night-unfurls",
+      "roles": [
+        "exploration"
+      ],
+      "title": "The Night Unfurls",
+      "file": "/bloodborne/audio/tracks/the-night-unfurls.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 127.08,
+      "bytes": 4003878,
+      "sha256": "9a1a111f5946e7a84c3ed629896eee9d8c95130d5e4b4718f1aaee5591f87777",
+      "loop": true,
+      "gain": 0.44,
+      "crossfadeMs": 2800,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc."
+    },
+    {
+      "id": "the-one-reborn",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "The One Reborn",
+      "file": "/bloodborne/audio/tracks/the-one-reborn.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 214.536,
+      "bytes": 7088274,
+      "sha256": "92d31d2d6b8cdadbbf7535d254f7286e2e9cbc787d8477627902cee8567622e9",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "the-one-reborn"
+    },
+    {
+      "id": "the-witch-of-hemwick",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "The Witch of Hemwick",
+      "file": "/bloodborne/audio/tracks/the-witch-of-hemwick.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 222.648,
+      "bytes": 7351756,
+      "sha256": "0ad48b7cae451972e0e879d6cb8befeb272cf9d581d3958329341235b874e69d",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "witch-of-hemwick"
+    },
+    {
+      "id": "watchers",
+      "roles": [
+        "boss",
+        "boss-phase"
+      ],
+      "title": "Watchers",
+      "file": "/bloodborne/audio/tracks/watchers.mp3",
+      "mime": "audio/mpeg",
+      "durationSeconds": 193.752,
+      "bytes": 6666197,
+      "sha256": "dc10942c5cb4ed0cd8b2cbb144870ef13ded6cb98e3083309ad0691be134c22e",
+      "loop": true,
+      "gain": 0.54,
+      "crossfadeMs": 1600,
+      "license": "User-provided local personal-use copy; redistribution rights are not granted.",
+      "source": "User-provided Bloodborne Original Soundtrack files from this PC.",
+      "attribution": "Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.",
+      "bossId": "shadows-of-yharnam"
+    }
+  ]
+}
+

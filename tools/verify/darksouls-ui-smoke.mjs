@@ -78,6 +78,19 @@ function tickInPage() {
   const got = q('button').find((b) => text(b) === 'Got it');
   if (got) { got.click(); return 'intro'; }
 
+  // Spatial pending decisions stay docked so the authentic board remains the
+  // input surface (entry, push, dodge move, spell target, Aggro/model picks).
+  const spatial = document.querySelector('.ds-spatial-prompt');
+  if (spatial) {
+    const pieces = q('svg [data-map-target="piece"]');
+    if (pieces.length) { fire(pick(pieces)); return 'spatial-piece'; }
+    const nodes = q('svg [data-map-target="node"]');
+    if (nodes.length) { fire(pick(nodes)); return 'spatial-node'; }
+    const auxiliary = q('button.ds-choice', spatial).filter((b) => !b.disabled);
+    if (auxiliary.length) { pick(auxiliary).click(); return 'spatial-aux'; }
+    return null;
+  }
+
   // a pending decision addressed to this seat: centered prompt, always first
   const prompt = document.querySelector('.ds-prompt-veil .ds-prompt');
   const dieCount = (el) => el.querySelectorAll('.ds-die').length;
@@ -132,6 +145,8 @@ function tickInPage() {
   if (picking) {
     const btns = q('button.ds-btn', picking).filter((b) => !b.disabled);
     const targets = btns.filter((b) => !/^CANCEL$/.test(text(b)));
+    const pieces = q('svg [data-map-target="piece"]');
+    if (pieces.length) { fire(pick(pieces)); return 'map-piece'; }
     const nodes = q('svg .ds-map-pick');
     if (nodes.length && (targets.length === 0 || Math.random() < 0.7)) { fire(nearestToHostile(nodes)); return 'map-node'; }
     if (targets.length) { const t = pick(targets); t.click(); return 'pick:' + text(t).slice(0, 24); }
@@ -216,7 +231,8 @@ function stallStateInPage() {
     promptOpts: q('.ds-prompt-veil button.ds-choice').map((b) => `${text(b).slice(0, 30)}${b.disabled ? '(x)' : ''}`),
     wait: text(document.querySelector('.ds-wait')),
     picking: text(document.querySelector('.ds-picking .ig-lab')),
-    mapPicks: q('svg .ds-map-pick').length,
+    spatial: text(document.querySelector('.ds-spatial-prompt')),
+    mapPicks: q('svg .ds-map-pick').length + q('svg [data-map-target="piece"]').length,
     rail: q('.ds-rail-body > button.ds-btn').map((b) =>
       `${text(b.querySelector('.ds-btn-main b'))}${b.disabled ? `(x ${text(b.querySelector('.ds-reason')).slice(0, 34)})` : ''}`),
     tiles: q('button.ds-tile').map((b) => `${text(b.querySelector('b'))}${b.disabled ? '(x)' : ''}${b.classList.contains('here') ? '*' : ''}`),

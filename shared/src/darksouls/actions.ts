@@ -3354,6 +3354,10 @@ function stepBossOp(s: DsState, step: DsStep): 'done' | 'retry' {
         }
         pushSummonFrom(s, beam.node, def.name);
       }
+      // Old Iron King faces the board centre after every Beam surfacing
+      // (Old Iron King p.13), including a repeated eye node.
+      const eye = g.nodeById[beam.node];
+      unit.facing = [g.face.sizePx[0] / 2 - eye.x, g.face.sizePx[1] / 2 - eye.y];
       run.templateNodes = beam.nodes;
       return 'done';
     }
@@ -3693,4 +3697,3 @@ export const _dsInternals = {
   applyBossDamage, applyCharDamage, applyEnemyDamage, startBossFight, pump,
   encounterVictory, partyWipe,
 };
-

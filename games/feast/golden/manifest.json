@@ -1,0 +1,5109 @@
+{
+  "formatVersion": 1,
+  "game": "feast",
+  "edition": "classic-base-2016",
+  "workshopId": "790490875",
+  "source": {
+    "saveName": "A Feast For Odin",
+    "gameMode": "A Feast For Odin",
+    "saveDate": "2/19/2017 4:18:06 PM",
+    "saveFile": "C:/Users/chase/Documents/My Games/Tabletop Simulator/Mods/Workshop/790490875.json",
+    "saveSha256": "da30567eb53ab2b1feb563b79bf2a77e62cd4833a1e08e5b7b24d7334cfe1dc9",
+    "saveBytes": 1614701,
+    "officialRulebook": {
+      "url": "https://www.feuerland-spiele.de/fileadmin/game/Ein_Fest_fuer_Odin/ODIN_EN_rules_2nd_Web.pdf",
+      "sha256": "e1280d095d2df7da6cb1cfd9cd7c0b7befcce2d8c495e3a541bc9ef64c2d9e36",
+      "bytes": 17912561
+    },
+    "officialAppendix": {
+      "url": "https://www.feuerland-spiele.de/fileadmin/game/Ein_Fest_fuer_Odin/ODIN_EN_Appendix_Web.pdf",
+      "sha256": "ae4e6ea6330ff85d9719d6b34ff9a65c91a7d64c0a25b2b2c39d2c2e6e2c2bc3",
+      "bytes": 2394865
+    }
+  },
+  "counts": {
+    "topLevelObjects": 208,
+    "recursiveObjects": 1061,
+    "actionSpaces": 61,
+    "occupations": 190,
+    "specials": 15,
+    "explorationFaces": 8,
+    "homeFaces": 2,
+    "extensionFaces": 4,
+    "mountainStrips": 8,
+    "buildingTypes": 3,
+    "shipTypes": 3,
+    "goodFaces": 32,
+    "weaponCards": 47
+  },
+  "expectedCounts": {
+    "topLevelObjects": 208,
+    "recursiveObjects": 1061,
+    "actionSpaces": 61,
+    "occupations": 190,
+    "specials": 15,
+    "explorationFaces": 8,
+    "homeFaces": 2,
+    "extensionFaces": 4,
+    "mountainStrips": 8,
+    "buildingTypes": 3,
+    "shipTypes": 3,
+    "goodFaces": 32,
+    "weaponCards": 47
+  },
+  "assets": [
+    {
+      "id": "action-board",
+      "role": "action-board",
+      "publicPath": "/feast/action-board.webp",
+      "guids": [
+        "996bfd"
+      ],
+      "sourceUrl": "http://i.imgur.com/TrPuk2F.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomTrPuk2Fjpg.jpg",
+        "sha256": "1112847a47c678dafd9f0ebf90bc3bc82e8aebbb6cb03973986dd11f9b0ee5dc",
+        "bytes": 2949231,
+        "imagePx": [
+          2500,
+          5000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "0c26f3f146835b6aaf6664fe4d269b1965c42b391cdf24698a6afdadb6a084df",
+        "bytes": 6565962,
+        "imagePx": [
+          2500,
+          5000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "appendix",
+      "role": "official-appendix",
+      "publicPath": "/feast/appendix.pdf",
+      "guids": [],
+      "sourceUrl": "https://www.feuerland-spiele.de/fileadmin/game/Ein_Fest_fuer_Odin/ODIN_EN_Appendix_Web.pdf",
+      "source": {
+        "cacheFile": "tmp/pdfs/odin-appendix.pdf",
+        "sha256": "ae4e6ea6330ff85d9719d6b34ff9a65c91a7d64c0a25b2b2c39d2c2e6e2c2bc3",
+        "bytes": 2394865
+      },
+      "staged": {
+        "sha256": "ae4e6ea6330ff85d9719d6b34ff9a65c91a7d64c0a25b2b2c39d2c2e6e2c2bc3",
+        "bytes": 2394865
+      }
+    },
+    {
+      "id": "banquet-table-long",
+      "role": "banquet-table-crop",
+      "publicPath": "/feast/banquet-table-long.webp",
+      "guids": [
+        "037bf4",
+        "c52e5a",
+        "85c969",
+        "74941a"
+      ],
+      "sourceUrl": "http://i.imgur.com/jQuEt6K.jpg",
+      "cropPx": [
+        1230,
+        15,
+        1080,
+        390
+      ],
+      "source": {
+        "cacheFile": "Images/httpiimgurcomjQuEt6Kjpg.jpg",
+        "sha256": "a4f8e051194d314ee8c9c4183ac1c25a25cd919c00719d2ab2401fb1f6c06127",
+        "bytes": 1679077,
+        "imagePx": [
+          2354,
+          1500
+        ]
+      },
+      "staged": {
+        "sha256": "6dadd2ed9d2f3e10a5e8b630d164de4c4e6e5f5d09c3646a1c820e4dae16de97",
+        "bytes": 413396,
+        "imagePx": [
+          1620,
+          585
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "banquet-table-short",
+      "role": "banquet-table-crop",
+      "publicPath": "/feast/banquet-table-short.webp",
+      "guids": [
+        "037bf4",
+        "c52e5a",
+        "85c969",
+        "74941a"
+      ],
+      "sourceUrl": "http://i.imgur.com/viLsTsv.jpg",
+      "cropPx": [
+        1230,
+        15,
+        1080,
+        390
+      ],
+      "source": {
+        "cacheFile": "Images/httpiimgurcomviLsTsvjpg.jpg",
+        "sha256": "440ce5c9fdd42a5e5eb762147c4145247d78622da3450a71698cb75390b39ed8",
+        "bytes": 1621937,
+        "imagePx": [
+          2354,
+          1500
+        ]
+      },
+      "staged": {
+        "sha256": "e53b4cbaaf16cf5a7a7e6fcf9fb61e4aa844e41c995b6fc7c57826d5859540e9",
+        "bytes": 382236,
+        "imagePx": [
+          1620,
+          585
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "banquet-table",
+      "role": "banquet-table-default-alias",
+      "publicPath": "/feast/banquet-table.webp",
+      "guids": [
+        "037bf4",
+        "c52e5a",
+        "85c969",
+        "74941a"
+      ],
+      "sourceUrl": "http://i.imgur.com/jQuEt6K.jpg",
+      "cropPx": [
+        1230,
+        15,
+        1080,
+        390
+      ],
+      "source": {
+        "cacheFile": "Images/httpiimgurcomjQuEt6Kjpg.jpg",
+        "sha256": "a4f8e051194d314ee8c9c4183ac1c25a25cd919c00719d2ab2401fb1f6c06127",
+        "bytes": 1679077,
+        "imagePx": [
+          2354,
+          1500
+        ]
+      },
+      "staged": {
+        "sha256": "6dadd2ed9d2f3e10a5e8b630d164de4c4e6e5f5d09c3646a1c820e4dae16de97",
+        "bytes": 413396,
+        "imagePx": [
+          1620,
+          585
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "box",
+      "role": "box-cover",
+      "publicPath": "/feast/box.webp",
+      "guids": [
+        "e2d3ea"
+      ],
+      "sourceUrl": "http://i.imgur.com/IFn0ztg.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomIFn0ztgpng.png",
+        "sha256": "75976b5d30547a49679aac5cc739d0d636a2d7d40e0f16fffa068973d77fcca5",
+        "bytes": 891909,
+        "imagePx": [
+          527,
+          738
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "e89589b4bf07bd866c9650c5539f4adf3c2f73a55d6fde150aa7afa2c93596c2",
+        "bytes": 185588,
+        "imagePx": [
+          527,
+          738
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "building-long-house-alternate",
+      "role": "building",
+      "publicPath": "/feast/buildings/long-house-alternate.webp",
+      "guids": [
+        "d79e74"
+      ],
+      "sourceUrl": "http://i.imgur.com/UTnXHox.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomUTnXHoxjpg.jpg",
+        "sha256": "c48a434ae60fa7ed03fb9cf3cc173f84549b492adcf752c1be4f343d624800c2",
+        "bytes": 599549,
+        "imagePx": [
+          1920,
+          750
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "e712d558bcbb9fc74cf3f1d9168fdc1720f5e9714dfb23ff66f692cd1a55b310",
+        "bytes": 691216,
+        "imagePx": [
+          1920,
+          750
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "building-long-house-back",
+      "role": "building-back",
+      "publicPath": "/feast/buildings/long-house-back.webp",
+      "guids": [
+        "8b9cf7",
+        "d79e74",
+        "8beb1e",
+        "e31e84",
+        "7ffaa3"
+      ],
+      "sourceUrl": "http://i.imgur.com/Xf3f3pp.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomXf3f3ppjpg.jpg",
+        "sha256": "171ec9d5932347c3109cd0b8775ec050c8d0a5336f4a8cf643522ecdcec43095",
+        "bytes": 382564,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "7c6920c16a8becff2a9dd5e31734767815c3821f6637a69512b0fd33ff0b4106",
+        "bytes": 391784,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "building-long-house",
+      "role": "building",
+      "publicPath": "/feast/buildings/long-house.webp",
+      "guids": [
+        "8b9cf7",
+        "d79e74",
+        "8beb1e",
+        "e31e84",
+        "7ffaa3"
+      ],
+      "sourceUrl": "http://i.imgur.com/FP46dC3.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomFP46dC3jpg.jpg",
+        "sha256": "928c3aeca16e767e07ce8f54dbb7c3538a617c9dff935e2fed71bd9804af2a95",
+        "bytes": 412619,
+        "imagePx": [
+          1920,
+          750
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "d1386f1ac629751772a2f596d168dcbd9e2376b2c2aed3f9d73169d4f4492d0e",
+        "bytes": 434748,
+        "imagePx": [
+          1920,
+          750
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "building-shed-back",
+      "role": "building-back",
+      "publicPath": "/feast/buildings/shed-back.webp",
+      "guids": [
+        "5bcac9",
+        "ca70ed",
+        "27c3ca"
+      ],
+      "sourceUrl": "http://i.imgur.com/Xf3f3pp.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomXf3f3ppjpg.jpg",
+        "sha256": "171ec9d5932347c3109cd0b8775ec050c8d0a5336f4a8cf643522ecdcec43095",
+        "bytes": 382564,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "7c6920c16a8becff2a9dd5e31734767815c3821f6637a69512b0fd33ff0b4106",
+        "bytes": 391784,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "building-shed",
+      "role": "building",
+      "publicPath": "/feast/buildings/shed.webp",
+      "guids": [
+        "5bcac9",
+        "ca70ed",
+        "27c3ca"
+      ],
+      "sourceUrl": "http://i.imgur.com/HIdsncN.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomHIdsncNjpg.jpg",
+        "sha256": "2cc2cf387f45a2610018ca56db2844e2b9c24a4e661af83403988a5de0a4d31c",
+        "bytes": 366409,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "5ee0e5e84171973551efed860ab52b7b215aabfd6e4837bd5bc2b6b9a3145e16",
+        "bytes": 423356,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "building-stone-house-back",
+      "role": "building-back",
+      "publicPath": "/feast/buildings/stone-house-back.webp",
+      "guids": [
+        "993898",
+        "ed203c",
+        "3ca507"
+      ],
+      "sourceUrl": "http://i.imgur.com/Xf3f3pp.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomXf3f3ppjpg.jpg",
+        "sha256": "171ec9d5932347c3109cd0b8775ec050c8d0a5336f4a8cf643522ecdcec43095",
+        "bytes": 382564,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "7c6920c16a8becff2a9dd5e31734767815c3821f6637a69512b0fd33ff0b4106",
+        "bytes": 391784,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "building-stone-house",
+      "role": "building",
+      "publicPath": "/feast/buildings/stone-house.webp",
+      "guids": [
+        "993898",
+        "ed203c",
+        "3ca507"
+      ],
+      "sourceUrl": "http://i.imgur.com/dFhD5lA.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomdFhD5lAjpg.jpg",
+        "sha256": "4fc6c0954b5d46a3bdbe918575f7a0029458bad80fdfcfdf25ea2a86859b4109",
+        "bytes": 247317,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "345f45321bce8e66e63d5b41c170d8696106ee8fe8b4d790e4206bd2d47f2025",
+        "bytes": 222262,
+        "imagePx": [
+          1531,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-back-occupation-a",
+      "role": "card-back",
+      "publicPath": "/feast/cards/occupation-a-back.webp",
+      "guids": [
+        "fa2877"
+      ],
+      "sourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcompL33fFfjpg.jpg",
+        "sha256": "485bf5e3a523a3a453f9d43110147004e00b39d808c71b5ecd4978deae16ce16",
+        "bytes": 172398,
+        "imagePx": [
+          490,
+          760
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "89cf074f45dba3780a6623bdaa5a6bf19125e0095a4afd421cd6edc28dc96ea8",
+        "bytes": 180422,
+        "imagePx": [
+          490,
+          760
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-sheet-occupation-a",
+      "role": "card-sheet",
+      "publicPath": "/feast/cards/occupation-a.webp",
+      "guids": [
+        "fa2877"
+      ],
+      "sourceUrl": "http://i.imgur.com/cezWiAp.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomcezWiApjpg.jpg",
+        "sha256": "ab08c1b82453d1ee7767f68fad2310010b6b24ded9dd9de4e9f043fdb1797ef7",
+        "bytes": 2360772,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "effa54b52eda3e0f763fc1a4ae82de9bd502f0454fad978d88ea634319115c0c",
+        "bytes": 2459620,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-back-occupation-b",
+      "role": "card-back",
+      "publicPath": "/feast/cards/occupation-b-back.webp",
+      "guids": [
+        "8d76cb"
+      ],
+      "sourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcompL33fFfjpg.jpg",
+        "sha256": "485bf5e3a523a3a453f9d43110147004e00b39d808c71b5ecd4978deae16ce16",
+        "bytes": 172398,
+        "imagePx": [
+          490,
+          760
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "89cf074f45dba3780a6623bdaa5a6bf19125e0095a4afd421cd6edc28dc96ea8",
+        "bytes": 180422,
+        "imagePx": [
+          490,
+          760
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-sheet-occupation-b",
+      "role": "card-sheet",
+      "publicPath": "/feast/cards/occupation-b.webp",
+      "guids": [
+        "8d76cb"
+      ],
+      "sourceUrl": "http://i.imgur.com/7JvbhqO.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom7JvbhqOjpg.jpg",
+        "sha256": "1d08af52b1bef77fd4183f3709609e01515a5203869953a86d69af407614277b",
+        "bytes": 1925618,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "b6e42c6c3d39d9fcff5fd9d9c999ed78132c46ca9b073b0a13440c07cf2b9985",
+        "bytes": 2020384,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-back-occupation-c",
+      "role": "card-back",
+      "publicPath": "/feast/cards/occupation-c-back.webp",
+      "guids": [
+        "deaab0"
+      ],
+      "sourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcompL33fFfjpg.jpg",
+        "sha256": "485bf5e3a523a3a453f9d43110147004e00b39d808c71b5ecd4978deae16ce16",
+        "bytes": 172398,
+        "imagePx": [
+          490,
+          760
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "89cf074f45dba3780a6623bdaa5a6bf19125e0095a4afd421cd6edc28dc96ea8",
+        "bytes": 180422,
+        "imagePx": [
+          490,
+          760
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-sheet-occupation-c",
+      "role": "card-sheet",
+      "publicPath": "/feast/cards/occupation-c.webp",
+      "guids": [
+        "deaab0"
+      ],
+      "sourceUrl": "http://i.imgur.com/wMSnZmh.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomwMSnZmhjpg.jpg",
+        "sha256": "2a4dacd3ff79542ed8ac2335248f428375b62d0318ba8e3ae581c7f3c51c560b",
+        "bytes": 1938443,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "fa9bd66634d72b5a10357f26f62ad8ca285b04134ee1293ebf4e1210802c4359",
+        "bytes": 1966776,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-back-occupation-starting",
+      "role": "card-back",
+      "publicPath": "/feast/cards/occupation-starting-back.webp",
+      "guids": [
+        "8fd527"
+      ],
+      "sourceUrl": "http://i.imgur.com/UlHFBIl.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomUlHFBIljpg.jpg",
+        "sha256": "d77f8d094005a28db1e3d05f23d7d4fea6959ed1f385c63032c9241428d33f35",
+        "bytes": 164531,
+        "imagePx": [
+          490,
+          760
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "baf488b40615c7f19c519604cd7dae363f7ea7feab2165a4bf248553b2388e18",
+        "bytes": 171168,
+        "imagePx": [
+          490,
+          760
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-sheet-occupation-starting",
+      "role": "card-sheet",
+      "publicPath": "/feast/cards/occupation-starting.webp",
+      "guids": [
+        "8fd527"
+      ],
+      "sourceUrl": "http://i.imgur.com/PnsxQbf.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomPnsxQbfjpg.jpg",
+        "sha256": "c08c67122c52f9cc535bf92cf5d7a1f3f54e2454877d7d830b1ba83332116644",
+        "bytes": 1945947,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "321708a31eb3cfe3d8d01412ef001f3e693d90e8e9848f60363e5ef0a980da97",
+        "bytes": 2061042,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-back-weapons",
+      "role": "card-back",
+      "publicPath": "/feast/cards/weapons-back.webp",
+      "guids": [
+        "b5a15d"
+      ],
+      "sourceUrl": "http://i.imgur.com/h1Dqask.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomh1Dqaskjpg.jpg",
+        "sha256": "e1aeda731c3338c986ba5985b68fb00ff5996351183c9343e477889513b12027",
+        "bytes": 456866,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "ece487a93cbe6b16ee7fea8b48fb18adcb51f5d69e6c282d3f6051ef4fa49e0b",
+        "bytes": 387680,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "card-sheet-weapons",
+      "role": "card-sheet",
+      "publicPath": "/feast/cards/weapons.webp",
+      "guids": [
+        "b5a15d"
+      ],
+      "sourceUrl": "http://i.imgur.com/3cbv1Y7.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom3cbv1Y7jpg.jpg",
+        "sha256": "3fe49b1120c5a65018ec838ab86c0556307b0a6afa61368e9fd51765c5f11f49",
+        "bytes": 451945,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "5a0042c8433847fda57aae4ab9aed9cb95c6b0721157a4a5680254f5cac4f925",
+        "bytes": 401668,
+        "imagePx": [
+          2765,
+          3000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "exploration-baffin-island",
+      "role": "exploration-board",
+      "publicPath": "/feast/exploration/baffin-island.webp",
+      "guids": [
+        "d62e9b"
+      ],
+      "sourceUrl": "http://i.imgur.com/33jvLr3.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom33jvLr3jpg.jpg",
+        "sha256": "5ee3aa85e1ecc84a611c515819b8bd24bce9a6159007f33f03445ead50fbeb2d",
+        "bytes": 510575,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "47eb1406f2af00b3b0399892340d449e46834f16db7674b3d173af3f0fc73e34",
+        "bytes": 555204,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "exploration-bear-island",
+      "role": "exploration-board",
+      "publicPath": "/feast/exploration/bear-island.webp",
+      "guids": [
+        "15d0ed"
+      ],
+      "sourceUrl": "http://i.imgur.com/M32QsnT.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomM32QsnTjpg.jpg",
+        "sha256": "14bf34be8a8d8bf03d28818972490cdf605e6537f699a5a41f8a20a3f0e38128",
+        "bytes": 387794,
+        "imagePx": [
+          1003,
+          1000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "361ac4cdd8eaadc96a5473b673d368cbcae6d9d5b92b3cf72b9ae0593dfa1aa6",
+        "bytes": 412860,
+        "imagePx": [
+          1003,
+          1000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "exploration-faroe-islands",
+      "role": "exploration-board",
+      "publicPath": "/feast/exploration/faroe-islands.webp",
+      "guids": [
+        "d62e9b"
+      ],
+      "sourceUrl": "http://i.imgur.com/Tfc9udU.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomTfc9udUjpg.jpg",
+        "sha256": "9d56771aaac623a5b7d6c81d25e9ef66f199b98e478e9e35bd9223a54442e379",
+        "bytes": 463662,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "449c0ef45ff0e1b8c710606c3ae8191fee37244f3dd1c3db72723da8eb77063d",
+        "bytes": 534164,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "exploration-greenland",
+      "role": "exploration-board",
+      "publicPath": "/feast/exploration/greenland.webp",
+      "guids": [
+        "2c7a52"
+      ],
+      "sourceUrl": "http://i.imgur.com/0ban0IO.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom0ban0IOjpg.jpg",
+        "sha256": "ba7eec50b734b08f37965f981953c1172b81a85009b3b220b515d2d573cbcde0",
+        "bytes": 395534,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "b3fd0d905cb609e2e4b5464e44da814a1a6c64aa33120bcd59670e3667bd88d5",
+        "bytes": 439912,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "exploration-iceland",
+      "role": "exploration-board",
+      "publicPath": "/feast/exploration/iceland.webp",
+      "guids": [
+        "e2186a"
+      ],
+      "sourceUrl": "http://i.imgur.com/VhE81NX.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomVhE81NXjpg.jpg",
+        "sha256": "d9888a78fa00f04c0e3dcdb4684bec59c586b1aaf45c1879e407f2380653878c",
+        "bytes": 346351,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "36cce23a12534c2cebbefd1079eafcfc3254c3dac221a7c0e2a6b381e90bfecc",
+        "bytes": 355918,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "exploration-labrador",
+      "role": "exploration-board",
+      "publicPath": "/feast/exploration/labrador.webp",
+      "guids": [
+        "e2186a"
+      ],
+      "sourceUrl": "http://i.imgur.com/eYQICrC.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomeYQICrCjpg.jpg",
+        "sha256": "d9b06c17feb33e4347dcbf01c70f34e27645e384c073b7ba7bc7d63f88300b62",
+        "bytes": 431550,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "5205f724d27882e18da608d7a5193abb172d034e6e2af291c53d83e4a4f0e88d",
+        "bytes": 469798,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "exploration-newfoundland",
+      "role": "exploration-board",
+      "publicPath": "/feast/exploration/newfoundland.webp",
+      "guids": [
+        "2c7a52"
+      ],
+      "sourceUrl": "http://i.imgur.com/uBd9U3a.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomuBd9U3ajpg.jpg",
+        "sha256": "49bc05706c50740e4f43ac1a4668caadc34051fb160c715d5f717485c613792a",
+        "bytes": 520845,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "4390176a0515a8ce58b214d5db5ec392ffdea9e402458d80eb2cb4013a350dae",
+        "bytes": 569968,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "exploration-shetland",
+      "role": "exploration-board",
+      "publicPath": "/feast/exploration/shetland.webp",
+      "guids": [
+        "15d0ed"
+      ],
+      "sourceUrl": "http://i.imgur.com/VQK96cF.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomVQK96cFjpg.jpg",
+        "sha256": "fb2435e865d0798a5489a105a68b7c496bf016cf5479e0cd50e43378be030690",
+        "bytes": 451053,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "4623b3a940ce8f2a1eb47eba84ffca9282d5dc199e8bbf53d2a84739decc17ff",
+        "bytes": 508044,
+        "imagePx": [
+          1000,
+          1000
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "extension-columns-1",
+      "role": "imitation-extension",
+      "publicPath": "/feast/extensions/columns-1.webp",
+      "guids": [
+        "ea6dee"
+      ],
+      "sourceUrl": "http://i.imgur.com/3l7J4MH.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom3l7J4MHjpg.jpg",
+        "sha256": "a0f5c5f42a24e7a74d3f4c799af54605c53db03c28846f441d9e86cf68f2c3fe",
+        "bytes": 279577,
+        "imagePx": [
+          1500,
+          500
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "3f90d1ada07f8dfd632a46a1dfbcdf18a6a4fe67483a389d7be14c1f8122f442",
+        "bytes": 306968,
+        "imagePx": [
+          1500,
+          500
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "extension-columns-2",
+      "role": "imitation-extension",
+      "publicPath": "/feast/extensions/columns-2.webp",
+      "guids": [
+        "ea6dee"
+      ],
+      "sourceUrl": "http://i.imgur.com/x7Kqvvi.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomx7Kqvvijpg.jpg",
+        "sha256": "4f99bb65f7ec371cd0be98a490e63e207b636f13acd3d180306f205086534048",
+        "bytes": 429142,
+        "imagePx": [
+          1500,
+          500
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "6e71b0293f1e8ebb4e13256ef81d070de9194d0004231b07155a014acf7d73c4",
+        "bytes": 482630,
+        "imagePx": [
+          1500,
+          500
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "extension-columns-3",
+      "role": "imitation-extension",
+      "publicPath": "/feast/extensions/columns-3.webp",
+      "guids": [
+        "2dd414"
+      ],
+      "sourceUrl": "http://i.imgur.com/p4NaFb8.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomp4NaFb8jpg.jpg",
+        "sha256": "89d71d390a58209c1aeade8a11c60d3c3f0596157780f3bcfca121ff29dbc5a6",
+        "bytes": 429620,
+        "imagePx": [
+          2000,
+          500
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "231bab6c83bd80ce70f4cdba563c61f297eb97f181f8f5330885f8cd97ddbda9",
+        "bytes": 480702,
+        "imagePx": [
+          2000,
+          500
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "extension-columns-4",
+      "role": "imitation-extension",
+      "publicPath": "/feast/extensions/columns-4.webp",
+      "guids": [
+        "2dd414"
+      ],
+      "sourceUrl": "http://i.imgur.com/ysH446K.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomysH446Kjpg.jpg",
+        "sha256": "0273571ac20fed4c919367b8407fe9e8ec1a63b786a86a29b62c0db65ddc5c21",
+        "bytes": 459742,
+        "imagePx": [
+          2000,
+          500
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "464fb90f21c073247bfa99379287ac4b04113bb189031b670a1d2c5d68ef9831",
+        "bytes": 512184,
+        "imagePx": [
+          2000,
+          500
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-beans",
+      "role": "good",
+      "publicPath": "/feast/goods/beans.webp",
+      "guids": [
+        "93acc3",
+        "0f4bda",
+        "574c26",
+        "43d91a",
+        "e5418e",
+        "4a9b8f",
+        "1aa3cd",
+        "7fc605",
+        "c00fb0",
+        "b7e038",
+        "5515a6",
+        "f3be8f",
+        "1f88ec",
+        "8fe19b",
+        "0a96fa",
+        "3718fc",
+        "94b386",
+        "aa08ce",
+        "1933c5",
+        "65ad87"
+      ],
+      "sourceUrl": "http://i.imgur.com/vBhdWgc.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomvBhdWgcjpg.jpg",
+        "sha256": "1a8936ecef7b491ecc2450e76ce5ce37475928a19d452b69f7db07b05a324d84",
+        "bytes": 81269,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "8715429fce5b3041a7bd7f70fbbdaf18c7a76417b73e6cf6b2227f2aa3b03efb",
+        "bytes": 86436,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-cabbage",
+      "role": "good",
+      "publicPath": "/feast/goods/cabbage.webp",
+      "guids": [
+        "aa8503",
+        "0985d2",
+        "0a411d",
+        "eed20d",
+        "5dcf6f",
+        "d7ff36",
+        "665b84",
+        "6fecdb",
+        "84c128",
+        "24dd4a",
+        "889a88",
+        "5205eb",
+        "4a2aaf",
+        "b2cd6a",
+        "134d92",
+        "2a4d36",
+        "3f365c"
+      ],
+      "sourceUrl": "http://i.imgur.com/kMIrVsF.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomkMIrVsFjpg.jpg",
+        "sha256": "fdd1533b4b629bd70d30cd5f3913288423a06e1711c80fe631fde087aa97ed71",
+        "bytes": 88062,
+        "imagePx": [
+          600,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "c98f8c7a7cdcdc5afb33d1f8db4d07d0b23a7986e14d2eaa69514688d1827a0c",
+        "bytes": 97274,
+        "imagePx": [
+          600,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-cattle",
+      "role": "good",
+      "publicPath": "/feast/goods/cattle.webp",
+      "guids": [
+        "346d05",
+        "346d05",
+        "346d05",
+        "ec39c6",
+        "346d05",
+        "846b8c",
+        "95798e",
+        "346d05",
+        "acd8a8",
+        "346d05",
+        "172258",
+        "99b037",
+        "346d05",
+        "b8029b",
+        "ccb4e6"
+      ],
+      "sourceUrl": "http://i.imgur.com/KYIQ7UD.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomKYIQ7UDjpg.jpg",
+        "sha256": "86c61106de9fd0680b62fa850b1ebf5c795fb98de7cd0164b6f74a5a2e667c96",
+        "bytes": 178275,
+        "imagePx": [
+          800,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "874032dc6cce9f6cbf49c9c67eb37ad864cf98013aa9e7f05c1e27c74b348077",
+        "bytes": 190402,
+        "imagePx": [
+          800,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-chest",
+      "role": "good",
+      "publicPath": "/feast/goods/chest.webp",
+      "guids": [
+        "45f111",
+        "d7e39c",
+        "15a167",
+        "cabae7",
+        "68551a",
+        "034fa8",
+        "8dee20",
+        "c97f54",
+        "d7ed41",
+        "534ecd",
+        "096aa8",
+        "696dc8",
+        "0669c3",
+        "80d4ee",
+        "8fc8ac",
+        "fddb6b",
+        "171317",
+        "07754e",
+        "3a8620",
+        "7cd6a8",
+        "2e53a9",
+        "626594",
+        "731e3e",
+        "1b73e1",
+        "973efb",
+        "7ce769",
+        "fb6c4c",
+        "5cb22b",
+        "4c7b39",
+        "191a0b"
+      ],
+      "sourceUrl": "http://i.imgur.com/g3RtACV.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomg3RtACVjpg.jpg",
+        "sha256": "371828880b2905eabc3bd31d0f7cda1fd58b92e74e541ae02b929bcaf296d14c",
+        "bytes": 90319,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "32dba1eb298d7109d0ab3573f5881a29b88adfa82c245be9929652368d1a0fd7",
+        "bytes": 94998,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-clothing",
+      "role": "good",
+      "publicPath": "/feast/goods/clothing.webp",
+      "guids": [
+        "1a1898",
+        "d2f635",
+        "d6981e",
+        "30df46",
+        "2b1b7d",
+        "f86c91",
+        "81f89f",
+        "c9a826",
+        "313337",
+        "bba529",
+        "ab1603",
+        "76a73c",
+        "351f35",
+        "0f1e63",
+        "a19283"
+      ],
+      "sourceUrl": "http://i.imgur.com/qtz8Xt6.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomqtz8Xt6jpg.jpg",
+        "sha256": "a8e1c2c8c52649251f691249a6b1434045314af3f3440d475c2b45ab4d61672d",
+        "bytes": 196988,
+        "imagePx": [
+          800,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "c8eece0a0908b840a4fbfad3e1270e24f8e4c6f0dc930d0fe01502d1d8919795",
+        "bytes": 226240,
+        "imagePx": [
+          800,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-flax",
+      "role": "good",
+      "publicPath": "/feast/goods/flax.webp",
+      "guids": [
+        "fdcda8",
+        "2aab26",
+        "6842ac",
+        "e30874",
+        "c6b705",
+        "4b5bf9",
+        "b5fd64",
+        "f14897",
+        "2d70ea",
+        "33058b",
+        "2798b7",
+        "49d6fe",
+        "f36bf9",
+        "e741af",
+        "596c33",
+        "93af0e",
+        "c665a4",
+        "f8c9ca",
+        "885013",
+        "2125a7"
+      ],
+      "sourceUrl": "http://i.imgur.com/FcDn8Dt.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomFcDn8Dtjpg.jpg",
+        "sha256": "641eb407900679e3c68dce798f44f02f0eb69fc021b109830b6997f3b54b797a",
+        "bytes": 44692,
+        "imagePx": [
+          600,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "af150ded179888dd3b809ebde65de572351b8af70c9a0e654ec108f00dae33b2",
+        "bytes": 46100,
+        "imagePx": [
+          600,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-fruits",
+      "role": "good",
+      "publicPath": "/feast/goods/fruits.webp",
+      "guids": [
+        "7e0bce",
+        "3313bb",
+        "235ca3",
+        "b73d59",
+        "9ca42b",
+        "fdb423",
+        "930f4e",
+        "d1c911",
+        "361347",
+        "75dee8",
+        "5fefd5",
+        "ddf5bd",
+        "e8d167",
+        "0bf352",
+        "7776cb"
+      ],
+      "sourceUrl": "http://i.imgur.com/qL6Rt3F.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomqL6Rt3Fjpg.jpg",
+        "sha256": "368cf667b5a1d05a882a457f668a82c92417e5c2fa3a8210aa4bd19095ba8a12",
+        "bytes": 156800,
+        "imagePx": [
+          600,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "162a7b20ad9ef0879e2dd702f8edb49069057648545ff01c7d402264d8253472",
+        "bytes": 175748,
+        "imagePx": [
+          600,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-fur",
+      "role": "good",
+      "publicPath": "/feast/goods/fur.webp",
+      "guids": [
+        "e9d813",
+        "75fb36",
+        "dbd1f1",
+        "cd9cd2",
+        "d05e3f",
+        "d077ee",
+        "9535b1",
+        "2a8721",
+        "93d4c0",
+        "d554ba",
+        "fd6107",
+        "236a32",
+        "116ac0",
+        "b5bf21",
+        "67f203",
+        "50de72",
+        "f7d89f",
+        "22dee3",
+        "70dcd0",
+        "a67c83"
+      ],
+      "sourceUrl": "http://i.imgur.com/MEjdQ9u.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomMEjdQ9ujpg.jpg",
+        "sha256": "1b4fa2557efb136f9e0af4d65b6abeb63674c6cb4b61487814d7b8f09dbf3dda",
+        "bytes": 127458,
+        "imagePx": [
+          800,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "c338fa69fa6e88e7ca035e7c26c0220260f81a8a4fb2541df58e7d84d0ce0070",
+        "bytes": 141308,
+        "imagePx": [
+          800,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-game-meat",
+      "role": "good",
+      "publicPath": "/feast/goods/game-meat.webp",
+      "guids": [
+        "aa8503",
+        "0985d2",
+        "0a411d",
+        "eed20d",
+        "5dcf6f",
+        "d7ff36",
+        "665b84",
+        "6fecdb",
+        "84c128",
+        "24dd4a",
+        "889a88",
+        "5205eb",
+        "4a2aaf",
+        "b2cd6a",
+        "134d92",
+        "2a4d36",
+        "3f365c"
+      ],
+      "sourceUrl": "http://i.imgur.com/79IfiNm.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom79IfiNmjpg.jpg",
+        "sha256": "5596ebcca592c04cd5b74029ddcd50cb03265ab0c0227a8beca852953900f1c5",
+        "bytes": 118873,
+        "imagePx": [
+          600,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "e755e36e9c8b6a55d6d5a0e595c7cc5c954f787e5639b66ee1e3490fdc1fb097",
+        "bytes": 131844,
+        "imagePx": [
+          600,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-grain",
+      "role": "good",
+      "publicPath": "/feast/goods/grain.webp",
+      "guids": [
+        "3a684f",
+        "8ec44d",
+        "b26824",
+        "626680",
+        "96e596",
+        "26111e",
+        "5badb7",
+        "fe1592",
+        "25cb5f",
+        "7e3f7c",
+        "a781c0",
+        "a3b048",
+        "07b5f8",
+        "dda406",
+        "6e0688",
+        "34f72c",
+        "c185ec",
+        "98fe3b",
+        "1a3d2f",
+        "d85be9"
+      ],
+      "sourceUrl": "http://i.imgur.com/VECZO2q.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomVECZO2qjpg.jpg",
+        "sha256": "67f9263648405e7cdcf64267bbd891907a1a65e4490d634931ac5f30d23947ae",
+        "bytes": 75977,
+        "imagePx": [
+          800,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "1fd80fbfc58eb9b7c62f6ae20b0023d364823f872a73af479268f133f0ca4ee5",
+        "bytes": 86780,
+        "imagePx": [
+          800,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-hide",
+      "role": "good",
+      "publicPath": "/feast/goods/hide.webp",
+      "guids": [
+        "c014a7",
+        "ae5f28",
+        "00778a",
+        "567046",
+        "07c05d",
+        "564d0a",
+        "1bbcd7",
+        "70c72f",
+        "e55f71",
+        "133337",
+        "7e14b2",
+        "02e072",
+        "be93be",
+        "d1c1b5",
+        "9ae55d",
+        "d67a7b",
+        "b14c06",
+        "963ab0",
+        "e01336",
+        "3c2931",
+        "8de9b2",
+        "cf89fb",
+        "eb035a",
+        "604ad6",
+        "e1356a",
+        "05fc2b",
+        "56afb7",
+        "e6d777",
+        "51662d",
+        "f0f320"
+      ],
+      "sourceUrl": "http://i.imgur.com/O8mW4lc.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomO8mW4lcjpg.jpg",
+        "sha256": "e039f38db24cae3f70acf86487fe92a09269f4bc4e4ab1c7c9116687d25d9328",
+        "bytes": 36253,
+        "imagePx": [
+          600,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "b2908ec9eaf0c5f3b7db4925a480a7993009218cd189b1fb2c7f6657bd4f1ea8",
+        "bytes": 37154,
+        "imagePx": [
+          600,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-jewelry",
+      "role": "good",
+      "publicPath": "/feast/goods/jewelry.webp",
+      "guids": [
+        "e9d813",
+        "75fb36",
+        "dbd1f1",
+        "cd9cd2",
+        "d05e3f",
+        "d077ee",
+        "9535b1",
+        "2a8721",
+        "93d4c0",
+        "d554ba",
+        "fd6107",
+        "236a32",
+        "116ac0",
+        "b5bf21",
+        "67f203",
+        "50de72",
+        "f7d89f",
+        "22dee3",
+        "70dcd0",
+        "a67c83"
+      ],
+      "sourceUrl": "http://i.imgur.com/wnwyZO5.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomwnwyZO5jpg.jpg",
+        "sha256": "bf89b4479f7ebc17ca1e8f61031b8aedcd4fa9a5b7847616a608887380f3efcf",
+        "bytes": 212730,
+        "imagePx": [
+          800,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "e4a99d4b8429a9b001a8b60285c2f9c164ad0e062268d95436ab66ba442c4bcc",
+        "bytes": 218776,
+        "imagePx": [
+          800,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-linen",
+      "role": "good",
+      "publicPath": "/feast/goods/linen.webp",
+      "guids": [
+        "aaec4b",
+        "e970a2",
+        "5f177e",
+        "39c166",
+        "d58e65",
+        "2a3c5e",
+        "0b5e89",
+        "4b22c5",
+        "921a53",
+        "c65f15",
+        "ac41d4",
+        "2313e6",
+        "d83e46",
+        "50d98c",
+        "a69ba8",
+        "70f3d1",
+        "649fc1",
+        "a2cdfd",
+        "99f6f2",
+        "3ff33d"
+      ],
+      "sourceUrl": "http://i.imgur.com/WABrys9.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomWABrys9jpg.jpg",
+        "sha256": "8eadf1b656f1154f0e9202aa2a46a1f1d1abfe063edd998da7823b12d5b9e9a3",
+        "bytes": 57064,
+        "imagePx": [
+          800,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "aa0da08ee8f0f0e9b4747a4c844517862842197d04bdf4b2ac273489bb0b9b62",
+        "bytes": 64274,
+        "imagePx": [
+          800,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-mead",
+      "role": "good",
+      "publicPath": "/feast/goods/mead.webp",
+      "guids": [
+        "022cd9",
+        "10c601",
+        "41e40f",
+        "6312c3",
+        "d1e898",
+        "442930",
+        "878aa4",
+        "acf451",
+        "056dab",
+        "81fedd",
+        "2fce9f",
+        "af0433",
+        "d9302e",
+        "9e2206",
+        "0be8a9",
+        "1b21d1",
+        "c79f74",
+        "113253",
+        "4c5577",
+        "7d776b",
+        "53f1a9",
+        "7d6e5c",
+        "6ba259",
+        "662de1",
+        "14a1d2"
+      ],
+      "sourceUrl": "http://i.imgur.com/1ENGSnM.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom1ENGSnMjpg.jpg",
+        "sha256": "828ea42ec56afa4bae695232693227da28bc31357a5ddbad334b862d69972f5f",
+        "bytes": 41266,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "d1367f39f1f78760d4525fd0afa2087946bad5b96c9c27c13f8328cdee13c8e1",
+        "bytes": 47466,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-milk",
+      "role": "good",
+      "publicPath": "/feast/goods/milk.webp",
+      "guids": [
+        "93acc3",
+        "0f4bda",
+        "574c26",
+        "43d91a",
+        "e5418e",
+        "4a9b8f",
+        "1aa3cd",
+        "7fc605",
+        "c00fb0",
+        "b7e038",
+        "5515a6",
+        "f3be8f",
+        "1f88ec",
+        "8fe19b",
+        "0a96fa",
+        "3718fc",
+        "94b386",
+        "aa08ce",
+        "1933c5",
+        "65ad87"
+      ],
+      "sourceUrl": "http://i.imgur.com/3Xh52JC.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom3Xh52JCjpg.jpg",
+        "sha256": "843bb91e768b475b0af07537d012dfcad65901fbb85c4a4033b1e3c7645c7ae4",
+        "bytes": 83907,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "2646638c505f60f2833487c8a4c3bc2eb231c6925d570b8b1d850b349920fd28",
+        "bytes": 98204,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-oil",
+      "role": "good",
+      "publicPath": "/feast/goods/oil.webp",
+      "guids": [
+        "a6e10f",
+        "7e8dde",
+        "4199c2",
+        "c3aca1",
+        "f53028",
+        "c94411",
+        "3f7255",
+        "5b83fe",
+        "5065c3",
+        "1742bf",
+        "82d864",
+        "9ce0eb",
+        "c5bdc8",
+        "dd9977",
+        "05825c",
+        "0e00be",
+        "9d2e9a",
+        "b4dcaa",
+        "be69c9",
+        "795380",
+        "6c2806",
+        "d6a5e8",
+        "8caf98",
+        "f04780",
+        "22bb88",
+        "6a2b13",
+        "12a1a9",
+        "d07895",
+        "1a47cd",
+        "1d9e8f",
+        "88316b",
+        "35dfca",
+        "a60df3",
+        "6a611b",
+        "3fc3a3",
+        "0c5fd0",
+        "fb42be",
+        "03fe59",
+        "844559",
+        "8d7c6c",
+        "3732ad",
+        "ecf3c0",
+        "9a6259"
+      ],
+      "sourceUrl": "http://i.imgur.com/gJac8lm.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomgJac8lmjpg.jpg",
+        "sha256": "7efcf551e1928d1e90a2482b250cf500dcce4d38cb7d49f49037cefc010ca2a9",
+        "bytes": 22532,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "eb2c1cdb5c9c9595de6788a4d3306c71a0811cd746b85af6a346046952da231c",
+        "bytes": 23826,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-peas",
+      "role": "good",
+      "publicPath": "/feast/goods/peas.webp",
+      "guids": [
+        "022cd9",
+        "10c601",
+        "41e40f",
+        "6312c3",
+        "d1e898",
+        "442930",
+        "878aa4",
+        "acf451",
+        "056dab",
+        "81fedd",
+        "2fce9f",
+        "af0433",
+        "d9302e",
+        "9e2206",
+        "0be8a9",
+        "1b21d1",
+        "c79f74",
+        "113253",
+        "4c5577",
+        "7d776b",
+        "53f1a9",
+        "7d6e5c",
+        "6ba259",
+        "662de1",
+        "14a1d2"
+      ],
+      "sourceUrl": "http://i.imgur.com/0BLS3IX.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom0BLS3IXjpg.jpg",
+        "sha256": "abc88d712a6b5f9a98a92ba5db67033b9c7c9ec3211c2677d3cce71cb75e0d70",
+        "bytes": 37772,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "b15dda1b235d8f6a866d73fc193fd038169b70223e5c9fd9c4c2b9c7200d03fa",
+        "bytes": 39612,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-pregnant-cattle",
+      "role": "good",
+      "publicPath": "/feast/goods/pregnant-cattle.webp",
+      "guids": [
+        "346d05",
+        "346d05",
+        "346d05",
+        "ec39c6",
+        "346d05",
+        "846b8c",
+        "95798e",
+        "346d05",
+        "acd8a8",
+        "346d05",
+        "172258",
+        "99b037",
+        "346d05",
+        "b8029b",
+        "ccb4e6"
+      ],
+      "sourceUrl": "http://i.imgur.com/fLPuJwM.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomfLPuJwMjpg.jpg",
+        "sha256": "34d825e79f3b292467587a6731314b5c569677303a34cba94b45603d62f804a6",
+        "bytes": 226025,
+        "imagePx": [
+          800,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "e5ceffe9fafe16d7b1f53d9787d855f4ed3bfe18e954e37e928a1ac360b9f977",
+        "bytes": 249722,
+        "imagePx": [
+          800,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-pregnant-sheep",
+      "role": "good",
+      "publicPath": "/feast/goods/pregnant-sheep.webp",
+      "guids": [
+        "645a3c",
+        "645a3c",
+        "645a3c",
+        "87a6ae",
+        "cd46fa",
+        "645a3c",
+        "4d4eb6",
+        "05d296",
+        "645a3c",
+        "645a3c",
+        "308411",
+        "007dc9",
+        "64a0ea",
+        "645a3c",
+        "50500c",
+        "1c34f5",
+        "645a3c",
+        "fd2fc1"
+      ],
+      "sourceUrl": "http://i.imgur.com/hg7agzU.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomhg7agzUjpg.jpg",
+        "sha256": "cadbb8cd2cc13da78c7b3494ec3fd32130e1349336bf747c3c453e2965bf8490",
+        "bytes": 279027,
+        "imagePx": [
+          1012,
+          497
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "979927a3eb5919e95781363448c9919664fe92b38689a7bb55336a81a9a6ef9c",
+        "bytes": 313172,
+        "imagePx": [
+          1012,
+          497
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-robe",
+      "role": "good",
+      "publicPath": "/feast/goods/robe.webp",
+      "guids": [
+        "9a4859",
+        "94c9ff",
+        "03ce59",
+        "b80cf7",
+        "8cea6b",
+        "81dd74",
+        "f7fb31",
+        "6d7b8e",
+        "73a74b",
+        "6c364f",
+        "0a67d9",
+        "6cb89c",
+        "2f9b8d",
+        "57e536",
+        "fb446b",
+        "3c4b7e",
+        "5b64f1",
+        "eb0635"
+      ],
+      "sourceUrl": "http://i.imgur.com/Xe9zpJI.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomXe9zpJIjpg.jpg",
+        "sha256": "9bdb33712f818da728a10dea9f96f07cd02b5228ecfabd514b16a71856ac5adb",
+        "bytes": 120017,
+        "imagePx": [
+          600,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "c66ad99251c2cc0cabf5ef48b8313ebbe8ddbee868a5ec75a3bd7afca09dcda0",
+        "bytes": 136786,
+        "imagePx": [
+          600,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-rune-stone",
+      "role": "good",
+      "publicPath": "/feast/goods/rune-stone.webp",
+      "guids": [
+        "a6e10f",
+        "7e8dde",
+        "4199c2",
+        "c3aca1",
+        "f53028",
+        "c94411",
+        "3f7255",
+        "5b83fe",
+        "5065c3",
+        "1742bf",
+        "82d864",
+        "9ce0eb",
+        "c5bdc8",
+        "dd9977",
+        "05825c",
+        "0e00be",
+        "9d2e9a",
+        "b4dcaa",
+        "be69c9",
+        "795380",
+        "6c2806",
+        "d6a5e8",
+        "8caf98",
+        "f04780",
+        "22bb88",
+        "6a2b13",
+        "12a1a9",
+        "d07895",
+        "1a47cd",
+        "1d9e8f",
+        "88316b",
+        "35dfca",
+        "a60df3",
+        "6a611b",
+        "3fc3a3",
+        "0c5fd0",
+        "fb42be",
+        "03fe59",
+        "844559",
+        "8d7c6c",
+        "3732ad",
+        "ecf3c0",
+        "9a6259"
+      ],
+      "sourceUrl": "http://i.imgur.com/l1WB7Us.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcoml1WB7Usjpg.jpg",
+        "sha256": "295d2583b346951f67b908c58749f7e2cafe41232948aa94bbb228173ca9e959",
+        "bytes": 53819,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "c1a440099f449f1ee572bde3bc93323b00e43a3495752b4ad63d7d8b74bd6d94",
+        "bytes": 56612,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-salt-meat",
+      "role": "good",
+      "publicPath": "/feast/goods/salt-meat.webp",
+      "guids": [
+        "3a684f",
+        "8ec44d",
+        "b26824",
+        "626680",
+        "96e596",
+        "26111e",
+        "5badb7",
+        "fe1592",
+        "25cb5f",
+        "7e3f7c",
+        "a781c0",
+        "a3b048",
+        "07b5f8",
+        "dda406",
+        "6e0688",
+        "34f72c",
+        "c185ec",
+        "98fe3b",
+        "1a3d2f",
+        "d85be9"
+      ],
+      "sourceUrl": "http://i.imgur.com/OJOzgT6.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomOJOzgT6jpg.jpg",
+        "sha256": "7128be2065cd62cd20abcdd82ec1f9658320c7a3192af243e3acae3042ae9df9",
+        "bytes": 89644,
+        "imagePx": [
+          800,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "ccb6a1af293e98b994048990d328c69c132028ba9e24130824f6f9dcd2d60777",
+        "bytes": 100820,
+        "imagePx": [
+          800,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-sheep",
+      "role": "good",
+      "publicPath": "/feast/goods/sheep.webp",
+      "guids": [
+        "645a3c",
+        "645a3c",
+        "645a3c",
+        "87a6ae",
+        "cd46fa",
+        "645a3c",
+        "4d4eb6",
+        "05d296",
+        "645a3c",
+        "645a3c",
+        "308411",
+        "007dc9",
+        "64a0ea",
+        "645a3c",
+        "50500c",
+        "1c34f5",
+        "645a3c",
+        "fd2fc1"
+      ],
+      "sourceUrl": "http://i.imgur.com/otGzxJW.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomotGzxJWjpg.jpg",
+        "sha256": "02d18fe144bfeae9c8a8081a62d1b6a2ffdf6430a39c190c8f58bcb6aa8f0560",
+        "bytes": 88892,
+        "imagePx": [
+          800,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "cb9b70904f61834ee601e6c796cafc93c950f9d0754e27d62e81258bfa9b3315",
+        "bytes": 86668,
+        "imagePx": [
+          800,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-silk",
+      "role": "good",
+      "publicPath": "/feast/goods/silk.webp",
+      "guids": [
+        "aaec4b",
+        "e970a2",
+        "5f177e",
+        "39c166",
+        "d58e65",
+        "2a3c5e",
+        "0b5e89",
+        "4b22c5",
+        "921a53",
+        "c65f15",
+        "ac41d4",
+        "2313e6",
+        "d83e46",
+        "50d98c",
+        "a69ba8",
+        "70f3d1",
+        "649fc1",
+        "a2cdfd",
+        "99f6f2",
+        "3ff33d"
+      ],
+      "sourceUrl": "http://i.imgur.com/svU6n4v.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomsvU6n4vjpg.jpg",
+        "sha256": "1ae35707b06035cdbc0d75cb2b21bf16eab4ced091a3ab522389da5c733f2980",
+        "bytes": 93268,
+        "imagePx": [
+          800,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "121d10fa13188bea40eb21224d3cab3357e14b208705ba65fe0f5deaa3027275",
+        "bytes": 100384,
+        "imagePx": [
+          800,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-silver-hoard",
+      "role": "good",
+      "publicPath": "/feast/goods/silver-hoard.webp",
+      "guids": [
+        "1a1898",
+        "d2f635",
+        "d6981e",
+        "30df46",
+        "2b1b7d",
+        "f86c91",
+        "81f89f",
+        "c9a826",
+        "313337",
+        "bba529",
+        "ab1603",
+        "76a73c",
+        "351f35",
+        "0f1e63",
+        "a19283"
+      ],
+      "sourceUrl": "http://i.imgur.com/BBM9kUs.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomBBM9kUsjpg.jpg",
+        "sha256": "3eec09b9add98c2a2d5b035586c43375bc08c4758699723e80cbd7b5711bd9c0",
+        "bytes": 294430,
+        "imagePx": [
+          800,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "a255a3f6fe3187bfc8550bde0c769fdae693f9bad2f43a3e221f095f12f99f03",
+        "bytes": 313904,
+        "imagePx": [
+          800,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-silverware",
+      "role": "good",
+      "publicPath": "/feast/goods/silverware.webp",
+      "guids": [
+        "c014a7",
+        "ae5f28",
+        "00778a",
+        "567046",
+        "07c05d",
+        "564d0a",
+        "1bbcd7",
+        "70c72f",
+        "e55f71",
+        "133337",
+        "7e14b2",
+        "02e072",
+        "be93be",
+        "d1c1b5",
+        "9ae55d",
+        "d67a7b",
+        "b14c06",
+        "963ab0",
+        "e01336",
+        "3c2931",
+        "8de9b2",
+        "cf89fb",
+        "eb035a",
+        "604ad6",
+        "e1356a",
+        "05fc2b",
+        "56afb7",
+        "e6d777",
+        "51662d",
+        "f0f320"
+      ],
+      "sourceUrl": "http://i.imgur.com/VQ29FXF.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomVQ29FXFjpg.jpg",
+        "sha256": "c1b6ed8d692c08c801fc7c709f6118d3ee567aaf86116d8eeecb1aff29b70b50",
+        "bytes": 71732,
+        "imagePx": [
+          600,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "572b3cb091bcf9b933e142cf2524b67e0653531ad471863060067f2ed9e93e74",
+        "bytes": 77028,
+        "imagePx": [
+          600,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-skin-and-bones",
+      "role": "good",
+      "publicPath": "/feast/goods/skin-and-bones.webp",
+      "guids": [
+        "9693aa",
+        "607d1c",
+        "250620",
+        "9317dc",
+        "f34602",
+        "e8c94e",
+        "1514c0",
+        "61baab",
+        "7fd834",
+        "8dda00",
+        "0c4a50",
+        "12e3df",
+        "76125e",
+        "0771e1",
+        "06a8e0",
+        "b7478a",
+        "48161c",
+        "aa2faf",
+        "9a5144",
+        "1d36be"
+      ],
+      "sourceUrl": "http://i.imgur.com/DbYLIgw.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomDbYLIgwjpg.jpg",
+        "sha256": "d46b4d796af340d2fef85e0a4fc396534a9ce94f3418c0306d1213c1fc998ad0",
+        "bytes": 111137,
+        "imagePx": [
+          600,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "2ecfcb6b8c3d98159f3c0706560ca0de4459c3fa1d9a4cfafff91ca3a60f34c9",
+        "bytes": 121702,
+        "imagePx": [
+          600,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-spices",
+      "role": "good",
+      "publicPath": "/feast/goods/spices.webp",
+      "guids": [
+        "9693aa",
+        "607d1c",
+        "250620",
+        "9317dc",
+        "f34602",
+        "e8c94e",
+        "1514c0",
+        "61baab",
+        "7fd834",
+        "8dda00",
+        "0c4a50",
+        "12e3df",
+        "76125e",
+        "0771e1",
+        "06a8e0",
+        "b7478a",
+        "48161c",
+        "aa2faf",
+        "9a5144",
+        "1d36be"
+      ],
+      "sourceUrl": "http://i.imgur.com/V93Gqdk.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomV93Gqdkjpg.jpg",
+        "sha256": "14f29fc53d8bc5057d13cdda012bdb92c363ec4202a951342fd099cae15a5844",
+        "bytes": 132325,
+        "imagePx": [
+          600,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "528564832be5deed7d9c360c85bbcb99e54c3a33324a72699a509ceae2dc3af8",
+        "bytes": 141832,
+        "imagePx": [
+          600,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-stockfish",
+      "role": "good",
+      "publicPath": "/feast/goods/stockfish.webp",
+      "guids": [
+        "fdcda8",
+        "2aab26",
+        "6842ac",
+        "e30874",
+        "c6b705",
+        "4b5bf9",
+        "b5fd64",
+        "f14897",
+        "2d70ea",
+        "33058b",
+        "2798b7",
+        "49d6fe",
+        "f36bf9",
+        "e741af",
+        "596c33",
+        "93af0e",
+        "c665a4",
+        "f8c9ca",
+        "885013",
+        "2125a7"
+      ],
+      "sourceUrl": "http://i.imgur.com/zEc8kWM.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomzEc8kWMjpg.jpg",
+        "sha256": "2a31ea1ab88b9177fa0387f1e7ad1c21f802b5fa6a3350bdfae2dcfd76bbf893",
+        "bytes": 64983,
+        "imagePx": [
+          600,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "38f61a9515f4f48948f4c005d923c5eb36190b9c2275699d6b5a737337f3bbdc",
+        "bytes": 72914,
+        "imagePx": [
+          600,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-treasure-chest",
+      "role": "good",
+      "publicPath": "/feast/goods/treasure-chest.webp",
+      "guids": [
+        "9a4859",
+        "94c9ff",
+        "03ce59",
+        "b80cf7",
+        "8cea6b",
+        "81dd74",
+        "f7fb31",
+        "6d7b8e",
+        "73a74b",
+        "6c364f",
+        "0a67d9",
+        "6cb89c",
+        "2f9b8d",
+        "57e536",
+        "fb446b",
+        "3c4b7e",
+        "5b64f1",
+        "eb0635"
+      ],
+      "sourceUrl": "http://i.imgur.com/hizTRml.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomhizTRmljpg.jpg",
+        "sha256": "8019f9e6345e5ad2311d06fdff656ad3f56e43b9bd3327dd62f5e976c49b7ad7",
+        "bytes": 242101,
+        "imagePx": [
+          600,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "98fa01fba51074e416411396ee12aefedefb0dc8f1becd83f4baf85607bd5738",
+        "bytes": 254544,
+        "imagePx": [
+          600,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-whale-meat",
+      "role": "good",
+      "publicPath": "/feast/goods/whale-meat.webp",
+      "guids": [
+        "7e0bce",
+        "3313bb",
+        "235ca3",
+        "b73d59",
+        "9ca42b",
+        "fdb423",
+        "930f4e",
+        "d1c911",
+        "361347",
+        "75dee8",
+        "5fefd5",
+        "ddf5bd",
+        "e8d167",
+        "0bf352",
+        "7776cb"
+      ],
+      "sourceUrl": "http://i.imgur.com/98n5bob.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom98n5bobjpg.jpg",
+        "sha256": "3e0c92d0d9e4b3b1fc41cbe0ee32ca761f91b496ddfd19165ec499c482c636da",
+        "bytes": 179183,
+        "imagePx": [
+          600,
+          600
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "ea4e6046d622a337322c58aaf373a5c87dd7dfa1027849449d36d7e3e97ad45e",
+        "bytes": 205056,
+        "imagePx": [
+          600,
+          600
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "good-wool",
+      "role": "good",
+      "publicPath": "/feast/goods/wool.webp",
+      "guids": [
+        "45f111",
+        "d7e39c",
+        "15a167",
+        "cabae7",
+        "68551a",
+        "034fa8",
+        "8dee20",
+        "c97f54",
+        "d7ed41",
+        "534ecd",
+        "096aa8",
+        "696dc8",
+        "0669c3",
+        "80d4ee",
+        "8fc8ac",
+        "fddb6b",
+        "171317",
+        "07754e",
+        "3a8620",
+        "7cd6a8",
+        "2e53a9",
+        "626594",
+        "731e3e",
+        "1b73e1",
+        "973efb",
+        "7ce769",
+        "fb6c4c",
+        "5cb22b",
+        "4c7b39",
+        "191a0b"
+      ],
+      "sourceUrl": "http://i.imgur.com/4rHsXws.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom4rHsXwsjpg.jpg",
+        "sha256": "f9b2c3dc4de30b8301f9c361c0dcb670736a9b0dd011b8bc903872830df22e4d",
+        "bytes": 67915,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "741ee2a39e6584c7dee38b13090211c78536c88c5c75a6030d4926fecae64fdb",
+        "bytes": 77252,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "home-long",
+      "role": "home-board",
+      "publicPath": "/feast/home-long.webp",
+      "guids": [
+        "037bf4",
+        "c52e5a",
+        "85c969",
+        "74941a"
+      ],
+      "sourceUrl": "http://i.imgur.com/jQuEt6K.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomjQuEt6Kjpg.jpg",
+        "sha256": "a4f8e051194d314ee8c9c4183ac1c25a25cd919c00719d2ab2401fb1f6c06127",
+        "bytes": 1679077,
+        "imagePx": [
+          2354,
+          1500
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "b3b98b67de367c4d0cee2f91fb887079d943fcbb4a4729052635ed3133212539",
+        "bytes": 1866550,
+        "imagePx": [
+          2354,
+          1500
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "home-short",
+      "role": "home-board",
+      "publicPath": "/feast/home-short.webp",
+      "guids": [
+        "037bf4",
+        "c52e5a",
+        "85c969",
+        "74941a"
+      ],
+      "sourceUrl": "http://i.imgur.com/viLsTsv.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomviLsTsvjpg.jpg",
+        "sha256": "440ce5c9fdd42a5e5eb762147c4145247d78622da3450a71698cb75390b39ed8",
+        "bytes": 1621937,
+        "imagePx": [
+          2354,
+          1500
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "2931e04f457db6e4dc4fc3ccf2e0dd47c92db1698fbcb0d047a1ab52bd22b2df",
+        "bytes": 1764054,
+        "imagePx": [
+          2354,
+          1500
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "logo",
+      "role": "logo-crop",
+      "publicPath": "/feast/logo.webp",
+      "guids": [
+        "e2d3ea"
+      ],
+      "sourceUrl": "http://i.imgur.com/IFn0ztg.png",
+      "cropPx": [
+        35,
+        8,
+        458,
+        210
+      ],
+      "source": {
+        "cacheFile": "Images/httpiimgurcomIFn0ztgpng.png",
+        "sha256": "75976b5d30547a49679aac5cc739d0d636a2d7d40e0f16fffa068973d77fcca5",
+        "bytes": 891909,
+        "imagePx": [
+          527,
+          738
+        ]
+      },
+      "staged": {
+        "sha256": "ad1853c9486580c088040b6597d4e396f188fd81dc790318e042123aab0d3ede",
+        "bytes": 67926,
+        "imagePx": [
+          916,
+          420
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "model-first-player-moose",
+      "role": "first-player-token",
+      "publicPath": "/feast/models/first-player-moose.obj",
+      "guids": [
+        "20778c"
+      ],
+      "sourceUrl": "http://pastebin.com/raw/6iw2han0",
+      "source": {
+        "cacheFile": "../../Documents/My Games/Tabletop Simulator/Mods/Models/httppastebincomraw6iw2han0.obj",
+        "sha256": "3361774bb7505ddf7ac2e454b2ec83f2a225963c26d44b93b1849760270e6cdf",
+        "bytes": 554461
+      },
+      "staged": {
+        "sha256": "b52b49380976b93c8b6de890a5af2ae22120b1205124793ac9eae2df132cfdfb",
+        "bytes": 554459
+      }
+    },
+    {
+      "id": "model-ore",
+      "role": "ore",
+      "publicPath": "/feast/models/ore.obj",
+      "guids": [
+        "feb814",
+        "7f6d09",
+        "2d4a7f",
+        "e8349b",
+        "33f232",
+        "188775",
+        "3a4906",
+        "76b07d",
+        "468ff6",
+        "a38e2f",
+        "1607a5",
+        "b381f1",
+        "28d43c",
+        "01fd1d",
+        "000553",
+        "3e667d",
+        "ecf2e4",
+        "31c212",
+        "89734a",
+        "e664ea",
+        "8841fc",
+        "773182",
+        "adbeee",
+        "b5a9d4",
+        "b90ada",
+        "af07de",
+        "62d4ed",
+        "b90c88",
+        "5c5ebd",
+        "7c09bd",
+        "ad7602",
+        "6f9315",
+        "f9563e",
+        "bd2db2",
+        "0577b8",
+        "8b8c95",
+        "b4fb43",
+        "bdcb9f",
+        "8c8f37",
+        "a9d9a3",
+        "7e1d04"
+      ],
+      "sourceUrl": "http://pastebin.com/raw/ZhDtc3AY",
+      "source": {
+        "cacheFile": "../../Documents/My Games/Tabletop Simulator/Mods/Models/httppastebincomrawZhDtc3AY.obj",
+        "sha256": "00554bf4dd46632a7da133dc5703208adf3453d3c9af095d34b8f2b99dc4a57d",
+        "bytes": 9857
+      },
+      "staged": {
+        "sha256": "00554bf4dd46632a7da133dc5703208adf3453d3c9af095d34b8f2b99dc4a57d",
+        "bytes": 9857
+      }
+    },
+    {
+      "id": "model-viking",
+      "role": "viking-worker",
+      "publicPath": "/feast/models/viking.obj",
+      "guids": [
+        "a7334e",
+        "1a5602",
+        "73a451",
+        "85250c",
+        "ad2768",
+        "8e044b",
+        "aded46",
+        "b11653",
+        "a28b34",
+        "c50422",
+        "4a5490",
+        "2d7b5f",
+        "7e4fb2",
+        "e5922a",
+        "a7fb10",
+        "bfd794",
+        "ec8520",
+        "3ac4de",
+        "c4e387",
+        "0ec7c9",
+        "42e1c8",
+        "278897",
+        "1a6abf",
+        "945d49",
+        "5e8673",
+        "cd4519",
+        "f7a6e1",
+        "dd57d6",
+        "c83947",
+        "ef1a44",
+        "2ea593",
+        "b5eeaa",
+        "3f6160",
+        "cf622e",
+        "95edaa",
+        "957622",
+        "55add3",
+        "b44730",
+        "8b7f1b",
+        "1bb52d",
+        "df34f6",
+        "becbfd",
+        "f947de",
+        "bd3d77",
+        "36bb49",
+        "754793",
+        "61a196",
+        "f0b6c8",
+        "cc8303",
+        "c2b5ef",
+        "ae0c09",
+        "96d2f3",
+        "7233db",
+        "0154dd",
+        "72d7d0",
+        "7a27a5",
+        "5d7ac1",
+        "79bd32",
+        "b78df4",
+        "dfe8fd"
+      ],
+      "sourceUrl": "http://pastebin.com/raw/RVyMnb3k",
+      "source": {
+        "cacheFile": "../../Documents/My Games/Tabletop Simulator/Mods/Models/httppastebincomrawRVyMnb3k.obj",
+        "sha256": "8a0e49f7baec893117f89e29fe6f8028c551340bdf2b13094194c3d2887f881d",
+        "bytes": 82933
+      },
+      "staged": {
+        "sha256": "99a5125a54fc0b2893e8ec9d8f4b8e3bcd950f6245d710b7f495bfd9f1760ac5",
+        "bytes": 82931
+      }
+    },
+    {
+      "id": "mountain-strip-01",
+      "role": "mountain-strip",
+      "publicPath": "/feast/mountains/strip-01.webp",
+      "guids": [
+        "063814"
+      ],
+      "sourceUrl": "http://i.imgur.com/sUZVzKQ.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomsUZVzKQjpg.jpg",
+        "sha256": "2beccb2534b13c44ad7c91906ed2d0408cd2422a606706f89b58bfbf621c9bbc",
+        "bytes": 393526,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "c592f77cd5ed0c5c4094af92f9144fc33442e85b6a51bbc1cd749d86195dff49",
+        "bytes": 464462,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "mountain-strip-02",
+      "role": "mountain-strip",
+      "publicPath": "/feast/mountains/strip-02.webp",
+      "guids": [
+        "c9d403"
+      ],
+      "sourceUrl": "http://i.imgur.com/cm6dqRO.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomcm6dqROjpg.jpg",
+        "sha256": "64c1269a0cff7df1acf62f61d54fd8e8c5c568595782f4d710a6e392a32cf1f7",
+        "bytes": 395854,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "e53baae2ff5a672de71f95a2480e32270e3d97b51da43414e4387836659e1a75",
+        "bytes": 467748,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "mountain-strip-03",
+      "role": "mountain-strip",
+      "publicPath": "/feast/mountains/strip-03.webp",
+      "guids": [
+        "c71013"
+      ],
+      "sourceUrl": "http://i.imgur.com/CN7gyXx.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomCN7gyXxjpg.jpg",
+        "sha256": "25e05097d71f78a97c6e1fc42ddd1bb19f2b063159cb2b2c3df693f835cd42f4",
+        "bytes": 467439,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "e017de5dfeccfcb21ad01e773e92f68a5ac403b75c3759b282929326aba4930d",
+        "bytes": 551874,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "mountain-strip-04",
+      "role": "mountain-strip",
+      "publicPath": "/feast/mountains/strip-04.webp",
+      "guids": [
+        "f0a898"
+      ],
+      "sourceUrl": "http://i.imgur.com/pCsbvjo.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcompCsbvjojpg.jpg",
+        "sha256": "d75f9e170f03348608fc4f779d29006f69b41f253b2e2af425fe8cae80485435",
+        "bytes": 258738,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "cf053ea71870e745d5493aaca9f527a6639e9425464e78b726df47709481c761",
+        "bytes": 277250,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "mountain-strip-05",
+      "role": "mountain-strip",
+      "publicPath": "/feast/mountains/strip-05.webp",
+      "guids": [
+        "ee0daf"
+      ],
+      "sourceUrl": "http://i.imgur.com/RvY2XmU.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomRvY2XmUjpg.jpg",
+        "sha256": "247182eea34b24367a009b81695049fabf1e7ed6d0e741cb2fbd8667215691c6",
+        "bytes": 239153,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "06d5734f7225af84dcb6a82b9140cf99ee65967f7c472d1c9150d8adf89d5c78",
+        "bytes": 227330,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "mountain-strip-06",
+      "role": "mountain-strip",
+      "publicPath": "/feast/mountains/strip-06.webp",
+      "guids": [
+        "bc611e"
+      ],
+      "sourceUrl": "http://i.imgur.com/Rk0BqsO.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomRk0BqsOjpg.jpg",
+        "sha256": "139f6ccd6a1e00d24ab2e39e9cb7bc749cfd472621427b75328ee534b62781c5",
+        "bytes": 284972,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "2f3afc1a5871db43748d2470092d4f1dbc11d0df93262c3e83190253375dc89f",
+        "bytes": 321946,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "mountain-strip-07",
+      "role": "mountain-strip",
+      "publicPath": "/feast/mountains/strip-07.webp",
+      "guids": [
+        "eb1d19"
+      ],
+      "sourceUrl": "http://i.imgur.com/UvrELwV.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomUvrELwVjpg.jpg",
+        "sha256": "c45463a96dbacf15be453305544b93e113ce5210b61246cb58a0b14c86ae06c0",
+        "bytes": 339601,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "8e826d14106db82218ec547ce2c1086092b95a500afc7141824ba695e495af7e",
+        "bytes": 394590,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "mountain-strip-08",
+      "role": "mountain-strip",
+      "publicPath": "/feast/mountains/strip-08.webp",
+      "guids": [
+        "3db5c1"
+      ],
+      "sourceUrl": "http://i.imgur.com/tq0GJk1.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomtq0GJk1jpg.jpg",
+        "sha256": "cb39fd05cdc2a7f11245a32bb7cba6e794d5a0f004f78e9ba5bdce3e249d56cb",
+        "bytes": 336443,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "0d3e270fbdcff0a05ac722be2a579f7a6af339364e16b8c7942c1a06134b4b75",
+        "bytes": 389612,
+        "imagePx": [
+          2300,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "resource-ore-texture",
+      "role": "resource-texture",
+      "publicPath": "/feast/resources/ore.webp",
+      "guids": [
+        "feb814",
+        "7f6d09",
+        "2d4a7f",
+        "e8349b",
+        "33f232",
+        "188775",
+        "3a4906",
+        "76b07d",
+        "468ff6",
+        "a38e2f",
+        "1607a5",
+        "b381f1",
+        "28d43c",
+        "01fd1d",
+        "000553",
+        "3e667d",
+        "ecf2e4",
+        "31c212",
+        "89734a",
+        "e664ea",
+        "8841fc",
+        "773182",
+        "adbeee",
+        "b5a9d4",
+        "b90ada",
+        "af07de",
+        "62d4ed",
+        "b90c88",
+        "5c5ebd",
+        "7c09bd",
+        "ad7602",
+        "6f9315",
+        "f9563e",
+        "bd2db2",
+        "0577b8",
+        "8b8c95",
+        "b4fb43",
+        "bdcb9f",
+        "8c8f37",
+        "a9d9a3",
+        "7e1d04"
+      ],
+      "sourceUrl": "http://i.imgur.com/ueJBi3k.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomueJBi3kjpg.jpg",
+        "sha256": "439ef133bd8da53bcf126b58bea90ef32ce09e3f3bb04896f373b195446c2ff3",
+        "bytes": 7472,
+        "imagePx": [
+          136,
+          138
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "6713ef0b46883fbe40a18ed2429539e3c76583c876840d2647cc7bcef1a07987",
+        "bytes": 8524,
+        "imagePx": [
+          136,
+          138
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "silver-1",
+      "role": "silver",
+      "publicPath": "/feast/resources/silver-1.webp",
+      "guids": [
+        "fa6941",
+        "3e43ac",
+        "882780",
+        "310321",
+        "8c12b8",
+        "836aa3",
+        "473095",
+        "fb0ca2",
+        "f52c6c",
+        "57509b",
+        "32a33b",
+        "8758f4",
+        "2c576f",
+        "5d8942",
+        "aaa341",
+        "fd67a8",
+        "6490fe",
+        "ad27f4",
+        "756484",
+        "6022ee",
+        "d99d91",
+        "617c2d",
+        "ac1192",
+        "a9f21d",
+        "4920f1",
+        "0f039f",
+        "891e04",
+        "f58e67",
+        "4f0cb8",
+        "e2aa33",
+        "e02412",
+        "7f3314",
+        "96b591",
+        "3ba0a1",
+        "93673f",
+        "2a5c11",
+        "7cf100",
+        "471003",
+        "de18bd",
+        "678e9d",
+        "b91beb",
+        "3882e6",
+        "8a2545",
+        "59fdc5",
+        "36f507",
+        "2bbef5",
+        "17d42c",
+        "867906",
+        "d205f9",
+        "1ff67e",
+        "33c9cb",
+        "a3bf33",
+        "644a68",
+        "873b2f",
+        "5f7730",
+        "6f08d7",
+        "9415e5",
+        "2dd4b1",
+        "15865d",
+        "1da442",
+        "fdf750",
+        "fb9ecc",
+        "b3a0d8",
+        "ff96d0",
+        "7dada7",
+        "b810a5",
+        "652671",
+        "e9f676",
+        "6dc764",
+        "d94307",
+        "26bbc7",
+        "cb1e87",
+        "fe28a2",
+        "9b86f6",
+        "64381c",
+        "d850e5",
+        "1fe0a5",
+        "fbb145",
+        "c6f633",
+        "65b0e8",
+        "f33825"
+      ],
+      "sourceUrl": "http://i.imgur.com/Ff1toRQ.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomFf1toRQjpg.jpg",
+        "sha256": "129d1613e6182f51ba70bd2c15e59346c35a60e2031b3953d81d948daf54ddf2",
+        "bytes": 32229,
+        "imagePx": [
+          243,
+          249
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "537ae4157fa72d48d014a65abe8e1693c8c5b46ec429d77785cd75a828fc827d",
+        "bytes": 37088,
+        "imagePx": [
+          243,
+          249
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "silver-10",
+      "role": "silver",
+      "publicPath": "/feast/resources/silver-10.webp",
+      "guids": [
+        "faeacc",
+        "2fc260",
+        "5a67cf",
+        "13e8ef",
+        "ae0f02",
+        "c5599b"
+      ],
+      "sourceUrl": "http://i.imgur.com/0haMk7G.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom0haMk7Gjpg.jpg",
+        "sha256": "da5b33d51a31c41b563734bd42aa7bb0fbf46cccca979fe3f387cbabe88ba43b",
+        "bytes": 224692,
+        "imagePx": [
+          1000,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "cd7cdd997823f233f7e9fcca9a2230cde4a2cbe2fb80f7c803a720a94b4ee8a3",
+        "bytes": 265662,
+        "imagePx": [
+          1000,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "silver-2",
+      "role": "silver",
+      "publicPath": "/feast/resources/silver-2.webp",
+      "guids": [
+        "23f013",
+        "2a1797",
+        "f1d05f",
+        "87f826",
+        "1a61a7",
+        "4c9c83",
+        "fe11f0",
+        "20fa51",
+        "e22d48",
+        "3cadd6",
+        "c56e51",
+        "76af70",
+        "2a20f9",
+        "ae6cd5",
+        "0bce7e",
+        "ca1ace",
+        "bca778",
+        "94b4f2",
+        "9e96d0",
+        "682923",
+        "99ed58",
+        "a83f10",
+        "b51bca"
+      ],
+      "sourceUrl": "http://i.imgur.com/CFJlHRF.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomCFJlHRFjpg.jpg",
+        "sha256": "0291bdf2a0155c1734c7fe4320fe15e9eecf76ae0328d1dacb88e5d31aeb730d",
+        "bytes": 46406,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "d2883ec11687e1758d095ee9363b54ec5d1091a3bea20c1fbe1fc04099e540be",
+        "bytes": 53008,
+        "imagePx": [
+          400,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "silver-4",
+      "role": "silver",
+      "publicPath": "/feast/resources/silver-4.webp",
+      "guids": [
+        "ac39a2",
+        "8d418a",
+        "694b8f",
+        "5f5099",
+        "70bee5",
+        "076d50",
+        "341d00",
+        "f3aa82",
+        "523cd4",
+        "87d89a",
+        "646698",
+        "db190f",
+        "23708a",
+        "0c488b",
+        "5083cc",
+        "9e1a41",
+        "f5c54f",
+        "5da442",
+        "f59b2a"
+      ],
+      "sourceUrl": "http://i.imgur.com/FjUNudE.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomFjUNudEjpg.jpg",
+        "sha256": "85d28aaee1947a42b5abfa967761c8ac08f75f9bdc8cbabc77180c65113af823",
+        "bytes": 90772,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "c42756ba13ef442662f053b260bab59eaf1f0a06eab925c08306b887e4b16de7",
+        "bytes": 106616,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "resource-stone",
+      "role": "resource",
+      "publicPath": "/feast/resources/stone.webp",
+      "guids": [
+        "508e9c",
+        "a843c7",
+        "acbc7f",
+        "a2928e",
+        "f656d4",
+        "2c38e4",
+        "b92049",
+        "af95da",
+        "052dfc",
+        "57d70a",
+        "754506",
+        "a73a57",
+        "7dfe31",
+        "8fd4de",
+        "d54af5",
+        "c7337a",
+        "a07688",
+        "932fb6",
+        "8f3df0",
+        "4f46ea",
+        "df4b70",
+        "6fc9d8",
+        "ae7182",
+        "37fdb7",
+        "717bcc"
+      ],
+      "sourceUrl": "http://i.imgur.com/JkxJ9Rf.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomJkxJ9Rfpng.png",
+        "sha256": "f8909f3e596c2fd6b2e0391aba82710c8693ca48b47403d1dce25455413bf1ee",
+        "bytes": 111625,
+        "imagePx": [
+          197,
+          278
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "90629840c972432fe1a4fa6c3e010935d27f1785e16d861029cd0f57c9ee4fad",
+        "bytes": 51304,
+        "imagePx": [
+          197,
+          278
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "thing-penalty",
+      "role": "penalty",
+      "publicPath": "/feast/resources/thing-penalty.webp",
+      "guids": [
+        "a840dc",
+        "7c907b",
+        "a9b6bc",
+        "85e172",
+        "82063c",
+        "ee9cbf",
+        "1156c6",
+        "f27165"
+      ],
+      "sourceUrl": "http://i.imgur.com/tlOhV3o.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomtlOhV3opng.png",
+        "sha256": "d3c8803fb2c5624c9fab3b3e8971a88518810febccd9ac95d255e824f20e96ee",
+        "bytes": 274624,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "737b4e8a9008e50e516eb2ac2fa4c153751639d58bc42924f770013bdd4764a8",
+        "bytes": 187436,
+        "imagePx": [
+          400,
+          400
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "resource-wood",
+      "role": "resource",
+      "publicPath": "/feast/resources/wood.webp",
+      "guids": [
+        "1c9f75",
+        "fb0a8d",
+        "95e3ac",
+        "ea13c2",
+        "e9e11e",
+        "ab0222",
+        "f2d978",
+        "9b141e",
+        "cc1090",
+        "e83dbd",
+        "34f1f6",
+        "d977e8",
+        "d5905a",
+        "ba4e42",
+        "9bb6eb",
+        "5681cc",
+        "9a9388",
+        "4655bd",
+        "a6a956",
+        "11c5ba",
+        "e595b5",
+        "ed1d1c",
+        "e03662",
+        "0dfec8",
+        "9d7c68",
+        "0dee10",
+        "36aefb",
+        "62b18a",
+        "45e195",
+        "e4a621",
+        "1933f7",
+        "6cfed9",
+        "e3e399"
+      ],
+      "sourceUrl": "http://i.imgur.com/HhSpuNi.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomHhSpuNipng.png",
+        "sha256": "d6601395468efcd7408083a067019b12f2468ccbbdb1330b64cad4ab9dece564",
+        "bytes": 109871,
+        "imagePx": [
+          188,
+          280
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "2550c74144f59c751e100ed8700ce031712ae3f6fba2070187fda9e965592bf9",
+        "bytes": 47196,
+        "imagePx": [
+          188,
+          280
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "round-overview-back",
+      "role": "component-back",
+      "publicPath": "/feast/round-overview-back.webp",
+      "guids": [
+        "c89f80"
+      ],
+      "sourceUrl": "http://i.imgur.com/GMdF7p4.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomGMdF7p4jpg.jpg",
+        "sha256": "5edbfa834a25c14d01e1aca2316c75d975804f3e35a24795e02925b2f4e9e873",
+        "bytes": 954721,
+        "imagePx": [
+          1000,
+          2317
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "02d60c5f439024b8c2bdbcc7682cd51b8d5b74e571a26613993cfeab9636910a",
+        "bytes": 881126,
+        "imagePx": [
+          1000,
+          2317
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "round-overview",
+      "role": "round-overview",
+      "publicPath": "/feast/round-overview.webp",
+      "guids": [
+        "c89f80"
+      ],
+      "sourceUrl": "http://i.imgur.com/N8RwZC6.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomN8RwZC6jpg.jpg",
+        "sha256": "c36a5cf7875485ac12490ae8eef536cecd8e34a5df05a44fb4c1fb2b5e876f19",
+        "bytes": 1288694,
+        "imagePx": [
+          1000,
+          2317
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "0e2aff9dc2a722d7f1a86af9d2012136b6e5a305204f7894c50d97f478ce337e",
+        "bytes": 1374294,
+        "imagePx": [
+          1000,
+          2317
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "rulebook",
+      "role": "official-rules",
+      "publicPath": "/feast/rulebook.pdf",
+      "guids": [],
+      "sourceUrl": "https://www.feuerland-spiele.de/fileadmin/game/Ein_Fest_fuer_Odin/ODIN_EN_rules_2nd_Web.pdf",
+      "source": {
+        "cacheFile": "tmp/pdfs/odin-rulebook.pdf",
+        "sha256": "e1280d095d2df7da6cb1cfd9cd7c0b7befcce2d8c495e3a541bc9ef64c2d9e36",
+        "bytes": 17912561
+      },
+      "staged": {
+        "sha256": "e1280d095d2df7da6cb1cfd9cd7c0b7befcce2d8c495e3a541bc9ef64c2d9e36",
+        "bytes": 17912561
+      }
+    },
+    {
+      "id": "ship-display-back",
+      "role": "supply-board-back",
+      "publicPath": "/feast/ship-display-back.webp",
+      "guids": [
+        "8cabca"
+      ],
+      "sourceUrl": "http://i.imgur.com/RiypEZy.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomRiypEZyjpg.jpg",
+        "sha256": "f0598da4d3d3a52ad87820f398c810b42dcfc2cfc85daf142906244e2a55fa3d",
+        "bytes": 264731,
+        "imagePx": [
+          1000,
+          669
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "70e97ebaa53fca3a98583bfdba8bc9545a858a6f3737499692ae06925220ed65",
+        "bytes": 270840,
+        "imagePx": [
+          1000,
+          669
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "ship-display-front",
+      "role": "supply-board",
+      "publicPath": "/feast/ship-display.webp",
+      "guids": [
+        "8cabca"
+      ],
+      "sourceUrl": "http://i.imgur.com/607bJPr.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom607bJPrjpg.jpg",
+        "sha256": "b2af5019116fb09dc96a2d9bb9a71b34b933bb953ea73423ec1b744a6ade1a01",
+        "bytes": 276978,
+        "imagePx": [
+          1000,
+          669
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "2440d6086c184c38e90a29ba690b7c0a33019e3830952cdb06f794bc1430fd78",
+        "bytes": 314902,
+        "imagePx": [
+          1000,
+          669
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "ship-knarr-back",
+      "role": "ship-back",
+      "publicPath": "/feast/ships/knarr-back.webp",
+      "guids": [
+        "e4aaee",
+        "87b692",
+        "9eccff",
+        "451f55",
+        "739e98",
+        "79b8fc",
+        "f942d7",
+        "1d3eb8",
+        "6a4948",
+        "7244ea",
+        "44abf0",
+        "03ce7f",
+        "112266"
+      ],
+      "sourceUrl": "http://i.imgur.com/w5zzNsY.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomw5zzNsYjpg.jpg",
+        "sha256": "69c2e89b2082bc3984481e3cf8ef027aa718058cd19f40ab67b82c8cb1e8c7a2",
+        "bytes": 344005,
+        "imagePx": [
+          600,
+          1200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "2958666b98edbaf6c8597dc2b7b983a19faa8856a2debe93e370359f79898dce",
+        "bytes": 384642,
+        "imagePx": [
+          600,
+          1200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "ship-knarr",
+      "role": "ship",
+      "publicPath": "/feast/ships/knarr-front.webp",
+      "guids": [
+        "e4aaee",
+        "87b692",
+        "9eccff",
+        "451f55",
+        "739e98",
+        "79b8fc",
+        "f942d7",
+        "1d3eb8",
+        "6a4948",
+        "7244ea",
+        "44abf0",
+        "03ce7f",
+        "112266"
+      ],
+      "sourceUrl": "http://i.imgur.com/h3Gz3Wm.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomh3Gz3Wmjpg.jpg",
+        "sha256": "2bec99bc6aa318f387bd2565529b65dd6a7141e9a6bfb893d9bd8d58c372bad1",
+        "bytes": 255490,
+        "imagePx": [
+          600,
+          1200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "f4b0b12375963ddcc736d1c208dea697a1885f7f6dfc560d7c902c37f912fccb",
+        "bytes": 275242,
+        "imagePx": [
+          600,
+          1200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "ship-longship-back",
+      "role": "ship-back",
+      "publicPath": "/feast/ships/longship-back.webp",
+      "guids": [
+        "39ba83",
+        "8ddbd5",
+        "5ea3a5",
+        "2ade02",
+        "e6a118",
+        "786885",
+        "efb4c0",
+        "36a878",
+        "e94967",
+        "4efe06",
+        "c99650"
+      ],
+      "sourceUrl": "http://i.imgur.com/kW1ISyR.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomkW1ISyRjpg.jpg",
+        "sha256": "1281eb6deaa3ace2f7c6a22fcab6f442ed26e6c54a432deefcd5921e83e616bb",
+        "bytes": 257174,
+        "imagePx": [
+          600,
+          1200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "23c8373ed7e16adf72d644a46df18b975fefe76d9c3bd06e4248bb98ff953e68",
+        "bytes": 279864,
+        "imagePx": [
+          600,
+          1200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "ship-longship",
+      "role": "ship",
+      "publicPath": "/feast/ships/longship-front.webp",
+      "guids": [
+        "39ba83",
+        "8ddbd5",
+        "5ea3a5",
+        "2ade02",
+        "e6a118",
+        "786885",
+        "efb4c0",
+        "36a878",
+        "e94967",
+        "4efe06",
+        "c99650"
+      ],
+      "sourceUrl": "http://i.imgur.com/P9ZhB1N.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomP9ZhB1Njpg.jpg",
+        "sha256": "72deed183a44978eb456fc7788227168e48d4f82b623b24b08d54c83ff565e73",
+        "bytes": 264373,
+        "imagePx": [
+          600,
+          1200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "9bcd8f51f8b6d681b5609883034edc5b03ab43c060233d8939a8700ecc1836fa",
+        "bytes": 281964,
+        "imagePx": [
+          600,
+          1200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "ship-whaling-boat",
+      "role": "ship",
+      "publicPath": "/feast/ships/whaling-boat-front.webp",
+      "guids": [
+        "661d6a",
+        "5e413d",
+        "dc1549",
+        "2387ca",
+        "1b1346",
+        "232127",
+        "2d7a1b",
+        "147dcf",
+        "9b6030",
+        "801bab",
+        "6d04ad"
+      ],
+      "sourceUrl": "http://i.imgur.com/jwhdUNu.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomjwhdUNujpg.jpg",
+        "sha256": "4a074fb61bea26f54929a77dc31d2bf8c91555a71a818eeac5c6ed7f3eefd767",
+        "bytes": 186562,
+        "imagePx": [
+          600,
+          800
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "48229f3f2e57d0441b5bfa3cbb82e7daa9ee0beeb4d8d778be89115df1357b5c",
+        "bytes": 209214,
+        "imagePx": [
+          600,
+          800
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "special-display-back",
+      "role": "supply-board-back",
+      "publicPath": "/feast/special-display-back.webp",
+      "guids": [
+        "9c35fb"
+      ],
+      "sourceUrl": "http://i.imgur.com/UbBVfY0.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomUbBVfY0png.png",
+        "sha256": "3842441489bff8803dfc379919166884ea1351303750c7a48b4b0816374b7311",
+        "bytes": 1142934,
+        "imagePx": [
+          1000,
+          720
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "9b88a0a7ad1544fd2a92aca510941039ed6b57cea86a10584c5368638d0a5390",
+        "bytes": 156626,
+        "imagePx": [
+          1000,
+          720
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-display-front",
+      "role": "supply-board",
+      "publicPath": "/feast/special-display.webp",
+      "guids": [
+        "9c35fb"
+      ],
+      "sourceUrl": "http://i.imgur.com/osZ9hAg.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomosZ9hAgpng.png",
+        "sha256": "a00bd722a5df681cabeee370388de79a1a39c02ebc2114a09850e08e3dd02f10",
+        "bytes": 1172437,
+        "imagePx": [
+          1000,
+          720
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "4dc896e5dd5ea81c38f44c36303a26bb35c0279ea4d3146ccc62f2c1bbe2f49d",
+        "bytes": 192256,
+        "imagePx": [
+          1000,
+          720
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-amber-figure",
+      "role": "special-tile",
+      "publicPath": "/feast/special/amber-figure.webp",
+      "guids": [
+        "06eb43"
+      ],
+      "sourceUrl": "http://i.imgur.com/axAk8z0.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomaxAk8z0png.png",
+        "sha256": "65b9669d7c9e433d3ea8b49008883381289efac49c48d3a38081a614e96753fc",
+        "bytes": 760649,
+        "imagePx": [
+          700,
+          700
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "aa8a864ad2f422714e7c8b0b963535370132a3121516f9424b97d57361c076dc",
+        "bytes": 482410,
+        "imagePx": [
+          700,
+          700
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-belt",
+      "role": "special-tile",
+      "publicPath": "/feast/special/belt.webp",
+      "guids": [
+        "1c4ceb"
+      ],
+      "sourceUrl": "http://i.imgur.com/b2j3NVT.jpg",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomb2j3NVTjpg.jpg",
+        "sha256": "c07f770cab29b9b305b6c59d436c435f38f0b6306547148e7ed2b18e3989a098",
+        "bytes": 103667,
+        "imagePx": [
+          1000,
+          200
+        ],
+        "format": "jpeg",
+        "hasAlpha": false
+      },
+      "staged": {
+        "sha256": "e2ebdcf59c28a126a76bdc453ac27ab41faa3eae5566f8ccf4f5fa48c7de050d",
+        "bytes": 340324,
+        "imagePx": [
+          1000,
+          200
+        ],
+        "format": "webp",
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "special-chalice",
+      "role": "special-tile",
+      "publicPath": "/feast/special/chalice.webp",
+      "guids": [
+        "54573b"
+      ],
+      "sourceUrl": "http://i.imgur.com/yacCywE.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomyacCywEpng.png",
+        "sha256": "5ec9dd2c41b80f711d427caff6f68c276cb1888e2c28a50a8ae6ca1f6de5e914",
+        "bytes": 995217,
+        "imagePx": [
+          700,
+          900
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "229acdcff4840282e78f0961bc54fb1b265f01ac0503fbbfd4791193d61781ea",
+        "bytes": 623548,
+        "imagePx": [
+          700,
+          900
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-cloakpin",
+      "role": "special-tile",
+      "publicPath": "/feast/special/cloakpin.webp",
+      "guids": [
+        "4479b9"
+      ],
+      "sourceUrl": "http://i.imgur.com/nGAU9sm.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomnGAU9smpng.png",
+        "sha256": "4b88e3c9884ba5729038be4fd128318738efc0157194d7d11034456c6e553339",
+        "bytes": 530489,
+        "imagePx": [
+          900,
+          500
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "c3e29b3712cfc7082f06448a8fa68be136de5ab2045b4415fe76faac1b1b1ff4",
+        "bytes": 331432,
+        "imagePx": [
+          900,
+          500
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-crucifix",
+      "role": "special-tile",
+      "publicPath": "/feast/special/crucifix.webp",
+      "guids": [
+        "0b4301"
+      ],
+      "sourceUrl": "http://i.imgur.com/qGnqg6z.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomqGnqg6zpng.png",
+        "sha256": "fb91853d754c6f57f1e3587d5fc189b571a51dc5dae36e11fd5f1364bafde140",
+        "bytes": 542676,
+        "imagePx": [
+          700,
+          900
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "b6662f392c2bc2e83f311f69e6c608370afb1f90f30be0093712f1d6be4cf902",
+        "bytes": 310832,
+        "imagePx": [
+          700,
+          900
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-drinking-horn",
+      "role": "special-tile",
+      "publicPath": "/feast/special/drinking-horn.webp",
+      "guids": [
+        "50db66"
+      ],
+      "sourceUrl": "http://i.imgur.com/NPEWOO7.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomNPEWOO7png.png",
+        "sha256": "46787e89139f6b2306a0b40e0fda099e6bf1d94126453b5a92c3174075674df0",
+        "bytes": 629272,
+        "imagePx": [
+          700,
+          700
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "430098c36347358df3b2edaf5cc0cad357b919fc3c0788a2f458a573c0f7351c",
+        "bytes": 383932,
+        "imagePx": [
+          700,
+          700
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-english-crown",
+      "role": "special-tile",
+      "publicPath": "/feast/special/english-crown.webp",
+      "guids": [
+        "4a47a8"
+      ],
+      "sourceUrl": "http://i.imgur.com/AfVKoS0.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomAfVKoS0png.png",
+        "sha256": "c1630c9fc6c76a44bea95e5fc1de3476a4a520cd651418ee6df199f1280fd686",
+        "bytes": 1518603,
+        "imagePx": [
+          1100,
+          700
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "d19e95c4dc0cfc2f9620588a8da3582301abba7f6adc8fc51dd480fa3342530c",
+        "bytes": 990592,
+        "imagePx": [
+          1100,
+          700
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-fibula",
+      "role": "special-tile",
+      "publicPath": "/feast/special/fibula.webp",
+      "guids": [
+        "9a1b1d"
+      ],
+      "sourceUrl": "http://i.imgur.com/oe2Qvgp.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomoe2Qvgppng.png",
+        "sha256": "1cb0596e522bb9c07b0141b8c268e25843ddbaaf08e8296ebaab1dfdb97c6e25",
+        "bytes": 941011,
+        "imagePx": [
+          700,
+          1100
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "fc1f880b0868e093465a7ac88e0a28d167a7b69a61a156742c755936b9747845",
+        "bytes": 550450,
+        "imagePx": [
+          700,
+          1100
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-forge-hammer",
+      "role": "special-tile",
+      "publicPath": "/feast/special/forge-hammer.webp",
+      "guids": [
+        "8d48fc"
+      ],
+      "sourceUrl": "http://i.imgur.com/i5KCbcz.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomi5KCbczpng.png",
+        "sha256": "5bfbcabc5c336cfd8272b6d89986f5de7af4718062c092ff030dcd18e3c6f18c",
+        "bytes": 956149,
+        "imagePx": [
+          700,
+          1100
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "08ba875f961ed727db9411e8be363c27c9a55dbe69238a853df4a2ffad09ead5",
+        "bytes": 559946,
+        "imagePx": [
+          700,
+          1100
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-glass-beads",
+      "role": "special-tile",
+      "publicPath": "/feast/special/glass-beads.webp",
+      "guids": [
+        "e847df"
+      ],
+      "sourceUrl": "http://i.imgur.com/zci5q85.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomzci5q85png.png",
+        "sha256": "963098159164eb9a7ada4b8278044df0d8d92d8eb45e73f89352e9946345d43c",
+        "bytes": 496324,
+        "imagePx": [
+          700,
+          700
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "4778511af777b185008bf3fea68cb430cc4e3316f5e1190016397c37d643a280",
+        "bytes": 293648,
+        "imagePx": [
+          700,
+          700
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-gold-brooch",
+      "role": "special-tile",
+      "publicPath": "/feast/special/gold-brooch.webp",
+      "guids": [
+        "06780d"
+      ],
+      "sourceUrl": "http://i.imgur.com/kjQFJTY.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomkjQFJTYpng.png",
+        "sha256": "92053da1412aa8ace1d15649c1cceaed738249800f6c10f48ce985d6b56a79bd",
+        "bytes": 685399,
+        "imagePx": [
+          700,
+          900
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "6311faf34cec42aa4ef13cd2a328f57a68c927a781bf9d8050ed5c1ddecc1f23",
+        "bytes": 381094,
+        "imagePx": [
+          700,
+          900
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-helmet",
+      "role": "special-tile",
+      "publicPath": "/feast/special/helmet.webp",
+      "guids": [
+        "b9bfbd"
+      ],
+      "sourceUrl": "http://i.imgur.com/jbnklhN.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomjbnklhNpng.png",
+        "sha256": "cb8d3b0817f94973cd5699a4ddc6e6faf51dee45f9ce7dfb4e0831b2bc1e3818",
+        "bytes": 453861,
+        "imagePx": [
+          500,
+          700
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "13ada5998e06e1788bdd26df14400f096f76123c7e1ae9e03dc69dc833495217",
+        "bytes": 269334,
+        "imagePx": [
+          500,
+          700
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-horseshoe",
+      "role": "special-tile",
+      "publicPath": "/feast/special/horseshoe.webp",
+      "guids": [
+        "36ea09"
+      ],
+      "sourceUrl": "http://i.imgur.com/oRRCbjV.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomoRRCbjVpng.png",
+        "sha256": "368a52defcc538509cc5075fad9af6bbe3f6c1d762b4fe240f99a57d74de6b5f",
+        "bytes": 660612,
+        "imagePx": [
+          700,
+          700
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "ea2ecb82402f61af40faebf4b9fe48994320e54c2094b29b62e54ced8c844477",
+        "bytes": 377794,
+        "imagePx": [
+          700,
+          700
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-round-shield",
+      "role": "special-tile",
+      "publicPath": "/feast/special/round-shield.webp",
+      "guids": [
+        "9e68f5"
+      ],
+      "sourceUrl": "http://i.imgur.com/yo4CWjB.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcomyo4CWjBpng.png",
+        "sha256": "08d1d7ba920acd0d1218841ab62c87a1196ca52c11764791d722dd1b68e7e189",
+        "bytes": 1422303,
+        "imagePx": [
+          900,
+          900
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "7898b276526bd740f3bf84b5d7a2ae3ef492d4df044cacf0c6bf039a043d7cb7",
+        "bytes": 864298,
+        "imagePx": [
+          900,
+          900
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    },
+    {
+      "id": "special-throwing-axe",
+      "role": "special-tile",
+      "publicPath": "/feast/special/throwing-axe.webp",
+      "guids": [
+        "e29cff"
+      ],
+      "sourceUrl": "http://i.imgur.com/0RyPnB7.png",
+      "source": {
+        "cacheFile": "Images/httpiimgurcom0RyPnB7png.png",
+        "sha256": "2196d54085b37def94ded9f8f85d73774f7916833eece3b76da59a8a5257b147",
+        "bytes": 1045476,
+        "imagePx": [
+          1100,
+          700
+        ],
+        "format": "png",
+        "hasAlpha": true
+      },
+      "staged": {
+        "sha256": "ed08649c704347930eef937cc506d0d3b08308dd85b4be842d710ad0cf8650cc",
+        "bytes": 681636,
+        "imagePx": [
+          1100,
+          700
+        ],
+        "format": "webp",
+        "hasAlpha": true
+      }
+    }
+  ],
+  "sourceGuids": {
+    "actionBoard": "996bfd",
+    "homeBoards": [
+      "037bf4",
+      "c52e5a",
+      "85c969",
+      "74941a"
+    ],
+    "extensions": [
+      "ea6dee",
+      "2dd414"
+    ],
+    "exploration": {
+      "A": "15d0ed",
+      "B": "d62e9b",
+      "C": "e2186a",
+      "D": "2c7a52"
+    },
+    "buildings": {
+      "shed": [
+        "5bcac9",
+        "ca70ed",
+        "27c3ca"
+      ],
+      "stone-house": [
+        "993898",
+        "ed203c",
+        "3ca507"
+      ],
+      "long-house": [
+        "8b9cf7",
+        "d79e74",
+        "8beb1e",
+        "e31e84",
+        "7ffaa3"
+      ]
+    },
+    "ships": {
+      "whaling-boat": [
+        "5e413d",
+        "dc1549",
+        "2387ca",
+        "1b1346",
+        "232127",
+        "2d7a1b",
+        "147dcf",
+        "9b6030",
+        "801bab",
+        "6d04ad"
+      ],
+      "knarr": [
+        "87b692",
+        "9eccff",
+        "451f55",
+        "739e98",
+        "79b8fc",
+        "f942d7",
+        "1d3eb8",
+        "6a4948",
+        "7244ea",
+        "44abf0",
+        "03ce7f",
+        "112266"
+      ],
+      "longship": [
+        "8ddbd5",
+        "5ea3a5",
+        "2ade02",
+        "e6a118",
+        "786885",
+        "efb4c0",
+        "36a878",
+        "e94967",
+        "4efe06",
+        "c99650"
+      ]
+    },
+    "goods": {
+      "peas/mead": {
+        "bagGuid": "8d4e28",
+        "guids": [
+          "022cd9",
+          "10c601",
+          "41e40f",
+          "6312c3",
+          "d1e898",
+          "442930",
+          "878aa4",
+          "acf451",
+          "056dab",
+          "81fedd",
+          "2fce9f",
+          "af0433",
+          "d9302e",
+          "9e2206",
+          "0be8a9",
+          "1b21d1",
+          "c79f74",
+          "113253",
+          "4c5577",
+          "7d776b",
+          "53f1a9",
+          "7d6e5c",
+          "6ba259",
+          "662de1",
+          "14a1d2"
+        ]
+      },
+      "flax/stockfish": {
+        "bagGuid": "95013a",
+        "guids": [
+          "fdcda8",
+          "2aab26",
+          "6842ac",
+          "e30874",
+          "c6b705",
+          "4b5bf9",
+          "b5fd64",
+          "f14897",
+          "2d70ea",
+          "33058b",
+          "2798b7",
+          "49d6fe",
+          "f36bf9",
+          "e741af",
+          "596c33",
+          "93af0e",
+          "c665a4",
+          "f8c9ca",
+          "885013",
+          "2125a7"
+        ]
+      },
+      "beans/milk": {
+        "bagGuid": "75db21",
+        "guids": [
+          "93acc3",
+          "0f4bda",
+          "574c26",
+          "43d91a",
+          "e5418e",
+          "4a9b8f",
+          "1aa3cd",
+          "7fc605",
+          "c00fb0",
+          "b7e038",
+          "5515a6",
+          "f3be8f",
+          "1f88ec",
+          "8fe19b",
+          "0a96fa",
+          "3718fc",
+          "94b386",
+          "aa08ce",
+          "1933c5",
+          "65ad87"
+        ]
+      },
+      "grain/salt-meat": {
+        "bagGuid": "ae9d40",
+        "guids": [
+          "3a684f",
+          "8ec44d",
+          "b26824",
+          "626680",
+          "96e596",
+          "26111e",
+          "5badb7",
+          "fe1592",
+          "25cb5f",
+          "7e3f7c",
+          "a781c0",
+          "a3b048",
+          "07b5f8",
+          "dda406",
+          "6e0688",
+          "34f72c",
+          "c185ec",
+          "98fe3b",
+          "1a3d2f",
+          "d85be9"
+        ]
+      },
+      "cabbage/game-meat": {
+        "bagGuid": "dc7256",
+        "guids": [
+          "aa8503",
+          "0985d2",
+          "0a411d",
+          "eed20d",
+          "5dcf6f",
+          "d7ff36",
+          "665b84",
+          "6fecdb",
+          "84c128",
+          "24dd4a",
+          "889a88",
+          "5205eb",
+          "4a2aaf",
+          "b2cd6a",
+          "134d92",
+          "2a4d36",
+          "3f365c"
+        ]
+      },
+      "fruits/whale-meat": {
+        "bagGuid": "f670ab",
+        "guids": [
+          "7e0bce",
+          "3313bb",
+          "235ca3",
+          "b73d59",
+          "9ca42b",
+          "fdb423",
+          "930f4e",
+          "d1c911",
+          "361347",
+          "75dee8",
+          "5fefd5",
+          "ddf5bd",
+          "e8d167",
+          "0bf352",
+          "7776cb"
+        ]
+      },
+      "sheep/pregnant-sheep": {
+        "bagGuid": "21c530",
+        "guids": [
+          "645a3c",
+          "645a3c",
+          "645a3c",
+          "87a6ae",
+          "cd46fa",
+          "645a3c",
+          "4d4eb6",
+          "05d296",
+          "645a3c",
+          "645a3c",
+          "308411",
+          "007dc9",
+          "64a0ea",
+          "645a3c",
+          "50500c",
+          "1c34f5",
+          "645a3c",
+          "fd2fc1"
+        ]
+      },
+      "cattle/pregnant-cattle": {
+        "bagGuid": "d54da5",
+        "guids": [
+          "346d05",
+          "346d05",
+          "346d05",
+          "ec39c6",
+          "346d05",
+          "846b8c",
+          "95798e",
+          "346d05",
+          "acd8a8",
+          "346d05",
+          "172258",
+          "99b037",
+          "346d05",
+          "b8029b",
+          "ccb4e6"
+        ]
+      },
+      "oil/rune-stone": {
+        "bagGuid": "fd16dc",
+        "guids": [
+          "a6e10f",
+          "7e8dde",
+          "4199c2",
+          "c3aca1",
+          "f53028",
+          "c94411",
+          "3f7255",
+          "5b83fe",
+          "5065c3",
+          "1742bf",
+          "82d864",
+          "9ce0eb",
+          "c5bdc8",
+          "dd9977",
+          "05825c",
+          "0e00be",
+          "9d2e9a",
+          "b4dcaa",
+          "be69c9",
+          "795380",
+          "6c2806",
+          "d6a5e8",
+          "8caf98",
+          "f04780",
+          "22bb88",
+          "6a2b13",
+          "12a1a9",
+          "d07895",
+          "1a47cd",
+          "1d9e8f",
+          "88316b",
+          "35dfca",
+          "a60df3",
+          "6a611b",
+          "3fc3a3",
+          "0c5fd0",
+          "fb42be",
+          "03fe59",
+          "844559",
+          "8d7c6c",
+          "3732ad",
+          "ecf3c0",
+          "9a6259"
+        ]
+      },
+      "hide/silverware": {
+        "bagGuid": "019662",
+        "guids": [
+          "c014a7",
+          "ae5f28",
+          "00778a",
+          "567046",
+          "07c05d",
+          "564d0a",
+          "1bbcd7",
+          "70c72f",
+          "e55f71",
+          "133337",
+          "7e14b2",
+          "02e072",
+          "be93be",
+          "d1c1b5",
+          "9ae55d",
+          "d67a7b",
+          "b14c06",
+          "963ab0",
+          "e01336",
+          "3c2931",
+          "8de9b2",
+          "cf89fb",
+          "eb035a",
+          "604ad6",
+          "e1356a",
+          "05fc2b",
+          "56afb7",
+          "e6d777",
+          "51662d",
+          "f0f320"
+        ]
+      },
+      "wool/chest": {
+        "bagGuid": "15a9d8",
+        "guids": [
+          "45f111",
+          "d7e39c",
+          "15a167",
+          "cabae7",
+          "68551a",
+          "034fa8",
+          "8dee20",
+          "c97f54",
+          "d7ed41",
+          "534ecd",
+          "096aa8",
+          "696dc8",
+          "0669c3",
+          "80d4ee",
+          "8fc8ac",
+          "fddb6b",
+          "171317",
+          "07754e",
+          "3a8620",
+          "7cd6a8",
+          "2e53a9",
+          "626594",
+          "731e3e",
+          "1b73e1",
+          "973efb",
+          "7ce769",
+          "fb6c4c",
+          "5cb22b",
+          "4c7b39",
+          "191a0b"
+        ]
+      },
+      "linen/silk": {
+        "bagGuid": "de4431",
+        "guids": [
+          "aaec4b",
+          "e970a2",
+          "5f177e",
+          "39c166",
+          "d58e65",
+          "2a3c5e",
+          "0b5e89",
+          "4b22c5",
+          "921a53",
+          "c65f15",
+          "ac41d4",
+          "2313e6",
+          "d83e46",
+          "50d98c",
+          "a69ba8",
+          "70f3d1",
+          "649fc1",
+          "a2cdfd",
+          "99f6f2",
+          "3ff33d"
+        ]
+      },
+      "skin-and-bones/spices": {
+        "bagGuid": "d76828",
+        "guids": [
+          "9693aa",
+          "607d1c",
+          "250620",
+          "9317dc",
+          "f34602",
+          "e8c94e",
+          "1514c0",
+          "61baab",
+          "7fd834",
+          "8dda00",
+          "0c4a50",
+          "12e3df",
+          "76125e",
+          "0771e1",
+          "06a8e0",
+          "b7478a",
+          "48161c",
+          "aa2faf",
+          "9a5144",
+          "1d36be"
+        ]
+      },
+      "fur/jewelry": {
+        "bagGuid": "b35e74",
+        "guids": [
+          "e9d813",
+          "75fb36",
+          "dbd1f1",
+          "cd9cd2",
+          "d05e3f",
+          "d077ee",
+          "9535b1",
+          "2a8721",
+          "93d4c0",
+          "d554ba",
+          "fd6107",
+          "236a32",
+          "116ac0",
+          "b5bf21",
+          "67f203",
+          "50de72",
+          "f7d89f",
+          "22dee3",
+          "70dcd0",
+          "a67c83"
+        ]
+      },
+      "robe/treasure-chest": {
+        "bagGuid": "e2034f",
+        "guids": [
+          "9a4859",
+          "94c9ff",
+          "03ce59",
+          "b80cf7",
+          "8cea6b",
+          "81dd74",
+          "f7fb31",
+          "6d7b8e",
+          "73a74b",
+          "6c364f",
+          "0a67d9",
+          "6cb89c",
+          "2f9b8d",
+          "57e536",
+          "fb446b",
+          "3c4b7e",
+          "5b64f1",
+          "eb0635"
+        ]
+      },
+      "clothing/silver-hoard": {
+        "bagGuid": "bb5010",
+        "guids": [
+          "1a1898",
+          "d2f635",
+          "d6981e",
+          "30df46",
+          "2b1b7d",
+          "f86c91",
+          "81f89f",
+          "c9a826",
+          "313337",
+          "bba529",
+          "ab1603",
+          "76a73c",
+          "351f35",
+          "0f1e63",
+          "a19283"
+        ]
+      }
+    },
+    "specials": {
+      "amber-figure": "06eb43",
+      "round-shield": "9e68f5",
+      "english-crown": "4a47a8",
+      "horseshoe": "36ea09",
+      "gold-brooch": "06780d",
+      "throwing-axe": "e29cff",
+      "chalice": "54573b",
+      "belt": "1c4ceb",
+      "cloakpin": "4479b9",
+      "drinking-horn": "50db66",
+      "fibula": "9a1b1d",
+      "crucifix": "0b4301",
+      "forge-hammer": "8d48fc",
+      "glass-beads": "e847df",
+      "helmet": "b9bfbd"
+    },
+    "mountains": [
+      "063814",
+      "c9d403",
+      "c71013",
+      "f0a898",
+      "ee0daf",
+      "bc611e",
+      "eb1d19",
+      "3db5c1"
+    ],
+    "occupationDecks": [
+      "fa2877",
+      "8d76cb",
+      "deaab0",
+      "8fd527",
+      "114b22",
+      "aa2575"
+    ],
+    "weaponDecks": [
+      "e37910",
+      "b5a15d",
+      "e65482",
+      "397e8e"
+    ],
+    "roundOverview": "c89f80",
+    "box": "e2d3ea"
+  }
+}

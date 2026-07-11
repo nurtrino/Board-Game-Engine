@@ -8,7 +8,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  DS_BOSSES, DS_CLASSES, DS_ENCOUNTER_BY_ID,
+  DS_BOSSES, DS_CLASSES, DS_ENCOUNTER_BY_ID, DS_ENEMIES, DS_INVADERS,
   createDarkSouls, applyDarkSoulsAction, dsViewFor,
   type DsView, type DsLogEntry, type DsBossDef,
 } from '@bge/shared';
@@ -16,10 +16,11 @@ import { playSfx, sfxEnabled, setSfxEnabled, type SfxName } from '../sfx';
 import {
   DS_FACE_ART, DS_DIAL_WHEEL, DS_KING_MATS, DS_HEALTHBAR, DS_SEAT_HEX,
   DS_BONFIRE_TOKEN, DS_FOG_WALL, DS_FIRST_ACT_TOKEN, DS_AGGRO_TOKEN,
-  useDsManifest, dsBossCardArt, type DsManifest, type DsCardArt,
+  useDsManifest, dsBossCardArt, dsCardArtById, type DsManifest, type DsCardArt,
 } from './ds-assets';
 import { DsTable, dsFaceSpace, useDsSceneReady, type DsFocus } from './DsScene';
 import './ds-board.css';
+import './ds-modern.css';
 
 // ---------- helpers ----------
 
@@ -109,7 +110,7 @@ function useFixtureView(): DsView | null {
       applyDarkSoulsAction(s, 0, { type: 'enter_fog_gate' });
       // answer only the setup pendings (lead character, order ties, arcs);
       // leave combat decisions open so the shot shows the round-one tableau
-      const SETUP_KINDS = new Set(['leadCharacter', 'enemyTieOrder', 'enemyMoveTie', 'arcChoice']);
+      const SETUP_KINDS = new Set(['entryPlace', 'leadCharacter', 'enemyTieOrder', 'enemyMoveTie', 'arcChoice']);
       let guard = 0;
       while (s.pendings.length > 0 && s.phase === 'bossEncounter' && guard++ < 12) {
         const head = s.pendings[0];
@@ -296,6 +297,47 @@ function BossPanel({ view, manifest }: { view: DsView; manifest: DsManifest }) {
   );
 }
 
+function EncounterPanel({ view, manifest }: { view: DsView; manifest: DsManifest }) {
+  const encounter = view.encounter;
+  if (!encounter?.encounterId) return null;
+  const card = DS_ENCOUNTER_BY_ID[encounter.encounterId];
+  const art = dsCardArtById(manifest, encounter.encounterId);
+  const enemies = encounter.enemies.flatMap((enemy) => {
+    const data = enemy.invader ? DS_INVADERS[enemy.typeId]?.data : DS_ENEMIES[enemy.typeId]?.data;
+    if (!data || enemy.wounds >= data.health) return [];
+    return [{ enemy, data }];
+  });
+  return (
+    <div className="ds-encounter-panel ig-glass">
+      <div className="ds-encounter-card-row">
+        {art && (
+          <span className="ds-card-art encounter" style={{
+            backgroundImage: `url(${art.image})`,
+            backgroundSize: `${art.cols * 100}% ${art.rows * 100}%`,
+            backgroundPosition: `${art.cols > 1 ? (art.col / (art.cols - 1)) * 100 : 0}% ${art.rows > 1 ? (art.row / (art.rows - 1)) * 100 : 0}%`,
+          }} />
+        )}
+        <div>
+          <span className="ig-lab">ENCOUNTER CARD · LEVEL {card?.level ?? '?'}</span>
+          <b>{card?.name ?? encounter.encounterId}</b>
+          <small>{enemies.length} {enemies.length === 1 ? 'HOSTILE' : 'HOSTILES'} REMAIN</small>
+        </div>
+      </div>
+      <div className="ds-enemy-roster">
+        {enemies.map(({ enemy, data }) => {
+          const remaining = Math.max(0, data.health - enemy.wounds);
+          return (
+            <div key={enemy.uid} className="ds-enemy-row">
+              <div className="ds-enemy-name"><b>{data.name}</b><small>THREAT {data.threat} · RANGE {data.attackRange === 'infinite' ? '∞' : data.attackRange}</small></div>
+              <div className="ds-enemy-health"><span><i style={{ width: `${(remaining / data.health) * 100}%` }} /></span><b className="ig-num">{remaining}/{data.health}</b></div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // exploration map strip: bonfire + the tile chain, encounter state, fog gate
 function MapStrip({ view }: { view: DsView }) {
   return (
@@ -378,8 +420,8 @@ export function DsBoard({ view: liveView }: { view: DsView }) {
   // widen back out between encounters / on face changes
   useEffect(() => {
     if (camPin) return;
-    setFocus({ x: 0, z: 0, dist: Math.max(space.renderW, space.renderH) * 1.02 });
-  }, [faceId, atBonfire, camPin, space]);
+    setFocus({ x: 0, z: 0, dist: Math.max(space.renderW, space.renderH) * (view.phase === 'bossEncounter' ? 1.24 : 1.02) });
+  }, [faceId, atBonfire, camPin, space, view.phase]);
 
   // turnover chime; win / defeat sting
   const turnKey = view.encounter ? `${view.encounter.turn}:${view.encounter.activeSeat}` : view.phase;
@@ -413,6 +455,9 @@ export function DsBoard({ view: liveView }: { view: DsView }) {
 
   const [muted, setMuted] = useState(!sfxEnabled());
   const toggleMute = () => { const next = !muted; setMuted(next); setSfxEnabled(!next); };
+  const latestCombatBeat = caption && (caption.kind === 'attack' || caption.kind === 'dice' || caption.kind === 'death')
+    ? caption
+    : [...view.log].reverse().find((entry) => entry.kind === 'attack' || entry.kind === 'dice' || entry.kind === 'death') ?? null;
 
   if (!manifest) {
     return (
@@ -432,7 +477,7 @@ export function DsBoard({ view: liveView }: { view: DsView }) {
 
   return (
     <div className="ig ds-tv">
-      <DsTable view={view} manifest={manifest} focus={focus} />
+      <DsTable view={view} manifest={manifest} focus={focus} combatBeat={latestCombatBeat} />
       {!ready && (
         <div className="ds-curtain" style={{ position: 'absolute', inset: 0, zIndex: 40 }}>
           <div className="ig-lab">Dark Souls · The Board Game</div>
@@ -463,6 +508,7 @@ export function DsBoard({ view: liveView }: { view: DsView }) {
 
       {/* boss dials / bonfire panel */}
       {view.boss && view.phase === 'bossEncounter' && <BossPanel view={view} manifest={manifest} />}
+      {view.phase === 'encounter' && <EncounterPanel view={view} manifest={manifest} />}
       {view.phase === 'bonfire' && <BonfirePanel view={view} />}
 
       {/* map strip while exploring (hidden inside boss arenas) */}

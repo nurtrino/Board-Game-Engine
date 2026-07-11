@@ -25,3 +25,11 @@ client/public/axis/setup-1942.png
 client/public/axis/zones.png
 client/public/axis/zones-anchors.png
 games/bloodborne/transcribe/
+
+# local scratch / logs / OCR data (never vendored)
+tmp/
+scratch-tmp/
+/public/
+eng.traineddata
+/page.png
+server/.rooms.backup.json

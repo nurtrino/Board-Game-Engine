@@ -24,6 +24,7 @@ export interface BbSceneManifest {
   sheets: Record<string, BbSheetMeta>;
   tokens: Record<string, { name: string; img: { rel: string; w: number; h: number } | null }>;
   huntBoard: { face: { rel: string } | null };
+  minis?: { manifest: string; models: number; standees: number };
 }
 
 let manifestCache: BbSceneManifest | null = null;
@@ -60,13 +61,21 @@ export function bbCellCss(m: BbSceneManifest | null, sheet: string, cell: number
 
 export const bbTileArt = (tileId: string): string => BB_TILES[tileId]?.art ?? '';
 export const bbTokenArt = (id: string): string => `/bloodborne/tokens/${id}.webp`;
-export const bbMiniObj = (slug: string): string => `/bloodborne/minis/${slug}.obj`;
-export const bbMiniTex = (slug: string): string => `/bloodborne/minis/${slug}.jpg`;
+/** Complete multipart miniature, Meshopt-compressed and lazy-loaded by the scene. */
+export const bbMiniGlb = (slug: string): string => `/bloodborne/minis/${slug}.glb`;
+export const bbMiniStandee = (slug: string): string => `/bloodborne/minis/${slug}-standee.webp`;
 
 export const bbHunterMini = (hunterId: string | null): string | null =>
   hunterId ? ((BB_HUNTERS[hunterId]?.art as { mini?: string | null })?.mini ?? null) : null;
-export const bbEnemyMini = (type: string): string | null => BB_ENEMIES[type]?.mini ?? null;
-export const bbBossMini = (type: string): string | null => BB_BOSSES[type]?.mini ?? null;
+/** The golden pass missed core enemies because their models sit in a second
+ * nested bag. Every runtime enemy except the source-mod Iosefka standee now
+ * has a verified GLB under its data id. */
+export const bbEnemyMini = (type: string): string | null =>
+  BB_ENEMIES[type]?.mini ?? (type === 'iosefka' ? null : type);
+export const bbEnemyStandee = (type: string): string | null =>
+  type === 'iosefka' ? bbMiniStandee(type) : null;
+/** Witch, Annalise, and Gehrman were omitted by the same shallow bag walk. */
+export const bbBossMini = (type: string): string | null => BB_BOSSES[type]?.mini ?? type;
 
 // ---------- names ----------
 

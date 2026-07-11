@@ -376,9 +376,7 @@
      "Oedon Chapel"
     ],
     "extraCards": [],
-    "enemies": [
-     "Church Servant"
-    ],
+    "enemies": [],
     "enemiesRandom": 3,
     "excludedEnemies": [
      "Church Servant"
@@ -433,9 +431,7 @@
     "extraCards": [
      "15"
     ],
-    "enemies": [
-     "Church Giant"
-    ],
+    "enemies": [],
     "enemiesRandom": 3,
     "excludedEnemies": [
      "Church Giant"
@@ -540,7 +536,11 @@
     "extraCards": [
      "1"
     ],
-    "enemies": [],
+    "enemies": [
+     "Scourge Beast",
+     "Male Beast Patient",
+     "Female Beast Patient"
+    ],
     "enemiesRandom": 0,
     "excludedEnemies": [],
     "randomTiles": {
@@ -590,7 +590,11 @@
     "extraCards": [
      "1"
     ],
-    "enemies": [],
+    "enemies": [
+     "Scourge Beast",
+     "Male Beast Patient",
+     "Female Beast Patient"
+    ],
     "enemiesRandom": 0,
     "excludedEnemies": [],
     "randomTiles": {
@@ -642,7 +646,11 @@
     "extraCards": [
      "1"
     ],
-    "enemies": [],
+    "enemies": [
+     "Scourge Beast",
+     "Male Beast Patient",
+     "Female Beast Patient"
+    ],
     "enemiesRandom": 0,
     "excludedEnemies": [],
     "randomTiles": {

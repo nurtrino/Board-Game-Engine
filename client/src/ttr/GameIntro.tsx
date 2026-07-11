@@ -3,7 +3,7 @@
 // bottom-right corner) for the full rules. A game can also supply a `walkthrough`
 // — a stepped, first-round teach that opens from the intro.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface WalkStep { title: string; body: string } // body may contain blank-line paragraphs
 
@@ -112,6 +112,13 @@ export function GameIntro({ intro, onClose, onWalkthrough }: {
   const [walk, setWalk] = useState<number | null>(null); // null = overview, else step index
   const steps = intro.walkthrough ?? [];
   const inWalk = walk !== null && steps.length > 0;
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
 
   return (
     <div
@@ -120,6 +127,9 @@ export function GameIntro({ intro, onClose, onWalkthrough }: {
     >
       <div
         className="ig-glass"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${intro.title} guide`}
         style={{ position: 'relative', maxWidth: 580, width: '100%', maxHeight: '88vh', overflowY: 'auto', borderRadius: 20, padding: '26px 28px 64px' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -139,7 +149,7 @@ export function GameIntro({ intro, onClose, onWalkthrough }: {
               ))}
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 22, flexWrap: 'wrap' }}>
-              <button onClick={onClose} className="tp-act primary" style={{ width: 'auto', padding: '11px 26px' }}>Got it</button>
+              <button autoFocus onClick={onClose} className="tp-act primary" style={{ width: 'auto', padding: '11px 26px' }}>Got it</button>
               {(onWalkthrough || steps.length > 0) && (
                 <button onClick={() => (onWalkthrough ? onWalkthrough() : setWalk(0))} className="tp-act" style={{ width: 'auto', padding: '11px 22px' }}>
                   Walk me through the interface

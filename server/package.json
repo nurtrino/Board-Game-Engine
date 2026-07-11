@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "watch": "tsx watch src/index.ts",
-    "dev:alt": "set PORT=8899&& tsx src/index.ts"
+    "dev:alt": "set PORT=8899&& tsx src/index.ts",
+    "test": "tsx src/axis-authority-test.ts && tsx src/save-auth-test.ts && tsx src/store-test.ts"
   },
   "dependencies": {
     "@bge/shared": "*",

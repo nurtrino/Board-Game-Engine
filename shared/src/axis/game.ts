@@ -54,7 +54,9 @@ export function createAxisGame(
 }
 
 export function axisGameViewFor(state: AxisState, viewer: number | null | 'dev'): AxisView {
-  void viewer; // A&A is public information; per-seat affordances are client-side
+  // A&A state is public. The room server overlays real-seat action authority
+  // after this reducer-level view is created; `viewer` cannot grant authority.
+  void viewer;
   return axisViewFor(state, AXIS_INDEX);
 }
 

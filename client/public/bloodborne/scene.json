@@ -1538,5 +1538,10 @@
     "h": 2048
    }
   }
- ]
+ ],
+ "minis": {
+  "manifest": "/bloodborne/minis/minis-manifest.json",
+  "models": 49,
+  "standees": 1
+ }
 }

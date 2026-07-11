@@ -20,6 +20,13 @@ export interface SimUnit {
   id: string;
   type: string; // anniversary unit key
   side: Side;
+  /** Exact airborne linkage used to keep carried infantry off the ground. */
+  paratrooper?: {
+    pairId: string;
+    role: 'bomber' | 'infantry';
+    counterpartId?: string;
+    aboard: boolean;
+  };
 }
 
 export interface UnitVisual {
@@ -127,6 +134,31 @@ export interface Placement {
   z: number;
   /** facing the enemy line (radians around Y) */
   rotationY: number;
+}
+
+export interface BattleSceneDetailBudget {
+  /** Decorative forest pieces; combatants are never removed by this budget. */
+  foliageCount: number;
+  /** Maximum independently mixed skeletal units (idle/fire/death clips). */
+  animatedUnitLimit: number;
+}
+
+/**
+ * Scale only ornamental and per-skeleton work as a battle grows. Every
+ * authoritative combatant remains present, targetable, and animated at the
+ * formation level; dense engagements simply spend less GPU/CPU on the forest
+ * and repeated character mixers.
+ */
+export function battleSceneDetailBudget(
+  unitCount: number,
+  reducedMotion = false,
+): BattleSceneDetailBudget {
+  const count = Number.isFinite(unitCount) ? Math.max(0, Math.floor(unitCount)) : 0;
+  if (reducedMotion) return { foliageCount: count >= 40 ? 64 : 88, animatedUnitLimit: 0 };
+  if (count >= 64) return { foliageCount: 78, animatedUnitLimit: 16 };
+  if (count >= 40) return { foliageCount: 104, animatedUnitLimit: 24 };
+  if (count >= 24) return { foliageCount: 134, animatedUnitLimit: 32 };
+  return { foliageCount: 165, animatedUnitLimit: 48 };
 }
 
 /**

@@ -1,0 +1,352 @@
+[
+  {
+    "id": "amber-figure",
+    "name": "Amber Figure",
+    "guid": "06eb43",
+    "sourceUrl": "http://i.imgur.com/axAk8z0.png",
+    "image": "/feast/special/amber-figure.webp",
+    "area": 7,
+    "mask": [
+      ".#.",
+      "###",
+      "###"
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 9,
+    "silverCost": 2,
+    "forge": false,
+    "points": 0
+  },
+  {
+    "id": "round-shield",
+    "name": "Round Shield",
+    "guid": "9e68f5",
+    "sourceUrl": "http://i.imgur.com/yo4CWjB.png",
+    "image": "/feast/special/round-shield.webp",
+    "area": 12,
+    "mask": [
+      ".##.",
+      "####",
+      "####",
+      ".##."
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 13,
+    "silverCost": 6,
+    "forge": false,
+    "points": 0
+  },
+  {
+    "id": "english-crown",
+    "name": "English Crown",
+    "guid": "4a47a8",
+    "sourceUrl": "http://i.imgur.com/AfVKoS0.png",
+    "image": "/feast/special/english-crown.webp",
+    "area": 13,
+    "mask": [
+      "#.#.#",
+      "#####",
+      "#####"
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 16,
+    "silverCost": null,
+    "forge": false,
+    "points": 2
+  },
+  {
+    "id": "horseshoe",
+    "name": "Horseshoe",
+    "guid": "36ea09",
+    "sourceUrl": "http://i.imgur.com/oRRCbjV.png",
+    "image": "/feast/special/horseshoe.webp",
+    "area": 7,
+    "mask": [
+      "#.#",
+      "#.#",
+      "###"
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 9,
+    "silverCost": 2,
+    "forge": true,
+    "points": 0
+  },
+  {
+    "id": "gold-brooch",
+    "name": "Gold Brooch",
+    "guid": "06780d",
+    "sourceUrl": "http://i.imgur.com/kjQFJTY.png",
+    "image": "/feast/special/gold-brooch.webp",
+    "area": 8,
+    "mask": [
+      ".#.",
+      "###",
+      "###",
+      ".#."
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 9,
+    "silverCost": 3,
+    "forge": false,
+    "points": 0
+  },
+  {
+    "id": "throwing-axe",
+    "name": "Throwing Axe",
+    "guid": "e29cff",
+    "sourceUrl": "http://i.imgur.com/0RyPnB7.png",
+    "image": "/feast/special/throwing-axe.webp",
+    "area": 9,
+    "mask": [
+      "#####",
+      ".###.",
+      "..#.."
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 11,
+    "silverCost": 4,
+    "forge": true,
+    "points": 0
+  },
+  {
+    "id": "chalice",
+    "name": "Chalice",
+    "guid": "54573b",
+    "sourceUrl": "http://i.imgur.com/yacCywE.png",
+    "image": "/feast/special/chalice.webp",
+    "area": 10,
+    "mask": [
+      "###",
+      "###",
+      ".#.",
+      "###"
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 12,
+    "silverCost": 5,
+    "forge": false,
+    "points": 0
+  },
+  {
+    "id": "belt",
+    "name": "Belt",
+    "guid": "1c4ceb",
+    "sourceUrl": "http://i.imgur.com/b2j3NVT.jpg",
+    "image": "/feast/special/belt.webp",
+    "area": 5,
+    "mask": [
+      "#####"
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      0,
+      0
+    ],
+    "method": "opaque-rectangular-200px-cells",
+    "swordValue": 8,
+    "silverCost": 2,
+    "forge": false,
+    "points": 0
+  },
+  {
+    "id": "cloakpin",
+    "name": "Cloakpin",
+    "guid": "4479b9",
+    "sourceUrl": "http://i.imgur.com/nGAU9sm.png",
+    "image": "/feast/special/cloakpin.webp",
+    "area": 5,
+    "mask": [
+      "#...",
+      "####"
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 8,
+    "silverCost": 1,
+    "forge": true,
+    "points": 0
+  },
+  {
+    "id": "drinking-horn",
+    "name": "Drinking Horn",
+    "guid": "50db66",
+    "sourceUrl": "http://i.imgur.com/NPEWOO7.png",
+    "image": "/feast/special/drinking-horn.webp",
+    "area": 6,
+    "mask": [
+      ".##",
+      "###",
+      "#.."
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 8,
+    "silverCost": 2,
+    "forge": false,
+    "points": 0
+  },
+  {
+    "id": "fibula",
+    "name": "Fibula",
+    "guid": "9a1b1d",
+    "sourceUrl": "http://i.imgur.com/oe2Qvgp.png",
+    "image": "/feast/special/fibula.webp",
+    "area": 9,
+    "mask": [
+      "##.",
+      "#..",
+      "###",
+      "#..",
+      "##."
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 10,
+    "silverCost": 4,
+    "forge": true,
+    "points": 0
+  },
+  {
+    "id": "crucifix",
+    "name": "Crucifix",
+    "guid": "0b4301",
+    "sourceUrl": "http://i.imgur.com/qGnqg6z.png",
+    "image": "/feast/special/crucifix.webp",
+    "area": 6,
+    "mask": [
+      ".#.",
+      "###",
+      ".#.",
+      ".#."
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 8,
+    "silverCost": 2,
+    "forge": true,
+    "points": 0
+  },
+  {
+    "id": "forge-hammer",
+    "name": "Forge Hammer",
+    "guid": "8d48fc",
+    "sourceUrl": "http://i.imgur.com/i5KCbcz.png",
+    "image": "/feast/special/forge-hammer.webp",
+    "area": 9,
+    "mask": [
+      "###",
+      "###",
+      ".#.",
+      ".#.",
+      ".#."
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 10,
+    "silverCost": 4,
+    "forge": true,
+    "points": 0
+  },
+  {
+    "id": "glass-beads",
+    "name": "Glass Beads",
+    "guid": "e847df",
+    "sourceUrl": "http://i.imgur.com/zci5q85.png",
+    "image": "/feast/special/glass-beads.webp",
+    "area": 5,
+    "mask": [
+      ".#.",
+      "###",
+      ".#."
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 7,
+    "silverCost": 0,
+    "forge": false,
+    "points": 0
+  },
+  {
+    "id": "helmet",
+    "name": "Helmet",
+    "guid": "b9bfbd",
+    "sourceUrl": "http://i.imgur.com/jbnklhN.png",
+    "image": "/feast/special/helmet.webp",
+    "area": 5,
+    "mask": [
+      "##",
+      "##",
+      ".#"
+    ],
+    "cellPx": 200,
+    "sampleOffsetPx": [
+      50,
+      50
+    ],
+    "method": "alpha-center-sample-200px-cells",
+    "swordValue": 8,
+    "silverCost": 1,
+    "forge": true,
+    "points": 0
+  }
+]

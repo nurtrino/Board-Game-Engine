@@ -18,8 +18,11 @@ import { GameIntro, type Intro } from '../ttr/GameIntro';
 import { playSfx } from '../sfx';
 import {
   useDsManifest, dsCardStyle, dsCardArt, DS_CLASS_BOARD, DS_MAT_RECTS, DS_SEAT_HEX, DS_DIE_HEX,
+  type DsManifest,
 } from './dsAssets';
 import { DsNodeMap, type MapPick } from './DsNodeMap';
+import { DS_BONFIRE_TOKEN, DS_FACE_ART, DS_FOG_WALL } from './ds-assets';
+import { dsNodeIdForOption, dsPieceIdForOption } from './dsEncounterPresentation';
 import {
   activationGate, atBonfire, attackChoices, buyReason, buySparkReason, canSpend, cleanCopy,
   dashPlan, dodgeStamina, endReason, enemyAlive, enemyDef, equipMoveReason, equipWindowOpen,
@@ -30,6 +33,7 @@ import {
   type AttackChoice, type DsVChar, type EquipSlotKey, type MovePlan,
 } from './dsPlayRules';
 import './ds-play.css';
+import './ds-modern.css';
 
 type Act = (a: DsAction) => void;
 
@@ -48,8 +52,8 @@ export const DS_INTRO: Intro = {
   walkthrough: [
     { title: 'Pick your class', body: 'At the start everyone picks one of the ten class boards. Your board carries your heroic action, your equipment slots, your stat tiers and your endurance bar. No duplicates: first tap takes the class.' },
     { title: 'Travel the tiles', body: 'From the bonfire, tap the next tile on the TRAVEL strip to enter it. Entering an unexplored tile flips its encounter card and the fight starts immediately. Enemies always act first.' },
-    { title: 'Your turn, your buttons', body: 'When it is your activation, the buttons on the right light up: WALK and RUN to move (tap a glowing node on the map), one attack per equipped weapon, ESTUS, your heroic action, and END ACTIVATION. Greyed buttons say why they are off.' },
-    { title: 'Answer the prompts', body: 'When an enemy hits you, a centered prompt asks BLOCK or DODGE and shows your dice. Other prompts pick push destinations, tie-breaks and treasure. The whole party waits until the prompt is answered, so answer it.' },
+    { title: 'Fight on the board', body: 'When it is your activation, choose WALK or RUN and tap a glowing node on the room. Choose a weapon attack and tap the exact enemy miniature you want to strike. Stacked enemies remain separate targets.' },
+    { title: 'Answer the prompts', body: 'Spatial choices stay docked while the board glows: tap nodes for dodges and pushes, or tap miniatures for targets and Aggro. Incoming attacks still open a focused BLOCK or DODGE decision with your live dice.' },
     { title: 'Spend souls at the bonfire', body: 'Back at the bonfire, ANDRE draws treasure cards for souls and installs upgrades, the FIREKEEPER raises a stat one tier, and REST (host confirms) refreshes the party at the cost of a spark.' },
     { title: 'Through the fog gate', body: 'Clear the farthest tile and ENTER FOG GATE to face the boss. Watch its behaviour cards on the TV, learn the pattern, and strike its weak arc. Kill the mini boss, re-gear, then the main boss awaits.' },
   ],
@@ -63,7 +67,7 @@ function DieChips({ dice, flat }: { dice: Partial<Record<string, number>>; flat?
   const parts: ReactNode[] = [];
   for (const [color, n] of Object.entries(dice)) {
     for (let i = 0; i < Math.min(n ?? 0, 4); i++) {
-      parts.push(<i key={`${color}${i}`} className="ds-die" style={{ background: DS_DIE_HEX[color] ?? '#333' }} />);
+      parts.push(<i key={`${color}${i}`} className={`ds-die ${color}`} style={{ backgroundColor: DS_DIE_HEX[color] ?? '#333' }} />);
     }
     if ((n ?? 0) > 4) parts.push(<em key={`${color}x`}>×{n}</em>);
   }
@@ -127,8 +131,7 @@ function RailBtn({ label, detail, reason, onClick, primary, cost }: {
 const ENDUR_BOX0 = 0.1;      // healthbar tile: first cube box starts at 10% of the strip
 const ENDUR_BOXSPAN = 0.0606; // each of the 10 boxes spans ~6.06%
 
-function EnduranceBar({ ch, height }: { ch: DsVChar; height: number }) {
-  const width = Math.round(height * 0.155);
+function EnduranceBar({ ch }: { ch: DsVChar }) {
   const art = `/dark-souls/healthbar-${ch.classId}${['assassin', 'herald', 'knight', 'warrior'].includes(ch.classId) ? '.png' : '.jpg'}`;
   const cubes: ReactNode[] = [];
   for (let i = 0; i < ENDURANCE_BOXES; i++) {
@@ -147,14 +150,10 @@ function EnduranceBar({ ch, height }: { ch: DsVChar; height: number }) {
     );
   }
   return (
-    <div className="ds-endur" style={{ width, height }} aria-label={`Endurance: ${ch.stamina} stamina, ${ch.damage} damage`}>
+    <div className="ds-endur" aria-label={`Endurance: ${ch.stamina} stamina, ${ch.damage} damage`}>
       <div
         className="ds-endur-art"
-        style={{
-          width: height, height: width,
-          backgroundImage: `url(${art})`,
-          transform: `rotate(90deg) translateY(${-width}px)`,
-        }}
+        style={{ backgroundImage: `url(${art})` }}
       />
       {cubes}
       <div className="ds-endur-tags">
@@ -170,11 +169,10 @@ const TIER_COL0 = 0.664; const TIER_DCOL = 0.0955;
 const TIER_ROW0 = 0.6505; const TIER_DROW = 0.0645;
 const STAT_ROWS: DsStat[] = ['str', 'dex', 'int', 'fai'];
 
-function Mat({ view, ch, mine, boardW, onSlot }: {
-  view: DsView; ch: DsVChar; mine: boolean; boardW: number;
+function Mat({ view, ch, mine, onSlot }: {
+  view: DsView; ch: DsVChar; mine: boolean;
   onSlot?: (cardId: string) => void;
 }) {
-  const boardH = boardW * (1553 / 2048);
   const rectStyle = (r: { x: number; y: number; w: number; h: number }): CSSProperties => ({
     left: `${r.x * 100}%`, top: `${r.y * 100}%`, width: `${r.w * 100}%`, height: `${r.h * 100}%`,
   });
@@ -186,7 +184,7 @@ function Mat({ view, ch, mine, boardW, onSlot }: {
   return (
     <div
       className={`ds-mat${mine ? ' mine' : ''}`}
-      style={{ width: boardW, height: boardH, backgroundImage: `url(${DS_CLASS_BOARD[ch.classId]})`, borderColor: DS_SEAT_HEX[ch.seat] }}
+      style={{ backgroundImage: `url(${DS_CLASS_BOARD[ch.classId]})`, borderColor: DS_SEAT_HEX[ch.seat] }}
     >
       {slots.map(({ key, rect }) => {
         const eq = ch[key];
@@ -243,30 +241,72 @@ function CharSummary({ view, ch }: { view: DsView; ch: DsVChar }) {
   );
 }
 
+function CharacterPanelHeader({ ch }: { ch: DsVChar }) {
+  const free = Math.max(0, ENDURANCE_BOXES - ch.stamina - ch.damage);
+  return (
+    <header className="ds-character-head">
+      <div>
+        <span className="ig-lab">CHOSEN UNDEAD</span>
+        <h3>{ch.className}</h3>
+      </div>
+      <div className="ds-character-vitals" aria-label={`${free} endurance spaces free`}>
+        <span><small>STAMINA</small><b className="ig-num">{ch.stamina}</b></span>
+        <i />
+        <span><small>DAMAGE</small><b className="ig-num">{ch.damage}</b></span>
+      </div>
+    </header>
+  );
+}
+
 // ---------- pending prompts (centered, explicit) ----------
+
+const PENDING_KIND_LABEL: Partial<Record<DsPending['kind'], string>> = {
+  leadCharacter: 'AGGRO', pushDest: 'PUSH PLACEMENT', nodeOverflow: 'NODE FULL',
+  enemyTieOrder: 'ACTIVATION ORDER', enemyMoveTie: 'ENEMY MOVE', arcChoice: 'ARC CHOICE',
+  spellTarget: 'CAST TARGET', entryPlace: 'ENTER THE ROOM', dodgeMove: 'DODGE',
+};
+
+const BOARD_PENDING_KINDS = new Set<DsPending['kind']>([
+  'leadCharacter', 'pushDest', 'nodeOverflow', 'enemyTieOrder', 'enemyMoveTie',
+  'spellTarget', 'entryPlace', 'dodgeMove',
+]);
 
 function PendingOverlay({ view, seat, act, mapPickHost }: {
   view: DsView; seat: number; act: Act;
   mapPickHost: (pick: MapPick | null) => void;
 }) {
   const head = view.head;
+  const usesBoard = Boolean(view.encounter && head && BOARD_PENDING_KINDS.has(head.kind));
   // publish node picks onto the shared map for spatial decisions
   useEffect(() => {
-    if (!head || head.seat !== seat) { mapPickHost(null); return; }
-    // plain node picks only: summonMove keys carry an arc suffix (node:id:arc)
-    // and stay button-driven — one node maps to four arc options
-    const nodeKeys = head.options.filter((o) => o.key.startsWith('node:') && o.key.indexOf(':', 5) < 0);
-    if (nodeKeys.length > 0) {
+    if (!head || head.seat !== seat || !usesBoard) { mapPickHost(null); return; }
+    const nodeOptions = head.options
+      .map((option) => ({ option, nodeId: dsNodeIdForOption(option.key) }))
+      .filter((entry): entry is { option: typeof head.options[number]; nodeId: string } => Boolean(entry.nodeId));
+    const pieceOptions = head.options
+      .map((option) => ({ option, pieceId: dsPieceIdForOption(option.key) }))
+      .filter((entry): entry is { option: typeof head.options[number]; pieceId: string } => Boolean(entry.pieceId));
+    if (nodeOptions.length > 0 || pieceOptions.length > 0) {
+      const nodeById = new Map(nodeOptions.map((entry) => [entry.nodeId, entry.option.key]));
+      const pieceById = new Map(pieceOptions.map((entry) => [entry.pieceId, entry.option.key]));
       mapPickHost({
-        nodes: new Set(nodeKeys.map((o) => o.key.slice(5))),
-        onPick: (nodeId) => act({ type: 'choose', pick: `node:${nodeId}` }),
+        nodes: new Set(nodeById.keys()),
+        pieces: new Set(pieceById.keys()),
+        onPick: (nodeId) => {
+          const optionKey = nodeById.get(nodeId);
+          if (optionKey) act({ type: 'choose', pick: optionKey });
+        },
+        onPickPiece: (pieceId) => {
+          const optionKey = pieceById.get(pieceId);
+          if (optionKey) act({ type: 'choose', pick: optionKey });
+        },
       });
     } else {
       mapPickHost(null);
     }
     return () => mapPickHost(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [head?.id, seat]);
+  }, [head?.id, seat, usesBoard]);
 
   if (!head) return null;
   if (head.seat !== seat) {
@@ -275,6 +315,28 @@ function PendingOverlay({ view, seat, act, mapPickHost }: {
         <span className="ig-lab">DECISION PENDING</span>
         <b>{(view.characters[head.seat]?.className ?? `SEAT ${head.seat + 1}`).toUpperCase()} DECIDES</b>
         <small>{cleanCopy(head.prompt)}</small>
+      </div>
+    );
+  }
+
+  const spatialOptions = head.options.filter((option) => dsNodeIdForOption(option.key) || dsPieceIdForOption(option.key));
+  const auxiliaryOptions = head.options.filter((option) => !spatialOptions.includes(option));
+  const dockOnBoard = usesBoard && spatialOptions.length > 0
+    && auxiliaryOptions.every((option) => option.key === 'stay' || option.key === 'skip');
+  if (dockOnBoard) {
+    return (
+      <div className="ds-spatial-prompt ig-glass" role="dialog" aria-label="Board decision">
+        <span className="ig-prompt-ring" />
+        <div className="ds-spatial-copy">
+          <span className="ig-lab">{PENDING_KIND_LABEL[head.kind] ?? 'CHOOSE ON THE BOARD'}</span>
+          <b>{cleanCopy(head.prompt)}</b>
+          <small>{spatialOptions.some((option) => dsPieceIdForOption(option.key)) ? 'Tap a glowing miniature.' : 'Tap a glowing node.'}</small>
+        </div>
+        {auxiliaryOptions.map((option) => (
+          <button key={option.key} className="ds-choice slim ghost" onClick={() => act({ type: 'choose', pick: option.key })}>
+            <b>{cleanCopy(option.label).toUpperCase()}</b>
+          </button>
+        ))}
       </div>
     );
   }
@@ -396,14 +458,9 @@ function PromptBody({ view, seat, head, act }: { view: DsView; seat: number; hea
     );
   }
 
-  const KIND_LABEL: Partial<Record<DsPending['kind'], string>> = {
-    leadCharacter: 'AGGRO', pushDest: 'PUSH PLACEMENT', nodeOverflow: 'NODE FULL',
-    enemyTieOrder: 'ACTIVATION ORDER', enemyMoveTie: 'ENEMY MOVE', arcChoice: 'ARC CHOICE',
-    spellTarget: 'CAST TARGET', entryPlace: 'ENTER THE ROOM',
-  };
   return (
     <>
-      <div className="ig-lab">{KIND_LABEL[head.kind] ?? 'DECISION'}</div>
+      <div className="ig-lab">{PENDING_KIND_LABEL[head.kind] ?? 'DECISION'}</div>
       <h3>{cleanCopy(head.prompt)}</h3>
       {head.options.some((o) => o.key.startsWith('node:')) && (
         <p className="ds-prompt-note">Tap a glowing node on the map, or pick below.</p>
@@ -493,13 +550,8 @@ function EncounterRail({ view, seat, act, setPick, pickMode }: {
       act({ type: 'attack', hand: choice.hand, option: choice.option });
       return;
     }
-    if (choice.targets.length === 1) {
-      const t = choice.targets[0];
-      act(t.kind === 'enemy'
-        ? { type: 'attack', hand: choice.hand, option: choice.option, targetUid: t.uid }
-        : { type: 'attack', hand: choice.hand, option: choice.option, targetUnit: t.unitKey });
-      return;
-    }
+    // Even one legal target is selected on the miniature. This keeps combat
+    // spatial and avoids the old dropdown-like auto-target/list flow.
     setPick({ kind: 'attack', choice });
   };
 
@@ -534,16 +586,12 @@ function EncounterRail({ view, seat, act, setPick, pickMode }: {
           <b>{pickMode.kind === 'attack'
             ? `${pickMode.choice.name.toUpperCase()} · ${pickMode.choice.cost} STAMINA`
             : pickMode.kind === 'run' ? 'RUN · TAP A GLOWING NODE' : 'WALK · TAP A GLOWING NODE'}</b>
-          {pickMode.kind === 'attack' && pickMode.choice.targets.map((t) => (
-            <button key={`${t.kind}${t.uid ?? t.unitKey}`} className="ds-btn" onClick={() => {
-              act(t.kind === 'enemy'
-                ? { type: 'attack', hand: pickMode.choice.hand, option: pickMode.choice.option, targetUid: t.uid }
-                : { type: 'attack', hand: pickMode.choice.hand, option: pickMode.choice.option, targetUnit: t.unitKey });
-              setPick(null);
-            }}>
-              <span className="ds-btn-main"><b>{t.label.toUpperCase()}</b></span>
-            </button>
-          ))}
+          {pickMode.kind === 'attack' && (
+            <div className="ds-board-pick-hint">
+              <span className="ig-prompt-ring" />
+              <span><b>TARGETS ARE GLOWING ON THE BOARD</b><small>Tap the enemy miniature you want to strike.</small></span>
+            </div>
+          )}
           {pickMode.kind !== 'attack' && pickMode.plan.arcSteps.map((a) => (
             <button key={a} className="ds-btn" onClick={() => { act({ type: pickMode.kind as 'walk' | 'run', arcStep: a }); setPick(null); }}>
               <span className="ds-btn-main"><b>CIRCLE TO THE {a.toUpperCase()} ARC</b></span>
@@ -636,22 +684,28 @@ function TravelStrip({ view, seat, act }: { view: DsView; seat: number; act: Act
           disabled={Boolean(gate) || !targets.includes('bonfire')}
           onClick={() => act({ type: 'travel', tileId: 'bonfire' })}
         >
-          <b>BONFIRE</b>
-          <small>{atBonfire(view) ? 'THE PARTY RESTS HERE' : 'RETURN'}</small>
+          <span className="ds-tile-art bonfire" style={{ backgroundImage: `url(${DS_BONFIRE_TOKEN})` }} />
+          <span className="ds-tile-copy"><b>BONFIRE</b><small>{atBonfire(view) ? 'THE PARTY RESTS HERE' : 'RETURN'}</small></span>
         </button>
-        {view.tiles.map((t) => (
-          <button
-            key={t.id}
-            className={`ds-tile${view.partyAt === t.id ? ' here' : ''}${t.cleared || t.completed ? ' cleared' : ''}`}
-            disabled={Boolean(gate) || !targets.includes(t.id)}
-            onClick={() => act({ type: 'travel', tileId: t.id })}
-          >
-            <b>LEVEL {t.level}</b>
-            <small>{t.completed ? 'DONE · NEVER RESETS' : t.cleared ? 'CLEARED' : t.faceUp ? 'REVEALED' : 'UNEXPLORED'}</small>
-            {view.fogGateTileId === t.id && <em>FOG GATE</em>}
-            {t.invaderToken && <em className="warn">DARK SPIRIT?</em>}
-          </button>
-        ))}
+        {view.tiles.map((t) => {
+          const art = DS_FACE_ART[t.faceId];
+          return (
+            <button
+              key={t.id}
+              className={`ds-tile${view.partyAt === t.id ? ' here' : ''}${t.cleared || t.completed ? ' cleared' : ''}`}
+              disabled={Boolean(gate) || !targets.includes(t.id)}
+              onClick={() => act({ type: 'travel', tileId: t.id })}
+            >
+              <span className="ds-tile-art" style={art ? { backgroundImage: `url(${art.image})` } : undefined} />
+              <span className="ds-tile-copy">
+                <b>LEVEL {t.level}</b>
+                <small>{t.completed ? 'DONE · NEVER RESETS' : t.cleared ? 'CLEARED' : t.faceUp ? 'REVEALED' : 'UNEXPLORED'}</small>
+              </span>
+              {view.fogGateTileId === t.id && <img className="ds-tile-fog" src={DS_FOG_WALL} alt="Fog gate" />}
+              {t.invaderToken && <em className="warn">DARK SPIRIT?</em>}
+            </button>
+          );
+        })}
       </div>
       <div className="ds-travel-actions">
         <RailBtn label="ENTER FOG GATE" reason={fog} primary={!fog}
@@ -906,6 +960,7 @@ function Header({ view, seat, onIntro, onDecks }: { view: DsView; seat: number; 
   return (
     <header className="ds-head">
       <div className="ds-head-brand">
+        <span className="ds-head-flame" aria-hidden="true" />
         <span className="ig-lab">DARK SOULS</span>
         <b>{view.characters[seat] ? view.characters[seat].className.toUpperCase() : `SEAT ${seat + 1}`}</b>
       </div>
@@ -913,9 +968,9 @@ function Header({ view, seat, onIntro, onDecks }: { view: DsView; seat: number; 
         {turnText}
       </div>
       <div className="ds-head-right">
-        <span className="ds-chip ig-glass" title="Party soul cache"><small>SOULS</small><b className="ig-num">{view.soulCache}</b></span>
-        <span className="ds-chip ig-glass" title="Sparks remaining"><small>SPARKS</small><b className="ig-num">{view.sparks}/{view.sparksMax}</b></span>
-        <span className="ds-chip ig-glass" title="Treasure deck"><small>DECK</small><b className="ig-num">{view.treasureDeckCount}</b></span>
+        <span className="ds-chip ds-resource souls ig-glass" title="Party soul cache"><small>SOULS</small><b className="ig-num">{view.soulCache}</b></span>
+        <span className="ds-chip ds-resource sparks ig-glass" title="Sparks remaining"><small>SPARKS</small><b className="ig-num">{view.sparks}/{view.sparksMax}</b></span>
+        <span className="ds-chip ds-resource deck ig-glass" title="Treasure deck"><small>DECK</small><b className="ig-num">{view.treasureDeckCount}</b></span>
         <button className="ds-chip ig-glass tool" onClick={onDecks}>DECKS</button>
         <button className="ds-chip ig-glass tool" onClick={onIntro}>GUIDE</button>
       </div>
@@ -959,7 +1014,7 @@ function PartyChips({ view, seat }: { view: DsView; seat: number }) {
 
 // ---------- screens ----------
 
-function EncounterScreen({ view, seat, act }: { view: DsView; seat: number; act: Act }) {
+function EncounterScreen({ view, seat, act, manifest }: { view: DsView; seat: number; act: Act; manifest: DsManifest }) {
   const ch = view.characters[seat];
   const [pickMode, setPickMode] = useState<PickMode>(null);
   const [pendingPick, setPendingPick] = useState<MapPick | null>(null);
@@ -971,38 +1026,40 @@ function EncounterScreen({ view, seat, act }: { view: DsView; seat: number; act:
   }, [view, seat]);
 
   const mapPick: MapPick | null = pendingPick ?? (pickMode && pickMode.kind !== 'swap' ? {
-    nodes: new Set(
-      pickMode.kind === 'attack'
-        ? pickMode.choice.targets.map((t) => t.nodeId)
-        : pickMode.plan.targets.map((t) => t.nodeId),
-    ),
+    nodes: new Set(pickMode.kind === 'attack' ? [] : pickMode.plan.targets.map((target) => target.nodeId)),
+    pieces: new Set(pickMode.kind === 'attack'
+      ? pickMode.choice.targets.map((target) => target.kind === 'enemy' ? `enemy:${target.uid}` : `boss:${target.unitKey}`)
+      : []),
     onPick: (nodeId) => {
-      if (pickMode.kind === 'attack') {
-        const t = pickMode.choice.targets.find((x) => x.nodeId === nodeId);
-        if (!t) return;
-        act(t.kind === 'enemy'
-          ? { type: 'attack', hand: pickMode.choice.hand, option: pickMode.choice.option, targetUid: t.uid }
-          : { type: 'attack', hand: pickMode.choice.hand, option: pickMode.choice.option, targetUnit: t.unitKey });
-      } else {
-        act({ type: pickMode.kind, nodeId });
-      }
+      if (pickMode.kind === 'attack') return;
+      act({ type: pickMode.kind, nodeId });
+      setPickMode(null);
+    },
+    onPickPiece: (pieceId) => {
+      if (pickMode.kind !== 'attack') return;
+      const target = pickMode.choice.targets.find((candidate) =>
+        candidate.kind === 'enemy' ? pieceId === `enemy:${candidate.uid}` : pieceId === `boss:${candidate.unitKey}`);
+      if (!target) return;
+      act(target.kind === 'enemy'
+        ? { type: 'attack', hand: pickMode.choice.hand, option: pickMode.choice.option, targetUid: target.uid }
+        : { type: 'attack', hand: pickMode.choice.hand, option: pickMode.choice.option, targetUnit: target.unitKey });
       setPickMode(null);
     },
   } : null);
 
-  const boardW = 392;
   return (
-    <div className="ds-main">
+    <div className="ds-main ds-main-encounter">
       <section className="ds-col mat">
+        <CharacterPanelHeader ch={ch} />
         <div className="ds-mat-row">
-          <EnduranceBar ch={ch} height={boardW * (1553 / 2048)} />
-          <Mat view={view} ch={ch} mine boardW={boardW}
+          <EnduranceBar ch={ch} />
+          <Mat view={view} ch={ch} mine
             onSlot={(cardId) => setManage(cardId)} />
         </div>
         <CharSummary view={view} ch={ch} />
       </section>
       <section className="ds-col map">
-        <DsNodeMap view={view} seat={seat} pick={mapPick} />
+        <DsNodeMap view={view} seat={seat} manifest={manifest} pick={mapPick} />
       </section>
       <section className="ds-col rail ig-glass">
         <EncounterRail view={view} seat={seat} act={act} pickMode={pickMode} setPick={setPickMode} />
@@ -1019,13 +1076,13 @@ function BonfireScreen({ view, seat, act }: { view: DsView; seat: number; act: A
   const [manage, setManage] = useState<string | null>(null);
   const [, setPendingPick] = useState<MapPick | null>(null);
   const rest = restReason(view, seat);
-  const boardW = 372;
   return (
-    <div className="ds-main">
+    <div className="ds-main ds-main-bonfire">
       <section className="ds-col mat">
+        <CharacterPanelHeader ch={ch} />
         <div className="ds-mat-row">
-          <EnduranceBar ch={ch} height={boardW * (1553 / 2048)} />
-          <Mat view={view} ch={ch} mine boardW={boardW} onSlot={(cardId) => setManage(cardId)} />
+          <EnduranceBar ch={ch} />
+          <Mat view={view} ch={ch} mine onSlot={(cardId) => setManage(cardId)} />
         </div>
         <CharSummary view={view} ch={ch} />
       </section>
@@ -1105,7 +1162,7 @@ export default function DsPlay({ view, act, seat, error }: {
       {!inSetup && <PartyChips view={view} seat={seat} />}
       {inSetup && <ClassPickScreen view={view} seat={seat} act={send} />}
       {view.phase === 'bonfire' && <BonfireScreen view={view} seat={seat} act={send} />}
-      {(view.phase === 'encounter' || view.phase === 'bossEncounter') && <EncounterScreen view={view} seat={seat} act={send} />}
+      {(view.phase === 'encounter' || view.phase === 'bossEncounter') && <EncounterScreen view={view} seat={seat} act={send} manifest={manifest} />}
       {view.phase === 'gameOver' && <GameOverScreen view={view} />}
       {inSetup && (
         <div className="ds-setup-tools">

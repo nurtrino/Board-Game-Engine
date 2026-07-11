@@ -103,6 +103,48 @@ export interface DsMiniDef {
   tint?: number[];
 }
 
+/**
+ * Raw community OBJs do not agree on a forward axis. These geometry-audited
+ * corrections normalize each sculpt so local +Z is its visual front; the
+ * outer scene yaw can then consistently point every model at its opponent.
+ */
+const MINI_FORWARD_CORRECTION: Record<string, number> = {
+  warrior: Math.PI,
+  knight: Math.PI,
+  herald: Math.PI,
+  assassin: Math.PI,
+  sorcerer: Math.PI,
+  'class-unknown-1': Math.PI,
+  'class-unknown-2': Math.PI,
+  'crossbow-hollow-alt': Math.PI,
+  'silver-knight-greatbowman': Math.PI,
+  'silver-knight-swordsman': Math.PI,
+  'silver-knight-swordsman-alt': Math.PI,
+  sentinel: Math.PI,
+  'large-hollow-soldier': Math.PI,
+  'hollow-soldier-alt': Math.PI,
+  'mushroom-child': Math.PI,
+  'mushroom-parent': Math.PI,
+  'titanite-demon': Math.PI,
+  'hungry-mimic': Math.PI,
+  'voracious-mimic': Math.PI,
+  'chest-mimic': Math.PI,
+  'old-dragonslayer': Math.PI,
+  'dragon-slayer-ornstein': Math.PI,
+  'black-dragon-kalameet': Math.PI,
+  'hollow-soldier': -Math.PI / 2,
+  'crossbow-hollow': -Math.PI / 2,
+  'winged-knight': -Math.PI / 2,
+  gargoyle: -Math.PI / 2,
+  artorias: -Math.PI / 2,
+  'boreal-outrider-knight': Math.PI / 2,
+  'dancer-of-the-boreal-valley': Math.PI / 2,
+};
+
+export function dsMiniForwardCorrection(id: string): number {
+  return MINI_FORWARD_CORRECTION[id] ?? 0;
+}
+
 export interface DsSheetDef {
   image: string; w: number; h: number; cols: number; rows: number; back?: string;
 }
@@ -194,6 +236,21 @@ const BOSS_DECKS: Record<string, string[]> = {
 };
 
 export interface DsCardArt { image: string; cols: number; rows: number; col: number; row: number }
+
+/** Resolve any staged card id, including all 66 encounter cards. */
+export function dsCardArtById(manifest: DsManifest, cardId: string): DsCardArt | null {
+  for (const deck of manifest.decks) {
+    const card = deck.cards.find((candidate) => candidate.id === cardId);
+    if (!card) continue;
+    const sheet = deck.sheets[card.sheet];
+    if (!sheet) continue;
+    return {
+      image: sheet.image, cols: sheet.cols, rows: sheet.rows,
+      col: card.cell % sheet.cols, row: Math.floor(card.cell / sheet.cols),
+    };
+  }
+  return null;
+}
 
 /** Resolve a behaviour-deck cell key (engine discard entry, e.g. 6 or
  * "sifart:13") to its card art crop in the staged sheets. */

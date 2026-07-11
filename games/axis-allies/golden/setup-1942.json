@@ -268,11 +268,6 @@
   "kiangsu": [
    {
     "power": "japan",
-    "key": "fighter",
-    "count": 1
-   },
-   {
-    "power": "japan",
     "key": "infantry",
     "count": 3
    }
@@ -548,7 +543,7 @@
    {
     "power": "china",
     "key": "infantry",
-    "count": 2
+    "count": 1
    }
   ],
   "morocco-algeria": [
@@ -573,6 +568,11 @@
     "power": "japan",
     "key": "infantry",
     "count": 2
+   },
+   {
+    "power": "japan",
+    "key": "fighter",
+    "count": 1
    }
   ],
   "stanovoj-chrebet": [
@@ -642,23 +642,18 @@
   "french-indo-china-thailand": [
    {
     "power": "japan",
-    "key": "fighter",
-    "count": 1
+    "key": "infantry",
+    "count": 2
    },
    {
     "power": "japan",
-    "key": "infantry",
-    "count": 3
+    "key": "fighter",
+    "count": 1
    }
   ],
   "burma": [
    {
-    "power": "usa",
-    "key": "fighter",
-    "count": 1
-   },
-   {
-    "power": "china",
+    "power": "japan",
     "key": "infantry",
     "count": 1
    }
@@ -751,6 +746,11 @@
    {
     "power": "china",
     "key": "infantry",
+    "count": 2
+   },
+   {
+    "power": "china",
+    "key": "fighter",
     "count": 1
    }
   ],
@@ -1090,6 +1090,13 @@
     "key": "infantry",
     "count": 1
    }
+  ],
+  "hupeh": [
+   {
+    "power": "china",
+    "key": "infantry",
+    "count": 1
+   }
   ]
  },
  "control": {
@@ -1151,7 +1158,7 @@
   "union-of-south-africa": "uk",
   "french-madagascar": "uk",
   "india": "uk",
-  "burma": "uk",
+  "burma": "japan",
   "french-indo-china-thailand": "japan",
   "yunnan": "china",
   "sikang": "china",

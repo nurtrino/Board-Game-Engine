@@ -8,10 +8,11 @@
 
 import type { BbState, BbSpaceRef, BbHunterState } from './state.js';
 import {
-  spaceRef, tileDef, parseRef, bbShuffle, lampSpaces, spawnEnemy, bfsFrom,
-  spaceNeighbors,
+  spaceRef, tileDef, parseRef, bbShuffle, lampSpaces, spawnEnemy, bfsFrom, drawConsumable,
+  spaceNeighbors, populateTile, worldExits, tileAt, facing, edgeDelta, rotEdge,
 } from './state.js';
-import { BB_MISSIONS, BB_CAMPAIGNS, BB_ENEMIES, BB_BOSSES, BB_ITEMS, type BbMissionDef } from './data.js';
+import { BB_MISSIONS, BB_CAMPAIGNS, BB_ENEMIES, BB_BOSSES, BB_ITEMS, BB_TILES, type BbMissionDef } from './data.js';
+import { BB_MAX_HP, BB_MAX_TOOLS, BB_MAX_RUNES } from './config.js';
 
 // ---------- mission-side state (attached to BbState.missionState) ----------
 
@@ -51,19 +52,28 @@ export interface BbMissionState {
   lockedMissions: string[]; // card numbers that may no longer be completed
   insightThisChapter: number;
   hooks: Record<string, Record<string, unknown>>; // card -> hooks block
+  spawns: {
+    tag: string;
+    type: string;
+    space: BbSpaceRef;
+    count: number;
+    respawnOnReset: boolean;
+    healOnReset: boolean;
+  }[];
 }
 
 export const missionState = (s: BbState): BbMissionState => {
   const box = s as unknown as { missionState?: BbMissionState };
   if (!box.missionState) {
-    box.missionState = { enemyMods: [], bossMods: {}, tokens: [], lockedTiles: [], lockedMissions: [], insightThisChapter: 0, hooks: {} };
+    box.missionState = { enemyMods: [], bossMods: {}, tokens: [], lockedTiles: [], lockedMissions: [], insightThisChapter: 0, hooks: {}, spawns: [] };
   }
+  box.missionState.spawns ??= [];
   return box.missionState;
 };
 
 export const resetMissionState = (s: BbState): void => {
   (s as unknown as { missionState?: BbMissionState }).missionState =
-    { enemyMods: [], bossMods: {}, tokens: [], lockedTiles: [], lockedMissions: [], insightThisChapter: 0, hooks: {} };
+    { enemyMods: [], bossMods: {}, tokens: [], lockedTiles: [], lockedMissions: [], insightThisChapter: 0, hooks: {}, spawns: [] };
 };
 
 export type BbMissionEventArg =
@@ -118,12 +128,16 @@ export const findSpace = (s: BbState, spec: string, selfSeat?: number): BbSpaceR
         return spaceRef(t.uid, sp.id);
       }
       if (kind === 'anySpawn') {
-        const sp = def.spaces.find((x) => x.icons.some((ic) => ic.startsWith('enemy')));
+        const sp = def.spaces.find((x) => x.icons.some((ic) => ic.startsWith('enemy')))
+          ?? def.spaces.find((x) => x.named)
+          ?? def.spaces[0];
         if (sp) return spaceRef(t.uid, sp.id);
       }
       if (kind.startsWith('enemy')) {
         const sp = def.spaces.find((x) => x.icons.includes(kind))
-          ?? def.spaces.find((x) => x.icons.some((ic) => ic.startsWith('enemy')));
+          ?? def.spaces.find((x) => x.icons.some((ic) => ic.startsWith('enemy')))
+          ?? def.spaces.find((x) => x.named)
+          ?? def.spaces[0];
         if (sp) return spaceRef(t.uid, sp.id);
       }
     }
@@ -137,6 +151,62 @@ const bossIdByName = (name: string): string | null =>
   Object.keys(BB_BOSSES).find((k) => BB_BOSSES[k].name.toLowerCase() === name.toLowerCase()) ?? null;
 const tileUidByName = (s: BbState, name: string): number | null =>
   s.tiles.find((t) => tileDef(t.tileId).name.toLowerCase() === name.toLowerCase())?.uid ?? null;
+
+const placeIconSurvivors = (s: BbState, tileUid?: number): void => {
+  for (const tile of s.tiles) {
+    if (tileUid != null && tile.uid !== tileUid) continue;
+    for (const sp of tileDef(tile.tileId).spaces) {
+      if (sp.icons.some((icon) => icon === 'consumable' || icon.startsWith('enemy'))) {
+        s.survivorTokens.push(spaceRef(tile.uid, sp.id));
+      }
+    }
+  }
+};
+
+const spawnBossAt = (s: BbState, card: string, id: string, space: BbSpaceRef, phase: 1 | 2 = 1): void => {
+  const def = BB_BOSSES[id];
+  if (!def || s.bosses.some((b) => b.missionTag === card && b.type === id)) return;
+  s.bosses.push({
+    uid: s.nextUid++, type: id, space, phase, damage: 0,
+    actionDeck: bbShuffle(s, def.phases[phase - 1].map((_, i) => i)), actionDiscard: [], missionTag: card,
+  });
+  evt(s, `${def.name.toUpperCase()} APPEARS`, 'boss');
+};
+
+const tryDeferredBossSpawns = (s: BbState): void => {
+  for (const [card, hooks] of Object.entries(missionState(s).hooks)) {
+    const spec = hooks.deferredBossSpawn as { id: string; space: string; phase?: 1 | 2 } | undefined;
+    if (!spec) continue;
+    const at = findSpace(s, spec.space);
+    if (!at) continue;
+    spawnBossAt(s, card, spec.id, at, spec.phase ?? 1);
+    delete hooks.deferredBossSpawn;
+  }
+};
+
+const placeNamedTileAdjacent = (s: BbState, tileName: string, anchorName: string): number | null => {
+  const existing = tileUidByName(s, tileName);
+  if (existing != null) return existing;
+  const tileId = Object.keys(BB_TILES).find((id) => BB_TILES[id].name.toLowerCase() === tileName.toLowerCase());
+  const anchor = s.tiles.find((tile) => tileDef(tile.tileId).name.toLowerCase() === anchorName.toLowerCase());
+  if (!tileId || !anchor) return null;
+  for (const exit of worldExits(anchor)) {
+    const [dx, dy] = edgeDelta(exit.edge);
+    if (tileAt(s, anchor.x + dx, anchor.y + dy)) continue;
+    for (let rot = 0; rot < 4; rot++) {
+      if (!BB_TILES[tileId].exits.some((candidate) => rotEdge(candidate.edge, rot) === facing(exit.edge))) continue;
+      const placed = { uid: s.nextUid++, tileId, rot: rot as 0 | 1 | 2 | 3, x: anchor.x + dx, y: anchor.y + dy };
+      s.tiles.push(placed);
+      populateTile(s, placed);
+      for (const [card, hooks] of Object.entries(missionState(s).hooks)) {
+        if (hooks.collectIconSurvivors && s.missions[card]?.revealed && !s.missions[card]?.completed) placeIconSurvivors(s, placed.uid);
+      }
+      tryDeferredBossSpawns(s);
+      return placed.uid;
+    }
+  }
+  return null;
+};
 
 // ---------- effects ----------
 
@@ -163,7 +233,10 @@ export const applyMissionEffects = (s: BbState, card: string, effects: Fx[]): vo
         // fog gates + clear + spawn 1 tagged enemy on the tile's spawn space
         fogGate(s, uid, card);
         const space = findSpace(s, `anySpawn:${tile}`) ?? findSpace(s, `tile:${tile}`);
-        if (space) spawnEnemy(s, enemyId, space, card);
+        if (space) {
+          spawnEnemy(s, enemyId, space, card);
+          ms.spawns.push({ tag: card, type: enemyId, space, count: 1, respawnOnReset: true, healOnReset: true });
+        }
         const e = s.enemies.find((x) => x.missionTag === card);
         if (e && fx.immuneToTileText) {
           ms.enemyMods.push({ tag: card, hpPool: 0, hpPoolMax: 0, replace: {}, immuneTileText: true });
@@ -204,13 +277,15 @@ export const applyMissionEffects = (s: BbState, card: string, effects: Fx[]): vo
       case 'spawnBoss': {
         const id = bossIdByName(String(fx.boss)) ?? String(fx.boss);
         const def = BB_BOSSES[id];
-        const space = findSpace(s, String(fx.space)) ?? s.hunters.find((h) => h.space)?.space;
-        if (!def || !space) { surface(s, card, `spawnBoss ${fx.boss}`); break; }
-        s.bosses.push({
-          uid: s.nextUid++, type: id, space, phase: 1, damage: 0,
-          actionDeck: bbShuffle(s, def.phases[0].map((_, i) => i)), actionDiscard: [], missionTag: card,
-        });
-        evt(s, `${def.name.toUpperCase()} APPEARS`, 'boss');
+        if (!def) { surface(s, card, `spawnBoss ${fx.boss}`); break; }
+        const spec = String(fx.space);
+        const space = findSpace(s, spec);
+        const phase = Number(fx.phase ?? 1) === 2 ? 2 : 1;
+        if (!space) {
+          ms.hooks[card] = { ...(ms.hooks[card] ?? {}), deferredBossSpawn: { id, space: spec, phase } };
+          break;
+        }
+        spawnBossAt(s, card, id, space, phase);
         break;
       }
       case 'spawnEnemy': {
@@ -218,8 +293,18 @@ export const applyMissionEffects = (s: BbState, card: string, effects: Fx[]): vo
         const space = findSpace(s, String(fx.space));
         if (!BB_ENEMIES[id] || !space) { surface(s, card, `spawnEnemy ${fx.enemy}`); break; }
         const n = Number(fx.count ?? 1) * (fx.perHunter ? s.partySize : 1);
-        // mission tag makes it survive/respawn on reset (resetMap keeps tagged)
-        for (let i = 0; i < n; i++) spawnEnemy(s, id, space, fx.respawnOnReset === false ? undefined : card);
+        // Tagged mission pieces persist when the normal map population is
+        // cleared. Only effects that explicitly say respawn recreate slain
+        // copies; `persistOnReset`/`noRespawn` keeps surviving copies only.
+        for (let i = 0; i < n; i++) spawnEnemy(s, id, space, card);
+        ms.spawns.push({
+          tag: card,
+          type: id,
+          space,
+          count: n,
+          respawnOnReset: fx.respawnOnReset === true,
+          healOnReset: fx.healOnReset === true || fx.respawnOnReset === true,
+        });
         break;
       }
       case 'spawnNpc': {
@@ -293,9 +378,59 @@ export const applyMissionEffects = (s: BbState, card: string, effects: Fx[]): vo
         }
         break;
       }
-      case 'custom':
-        surface(s, card, String(fx.id));
+      case 'custom': {
+        const id = String(fx.id);
+        if (id === 'survivor-token-on-each-consumable-or-enemy-icon-space-interact-to-collect') {
+          ms.hooks[card] = { ...(ms.hooks[card] ?? {}), collectIconSurvivors: true };
+          placeIconSurvivors(s);
+        } else if (id === 'interact-to-place-fire-token-on-tile-without-one') {
+          ms.hooks[card] = { ...(ms.hooks[card] ?? {}), placeFireOnInteract: true };
+        } else if (id === 'spawn-church-giant-and-servant-on-grand-cathedral-reveal') {
+          ms.hooks[card] = {
+            ...(ms.hooks[card] ?? {}),
+            spawnEnemiesOnTileReveal: { tile: 'Grand Cathedral', enemies: ['Church Giant', 'Church Servant'] },
+          };
+        } else if (id === 'gascoigne-starts-phase-2' || id === 'cleric-beast-starts-at-phase-2' || id === 'gascoigne-starts-at-phase-2') {
+          const boss = s.bosses.find((b) => b.missionTag === card);
+          if (boss) {
+            boss.phase = 2;
+            boss.damage = 0;
+            boss.actionDeck = bbShuffle(s, BB_BOSSES[boss.type].phases[1].map((_, i) => i));
+            boss.actionDiscard = [];
+          } else {
+            const deferred = ms.hooks[card]?.deferredBossSpawn as { id: string; space: string; phase?: 1 | 2 } | undefined;
+            if (deferred) deferred.phase = 2;
+          }
+        } else if (id === 'swap-to-gascoigne-transformed-heal-phase-1-discard-40-and-music-box') {
+          const boss = s.bosses.find((b) => b.type === 'father-gascoigne');
+          const transformed = BB_BOSSES['father-gascoigne-transformed'];
+          if (boss && transformed) {
+            boss.type = 'father-gascoigne-transformed';
+            boss.phase = 1;
+            boss.damage = 0;
+            boss.actionDeck = bbShuffle(s, transformed.phases[0].map((_, i) => i));
+            boss.actionDiscard = [];
+            delete ms.bossMods['father-gascoigne'];
+            delete ms.hooks['40'];
+            const boundlessFrenzy = s.missions['40'];
+            if (boundlessFrenzy) {
+              boundlessFrenzy.completed = true;
+              boundlessFrenzy.revealed = false;
+            }
+            for (const hunter of s.hunters) {
+              hunter.rewards = hunter.rewards.filter((reward) => reward.id !== 'tiny-music-box');
+            }
+            s.specialRules = s.specialRules.filter((rule) => rule !== '40' && !rule.startsWith('40:'));
+          } else {
+            surface(s, card, id);
+          }
+        } else if (id === 'connect-grand-cathedral-to-courtyard-lamp') {
+          if (placeNamedTileAdjacent(s, 'Grand Cathedral', 'Courtyard Lamp') == null) surface(s, card, id);
+        } else {
+          surface(s, card, id);
+        }
         break;
+      }
       default:
         surface(s, card, String(fx.do));
         break;
@@ -343,8 +478,33 @@ const collectInsight = (s: BbState, card: string): void => {
 
 const completeHunt = (s: BbState): void => {
   if (s.phase === 'ended') return;
+  if (s.combat) {
+    (s as unknown as { huntCompletePending?: boolean }).huntCompletePending = true;
+    return;
+  }
   s.phase = 'ended';
   s.outcome = 'victory';
+  s.activeSeat = null;
+  s.activationQueue = [];
+  s.combat = null;
+  s.pending = s.pending.filter((p) => p.kind === 'reward-overflow');
+  // Campaign rules (p. 25): after winning, every hunter visits the Dream and
+  // must spend remaining echoes before the next chapter begins. This visit
+  // does not advance the now-irrelevant Hunt Track.
+  for (const h of s.hunters) {
+    h.deck = bbShuffle(s, [...h.deck, ...h.discard, ...h.hand, ...h.slots.filter(Boolean) as string[]]);
+    h.discard = [];
+    h.hand = [];
+    h.slots = h.slots.map(() => null);
+    if (h.echoes > 0) s.pending.push({ seat: h.seat, kind: 'dream-upgrades', picks: h.echoes });
+    h.echoes = 0;
+    h.space = null;
+    h.hp = BB_MAX_HP;
+    h.poison = false;
+    h.frenzy = false;
+    h.firearmExhausted = false;
+    for (const r of h.rewards) r.exhausted = false;
+  }
   s.campaignStore = {
     hunterDecks: Object.fromEntries(s.hunters.map((h) => [h.seat, [...h.deck, ...h.discard, ...h.hand, ...h.slots.filter(Boolean) as string[]]])),
     firearms: Object.fromEntries(s.hunters.map((h) => [h.seat, h.firearmId])),
@@ -353,6 +513,13 @@ const completeHunt = (s: BbState): void => {
     insightCards: [...s.insightCards],
   };
   evt(s, 'THE HUNT IS COMPLETE · VICTORY', 'victory');
+};
+
+export const bbMissionFinalizeHunt = (s: BbState): void => {
+  const box = s as unknown as { huntCompletePending?: boolean };
+  if (!box.huntCompletePending) return;
+  box.huntCompletePending = false;
+  completeHunt(s);
 };
 
 const grantReward = (s: BbState, fx: Fx): void => {
@@ -365,17 +532,72 @@ const grantReward = (s: BbState, fx: Fx): void => {
     if (!id) { surface(s, 'reward', String(fx.item)); return; }
     const it = BB_ITEMS[id];
     if (it.kind === 'firearm') h.firearmId = id;
-    else if (it.kind === 'tool' || it.kind === 'rune') h.rewards.push({ id, exhausted: false });
+    else if (it.kind === 'tool' || it.kind === 'rune') {
+      const cap = it.kind === 'tool' ? BB_MAX_TOOLS : BB_MAX_RUNES;
+      if (h.rewards.filter((r) => BB_ITEMS[r.id]?.kind === it.kind).length >= cap) {
+        s.pending.push({ seat, kind: 'reward-overflow', rewardId: id });
+      } else {
+        h.rewards.push({ id, exhausted: false });
+      }
+    }
     else h.consumables.push(id);
     evt(s, `REWARD · ${it.name.toUpperCase()}`, 'reward');
   }
   if (fx.consumables) {
     for (let i = 0; i < Number(fx.consumables); i++) {
-      const c = s.consumableDeck.shift();
+      const c = drawConsumable(s);
       if (c) h.consumables.push(c);
     }
   }
   if (fx.echoes) h.echoes = Math.min(3, h.echoes + Number(fx.echoes));
+};
+
+/** Mission pieces that override the normal reset rules (p. 24). Called after
+ * the base map reset has removed ordinary enemies and repopulated spawn icons. */
+export const bbMissionOnReset = (s: BbState): void => {
+  const ms = missionState(s);
+  for (const mod of ms.enemyMods) mod.hpPool = mod.hpPoolMax;
+  type SpawnSpec = BbMissionState['spawns'][number];
+  const combined = new Map<string, SpawnSpec>();
+  for (const spec of ms.spawns) {
+    const key = `${spec.tag}\0${spec.type}\0${spec.space}\0${spec.respawnOnReset}\0${spec.healOnReset}`;
+    const prior = combined.get(key);
+    if (prior) prior.count += spec.count;
+    else combined.set(key, { ...spec });
+  }
+  const specs = [...combined.values()];
+  const handledRespawns = new Set<string>();
+  for (const spec of specs.filter((entry) => entry.respawnOnReset)) {
+    const key = `${spec.tag}\0${spec.type}`;
+    if (handledRespawns.has(key)) continue;
+    handledRespawns.add(key);
+    const family = specs.filter((entry) => entry.respawnOnReset && entry.tag === spec.tag && entry.type === spec.type);
+    const destinations = family.flatMap((entry) => Array.from({ length: entry.count }, () => entry.space));
+    const existing = s.enemies
+      .filter((e) => e.missionTag === spec.tag && e.type === spec.type)
+      .sort((a, b) => a.uid - b.uid);
+    // Assign each surviving miniature to one requested slot exactly once.
+    for (let i = 0; i < Math.min(existing.length, destinations.length); i++) {
+      existing[i].space = destinations[i];
+      existing[i].damage = 0;
+    }
+    for (let i = existing.length; i < destinations.length; i++) {
+      spawnEnemy(s, spec.type, destinations[i], spec.tag);
+    }
+  }
+  const healed = new Set<string>();
+  for (const spec of specs.filter((entry) => !entry.respawnOnReset && entry.healOnReset)) {
+    const key = `${spec.tag}\0${spec.type}`;
+    if (healed.has(key)) continue;
+    healed.add(key);
+    for (const e of s.enemies.filter((piece) => piece.missionTag === spec.tag && piece.type === spec.type)) e.damage = 0;
+  }
+  for (const b of s.bosses) {
+    const mod = ms.bossMods[b.type];
+    if (!mod?.respawnTo) continue;
+    const at = findSpace(s, mod.respawnTo);
+    if (at) b.space = at;
+  }
 };
 
 // ---------- reveal ----------
@@ -432,6 +654,7 @@ interface BbTrigger {
   reveal?: string;
   space?: number;
   afterTrackSpace?: number; // endMoveOnTile gated behind a track position
+  afterCard?: string;       // trigger is dormant until this mission card is revealed
   cases?: { ifInsightCard?: string; notInsightCard?: string; else?: boolean; reveal: string }[];
 }
 
@@ -443,7 +666,9 @@ export const bbMissionOnReveal = (s: BbState, hook: 'chapter-start'): void => {
   const ch = defs[chKey] as (BbMissionDef & { triggers?: BbTrigger[] }) | undefined;
   const chDef = BB_CAMPAIGNS[s.campaignId].chapters[s.chapter - 1];
   // special-rules cards flip faceup at setup (p. 10)
-  for (const n of chDef.extraCards ?? []) revealMission(s, n);
+  const setupCards = new Set(chDef.extraCards ?? []);
+  if (ch?.prePlace?.specialRuleCard) setupCards.add(ch.prePlace.specialRuleCard);
+  for (const n of setupCards) revealMission(s, n);
   for (const t of ch?.triggers ?? []) {
     if (t.on === 'startOfHunt' && t.reveal) revealMission(s, t.reveal);
     if (t.on === 'startOfHuntBranch') {
@@ -480,6 +705,30 @@ export const bbMissionEvent = (s: BbState, ev: BbMissionEventArg): void => {
         const carried = ((h as unknown as { carriedSurvivors?: number }).carriedSurvivors ?? 0) + 1;
         (h as unknown as { carriedSurvivors?: number }).carriedSurvivors = carried;
         evt(s, 'A SURVIVOR FOLLOWS YOU', 'token');
+      }
+    }
+  }
+  if (ev.type === 'interact') {
+    for (const [card, hooks] of Object.entries(ms.hooks)) {
+      const inst = s.missions[card];
+      if (!inst || inst.completed || ms.lockedMissions.includes(card)) continue;
+      if (hooks.collectIconSurvivors) {
+        const ix = s.survivorTokens.indexOf(ev.space);
+        if (ix !== -1) {
+          s.survivorTokens.splice(ix, 1);
+          inst.vars.delivered = (inst.vars.delivered ?? 0) + 1;
+          evt(s, 'SURVIVOR GUIDED TO SAFETY', 'token');
+        }
+      }
+      if (hooks.placeFireOnInteract && inst.tokens > 0) {
+        const uid = parseRef(ev.space).uid;
+        const key = `fire:${uid}`;
+        if (!inst.vars[key]) {
+          inst.vars[key] = 1;
+          inst.tokens--;
+          s.insightTokens[ev.space] = (s.insightTokens[ev.space] ?? 0) + 1;
+          evt(s, 'OLD YHARNAM BURNS', 'token');
+        }
       }
     }
   }
@@ -543,6 +792,30 @@ export const bbMissionEvent = (s: BbState, ev: BbMissionEventArg): void => {
     // fleeing tokens creep away; boss bonus activations handled in actions.ts
     for (const tok of ms.tokens) {
       if (tok.fleeing && tok.space) for (let i = 0; i < tok.movesAwayPerTurn; i++) fleeStep(s, tok);
+    }
+  }
+  if (ev.type === 'tileRevealed') {
+    tryDeferredBossSpawns(s);
+    for (const [card, hooks] of Object.entries(ms.hooks)) {
+      const inst = s.missions[card];
+      if (hooks.collectIconSurvivors && inst?.revealed && !inst.completed) {
+        placeIconSurvivors(s, ev.tileUid);
+      }
+      const wave = hooks.spawnEnemiesOnTileReveal as { tile: string; enemies: string[] } | undefined;
+      if (wave && inst?.revealed && !inst.completed && !inst.vars.spawned
+        && tileDef(ev.tileId).name.toLowerCase() === wave.tile.toLowerCase()) {
+        const at = findSpace(s, `anySpawn:${wave.tile}`) ?? findSpace(s, `tile:${wave.tile}`);
+        if (at) {
+          for (const name of wave.enemies) {
+            const type = enemyIdByName(name);
+            if (type) {
+              spawnEnemy(s, type, at, card);
+              ms.spawns.push({ tag: card, type, space: at, count: 1, respawnOnReset: false, healOnReset: false });
+            }
+          }
+          inst.vars.spawned = 1;
+        }
+      }
     }
   }
 
@@ -658,7 +931,8 @@ export const bbMissionEvent = (s: BbState, ev: BbMissionEventArg): void => {
     if (!t.reveal || s.missions[t.reveal]?.revealed) continue;
     if (t.on === 'endMoveOnTile' && ev.type === 'endMove'
       && tileDef(ev.tileId).name.toLowerCase() === (t.tile ?? '').toLowerCase()
-      && s.huntTrack >= (t.afterTrackSpace ?? 0)) {
+      && s.huntTrack >= (t.afterTrackSpace ?? 0)
+      && (!t.afterCard || !!s.missions[t.afterCard]?.revealed)) {
       revealMission(s, t.reveal);
     }
     // Hunt Track reaching a given space (e.g. the 1st reset at 4)
@@ -679,6 +953,12 @@ export const bbMissionInteractables = (s: BbState, seat: number, space: BbSpaceR
   const ms = missionState(s);
   for (const tok of ms.tokens) {
     if (tok.space === space && tok.pickup === 'interact') out.push(`token:${tok.id}`);
+  }
+  for (const [card, hooks] of Object.entries(ms.hooks)) {
+    const inst = s.missions[card];
+    if (!inst || inst.completed || ms.lockedMissions.includes(card)) continue;
+    if (hooks.collectIconSurvivors && s.survivorTokens.includes(space)) out.push(`icon-survivor:${card}`);
+    if (hooks.placeFireOnInteract && inst.tokens > 0 && !inst.vars[`fire:${parseRef(space).uid}`]) out.push(`fire:${card}`);
   }
   const defs = defsFor(s);
   for (const [number, inst] of Object.entries(s.missions)) {

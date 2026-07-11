@@ -1,0 +1,1313 @@
+{
+  "source": "TTS workshop 3460664356",
+  "board": {
+    "image": "/politik/board.webp",
+    "imagePx": [
+      5760,
+      3840
+    ],
+    "world": {
+      "width": 30,
+      "height": 20
+    },
+    "tts": {
+      "pos": [
+        0,
+        5.465079,
+        2.5
+      ],
+      "rot": [
+        0,
+        179.999878,
+        0
+      ],
+      "scale": [
+        10,
+        1,
+        10
+      ]
+    },
+    "worldToPixel": {
+      "sx": 192,
+      "tx": 2880,
+      "sz": -192,
+      "tz": 2400
+    }
+  },
+  "mat": {
+    "board": "/politik/nation-board.webp",
+    "resources": "/politik/resource-pad.webp",
+    "companyBoard": "/politik/company-board.webp",
+    "margin": "/politik/margin-token.webp",
+    "corporateLeader": "/politik/leader-corporate.webp",
+    "politicalLeader": "/politik/leader-political.webp",
+    "markets": {
+      "media": "/politik/market-media.webp",
+      "energy": "/politik/market-energy.webp",
+      "financial": "/politik/market-financial.webp",
+      "humanities": "/politik/market-humanities.webp",
+      "technology": "/politik/market-technology.webp",
+      "manufacturing": "/politik/market-manufacturing.webp"
+    }
+  },
+  "logo": "/politik/logo.webp",
+  "rulebook": "/politik/rulebook.pdf",
+  "sheets": {
+    "10359": {
+      "face": "/politik/sheet-10359.webp",
+      "back": "/politik/back-10359.webp",
+      "cols": 1,
+      "rows": 1,
+      "uniqueBack": false
+    },
+    "10361": {
+      "face": "/politik/sheet-10361.webp",
+      "back": "/politik/back-10361.webp",
+      "cols": 1,
+      "rows": 1,
+      "uniqueBack": false
+    },
+    "10362": {
+      "face": "/politik/sheet-10362.webp",
+      "back": "/politik/back-10362.webp",
+      "cols": 1,
+      "rows": 1,
+      "uniqueBack": false
+    },
+    "10381": {
+      "face": "/politik/sheet-10381.webp",
+      "back": "/politik/back-10381.webp",
+      "cols": 1,
+      "rows": 1,
+      "uniqueBack": false
+    },
+    "10406": {
+      "face": "/politik/sheet-10406.webp",
+      "back": "/politik/back-10406.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": true
+    },
+    "10407": {
+      "face": "/politik/sheet-10407.webp",
+      "back": "/politik/back-10407.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": true
+    },
+    "10408": {
+      "face": "/politik/sheet-10408.webp",
+      "back": "/politik/back-10408.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": true
+    },
+    "10409": {
+      "face": "/politik/sheet-10409.webp",
+      "back": "/politik/back-10409.webp",
+      "cols": 1,
+      "rows": 1,
+      "uniqueBack": false
+    },
+    "10412": {
+      "face": "/politik/sheet-10412.webp",
+      "back": "/politik/back-10412.webp",
+      "cols": 3,
+      "rows": 2,
+      "uniqueBack": false
+    },
+    "10414": {
+      "face": "/politik/sheet-10414.webp",
+      "back": "/politik/back-10414.webp",
+      "cols": 4,
+      "rows": 3,
+      "uniqueBack": false
+    },
+    "10416": {
+      "face": "/politik/sheet-10416.webp",
+      "back": "/politik/back-10416.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": true
+    },
+    "10417": {
+      "face": "/politik/sheet-10417.webp",
+      "back": "/politik/back-10417.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10418": {
+      "face": "/politik/sheet-10418.webp",
+      "back": "/politik/back-10418.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10419": {
+      "face": "/politik/sheet-10419.webp",
+      "back": "/politik/back-10419.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10420": {
+      "face": "/politik/sheet-10420.webp",
+      "back": "/politik/back-10420.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10421": {
+      "face": "/politik/sheet-10421.webp",
+      "back": "/politik/back-10421.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10422": {
+      "face": "/politik/sheet-10422.webp",
+      "back": "/politik/back-10422.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10423": {
+      "face": "/politik/sheet-10423.webp",
+      "back": "/politik/back-10423.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10424": {
+      "face": "/politik/sheet-10424.webp",
+      "back": "/politik/back-10424.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10425": {
+      "face": "/politik/sheet-10425.webp",
+      "back": "/politik/back-10425.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10426": {
+      "face": "/politik/sheet-10426.webp",
+      "back": "/politik/back-10426.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10427": {
+      "face": "/politik/sheet-10427.webp",
+      "back": "/politik/back-10427.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10428": {
+      "face": "/politik/sheet-10428.webp",
+      "back": "/politik/back-10428.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10429": {
+      "face": "/politik/sheet-10429.webp",
+      "back": "/politik/back-10429.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10430": {
+      "face": "/politik/sheet-10430.webp",
+      "back": "/politik/back-10430.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10431": {
+      "face": "/politik/sheet-10431.webp",
+      "back": "/politik/back-10431.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10432": {
+      "face": "/politik/sheet-10432.webp",
+      "back": "/politik/back-10432.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10433": {
+      "face": "/politik/sheet-10433.webp",
+      "back": "/politik/back-10433.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10434": {
+      "face": "/politik/sheet-10434.webp",
+      "back": "/politik/back-10434.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    },
+    "10435": {
+      "face": "/politik/sheet-10435.webp",
+      "back": "/politik/back-10435.webp",
+      "cols": 4,
+      "rows": 3,
+      "uniqueBack": false
+    },
+    "10436": {
+      "face": "/politik/sheet-10436.webp",
+      "back": "/politik/back-10436.webp",
+      "cols": 6,
+      "rows": 4,
+      "uniqueBack": false
+    }
+  },
+  "boardData": {
+    "imagePx": [
+      5760,
+      3840
+    ],
+    "world": {
+      "width": 30,
+      "height": 20
+    },
+    "states": [
+      {
+        "id": "A1",
+        "name": "Elrun",
+        "region": "A",
+        "benefit": "research",
+        "px": [
+          1015,
+          1262
+        ]
+      },
+      {
+        "id": "A2",
+        "name": "Capro",
+        "region": "A",
+        "benefit": "food",
+        "px": [
+          1456,
+          1116
+        ]
+      },
+      {
+        "id": "A3",
+        "name": "Rodjev",
+        "region": "A",
+        "benefit": "food",
+        "px": [
+          2094,
+          1077
+        ]
+      },
+      {
+        "id": "A4",
+        "name": "Qisio",
+        "region": "A",
+        "benefit": "carbon",
+        "px": [
+          1021,
+          1753
+        ]
+      },
+      {
+        "id": "A5",
+        "name": "Kiri Haka",
+        "region": "A",
+        "benefit": "food",
+        "px": [
+          1494,
+          1992
+        ]
+      },
+      {
+        "id": "A6",
+        "name": "Urek",
+        "region": "A",
+        "benefit": "carbon",
+        "px": [
+          2115,
+          1428
+        ]
+      },
+      {
+        "id": "B1",
+        "name": "Madasa",
+        "region": "B",
+        "benefit": "food",
+        "px": [
+          2890,
+          1006
+        ]
+      },
+      {
+        "id": "B2",
+        "name": "Jessra",
+        "region": "B",
+        "benefit": "carbon",
+        "px": [
+          3450,
+          909
+        ]
+      },
+      {
+        "id": "B3",
+        "name": "Zibir",
+        "region": "B",
+        "benefit": "research",
+        "px": [
+          4547,
+          360
+        ]
+      },
+      {
+        "id": "B4",
+        "name": "Hanasi",
+        "region": "B",
+        "benefit": "food",
+        "px": [
+          3277,
+          1495
+        ]
+      },
+      {
+        "id": "B5",
+        "name": "Onix",
+        "region": "B",
+        "benefit": "food",
+        "px": [
+          3744,
+          1122
+        ]
+      },
+      {
+        "id": "B8",
+        "name": "Baasa",
+        "region": "B",
+        "benefit": "carbon",
+        "px": [
+          4476,
+          816
+        ]
+      },
+      {
+        "id": "C1",
+        "name": "Brontif",
+        "region": "C",
+        "benefit": "carbon",
+        "px": [
+          3936,
+          1614
+        ]
+      },
+      {
+        "id": "C2",
+        "name": "Moxis",
+        "region": "C",
+        "benefit": "food",
+        "px": [
+          4416,
+          1785
+        ]
+      },
+      {
+        "id": "C3",
+        "name": "Tibero",
+        "region": "C",
+        "benefit": "food",
+        "px": [
+          4574,
+          1386
+        ]
+      },
+      {
+        "id": "C4",
+        "name": "Centini",
+        "region": "C",
+        "benefit": "carbon",
+        "px": [
+          3917,
+          2014
+        ]
+      },
+      {
+        "id": "C5",
+        "name": "Santet",
+        "region": "C",
+        "benefit": "research",
+        "px": [
+          4482,
+          2274
+        ]
+      },
+      {
+        "id": "C6",
+        "name": "Heshing",
+        "region": "C",
+        "benefit": "carbon",
+        "px": [
+          4866,
+          2094
+        ]
+      },
+      {
+        "id": "D1",
+        "name": "Emos",
+        "region": "D",
+        "benefit": "carbon",
+        "px": [
+          3162,
+          2037
+        ]
+      },
+      {
+        "id": "D2",
+        "name": "Aplos",
+        "region": "D",
+        "benefit": "food",
+        "px": [
+          3180,
+          2412
+        ]
+      },
+      {
+        "id": "D3",
+        "name": "Verrat",
+        "region": "D",
+        "benefit": "carbon",
+        "px": [
+          3924,
+          2754
+        ]
+      },
+      {
+        "id": "D4",
+        "name": "Iniza",
+        "region": "D",
+        "benefit": "research",
+        "px": [
+          2472,
+          2928
+        ]
+      },
+      {
+        "id": "D5",
+        "name": "Roqoa",
+        "region": "D",
+        "benefit": "research",
+        "px": [
+          2919,
+          2724
+        ]
+      },
+      {
+        "id": "D6",
+        "name": "Parapin",
+        "region": "D",
+        "benefit": "food",
+        "px": [
+          3333,
+          2892
+        ]
+      },
+      {
+        "id": "E1",
+        "name": "Fang Ro",
+        "region": "E",
+        "benefit": "food",
+        "px": [
+          1135,
+          3097
+        ]
+      },
+      {
+        "id": "E2",
+        "name": "Sonu",
+        "region": "E",
+        "benefit": "food",
+        "px": [
+          1658,
+          2695
+        ]
+      },
+      {
+        "id": "E3",
+        "name": "Osa Tempro",
+        "region": "E",
+        "benefit": "carbon",
+        "px": [
+          1800,
+          2388
+        ]
+      },
+      {
+        "id": "E4",
+        "name": "Adaron",
+        "region": "E",
+        "benefit": "research",
+        "px": [
+          1440,
+          3372
+        ]
+      },
+      {
+        "id": "E5",
+        "name": "Tahn Ticca",
+        "region": "E",
+        "benefit": "carbon",
+        "px": [
+          1835,
+          2967
+        ]
+      },
+      {
+        "id": "E6",
+        "name": "Hypha",
+        "region": "E",
+        "benefit": "food",
+        "px": [
+          2343,
+          2258
+        ]
+      }
+    ],
+    "stations": [
+      {
+        "id": "X1",
+        "name": "Nova",
+        "regions": [
+          "A",
+          "B"
+        ],
+        "px": [
+          2529,
+          1398
+        ],
+        "card": 0
+      },
+      {
+        "id": "X2",
+        "name": "Meza",
+        "regions": [
+          "B",
+          "C"
+        ],
+        "px": [
+          4233,
+          1149
+        ],
+        "card": 1
+      },
+      {
+        "id": "X5",
+        "name": "Luna",
+        "regions": [
+          "C",
+          "D"
+        ],
+        "px": [
+          3753,
+          2346
+        ],
+        "card": 4
+      },
+      {
+        "id": "X4",
+        "name": "Rosa",
+        "regions": [
+          "D",
+          "E"
+        ],
+        "px": [
+          2709,
+          2310
+        ],
+        "card": 3
+      },
+      {
+        "id": "X3",
+        "name": "Arca",
+        "regions": [
+          "E",
+          "A"
+        ],
+        "px": [
+          1107,
+          2487
+        ],
+        "card": 2
+      }
+    ],
+    "adjacency": [
+      [
+        "X3",
+        "A4"
+      ],
+      [
+        "A4",
+        "A1"
+      ],
+      [
+        "A4",
+        "A5"
+      ],
+      [
+        "A5",
+        "A6"
+      ],
+      [
+        "A6",
+        "A3"
+      ],
+      [
+        "A3",
+        "A2"
+      ],
+      [
+        "A2",
+        "A1"
+      ],
+      [
+        "A6",
+        "X1"
+      ],
+      [
+        "X1",
+        "B1"
+      ],
+      [
+        "B1",
+        "B4"
+      ],
+      [
+        "B4",
+        "B2"
+      ],
+      [
+        "B2",
+        "B3"
+      ],
+      [
+        "B3",
+        "B8"
+      ],
+      [
+        "B8",
+        "B5"
+      ],
+      [
+        "B5",
+        "B4"
+      ],
+      [
+        "B5",
+        "X2"
+      ],
+      [
+        "X2",
+        "C3"
+      ],
+      [
+        "C3",
+        "C2"
+      ],
+      [
+        "C3",
+        "C6"
+      ],
+      [
+        "C6",
+        "C5"
+      ],
+      [
+        "C5",
+        "C2"
+      ],
+      [
+        "C2",
+        "C1"
+      ],
+      [
+        "C2",
+        "C4"
+      ],
+      [
+        "C4",
+        "X5"
+      ],
+      [
+        "X5",
+        "D3"
+      ],
+      [
+        "D3",
+        "D2"
+      ],
+      [
+        "D3",
+        "D6"
+      ],
+      [
+        "D6",
+        "D5"
+      ],
+      [
+        "D5",
+        "D2"
+      ],
+      [
+        "D2",
+        "D1"
+      ],
+      [
+        "D5",
+        "D4"
+      ],
+      [
+        "D1",
+        "X4"
+      ],
+      [
+        "X4",
+        "E6"
+      ],
+      [
+        "E6",
+        "E5"
+      ],
+      [
+        "E5",
+        "E2"
+      ],
+      [
+        "E5",
+        "E4"
+      ],
+      [
+        "E2",
+        "E3"
+      ],
+      [
+        "E2",
+        "E1"
+      ],
+      [
+        "E1",
+        "E4"
+      ],
+      [
+        "E2",
+        "X3"
+      ]
+    ],
+    "council": [
+      {
+        "id": "chair",
+        "name": "Chair",
+        "px": [
+          2432,
+          3650
+        ]
+      },
+      {
+        "id": "justice",
+        "name": "Justice",
+        "px": [
+          3027,
+          3650
+        ]
+      },
+      {
+        "id": "commerce",
+        "name": "Commerce",
+        "px": [
+          3623,
+          3650
+        ]
+      },
+      {
+        "id": "labor",
+        "name": "Labor",
+        "px": [
+          4218,
+          3650
+        ]
+      },
+      {
+        "id": "intel",
+        "name": "Intel",
+        "px": [
+          4813,
+          3650
+        ]
+      },
+      {
+        "id": "defense",
+        "name": "Defense",
+        "px": [
+          5408,
+          3650
+        ]
+      }
+    ],
+    "industries": [
+      {
+        "id": "media",
+        "name": "Media",
+        "color": "#f28c59",
+        "px": [
+          840,
+          176
+        ]
+      },
+      {
+        "id": "energy",
+        "name": "Energy",
+        "color": "#667344",
+        "px": [
+          838,
+          317
+        ]
+      },
+      {
+        "id": "financial",
+        "name": "Financial",
+        "color": "#779650",
+        "px": [
+          840,
+          458
+        ]
+      },
+      {
+        "id": "humanities",
+        "name": "Humanities",
+        "color": "#da6384",
+        "px": [
+          840,
+          600
+        ]
+      },
+      {
+        "id": "technology",
+        "name": "Technology",
+        "color": "#2eb4c8",
+        "px": [
+          840,
+          740
+        ]
+      },
+      {
+        "id": "manufacturing",
+        "name": "Manufacturing",
+        "color": "#6f9887",
+        "px": [
+          840,
+          881
+        ]
+      }
+    ],
+    "bases": [
+      {
+        "id": "capitalism",
+        "name": "Capitalism",
+        "color": "#68a07c",
+        "px": [
+          5409,
+          1403
+        ]
+      },
+      {
+        "id": "communism",
+        "name": "Communism",
+        "color": "#dd413c",
+        "px": [
+          5409,
+          1864
+        ]
+      },
+      {
+        "id": "statism",
+        "name": "Statism",
+        "color": "#76528e",
+        "px": [
+          5408,
+          2326
+        ]
+      },
+      {
+        "id": "fascism",
+        "name": "Fascism",
+        "color": "#d52469",
+        "px": [
+          5409,
+          2788
+        ]
+      }
+    ],
+    "prices": {
+      "food": 8,
+      "carbon": 5,
+      "research": 5,
+      "campaign": 5,
+      "clash": 2,
+      "educate": 2
+    },
+    "priceRows": [
+      {
+        "id": "food",
+        "px": [
+          1588,
+          161
+        ],
+        "slots": [
+          [
+            1588,
+            161
+          ],
+          [
+            1672,
+            161
+          ],
+          [
+            1757,
+            163
+          ],
+          [
+            1839,
+            163
+          ],
+          [
+            1922,
+            163
+          ],
+          [
+            2006,
+            163
+          ],
+          [
+            2089,
+            161
+          ],
+          [
+            2172,
+            163
+          ],
+          [
+            2256,
+            163
+          ],
+          [
+            2339,
+            161
+          ]
+        ],
+        "start": 8,
+        "min": 1,
+        "max": 10
+      },
+      {
+        "id": "carbon",
+        "px": [
+          1588,
+          257
+        ],
+        "slots": [
+          [
+            1588,
+            257
+          ],
+          [
+            1672,
+            259
+          ],
+          [
+            1755,
+            259
+          ],
+          [
+            1837,
+            259
+          ],
+          [
+            1922,
+            259
+          ],
+          [
+            2006,
+            259
+          ],
+          [
+            2087,
+            259
+          ],
+          [
+            2173,
+            257
+          ],
+          [
+            2254,
+            257
+          ],
+          [
+            2339,
+            259
+          ]
+        ],
+        "start": 5,
+        "min": 1,
+        "max": 10
+      },
+      {
+        "id": "research",
+        "px": [
+          1590,
+          355
+        ],
+        "slots": [
+          [
+            1590,
+            355
+          ],
+          [
+            1672,
+            357
+          ],
+          [
+            1755,
+            355
+          ],
+          [
+            1839,
+            353
+          ],
+          [
+            1922,
+            355
+          ],
+          [
+            2003,
+            353
+          ],
+          [
+            2085,
+            353
+          ],
+          [
+            2172,
+            353
+          ],
+          [
+            2254,
+            355
+          ],
+          [
+            2337,
+            355
+          ]
+        ],
+        "start": 5,
+        "min": 1,
+        "max": 10
+      },
+      {
+        "id": "campaign",
+        "px": [
+          1586,
+          449
+        ],
+        "slots": [
+          [
+            1586,
+            449
+          ],
+          [
+            1674,
+            451
+          ],
+          [
+            1755,
+            451
+          ],
+          [
+            1839,
+            451
+          ],
+          [
+            1920,
+            451
+          ],
+          [
+            2004,
+            451
+          ],
+          [
+            2089,
+            451
+          ],
+          [
+            2172,
+            451
+          ],
+          [
+            2256,
+            449
+          ],
+          [
+            2337,
+            449
+          ]
+        ],
+        "start": 5,
+        "min": 1,
+        "max": 10
+      },
+      {
+        "id": "clash",
+        "px": [
+          1590,
+          545
+        ],
+        "slots": [
+          [
+            1590,
+            545
+          ],
+          [
+            1672,
+            547
+          ],
+          [
+            1755,
+            545
+          ],
+          [
+            1837,
+            547
+          ],
+          [
+            1922,
+            547
+          ],
+          [
+            2004,
+            547
+          ],
+          [
+            2087,
+            545
+          ],
+          [
+            2172,
+            545
+          ],
+          [
+            2254,
+            547
+          ],
+          [
+            2339,
+            547
+          ]
+        ],
+        "start": 2,
+        "min": 1,
+        "max": 10
+      },
+      {
+        "id": "educate",
+        "px": [
+          1588,
+          643
+        ],
+        "slots": [
+          [
+            1588,
+            643
+          ],
+          [
+            1672,
+            643
+          ],
+          [
+            1755,
+            645
+          ],
+          [
+            1837,
+            641
+          ],
+          [
+            1922,
+            643
+          ],
+          [
+            2004,
+            643
+          ],
+          [
+            2087,
+            645
+          ],
+          [
+            2170,
+            645
+          ],
+          [
+            2256,
+            643
+          ],
+          [
+            2339,
+            643
+          ]
+        ],
+        "start": 2,
+        "min": 1,
+        "max": 10
+      }
+    ],
+    "powerGrabs": {
+      "military": [
+        2701,
+        1792
+      ],
+      "political": [
+        4159,
+        3080
+      ],
+      "corporate": [
+        1320,
+        818
+      ]
+    },
+    "nationalActions": {
+      "income": [
+        2674,
+        550
+      ],
+      "rally": [
+        3108,
+        550
+      ],
+      "produce": [
+        3541,
+        550
+      ],
+      "refresh": [
+        3975,
+        550
+      ]
+    }
+  }
+}

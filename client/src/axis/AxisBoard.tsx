@@ -4,11 +4,15 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  AXIS_MAP, POWERS, UNITS, WIN_CONDITIONS, CHINA_COLOR,
-  type AxisView, type PowerKey, type UnitKey,
+  AXIS_MAP, POWERS, WIN_CONDITIONS, CHINA_COLOR,
+  type AxisView, type PowerKey,
 } from '@bge/shared';
 import { AxisTable, useAxisManifest, useSceneReady, SPACE_CENTER, px2r, type FocusTarget, type StagedStack } from './AxisScene';
-import { AxisBattleStage, AfterAction, warmDiceBox } from './AxisBattleStage';
+import { AxisBattleStage, AfterAction, releaseDiceBox, warmDiceBox, warmPreferredBattleRenderer } from './AxisBattleStage';
+import { warmBattleAssets } from './sim/BattleSim';
+import { AxisLoading } from './AxisLoading';
+import { powerTextColor } from './axisColors';
+import { axisCapitalTurnPresentation } from './axisCapitalPresentation';
 import { playSfx } from '../sfx';
 
 const PHASE_LABEL: Record<string, string> = {
@@ -17,11 +21,10 @@ const PHASE_LABEL: Record<string, string> = {
   combatMove: 'Combat Move',
   battle: 'Conduct Combat',
   noncombat: 'Noncombat Move',
-  mobilize: 'Mobilize New Units',
+  mobilize: 'Mobilize & Collect Income',
   income: 'Collect Income',
   gameOver: 'Game Over',
 };
-
 const powerHex = (p: PowerKey | 'china') => (p === 'china' ? CHINA_COLOR : POWERS[p].color);
 
 function spaceName(id: string): string {
@@ -29,73 +32,6 @@ function spaceName(id: string): string {
   if (t) return t.name;
   const z = AXIS_MAP.seaZones.find((x) => x.id === id);
   return z ? `Sea Zone ${z.n}` : id;
-}
-
-// ---------- battle panel ----------
-
-function BattlePanel({ view, art }: { view: AxisView; art?: string }) {
-  const c = view.combat!;
-  const b = c.battle;
-  const count = (side: 'attacker' | 'defender') => {
-    const units = b[side].filter((u) => u.hp > 0);
-    const byKey = new Map<string, number>();
-    for (const u of units) byKey.set(u.key, (byKey.get(u.key) ?? 0) + 1);
-    return [...byKey.entries()];
-  };
-  const lastRolls = [...b.log].reverse().find((e) => e.rolls.length > 0);
-  return (
-    <div
-      className="ig-glass"
-      style={{
-        position: 'absolute', right: '1rem', top: '4.6rem', width: 330, zIndex: 8, borderRadius: 14, padding: '0.9rem 1rem',
-        backgroundImage: art
-          ? `linear-gradient(rgba(6,8,12,.88), rgba(6,8,12,.94)), url(${art})`
-          : undefined,
-        backgroundSize: 'cover', backgroundPosition: 'center',
-      }}
-    >
-      <div className="ig-lab">Battle · {spaceName(c.space)}{b.ctx.amphibious ? ' · amphibious' : ''}</div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', margin: '.55rem 0 .3rem' }}>
-        <span style={{ color: powerHex(c.attacker), fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em' }}>{POWERS[c.attacker].short} attacks</span>
-        <span className="ig-num" style={{ opacity: 0.7 }}>Round {b.round}</span>
-      </div>
-      {(['attacker', 'defender'] as const).map((side) => (
-        <div key={side} style={{ display: 'flex', flexWrap: 'wrap', gap: 6, padding: '.3rem 0', borderTop: side === 'defender' ? '1px solid var(--brd)' : 'none' }}>
-          <span className="ig-lab" style={{ width: '100%' }}>{side}</span>
-          {count(side).map(([k, n]) => (
-            <span key={k} style={{ fontSize: 12.5, background: 'rgba(255,255,255,.06)', borderRadius: 6, padding: '2px 8px' }}>
-              {n} {UNITS[k as UnitKey].name}
-            </span>
-          ))}
-          {count(side).length === 0 && <span style={{ fontSize: 12.5, opacity: 0.6 }}>Wiped out</span>}
-        </div>
-      ))}
-      {lastRolls && (
-        <div style={{ borderTop: '1px solid var(--brd)', paddingTop: '.45rem', marginTop: '.2rem' }}>
-          <div className="ig-lab">{lastRolls.title}</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 5 }}>
-            {lastRolls.rolls.map((r, i) => (
-              <span key={i} style={{
-                width: 26, height: 26, borderRadius: 6, display: 'grid', placeItems: 'center',
-                fontWeight: 700, fontSize: 14,
-                background: r.hit ? 'rgba(123,224,163,.18)' : 'rgba(255,255,255,.05)',
-                border: `1px solid ${r.hit ? '#7be0a3' : 'var(--brd-2)'}`,
-                color: r.hit ? '#7be0a3' : 'inherit',
-              }}>{r.value}</span>
-            ))}
-          </div>
-          <div style={{ fontSize: 12.5, opacity: 0.8, marginTop: 5 }}>{lastRolls.text}</div>
-        </div>
-      )}
-      {b.decision && (
-        <div style={{ borderTop: '1px solid var(--brd)', paddingTop: '.45rem', marginTop: '.3rem', fontSize: 12.5, color: '#e8b450' }}>
-          {b.decision.type === 'casualties' && 'Waiting on casualty picks.'}
-          {b.decision.type === 'retreat' && 'Attacker decides: press on or retreat.'}
-          {b.decision.type === 'submerge' && 'Submarines may submerge.'}
-        </div>
-      )}
-    </div>
-  );
 }
 
 // ---------- production screen (after every turn) ----------
@@ -115,7 +51,7 @@ function ProductionScreen({ view, art, collected }: { view: AxisView; art?: stri
       >
         <div className="ig-modal-head">
           <b>National Production</b>
-          <span style={{ color: powerHex(active), textTransform: 'uppercase', letterSpacing: '.08em', fontSize: 13 }}>
+          <span style={{ color: powerTextColor(active), textTransform: 'uppercase', letterSpacing: '.08em', fontSize: 13 }}>
             {POWERS[active].name} collected {view.powers[active].lastIncome} IPCs
           </span>
         </div>
@@ -124,7 +60,7 @@ function ProductionScreen({ view, art, collected }: { view: AxisView; art?: stri
           const max = Math.max(...order.map((q) => view.powers[q].production), 1);
           return (
             <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '.4rem 0' }}>
-              <span style={{ width: 110, textTransform: 'uppercase', letterSpacing: '.05em', fontSize: 12.5, color: powerHex(p), fontWeight: 700 }}>
+              <span style={{ width: 110, textTransform: 'uppercase', letterSpacing: '.05em', fontSize: 12.5, color: powerTextColor(p), fontWeight: 700 }}>
                 {POWERS[p].name}
               </span>
               <div style={{ flex: 1, height: 10, borderRadius: 5, background: 'rgba(255,255,255,.05)', overflow: 'hidden' }}>
@@ -190,8 +126,15 @@ function Announcements({ view }: { view: AxisView }) {
 
 // ---------- main board ----------
 
-export default function AxisBoard({ view }: { view: AxisView }) {
+export default function AxisBoard({
+  view,
+  onBattleVisualReady,
+}: {
+  view: AxisView;
+  onBattleVisualReady: (combatId: number, ready: boolean, visualSeq: number) => void;
+}) {
   const manifest = useAxisManifest();
+  const mapSceneReady = useSceneReady();
   const [focus, setFocus] = useState<FocusTarget | null>(null);
 
   // ?cam=px,py,dist pins the camera to an art-pixel spot (verification shots)
@@ -207,26 +150,62 @@ export default function AxisBoard({ view }: { view: AxisView }) {
   // fly to battles as they open; otherwise follow the latest logged action
   // (attack declarations, blitzes, captures); widen out on turn changes
   const combatSpace = view.combat?.space ?? null;
+  const emergencyLandingSpace = view.defendingCarrierLanding?.progress.ok
+    && view.defendingCarrierLanding.progress.status === 'decision'
+    ? view.defendingCarrierLanding.progress.decision.fighter.originSeaZone
+    : null;
+  const emergencyLandingOwner = view.defendingCarrierLanding?.progress.ok
+    && view.defendingCarrierLanding.progress.status === 'decision'
+    ? view.defendingCarrierLanding.progress.decision.owner
+    : null;
   const lastSpaced = [...view.log].reverse().find((e) => e.space)?.space ?? null;
   const lastLen = view.log.length;
   useEffect(() => {
     if (camPin) return;
-    const target = combatSpace ?? lastSpaced;
+    const target = combatSpace ?? emergencyLandingSpace ?? lastSpaced;
     if (target && SPACE_CENTER[target]) {
       const c = SPACE_CENTER[target];
       const [x, z] = px2r(c[0], c[1]);
-      setFocus({ x, z, dist: combatSpace ? 14 : 20 });
+      setFocus({ x, z, dist: combatSpace ? 14 : emergencyLandingSpace ? 18 : 20 });
       if (combatSpace) playSfx('link');
     }
-  }, [combatSpace, lastSpaced, lastLen]);
+  }, [combatSpace, emergencyLandingSpace, lastSpaced, lastLen]);
   useEffect(() => {
     if (camPin) return;
     // new power's turn: pull back to the whole map
     setFocus({ x: (9500 / 2) * 0.01, z: -(4956 / 2) * 0.01, dist: 62 });
   }, [view.active, camPin]);
 
-  // warm the dice physics so the first battle opens without a load stall
-  useEffect(() => { warmDiceBox(); }, []);
+  // The TV has one WebGL budget. In either direction, unmount the outgoing
+  // renderer and wait briefly before mounting the next so its GPU resources
+  // have been released. A timer is intentional: TV tabs may be backgrounded,
+  // where requestAnimationFrame is suspended and would strand the battle UI.
+  const combatId = view.combat?.id ?? null;
+  const [battleStageVisible, setBattleStageVisible] = useState(false);
+  const [mapVisible, setMapVisible] = useState(combatId == null);
+  useEffect(() => {
+    setMapVisible(false);
+    setBattleStageVisible(false);
+    const settleTimer = setTimeout(() => {
+      if (combatId == null) setMapVisible(true);
+      else setBattleStageVisible(true);
+    }, 160);
+    return () => clearTimeout(settleTimer);
+  }, [combatId]);
+
+  // The cinematic dice initialize while the map is being played so the first
+  // battle normally arrives hot. A failed warm-up remains recoverable from the
+  // battle's blocking retry curtain.
+  useEffect(() => {
+    void warmDiceBox().catch(() => {});
+    void warmPreferredBattleRenderer().catch(() => {});
+    return releaseDiceBox;
+  }, []);
+  useEffect(() => {
+    if (!mapSceneReady) return;
+    const timer = window.setTimeout(warmBattleAssets, 1500);
+    return () => window.clearTimeout(timer);
+  }, [mapSceneReady]);
 
   // voice turn changes and the win; hold the production screen on screen for
   // a beat after every turn (mobilize + income are one merged stage now)
@@ -247,6 +226,7 @@ export default function AxisBoard({ view }: { view: AxisView }) {
 
   const lastLog = view.log[view.log.length - 1];
   const active = POWERS[view.active];
+  const capital = axisCapitalTurnPresentation(view);
 
   const vcLine = useMemo(
     () => `Axis ${view.vc.axis} · Allies ${view.vc.allies} of ${view.vc.goal}`,
@@ -256,61 +236,93 @@ export default function AxisBoard({ view }: { view: AxisView }) {
   const staged: StagedStack[] = useMemo(() => {
     const out: StagedStack[] = [];
     for (const p of view.turnOrder) {
+      if (p === view.active && view.turnStartedCapitalOccupied) continue;
       for (const [key, count] of Object.entries(view.powers[p].staging)) {
         if (count) out.push({ power: p, key: key as never, count: count as number });
       }
     }
     return out;
-  }, [view.powers]);
+  }, [view.powers, view.active, view.turnStartedCapitalOccupied]);
+
+  const phaseOrder = view.options.rnd
+    ? ['rnd', 'purchase', 'combatMove', 'noncombat', 'mobilize']
+    : ['purchase', 'combatMove', 'noncombat', 'mobilize'];
+  const phaseIndex = phaseOrder.indexOf(view.phase === 'battle' ? 'combatMove' : view.phase);
+  const phaseProgress = phaseIndex >= 0 ? `Phase ${phaseIndex + 1} / ${phaseOrder.length}` : 'Campaign';
+  const nestedOperation = emergencyLandingOwner
+    ? `${POWERS[emergencyLandingOwner].name} fighter decision`
+    : view.active === 'usa'
+      && (view.phase === 'combatMove' || view.phase === 'battle' || view.phase === 'noncombat')
+      ? view.operatingPower
+        ? `${view.operatingPower === 'china' ? 'China' : 'United States'} operations · ${view.usaOperationIndex + 1}/2`
+        : 'USA + China · choosing operation order'
+      : null;
+  const displayedPhase = view.defendingCarrierLanding
+    ? 'Emergency Carrier Landing'
+    : view.phase === 'mobilize' && capital.mobilize
+    ? capital.mobilize.title
+    : PHASE_LABEL[view.phase];
 
   if (!manifest) return <AxisLoading label="Reading the mod" />;
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#04060a', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
-      <div style={{ position: 'absolute', inset: 0 }}>
-        <AxisTable manifest={manifest} board={view.board} control={view.control} focus={focus} staged={staged} />
+    <div className={`ax-tv${capital.banner ? ' capital-turn' : ''}`}>
+      <div className={`ax-tv-scene${view.combat ? ' suspended' : ''}`}>
+        {!view.combat && mapVisible && <AxisTable manifest={manifest} board={view.board} control={view.control} focus={focus} staged={staged} />}
+        {view.combat && (
+          <div className="ax-tv-battle-backdrop" aria-hidden>
+            <span>Combat operations</span>
+          </div>
+        )}
       </div>
-      <LoadingCurtain />
+      {!view.combat && <LoadingCurtain />}
       <Announcements view={view} />
 
-      {/* top-left: scenario + phase */}
-      <div className="ig-glass ig-era">
-        <div className="ig-lab">Axis & Allies · {view.options.scenario} · Round {view.round}</div>
-        <div className="ig-era-v" style={{ color: active.color }}>{active.name}</div>
-        <div className="ig-era-rule" />
-        <div style={{ fontSize: 12.5, marginTop: 5, letterSpacing: '.08em', textTransform: 'uppercase', opacity: 0.8 }}>
-          {PHASE_LABEL[view.phase]}
-        </div>
-      </div>
-
-      {/* top-right: power chips */}
-      <div className="ig-scores">
-        {view.turnOrder.map((p) => (
-          <div
-            key={p}
-            className={`ig-chip ig-glass${p === view.active ? ' on' : ''}`}
-            style={{ ['--seat' as never]: powerHex(p) }}
-          >
-            <span className="nm" style={{ color: powerHex(p) }}>{POWERS[p].short}</span>
-            <span className="mn ig-num">{view.powers[p].ipcs}</span>
+      <header className="ax-tv-hud" aria-label="Game status">
+        <section className="ax-tv-turn">
+          <div className="ax-tv-kicker">Axis & Allies · {view.options.scenario} · Round {view.round}</div>
+          <div className="ax-tv-turn-row">
+            <span className="ax-power-dot" style={{ background: active.color }} aria-hidden />
+            <div>
+              <b style={{ color: powerTextColor(view.active) }}>{active.name} turn</b>
+              <span>{displayedPhase}{nestedOperation ? ` · ${nestedOperation}` : ''}</span>
+            </div>
+            <em>{phaseProgress}</em>
           </div>
-        ))}
-      </div>
+          {capital.banner && (
+            <div className={`ax-capital-alert tv ${capital.banner.tone}`} role="status" aria-live="polite">
+              <b>{capital.banner.title}</b>
+              <span>{capital.banner.detail}</span>
+            </div>
+          )}
+        </section>
+        <section className="ax-tv-powers" aria-label="Power treasuries">
+          {view.turnOrder.map((p) => (
+            <div key={p} className={`ax-tv-power${p === view.active ? ' active' : ''}`} style={{ ['--seat' as never]: powerHex(p) }} aria-label={`${POWERS[p].name}: ${view.powers[p].ipcs} IPCs`}>
+              <span style={{ color: powerTextColor(p) }}>{POWERS[p].short}</span>
+              <b className="ig-num">{view.powers[p].ipcs}</b>
+              <small>IPC</small>
+            </div>
+          ))}
+        </section>
+      </header>
 
-      {/* bottom banner: last event + VC race */}
-      <div className="ig-glass ig-banner" style={{ minWidth: 420 }}>
-        <div className="ig-banner-head">
-          <b style={{ textTransform: 'uppercase', letterSpacing: '.06em', fontSize: 13 }}>
-            {lastLog?.text ?? `${active.name} is up.`}
-          </b>
+      <footer className="ax-tv-feed" aria-live="polite">
+        <div className="ax-tv-event"><small>Latest order</small><b>{lastLog?.text ?? `${active.name} is up.`}</b></div>
+        <div className="ax-tv-victory">
+          <span><small>Axis cities</small><b className="ig-num">{view.vc.axis}</b></span>
+          <div><small>{WIN_CONDITIONS[view.options.winCondition].label}</small><strong>{view.vc.goal} to win</strong></div>
+          <span><small>Allied cities</small><b className="ig-num">{view.vc.allies}</b></span>
         </div>
-        <div className="ig-banner-foot">
-          <span className="ig-lab">{WIN_CONDITIONS[view.options.winCondition].label}</span>
-          <span className="ig-num" style={{ fontSize: 12.5 }}>{vcLine}</span>
-        </div>
-      </div>
+      </footer>
 
-      {view.combat && <AxisBattleStage view={view} />}
+      {view.combat && battleStageVisible && (
+        <AxisBattleStage
+          key={String(view.combat.id)}
+          view={view}
+          onBattleVisualReady={onBattleVisualReady}
+        />
+      )}
       <AfterAction view={view} />
       {prodShow && !view.winner && !view.combat && (
         <ProductionScreen view={view} collected={prodShow} art={(manifest as { boards?: { image?: string }[] }).boards?.[1]?.image ?? undefined} />
@@ -329,17 +341,6 @@ export default function AxisBoard({ view }: { view: AxisView }) {
   );
 }
 
-
-// full-screen loading screen until the map texture and unit meshes are in
-export function AxisLoading({ label, overlay }: { label: string; overlay?: boolean }) {
-  return (
-    <div className="ax-loading" style={overlay ? { position: 'absolute', inset: 0, zIndex: 60 } : undefined}>
-      <div className="ig-lab">Axis & Allies Anniversary</div>
-      <h2>{label}</h2>
-      <div className="ax-loading-bar"><span /></div>
-    </div>
-  );
-}
 
 function LoadingCurtain() {
   const ready = useSceneReady();

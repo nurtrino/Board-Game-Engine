@@ -26,6 +26,7 @@ const PolitikPlay = lazy(() => import('../politik/PolitikPlay').then((module) =>
 const DsPlay = lazy(() => import('../darksouls/DsPlay'));
 const FeastPlay = lazy(() => import('../feast/FeastPlay').then((module) => ({ default: module.FeastPlay })));
 const BbPlay = lazy(() => import('../bloodborne/BbPlay'));
+const SetiPlay = lazy(() => import('../seti/SetiPlay').then((module) => ({ default: module.SetiPlay })));
 
 function PlayerGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} command table…</div>;
@@ -989,6 +990,11 @@ export function PlayPage() {
         <BbPlay view={view} act={act} seat={me ?? 0} error={error} />
       </Suspense>
     );
+    if (view.game === 'seti') return (
+      <Suspense fallback={<PlayerGameLoading game="SETI" />}>
+        <SetiPlay view={view} act={act} error={error} />
+      </Suspense>
+    );
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
@@ -1007,6 +1013,7 @@ export function PlayPage() {
     darksouls: 'Dark Souls: The Board Game',
     bloodborne: 'Bloodborne: The Board Game',
     feast: 'A Feast for Odin',
+    seti: 'SETI: Search for Extraterrestrial Intelligence',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
   const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
@@ -1016,6 +1023,7 @@ export function PlayPage() {
     : room.game === 'darksouls' ? 'Your colour marks your seat. Pick a class once the party sets out.'
     : room.game === 'bloodborne' ? 'Your colour marks your seat. Choose a hunter once the Hunt begins.'
     : room.game === 'feast' ? 'Your colour marks your Vikings, action spaces, and personal boards.'
+    : room.game === 'seti' ? 'Your colour marks your probes, landers, orbiters, signals, and discoveries.'
     : "Your piece marks your income on the board's turn-order track.";
 
   return (

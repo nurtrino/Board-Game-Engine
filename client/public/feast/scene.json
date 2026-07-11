@@ -1,0 +1,5869 @@
+{
+  "source": {
+    "workshopId": "790490875",
+    "saveSha256": "da30567eb53ab2b1feb563b79bf2a77e62cd4833a1e08e5b7b24d7334cfe1dc9",
+    "edition": "CLASSIC BASE · 2016",
+    "manifest": "/feast/manifest.json"
+  },
+  "actionBoard": {
+    "guid": "996bfd",
+    "image": "/feast/action-board.webp",
+    "sourceUrl": "http://i.imgur.com/TrPuk2F.jpg",
+    "tts": {
+      "pos": [
+        1.954131,
+        1.155184,
+        6.75889
+      ],
+      "rot": [
+        0.000004,
+        179.984192,
+        0
+      ],
+      "scale": [
+        11.034918,
+        1,
+        11.034918
+      ]
+    },
+    "imagePx": [
+      2500,
+      5000
+    ]
+  },
+  "homeBoards": {
+    "short": {
+      "guids": [
+        "037bf4",
+        "c52e5a",
+        "85c969",
+        "74941a"
+      ],
+      "image": "/feast/home-short.webp",
+      "sourceUrl": "http://i.imgur.com/viLsTsv.jpg",
+      "side": "primary",
+      "boardId": "home-short",
+      "imagePx": [
+        2354,
+        1500
+      ],
+      "grid": {
+        "originPx": [
+          26,
+          106
+        ],
+        "cellPx": [
+          87.08,
+          87.08
+        ],
+        "rows": 12,
+        "cols": 13,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.011045,
+          0.070667
+        ],
+        "normalizedCell": [
+          0.036992,
+          0.058053
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 11,
+          "colMin": 0,
+          "colMax": 12
+        }
+      },
+      "layout": [
+        "NNNNNNNNNNNI.",
+        "NNNNNNNNNNIN.",
+        "NNNNNNNNNINN.",
+        "NNNNNNNNINNN ",
+        "NNNNNNNINNNN ",
+        "B.....INNNNN ",
+        ".....I.NNNNN ",
+        "..B.I.BNNNNN ",
+        "...I...NNNNN ",
+        ".BI....NNNNN ",
+        ".I...B.NNNNN ",
+        "I......N     "
+      ]
+    },
+    "long": {
+      "guids": [
+        "037bf4",
+        "c52e5a",
+        "85c969",
+        "74941a"
+      ],
+      "image": "/feast/home-long.webp",
+      "sourceUrl": "http://i.imgur.com/jQuEt6K.jpg",
+      "side": "secondary",
+      "boardId": "home-long",
+      "imagePx": [
+        2354,
+        1500
+      ],
+      "grid": {
+        "originPx": [
+          26,
+          106
+        ],
+        "cellPx": [
+          87.08,
+          87.08
+        ],
+        "rows": 12,
+        "cols": 13,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.011045,
+          0.070667
+        ],
+        "normalizedCell": [
+          0.036992,
+          0.058053
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 11,
+          "colMin": 0,
+          "colMax": 12
+        }
+      },
+      "layout": [
+        "NNNNNNNNNNNI.",
+        "NNNNNNNNNNIN.",
+        "NNNNNNNNNINN.",
+        "NNNNNNNNINNN ",
+        "NNNNNNNINNNN ",
+        "B.....INNNNN ",
+        ".....I.NNNNN ",
+        "..B.I.BNNNNN ",
+        "...I...NNNNN ",
+        ".BI....NNNNN ",
+        ".I...B.NNNNN ",
+        "I......N     "
+      ]
+    }
+  },
+  "banquetTables": {
+    "short": {
+      "image": "/feast/banquet-table-short.webp",
+      "sourceUrl": "http://i.imgur.com/viLsTsv.jpg",
+      "sourceGuid": "037bf4",
+      "cropPx": [
+        1230,
+        15,
+        1080,
+        390
+      ]
+    },
+    "long": {
+      "image": "/feast/banquet-table-long.webp",
+      "sourceUrl": "http://i.imgur.com/jQuEt6K.jpg",
+      "sourceGuid": "037bf4",
+      "cropPx": [
+        1230,
+        15,
+        1080,
+        390
+      ]
+    },
+    "default": {
+      "image": "/feast/banquet-table.webp",
+      "sourceUrl": "http://i.imgur.com/jQuEt6K.jpg",
+      "sourceGuid": "037bf4",
+      "cropPx": [
+        1230,
+        15,
+        1080,
+        390
+      ]
+    }
+  },
+  "extensions": {
+    "columns-1-2": {
+      "guid": "ea6dee",
+      "tts": {
+        "pos": [
+          5.05602,
+          1.155184,
+          -5.100056
+        ],
+        "rot": [
+          0.000001,
+          180.00856,
+          0
+        ],
+        "scale": [
+          0.757227,
+          1,
+          0.757227
+        ]
+      },
+      "faces": [
+        {
+          "id": "columns-1",
+          "column": 1,
+          "image": "/feast/extensions/columns-1.webp",
+          "sourceUrl": "http://i.imgur.com/3l7J4MH.jpg"
+        },
+        {
+          "id": "columns-2",
+          "column": 2,
+          "image": "/feast/extensions/columns-2.webp",
+          "sourceUrl": "http://i.imgur.com/x7Kqvvi.jpg"
+        }
+      ]
+    },
+    "columns-3-4": {
+      "guid": "2dd414",
+      "tts": {
+        "pos": [
+          -0.29512,
+          1.155184,
+          -5.102502
+        ],
+        "rot": [
+          -0.000001,
+          180.001434,
+          0
+        ],
+        "scale": [
+          0.758518,
+          1,
+          0.758518
+        ]
+      },
+      "faces": [
+        {
+          "id": "columns-3",
+          "column": 3,
+          "image": "/feast/extensions/columns-3.webp",
+          "sourceUrl": "http://i.imgur.com/p4NaFb8.jpg"
+        },
+        {
+          "id": "columns-4",
+          "column": 4,
+          "image": "/feast/extensions/columns-4.webp",
+          "sourceUrl": "http://i.imgur.com/ysH446K.jpg"
+        }
+      ]
+    }
+  },
+  "exploration": {
+    "shetland": {
+      "id": "shetland",
+      "pair": "A",
+      "reverse": "bear-island",
+      "guid": "15d0ed",
+      "side": "primary",
+      "sourceUrl": "http://i.imgur.com/VQK96cF.jpg",
+      "image": "/feast/exploration/shetland.webp",
+      "tts": {
+        "pos": [
+          -6.991084,
+          1.155185,
+          11.347043
+        ],
+        "rot": [
+          0.000008,
+          179.882645,
+          0
+        ],
+        "scale": [
+          3.247567,
+          1,
+          3.247567
+        ]
+      },
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "grid": {
+        "originPx": [
+          109,
+          136
+        ],
+        "cellPx": [
+          85,
+          85
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.109,
+          0.136
+        ],
+        "normalizedCell": [
+          0.085,
+          0.085
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "    ...  ",
+        "NNNN.B.  ",
+        "NBNN..NN.",
+        "NNNN...B.",
+        "    NN...",
+        "..I NN.B.",
+        ".I. .NN..",
+        "I.B   NNN",
+        " ..   NN."
+      ]
+    },
+    "bear-island": {
+      "id": "bear-island",
+      "pair": "A",
+      "reverse": "shetland",
+      "guid": "15d0ed",
+      "side": "secondary",
+      "sourceUrl": "http://i.imgur.com/M32QsnT.jpg",
+      "image": "/feast/exploration/bear-island.webp",
+      "tts": {
+        "pos": [
+          -6.991084,
+          1.155185,
+          11.347043
+        ],
+        "rot": [
+          0.000008,
+          179.882645,
+          0
+        ],
+        "scale": [
+          3.247567,
+          1,
+          3.247567
+        ]
+      },
+      "imagePx": [
+        1003,
+        1000
+      ],
+      "grid": {
+        "originPx": [
+          203,
+          139
+        ],
+        "cellPx": [
+          85.7,
+          85.7
+        ],
+        "rows": 9,
+        "cols": 8,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.202393,
+          0.139
+        ],
+        "normalizedCell": [
+          0.085444,
+          0.0857
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 7
+        }
+      },
+      "layout": [
+        "   NNNN ",
+        " NNNINNN",
+        "NNNI.N.N",
+        "..I.B.N.",
+        " IX..N.B",
+        " .....NN",
+        " .....B ",
+        "   .N.. ",
+        "    NN  "
+      ]
+    },
+    "faroe-islands": {
+      "id": "faroe-islands",
+      "pair": "B",
+      "reverse": "baffin-island",
+      "guid": "d62e9b",
+      "side": "primary",
+      "sourceUrl": "http://i.imgur.com/Tfc9udU.jpg",
+      "image": "/feast/exploration/faroe-islands.webp",
+      "tts": {
+        "pos": [
+          -6.938889,
+          1.155186,
+          4.322345
+        ],
+        "rot": [
+          0,
+          180.013535,
+          0
+        ],
+        "scale": [
+          3.247567,
+          1,
+          3.247567
+        ]
+      },
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "grid": {
+        "originPx": [
+          96,
+          154
+        ],
+        "cellPx": [
+          85,
+          85
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.096,
+          0.154
+        ],
+        "normalizedCell": [
+          0.085,
+          0.085
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "     NBIN",
+        "  NN  I.N",
+        " NB..IX.B",
+        " ...INNNN",
+        "   I..NX.",
+        "..IX BNN ",
+        "BI.. ..N ",
+        "I... .BN ",
+        "     ..N "
+      ]
+    },
+    "baffin-island": {
+      "id": "baffin-island",
+      "pair": "B",
+      "reverse": "faroe-islands",
+      "guid": "d62e9b",
+      "side": "secondary",
+      "sourceUrl": "http://i.imgur.com/33jvLr3.jpg",
+      "image": "/feast/exploration/baffin-island.webp",
+      "tts": {
+        "pos": [
+          -6.938889,
+          1.155186,
+          4.322345
+        ],
+        "rot": [
+          0,
+          180.013535,
+          0
+        ],
+        "scale": [
+          3.247567,
+          1,
+          3.247567
+        ]
+      },
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "grid": {
+        "originPx": [
+          117,
+          137
+        ],
+        "cellPx": [
+          85.3,
+          85.3
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.117,
+          0.137
+        ],
+        "normalizedCell": [
+          0.0853,
+          0.0853
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "N.NNB    ",
+        "NN.NNN...",
+        " .N.NN.B.",
+        " NXN.I  .",
+        " ...INN  ",
+        "...INNNBN",
+        " .I.NN   ",
+        ".I..N..  ",
+        "I.. N.B.N"
+      ]
+    },
+    "iceland": {
+      "id": "iceland",
+      "pair": "C",
+      "reverse": "labrador",
+      "guid": "e2186a",
+      "side": "primary",
+      "sourceUrl": "http://i.imgur.com/VhE81NX.jpg",
+      "image": "/feast/exploration/iceland.webp",
+      "tts": {
+        "pos": [
+          10.887668,
+          1.155185,
+          11.433365
+        ],
+        "rot": [
+          0.000009,
+          180.0301,
+          0
+        ],
+        "scale": [
+          3.247567,
+          1,
+          3.247567
+        ]
+      },
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "grid": {
+        "originPx": [
+          190,
+          227
+        ],
+        "cellPx": [
+          85.6,
+          85.6
+        ],
+        "rows": 8,
+        "cols": 8,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.19,
+          0.227
+        ],
+        "normalizedCell": [
+          0.0856,
+          0.0856
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 7,
+          "colMin": 0,
+          "colMax": 7
+        }
+      },
+      "layout": [
+        ".N N NNI",
+        "N. .NNIN",
+        " .B.NINN",
+        "....INNN",
+        "B..INNNN",
+        "..IN...N",
+        ".INN.B. ",
+        "  NN.   "
+      ]
+    },
+    "labrador": {
+      "id": "labrador",
+      "pair": "C",
+      "reverse": "iceland",
+      "guid": "e2186a",
+      "side": "secondary",
+      "sourceUrl": "http://i.imgur.com/eYQICrC.jpg",
+      "image": "/feast/exploration/labrador.webp",
+      "tts": {
+        "pos": [
+          10.887668,
+          1.155185,
+          11.433365
+        ],
+        "rot": [
+          0.000009,
+          180.0301,
+          0
+        ],
+        "scale": [
+          3.247567,
+          1,
+          3.247567
+        ]
+      },
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "grid": {
+        "originPx": [
+          114,
+          140
+        ],
+        "cellPx": [
+          85.5,
+          85.5
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.114,
+          0.14
+        ],
+        "normalizedCell": [
+          0.0855,
+          0.0855
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "   NN    ",
+        "   NNN   ",
+        "   N.N   ",
+        "   BNN.N ",
+        "  NNNNNNN",
+        "NNN.NNNNN",
+        ".N.NBNXN ",
+        "NBN.N.NNN",
+        " N N.NBNN"
+      ]
+    },
+    "greenland": {
+      "id": "greenland",
+      "pair": "D",
+      "reverse": "newfoundland",
+      "guid": "2c7a52",
+      "side": "primary",
+      "sourceUrl": "http://i.imgur.com/0ban0IO.jpg",
+      "image": "/feast/exploration/greenland.webp",
+      "tts": {
+        "pos": [
+          10.944596,
+          1.155184,
+          4.402814
+        ],
+        "rot": [
+          0,
+          179.984772,
+          0
+        ],
+        "scale": [
+          3.31256,
+          1,
+          3.31256
+        ]
+      },
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "grid": {
+        "originPx": [
+          110,
+          211
+        ],
+        "cellPx": [
+          86,
+          86
+        ],
+        "rows": 8,
+        "cols": 8,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.11,
+          0.211
+        ],
+        "normalizedCell": [
+          0.086,
+          0.086
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 7,
+          "colMin": 0,
+          "colMax": 7
+        }
+      },
+      "layout": [
+        "NNN..INN",
+        "...XINNN",
+        " B.INNNI",
+        " ..NNNI ",
+        ".N.NNI..",
+        " NNNIX.B",
+        "  .I... ",
+        "    ... "
+      ]
+    },
+    "newfoundland": {
+      "id": "newfoundland",
+      "pair": "D",
+      "reverse": "greenland",
+      "guid": "2c7a52",
+      "side": "secondary",
+      "sourceUrl": "http://i.imgur.com/uBd9U3a.jpg",
+      "image": "/feast/exploration/newfoundland.webp",
+      "tts": {
+        "pos": [
+          10.944596,
+          1.155184,
+          4.402814
+        ],
+        "rot": [
+          0,
+          179.984772,
+          0
+        ],
+        "scale": [
+          3.31256,
+          1,
+          3.31256
+        ]
+      },
+      "imagePx": [
+        1000,
+        1000
+      ],
+      "grid": {
+        "originPx": [
+          114,
+          138
+        ],
+        "cellPx": [
+          85.5,
+          85.5
+        ],
+        "rows": 9,
+        "cols": 9,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.114,
+          0.138
+        ],
+        "normalizedCell": [
+          0.0855,
+          0.0855
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 8,
+          "colMin": 0,
+          "colMax": 8
+        }
+      },
+      "layout": [
+        "  NNN    ",
+        "  NN     ",
+        " NBN NN  ",
+        " .N.NNN  ",
+        ".N.N.NNN ",
+        "NBN.N.NNN",
+        ".N.NNNBN ",
+        "NNN.NNNNN",
+        "     N NN"
+      ]
+    }
+  },
+  "buildings": {
+    "shed": {
+      "id": "shed",
+      "guid": "5bcac9",
+      "guids": [
+        "5bcac9",
+        "ca70ed",
+        "27c3ca"
+      ],
+      "count": 3,
+      "sourceUrl": "http://i.imgur.com/HIdsncN.jpg",
+      "front": "/feast/buildings/shed.webp",
+      "back": "/feast/buildings/shed-back.webp",
+      "alternateFront": null,
+      "imagePx": [
+        1531,
+        600
+      ],
+      "grid": {
+        "rows": 2,
+        "cols": 3,
+        "uniform": false,
+        "calibrationKind": "six-explicit-resource-centers",
+        "cellCentersPx": [
+          [
+            208,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            513,
+            315
+          ],
+          [
+            1004,
+            315
+          ],
+          [
+            1175,
+            315
+          ],
+          [
+            1342,
+            315
+          ]
+        ],
+        "normalizedOrigin": null,
+        "normalizedCell": null,
+        "normalizedCellCenters": [
+          [
+            0.135859,
+            0.525
+          ],
+          [
+            0.23514,
+            0.525
+          ],
+          [
+            0.335075,
+            0.525
+          ],
+          [
+            0.655781,
+            0.525
+          ],
+          [
+            0.767472,
+            0.525
+          ],
+          [
+            0.876551,
+            0.525
+          ]
+        ],
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 1,
+          "colMin": 0,
+          "colMax": 2
+        }
+      },
+      "layout": [
+        "NNN",
+        "NNN"
+      ]
+    },
+    "stone-house": {
+      "id": "stone-house",
+      "guid": "993898",
+      "guids": [
+        "993898",
+        "ed203c",
+        "3ca507"
+      ],
+      "count": 3,
+      "sourceUrl": "http://i.imgur.com/dFhD5lA.jpg",
+      "front": "/feast/buildings/stone-house.webp",
+      "back": "/feast/buildings/stone-house-back.webp",
+      "alternateFront": null,
+      "imagePx": [
+        1531,
+        600
+      ],
+      "grid": {
+        "originPx": [
+          895,
+          89
+        ],
+        "cellPx": [
+          121.3,
+          122.2
+        ],
+        "rows": 4,
+        "cols": 5,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.584585,
+          0.148333
+        ],
+        "normalizedCell": [
+          0.079229,
+          0.203667
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 3,
+          "colMin": 0,
+          "colMax": 4
+        }
+      },
+      "layout": [
+        " N.  ",
+        "N.BN ",
+        " N..N",
+        "  N.N"
+      ]
+    },
+    "long-house": {
+      "id": "long-house",
+      "guid": "8b9cf7",
+      "guids": [
+        "8b9cf7",
+        "d79e74",
+        "8beb1e",
+        "e31e84",
+        "7ffaa3"
+      ],
+      "count": 5,
+      "sourceUrl": "http://i.imgur.com/FP46dC3.jpg",
+      "front": "/feast/buildings/long-house.webp",
+      "back": "/feast/buildings/long-house-back.webp",
+      "alternateFront": "/feast/buildings/long-house-alternate.webp",
+      "imagePx": [
+        1920,
+        750
+      ],
+      "grid": {
+        "originPx": [
+          108,
+          263
+        ],
+        "cellPx": [
+          151.6,
+          151.5
+        ],
+        "rows": 3,
+        "cols": 11,
+        "uniform": true,
+        "normalizedOrigin": [
+          0.05625,
+          0.350667
+        ],
+        "normalizedCell": [
+          0.078958,
+          0.202
+        ],
+        "normalizedCellCenters": null,
+        "logicalBounds": {
+          "rowMin": 0,
+          "rowMax": 2,
+          "colMin": 0,
+          "colMax": 10
+        }
+      },
+      "layout": [
+        ".N.N.N.N.NB",
+        "NBNXN.NXN.N",
+        ".N.N.B.N.N."
+      ]
+    }
+  },
+  "ships": {
+    "whaling-boat": {
+      "id": "whaling-boat",
+      "name": "Whaling Boat",
+      "bagGuid": "b88bb1",
+      "sampleGuid": "661d6a",
+      "cost": 3,
+      "points": 3,
+      "bay": "small",
+      "count": 10,
+      "guids": [
+        "5e413d",
+        "dc1549",
+        "2387ca",
+        "1b1346",
+        "232127",
+        "2d7a1b",
+        "147dcf",
+        "9b6030",
+        "801bab",
+        "6d04ad"
+      ],
+      "sourceUrl": "http://i.imgur.com/jwhdUNu.jpg",
+      "front": "/feast/ships/whaling-boat-front.webp",
+      "back": null
+    },
+    "knarr": {
+      "id": "knarr",
+      "name": "Knarr",
+      "bagGuid": "d3d565",
+      "sampleGuid": "e4aaee",
+      "cost": 5,
+      "points": 5,
+      "bay": "large",
+      "emigrationPoints": 18,
+      "count": 12,
+      "guids": [
+        "87b692",
+        "9eccff",
+        "451f55",
+        "739e98",
+        "79b8fc",
+        "f942d7",
+        "1d3eb8",
+        "6a4948",
+        "7244ea",
+        "44abf0",
+        "03ce7f",
+        "112266"
+      ],
+      "sourceUrl": "http://i.imgur.com/h3Gz3Wm.jpg",
+      "front": "/feast/ships/knarr-front.webp",
+      "back": "/feast/ships/knarr-back.webp"
+    },
+    "longship": {
+      "id": "longship",
+      "name": "Longship",
+      "bagGuid": "57dbed",
+      "sampleGuid": "39ba83",
+      "cost": 8,
+      "points": 8,
+      "bay": "large",
+      "emigrationPoints": 21,
+      "count": 10,
+      "guids": [
+        "8ddbd5",
+        "5ea3a5",
+        "2ade02",
+        "e6a118",
+        "786885",
+        "efb4c0",
+        "36a878",
+        "e94967",
+        "4efe06",
+        "c99650"
+      ],
+      "sourceUrl": "http://i.imgur.com/P9ZhB1N.jpg",
+      "front": "/feast/ships/longship-front.webp",
+      "back": "/feast/ships/longship-back.webp"
+    }
+  },
+  "goods": {
+    "peas": {
+      "id": "peas",
+      "name": "peas",
+      "color": "orange",
+      "reverse": "mead",
+      "shape": {
+        "width": 2,
+        "height": 1,
+        "mask": [
+          "##"
+        ]
+      },
+      "count": 25,
+      "bagGuid": "8d4e28",
+      "guids": [
+        "022cd9",
+        "10c601",
+        "41e40f",
+        "6312c3",
+        "d1e898",
+        "442930",
+        "878aa4",
+        "acf451",
+        "056dab",
+        "81fedd",
+        "2fce9f",
+        "af0433",
+        "d9302e",
+        "9e2206",
+        "0be8a9",
+        "1b21d1",
+        "c79f74",
+        "113253",
+        "4c5577",
+        "7d776b",
+        "53f1a9",
+        "7d6e5c",
+        "6ba259",
+        "662de1",
+        "14a1d2"
+      ],
+      "image": "/feast/goods/peas.webp",
+      "sourceUrl": "http://i.imgur.com/0BLS3IX.jpg"
+    },
+    "mead": {
+      "id": "mead",
+      "name": "mead",
+      "color": "red",
+      "reverse": "peas",
+      "shape": {
+        "width": 2,
+        "height": 1,
+        "mask": [
+          "##"
+        ]
+      },
+      "count": 25,
+      "bagGuid": "8d4e28",
+      "guids": [
+        "022cd9",
+        "10c601",
+        "41e40f",
+        "6312c3",
+        "d1e898",
+        "442930",
+        "878aa4",
+        "acf451",
+        "056dab",
+        "81fedd",
+        "2fce9f",
+        "af0433",
+        "d9302e",
+        "9e2206",
+        "0be8a9",
+        "1b21d1",
+        "c79f74",
+        "113253",
+        "4c5577",
+        "7d776b",
+        "53f1a9",
+        "7d6e5c",
+        "6ba259",
+        "662de1",
+        "14a1d2"
+      ],
+      "image": "/feast/goods/mead.webp",
+      "sourceUrl": "http://i.imgur.com/1ENGSnM.jpg"
+    },
+    "flax": {
+      "id": "flax",
+      "name": "flax",
+      "color": "orange",
+      "reverse": "stockfish",
+      "shape": {
+        "width": 3,
+        "height": 1,
+        "mask": [
+          "###"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "95013a",
+      "guids": [
+        "fdcda8",
+        "2aab26",
+        "6842ac",
+        "e30874",
+        "c6b705",
+        "4b5bf9",
+        "b5fd64",
+        "f14897",
+        "2d70ea",
+        "33058b",
+        "2798b7",
+        "49d6fe",
+        "f36bf9",
+        "e741af",
+        "596c33",
+        "93af0e",
+        "c665a4",
+        "f8c9ca",
+        "885013",
+        "2125a7"
+      ],
+      "image": "/feast/goods/flax.webp",
+      "sourceUrl": "http://i.imgur.com/FcDn8Dt.jpg"
+    },
+    "stockfish": {
+      "id": "stockfish",
+      "name": "stockfish",
+      "color": "red",
+      "reverse": "flax",
+      "shape": {
+        "width": 3,
+        "height": 1,
+        "mask": [
+          "###"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "95013a",
+      "guids": [
+        "fdcda8",
+        "2aab26",
+        "6842ac",
+        "e30874",
+        "c6b705",
+        "4b5bf9",
+        "b5fd64",
+        "f14897",
+        "2d70ea",
+        "33058b",
+        "2798b7",
+        "49d6fe",
+        "f36bf9",
+        "e741af",
+        "596c33",
+        "93af0e",
+        "c665a4",
+        "f8c9ca",
+        "885013",
+        "2125a7"
+      ],
+      "image": "/feast/goods/stockfish.webp",
+      "sourceUrl": "http://i.imgur.com/zEc8kWM.jpg"
+    },
+    "beans": {
+      "id": "beans",
+      "name": "beans",
+      "color": "orange",
+      "reverse": "milk",
+      "shape": {
+        "width": 2,
+        "height": 2,
+        "mask": [
+          "##",
+          "##"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "75db21",
+      "guids": [
+        "93acc3",
+        "0f4bda",
+        "574c26",
+        "43d91a",
+        "e5418e",
+        "4a9b8f",
+        "1aa3cd",
+        "7fc605",
+        "c00fb0",
+        "b7e038",
+        "5515a6",
+        "f3be8f",
+        "1f88ec",
+        "8fe19b",
+        "0a96fa",
+        "3718fc",
+        "94b386",
+        "aa08ce",
+        "1933c5",
+        "65ad87"
+      ],
+      "image": "/feast/goods/beans.webp",
+      "sourceUrl": "http://i.imgur.com/vBhdWgc.jpg"
+    },
+    "milk": {
+      "id": "milk",
+      "name": "milk",
+      "color": "red",
+      "reverse": "beans",
+      "shape": {
+        "width": 2,
+        "height": 2,
+        "mask": [
+          "##",
+          "##"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "75db21",
+      "guids": [
+        "93acc3",
+        "0f4bda",
+        "574c26",
+        "43d91a",
+        "e5418e",
+        "4a9b8f",
+        "1aa3cd",
+        "7fc605",
+        "c00fb0",
+        "b7e038",
+        "5515a6",
+        "f3be8f",
+        "1f88ec",
+        "8fe19b",
+        "0a96fa",
+        "3718fc",
+        "94b386",
+        "aa08ce",
+        "1933c5",
+        "65ad87"
+      ],
+      "image": "/feast/goods/milk.webp",
+      "sourceUrl": "http://i.imgur.com/3Xh52JC.jpg"
+    },
+    "grain": {
+      "id": "grain",
+      "name": "grain",
+      "color": "orange",
+      "reverse": "salt-meat",
+      "shape": {
+        "width": 4,
+        "height": 1,
+        "mask": [
+          "####"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "ae9d40",
+      "guids": [
+        "3a684f",
+        "8ec44d",
+        "b26824",
+        "626680",
+        "96e596",
+        "26111e",
+        "5badb7",
+        "fe1592",
+        "25cb5f",
+        "7e3f7c",
+        "a781c0",
+        "a3b048",
+        "07b5f8",
+        "dda406",
+        "6e0688",
+        "34f72c",
+        "c185ec",
+        "98fe3b",
+        "1a3d2f",
+        "d85be9"
+      ],
+      "image": "/feast/goods/grain.webp",
+      "sourceUrl": "http://i.imgur.com/VECZO2q.jpg"
+    },
+    "salt-meat": {
+      "id": "salt-meat",
+      "name": "salt meat",
+      "color": "red",
+      "reverse": "grain",
+      "shape": {
+        "width": 4,
+        "height": 1,
+        "mask": [
+          "####"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "ae9d40",
+      "guids": [
+        "3a684f",
+        "8ec44d",
+        "b26824",
+        "626680",
+        "96e596",
+        "26111e",
+        "5badb7",
+        "fe1592",
+        "25cb5f",
+        "7e3f7c",
+        "a781c0",
+        "a3b048",
+        "07b5f8",
+        "dda406",
+        "6e0688",
+        "34f72c",
+        "c185ec",
+        "98fe3b",
+        "1a3d2f",
+        "d85be9"
+      ],
+      "image": "/feast/goods/salt-meat.webp",
+      "sourceUrl": "http://i.imgur.com/OJOzgT6.jpg"
+    },
+    "cabbage": {
+      "id": "cabbage",
+      "name": "cabbage",
+      "color": "orange",
+      "reverse": "game-meat",
+      "shape": {
+        "width": 3,
+        "height": 2,
+        "mask": [
+          "###",
+          "###"
+        ]
+      },
+      "count": 17,
+      "bagGuid": "dc7256",
+      "guids": [
+        "aa8503",
+        "0985d2",
+        "0a411d",
+        "eed20d",
+        "5dcf6f",
+        "d7ff36",
+        "665b84",
+        "6fecdb",
+        "84c128",
+        "24dd4a",
+        "889a88",
+        "5205eb",
+        "4a2aaf",
+        "b2cd6a",
+        "134d92",
+        "2a4d36",
+        "3f365c"
+      ],
+      "image": "/feast/goods/cabbage.webp",
+      "sourceUrl": "http://i.imgur.com/kMIrVsF.jpg"
+    },
+    "game-meat": {
+      "id": "game-meat",
+      "name": "game meat",
+      "color": "red",
+      "reverse": "cabbage",
+      "shape": {
+        "width": 3,
+        "height": 2,
+        "mask": [
+          "###",
+          "###"
+        ]
+      },
+      "count": 17,
+      "bagGuid": "dc7256",
+      "guids": [
+        "aa8503",
+        "0985d2",
+        "0a411d",
+        "eed20d",
+        "5dcf6f",
+        "d7ff36",
+        "665b84",
+        "6fecdb",
+        "84c128",
+        "24dd4a",
+        "889a88",
+        "5205eb",
+        "4a2aaf",
+        "b2cd6a",
+        "134d92",
+        "2a4d36",
+        "3f365c"
+      ],
+      "image": "/feast/goods/game-meat.webp",
+      "sourceUrl": "http://i.imgur.com/79IfiNm.jpg"
+    },
+    "fruits": {
+      "id": "fruits",
+      "name": "fruits",
+      "color": "orange",
+      "reverse": "whale-meat",
+      "shape": {
+        "width": 3,
+        "height": 3,
+        "mask": [
+          "###",
+          "###",
+          "###"
+        ]
+      },
+      "count": 15,
+      "bagGuid": "f670ab",
+      "guids": [
+        "7e0bce",
+        "3313bb",
+        "235ca3",
+        "b73d59",
+        "9ca42b",
+        "fdb423",
+        "930f4e",
+        "d1c911",
+        "361347",
+        "75dee8",
+        "5fefd5",
+        "ddf5bd",
+        "e8d167",
+        "0bf352",
+        "7776cb"
+      ],
+      "image": "/feast/goods/fruits.webp",
+      "sourceUrl": "http://i.imgur.com/qL6Rt3F.jpg"
+    },
+    "whale-meat": {
+      "id": "whale-meat",
+      "name": "whale meat",
+      "color": "red",
+      "reverse": "fruits",
+      "shape": {
+        "width": 3,
+        "height": 3,
+        "mask": [
+          "###",
+          "###",
+          "###"
+        ]
+      },
+      "count": 15,
+      "bagGuid": "f670ab",
+      "guids": [
+        "7e0bce",
+        "3313bb",
+        "235ca3",
+        "b73d59",
+        "9ca42b",
+        "fdb423",
+        "930f4e",
+        "d1c911",
+        "361347",
+        "75dee8",
+        "5fefd5",
+        "ddf5bd",
+        "e8d167",
+        "0bf352",
+        "7776cb"
+      ],
+      "image": "/feast/goods/whale-meat.webp",
+      "sourceUrl": "http://i.imgur.com/98n5bob.jpg"
+    },
+    "sheep": {
+      "id": "sheep",
+      "name": "sheep",
+      "color": "red",
+      "reverse": "pregnant-sheep",
+      "shape": {
+        "width": 4,
+        "height": 2,
+        "mask": [
+          "####",
+          "####"
+        ]
+      },
+      "count": 18,
+      "bagGuid": "21c530",
+      "guids": [
+        "645a3c",
+        "645a3c",
+        "645a3c",
+        "87a6ae",
+        "cd46fa",
+        "645a3c",
+        "4d4eb6",
+        "05d296",
+        "645a3c",
+        "645a3c",
+        "308411",
+        "007dc9",
+        "64a0ea",
+        "645a3c",
+        "50500c",
+        "1c34f5",
+        "645a3c",
+        "fd2fc1"
+      ],
+      "image": "/feast/goods/sheep.webp",
+      "sourceUrl": "http://i.imgur.com/otGzxJW.jpg"
+    },
+    "pregnant-sheep": {
+      "id": "pregnant-sheep",
+      "name": "pregnant sheep",
+      "color": "red",
+      "reverse": "sheep",
+      "shape": {
+        "width": 4,
+        "height": 2,
+        "mask": [
+          "####",
+          "####"
+        ]
+      },
+      "count": 18,
+      "bagGuid": "21c530",
+      "guids": [
+        "645a3c",
+        "645a3c",
+        "645a3c",
+        "87a6ae",
+        "cd46fa",
+        "645a3c",
+        "4d4eb6",
+        "05d296",
+        "645a3c",
+        "645a3c",
+        "308411",
+        "007dc9",
+        "64a0ea",
+        "645a3c",
+        "50500c",
+        "1c34f5",
+        "645a3c",
+        "fd2fc1"
+      ],
+      "image": "/feast/goods/pregnant-sheep.webp",
+      "sourceUrl": "http://i.imgur.com/hg7agzU.jpg"
+    },
+    "cattle": {
+      "id": "cattle",
+      "name": "cattle",
+      "color": "red",
+      "reverse": "pregnant-cattle",
+      "shape": {
+        "width": 4,
+        "height": 3,
+        "mask": [
+          "####",
+          "####",
+          "####"
+        ]
+      },
+      "count": 15,
+      "bagGuid": "d54da5",
+      "guids": [
+        "346d05",
+        "346d05",
+        "346d05",
+        "ec39c6",
+        "346d05",
+        "846b8c",
+        "95798e",
+        "346d05",
+        "acd8a8",
+        "346d05",
+        "172258",
+        "99b037",
+        "346d05",
+        "b8029b",
+        "ccb4e6"
+      ],
+      "image": "/feast/goods/cattle.webp",
+      "sourceUrl": "http://i.imgur.com/KYIQ7UD.jpg"
+    },
+    "pregnant-cattle": {
+      "id": "pregnant-cattle",
+      "name": "pregnant cattle",
+      "color": "red",
+      "reverse": "cattle",
+      "shape": {
+        "width": 4,
+        "height": 3,
+        "mask": [
+          "####",
+          "####",
+          "####"
+        ]
+      },
+      "count": 15,
+      "bagGuid": "d54da5",
+      "guids": [
+        "346d05",
+        "346d05",
+        "346d05",
+        "ec39c6",
+        "346d05",
+        "846b8c",
+        "95798e",
+        "346d05",
+        "acd8a8",
+        "346d05",
+        "172258",
+        "99b037",
+        "346d05",
+        "b8029b",
+        "ccb4e6"
+      ],
+      "image": "/feast/goods/pregnant-cattle.webp",
+      "sourceUrl": "http://i.imgur.com/fLPuJwM.jpg"
+    },
+    "oil": {
+      "id": "oil",
+      "name": "oil",
+      "color": "green",
+      "reverse": "rune-stone",
+      "shape": {
+        "width": 2,
+        "height": 1,
+        "mask": [
+          "##"
+        ]
+      },
+      "count": 43,
+      "bagGuid": "fd16dc",
+      "guids": [
+        "a6e10f",
+        "7e8dde",
+        "4199c2",
+        "c3aca1",
+        "f53028",
+        "c94411",
+        "3f7255",
+        "5b83fe",
+        "5065c3",
+        "1742bf",
+        "82d864",
+        "9ce0eb",
+        "c5bdc8",
+        "dd9977",
+        "05825c",
+        "0e00be",
+        "9d2e9a",
+        "b4dcaa",
+        "be69c9",
+        "795380",
+        "6c2806",
+        "d6a5e8",
+        "8caf98",
+        "f04780",
+        "22bb88",
+        "6a2b13",
+        "12a1a9",
+        "d07895",
+        "1a47cd",
+        "1d9e8f",
+        "88316b",
+        "35dfca",
+        "a60df3",
+        "6a611b",
+        "3fc3a3",
+        "0c5fd0",
+        "fb42be",
+        "03fe59",
+        "844559",
+        "8d7c6c",
+        "3732ad",
+        "ecf3c0",
+        "9a6259"
+      ],
+      "image": "/feast/goods/oil.webp",
+      "sourceUrl": "http://i.imgur.com/gJac8lm.jpg"
+    },
+    "rune-stone": {
+      "id": "rune-stone",
+      "name": "rune stone",
+      "color": "blue",
+      "reverse": "oil",
+      "shape": {
+        "width": 2,
+        "height": 1,
+        "mask": [
+          "##"
+        ]
+      },
+      "count": 43,
+      "bagGuid": "fd16dc",
+      "guids": [
+        "a6e10f",
+        "7e8dde",
+        "4199c2",
+        "c3aca1",
+        "f53028",
+        "c94411",
+        "3f7255",
+        "5b83fe",
+        "5065c3",
+        "1742bf",
+        "82d864",
+        "9ce0eb",
+        "c5bdc8",
+        "dd9977",
+        "05825c",
+        "0e00be",
+        "9d2e9a",
+        "b4dcaa",
+        "be69c9",
+        "795380",
+        "6c2806",
+        "d6a5e8",
+        "8caf98",
+        "f04780",
+        "22bb88",
+        "6a2b13",
+        "12a1a9",
+        "d07895",
+        "1a47cd",
+        "1d9e8f",
+        "88316b",
+        "35dfca",
+        "a60df3",
+        "6a611b",
+        "3fc3a3",
+        "0c5fd0",
+        "fb42be",
+        "03fe59",
+        "844559",
+        "8d7c6c",
+        "3732ad",
+        "ecf3c0",
+        "9a6259"
+      ],
+      "image": "/feast/goods/rune-stone.webp",
+      "sourceUrl": "http://i.imgur.com/l1WB7Us.jpg"
+    },
+    "hide": {
+      "id": "hide",
+      "name": "hide",
+      "color": "green",
+      "reverse": "silverware",
+      "shape": {
+        "width": 3,
+        "height": 1,
+        "mask": [
+          "###"
+        ]
+      },
+      "count": 30,
+      "bagGuid": "019662",
+      "guids": [
+        "c014a7",
+        "ae5f28",
+        "00778a",
+        "567046",
+        "07c05d",
+        "564d0a",
+        "1bbcd7",
+        "70c72f",
+        "e55f71",
+        "133337",
+        "7e14b2",
+        "02e072",
+        "be93be",
+        "d1c1b5",
+        "9ae55d",
+        "d67a7b",
+        "b14c06",
+        "963ab0",
+        "e01336",
+        "3c2931",
+        "8de9b2",
+        "cf89fb",
+        "eb035a",
+        "604ad6",
+        "e1356a",
+        "05fc2b",
+        "56afb7",
+        "e6d777",
+        "51662d",
+        "f0f320"
+      ],
+      "image": "/feast/goods/hide.webp",
+      "sourceUrl": "http://i.imgur.com/O8mW4lc.jpg"
+    },
+    "silverware": {
+      "id": "silverware",
+      "name": "silverware",
+      "color": "blue",
+      "reverse": "hide",
+      "shape": {
+        "width": 3,
+        "height": 1,
+        "mask": [
+          "###"
+        ]
+      },
+      "count": 30,
+      "bagGuid": "019662",
+      "guids": [
+        "c014a7",
+        "ae5f28",
+        "00778a",
+        "567046",
+        "07c05d",
+        "564d0a",
+        "1bbcd7",
+        "70c72f",
+        "e55f71",
+        "133337",
+        "7e14b2",
+        "02e072",
+        "be93be",
+        "d1c1b5",
+        "9ae55d",
+        "d67a7b",
+        "b14c06",
+        "963ab0",
+        "e01336",
+        "3c2931",
+        "8de9b2",
+        "cf89fb",
+        "eb035a",
+        "604ad6",
+        "e1356a",
+        "05fc2b",
+        "56afb7",
+        "e6d777",
+        "51662d",
+        "f0f320"
+      ],
+      "image": "/feast/goods/silverware.webp",
+      "sourceUrl": "http://i.imgur.com/VQ29FXF.jpg"
+    },
+    "wool": {
+      "id": "wool",
+      "name": "wool",
+      "color": "green",
+      "reverse": "chest",
+      "shape": {
+        "width": 2,
+        "height": 2,
+        "mask": [
+          "##",
+          "##"
+        ]
+      },
+      "count": 30,
+      "bagGuid": "15a9d8",
+      "guids": [
+        "45f111",
+        "d7e39c",
+        "15a167",
+        "cabae7",
+        "68551a",
+        "034fa8",
+        "8dee20",
+        "c97f54",
+        "d7ed41",
+        "534ecd",
+        "096aa8",
+        "696dc8",
+        "0669c3",
+        "80d4ee",
+        "8fc8ac",
+        "fddb6b",
+        "171317",
+        "07754e",
+        "3a8620",
+        "7cd6a8",
+        "2e53a9",
+        "626594",
+        "731e3e",
+        "1b73e1",
+        "973efb",
+        "7ce769",
+        "fb6c4c",
+        "5cb22b",
+        "4c7b39",
+        "191a0b"
+      ],
+      "image": "/feast/goods/wool.webp",
+      "sourceUrl": "http://i.imgur.com/4rHsXws.jpg"
+    },
+    "chest": {
+      "id": "chest",
+      "name": "chest",
+      "color": "blue",
+      "reverse": "wool",
+      "shape": {
+        "width": 2,
+        "height": 2,
+        "mask": [
+          "##",
+          "##"
+        ]
+      },
+      "count": 30,
+      "bagGuid": "15a9d8",
+      "guids": [
+        "45f111",
+        "d7e39c",
+        "15a167",
+        "cabae7",
+        "68551a",
+        "034fa8",
+        "8dee20",
+        "c97f54",
+        "d7ed41",
+        "534ecd",
+        "096aa8",
+        "696dc8",
+        "0669c3",
+        "80d4ee",
+        "8fc8ac",
+        "fddb6b",
+        "171317",
+        "07754e",
+        "3a8620",
+        "7cd6a8",
+        "2e53a9",
+        "626594",
+        "731e3e",
+        "1b73e1",
+        "973efb",
+        "7ce769",
+        "fb6c4c",
+        "5cb22b",
+        "4c7b39",
+        "191a0b"
+      ],
+      "image": "/feast/goods/chest.webp",
+      "sourceUrl": "http://i.imgur.com/g3RtACV.jpg"
+    },
+    "linen": {
+      "id": "linen",
+      "name": "linen",
+      "color": "green",
+      "reverse": "silk",
+      "shape": {
+        "width": 4,
+        "height": 1,
+        "mask": [
+          "####"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "de4431",
+      "guids": [
+        "aaec4b",
+        "e970a2",
+        "5f177e",
+        "39c166",
+        "d58e65",
+        "2a3c5e",
+        "0b5e89",
+        "4b22c5",
+        "921a53",
+        "c65f15",
+        "ac41d4",
+        "2313e6",
+        "d83e46",
+        "50d98c",
+        "a69ba8",
+        "70f3d1",
+        "649fc1",
+        "a2cdfd",
+        "99f6f2",
+        "3ff33d"
+      ],
+      "image": "/feast/goods/linen.webp",
+      "sourceUrl": "http://i.imgur.com/WABrys9.jpg"
+    },
+    "silk": {
+      "id": "silk",
+      "name": "silk",
+      "color": "blue",
+      "reverse": "linen",
+      "shape": {
+        "width": 4,
+        "height": 1,
+        "mask": [
+          "####"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "de4431",
+      "guids": [
+        "aaec4b",
+        "e970a2",
+        "5f177e",
+        "39c166",
+        "d58e65",
+        "2a3c5e",
+        "0b5e89",
+        "4b22c5",
+        "921a53",
+        "c65f15",
+        "ac41d4",
+        "2313e6",
+        "d83e46",
+        "50d98c",
+        "a69ba8",
+        "70f3d1",
+        "649fc1",
+        "a2cdfd",
+        "99f6f2",
+        "3ff33d"
+      ],
+      "image": "/feast/goods/silk.webp",
+      "sourceUrl": "http://i.imgur.com/svU6n4v.jpg"
+    },
+    "skin-and-bones": {
+      "id": "skin-and-bones",
+      "name": "skin and bones",
+      "color": "green",
+      "reverse": "spices",
+      "shape": {
+        "width": 3,
+        "height": 2,
+        "mask": [
+          "###",
+          "###"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "d76828",
+      "guids": [
+        "9693aa",
+        "607d1c",
+        "250620",
+        "9317dc",
+        "f34602",
+        "e8c94e",
+        "1514c0",
+        "61baab",
+        "7fd834",
+        "8dda00",
+        "0c4a50",
+        "12e3df",
+        "76125e",
+        "0771e1",
+        "06a8e0",
+        "b7478a",
+        "48161c",
+        "aa2faf",
+        "9a5144",
+        "1d36be"
+      ],
+      "image": "/feast/goods/skin-and-bones.webp",
+      "sourceUrl": "http://i.imgur.com/DbYLIgw.jpg"
+    },
+    "spices": {
+      "id": "spices",
+      "name": "spices",
+      "color": "blue",
+      "reverse": "skin-and-bones",
+      "shape": {
+        "width": 3,
+        "height": 2,
+        "mask": [
+          "###",
+          "###"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "d76828",
+      "guids": [
+        "9693aa",
+        "607d1c",
+        "250620",
+        "9317dc",
+        "f34602",
+        "e8c94e",
+        "1514c0",
+        "61baab",
+        "7fd834",
+        "8dda00",
+        "0c4a50",
+        "12e3df",
+        "76125e",
+        "0771e1",
+        "06a8e0",
+        "b7478a",
+        "48161c",
+        "aa2faf",
+        "9a5144",
+        "1d36be"
+      ],
+      "image": "/feast/goods/spices.webp",
+      "sourceUrl": "http://i.imgur.com/V93Gqdk.jpg"
+    },
+    "fur": {
+      "id": "fur",
+      "name": "fur",
+      "color": "green",
+      "reverse": "jewelry",
+      "shape": {
+        "width": 4,
+        "height": 2,
+        "mask": [
+          "####",
+          "####"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "b35e74",
+      "guids": [
+        "e9d813",
+        "75fb36",
+        "dbd1f1",
+        "cd9cd2",
+        "d05e3f",
+        "d077ee",
+        "9535b1",
+        "2a8721",
+        "93d4c0",
+        "d554ba",
+        "fd6107",
+        "236a32",
+        "116ac0",
+        "b5bf21",
+        "67f203",
+        "50de72",
+        "f7d89f",
+        "22dee3",
+        "70dcd0",
+        "a67c83"
+      ],
+      "image": "/feast/goods/fur.webp",
+      "sourceUrl": "http://i.imgur.com/MEjdQ9u.jpg"
+    },
+    "jewelry": {
+      "id": "jewelry",
+      "name": "jewelry",
+      "color": "blue",
+      "reverse": "fur",
+      "shape": {
+        "width": 4,
+        "height": 2,
+        "mask": [
+          "####",
+          "####"
+        ]
+      },
+      "count": 20,
+      "bagGuid": "b35e74",
+      "guids": [
+        "e9d813",
+        "75fb36",
+        "dbd1f1",
+        "cd9cd2",
+        "d05e3f",
+        "d077ee",
+        "9535b1",
+        "2a8721",
+        "93d4c0",
+        "d554ba",
+        "fd6107",
+        "236a32",
+        "116ac0",
+        "b5bf21",
+        "67f203",
+        "50de72",
+        "f7d89f",
+        "22dee3",
+        "70dcd0",
+        "a67c83"
+      ],
+      "image": "/feast/goods/jewelry.webp",
+      "sourceUrl": "http://i.imgur.com/wnwyZO5.jpg"
+    },
+    "robe": {
+      "id": "robe",
+      "name": "robe",
+      "color": "green",
+      "reverse": "treasure-chest",
+      "shape": {
+        "width": 3,
+        "height": 3,
+        "mask": [
+          "###",
+          "###",
+          "###"
+        ]
+      },
+      "count": 18,
+      "bagGuid": "e2034f",
+      "guids": [
+        "9a4859",
+        "94c9ff",
+        "03ce59",
+        "b80cf7",
+        "8cea6b",
+        "81dd74",
+        "f7fb31",
+        "6d7b8e",
+        "73a74b",
+        "6c364f",
+        "0a67d9",
+        "6cb89c",
+        "2f9b8d",
+        "57e536",
+        "fb446b",
+        "3c4b7e",
+        "5b64f1",
+        "eb0635"
+      ],
+      "image": "/feast/goods/robe.webp",
+      "sourceUrl": "http://i.imgur.com/Xe9zpJI.jpg"
+    },
+    "treasure-chest": {
+      "id": "treasure-chest",
+      "name": "treasure chest",
+      "color": "blue",
+      "reverse": "robe",
+      "shape": {
+        "width": 3,
+        "height": 3,
+        "mask": [
+          "###",
+          "###",
+          "###"
+        ]
+      },
+      "count": 18,
+      "bagGuid": "e2034f",
+      "guids": [
+        "9a4859",
+        "94c9ff",
+        "03ce59",
+        "b80cf7",
+        "8cea6b",
+        "81dd74",
+        "f7fb31",
+        "6d7b8e",
+        "73a74b",
+        "6c364f",
+        "0a67d9",
+        "6cb89c",
+        "2f9b8d",
+        "57e536",
+        "fb446b",
+        "3c4b7e",
+        "5b64f1",
+        "eb0635"
+      ],
+      "image": "/feast/goods/treasure-chest.webp",
+      "sourceUrl": "http://i.imgur.com/hizTRml.jpg"
+    },
+    "clothing": {
+      "id": "clothing",
+      "name": "clothing",
+      "color": "green",
+      "reverse": "silver-hoard",
+      "shape": {
+        "width": 4,
+        "height": 3,
+        "mask": [
+          "####",
+          "####",
+          "####"
+        ]
+      },
+      "count": 15,
+      "bagGuid": "bb5010",
+      "guids": [
+        "1a1898",
+        "d2f635",
+        "d6981e",
+        "30df46",
+        "2b1b7d",
+        "f86c91",
+        "81f89f",
+        "c9a826",
+        "313337",
+        "bba529",
+        "ab1603",
+        "76a73c",
+        "351f35",
+        "0f1e63",
+        "a19283"
+      ],
+      "image": "/feast/goods/clothing.webp",
+      "sourceUrl": "http://i.imgur.com/qtz8Xt6.jpg"
+    },
+    "silver-hoard": {
+      "id": "silver-hoard",
+      "name": "silver hoard",
+      "color": "blue",
+      "reverse": "clothing",
+      "shape": {
+        "width": 4,
+        "height": 3,
+        "mask": [
+          "####",
+          "####",
+          "####"
+        ]
+      },
+      "count": 15,
+      "bagGuid": "bb5010",
+      "guids": [
+        "1a1898",
+        "d2f635",
+        "d6981e",
+        "30df46",
+        "2b1b7d",
+        "f86c91",
+        "81f89f",
+        "c9a826",
+        "313337",
+        "bba529",
+        "ab1603",
+        "76a73c",
+        "351f35",
+        "0f1e63",
+        "a19283"
+      ],
+      "image": "/feast/goods/silver-hoard.webp",
+      "sourceUrl": "http://i.imgur.com/BBM9kUs.jpg"
+    }
+  },
+  "resources": {
+    "wood": {
+      "id": "wood",
+      "sampleGuid": "1c9f75",
+      "bagGuid": "11fedc",
+      "expected": 32,
+      "kind": "token",
+      "count": 32,
+      "guids": [
+        "fb0a8d",
+        "95e3ac",
+        "ea13c2",
+        "e9e11e",
+        "ab0222",
+        "f2d978",
+        "9b141e",
+        "cc1090",
+        "e83dbd",
+        "34f1f6",
+        "d977e8",
+        "d5905a",
+        "ba4e42",
+        "9bb6eb",
+        "5681cc",
+        "9a9388",
+        "4655bd",
+        "a6a956",
+        "11c5ba",
+        "e595b5",
+        "ed1d1c",
+        "e03662",
+        "0dfec8",
+        "9d7c68",
+        "0dee10",
+        "36aefb",
+        "62b18a",
+        "45e195",
+        "e4a621",
+        "1933f7",
+        "6cfed9",
+        "e3e399"
+      ],
+      "sourceUrl": "http://i.imgur.com/HhSpuNi.png",
+      "image": "/feast/resources/wood.webp"
+    },
+    "stone": {
+      "id": "stone",
+      "sampleGuid": "508e9c",
+      "bagGuid": "410571",
+      "expected": 24,
+      "kind": "token",
+      "count": 24,
+      "guids": [
+        "a843c7",
+        "acbc7f",
+        "a2928e",
+        "f656d4",
+        "2c38e4",
+        "b92049",
+        "af95da",
+        "052dfc",
+        "57d70a",
+        "754506",
+        "a73a57",
+        "7dfe31",
+        "8fd4de",
+        "d54af5",
+        "c7337a",
+        "a07688",
+        "932fb6",
+        "8f3df0",
+        "4f46ea",
+        "df4b70",
+        "6fc9d8",
+        "ae7182",
+        "37fdb7",
+        "717bcc"
+      ],
+      "sourceUrl": "http://i.imgur.com/JkxJ9Rf.png",
+      "image": "/feast/resources/stone.webp"
+    },
+    "ore": {
+      "id": "ore",
+      "sampleGuid": "feb814",
+      "bagGuid": "594862",
+      "expected": 40,
+      "count": 40,
+      "guids": [
+        "7f6d09",
+        "2d4a7f",
+        "e8349b",
+        "33f232",
+        "188775",
+        "3a4906",
+        "76b07d",
+        "468ff6",
+        "a38e2f",
+        "1607a5",
+        "b381f1",
+        "28d43c",
+        "01fd1d",
+        "000553",
+        "3e667d",
+        "ecf2e4",
+        "31c212",
+        "89734a",
+        "e664ea",
+        "8841fc",
+        "773182",
+        "adbeee",
+        "b5a9d4",
+        "b90ada",
+        "af07de",
+        "62d4ed",
+        "b90c88",
+        "5c5ebd",
+        "7c09bd",
+        "ad7602",
+        "6f9315",
+        "f9563e",
+        "bd2db2",
+        "0577b8",
+        "8b8c95",
+        "b4fb43",
+        "bdcb9f",
+        "8c8f37",
+        "a9d9a3",
+        "7e1d04"
+      ],
+      "sourceUrl": "http://i.imgur.com/ueJBi3k.jpg",
+      "image": "/feast/resources/ore.webp"
+    }
+  },
+  "silver": {
+    "silver-1": {
+      "id": "silver-1",
+      "count": 80,
+      "bagGuid": "d3f3c1",
+      "guids": [
+        "3e43ac",
+        "882780",
+        "310321",
+        "8c12b8",
+        "836aa3",
+        "473095",
+        "fb0ca2",
+        "f52c6c",
+        "57509b",
+        "32a33b",
+        "8758f4",
+        "2c576f",
+        "5d8942",
+        "aaa341",
+        "fd67a8",
+        "6490fe",
+        "ad27f4",
+        "756484",
+        "6022ee",
+        "d99d91",
+        "617c2d",
+        "ac1192",
+        "a9f21d",
+        "4920f1",
+        "0f039f",
+        "891e04",
+        "f58e67",
+        "4f0cb8",
+        "e2aa33",
+        "e02412",
+        "7f3314",
+        "96b591",
+        "3ba0a1",
+        "93673f",
+        "2a5c11",
+        "7cf100",
+        "471003",
+        "de18bd",
+        "678e9d",
+        "b91beb",
+        "3882e6",
+        "8a2545",
+        "59fdc5",
+        "36f507",
+        "2bbef5",
+        "17d42c",
+        "867906",
+        "d205f9",
+        "1ff67e",
+        "33c9cb",
+        "a3bf33",
+        "644a68",
+        "873b2f",
+        "5f7730",
+        "6f08d7",
+        "9415e5",
+        "2dd4b1",
+        "15865d",
+        "1da442",
+        "fdf750",
+        "fb9ecc",
+        "b3a0d8",
+        "ff96d0",
+        "7dada7",
+        "b810a5",
+        "652671",
+        "e9f676",
+        "6dc764",
+        "d94307",
+        "26bbc7",
+        "cb1e87",
+        "fe28a2",
+        "9b86f6",
+        "64381c",
+        "d850e5",
+        "1fe0a5",
+        "fbb145",
+        "c6f633",
+        "65b0e8",
+        "f33825"
+      ],
+      "sourceUrl": "http://i.imgur.com/Ff1toRQ.jpg",
+      "image": "/feast/resources/silver-1.webp"
+    },
+    "silver-2": {
+      "id": "silver-2",
+      "count": 22,
+      "bagGuid": "64f4ba",
+      "guids": [
+        "2a1797",
+        "f1d05f",
+        "87f826",
+        "1a61a7",
+        "4c9c83",
+        "fe11f0",
+        "20fa51",
+        "e22d48",
+        "3cadd6",
+        "c56e51",
+        "76af70",
+        "2a20f9",
+        "ae6cd5",
+        "0bce7e",
+        "ca1ace",
+        "bca778",
+        "94b4f2",
+        "9e96d0",
+        "682923",
+        "99ed58",
+        "a83f10",
+        "b51bca"
+      ],
+      "sourceUrl": "http://i.imgur.com/CFJlHRF.jpg",
+      "image": "/feast/resources/silver-2.webp"
+    },
+    "silver-4": {
+      "id": "silver-4",
+      "count": 18,
+      "bagGuid": "61a832",
+      "guids": [
+        "8d418a",
+        "694b8f",
+        "5f5099",
+        "70bee5",
+        "076d50",
+        "341d00",
+        "f3aa82",
+        "523cd4",
+        "87d89a",
+        "646698",
+        "db190f",
+        "23708a",
+        "0c488b",
+        "5083cc",
+        "9e1a41",
+        "f5c54f",
+        "5da442",
+        "f59b2a"
+      ],
+      "sourceUrl": "http://i.imgur.com/FjUNudE.jpg",
+      "image": "/feast/resources/silver-4.webp"
+    },
+    "silver-10": {
+      "id": "silver-10",
+      "count": 5,
+      "bagGuid": "f09402",
+      "guids": [
+        "2fc260",
+        "5a67cf",
+        "13e8ef",
+        "ae0f02",
+        "c5599b"
+      ],
+      "sourceUrl": "http://i.imgur.com/0haMk7G.jpg",
+      "image": "/feast/resources/silver-10.webp"
+    }
+  },
+  "specials": [
+    {
+      "id": "amber-figure",
+      "name": "Amber Figure",
+      "guid": "06eb43",
+      "sourceUrl": "http://i.imgur.com/axAk8z0.png",
+      "image": "/feast/special/amber-figure.webp",
+      "area": 7,
+      "mask": [
+        ".#.",
+        "###",
+        "###"
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 9,
+      "silverCost": 2,
+      "forge": false,
+      "points": 0
+    },
+    {
+      "id": "round-shield",
+      "name": "Round Shield",
+      "guid": "9e68f5",
+      "sourceUrl": "http://i.imgur.com/yo4CWjB.png",
+      "image": "/feast/special/round-shield.webp",
+      "area": 12,
+      "mask": [
+        ".##.",
+        "####",
+        "####",
+        ".##."
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 13,
+      "silverCost": 6,
+      "forge": false,
+      "points": 0
+    },
+    {
+      "id": "english-crown",
+      "name": "English Crown",
+      "guid": "4a47a8",
+      "sourceUrl": "http://i.imgur.com/AfVKoS0.png",
+      "image": "/feast/special/english-crown.webp",
+      "area": 13,
+      "mask": [
+        "#.#.#",
+        "#####",
+        "#####"
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 16,
+      "silverCost": null,
+      "forge": false,
+      "points": 2
+    },
+    {
+      "id": "horseshoe",
+      "name": "Horseshoe",
+      "guid": "36ea09",
+      "sourceUrl": "http://i.imgur.com/oRRCbjV.png",
+      "image": "/feast/special/horseshoe.webp",
+      "area": 7,
+      "mask": [
+        "#.#",
+        "#.#",
+        "###"
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 9,
+      "silverCost": 2,
+      "forge": true,
+      "points": 0
+    },
+    {
+      "id": "gold-brooch",
+      "name": "Gold Brooch",
+      "guid": "06780d",
+      "sourceUrl": "http://i.imgur.com/kjQFJTY.png",
+      "image": "/feast/special/gold-brooch.webp",
+      "area": 8,
+      "mask": [
+        ".#.",
+        "###",
+        "###",
+        ".#."
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 9,
+      "silverCost": 3,
+      "forge": false,
+      "points": 0
+    },
+    {
+      "id": "throwing-axe",
+      "name": "Throwing Axe",
+      "guid": "e29cff",
+      "sourceUrl": "http://i.imgur.com/0RyPnB7.png",
+      "image": "/feast/special/throwing-axe.webp",
+      "area": 9,
+      "mask": [
+        "#####",
+        ".###.",
+        "..#.."
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 11,
+      "silverCost": 4,
+      "forge": true,
+      "points": 0
+    },
+    {
+      "id": "chalice",
+      "name": "Chalice",
+      "guid": "54573b",
+      "sourceUrl": "http://i.imgur.com/yacCywE.png",
+      "image": "/feast/special/chalice.webp",
+      "area": 10,
+      "mask": [
+        "###",
+        "###",
+        ".#.",
+        "###"
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 12,
+      "silverCost": 5,
+      "forge": false,
+      "points": 0
+    },
+    {
+      "id": "belt",
+      "name": "Belt",
+      "guid": "1c4ceb",
+      "sourceUrl": "http://i.imgur.com/b2j3NVT.jpg",
+      "image": "/feast/special/belt.webp",
+      "area": 5,
+      "mask": [
+        "#####"
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        0,
+        0
+      ],
+      "method": "opaque-rectangular-200px-cells",
+      "swordValue": 8,
+      "silverCost": 2,
+      "forge": false,
+      "points": 0
+    },
+    {
+      "id": "cloakpin",
+      "name": "Cloakpin",
+      "guid": "4479b9",
+      "sourceUrl": "http://i.imgur.com/nGAU9sm.png",
+      "image": "/feast/special/cloakpin.webp",
+      "area": 5,
+      "mask": [
+        "#...",
+        "####"
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 8,
+      "silverCost": 1,
+      "forge": true,
+      "points": 0
+    },
+    {
+      "id": "drinking-horn",
+      "name": "Drinking Horn",
+      "guid": "50db66",
+      "sourceUrl": "http://i.imgur.com/NPEWOO7.png",
+      "image": "/feast/special/drinking-horn.webp",
+      "area": 6,
+      "mask": [
+        ".##",
+        "###",
+        "#.."
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 8,
+      "silverCost": 2,
+      "forge": false,
+      "points": 0
+    },
+    {
+      "id": "fibula",
+      "name": "Fibula",
+      "guid": "9a1b1d",
+      "sourceUrl": "http://i.imgur.com/oe2Qvgp.png",
+      "image": "/feast/special/fibula.webp",
+      "area": 9,
+      "mask": [
+        "##.",
+        "#..",
+        "###",
+        "#..",
+        "##."
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 10,
+      "silverCost": 4,
+      "forge": true,
+      "points": 0
+    },
+    {
+      "id": "crucifix",
+      "name": "Crucifix",
+      "guid": "0b4301",
+      "sourceUrl": "http://i.imgur.com/qGnqg6z.png",
+      "image": "/feast/special/crucifix.webp",
+      "area": 6,
+      "mask": [
+        ".#.",
+        "###",
+        ".#.",
+        ".#."
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 8,
+      "silverCost": 2,
+      "forge": true,
+      "points": 0
+    },
+    {
+      "id": "forge-hammer",
+      "name": "Forge Hammer",
+      "guid": "8d48fc",
+      "sourceUrl": "http://i.imgur.com/i5KCbcz.png",
+      "image": "/feast/special/forge-hammer.webp",
+      "area": 9,
+      "mask": [
+        "###",
+        "###",
+        ".#.",
+        ".#.",
+        ".#."
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 10,
+      "silverCost": 4,
+      "forge": true,
+      "points": 0
+    },
+    {
+      "id": "glass-beads",
+      "name": "Glass Beads",
+      "guid": "e847df",
+      "sourceUrl": "http://i.imgur.com/zci5q85.png",
+      "image": "/feast/special/glass-beads.webp",
+      "area": 5,
+      "mask": [
+        ".#.",
+        "###",
+        ".#."
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 7,
+      "silverCost": 0,
+      "forge": false,
+      "points": 0
+    },
+    {
+      "id": "helmet",
+      "name": "Helmet",
+      "guid": "b9bfbd",
+      "sourceUrl": "http://i.imgur.com/jbnklhN.png",
+      "image": "/feast/special/helmet.webp",
+      "area": 5,
+      "mask": [
+        "##",
+        "##",
+        ".#"
+      ],
+      "cellPx": 200,
+      "sampleOffsetPx": [
+        50,
+        50
+      ],
+      "method": "alpha-center-sample-200px-cells",
+      "swordValue": 8,
+      "silverCost": 1,
+      "forge": true,
+      "points": 0
+    }
+  ],
+  "mountains": [
+    {
+      "id": "strip-01",
+      "order": 1,
+      "guid": "063814",
+      "sourceUrl": "http://i.imgur.com/sUZVzKQ.jpg",
+      "direction": "arrow-end-first",
+      "items": [
+        "wood",
+        "wood",
+        "stone",
+        "stone",
+        "stone",
+        "ore",
+        "silver-2"
+      ],
+      "image": "/feast/mountains/strip-01.webp"
+    },
+    {
+      "id": "strip-02",
+      "order": 2,
+      "guid": "c9d403",
+      "sourceUrl": "http://i.imgur.com/cm6dqRO.jpg",
+      "direction": "arrow-end-first",
+      "items": [
+        "wood",
+        "wood",
+        "wood",
+        "stone",
+        "stone",
+        "stone",
+        "silver-2"
+      ],
+      "image": "/feast/mountains/strip-02.webp"
+    },
+    {
+      "id": "strip-03",
+      "order": 3,
+      "guid": "c71013",
+      "sourceUrl": "http://i.imgur.com/CN7gyXx.jpg",
+      "direction": "arrow-end-first",
+      "items": [
+        "wood",
+        "wood",
+        "wood",
+        "wood",
+        "stone",
+        "ore",
+        "silver-2"
+      ],
+      "image": "/feast/mountains/strip-03.webp"
+    },
+    {
+      "id": "strip-04",
+      "order": 4,
+      "guid": "f0a898",
+      "sourceUrl": "http://i.imgur.com/pCsbvjo.jpg",
+      "direction": "arrow-end-first",
+      "items": [
+        "wood",
+        "wood",
+        "stone",
+        "stone",
+        "ore",
+        "ore",
+        "silver-2"
+      ],
+      "image": "/feast/mountains/strip-04.webp"
+    },
+    {
+      "id": "strip-05",
+      "order": 5,
+      "guid": "ee0daf",
+      "sourceUrl": "http://i.imgur.com/RvY2XmU.jpg",
+      "direction": "arrow-end-first",
+      "items": [
+        "wood",
+        "wood",
+        "wood",
+        "wood",
+        "stone",
+        "stone",
+        "silver-2"
+      ],
+      "image": "/feast/mountains/strip-05.webp"
+    },
+    {
+      "id": "strip-06",
+      "order": 6,
+      "guid": "bc611e",
+      "sourceUrl": "http://i.imgur.com/Rk0BqsO.jpg",
+      "direction": "arrow-end-first",
+      "items": [
+        "wood",
+        "wood",
+        "wood",
+        "stone",
+        "stone",
+        "ore",
+        "silver-2"
+      ],
+      "image": "/feast/mountains/strip-06.webp"
+    },
+    {
+      "id": "strip-07",
+      "order": 7,
+      "guid": "eb1d19",
+      "sourceUrl": "http://i.imgur.com/UvrELwV.jpg",
+      "direction": "arrow-end-first",
+      "items": [
+        "wood",
+        "wood",
+        "stone",
+        "ore",
+        "ore",
+        "silver-2",
+        "silver-2"
+      ],
+      "image": "/feast/mountains/strip-07.webp"
+    },
+    {
+      "id": "strip-08",
+      "order": 8,
+      "guid": "3db5c1",
+      "sourceUrl": "http://i.imgur.com/tq0GJk1.jpg",
+      "direction": "arrow-end-first",
+      "items": [
+        "wood",
+        "wood",
+        "wood",
+        "stone",
+        "ore",
+        "ore",
+        "silver-2"
+      ],
+      "image": "/feast/mountains/strip-08.webp"
+    }
+  ],
+  "decks": {
+    "sheets": {
+      "occupation-b": {
+        "id": "occupation-b",
+        "sheetId": 3,
+        "cols": 10,
+        "rows": 7,
+        "uniqueBack": false,
+        "faceSourceUrl": "http://i.imgur.com/7JvbhqO.jpg",
+        "backSourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+        "face": "/feast/cards/occupation-b.webp",
+        "back": "/feast/cards/occupation-b-back.webp",
+        "image": "/feast/cards/occupation-b.webp"
+      },
+      "occupation-c": {
+        "id": "occupation-c",
+        "sheetId": 4,
+        "cols": 10,
+        "rows": 7,
+        "uniqueBack": false,
+        "faceSourceUrl": "http://i.imgur.com/wMSnZmh.jpg",
+        "backSourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+        "face": "/feast/cards/occupation-c.webp",
+        "back": "/feast/cards/occupation-c-back.webp",
+        "image": "/feast/cards/occupation-c.webp"
+      },
+      "occupation-a": {
+        "id": "occupation-a",
+        "sheetId": 5,
+        "cols": 10,
+        "rows": 7,
+        "uniqueBack": false,
+        "faceSourceUrl": "http://i.imgur.com/cezWiAp.jpg",
+        "backSourceUrl": "http://i.imgur.com/pL33fFf.jpg",
+        "face": "/feast/cards/occupation-a.webp",
+        "back": "/feast/cards/occupation-a-back.webp",
+        "image": "/feast/cards/occupation-a.webp"
+      },
+      "occupation-starting": {
+        "id": "occupation-starting",
+        "sheetId": 6,
+        "cols": 10,
+        "rows": 7,
+        "uniqueBack": false,
+        "faceSourceUrl": "http://i.imgur.com/PnsxQbf.jpg",
+        "backSourceUrl": "http://i.imgur.com/UlHFBIl.jpg",
+        "face": "/feast/cards/occupation-starting.webp",
+        "back": "/feast/cards/occupation-starting-back.webp",
+        "image": "/feast/cards/occupation-starting.webp"
+      },
+      "weapons": {
+        "id": "weapons",
+        "sheetId": 2,
+        "cols": 10,
+        "rows": 7,
+        "uniqueBack": true,
+        "faceSourceUrl": "http://i.imgur.com/3cbv1Y7.jpg",
+        "backSourceUrl": "http://i.imgur.com/h1Dqask.jpg",
+        "face": "/feast/cards/weapons.webp",
+        "back": "/feast/cards/weapons-back.webp",
+        "image": "/feast/cards/weapons.webp"
+      }
+    },
+    "occupationDecks": [
+      {
+        "id": "A-dark",
+        "guid": "fa2877",
+        "deck": "A",
+        "starting": false,
+        "expected": 57,
+        "sheet": 5,
+        "cells": [
+          0,
+          56
+        ],
+        "cards": [
+          {
+            "guid": "fa2877",
+            "cardId": 500,
+            "sheet": 5,
+            "cell": 0
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 501,
+            "sheet": 5,
+            "cell": 1
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 502,
+            "sheet": 5,
+            "cell": 2
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 503,
+            "sheet": 5,
+            "cell": 3
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 504,
+            "sheet": 5,
+            "cell": 4
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 505,
+            "sheet": 5,
+            "cell": 5
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 506,
+            "sheet": 5,
+            "cell": 6
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 507,
+            "sheet": 5,
+            "cell": 7
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 508,
+            "sheet": 5,
+            "cell": 8
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 509,
+            "sheet": 5,
+            "cell": 9
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 510,
+            "sheet": 5,
+            "cell": 10
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 511,
+            "sheet": 5,
+            "cell": 11
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 512,
+            "sheet": 5,
+            "cell": 12
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 513,
+            "sheet": 5,
+            "cell": 13
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 514,
+            "sheet": 5,
+            "cell": 14
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 515,
+            "sheet": 5,
+            "cell": 15
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 516,
+            "sheet": 5,
+            "cell": 16
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 517,
+            "sheet": 5,
+            "cell": 17
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 518,
+            "sheet": 5,
+            "cell": 18
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 519,
+            "sheet": 5,
+            "cell": 19
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 520,
+            "sheet": 5,
+            "cell": 20
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 521,
+            "sheet": 5,
+            "cell": 21
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 522,
+            "sheet": 5,
+            "cell": 22
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 523,
+            "sheet": 5,
+            "cell": 23
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 524,
+            "sheet": 5,
+            "cell": 24
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 525,
+            "sheet": 5,
+            "cell": 25
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 526,
+            "sheet": 5,
+            "cell": 26
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 527,
+            "sheet": 5,
+            "cell": 27
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 528,
+            "sheet": 5,
+            "cell": 28
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 529,
+            "sheet": 5,
+            "cell": 29
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 530,
+            "sheet": 5,
+            "cell": 30
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 531,
+            "sheet": 5,
+            "cell": 31
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 532,
+            "sheet": 5,
+            "cell": 32
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 533,
+            "sheet": 5,
+            "cell": 33
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 534,
+            "sheet": 5,
+            "cell": 34
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 535,
+            "sheet": 5,
+            "cell": 35
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 536,
+            "sheet": 5,
+            "cell": 36
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 537,
+            "sheet": 5,
+            "cell": 37
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 538,
+            "sheet": 5,
+            "cell": 38
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 539,
+            "sheet": 5,
+            "cell": 39
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 540,
+            "sheet": 5,
+            "cell": 40
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 541,
+            "sheet": 5,
+            "cell": 41
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 542,
+            "sheet": 5,
+            "cell": 42
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 543,
+            "sheet": 5,
+            "cell": 43
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 544,
+            "sheet": 5,
+            "cell": 44
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 545,
+            "sheet": 5,
+            "cell": 45
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 546,
+            "sheet": 5,
+            "cell": 46
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 547,
+            "sheet": 5,
+            "cell": 47
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 548,
+            "sheet": 5,
+            "cell": 48
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 549,
+            "sheet": 5,
+            "cell": 49
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 550,
+            "sheet": 5,
+            "cell": 50
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 551,
+            "sheet": 5,
+            "cell": 51
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 552,
+            "sheet": 5,
+            "cell": 52
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 553,
+            "sheet": 5,
+            "cell": 53
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 554,
+            "sheet": 5,
+            "cell": 54
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 555,
+            "sheet": 5,
+            "cell": 55
+          },
+          {
+            "guid": "fa2877",
+            "cardId": 556,
+            "sheet": 5,
+            "cell": 56
+          }
+        ]
+      },
+      {
+        "id": "B-dark",
+        "guid": "8d76cb",
+        "deck": "B",
+        "starting": false,
+        "expected": 44,
+        "sheet": 3,
+        "cells": [
+          0,
+          43
+        ],
+        "cards": [
+          {
+            "guid": "9c7115",
+            "cardId": 300,
+            "sheet": 3,
+            "cell": 0
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 301,
+            "sheet": 3,
+            "cell": 1
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 302,
+            "sheet": 3,
+            "cell": 2
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 303,
+            "sheet": 3,
+            "cell": 3
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 304,
+            "sheet": 3,
+            "cell": 4
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 305,
+            "sheet": 3,
+            "cell": 5
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 306,
+            "sheet": 3,
+            "cell": 6
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 307,
+            "sheet": 3,
+            "cell": 7
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 308,
+            "sheet": 3,
+            "cell": 8
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 309,
+            "sheet": 3,
+            "cell": 9
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 310,
+            "sheet": 3,
+            "cell": 10
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 311,
+            "sheet": 3,
+            "cell": 11
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 312,
+            "sheet": 3,
+            "cell": 12
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 313,
+            "sheet": 3,
+            "cell": 13
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 314,
+            "sheet": 3,
+            "cell": 14
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 315,
+            "sheet": 3,
+            "cell": 15
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 316,
+            "sheet": 3,
+            "cell": 16
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 317,
+            "sheet": 3,
+            "cell": 17
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 318,
+            "sheet": 3,
+            "cell": 18
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 319,
+            "sheet": 3,
+            "cell": 19
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 320,
+            "sheet": 3,
+            "cell": 20
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 321,
+            "sheet": 3,
+            "cell": 21
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 322,
+            "sheet": 3,
+            "cell": 22
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 323,
+            "sheet": 3,
+            "cell": 23
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 324,
+            "sheet": 3,
+            "cell": 24
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 325,
+            "sheet": 3,
+            "cell": 25
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 326,
+            "sheet": 3,
+            "cell": 26
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 327,
+            "sheet": 3,
+            "cell": 27
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 328,
+            "sheet": 3,
+            "cell": 28
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 329,
+            "sheet": 3,
+            "cell": 29
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 330,
+            "sheet": 3,
+            "cell": 30
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 331,
+            "sheet": 3,
+            "cell": 31
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 332,
+            "sheet": 3,
+            "cell": 32
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 333,
+            "sheet": 3,
+            "cell": 33
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 334,
+            "sheet": 3,
+            "cell": 34
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 335,
+            "sheet": 3,
+            "cell": 35
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 336,
+            "sheet": 3,
+            "cell": 36
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 337,
+            "sheet": 3,
+            "cell": 37
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 338,
+            "sheet": 3,
+            "cell": 38
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 339,
+            "sheet": 3,
+            "cell": 39
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 340,
+            "sheet": 3,
+            "cell": 40
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 341,
+            "sheet": 3,
+            "cell": 41
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 342,
+            "sheet": 3,
+            "cell": 42
+          },
+          {
+            "guid": "8d76cb",
+            "cardId": 343,
+            "sheet": 3,
+            "cell": 43
+          }
+        ]
+      },
+      {
+        "id": "C-dark",
+        "guid": "deaab0",
+        "deck": "C",
+        "starting": false,
+        "expected": 44,
+        "sheet": 4,
+        "cells": [
+          0,
+          43
+        ],
+        "cards": [
+          {
+            "guid": "deaab0",
+            "cardId": 400,
+            "sheet": 4,
+            "cell": 0
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 401,
+            "sheet": 4,
+            "cell": 1
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 402,
+            "sheet": 4,
+            "cell": 2
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 403,
+            "sheet": 4,
+            "cell": 3
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 404,
+            "sheet": 4,
+            "cell": 4
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 405,
+            "sheet": 4,
+            "cell": 5
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 406,
+            "sheet": 4,
+            "cell": 6
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 407,
+            "sheet": 4,
+            "cell": 7
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 408,
+            "sheet": 4,
+            "cell": 8
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 409,
+            "sheet": 4,
+            "cell": 9
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 410,
+            "sheet": 4,
+            "cell": 10
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 411,
+            "sheet": 4,
+            "cell": 11
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 412,
+            "sheet": 4,
+            "cell": 12
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 413,
+            "sheet": 4,
+            "cell": 13
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 414,
+            "sheet": 4,
+            "cell": 14
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 415,
+            "sheet": 4,
+            "cell": 15
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 416,
+            "sheet": 4,
+            "cell": 16
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 417,
+            "sheet": 4,
+            "cell": 17
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 418,
+            "sheet": 4,
+            "cell": 18
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 419,
+            "sheet": 4,
+            "cell": 19
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 420,
+            "sheet": 4,
+            "cell": 20
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 421,
+            "sheet": 4,
+            "cell": 21
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 422,
+            "sheet": 4,
+            "cell": 22
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 423,
+            "sheet": 4,
+            "cell": 23
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 424,
+            "sheet": 4,
+            "cell": 24
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 425,
+            "sheet": 4,
+            "cell": 25
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 426,
+            "sheet": 4,
+            "cell": 26
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 427,
+            "sheet": 4,
+            "cell": 27
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 428,
+            "sheet": 4,
+            "cell": 28
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 429,
+            "sheet": 4,
+            "cell": 29
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 430,
+            "sheet": 4,
+            "cell": 30
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 431,
+            "sheet": 4,
+            "cell": 31
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 432,
+            "sheet": 4,
+            "cell": 32
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 433,
+            "sheet": 4,
+            "cell": 33
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 434,
+            "sheet": 4,
+            "cell": 34
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 435,
+            "sheet": 4,
+            "cell": 35
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 436,
+            "sheet": 4,
+            "cell": 36
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 437,
+            "sheet": 4,
+            "cell": 37
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 438,
+            "sheet": 4,
+            "cell": 38
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 439,
+            "sheet": 4,
+            "cell": 39
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 440,
+            "sheet": 4,
+            "cell": 40
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 441,
+            "sheet": 4,
+            "cell": 41
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 442,
+            "sheet": 4,
+            "cell": 42
+          },
+          {
+            "guid": "deaab0",
+            "cardId": 443,
+            "sheet": 4,
+            "cell": 43
+          }
+        ]
+      },
+      {
+        "id": "a-starting",
+        "guid": "8fd527",
+        "deck": "A",
+        "starting": true,
+        "expected": 15,
+        "sheet": 6,
+        "cells": [
+          0,
+          14
+        ],
+        "cards": [
+          {
+            "guid": "8fd527",
+            "cardId": 600,
+            "sheet": 6,
+            "cell": 0
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 601,
+            "sheet": 6,
+            "cell": 1
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 602,
+            "sheet": 6,
+            "cell": 2
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 603,
+            "sheet": 6,
+            "cell": 3
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 604,
+            "sheet": 6,
+            "cell": 4
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 605,
+            "sheet": 6,
+            "cell": 5
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 606,
+            "sheet": 6,
+            "cell": 6
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 607,
+            "sheet": 6,
+            "cell": 7
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 608,
+            "sheet": 6,
+            "cell": 8
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 609,
+            "sheet": 6,
+            "cell": 9
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 610,
+            "sheet": 6,
+            "cell": 10
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 611,
+            "sheet": 6,
+            "cell": 11
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 612,
+            "sheet": 6,
+            "cell": 12
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 613,
+            "sheet": 6,
+            "cell": 13
+          },
+          {
+            "guid": "8fd527",
+            "cardId": 614,
+            "sheet": 6,
+            "cell": 14
+          }
+        ]
+      },
+      {
+        "id": "b-starting",
+        "guid": "114b22",
+        "deck": "B",
+        "starting": true,
+        "expected": 15,
+        "sheet": 6,
+        "cells": [
+          15,
+          29
+        ],
+        "cards": [
+          {
+            "guid": "b6ddff",
+            "cardId": 615,
+            "sheet": 6,
+            "cell": 15
+          },
+          {
+            "guid": "af67f3",
+            "cardId": 616,
+            "sheet": 6,
+            "cell": 16
+          },
+          {
+            "guid": "0d32ef",
+            "cardId": 617,
+            "sheet": 6,
+            "cell": 17
+          },
+          {
+            "guid": "528cc3",
+            "cardId": 618,
+            "sheet": 6,
+            "cell": 18
+          },
+          {
+            "guid": "fd2090",
+            "cardId": 619,
+            "sheet": 6,
+            "cell": 19
+          },
+          {
+            "guid": "ee720d",
+            "cardId": 620,
+            "sheet": 6,
+            "cell": 20
+          },
+          {
+            "guid": "e4bbd1",
+            "cardId": 621,
+            "sheet": 6,
+            "cell": 21
+          },
+          {
+            "guid": "c6d8df",
+            "cardId": 622,
+            "sheet": 6,
+            "cell": 22
+          },
+          {
+            "guid": "ac414d",
+            "cardId": 623,
+            "sheet": 6,
+            "cell": 23
+          },
+          {
+            "guid": "91c862",
+            "cardId": 624,
+            "sheet": 6,
+            "cell": 24
+          },
+          {
+            "guid": "c7ca02",
+            "cardId": 625,
+            "sheet": 6,
+            "cell": 25
+          },
+          {
+            "guid": "e18628",
+            "cardId": 626,
+            "sheet": 6,
+            "cell": 26
+          },
+          {
+            "guid": "037808",
+            "cardId": 627,
+            "sheet": 6,
+            "cell": 27
+          },
+          {
+            "guid": "4cb866",
+            "cardId": 628,
+            "sheet": 6,
+            "cell": 28
+          },
+          {
+            "guid": "32b459",
+            "cardId": 629,
+            "sheet": 6,
+            "cell": 29
+          }
+        ]
+      },
+      {
+        "id": "c-starting",
+        "guid": "aa2575",
+        "deck": "C",
+        "starting": true,
+        "expected": 15,
+        "sheet": 6,
+        "cells": [
+          30,
+          44
+        ],
+        "cards": [
+          {
+            "guid": "a44024",
+            "cardId": 630,
+            "sheet": 6,
+            "cell": 30
+          },
+          {
+            "guid": "8ac28b",
+            "cardId": 631,
+            "sheet": 6,
+            "cell": 31
+          },
+          {
+            "guid": "101639",
+            "cardId": 632,
+            "sheet": 6,
+            "cell": 32
+          },
+          {
+            "guid": "c0478c",
+            "cardId": 633,
+            "sheet": 6,
+            "cell": 33
+          },
+          {
+            "guid": "ab41c6",
+            "cardId": 634,
+            "sheet": 6,
+            "cell": 34
+          },
+          {
+            "guid": "da27b2",
+            "cardId": 635,
+            "sheet": 6,
+            "cell": 35
+          },
+          {
+            "guid": "221649",
+            "cardId": 636,
+            "sheet": 6,
+            "cell": 36
+          },
+          {
+            "guid": "8f3a92",
+            "cardId": 637,
+            "sheet": 6,
+            "cell": 37
+          },
+          {
+            "guid": "cb3a8a",
+            "cardId": 638,
+            "sheet": 6,
+            "cell": 38
+          },
+          {
+            "guid": "2560a6",
+            "cardId": 639,
+            "sheet": 6,
+            "cell": 39
+          },
+          {
+            "guid": "6deecd",
+            "cardId": 640,
+            "sheet": 6,
+            "cell": 40
+          },
+          {
+            "guid": "5da883",
+            "cardId": 641,
+            "sheet": 6,
+            "cell": 41
+          },
+          {
+            "guid": "a1b4a6",
+            "cardId": 642,
+            "sheet": 6,
+            "cell": 42
+          },
+          {
+            "guid": "9269b3",
+            "cardId": 643,
+            "sheet": 6,
+            "cell": 43
+          },
+          {
+            "guid": "70ce17",
+            "cardId": 644,
+            "sheet": 6,
+            "cell": 44
+          }
+        ]
+      }
+    ],
+    "weapons": [
+      {
+        "id": "bow",
+        "guid": "e37910",
+        "sheet": 2,
+        "cell": 0,
+        "count": 12,
+        "guids": [
+          "53c037",
+          "077ffc",
+          "53c037",
+          "53c037",
+          "53c037",
+          "53c037",
+          "53c037",
+          "53c037",
+          "53c037",
+          "53c037",
+          "53c037",
+          "77e1a0"
+        ]
+      },
+      {
+        "id": "spear",
+        "guid": "b5a15d",
+        "sheet": 2,
+        "cell": 1,
+        "count": 12,
+        "guids": [
+          "f58684",
+          "3254fb",
+          "f58684",
+          "f58684",
+          "f58684",
+          "f58684",
+          "f58684",
+          "f58684",
+          "f58684",
+          "f58684",
+          "f58684",
+          "884cc3"
+        ]
+      },
+      {
+        "id": "long-sword",
+        "guid": "e65482",
+        "sheet": 2,
+        "cell": 2,
+        "count": 11,
+        "guids": [
+          "c6ffb8",
+          "887223",
+          "3594a3",
+          "c6ffb8",
+          "02948e",
+          "c6ffb8",
+          "c6ffb8",
+          "2aa578",
+          "c6ffb8",
+          "07f12b",
+          "c6ffb8"
+        ]
+      },
+      {
+        "id": "snare",
+        "guid": "397e8e",
+        "sheet": 2,
+        "cell": 3,
+        "count": 12,
+        "guids": [
+          "f7f934",
+          "5d0b4a",
+          "9a68c4",
+          "f7f934",
+          "536fbe",
+          "f7f934",
+          "f7f934",
+          "e6d72f",
+          "f7f934",
+          "a6631c",
+          "f7f934",
+          "9e583e"
+        ]
+      }
+    ]
+  },
+  "roundOverview": {
+    "guid": "c89f80",
+    "image": "/feast/round-overview.webp",
+    "back": "/feast/round-overview-back.webp",
+    "sourceUrl": "http://i.imgur.com/N8RwZC6.jpg"
+  },
+  "supplyBoards": {
+    "specials": {
+      "guid": "9c35fb",
+      "front": "/feast/special-display.webp",
+      "back": "/feast/special-display-back.webp"
+    },
+    "ships": {
+      "guid": "8cabca",
+      "front": "/feast/ship-display.webp",
+      "back": "/feast/ship-display-back.webp"
+    }
+  },
+  "box": {
+    "guid": "e2d3ea",
+    "image": "/feast/box.webp",
+    "sourceUrl": "http://i.imgur.com/IFn0ztg.png"
+  },
+  "logo": "/feast/logo.webp",
+  "models": {
+    "viking": {
+      "model": "/feast/models/viking.obj",
+      "sourceUrl": "http://pastebin.com/raw/RVyMnb3k",
+      "material": "tts-tinted",
+      "tints": {
+        "purple": [
+          0.627,
+          0.124998,
+          0.941
+        ],
+        "green": [
+          0.191998,
+          0.701,
+          0.167998
+        ],
+        "red": [
+          0.856,
+          0.099998,
+          0.093998
+        ],
+        "blue": [
+          0,
+          0.38967,
+          0.837071
+        ],
+        "solo": [
+          0.249998,
+          0.249998,
+          0.249998
+        ]
+      }
+    },
+    "ore": {
+      "model": "/feast/models/ore.obj",
+      "texture": "/feast/resources/ore.webp",
+      "sourceUrl": "http://pastebin.com/raw/ZhDtc3AY"
+    },
+    "firstPlayer": {
+      "model": "/feast/models/first-player-moose.obj",
+      "sourceUrl": "http://pastebin.com/raw/6iw2han0"
+    }
+  },
+  "actionSpaces": [
+    {
+      "id": "build-shed",
+      "order": 1,
+      "name": "Build a Shed",
+      "group": "Build Houses",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 365,
+        "width": 500,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.073,
+        "width": 0.2,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "build-stone-house",
+      "order": 2,
+      "name": "Build a Stone House",
+      "group": "Build Houses",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 365,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.073,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "build-long-house",
+      "order": 3,
+      "name": "Build a Long House",
+      "group": "Build Houses",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 365,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.073,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "build-house-and-ship",
+      "order": 4,
+      "name": "Build a House and Ship",
+      "group": "Build Houses",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 360,
+        "width": 565,
+        "height": 430
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.072,
+        "width": 0.226,
+        "height": 0.086
+      }
+    },
+    {
+      "id": "build-whaling-boat",
+      "order": 5,
+      "name": "Build a Whaling Boat",
+      "group": "Build Ships",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 580,
+        "width": 500,
+        "height": 160
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.116,
+        "width": 0.2,
+        "height": 0.032
+      }
+    },
+    {
+      "id": "build-knarr",
+      "order": 6,
+      "name": "Build a Knarr",
+      "group": "Build Ships",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 580,
+        "width": 510,
+        "height": 160
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.116,
+        "width": 0.204,
+        "height": 0.032
+      }
+    },
+    {
+      "id": "build-longship",
+      "order": 7,
+      "name": "Build a Longship",
+      "group": "Build Ships",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 580,
+        "width": 510,
+        "height": 160
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.116,
+        "width": 0.204,
+        "height": 0.032
+      }
+    },
+    {
+      "id": "hunt-game-1",
+      "order": 8,
+      "name": "Hunting Game",
+      "group": "Hunting",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 785,
+        "width": 500,
+        "height": 200
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.157,
+        "width": 0.2,
+        "height": 0.04
+      }
+    },
+    {
+      "id": "take-stockfish",
+      "order": 9,
+      "name": "Take 1 Stockfish",
+      "group": "Hunting",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 1010,
+        "width": 500,
+        "height": 135
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.202,
+        "width": 0.2,
+        "height": 0.027
+      }
+    },
+    {
+      "id": "hunt-game-2",
+      "order": 10,
+      "name": "Hunting Game",
+      "group": "Hunting",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 785,
+        "width": 510,
+        "height": 200
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.157,
+        "width": 0.204,
+        "height": 0.04
+      }
+    },
+    {
+      "id": "lay-snare",
+      "order": 11,
+      "name": "Laying a Snare",
+      "group": "Hunting",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 1010,
+        "width": 510,
+        "height": 210
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.202,
+        "width": 0.204,
+        "height": 0.042
+      }
+    },
+    {
+      "id": "whaling-major",
+      "order": 12,
+      "name": "Whaling (1-3 Boats)",
+      "group": "Hunting",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 785,
+        "width": 510,
+        "height": 425
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.157,
+        "width": 0.204,
+        "height": 0.085
+      }
+    },
+    {
+      "id": "whaling-minor",
+      "order": 13,
+      "name": "Whaling (1 Boat)",
+      "group": "Hunting",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 785,
+        "width": 565,
+        "height": 425
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.157,
+        "width": 0.226,
+        "height": 0.085
+      }
+    },
+    {
+      "id": "buy-stockfish",
+      "order": 14,
+      "name": "Buy 2 Stockfish",
+      "group": "Livestock Market",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 1250,
+        "width": 500,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "buy-salt-meat",
+      "order": 15,
+      "name": "Buy 2 Salt Meat",
+      "group": "Livestock Market",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 1420,
+        "width": 500,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.284,
+        "width": 0.2,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "buy-sheep",
+      "order": 16,
+      "name": "Buy a Sheep",
+      "group": "Livestock Market",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 1250,
+        "width": 510,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.25,
+        "width": 0.204,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "buy-cattle-milk",
+      "order": 17,
+      "name": "Buy Cattle and Milk",
+      "group": "Livestock Market",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 1420,
+        "width": 510,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.284,
+        "width": 0.204,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "livestock-choice",
+      "order": 18,
+      "name": "Sheep or Cattle",
+      "group": "Livestock Market",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 1245,
+        "width": 510,
+        "height": 325
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.249,
+        "width": 0.204,
+        "height": 0.065
+      }
+    },
+    {
+      "id": "buy-cattle-sheep",
+      "order": 19,
+      "name": "Buy Cattle and Sheep",
+      "group": "Livestock Market",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 1245,
+        "width": 565,
+        "height": 325
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.249,
+        "width": 0.226,
+        "height": 0.065
+      }
+    },
+    {
+      "id": "weekly-beans",
+      "order": 20,
+      "name": "Beans and Silver",
+      "group": "Weekly Market",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 1610,
+        "width": 500,
+        "height": 155
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.322,
+        "width": 0.2,
+        "height": 0.031
+      }
+    },
+    {
+      "id": "weekly-flax-stockfish",
+      "order": 21,
+      "name": "Flax, Stockfish, and Silver",
+      "group": "Weekly Market",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 1610,
+        "width": 510,
+        "height": 155
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.322,
+        "width": 0.204,
+        "height": 0.031
+      }
+    },
+    {
+      "id": "weekly-feast",
+      "order": 22,
+      "name": "Fruit, Oil, Salt Meat, and Silver",
+      "group": "Weekly Market",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 1610,
+        "width": 510,
+        "height": 155
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.322,
+        "width": 0.204,
+        "height": 0.031
+      }
+    },
+    {
+      "id": "weekly-livestock",
+      "order": 23,
+      "name": "Spices and Livestock Produce",
+      "group": "Weekly Market",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 1600,
+        "width": 565,
+        "height": 350
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.32,
+        "width": 0.226,
+        "height": 0.07
+      }
+    },
+    {
+      "id": "produce-milk",
+      "order": 24,
+      "name": "Produce Milk",
+      "group": "Products",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 1790,
+        "width": 500,
+        "height": 175
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.358,
+        "width": 0.2,
+        "height": 0.035
+      }
+    },
+    {
+      "id": "produce-mead",
+      "order": 25,
+      "name": "Mead and Silver",
+      "group": "Products",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 1790,
+        "width": 510,
+        "height": 175
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.358,
+        "width": 0.204,
+        "height": 0.035
+      }
+    },
+    {
+      "id": "produce-wool",
+      "order": 26,
+      "name": "Produce Wool",
+      "group": "Products",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 1790,
+        "width": 510,
+        "height": 175
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.358,
+        "width": 0.204,
+        "height": 0.035
+      }
+    },
+    {
+      "id": "craft-linen",
+      "order": 27,
+      "name": "Craft Linen",
+      "group": "Crafting",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 2010,
+        "width": 500,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.402,
+        "width": 0.2,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "craft-rune-stone",
+      "order": 28,
+      "name": "Craft Rune Stone",
+      "group": "Crafting",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 2190,
+        "width": 500,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.438,
+        "width": 0.2,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "craft-clothing",
+      "order": 29,
+      "name": "Craft Clothing",
+      "group": "Crafting",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 2010,
+        "width": 510,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.402,
+        "width": 0.204,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "craft-chest",
+      "order": 30,
+      "name": "Craft a Chest",
+      "group": "Crafting",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 2190,
+        "width": 510,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.438,
+        "width": 0.204,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "forge",
+      "order": 31,
+      "name": "Forge a Special Tile or Jewelry",
+      "group": "Crafting",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 2010,
+        "width": 510,
+        "height": 150
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.402,
+        "width": 0.204,
+        "height": 0.03
+      }
+    },
+    {
+      "id": "craft-runes-and-chests",
+      "order": 32,
+      "name": "Craft 2 Rune Stones and 2 Chests",
+      "group": "Crafting",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 2190,
+        "width": 510,
+        "height": 165
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.438,
+        "width": 0.204,
+        "height": 0.033
+      }
+    },
+    {
+      "id": "master-crafting",
+      "order": 33,
+      "name": "Master Crafting",
+      "group": "Crafting",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 2000,
+        "width": 565,
+        "height": 360
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.4,
+        "width": 0.226,
+        "height": 0.072
+      }
+    },
+    {
+      "id": "mountain-2",
+      "order": 34,
+      "name": "Take up to 2 Mountain Items",
+      "group": "Mountains and Trade",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 2410,
+        "width": 500,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.482,
+        "width": 0.2,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "mountain-1-upgrade-1",
+      "order": 35,
+      "name": "Take 1 Mountain Item and Upgrade 1 Good",
+      "group": "Mountains and Trade",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 2610,
+        "width": 500,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.522,
+        "width": 0.2,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "upgrade-2",
+      "order": 36,
+      "name": "Upgrade up to 2 Goods",
+      "group": "Mountains and Trade",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 2820,
+        "width": 500,
+        "height": 140
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.564,
+        "width": 0.2,
+        "height": 0.028
+      }
+    },
+    {
+      "id": "wood-per-player",
+      "order": 37,
+      "name": "Wood per Player and 1 Ore",
+      "group": "Mountains and Trade",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 2410,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.482,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "mountain-3-upgrade-1",
+      "order": 38,
+      "name": "Take 3 Mountain Items and Upgrade 1 Good",
+      "group": "Mountains and Trade",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 2610,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.522,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "upgrade-3",
+      "order": 39,
+      "name": "Upgrade up to 3 Goods",
+      "group": "Mountains and Trade",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 2820,
+        "width": 510,
+        "height": 140
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.564,
+        "width": 0.204,
+        "height": 0.028
+      }
+    },
+    {
+      "id": "mountain-3-plus-2",
+      "order": 40,
+      "name": "Take 3 + 2 Mountain Items",
+      "group": "Mountains and Trade",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 2410,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.482,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "upgrade-3-weapons-4",
+      "order": 41,
+      "name": "Upgrade 3 Goods and Draw 4 Weapons",
+      "group": "Mountains and Trade",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 2610,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.522,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "upgrade-4",
+      "order": 42,
+      "name": "Upgrade up to 4 Goods",
+      "group": "Mountains and Trade",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 2820,
+        "width": 510,
+        "height": 140
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.564,
+        "width": 0.204,
+        "height": 0.028
+      }
+    },
+    {
+      "id": "mountain-4-double-2",
+      "order": 43,
+      "name": "Take 4 Mountain Items and Double-Upgrade 2 Goods",
+      "group": "Mountains and Trade",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 2390,
+        "width": 565,
+        "height": 380
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.478,
+        "width": 0.226,
+        "height": 0.076
+      }
+    },
+    {
+      "id": "mountain-2x4-or-double-3",
+      "order": 44,
+      "name": "Take 2 from up to 4 Strips or Double-Upgrade 3 Goods",
+      "group": "Mountains and Trade",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 2800,
+        "width": 565,
+        "height": 445
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.56,
+        "width": 0.226,
+        "height": 0.089
+      }
+    },
+    {
+      "id": "overseas-trade-1",
+      "order": 45,
+      "name": "Overseas Trading",
+      "group": "Sailing",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 3260,
+        "width": 500,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.652,
+        "width": 0.2,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "overseas-trade-2",
+      "order": 46,
+      "name": "Overseas Trading",
+      "group": "Sailing",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 3260,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.652,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "special-sale",
+      "order": 47,
+      "name": "Special Sale",
+      "group": "Sailing",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 3260,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.652,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "raid",
+      "order": 48,
+      "name": "Raiding",
+      "group": "Raiding, Pillaging, and Plundering",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 3490,
+        "width": 500,
+        "height": 205
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.698,
+        "width": 0.2,
+        "height": 0.041
+      }
+    },
+    {
+      "id": "pillage-2",
+      "order": 49,
+      "name": "Pillaging",
+      "group": "Raiding, Pillaging, and Plundering",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 3490,
+        "width": 510,
+        "height": 205
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.698,
+        "width": 0.204,
+        "height": 0.041
+      }
+    },
+    {
+      "id": "pillage-3",
+      "order": 50,
+      "name": "Pillaging",
+      "group": "Raiding, Pillaging, and Plundering",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 3490,
+        "width": 510,
+        "height": 205
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.698,
+        "width": 0.204,
+        "height": 0.041
+      }
+    },
+    {
+      "id": "plunder",
+      "order": 51,
+      "name": "Plundering",
+      "group": "Raiding, Pillaging, and Plundering",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 3475,
+        "width": 565,
+        "height": 410
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.695,
+        "width": 0.226,
+        "height": 0.082
+      }
+    },
+    {
+      "id": "explore-short",
+      "order": 52,
+      "name": "Explore Shetland or Faroe Islands",
+      "group": "Exploration",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 3740,
+        "width": 500,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.748,
+        "width": 0.2,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "explore-medium",
+      "order": 53,
+      "name": "Explore Iceland, Greenland, or Bear Island",
+      "group": "Exploration",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 3740,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.748,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "explore-long",
+      "order": 54,
+      "name": "Explore Baffin Island, Labrador, or Newfoundland",
+      "group": "Exploration",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 3740,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.748,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "draw-occupation",
+      "order": 55,
+      "name": "Draw an Occupation and Take 1 Silver",
+      "group": "Emigration and Occupation",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 4030,
+        "width": 500,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.806,
+        "width": 0.2,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "play-occupation-paid",
+      "order": 56,
+      "name": "Play 1 Occupation for Stone or Ore",
+      "group": "Emigration and Occupation",
+      "column": 1,
+      "workers": 1,
+      "artBoundsPx": {
+        "x": 335,
+        "y": 4230,
+        "width": 500,
+        "height": 180
+      },
+      "artBounds": {
+        "x": 0.134,
+        "y": 0.846,
+        "width": 0.2,
+        "height": 0.036
+      }
+    },
+    {
+      "id": "emigrate-2",
+      "order": 57,
+      "name": "Emigrate",
+      "group": "Emigration and Occupation",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 4030,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.806,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "play-occupations-2",
+      "order": 58,
+      "name": "Play up to 2 Occupations",
+      "group": "Emigration and Occupation",
+      "column": 2,
+      "workers": 2,
+      "artBoundsPx": {
+        "x": 860,
+        "y": 4230,
+        "width": 510,
+        "height": 180
+      },
+      "artBounds": {
+        "x": 0.344,
+        "y": 0.846,
+        "width": 0.204,
+        "height": 0.036
+      }
+    },
+    {
+      "id": "emigrate-3",
+      "order": 59,
+      "name": "Emigrate",
+      "group": "Emigration and Occupation",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 4030,
+        "width": 510,
+        "height": 170
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.806,
+        "width": 0.204,
+        "height": 0.034
+      }
+    },
+    {
+      "id": "play-occupations-4",
+      "order": 60,
+      "name": "Play up to 4 Occupations",
+      "group": "Emigration and Occupation",
+      "column": 3,
+      "workers": 3,
+      "artBoundsPx": {
+        "x": 1390,
+        "y": 4230,
+        "width": 510,
+        "height": 180
+      },
+      "artBounds": {
+        "x": 0.556,
+        "y": 0.846,
+        "width": 0.204,
+        "height": 0.036
+      }
+    },
+    {
+      "id": "upgrade-boat-and-emigrate",
+      "order": 61,
+      "name": "Upgrade a Whaling Boat and Emigrate",
+      "group": "Emigration and Occupation",
+      "column": 4,
+      "workers": 4,
+      "artBoundsPx": {
+        "x": 1915,
+        "y": 4020,
+        "width": 565,
+        "height": 390
+      },
+      "artBounds": {
+        "x": 0.766,
+        "y": 0.804,
+        "width": 0.226,
+        "height": 0.078
+      }
+    }
+  ],
+  "rules": {
+    "rulebook": "/feast/rulebook.pdf",
+    "appendix": "/feast/appendix.pdf"
+  }
+}

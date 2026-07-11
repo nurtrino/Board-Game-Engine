@@ -62,6 +62,11 @@ const GAMES = [
     name: 'Bloodborne: The Board Game',
     logo: '/bloodborne/box.webp',
   },
+  {
+    id: 'seti',
+    name: 'SETI: Search for Extraterrestrial Intelligence',
+    logo: '/seti/box.webp',
+  },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
     name: 'Axis & Allies Anniversary',
@@ -185,6 +190,20 @@ const FEAST_OPTION_DEFS = [
   ] },
 ] as const;
 
+const SETI_OPTION_DEFS = [
+  { key: 'soloDifficulty', label: 'SOLO RIVAL', values: [
+    { v: 3, label: 'STANDARD · 3' },
+    { v: 1, label: 'LEVEL 1' },
+    { v: 2, label: 'LEVEL 2' },
+    { v: 4, label: 'LEVEL 4' },
+    { v: 5, label: 'LEVEL 5' },
+  ] },
+  { key: 'promoCards', label: 'PROMO PROJECTS', values: [
+    { v: false, label: 'BASE 138' },
+    { v: true, label: 'ADD 2 PROMOS' },
+  ] },
+] as const;
+
 const dateOf = (t: number) =>
   new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
@@ -221,6 +240,8 @@ export function SelectGame() {
         ? { length: 'long', occupationMode: 'A', soloStartingOccupation: 'random', ...options }
       : game.id === 'bloodborne'
         ? { campaign: 'the-long-hunt', chapter: 1, partySize: 4, ...options }
+      : game.id === 'seti'
+        ? { soloDifficulty: 3, promoCards: false, ...options }
       : undefined;
     socket.send({ type: 'create_room', name: name.trim(), game: game.id, options: opts });
   };
@@ -399,6 +420,32 @@ export function SelectGame() {
                   <span className="dim">COMPLETE ORIGINAL BASE GAME · 1-4 PLAYERS · SOLO INCLUDED</span>
                 </div>
                 {FEAST_OPTION_DEFS.map((def) => {
+                  const current = options[def.key] ?? def.values[0].v;
+                  return (
+                    <div key={def.key} className="create-option">
+                      <span className="create-option-label">{def.label}</span>
+                      <div className="create-option-values">
+                        {def.values.map((val) => (
+                          <button
+                            key={String(val.v)}
+                            className={current === val.v ? 'opt on' : 'opt'}
+                            onClick={() => setOptions((state) => ({ ...state, [def.key]: val.v }))}
+                          >{val.label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {game.id === 'seti' && (
+              <div className="create-options">
+                <div className="create-option">
+                  <span className="create-option-label">CORE GAME · 1–4 AGENCIES</span>
+                  <span className="dim">ONE AGENCY USES THE OFFICIAL SOLO RIVAL</span>
+                </div>
+                {SETI_OPTION_DEFS.map((def) => {
                   const current = options[def.key] ?? def.values[0].v;
                   return (
                     <div key={def.key} className="create-option">

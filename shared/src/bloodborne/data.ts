@@ -201,6 +201,12 @@ export interface BbMissionDef {
   goalText: string | null;
   onReveal?: BbMissionEffect[];
   goal?: BbMissionGoal;
+  /** Setup-only physical tiles placed before the chapter tile deck is built. */
+  prePlace?: {
+    chain?: string[];
+    attach?: { tile: string; to: string }[];
+    specialRuleCard?: string;
+  };
 }
 
 // ---------- exports ----------

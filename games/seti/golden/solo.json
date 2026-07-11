@@ -1,0 +1,1438 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "workshopId": "3415673254",
+    "backupBagGuid": "382b8f",
+    "liveBoardBagGuid": "52427b"
+  },
+  "counts": {
+    "rivalBoards": 4,
+    "objectives": 24,
+    "rivalActions": 19
+  },
+  "rivalBoards": [
+    {
+      "id": "difficulty-1-2",
+      "difficulty": [
+        1,
+        2
+      ],
+      "guid": "0c60ec",
+      "image": "/seti/solo/rival-board-1-2.webp",
+      "imagePx": [
+        3536,
+        1147
+      ],
+      "sourceImagePx": [
+        3536,
+        1147
+      ],
+      "tts": {
+        "pos": [
+          45.296364,
+          3.144585,
+          1.603569
+        ],
+        "rot": [
+          359.9879,
+          89.995995,
+          356.800079
+        ],
+        "scale": [
+          1.761139,
+          1,
+          1.761139
+        ]
+      }
+    },
+    {
+      "id": "difficulty-3",
+      "difficulty": [
+        3
+      ],
+      "guid": "0bf791",
+      "image": "/seti/solo/rival-board-3.webp",
+      "imagePx": [
+        3536,
+        1147
+      ],
+      "sourceImagePx": [
+        3536,
+        1147
+      ],
+      "tts": {
+        "pos": [
+          45.800568,
+          3.134254,
+          0.905583
+        ],
+        "rot": [
+          0.216517,
+          89.99752,
+          0.094674
+        ],
+        "scale": [
+          1.761139,
+          1,
+          1.761139
+        ]
+      }
+    },
+    {
+      "id": "difficulty-4",
+      "difficulty": [
+        4
+      ],
+      "guid": "a91219",
+      "image": "/seti/solo/rival-board-4.webp",
+      "imagePx": [
+        3515,
+        1144
+      ],
+      "sourceImagePx": [
+        3515,
+        1144
+      ],
+      "tts": {
+        "pos": [
+          45.49613,
+          3.122268,
+          -0.508387
+        ],
+        "rot": [
+          0.04206,
+          89.96991,
+          359.95517
+        ],
+        "scale": [
+          1.761139,
+          1,
+          1.761139
+        ]
+      }
+    },
+    {
+      "id": "difficulty-5",
+      "difficulty": [
+        5
+      ],
+      "guid": "54dd1c",
+      "image": "/seti/solo/rival-board-5.webp",
+      "imagePx": [
+        3518,
+        1146
+      ],
+      "sourceImagePx": [
+        3518,
+        1146
+      ],
+      "tts": {
+        "pos": [
+          45.950905,
+          3.12497,
+          -0.955823
+        ],
+        "rot": [
+          -0.000054,
+          89.997826,
+          359.7558
+        ],
+        "scale": [
+          1.761139,
+          1,
+          1.761139
+        ]
+      }
+    }
+  ],
+  "rivalActions": [
+    {
+      "id": "rival-action-42500",
+      "guid": "1c87b4",
+      "group": "S1",
+      "sourceBagGuid": "104c3e",
+      "sourceDeckGuid": "9a9505",
+      "cardId": 42500,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 0,
+        "column": 0,
+        "row": 0,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42501",
+      "guid": "2d6337",
+      "group": "S1",
+      "sourceBagGuid": "104c3e",
+      "sourceDeckGuid": "9a9505",
+      "cardId": 42501,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 1,
+        "column": 1,
+        "row": 0,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42502",
+      "guid": "ecb5ee",
+      "group": "S1",
+      "sourceBagGuid": "104c3e",
+      "sourceDeckGuid": "9a9505",
+      "cardId": 42502,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 2,
+        "column": 2,
+        "row": 0,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42503",
+      "guid": "6cf391",
+      "group": "S1",
+      "sourceBagGuid": "104c3e",
+      "sourceDeckGuid": "9a9505",
+      "cardId": 42503,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 3,
+        "column": 3,
+        "row": 0,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42504",
+      "guid": "766542",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42504,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 4,
+        "column": 4,
+        "row": 0,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42505",
+      "guid": "81e3fe",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42505,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 5,
+        "column": 0,
+        "row": 1,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42506",
+      "guid": "ffa93a",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42506,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 6,
+        "column": 1,
+        "row": 1,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42507",
+      "guid": "414259",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42507,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 7,
+        "column": 2,
+        "row": 1,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42508",
+      "guid": "2080ca",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42508,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 8,
+        "column": 3,
+        "row": 1,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42509",
+      "guid": "406f53",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42509,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 9,
+        "column": 4,
+        "row": 1,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42510",
+      "guid": "c2cfe7",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42510,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 10,
+        "column": 0,
+        "row": 2,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42511",
+      "guid": "9aabd5",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42511,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 11,
+        "column": 1,
+        "row": 2,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42512",
+      "guid": "3541b9",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42512,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 12,
+        "column": 2,
+        "row": 2,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42513",
+      "guid": "c9fae8",
+      "group": "S5",
+      "sourceBagGuid": "ae7448",
+      "sourceDeckGuid": "ae85e8",
+      "cardId": 42513,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 13,
+        "column": 3,
+        "row": 2,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42514",
+      "guid": "9975ec",
+      "group": "Rival Alien Cards",
+      "sourceBagGuid": "f7efbc",
+      "sourceDeckGuid": "fd09a8",
+      "cardId": 42514,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 14,
+        "column": 4,
+        "row": 2,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42515",
+      "guid": "3e49ed",
+      "group": "Rival Alien Cards",
+      "sourceBagGuid": "f7efbc",
+      "sourceDeckGuid": "fd09a8",
+      "cardId": 42515,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 15,
+        "column": 0,
+        "row": 3,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42516",
+      "guid": "5116c5",
+      "group": "Rival Alien Cards",
+      "sourceBagGuid": "f7efbc",
+      "sourceDeckGuid": "fd09a8",
+      "cardId": 42516,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 16,
+        "column": 1,
+        "row": 3,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42517",
+      "guid": "1eec4c",
+      "group": "Rival Alien Cards",
+      "sourceBagGuid": "f7efbc",
+      "sourceDeckGuid": "fd09a8",
+      "cardId": 42517,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 17,
+        "column": 2,
+        "row": 3,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    },
+    {
+      "id": "rival-action-42518",
+      "guid": "0e95c1",
+      "group": "Rival Alien Cards",
+      "sourceBagGuid": "f7efbc",
+      "sourceDeckGuid": "fd09a8",
+      "cardId": 42518,
+      "deckId": 425,
+      "sheetKey": "solo-rival:425",
+      "sheet": "/seti/solo/rival-actions.webp",
+      "cell": {
+        "index": 18,
+        "column": 3,
+        "row": 3,
+        "columns": 5,
+        "rows": 4,
+        "zeroBased": true
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "id": "objective-1-01",
+      "tier": 1,
+      "sourceIndex": 0,
+      "guid": "fb4473",
+      "face": "/seti/solo/objective-1-01.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj1_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610099271/CA911E44A79E0B03C1704194B0750E009F663E35/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          30.751019,
+          2.018211,
+          -22.859163
+        ],
+        "rot": [
+          0.290476,
+          179.954788,
+          359.884064
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-1-02",
+      "tier": 1,
+      "sourceIndex": 1,
+      "guid": "fc64a9",
+      "face": "/seti/solo/objective-1-02.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj1_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610099271/CA911E44A79E0B03C1704194B0750E009F663E35/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          31.07802,
+          2.021872,
+          -23.001324
+        ],
+        "rot": [
+          0,
+          180,
+          0.15651
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-1-03",
+      "tier": 1,
+      "sourceIndex": 2,
+      "guid": "33cf54",
+      "face": "/seti/solo/objective-1-03.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj1_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610099271/CA911E44A79E0B03C1704194B0750E009F663E35/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          31.026962,
+          2.021806,
+          -22.950663
+        ],
+        "rot": [
+          0,
+          180,
+          0.157423
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-1-04",
+      "tier": 1,
+      "sourceIndex": 3,
+      "guid": "e7119e",
+      "face": "/seti/solo/objective-1-04.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj1_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610099271/CA911E44A79E0B03C1704194B0750E009F663E35/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          30.858927,
+          2.02219,
+          -22.753918
+        ],
+        "rot": [
+          0.000006,
+          179.999771,
+          1.003698
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-01",
+      "tier": 2,
+      "sourceIndex": 0,
+      "guid": "b9d855",
+      "face": "/seti/solo/objective-2-01.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.433247,
+          2.015521,
+          -22.241995
+        ],
+        "rot": [
+          359.831726,
+          179.9679,
+          359.9088
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-02",
+      "tier": 2,
+      "sourceIndex": 1,
+      "guid": "7d01f3",
+      "face": "/seti/solo/objective-2-02.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.74821,
+          2.015028,
+          -22.223059
+        ],
+        "rot": [
+          359.791656,
+          180.0358,
+          0.14602
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-03",
+      "tier": 2,
+      "sourceIndex": 2,
+      "guid": "a762a5",
+      "face": "/seti/solo/objective-2-03.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.573994,
+          2.015793,
+          -22.324148
+        ],
+        "rot": [
+          359.8461,
+          179.986343,
+          359.939545
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-04",
+      "tier": 2,
+      "sourceIndex": 3,
+      "guid": "99382a",
+      "face": "/seti/solo/objective-2-04.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.56156,
+          2.049228,
+          -22.521772
+        ],
+        "rot": [
+          0.000001,
+          180,
+          4.711043
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-05",
+      "tier": 2,
+      "sourceIndex": 4,
+      "guid": "86b80e",
+      "face": "/seti/solo/objective-2-05.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.620674,
+          2.016152,
+          -22.434961
+        ],
+        "rot": [
+          0.022177,
+          180.005478,
+          0.00215
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-06",
+      "tier": 2,
+      "sourceIndex": 5,
+      "guid": "d9cd41",
+      "face": "/seti/solo/objective-2-06.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.629627,
+          2.016176,
+          -22.349587
+        ],
+        "rot": [
+          359.918427,
+          179.995,
+          0.026686
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-07",
+      "tier": 2,
+      "sourceIndex": 6,
+      "guid": "784c54",
+      "face": "/seti/solo/objective-2-07.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.608597,
+          2.016391,
+          -22.416624
+        ],
+        "rot": [
+          0.019043,
+          180.001709,
+          359.981
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-08",
+      "tier": 2,
+      "sourceIndex": 7,
+      "guid": "64fab9",
+      "face": "/seti/solo/objective-2-08.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.588543,
+          2.017318,
+          -22.487217
+        ],
+        "rot": [
+          0.014129,
+          179.99968,
+          0.089884
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-09",
+      "tier": 2,
+      "sourceIndex": 8,
+      "guid": "d6d957",
+      "face": "/seti/solo/objective-2-09.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.50982,
+          2.01619,
+          -22.327316
+        ],
+        "rot": [
+          359.869263,
+          180.0415,
+          359.946655
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-10",
+      "tier": 2,
+      "sourceIndex": 9,
+      "guid": "bb16b6",
+      "face": "/seti/solo/objective-2-10.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.75313,
+          2.016293,
+          -22.339743
+        ],
+        "rot": [
+          359.972534,
+          180.001892,
+          0.617572
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-2-11",
+      "tier": 2,
+      "sourceIndex": 10,
+      "guid": "3d4c6d",
+      "face": "/seti/solo/objective-2-11.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj2_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610106460/37B086D089DB3BE1BA2386F82B69D6671CCF62E5/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          33.5751,
+          2.016169,
+          -22.359392
+        ],
+        "rot": [
+          359.924561,
+          179.990082,
+          359.948547
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-01",
+      "tier": 3,
+      "sourceIndex": 0,
+      "guid": "11e725",
+      "face": "/seti/solo/objective-3-01.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          34.363705,
+          2.129597,
+          -21.62515
+        ],
+        "rot": [
+          2.743137,
+          180.4686,
+          10.014325
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-02",
+      "tier": 3,
+      "sourceIndex": 1,
+      "guid": "df4e8a",
+      "face": "/seti/solo/objective-3-02.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          35.272102,
+          2.093046,
+          -21.872803
+        ],
+        "rot": [
+          0.33814,
+          180.028168,
+          10.390842
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-03",
+      "tier": 3,
+      "sourceIndex": 2,
+      "guid": "9dcfcd",
+      "face": "/seti/solo/objective-3-03.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          36.131187,
+          2.064508,
+          -21.823582
+        ],
+        "rot": [
+          0.153337,
+          180.019226,
+          8.656031
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-04",
+      "tier": 3,
+      "sourceIndex": 3,
+      "guid": "4e23a6",
+      "face": "/seti/solo/objective-3-04.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          36.668415,
+          2.087265,
+          -21.768532
+        ],
+        "rot": [
+          0.144214,
+          180.020721,
+          8.420597
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-05",
+      "tier": 3,
+      "sourceIndex": 4,
+      "guid": "8b964e",
+      "face": "/seti/solo/objective-3-05.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          35.629745,
+          2.299777,
+          -21.889612
+        ],
+        "rot": [
+          0.13638,
+          180.004364,
+          358.579742
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-06",
+      "tier": 3,
+      "sourceIndex": 5,
+      "guid": "9c0920",
+      "face": "/seti/solo/objective-3-06.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          35.177193,
+          2.069596,
+          -21.661688
+        ],
+        "rot": [
+          359.8749,
+          180.034424,
+          347.416168
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-07",
+      "tier": 3,
+      "sourceIndex": 6,
+      "guid": "81667c",
+      "face": "/seti/solo/objective-3-07.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          36.03524,
+          1.89534,
+          -21.439854
+        ],
+        "rot": [
+          1.891546,
+          180.010712,
+          4.059424
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-08",
+      "tier": 3,
+      "sourceIndex": 7,
+      "guid": "654cfa",
+      "face": "/seti/solo/objective-3-08.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          36.34428,
+          1.992937,
+          -21.938768
+        ],
+        "rot": [
+          1.996806,
+          180.082153,
+          1.519174
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    },
+    {
+      "id": "objective-3-09",
+      "tier": 3,
+      "sourceIndex": 8,
+      "guid": "6f1e6c",
+      "face": "/seti/solo/objective-3-09.webp",
+      "imagePx": [
+        470,
+        468
+      ],
+      "sourceImagePx": [
+        470,
+        468
+      ],
+      "back": null,
+      "backSource": {
+        "name": "Obj3_Back",
+        "sourceUrl": "https://steamusercontent-a.akamaihd.net/ugc/44574410610114343/02F0BD1BF336FDC45BCB80F01760CD9486D45470/",
+        "status": "known-unavailable"
+      },
+      "tts": {
+        "pos": [
+          36.58986,
+          2.072601,
+          -22.679976
+        ],
+        "rot": [
+          1.663171,
+          180.068542,
+          0.948464
+        ],
+        "scale": [
+          0.434758,
+          1,
+          0.434758
+        ]
+      }
+    }
+  ],
+  "objectiveBacks": {
+    "status": "unavailable-in-source-cache",
+    "names": [
+      "Obj1_Back",
+      "Obj2_Back",
+      "Obj3_Back"
+    ],
+    "impact": "hidden stack backs only; every objective front and stable GUID is preserved"
+  },
+  "transcriptionGaps": [
+    "Difficulty progress thresholds/rewards, objective composition, and preferred-tech cycles remain printed-board transcription.",
+    "Rival action instructions and all 24 objective conditions remain printed-art transcription."
+  ]
+}

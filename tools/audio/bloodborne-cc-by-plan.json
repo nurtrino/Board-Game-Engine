@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "license": "CC BY 4.0",
+    "outputFormat": "ogg",
+    "loop": true,
+    "crossfadeMs": 2500
+  },
+  "tracks": [
+    {
+      "id": "descent",
+      "input": "https://www.scottbuckley.com.au/library/wp-content/uploads/2018/04/descent.mp3",
+      "title": "Descent",
+      "roles": ["menu", "exploration"],
+      "gain": 0.46,
+      "source": "https://www.scottbuckley.com.au/library/descent/",
+      "attribution": "'Descent' by Scott Buckley – released under CC BY 4.0. www.scottbuckley.com.au"
+    },
+    {
+      "id": "march-of-midnight",
+      "input": "https://www.scottbuckley.com.au/library/wp-content/uploads/2019/10/sb_marchofmidnight.mp3",
+      "title": "March of Midnight",
+      "roles": ["enemy-encounter"],
+      "gain": 0.54,
+      "crossfadeMs": 1800,
+      "source": "https://www.scottbuckley.com.au/library/march-of-midnight/",
+      "attribution": "'March of Midnight' by Scott Buckley – released under CC BY 4.0. www.scottbuckley.com.au"
+    },
+    {
+      "id": "the-summoning",
+      "input": "https://www.scottbuckley.com.au/library/wp-content/uploads/2020/10/sb_thesummoning.mp3",
+      "title": "The Summoning",
+      "roles": ["boss"],
+      "gain": 0.58,
+      "crossfadeMs": 1600,
+      "bossPhase": 1,
+      "source": "https://www.scottbuckley.com.au/library/the-summoning/",
+      "attribution": "'The Summoning' by Scott Buckley – released under CC BY 4.0. www.scottbuckley.com.au"
+    },
+    {
+      "id": "fate-and-fortune",
+      "input": "https://www.scottbuckley.com.au/library/wp-content/uploads/2020/03/sb_fateandfortune.mp3",
+      "title": "Fate and Fortune",
+      "roles": ["boss-phase"],
+      "gain": 0.6,
+      "crossfadeMs": 1200,
+      "bossPhase": 2,
+      "source": "https://www.scottbuckley.com.au/library/fate-and-fortune/",
+      "attribution": "'Fate and Fortune' by Scott Buckley – released under CC BY 4.0. www.scottbuckley.com.au"
+    },
+    {
+      "id": "i-walk-with-ghosts",
+      "input": "https://www.scottbuckley.com.au/library/wp-content/uploads/2021/04/sb_iwalkwithghosts.mp3",
+      "title": "I Walk With Ghosts",
+      "roles": ["dream"],
+      "gain": 0.42,
+      "crossfadeMs": 3500,
+      "source": "https://www.scottbuckley.com.au/library/i-walk-with-ghosts/",
+      "attribution": "'I Walk With Ghosts' by Scott Buckley – released under CC BY 4.0. www.scottbuckley.com.au"
+    },
+    {
+      "id": "the-long-dark",
+      "input": "https://www.scottbuckley.com.au/library/wp-content/uploads/2023/01/TheLongDark.mp3",
+      "title": "The Long Dark",
+      "roles": ["defeat"],
+      "gain": 0.52,
+      "loop": false,
+      "crossfadeMs": 1200,
+      "source": "https://www.scottbuckley.com.au/library/the-long-dark/",
+      "attribution": "'The Long Dark' by Scott Buckley – released under CC BY 4.0. www.scottbuckley.com.au"
+    },
+    {
+      "id": "emergent",
+      "input": "https://www.scottbuckley.com.au/library/wp-content/uploads/2019/11/sb_emergent.mp3",
+      "title": "Emergent",
+      "roles": ["victory"],
+      "gain": 0.52,
+      "loop": false,
+      "crossfadeMs": 1200,
+      "source": "https://www.scottbuckley.com.au/library/emergent/",
+      "attribution": "'Emergent' by Scott Buckley – released under CC BY 4.0. www.scottbuckley.com.au"
+    }
+  ]
+}

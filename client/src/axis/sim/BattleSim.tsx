@@ -6,13 +6,14 @@
  * Placeholder geometry stands in for real models for now — swap `<UnitMesh>`
  * shapes for glTF without touching the formation / firing / destruction loop.
  */
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Component, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ErrorInfo, type ReactNode } from "react";
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF, Billboard, Environment } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette, ToneMapping } from "@react-three/postprocessing";
 import { ToneMappingMode } from "postprocessing";
 import * as THREE from "three";
 import { Water } from 'three/examples/jsm/objects/Water.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
 // the sim's one-shot sounds live with its assets
 const simAudio = new Map<string, HTMLAudioElement>();
@@ -28,6 +29,7 @@ function playSound(name: string): void {
 import { UNITS } from '@bge/shared';
 const UNITS_BY_KEY = UNITS as Record<string, (typeof UNITS)[keyof typeof UNITS]>;
 import {
+  battleSceneDetailBudget,
   formation,
   visualFor,
   fireSoundFor,
@@ -183,6 +185,10 @@ function Ground() {
     g.computeVertexNormals();
     return g;
   }, []);
+  useEffect(() => () => {
+    tex.dispose();
+    geo.dispose();
+  }, [geo, tex]);
   return (
     <mesh geometry={geo} rotation-x={-Math.PI / 2} receiveShadow>
       {/* light, subtle warm tint over the seamless dead-grass — not heavy brown */}
@@ -285,10 +291,10 @@ function FoliagePiece({ file, x, z, yaw, target }: FoliageInstance) {
  * horizon while the centre stays clear for the armies.
  *
  * Cloning (not GPU instancing) on purpose: the tree models are mesh-quantized,
- * and instancing their compressed geometry shatters it. The trees are low-poly,
- * so ~150 clones are a few hundred cheap draw calls — fine on any real GPU.
+ * and instancing their compressed geometry shatters it. Density is budgeted
+ * against army size so these backdrop draw calls never displace combatants.
  */
-function Foliage() {
+function Foliage({ count }: { count: number }) {
   const items = useMemo<FoliageInstance[]>(() => {
     const rng = mulberry32(0x5eedface);
     const out: FoliageInstance[] = [];
@@ -298,7 +304,7 @@ function Foliage() {
     let guard = 0;
     // Even fill of the whole field outside the clear box, so the forest wraps
     // the battlefield — flanks and back — instead of clustering in the corners.
-    while (out.length < 165 && guard < 6000) {
+    while (out.length < count && guard < 6000) {
       guard++;
       const x = (rng() * 2 - 1) * FIELD;
       const z = (rng() * 2 - 1) * FIELD;
@@ -312,7 +318,7 @@ function Foliage() {
       out.push({ file, x, z, yaw, target: base * jitter });
     }
     return out;
-  }, []);
+  }, [count]);
 
   return (
     <group>
@@ -635,6 +641,7 @@ function SpriteExplosion({
   const t0 = useRef<number | null>(null);
   const frameRef = useRef(-1);
   const doneRef = useRef(false);
+  useEffect(() => () => tex.dispose(), [tex]);
   useFrame(({ clock }) => {
     if (t0.current === null) t0.current = clock.elapsedTime;
     const frame = Math.floor((clock.elapsedTime - t0.current) * EXPL_FPS);
@@ -684,6 +691,7 @@ function ModelUnit({
   dim,
   destroyed = false,
   fireToken = 0,
+  animationsEnabled,
   onHeight,
 }: {
   file: string;
@@ -695,6 +703,7 @@ function ModelUnit({
   dim?: number;
   destroyed?: boolean;
   fireToken?: number;
+  animationsEnabled: boolean;
   onHeight?: (h: number) => void;
 }) {
   const { scene, animations } = useGLTF(modelUrl(file));
@@ -771,7 +780,7 @@ function ModelUnit({
   }>({});
   const dyingRef = useRef(false);
   useEffect(() => {
-    if (!animations.length) {
+    if (!animationsEnabled || !animations.length) {
       mixerRef.current = null;
       return;
     }
@@ -805,7 +814,7 @@ function ModelUnit({
       mixerRef.current = null;
       actionsRef.current = {};
     };
-  }, [animations, obj]);
+  }, [animations, animationsEnabled, obj]);
 
   // Cross-fade idle → death once on kill (and back to idle on a fresh battle).
   useEffect(() => {
@@ -896,20 +905,44 @@ function HealthBar({
   );
 }
 
+function AirborneCanopy({ side }: { side: Side }) {
+  const color = side === 'attacker' ? '#7db7df' : '#e17b70';
+  return (
+    <group position={[0, 3.2, 0]}>
+      <mesh rotation-x={Math.PI}>
+        <sphereGeometry args={[1.7, 18, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={color} roughness={0.88} metalness={0.02} side={THREE.DoubleSide} />
+      </mesh>
+      {[-1, 1].map((x) => (
+        <mesh key={x} position={[x * 0.7, -1.15, 0]} rotation-z={x * -0.36}>
+          <cylinderGeometry args={[0.018, 0.018, 2.55, 5]} />
+          <meshBasicMaterial color="#d8d2bb" />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function Unit({
   placement,
   domain,
   destroyed,
+  submerged,
+  retreating,
   health,
   salvo,
   firing,
+  animationsEnabled,
 }: {
   placement: Placement;
   domain: Domain;
   destroyed: boolean;
+  submerged: boolean;
+  retreating: boolean;
   health: number;
   salvo: number;
   firing: boolean;
+  animationsEnabled: boolean;
 }) {
   const group = useRef<THREE.Group>(null);
   const modelWrap = useRef<THREE.Group>(null);
@@ -922,6 +955,41 @@ function Unit({
   const [crashed, setCrashed] = useState(false); // plane hit the ground
   const [exploded, setExploded] = useState(false); // explosion finished → fire pile
   const [fireToken, setFireToken] = useState(0); // bumps when this unit fires
+  const paratrooper = placement.unit.paratrooper;
+  const usesAnimatedDeath = Boolean(vis.animatedDeath && animationsEnabled);
+  const paratrooperInfantry = paratrooper?.role === 'infantry';
+  const carriedInfantry = paratrooperInfantry && paratrooper.aboard;
+  const dropProgress = useRef(paratrooperInfantry && !carriedInfantry ? 0 : 1);
+  const wasCarried = useRef(Boolean(carriedInfantry));
+  const [dropping, setDropping] = useState(paratrooperInfantry && !carriedInfantry);
+
+  const submergeProgress = useRef(submerged ? 1 : 0);
+  const retreatProgress = useRef(0);
+  const wasSubmerged = useRef(submerged);
+
+  useEffect(() => {
+    if (submerged && !wasSubmerged.current) submergeProgress.current = 0;
+    if (!submerged) submergeProgress.current = 0;
+    wasSubmerged.current = submerged;
+  }, [submerged]);
+
+  useEffect(() => {
+    retreatProgress.current = 0;
+  }, [retreating]);
+
+  useEffect(() => {
+    if (carriedInfantry) {
+      wasCarried.current = true;
+      dropProgress.current = 0;
+      setDropping(false);
+      return;
+    }
+    if (paratrooperInfantry && (wasCarried.current || dropProgress.current < 1)) {
+      wasCarried.current = false;
+      dropProgress.current = 0;
+      setDropping(true);
+    }
+  }, [carriedInfantry, paratrooperInfantry]);
 
   // Reset death state when a unit comes back to life (battle reset).
   useEffect(() => {
@@ -937,7 +1005,7 @@ function Unit({
   useEffect(() => {
     if (salvo !== lastSalvoRef.current) {
       lastSalvoRef.current = salvo;
-      if (firing && !destroyed) setFireToken((n) => n + 1);
+      if (firing) setFireToken((n) => n + 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salvo]);
@@ -949,12 +1017,20 @@ function Unit({
   useFrame(({ clock }, dt) => {
     const g = group.current;
     if (!g) return;
+    if (carriedInfantry) {
+      g.visible = false;
+      return;
+    }
+    g.visible = true;
     const t = clock.elapsedTime;
     if (t0Ref.current === null) t0Ref.current = t;
     const age = t - t0Ref.current;
     let x = placement.x;
     let z = placement.z;
     let y = 0;
+
+    if (submerged) submergeProgress.current = Math.min(1, submergeProgress.current + dt / 1.8);
+    if (retreating) retreatProgress.current = Math.min(1, retreatProgress.current + dt / 1.8);
 
     if (vis.air) {
       const hoverY = 6 + Math.sin(t * 1.5 + bobSeed) * 0.3;
@@ -996,8 +1072,26 @@ function Unit({
       // once the blast finishes). Both stay put — no sink/collapse here.
       y = terrainHeight(placement.x, placement.z);
       if (modelWrap.current) {
-        modelWrap.current.visible = !(destroyed && !vis.animatedDeath && exploded);
+        modelWrap.current.visible = !(destroyed && !usesAnimatedDeath && exploded);
       }
+      if (paratrooperInfantry && dropProgress.current < 1) {
+        dropProgress.current = Math.min(1, dropProgress.current + dt / (destroyed ? 1.05 : 1.8));
+        const drop = 1 - Math.pow(1 - dropProgress.current, 3);
+        y += THREE.MathUtils.lerp(destroyed ? 9 : 14, 0, drop);
+        x += Math.sin(drop * Math.PI * 2 + bobSeed) * (1 - drop) * 1.2;
+        g.rotation.z = destroyed ? drop * 1.1 : Math.sin(drop * Math.PI) * 0.08;
+        if (dropProgress.current >= 1 && dropping) setDropping(false);
+      }
+    }
+    if (submerged && domain === "sea") {
+      // Keep submerged boats visibly out of the engagement after they slip
+      // beneath the surface.
+      y -= submergeProgress.current * 5.5;
+    }
+    if (retreating) {
+      const eased = 1 - Math.pow(1 - retreatProgress.current, 3);
+      z += (placement.unit.side === "attacker" ? -1 : 1) * eased * 52;
+      if (vis.air) y += eased * 12;
     }
     y += vis.yOffset ?? 0; // e.g. sit the submarine lower in the water
     g.position.set(x, y, z);
@@ -1005,7 +1099,7 @@ function Unit({
 
   // Land wrecks (tank/artillery) and burning ships; soldiers use their death
   // animation and aircraft crash (handled separately).
-  const showWreckFx = destroyed && !vis.air && !vis.animatedDeath;
+  const showWreckFx = destroyed && !vis.air && !usesAnimatedDeath;
   // Wounded-but-afloat capital ships (battleship/carrier at half HP) trail a
   // small deck fire so damage reads at a glance before the killing blow.
   const showDamageFx =
@@ -1026,13 +1120,17 @@ function Unit({
               dim={vis.dim}
               destroyed={destroyed}
               fireToken={fireToken}
+              animationsEnabled={animationsEnabled}
               onHeight={setModelH}
             />
           ) : (
             <UnitMesh shape={vis.shape} color={destroyed ? "#555" : color} />
           )}
         </group>
-        <HealthBar side={placement.unit.side} y={barY} width={barW} destroyed={destroyed} health={health} />
+        {dropping && !destroyed && <AirborneCanopy side={placement.unit.side} />}
+        {(UNITS_BY_KEY[placement.unit.type]?.hits ?? 1) > 1 && (
+          <HealthBar side={placement.unit.side} y={barY} width={barW} destroyed={destroyed} health={health} />
+        )}
         {showDamageFx && (
           <group position={[0, (modelH ?? 2) * 0.35, (vis.target ?? vis.size) * -0.12]}>
             <Burning scale={0.7} />
@@ -1252,22 +1350,31 @@ function BeamMesh({ beam, startRef }: { beam: Beam; startRef: React.RefObject<nu
 function Volley({
   placements,
   destroyedIds,
+  submergedIds,
+  preferredTargetIds,
+  shotLinks,
   salvo,
   domain,
   firingIds,
   playSounds,
+  onComplete,
 }: {
   placements: Placement[];
   destroyedIds: Set<string>;
+  submergedIds: Set<string>;
+  preferredTargetIds: Set<string>;
+  shotLinks: readonly { firingId: string; targetId: string }[];
   salvo: number;
   domain: Domain;
   firingIds: string[];
   playSounds: boolean;
+  onComplete: (salvo: number) => void;
 }) {
   const [beams, setBeams] = useState<Beam[]>([]);
   const startRef = useRef(0);
   const durRef = useRef(0);
   const lastSalvo = useRef(0);
+  const pendingSalvo = useRef(0);
 
   const posOf = useMemo(() => {
     const m = new Map<string, THREE.Vector3>();
@@ -1285,21 +1392,41 @@ function Volley({
     if (salvo !== lastSalvo.current) {
       lastSalvo.current = salvo;
       const firing = new Set(firingIds);
-      const live = placements.filter((p) => !destroyedIds.has(p.unit.id));
-      const att = live.filter((p) => p.unit.side === "attacker");
-      const def = live.filter((p) => p.unit.side === "defender");
-      const shooters = live.filter((p) => firing.has(p.unit.id));
+      const engaged = placements.filter((p) => !submergedIds.has(p.unit.id));
+      const live = engaged.filter((p) => !destroyedIds.has(p.unit.id));
+      const attLive = live.filter((p) => p.unit.side === "attacker");
+      const defLive = live.filter((p) => p.unit.side === "defender");
+      const attAll = engaged.filter((p) => p.unit.side === "attacker");
+      const defAll = engaged.filter((p) => p.unit.side === "defender");
+      // Simultaneous return-fire casualties still shoot in the volley that
+      // killed them, so firing IDs—not post-casualty health—drive shooters.
+      const shooters = engaged.filter((p) => firing.has(p.unit.id));
+      // A targeted AA casualty may already be at 0 HP in the authoritative
+      // snapshot, but the cinematic shot still needs to travel to that exact
+      // aircraft. Keep all engaged preferred targets, not just survivors.
+      const forcedTargets = engaged.filter((placement) => preferredTargetIds.has(placement.unit.id));
       const next: Beam[] = [];
       let slot = 0;
       for (const s of shooters) {
-        const enemies = s.unit.side === "attacker" ? def : att;
+        const exactTargets = shotLinks
+          .filter((link) => link.firingId === s.unit.id)
+          .map((link) => engaged.find((placement) => placement.unit.id === link.targetId))
+          .filter((target): target is Placement => target !== undefined && target.unit.side !== s.unit.side);
+        const preferred = exactTargets.length > 0
+          ? exactTargets
+          : forcedTargets.filter((target) => target.unit.side !== s.unit.side).length > 0
+            ? forcedTargets.filter((target) => target.unit.side !== s.unit.side)
+            : s.unit.side === "attacker" ? defLive : attLive;
+        const enemies = preferred.length > 0 ? preferred : s.unit.side === "attacker" ? defAll : attAll;
         if (!enemies.length) continue;
-        const target = enemies[Math.floor(Math.random() * enemies.length)];
-        const a = posOf.get(s.unit.id);
-        const b = posOf.get(target.unit.id);
-        if (!a || !b) continue;
-        next.push({ key: `${s.unit.id}-${salvo}`, from: a, to: b, delay: slot * BEAM_STAGGER });
-        slot++;
+        const targets = exactTargets.length > 0 ? exactTargets : [enemies[slot % enemies.length]!];
+        for (const target of targets) {
+          const a = posOf.get(s.unit.id);
+          const b = posOf.get(target.unit.id);
+          if (!a || !b) continue;
+          next.push({ key: `${s.unit.id}-${target.unit.id}-${salvo}-${slot}`, from: a, to: b, delay: slot * BEAM_STAGGER });
+          slot++;
+        }
       }
       if (playSounds) {
         const sounds = new Set(shooters.map((p) => fireSoundFor(p.unit.type)));
@@ -1309,11 +1436,15 @@ function Volley({
       // Longest shot = last shooter's stagger + its burst tail + the shot's life.
       const lastDelay = next.reduce((m, b) => Math.max(m, b.delay), 0);
       durRef.current = lastDelay + BEAM_LIFE + 0.1;
+      pendingSalvo.current = salvo;
       setBeams(next);
       return;
     }
-    if (beams.length && clock.elapsedTime - startRef.current > durRef.current) {
-      setBeams([]);
+    if (pendingSalvo.current > 0 && clock.elapsedTime - startRef.current > durRef.current) {
+      if (beams.length) setBeams([]);
+      const completed = pendingSalvo.current;
+      pendingSalvo.current = 0;
+      onComplete(completed);
     }
   });
 
@@ -1329,6 +1460,10 @@ function Volley({
 /** Cinematic opening: sweep across the field, then settle into the battle view. */
 function IntroCamera({ settle, onDone }: { settle: [number, number, number]; onDone: () => void }) {
   const camera = useThree((s) => s.camera);
+  const reduceMotion = useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    [],
+  );
   const start = useMemo(
     () => new THREE.Vector3(-settle[0] * 0.55, settle[1] * 1.7 + 14, settle[2] * 1.2 + 26),
     [settle],
@@ -1336,10 +1471,10 @@ function IntroCamera({ settle, onDone }: { settle: [number, number, number]; onD
   const settleVec = useMemo(() => new THREE.Vector3(...settle), [settle]);
   const t0 = useRef<number | null>(null);
   const fired = useRef(false);
-  const DUR = 4.5;
+  const DUR = reduceMotion ? 0 : 4.5;
   useFrame(({ clock }) => {
     if (t0.current === null) t0.current = clock.elapsedTime;
-    const raw = Math.min(1, (clock.elapsedTime - t0.current) / DUR);
+    const raw = DUR === 0 ? 1 : Math.min(1, (clock.elapsedTime - t0.current) / DUR);
     const e = raw < 0.5 ? 2 * raw * raw : 1 - Math.pow(-2 * raw + 2, 2) / 2; // easeInOut
     camera.position.lerpVectors(start, settleVec, e);
     camera.lookAt(0, (1 - e) * 6, 0);
@@ -1354,6 +1489,10 @@ function IntroCamera({ settle, onDone }: { settle: [number, number, number]; onD
 /** WASD panning that rides on top of OrbitControls (moves camera + target). */
 function WasdControls({ controlsRef }: { controlsRef: React.RefObject<{ object: THREE.Camera; target: THREE.Vector3; update: () => void } | null> }) {
   const keys = useRef<Record<string, boolean>>({});
+  const forward = useRef(new THREE.Vector3());
+  const lateral = useRef(new THREE.Vector3());
+  const delta = useRef(new THREE.Vector3());
+  const up = useRef(new THREE.Vector3(0, 1, 0));
   useEffect(() => {
     const handle = (down: boolean) => (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
@@ -1372,13 +1511,14 @@ function WasdControls({ controlsRef }: { controlsRef: React.RefObject<{ object: 
   useFrame((_, dt) => {
     const c = controlsRef.current;
     if (!c) return;
-    const fwd = new THREE.Vector3();
+    if (!keys.current.w && !keys.current.a && !keys.current.s && !keys.current.d) return;
+    const fwd = forward.current;
     c.object.getWorldDirection(fwd);
     fwd.y = 0;
     if (fwd.lengthSq() === 0) return;
     fwd.normalize();
-    const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), fwd).normalize();
-    const move = new THREE.Vector3();
+    const right = lateral.current.crossVectors(up.current, fwd).normalize();
+    const move = delta.current.set(0, 0, 0);
     if (keys.current.w) move.add(fwd);
     if (keys.current.s) move.sub(fwd);
     if (keys.current.a) move.add(right);
@@ -1398,9 +1538,21 @@ export interface BattleSimProps {
   units: SimUnit[];
   domain: Domain;
   destroyedIds: string[];
+  /** Current authoritative battlefield generation. */
+  visualSeq: number;
+  /** Units currently beneath the surface and out of combat. */
+  submergedIds?: string[];
+  /** Units leaving the field during this visual generation. */
+  retreatingIds?: string[];
+  /** Prefer these live targets for the current volley (for example a factory). */
+  preferredTargetIds?: string[];
+  /** Exact roll-to-target links (currently defending AA fire). */
+  shotLinks?: readonly { firingId: string; targetId: string }[];
+  /** Longest animation introduced by this generation. */
+  presentationDurationMs?: number;
   /** increment to trigger a firing volley */
   salvo: number;
-  /** unit ids that fire this volley (scored a hit) */
+  /** unit ids that fire this volley, whether their shot hits or misses */
   firingIds: string[];
   /** per-unit health 0..1 by id (drives the bars; omit = full health) */
   healthById?: Record<string, number>;
@@ -1409,35 +1561,100 @@ export interface BattleSimProps {
   /** team names for the cinematic intro title card */
   attackerName?: string;
   defenderName?: string;
+  /** Reports the first frame after every required cinematic asset is loaded. */
+  onVisualReady?: () => void;
+  /** Reports when the opening camera has settled and interaction may begin. */
+  onInteractionReady?: () => void;
+  /** Reports when every shot in a dice salvo has played. */
+  onVolleyComplete?: (salvo: number) => void;
+  /** Reports after the exact authoritative battlefield generation is painted. */
+  onPresentationComplete?: (visualSeq: number) => void;
+  /** Revokes readiness if the WebGL renderer is interrupted or fails. */
+  onVisualUnavailable?: () => void;
+  /** Reports a renderer failure that needs an explicit retry. */
+  onVisualFailure?: () => void;
   className?: string;
+}
+
+function RenderHeartbeat({ onReady }: { onReady: () => void }) {
+  const reported = useRef(false);
+  useFrame(() => {
+    if (reported.current) return;
+    reported.current = true;
+    onReady();
+  });
+  return null;
 }
 
 function Scene({
   units,
   domain,
   destroyedIds,
+  submergedIds = [],
+  retreatingIds = [],
+  preferredTargetIds = [],
+  shotLinks = [],
   salvo,
   firingIds,
   healthById,
   playSounds = true,
   camPos,
-}: Omit<BattleSimProps, "className"> & { camPos: [number, number, number] }) {
+  onFirstFrame,
+  onInteractionReady,
+  onVolleyComplete,
+}: Omit<BattleSimProps, "className" | "visualSeq" | "presentationDurationMs" | "onVisualReady" | "onInteractionReady" | "onVolleyComplete" | "onPresentationComplete" | "onVisualUnavailable" | "onVisualFailure"> & { camPos: [number, number, number]; onFirstFrame: () => void; onInteractionReady: () => void; onVolleyComplete: (salvo: number) => void }) {
   const placements = useMemo(() => {
     const att = formation(units.filter((u) => u.side === "attacker"), "attacker");
     const def = formation(units.filter((u) => u.side === "defender"), "defender");
     return [...att, ...def];
   }, [units]);
   const destroyed = useMemo(() => new Set(destroyedIds), [destroyedIds]);
+  const submerged = useMemo(() => new Set(submergedIds), [submergedIds]);
+  const retreating = useMemo(() => new Set(retreatingIds), [retreatingIds]);
+  const preferredTargets = useMemo(() => new Set(preferredTargetIds), [preferredTargetIds]);
+  const reducedMotion = useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    [],
+  );
+  const detailBudget = useMemo(
+    () => battleSceneDetailBudget(placements.length, reducedMotion),
+    [placements.length, reducedMotion],
+  );
+  const animatedUnitIds = useMemo(() => {
+    const ids = new Set<string>();
+    const candidates = placements.filter((placement) => visualFor(placement.unit.type).animatedDeath);
+    const perSide = Math.ceil(detailBudget.animatedUnitLimit / 2);
+    for (const side of ['attacker', 'defender'] as const) {
+      let admitted = 0;
+      for (const placement of candidates) {
+        if (placement.unit.side !== side) continue;
+        if (admitted >= perSide) break;
+        ids.add(placement.unit.id);
+        admitted++;
+      }
+    }
+    // If one side has few animated models, spend its unused share on the other
+    // side while still respecting the global mixer ceiling.
+    for (const placement of candidates) {
+      if (ids.size >= detailBudget.animatedUnitLimit) break;
+      ids.add(placement.unit.id);
+    }
+    return ids;
+  }, [detailBudget.animatedUnitLimit, placements]);
   const sun = useSunDirection();
   const controlsRef = useRef<{ object: THREE.Camera; target: THREE.Vector3; update: () => void } | null>(null);
   const [introDone, setIntroDone] = useState(false);
+  const [frameReady, setFrameReady] = useState(false);
+  const interactionReported = useRef(false);
+  useEffect(() => {
+    if (introDone && frameReady && !interactionReported.current) {
+      interactionReported.current = true;
+      onInteractionReady();
+    }
+  }, [frameReady, introDone, onInteractionReady]);
 
   return (
     <>
-      <Suspense fallback={null}>
-        <SkyEnvironment />
-      </Suspense>
-
       {/* Distance haze: atmospheric perspective sells the scale of the field
           and melts the horizon into the overcast sky. */}
       <fog
@@ -1463,14 +1680,18 @@ function Scene({
       />
       <ambientLight intensity={0.22} />
 
-      <ImpactRig trigger={destroyedIds.length}>
-        <Suspense fallback={null}>
+      {/* A single boundary covers the sky, terrain, effects and exact unit
+          models. The heartbeat cannot report ready while any cinematic asset
+          is still suspended. */}
+      <Suspense fallback={null}>
+        <SkyEnvironment />
+        <ImpactRig trigger={destroyedIds.length}>
           {domain === "sea" ? (
             <Ocean sun={sun} />
           ) : (
             <>
               <Ground />
-              <Foliage />
+              <Foliage count={detailBudget.foliageCount} />
               <BattlefieldDressing />
             </>
           )}
@@ -1481,26 +1702,28 @@ function Scene({
               placement={p}
               domain={domain}
               destroyed={destroyed.has(p.unit.id)}
+              submerged={submerged.has(p.unit.id)}
+              retreating={retreating.has(p.unit.id)}
               health={healthById?.[p.unit.id] ?? 1}
               salvo={salvo}
               firing={firingIds.includes(p.unit.id)}
+              animationsEnabled={animatedUnitIds.has(p.unit.id)}
             />
           ))}
-        </Suspense>
+          {/* Mount only after the complete battlefield has cleared Suspense. */}
+          <RenderHeartbeat onReady={() => { setFrameReady(true); onFirstFrame(); }} />
+          {!introDone && <IntroCamera settle={camPos} onDone={() => setIntroDone(true)} />}
+          <Volley placements={placements} destroyedIds={destroyed} submergedIds={submerged} preferredTargetIds={preferredTargets} shotLinks={shotLinks} salvo={salvo} domain={domain} firingIds={firingIds} playSounds={playSounds} onComplete={onVolleyComplete} />
+        </ImpactRig>
+      </Suspense>
 
-        <Volley placements={placements} destroyedIds={destroyed} salvo={salvo} domain={domain} firingIds={firingIds} playSounds={playSounds} />
-      </ImpactRig>
-
-      {/* Post: selective bloom makes tracers, muzzle flashes and fire actually
-          glow; vignette + filmic curve give the "shot on film" finish. Kept
-          lean (no MSAA, mipmap bloom) for the weak-iGPU budget. */}
+      {/* Restore the original filmic battle treatment. */}
       <EffectComposer multisampling={0}>
         <Bloom mipmapBlur intensity={0.75} luminanceThreshold={0.72} luminanceSmoothing={0.25} />
         <Vignette eskil={false} offset={0.16} darkness={0.55} />
         <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
       </EffectComposer>
 
-      {!introDone && <IntroCamera settle={camPos} onDone={() => setIntroDone(true)} />}
       {introDone && (
         <>
           <OrbitControls
@@ -1524,14 +1747,37 @@ function Scene({
   );
 }
 
-// Warm the glTF cache so models pop in fast on first battle.
-for (const f of MODEL_FILES) useGLTF.preload(modelUrl(f));
-for (const f of FOLIAGE_FILES) useGLTF.preload(modelUrl(f));
-// Warm the explosion sheet too: without this the first blast suspends the whole
-// scene (~1s freeze) while the 920 KB texture loads on demand. Browser-only —
-// during SSR/build there's no server to fetch it from (it would error the build).
-if (typeof window !== "undefined") {
-  useLoader.preload(THREE.TextureLoader, "/axis/sim/explosion.png");
+let battleAssetsWarmed = false;
+/** Warm the browser cache without enrolling future battles in map progress. */
+export function warmBattleAssets(): void {
+  if (battleAssetsWarmed || typeof document === 'undefined') return;
+  battleAssetsWarmed = true;
+  const urls = [
+    ...MODEL_FILES.map(modelUrl),
+    ...FOLIAGE_FILES.map(modelUrl),
+    '/axis/sim/explosion.png',
+    '/axis/sim/waternormals.jpg',
+    '/axis/sim/sky-overcast.hdr',
+  ];
+  for (const href of urls) {
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = href;
+    link.as = 'fetch';
+    link.crossOrigin = 'anonymous';
+    link.dataset.axisBattlePrefetch = href;
+    document.head.appendChild(link);
+  }
+}
+
+/** Clear rejected loader cache entries so an explicit retry can fetch again. */
+export function clearBattleAssetCache(): void {
+  for (const file of [...MODEL_FILES, ...FOLIAGE_FILES]) useGLTF.clear(modelUrl(file));
+  for (const url of ['/axis/sim/explosion.png', '/axis/sim/waternormals.jpg', '/axis/sim/ground-grass.jpg']) {
+    useLoader.clear(THREE.TextureLoader, url);
+  }
+  useLoader.clear(RGBELoader, '/axis/sim/sky-overcast.hdr');
+  battleAssetsWarmed = false;
 }
 
 /**
@@ -1593,26 +1839,114 @@ function KillFeed({ units, destroyedIds }: { units: SimUnit[]; destroyedIds: str
   );
 }
 
-export default function BattleSim({ units, domain, destroyedIds, salvo, firingIds, healthById, playSounds, attackerName, defenderName, className }: BattleSimProps) {
+class BattleCanvasBoundary extends Component<{
+  children: ReactNode;
+  onFailure: () => void;
+}, { failed: boolean }> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(_error: Error, _info: ErrorInfo) {
+    this.props.onFailure();
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+export default function BattleSim({
+  units,
+  domain,
+  destroyedIds,
+  visualSeq,
+  submergedIds = [],
+  retreatingIds = [],
+  preferredTargetIds = [],
+  shotLinks = [],
+  presentationDurationMs = 0,
+  salvo,
+  firingIds,
+  healthById,
+  playSounds,
+  attackerName,
+  defenderName,
+  onVisualReady,
+  onInteractionReady,
+  onVolleyComplete,
+  onPresentationComplete,
+  onVisualUnavailable,
+  onVisualFailure,
+  className,
+}: BattleSimProps) {
   // Broadside view: elevated enough to frame the units, low enough that the
   // overcast sky still shows above the horizon. Sea is bigger → further back.
   // Naval view sits higher and looks down at a steeper angle over the fleet.
   // Viewed from -X so the attacker (blue) reads on the left and defender (red)
   // on the right.
   const camPos: [number, number, number] = domain === "sea" ? [-44, 44, 48] : [-24, 16, 18];
-  // If the GPU drops the context (driver reset under load on weak hardware) we
-  // first try to recover automatically by remounting the canvas a couple of
-  // times — this transparently fixes the common cold-start failure on the first
-  // battle (shaders/env/models all upload at once and spike a weak GPU; the
-  // remount succeeds because everything is already parsed and warm). Only after
-  // the auto-retries are exhausted do we show a manual retry overlay.
-  const [contextLost, setContextLost] = useState(false);
+  // The cinematic is the only battle renderer. If WebGL is interrupted, keep
+  // the stage blocked and retry it; never substitute an alternate battle.
+  const [rendererFailed, setRendererFailed] = useState(false);
+  const [rendererReady, setRendererReady] = useState(false);
   const [canvasKey, setCanvasKey] = useState(0);
-  const autoRetries = useRef(0);
+  const visualReported = useRef(false);
+  // Null forces a freshly mounted/reconnected renderer to acknowledge the
+  // current authoritative generation after it has actually painted it.
+  const presentedSeq = useRef<number | null>(null);
+  const presentationCompleteRef = useRef(onPresentationComplete);
+  useEffect(() => { presentationCompleteRef.current = onPresentationComplete; }, [onPresentationComplete]);
+  useEffect(() => {
+    if (!rendererReady || presentedSeq.current === visualSeq) return;
+    presentedSeq.current = visualSeq;
+    let firstFrame = 0;
+    let secondFrame = 0;
+    let timer = 0;
+    // Two frames guarantee React/Three has painted the new authoritative state
+    // even when the transition itself has no timed animation (for example,
+    // declining to submerge before the next roll).
+    firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        timer = window.setTimeout(
+          () => presentationCompleteRef.current?.(visualSeq),
+          Math.max(0, presentationDurationMs),
+        );
+      });
+    });
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+      window.clearTimeout(timer);
+    };
+  }, [presentationDurationMs, rendererReady, visualSeq]);
+  const reportCinematic = useCallback(() => {
+    visualReported.current = true;
+    setRendererFailed(false);
+    setRendererReady(true);
+    onVisualReady?.();
+  }, [onVisualReady]);
+  const reportUnavailable = useCallback(() => {
+    visualReported.current = true;
+    setRendererReady(false);
+    setRendererFailed(true);
+    onVisualUnavailable?.();
+    onVisualFailure?.();
+  }, [onVisualFailure, onVisualUnavailable]);
+
+  useEffect(() => {
+    visualReported.current = false;
+    setRendererReady(false);
+    setRendererFailed(false);
+    onVisualUnavailable?.();
+  }, [canvasKey, domain, onVisualUnavailable]);
   return (
-    <div className={className} style={{ width: "100%", height: "100%", position: "relative" }}>
+    <div className={`battle-sim-root${rendererReady ? ' ready' : ' loading'}${rendererFailed ? ' failed' : ''}${className ? ` ${className}` : ''}`}>
+      <BattleCanvasBoundary key={canvasKey} onFailure={reportUnavailable}>
       <Canvas
-        key={canvasKey}
+        className="battle-webgl-canvas"
         shadows
         camera={{ position: camPos, fov: 50 }}
         // Cap the pixel ratio: integrated GPUs (e.g. AMD Radeon iGPUs) can't
@@ -1625,35 +1959,16 @@ export default function BattleSim({ units, domain, destroyedIds, salvo, firingId
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 0.5,
           powerPreference: "high-performance",
-          // Keep the drawing buffer readable so battle screenshots (and the
-          // preview capture pipeline) can grab frames of the 3D view.
-          preserveDrawingBuffer: true,
         }}
         onCreated={({ gl }) => {
           const canvas = gl.domElement;
-          // preventDefault lets the browser attempt to restore the context
-          // rather than leaving a permanently black surface.
           canvas.addEventListener(
             "webglcontextlost",
-            (e) => {
-              e.preventDefault();
-              if (autoRetries.current < 2) {
-                autoRetries.current += 1;
-                // Remount the canvas after a beat to let the GPU settle; this
-                // recovers the cold-start failure without the user lifting a
-                // finger. Bounded so a truly underpowered GPU still lands on the
-                // manual overlay instead of looping.
-                window.setTimeout(() => setCanvasKey((k) => k + 1), 500);
-              } else {
-                setContextLost(true);
-              }
+            (event) => {
+              event.preventDefault();
+              reportUnavailable();
             },
-            false,
-          );
-          canvas.addEventListener(
-            "webglcontextrestored",
-            () => setContextLost(false),
-            false,
+            { once: true },
           );
         }}
       >
@@ -1667,13 +1982,21 @@ export default function BattleSim({ units, domain, destroyedIds, salvo, firingId
           units={units}
           domain={domain}
           destroyedIds={destroyedIds}
+          submergedIds={submergedIds}
+          retreatingIds={retreatingIds}
+          preferredTargetIds={preferredTargetIds}
+          shotLinks={shotLinks}
           salvo={salvo}
           firingIds={firingIds}
           healthById={healthById}
           playSounds={playSounds}
           camPos={camPos}
+          onFirstFrame={reportCinematic}
+          onInteractionReady={() => onInteractionReady?.()}
+          onVolleyComplete={(completedSalvo) => onVolleyComplete?.(completedSalvo)}
         />
       </Canvas>
+      </BattleCanvasBoundary>
 
       {/* Cinematic letterbox: bars frame the opening pan, then slide away. */}
       <div className="battle-letterbox" aria-hidden>
@@ -1684,14 +2007,14 @@ export default function BattleSim({ units, domain, destroyedIds, salvo, firingId
       {/* Cinematic title card during the opening pan */}
       {(attackerName || defenderName) && (
         <div className="battle-intro-card" aria-hidden>
-          <div className="flex items-center gap-4 sm:gap-8 text-center">
-            <span className="display text-3xl sm:text-5xl" style={{ color: ATTACKER_COLOR, letterSpacing: 2 }}>
+          <div className="battle-intro-versus">
+            <span className="battle-display battle-intro-name" style={{ color: ATTACKER_COLOR, letterSpacing: 2 }}>
               {attackerName ?? "Attacker"}
             </span>
-            <span className="display text-xl sm:text-3xl" style={{ color: "#cdd4db" }}>
+            <span className="battle-display battle-intro-vs" style={{ color: "#cdd4db" }}>
               vs
             </span>
-            <span className="display text-3xl sm:text-5xl" style={{ color: DEFENDER_COLOR, letterSpacing: 2 }}>
+            <span className="battle-display battle-intro-name" style={{ color: DEFENDER_COLOR, letterSpacing: 2 }}>
               {defenderName ?? "Defender"}
             </span>
           </div>
@@ -1703,16 +2026,16 @@ export default function BattleSim({ units, domain, destroyedIds, salvo, firingId
         <>
           <div className="battle-plate battle-plate-left" aria-hidden>
             <span className="chev" style={{ background: ATTACKER_COLOR }} />
-            <div>
-              <div className="display plate-name" style={{ color: ATTACKER_COLOR }}>
+            <div className="battle-plate-copy">
+              <div className="battle-display plate-name" style={{ color: ATTACKER_COLOR }}>
                 {attackerName ?? "Attacker"}
               </div>
               <div className="plate-role">Attacker</div>
             </div>
           </div>
           <div className="battle-plate battle-plate-right" aria-hidden>
-            <div className="text-right">
-              <div className="display plate-name" style={{ color: DEFENDER_COLOR }}>
+            <div className="battle-plate-copy battle-plate-copy-right">
+              <div className="battle-display plate-name" style={{ color: DEFENDER_COLOR }}>
                 {defenderName ?? "Defender"}
               </div>
               <div className="plate-role">Defender</div>
@@ -1723,24 +2046,19 @@ export default function BattleSim({ units, domain, destroyedIds, salvo, firingId
       )}
       <KillFeed units={units} destroyedIds={destroyedIds} />
 
-      {/* Graceful fallback if the GPU dropped the 3D context and didn't restore */}
-      {contextLost && (
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6"
-          style={{ background: "rgba(10,13,17,0.9)" }}
-        >
-          <div className="text-sm" style={{ color: "#cdd4db" }}>
-            The 3D view was interrupted by the graphics driver.
-          </div>
+      {rendererFailed && (
+        <div className="battle-context-fallback" role="alert">
+          <div className="battle-context-copy"><b>Cinematic interrupted</b><span>The battle remains paused until the cinematic battlefield is available.</span></div>
           <button
-            className="btn btn-primary"
+            className="battle-reload-btn"
             onClick={() => {
-              autoRetries.current = 0;
-              setContextLost(false);
-              setCanvasKey((k) => k + 1); // remount the canvas → fresh context
+              visualReported.current = false;
+              setRendererReady(false);
+              setRendererFailed(false);
+              setCanvasKey((k) => k + 1);
             }}
           >
-            ↺ Reload 3D view
+            Retry cinematic
           </button>
         </div>
       )}

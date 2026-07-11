@@ -1,10 +1,33 @@
 // WebSocket client with auto-reconnect and a small React hook. The engine has
 // been scrapped, so this now only tracks room/lobby state for the two screens.
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ClientMsg, ServerMsg, RoomInfo, GameView, GameAction } from '@bge/shared';
 
 type Listener = (msg: ServerMsg) => void;
+
+/**
+ * Keep only the newest disconnected battle-presentation acknowledgement.
+ *
+ * A TV can cross hidden/visible, retry, and renderer-ready states while its
+ * WebSocket is reconnecting. Replaying every transient acknowledgement would
+ * briefly expose an obsolete `ready: true` before the final revocation is
+ * processed. Other messages retain their original order; only this ephemeral,
+ * per-socket presentation fact is safe (and necessary) to coalesce.
+ */
+export function enqueueClientMessage(queue: ClientMsg[], msg: ClientMsg): void {
+  if (msg.type === 'axis_battle_visual_ready') {
+    discardQueuedBattleVisualReadiness(queue);
+  }
+  queue.push(msg);
+}
+
+/** Room navigation must not replay a prior room's ephemeral acknowledgement. */
+export function discardQueuedBattleVisualReadiness(queue: ClientMsg[]): void {
+  for (let index = queue.length - 1; index >= 0; index--) {
+    if (queue[index]?.type === 'axis_battle_visual_ready') queue.splice(index, 1);
+  }
+}
 
 class Socket {
   private ws: WebSocket | null = null;
@@ -34,7 +57,7 @@ class Socket {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(msg));
     } else {
-      this.queue.push(msg);
+      enqueueClientMessage(this.queue, msg);
     }
   }
 
@@ -47,6 +70,10 @@ class Socket {
     this.onOpenHooks.add(hook);
     if (this.ws?.readyState === WebSocket.OPEN) hook();
     return () => this.onOpenHooks.delete(hook);
+  }
+
+  discardBattleVisualReadiness(): void {
+    discardQueuedBattleVisualReadiness(this.queue);
   }
 }
 
@@ -64,6 +91,7 @@ export interface RoomConn {
   clearError: () => void;
   start: () => void;
   act: (action: GameAction) => void;
+  signalBattleVisualReady: (combatId: number, ready: boolean, visualSeq: number) => void;
   devViewAs: (seat: number | null) => void;
 }
 
@@ -74,8 +102,18 @@ export function useRoom(roomId: string, mode: 'watch' | 'play', name?: string): 
   const [playerIndex, setPlayerIndex] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const errTimer = useRef<number | undefined>(undefined);
+  const battleVisualSignal = useRef<{ combatId: number; visualSeq: number; ready: boolean } | null>(null);
+
+  const signalBattleVisualReady = useCallback((combatId: number, ready: boolean, visualSeq: number) => {
+    if (!Number.isSafeInteger(combatId) || !Number.isSafeInteger(visualSeq) || visualSeq < 0) return;
+    const signal = { combatId, visualSeq, ready };
+    battleVisualSignal.current = signal;
+    socket.send({ type: 'axis_battle_visual_ready', ...signal });
+  }, []);
 
   useEffect(() => {
+    battleVisualSignal.current = null;
+    socket.discardBattleVisualReadiness();
     const offMsg = socket.on((msg) => {
       switch (msg.type) {
         case 'room': setRoom(msg.info); break;
@@ -94,6 +132,11 @@ export function useRoom(roomId: string, mode: 'watch' | 'play', name?: string): 
     const offOpen = socket.onOpen(() => {
       if (mode === 'watch') {
         socket.send({ type: 'watch', roomId });
+        // Readiness lives on the socket, not in the save. If a ready TV briefly
+        // reconnects while the same cinematic remains mounted, acknowledge the
+        // exact battle again after re-attaching as a watcher.
+        const signal = battleVisualSignal.current;
+        if (signal?.ready) socket.send({ type: 'axis_battle_visual_ready', ...signal });
       } else {
         const token = localStorage.getItem(tokenKey(roomId)) ?? undefined;
         socket.send({ type: 'join', roomId, name: name ?? '', playerToken: token });
@@ -111,6 +154,7 @@ export function useRoom(roomId: string, mode: 'watch' | 'play', name?: string): 
     clearError: () => setError(null),
     start: () => socket.send({ type: 'start' }),
     act: (action) => socket.send({ type: 'action', action }),
+    signalBattleVisualReady,
     devViewAs: (seat) => socket.send({ type: 'dev_view', seat }),
   };
 }

@@ -64,6 +64,9 @@ continue a save or start a new one, and rooms are continuously persisted
 Devices keep a per-room token in localStorage and reconnect straight into their
 seat, so a resumed game continues exactly where it left off. Finished games and
 never-started lobbies are retired after a week, untouched games after 60 days.
+Deleting a save requires the creating device, the original host device, or an
+administrator bearer credential. Set `BGE_ADMIN_TOKEN` to a long random value
+when deployment-level save administration is needed.
 
 ## Layout
 

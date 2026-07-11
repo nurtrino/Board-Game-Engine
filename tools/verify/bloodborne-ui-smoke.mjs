@@ -96,6 +96,15 @@ function tickInPage() {
     if (lamps.length) { pick(lamps).click(); return 'return-lamp'; }
     const options = enabled(q('[data-testid="bb-mission-option"]', prompt));
     if (options.length) { pick(options).click(); return 'mission-choice'; }
+    if (kind === 'combat-reaction') {
+      const reactions = enabled(q('[data-testid^="bb-reaction-"]', prompt))
+        .filter((b) => b.getAttribute('data-testid') !== 'bb-reaction-pass');
+      if (reactions.length && Math.random() < 0.5) {
+        pick(reactions).click(); return 'combat-reaction:use';
+      }
+      const reactionPass = q('[data-testid="bb-reaction-pass"]', prompt);
+      if (reactionPass.length) { reactionPass[0].click(); return 'combat-reaction:pass'; }
+    }
     const cards = enabled(q('.bb-card', prompt));
     if (kind === 'combat-attack' && cards.length && Math.random() < 0.8) { pick(cards).click(); return 'combat-card'; }
     if ((kind === 'combat-dodge' || kind === 'combat-rider') && cards.length && Math.random() < 0.7) { pick(cards).click(); return 'dodge-card'; }
@@ -105,7 +114,7 @@ function tickInPage() {
       const disc = q('button', prompt).find((b) => text(b).includes('DISCARD THE UPGRADE'));
       if (disc) { disc.click(); return 'incorporate-discard'; }
     }
-    const pass = q('[data-testid="bb-combat-pass"], [data-testid="bb-dodge-pass"]', prompt);
+    const pass = q('[data-testid="bb-combat-pass"], [data-testid="bb-dodge-pass"], [data-testid="bb-reaction-pass"]', prompt);
     if (pass.length) { pass[0].click(); return kind + ':pass'; }
     const ghost = q('button.bb-btn.ghost, button.bb-btn', prompt).filter((b) => !b.disabled);
     if (ghost.length) { ghost[ghost.length - 1].click(); return kind + ':fallback'; }

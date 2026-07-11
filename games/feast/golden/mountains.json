@@ -1,0 +1,138 @@
+[
+  {
+    "id": "strip-01",
+    "order": 1,
+    "guid": "063814",
+    "sourceUrl": "http://i.imgur.com/sUZVzKQ.jpg",
+    "direction": "arrow-end-first",
+    "items": [
+      "wood",
+      "wood",
+      "stone",
+      "stone",
+      "stone",
+      "ore",
+      "silver-2"
+    ],
+    "image": "/feast/mountains/strip-01.webp"
+  },
+  {
+    "id": "strip-02",
+    "order": 2,
+    "guid": "c9d403",
+    "sourceUrl": "http://i.imgur.com/cm6dqRO.jpg",
+    "direction": "arrow-end-first",
+    "items": [
+      "wood",
+      "wood",
+      "wood",
+      "stone",
+      "stone",
+      "stone",
+      "silver-2"
+    ],
+    "image": "/feast/mountains/strip-02.webp"
+  },
+  {
+    "id": "strip-03",
+    "order": 3,
+    "guid": "c71013",
+    "sourceUrl": "http://i.imgur.com/CN7gyXx.jpg",
+    "direction": "arrow-end-first",
+    "items": [
+      "wood",
+      "wood",
+      "wood",
+      "wood",
+      "stone",
+      "ore",
+      "silver-2"
+    ],
+    "image": "/feast/mountains/strip-03.webp"
+  },
+  {
+    "id": "strip-04",
+    "order": 4,
+    "guid": "f0a898",
+    "sourceUrl": "http://i.imgur.com/pCsbvjo.jpg",
+    "direction": "arrow-end-first",
+    "items": [
+      "wood",
+      "wood",
+      "stone",
+      "stone",
+      "ore",
+      "ore",
+      "silver-2"
+    ],
+    "image": "/feast/mountains/strip-04.webp"
+  },
+  {
+    "id": "strip-05",
+    "order": 5,
+    "guid": "ee0daf",
+    "sourceUrl": "http://i.imgur.com/RvY2XmU.jpg",
+    "direction": "arrow-end-first",
+    "items": [
+      "wood",
+      "wood",
+      "wood",
+      "wood",
+      "stone",
+      "stone",
+      "silver-2"
+    ],
+    "image": "/feast/mountains/strip-05.webp"
+  },
+  {
+    "id": "strip-06",
+    "order": 6,
+    "guid": "bc611e",
+    "sourceUrl": "http://i.imgur.com/Rk0BqsO.jpg",
+    "direction": "arrow-end-first",
+    "items": [
+      "wood",
+      "wood",
+      "wood",
+      "stone",
+      "stone",
+      "ore",
+      "silver-2"
+    ],
+    "image": "/feast/mountains/strip-06.webp"
+  },
+  {
+    "id": "strip-07",
+    "order": 7,
+    "guid": "eb1d19",
+    "sourceUrl": "http://i.imgur.com/UvrELwV.jpg",
+    "direction": "arrow-end-first",
+    "items": [
+      "wood",
+      "wood",
+      "stone",
+      "ore",
+      "ore",
+      "silver-2",
+      "silver-2"
+    ],
+    "image": "/feast/mountains/strip-07.webp"
+  },
+  {
+    "id": "strip-08",
+    "order": 8,
+    "guid": "3db5c1",
+    "sourceUrl": "http://i.imgur.com/tq0GJk1.jpg",
+    "direction": "arrow-end-first",
+    "items": [
+      "wood",
+      "wood",
+      "wood",
+      "stone",
+      "ore",
+      "ore",
+      "silver-2"
+    ],
+    "image": "/feast/mountains/strip-08.webp"
+  }
+]

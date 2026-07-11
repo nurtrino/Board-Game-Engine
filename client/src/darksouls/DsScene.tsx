@@ -6,21 +6,22 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
-import { OrbitControls, useProgress } from '@react-three/drei';
+import { OrbitControls, Sparkles, useProgress } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import * as THREE from 'three';
 import {
-  DS_TILE_FACES, DS_ENEMIES, dsTileGraph,
-  type DsView, type DsBossUnit, type DsTileFace,
+  DS_TILE_FACES, DS_ENEMIES, DS_INVADERS, dsTileGraph,
+  type DsView, type DsBossUnit, type DsTileFace, type DsLogEntry,
 } from '@bge/shared';
 import {
   DS_FACE_ART, DS_BONFIRE_TILE, DS_FOG_WALL, DS_TRAP_TOKEN, DS_AGGRO_TOKEN,
   DS_SOULS_TOKEN, DS_CONDITION_TOKENS, DS_TERRAIN_MINI, DS_K, DS_SEAT_HEX,
-  dsFaceWorldWidth, dsClassMini, dsBossUnitMini, dsMiniOf,
+  dsFaceWorldWidth, dsClassMini, dsBossUnitMini, dsMiniForwardCorrection, dsMiniOf,
   type DsManifest, type DsMiniDef,
 } from './ds-assets';
+import { dsNearestPoint, dsYawToward, type DsBoardPoint } from './dsEncounterPresentation';
 
 const BOARD_Y = 0;
 
@@ -53,6 +54,11 @@ export function dsFaceSpace(faceId: string): DsFaceSpace {
   };
 }
 
+function pointAt(space: DsFaceSpace, nodeId: string): DsBoardPoint {
+  const [x, z] = space.nodeXZ(nodeId);
+  return { x, z };
+}
+
 /** Loading gate: true once every pending loader has finished at least once. */
 export function useDsSceneReady(): boolean {
   const { active, progress } = useProgress();
@@ -72,11 +78,11 @@ function TilePlane({ image, renderW, renderH }: { image: string; renderW: number
   }, [tex, gl]);
   return (
     <group>
-      <mesh position={[0, BOARD_Y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh receiveShadow position={[0, BOARD_Y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[renderW, renderH]} />
         <meshStandardMaterial map={tex} roughness={0.94} />
       </mesh>
-      <mesh position={[0, BOARD_Y - 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh receiveShadow position={[0, BOARD_Y - 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[renderW * 2.4, renderH * 2.4]} />
         <meshStandardMaterial color="#04060a" roughness={1} />
       </mesh>
@@ -127,6 +133,8 @@ function useDsObj(url: string, tint: number[] | null | undefined, textureUrl: st
       if ((o as THREE.Line).isLine || (o as THREE.Points).isPoints) { junk.push(o); return; }
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
+      m.castShadow = true;
+      m.receiveShadow = false;
       if (m.geometry) {
         const source = m.geometry as THREE.BufferGeometry;
         let geometry = normalizedGeometry.get(source.uuid);
@@ -156,18 +164,38 @@ function useDsObj(url: string, tint: number[] | null | undefined, textureUrl: st
   }, [obj, tex, tint, textureUrl]);
 }
 
-function MeshMini({ def, x, z, yaw = 0, highlight }: {
-  def: DsMiniDef; x: number; z: number; yaw?: number; highlight?: string | null;
+function MeshMini({ def, x, z, yaw = 0, highlight, beatKey }: {
+  def: DsMiniDef; x: number; z: number; yaw?: number; highlight?: string | null; beatKey?: string | null;
 }) {
   const { clone, minY, midX, midZ } = useDsObj(def.mesh!, def.tint, def.texture);
   const s = def.scale * DS_K; // authentic: OBJ bbox * mod scale = TTS world size
+  const correction = dsMiniForwardCorrection(def.id);
+  const group = useRef<THREE.Group>(null);
+  const initial = useRef({ x, z, yaw });
+  const beatClock = useRef(99);
+  const y = BOARD_Y - minY * s;
+  useEffect(() => { if (beatKey) beatClock.current = 0; }, [beatKey]);
+  useFrame((_state, delta) => {
+    const object = group.current;
+    if (!object) return;
+    const alpha = 1 - Math.exp(-8 * delta);
+    object.position.x = THREE.MathUtils.lerp(object.position.x, x, alpha);
+    object.position.z = THREE.MathUtils.lerp(object.position.z, z, alpha);
+    beatClock.current += delta;
+    const beat = beatClock.current < 0.62 ? Math.sin((beatClock.current / 0.62) * Math.PI) : 0;
+    object.position.y = y + beat * 0.16;
+    const turn = THREE.MathUtils.euclideanModulo(yaw - object.rotation.y + Math.PI, Math.PI * 2) - Math.PI;
+    object.rotation.y += turn * alpha;
+  });
   return (
-    <group position={[x, BOARD_Y - minY * s, z]} rotation={[0, yaw, 0]} scale={[s, s, s]}>
+    <group ref={group} position={[initial.current.x, y, initial.current.z]} rotation={[0, initial.current.yaw, 0]} scale={[s, s, s]}>
       {/* the primitive's offset applies after the group's yaw, so cancel the
           bbox centre in local space (playbook 4.2 centerXZ) */}
-      <primitive object={clone} position-x={-midX} position-z={-midZ} />
+      <group rotation-y={correction}>
+        <primitive object={clone} position-x={-midX} position-z={-midZ} />
+      </group>
       {highlight && (
-        <mesh position={[0, (0.02 - (BOARD_Y - minY * s)) / s, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[1 / s, 1 / s, 1 / s]}>
+        <mesh position={[0, (0.02 - y) / s, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[1 / s, 1 / s, 1 / s]}>
           <ringGeometry args={[0.42, 0.52, 32]} />
           <meshBasicMaterial color={highlight} transparent opacity={0.95} depthWrite={false} />
         </mesh>
@@ -178,18 +206,44 @@ function MeshMini({ def, x, z, yaw = 0, highlight }: {
 
 // ---------- flat figurine standees ----------
 
-function Standee({ def, x, z, highlight }: { def: DsMiniDef; x: number; z: number; highlight?: string | null }) {
+function Standee({ def, x, z, yaw = 0, highlight, beatKey }: {
+  def: DsMiniDef; x: number; z: number; yaw?: number; highlight?: string | null; beatKey?: string | null;
+}) {
   const tex = useLoader(THREE.TextureLoader, def.texture!);
-  useMemo(() => { tex.colorSpace = THREE.SRGBColorSpace; }, [tex]);
+  const backTex = useLoader(THREE.TextureLoader, def.textureBack ?? def.texture!);
+  useMemo(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    backTex.colorSpace = THREE.SRGBColorSpace;
+  }, [tex, backTex]);
   const img = tex.image as { width: number; height: number } | undefined;
   const worldH = def.scale * 1.8; // figurine height factor: megaboss standee (7) matches the kings' 12.8-unit sculpts
   const h = worldH * DS_K;
   const w = h * ((img?.width ?? 1) / (img?.height ?? 1));
+  const group = useRef<THREE.Group>(null);
+  const initial = useRef({ x, z, yaw });
+  const beatClock = useRef(99);
+  useEffect(() => { if (beatKey) beatClock.current = 0; }, [beatKey]);
+  useFrame((_state, delta) => {
+    const object = group.current;
+    if (!object) return;
+    const alpha = 1 - Math.exp(-8 * delta);
+    object.position.x = THREE.MathUtils.lerp(object.position.x, x, alpha);
+    object.position.z = THREE.MathUtils.lerp(object.position.z, z, alpha);
+    beatClock.current += delta;
+    const beat = beatClock.current < 0.62 ? Math.sin((beatClock.current / 0.62) * Math.PI) : 0;
+    object.position.y = beat * 0.16;
+    const turn = THREE.MathUtils.euclideanModulo(yaw - object.rotation.y + Math.PI, Math.PI * 2) - Math.PI;
+    object.rotation.y += turn * alpha;
+  });
   return (
-    <group position={[x, 0, z]}>
-      <mesh position={[0, BOARD_Y + h / 2, 0]} rotation={[0, Math.PI * 0.13, 0]}>
+    <group ref={group} position={[initial.current.x, 0, initial.current.z]} rotation={[0, initial.current.yaw, 0]}>
+      <mesh castShadow position={[0, BOARD_Y + h / 2, 0]}>
         <planeGeometry args={[w, h]} />
-        <meshStandardMaterial map={tex} transparent alphaTest={0.35} side={THREE.DoubleSide} roughness={0.85} />
+        <meshStandardMaterial map={tex} transparent alphaTest={0.35} side={THREE.FrontSide} roughness={0.85} />
+      </mesh>
+      <mesh castShadow position={[0, BOARD_Y + h / 2, -0.002]} rotation={[0, Math.PI, 0]}>
+        <planeGeometry args={[w, h]} />
+        <meshStandardMaterial map={backTex} transparent alphaTest={0.35} side={THREE.FrontSide} roughness={0.85} />
       </mesh>
       <mesh position={[0, BOARD_Y + 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[w * 0.3, 24]} />
@@ -205,12 +259,12 @@ function Standee({ def, x, z, highlight }: { def: DsMiniDef; x: number; z: numbe
   );
 }
 
-function Mini({ def, x, z, yaw, highlight }: {
-  def: DsMiniDef | null; x: number; z: number; yaw?: number; highlight?: string | null;
+function Mini({ def, x, z, yaw, highlight, beatKey }: {
+  def: DsMiniDef | null; x: number; z: number; yaw?: number; highlight?: string | null; beatKey?: string | null;
 }) {
   if (!def) return null;
-  if (def.mesh) return <MeshMini def={def} x={x} z={z} yaw={yaw} highlight={highlight} />;
-  if (def.texture) return <Standee def={def} x={x} z={z} highlight={highlight} />;
+  if (def.mesh) return <MeshMini def={def} x={x} z={z} yaw={yaw} highlight={highlight} beatKey={beatKey} />;
+  if (def.texture) return <Standee def={def} x={x} z={z} yaw={yaw} highlight={highlight} beatKey={beatKey} />;
   return null;
 }
 
@@ -259,6 +313,53 @@ function WoundPips({ x, z, wounds, health }: { x: number; z: number; wounds: num
       ))}
     </group>
   );
+}
+
+function CombatBurst({ x, z, magic = false }: { x: number; z: number; magic?: boolean }) {
+  const group = useRef<THREE.Group>(null);
+  const ring = useRef<THREE.MeshBasicMaterial>(null);
+  const core = useRef<THREE.MeshBasicMaterial>(null);
+  const light = useRef<THREE.PointLight>(null);
+  const age = useRef(0);
+  const color = magic ? '#78a9ff' : '#ff7b3d';
+  useFrame((_state, delta) => {
+    age.current += delta;
+    const t = Math.min(1, age.current / 1.1);
+    if (group.current) {
+      group.current.scale.setScalar(0.7 + t * 3.8);
+      group.current.rotation.y += delta * 1.8;
+    }
+    if (ring.current) ring.current.opacity = Math.max(0, (1 - t) * 0.9);
+    if (core.current) core.current.opacity = Math.max(0, (1 - t) * 0.72);
+    if (light.current) light.current.intensity = Math.max(0, (1 - t) * 8);
+  });
+  return (
+    <group ref={group} position={[x, BOARD_Y + 0.08, z]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.2, 0.32, 32]} />
+        <meshBasicMaterial ref={ring} color={color} transparent opacity={0.9} depthWrite={false} blending={THREE.AdditiveBlending} />
+      </mesh>
+      <mesh position={[0, 0.16, 0]}>
+        <sphereGeometry args={[0.13, 14, 10]} />
+        <meshBasicMaterial ref={core} color={color} transparent opacity={0.72} depthWrite={false} blending={THREE.AdditiveBlending} />
+      </mesh>
+      {Array.from({ length: 6 }, (_, index) => {
+        const angle = index * Math.PI / 3;
+        return (
+          <mesh key={index} position={[Math.cos(angle) * 0.24, 0.13, Math.sin(angle) * 0.24]}
+            rotation={[0, -angle, Math.PI / 4]}>
+            <boxGeometry args={[0.035, 0.28, 0.035]} />
+            <meshBasicMaterial color={color} transparent opacity={0.7} depthWrite={false} blending={THREE.AdditiveBlending} />
+          </mesh>
+        );
+      })}
+      <pointLight ref={light} color={color} intensity={8} distance={4.5} decay={2} />
+    </group>
+  );
+}
+
+function modelHealth(typeId: string, invader = false): number {
+  return (invader ? DS_INVADERS[typeId]?.data.health : DS_ENEMIES[typeId]?.data.health) ?? 1;
 }
 
 // ---------- boss arc indicator ----------
@@ -326,13 +427,34 @@ export interface DsFocus { x: number; z: number; dist: number }
 function Rig({ home, focus }: { home: DsFocus; focus: DsFocus | null }) {
   const ref = useRef<OrbitControlsImpl>(null);
   const goal = useRef<DsFocus | null>(null);
+  const { camera } = useThree();
   useEffect(() => { goal.current = focus; }, [focus]);
-  useFrame(({ camera }) => {
+  useEffect(() => {
+    const host = window as unknown as { __setCam?: (azimuth: number, elevation: number, distance: number) => void };
+    const setCam = (azimuth: number, elevation: number, distance: number) => {
+      const controls = ref.current;
+      if (!controls) return;
+      const az = THREE.MathUtils.degToRad(azimuth);
+      const el = THREE.MathUtils.degToRad(elevation);
+      const flat = Math.cos(el) * distance;
+      camera.position.set(
+        controls.target.x + Math.sin(az) * flat,
+        controls.target.y + Math.sin(el) * distance,
+        controls.target.z + Math.cos(az) * flat,
+      );
+      camera.lookAt(controls.target);
+      controls.update();
+      goal.current = null;
+    };
+    host.__setCam = setCam;
+    return () => { if (host.__setCam === setCam) delete host.__setCam; };
+  }, [camera]);
+  useFrame(() => {
     const g = goal.current;
     const ctl = ref.current;
     if (!g || !ctl) return;
-    ctl.target.lerp(new THREE.Vector3(g.x, 0, g.z), 0.07);
-    const targetPos = new THREE.Vector3(g.x + 0.0001, g.dist, g.z + g.dist * 0.62);
+    ctl.target.lerp(new THREE.Vector3(g.x, 0.28, g.z), 0.07);
+    const targetPos = new THREE.Vector3(g.x + 0.0001, g.dist * 0.82, g.z + g.dist * 0.72);
     camera.position.lerp(targetPos, 0.055);
     ctl.update();
     if (camera.position.distanceTo(targetPos) < 0.35) goal.current = null;
@@ -340,11 +462,12 @@ function Rig({ home, focus }: { home: DsFocus; focus: DsFocus | null }) {
   return (
     <OrbitControls
       ref={ref}
-      target={[home.x, 0, home.z]}
+      target={[home.x, 0.28, home.z]}
       enableDamping
       dampingFactor={0.08}
       minDistance={3}
       maxDistance={60}
+      minPolarAngle={Math.PI * 0.12}
       maxPolarAngle={Math.PI * 0.44}
     />
   );
@@ -360,10 +483,11 @@ const BONFIRE_SPOTS: [number, number][] = [
 
 // ---------- the table ----------
 
-export function DsTable({ view, manifest, focus }: {
+export function DsTable({ view, manifest, focus, combatBeat }: {
   view: DsView;
   manifest: DsManifest;
   focus: DsFocus | null;
+  combatBeat?: DsLogEntry | null;
 }) {
   const enc = view.encounter;
   const atBonfire = !enc && view.partyAt === 'bonfire';
@@ -373,6 +497,12 @@ export function DsTable({ view, manifest, focus }: {
   const space = useMemo(() => dsFaceSpace(atBonfire ? 'bonfire' : faceId), [atBonfire, faceId]);
   const art = atBonfire ? DS_BONFIRE_TILE : DS_FACE_ART[faceId] ?? DS_BONFIRE_TILE;
   const tile = enc?.tileId ? view.tiles.find((t) => t.id === enc.tileId) : null;
+  const aliveEnemies = enc?.enemies.filter((enemy) => enemy.wounds < modelHealth(enemy.typeId, enemy.invader)) ?? [];
+  const isCombatBeat = Boolean(combatBeat && (combatBeat.kind === 'attack' || combatBeat.kind === 'dice' || combatBeat.kind === 'death'));
+  const combatBeatKey = isCombatBeat && combatBeat ? `${combatBeat.kind}:${combatBeat.text}:${combatBeat.nodeId ?? ''}:${combatBeat.seat ?? ''}` : null;
+  const beatAtNode = (nodeId: string | null) => combatBeatKey && nodeId && combatBeat?.nodeId === nodeId ? combatBeatKey : null;
+  const beatAtSeat = (seat: number, nodeId: string | null) => combatBeatKey
+    && (combatBeat?.seat === seat || (nodeId && combatBeat?.nodeId === nodeId)) ? combatBeatKey : null;
 
   // characters: on nodes during an encounter, around the fire at the bonfire
   const charSpots = useMemo(() => {
@@ -400,28 +530,67 @@ export function DsTable({ view, manifest, focus }: {
   const nodeCount = new Map<string, number>();
   if (enc) {
     for (const ch of view.characters) if (ch.nodeId) nodeCount.set(ch.nodeId, (nodeCount.get(ch.nodeId) ?? 0) + 1);
-    for (const e of enc.enemies) nodeCount.set(e.nodeId, (nodeCount.get(e.nodeId) ?? 0) + 1);
+    for (const e of aliveEnemies) nodeCount.set(e.nodeId, (nodeCount.get(e.nodeId) ?? 0) + 1);
     for (const u of view.boss?.units ?? []) if (u.inPlay && u.nodeId) nodeCount.set(u.nodeId, (nodeCount.get(u.nodeId) ?? 0) + 1);
     if (view.summon?.nodeId) nodeCount.set(view.summon.nodeId, (nodeCount.get(view.summon.nodeId) ?? 0) + 1);
   }
 
   const bossNodes = new Set((view.boss?.units ?? []).filter((u) => u.inPlay && u.nodeId).map((u) => u.nodeId as string));
 
-  const home: DsFocus = { x: 0, z: 0, dist: Math.max(space.renderW, space.renderH) * 1.02 };
+  const characterPoints: DsBoardPoint[] = view.characters.flatMap((character) =>
+    character.nodeId ? [pointAt(space, character.nodeId)] : []);
+  const enemyPoints: DsBoardPoint[] = aliveEnemies.map((enemy) => pointAt(space, enemy.nodeId));
+  const bossPoints: DsBoardPoint[] = (view.boss?.units ?? []).flatMap((unit) =>
+    unit.inPlay && unit.nodeId ? [pointAt(space, unit.nodeId)] : []);
+  const hostilePoints = [...enemyPoints, ...bossPoints];
+  const faceNearest = (from: DsBoardPoint, targets: DsBoardPoint[]) =>
+    dsYawToward(from, dsNearestPoint(from, targets) ?? { x: 0, z: 0 });
+
+  const home: DsFocus = {
+    x: 0,
+    z: 0,
+    // Boss sculpts project far above the arena plane; the wider establishing
+    // shot keeps their silhouette in frame before combat close-ups begin.
+    dist: Math.max(space.renderW, space.renderH) * (view.phase === 'bossEncounter' ? 1.24 : 1.02),
+  };
 
   return (
     <Canvas
-      camera={{ position: [0, home.dist, home.dist * 0.62], fov: 42 }}
+      shadows
+      camera={{ position: [0, home.dist * 0.82, home.dist * 0.72], fov: 40 }}
       dpr={[1, 1.5]}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
+      onCreated={({ gl }) => {
+        gl.toneMapping = THREE.ACESFilmicToneMapping;
+        gl.toneMappingExposure = 1.08;
+        gl.shadowMap.enabled = true;
+        gl.shadowMap.type = THREE.PCFSoftShadowMap;
+      }}
       style={{ position: 'absolute', inset: 0, background: '#04060a' }}
     >
-      <ambientLight intensity={0.72} />
-      <directionalLight position={[14, 26, 10]} intensity={1.1} />
-      <directionalLight position={[-12, 18, -14]} intensity={0.35} />
+      <fog attach="fog" args={['#030509', 28, 62]} />
+      <hemisphereLight args={['#8390ad', '#150d09', 0.5]} />
+      <ambientLight intensity={0.18} />
+      <directionalLight
+        castShadow color="#ffd4a3" position={[12, 24, 8]} intensity={2.05}
+        shadow-mapSize-width={1536} shadow-mapSize-height={1536}
+        shadow-camera-left={-18} shadow-camera-right={18} shadow-camera-top={18} shadow-camera-bottom={-18}
+        shadow-camera-near={1} shadow-camera-far={52} shadow-bias={-0.00035}
+      />
+      <directionalLight color="#7896c8" position={[-14, 14, -12]} intensity={0.72} />
+      <spotLight color="#db6f39" position={[-7, 11, 5]} intensity={atBonfire ? 28 : 13}
+        distance={28} angle={0.62} penumbra={0.9} decay={2} />
+      <pointLight color={atBonfire ? '#ff8a38' : '#9f3e27'} position={[0, 2.8, 0]}
+        intensity={atBonfire ? 21 : 7} distance={17} decay={2} />
       <Suspense fallback={null}>
         <TilePlane key={atBonfire ? 'bonfire' : faceId} image={art.image} renderW={space.renderW} renderH={space.renderH} />
         {!atBonfire && <NodeMarkers space={space} />}
+        {combatBeatKey && combatBeat?.nodeId && space.face && (
+          <CombatBurst key={combatBeatKey} x={space.nodeXZ(combatBeat.nodeId)[0]} z={space.nodeXZ(combatBeat.nodeId)[1]}
+            magic={/magic|spell|sorcer/i.test(combatBeat.text)} />
+        )}
+        <Sparkles count={atBonfire ? 34 : 16} scale={[space.renderW * 0.72, 4.5, space.renderH * 0.72]}
+          position={[0, 2.1, 0]} size={0.72} speed={0.18} opacity={0.42} color={atBonfire ? '#ff9a4a' : '#bd6b46'} />
 
         {/* terrain pieces from the encounter card rows */}
         {enc?.terrain.map((t, i) => {
@@ -430,9 +599,10 @@ export function DsTable({ view, manifest, focus }: {
           if ((t.piece === 'chest' || t.piece === 'mimic-chest') && bossNodes.has(t.nodeId)) return null; // the mimic replaced its chest
           const def = dsMiniOf(manifest, DS_TERRAIN_MINI[t.piece] ?? t.piece);
           const opened = tile?.chests[t.nodeId] === 'open';
+          const yaw = dsYawToward({ x, z }, { x: 0, z: 0 });
           return (
             <group key={`ter${i}`}>
-              <Mini def={def} x={x} z={z} highlight={opened ? '#c9a25a' : null} />
+              <Mini def={def} x={x} z={z} yaw={yaw} highlight={opened ? '#c9a25a' : null} />
             </group>
           );
         })}
@@ -452,17 +622,19 @@ export function DsTable({ view, manifest, focus }: {
         )}
 
         {/* enemies */}
-        {enc?.enemies.map((e) => {
+        {aliveEnemies.map((e) => {
           const [nx, nz] = space.nodeXZ(e.nodeId);
           const [ox, oz] = stackShift(takeSlot(e.nodeId), nodeCount.get(e.nodeId) ?? 1);
           const def = dsMiniOf(manifest, e.typeId);
-          const health = DS_ENEMIES[e.typeId]?.data.health ?? 1;
+          const health = modelHealth(e.typeId, e.invader);
+          const x = nx + ox, z = nz + oz;
+          const yaw = faceNearest({ x, z }, characterPoints);
           return (
             <group key={e.uid}>
-              <Mini def={def} x={nx + ox} z={nz + oz} highlight={e.invader ? '#b06adf' : null} />
-              <WoundPips x={nx + ox} z={nz + oz} wounds={e.wounds} health={health} />
+              <Mini def={def} x={x} z={z} yaw={yaw} highlight={e.invader ? '#b06adf' : null} beatKey={beatAtNode(e.nodeId)} />
+              <WoundPips x={x} z={z} wounds={e.wounds} health={health} />
               {e.conditions.map((c, k) => (
-                <FlatToken key={c} image={DS_CONDITION_TOKENS[c]} x={nx + ox - 0.5 + k * 0.3} z={nz + oz - 0.6} r={0.15} lift={0.035} />
+                <FlatToken key={c} image={DS_CONDITION_TOKENS[c]} x={x - 0.5 + k * 0.3} z={z - 0.6} r={0.15} lift={0.035} />
               ))}
             </group>
           );
@@ -476,7 +648,7 @@ export function DsTable({ view, manifest, focus }: {
           takeSlot(u.nodeId);
           return (
             <group key={u.key}>
-              <Mini def={def} x={x} z={z} yaw={yaw} />
+              <Mini def={def} x={x} z={z} yaw={yaw} beatKey={beatAtNode(u.nodeId)} />
               <ArcIndicator x={x} z={z} facing={u.facing} r={1.05} />
             </group>
           );
@@ -487,9 +659,10 @@ export function DsTable({ view, manifest, focus }: {
           const [ox, oz] = enc ? stackShift(takeSlot(ch.nodeId), nodeCount.get(ch.nodeId ?? '') ?? 1) : [0, 0];
           const def = dsClassMini(manifest, ch.classId);
           const x = xz[0] + ox, z = xz[1] + oz;
+          const yaw = atBonfire ? dsYawToward({ x, z }, { x: 0, z: 0 }) : faceNearest({ x, z }, hostilePoints);
           return (
             <group key={ch.seat}>
-              <Mini def={def} x={x} z={z} highlight={DS_SEAT_HEX[ch.seat % DS_SEAT_HEX.length]} />
+              <Mini def={def} x={x} z={z} yaw={yaw} highlight={DS_SEAT_HEX[ch.seat % DS_SEAT_HEX.length]} beatKey={beatAtSeat(ch.seat, ch.nodeId)} />
               {view.aggroSeat === ch.seat && enc && (
                 <FlatToken image={DS_AGGRO_TOKEN} x={x + 0.62} z={z + 0.5} r={0.26} lift={0.03} />
               )}
@@ -504,7 +677,9 @@ export function DsTable({ view, manifest, focus }: {
         {view.summon?.nodeId && (() => {
           const [nx, nz] = space.nodeXZ(view.summon.nodeId);
           const [ox, oz] = stackShift(takeSlot(view.summon.nodeId), nodeCount.get(view.summon.nodeId) ?? 1);
-          return <Mini def={dsMiniOf(manifest, view.summon.id)} x={nx + ox} z={nz + oz} highlight="#cfd8ff" />;
+          const x = nx + ox, z = nz + oz;
+          return <Mini def={dsMiniOf(manifest, view.summon.id)} x={x} z={z} yaw={faceNearest({ x, z }, hostilePoints)}
+            highlight="#cfd8ff" beatKey={beatAtNode(view.summon.nodeId)} />;
         })()}
 
         {/* the fog gate wall on the boss arena entry */}

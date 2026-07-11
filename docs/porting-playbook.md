@@ -20,10 +20,10 @@ Monorepo, three workspaces:
   source (`@bge/shared` → `shared/src/index.ts`, no build step).
 
 **Multi-game.** A room carries a `game` id: `'brass' | 'ttr' | 'trek' |
-'darktower'`. The server has an `engines` registry (create/view/apply per game)
-and `GAME_SEATS` (seat colours per game). The client dispatches by `view.game`:
-`BoardPage` → `TtrBoard`/`TrekBoard`/`DtBoard`; `PlayPage` → `TtrPlay`/`TrekPlay`/
-`DtPlay` (Brass renders inline in `PlayPage`/`BoardPage`).
+'darktower' | 'dune' | 'axis' | 'politik' | 'darksouls'`. The server has an
+`engines` registry (create/view/apply per game) and `GAME_SEATS` (seat colours
+per game). The client dispatches the shared `GameView` by `view.game` from
+`BoardPage` and `PlayPage` into the appropriate TV/device implementation.
 
 **Rooms are saves.** Persisted continuously, rehydrated at boot, reconnect by a
 per-room token in `localStorage`. Deleting a save = `DELETE /api/saves/:id`.
@@ -51,6 +51,10 @@ transform). Ported mods:
 | Ticket to Ride: Rails & Sails | `ttr` | 3324777769 |
 | Trekking the National Parks | `trek` | 2102536379 |
 | Dark Tower | `darktower` | 873019835 |
+| Dune: Imperium | `dune` | 2354919205 |
+| Axis & Allies Anniversary Edition | `axis` | 1961347286 |
+| Politik | `politik` | 3460664356 |
+| Dark Souls: The Board Game | `darksouls` | 1210887127 |
 
 **Tools** (`tools/tts-extract/`), run with `node`:
 
@@ -138,6 +142,21 @@ Some rules data only exists as printed art. The workflow that held up:
   the rulebook's worked example (Lassen Volcanic = canoe+mountain+boot matched
   my icon reading exactly) and distribution counts (13×VP5 / 16×VP7 / 10×VP10,
   icon count follows VP tier). If those line up, the reading is right.
+- **OCR is a transcription hint, never rules authority.** Do not make every
+  card pass through a confirmation wall just because some cards are uncertain.
+  Verified structured cards should play normally. Drawing, browsing, holding,
+  or enlarging an uncertain card should ask for nothing; only when the player
+  actually uses it should the device show the authentic art and one `ENTER
+  PRINTED VALUES` action for the fields that matter to that use. A human's
+  declaration overrides the OCR hint for legality and resolution, and changing
+  any entered field invalidates the previous confirmation. Label OCR copy as
+  optional and unenforced so a bad transcription can never break the game.
+- **Guide unencoded printed effects instead of guessing them.** Keep the
+  enlarged authentic card visible beside a typed resolver for bounded operations
+  such as resources, card movement, Support/Influence, Markets/Margin, prices,
+  readiness, and acknowledgements. Validate ownership and numeric bounds in the
+  engine and write a precise public audit event. This preserves an honor-system
+  card's flexibility without allowing arbitrary client state edits.
 - **Board graphs: verify by line overlay.** Draw every transcribed edge as a
   cyan line over the full-res board art, then inspect quadrant-by-quadrant:
   every line must lie on a printed trail and every printed trail must have a
@@ -331,6 +350,33 @@ engine emits `{pic,lcd,sfx,ms}` steps; a `useTowerDisplay` hook exposes an
 comes "through" the focused board; keep the phones silent so a TV+phones table
 doesn't double up.
 
+### 4.5 Reconstruct personal tableaux from physical ownership
+
+Before choosing a renderer, inventory every object around one TTS seat and
+record four facts: **owner, multiplicity, printed zone, and orientation**. Politik
+showed why all four matter. Its Nation card and three leaders belong on the
+Nation board; every controlled Company owns a separate narrow Company tracker
+and exactly one Margin marker; Support and Corruption belong on the shared board
+and must not be duplicated as loose personal pieces.
+
+- If the personal objects are flat, coplanar, and share a yaw, a fixed top-down
+  tableau built from the authentic art can be more faithful than a forced 3D
+  camera. An arbitrary angle adds perspective drift, clips the mat, and can turn
+  rotated cards edge-on. Keep WebGL for genuinely three-dimensional personal
+  objects or interactions, not as a requirement in itself.
+- Reproduce **one physical component per real instance**: one tracker per
+  Company, one marker per tracker, one card per card in play. Never reuse one
+  printed tracker for several entities or add fallback cards that are not in
+  the state. Show clear empty states instead of placeholders.
+- Preserve source-art aspect ratios. Constrain one dimension and let the other
+  remain automatic; stretching a narrow tracker to fill a rectangular slot is
+  immediately visible. Use `object-fit: contain` for authentic component art.
+- A shared-board fact that players need constantly may be summarized on the
+  device, but label its location explicitly (`SUPPORT ON MAIN BOARD`,
+  `CORRUPTION · BOARD`) rather than drawing a second physical piece.
+- Counts are exact state, not decorative tracks. Do not clamp a resource because
+  the convenient graphic stops at 12 when the real game can hold 20–40.
+
 ---
 
 ## 5. Owner's product preferences (hold these unless told otherwise)
@@ -342,16 +388,19 @@ doesn't double up.
 - In-game backgrounds are **black**.
 - The TV is the shared table (fills the screen with the board); the player
   **devices** hold hands + take actions.
-- Each device shows the player's **mat rendered as real 3D game objects** —
-  the mod's own player board, leader/reference card, pawns, troop pieces and
-  resource tokens laid out like the physical table (skip the storage bowls).
-  Text counts alone are not enough; the mat is a scene, not a stat sheet.
+- Each device shows the player's **physical tableau reconstructed from the
+  mod's real art and component layout** — the player board, leader/reference
+  card, pawns, trackers, cards and resource pieces arranged like the source
+  table (skip storage bowls). This may be a real 3D scene or a fixed top-down
+  DOM/CSS tableau when the source objects are flat and coplanar. Text counts
+  alone are not enough; it must still read as the game's physical table, not a
+  generic stat sheet.
 - **Orbit camera is for the shared TV board; the personal mat is a fixed
   frame.** The main board keeps a movable orbit camera (authenticity, §5
-  authenticity). The *personal player-mat* view is real 3D but a **fixed,
-  gently-angled, non-interactive** readout — the owner asked for it not to be
-  movable (nothing to fly around on your own board). Frame it flat-ish so the
-  whole mat reads at a glance.
+  authenticity). The personal view is fixed and non-interactive except for
+  selecting or inspecting components. Match the source geometry: use a gentle
+  fixed angle only when it helps real 3D objects read; use true top-down when
+  the TTS layout itself is flat. The whole tableau must read at a glance.
 - **Surface everything on the one no-scroll page — don't hide it behind a
   stats/overlay menu.** Once the mat and the resource/influence readouts live on
   the main device screen, a separate "house/detail" overlay that repeats them is
@@ -417,8 +466,10 @@ play) so the TV can narrate each move; instant bot turns were rejected.
 **Authenticity over convenience** — use the mod's *real* meshes, textures,
 sounds, card art, and board; reproduce the physical object (down to a game's
 electronic panel). Fabricated/placeholder art is only ever a stopgap and will be
-replaced the moment the real asset is found. Real 3D with an orbit camera, never
-2D sprites.
+replaced the moment the real asset is found. The shared table stays genuinely
+3D when the game has a spatial board. A flat personal tableau may use authentic
+art in DOM/CSS when that preserves the source layout better than perspective;
+that is not permission to replace real components with generic icons or sprites.
 
 **Respect the mod's design, don't over-engineer rules** — Dark Tower is
 honor-system on board position, so we keep its exact electronic brain and expose
@@ -452,7 +503,53 @@ the hand for vertical space, make the hand a **single horizontal swipeable row**
 (`nowrap` + `overflow-x`) rather than letting it wrap to two rows and push itself
 below the fold.
 
-### 5.1 Dislikes — the things that come back (fix before showing)
+### 5.1 Personal-device patterns that held up in Politik
+
+The Politik personal screen was the clearest test so far because it had to keep
+a Nation board, exact resources, multiple Company boards, a hand, action controls,
+and access to the shared map inside a 1024×768 device. The combination that
+looked best was **authentic cream component art inside dark, low-contrast glass
+panels**, with thin borders, restrained seat-colour wash, uppercase section
+labels, and strong numeric counts. The art carries the game's identity; the dark
+shell organizes it without competing with it.
+
+- **Use three obvious zones:** identity/player board, exact personal ledger, and
+  controlled entities. Keep their order stable and give each a real heading.
+  Adaptive density is better than a permanently sparse grid: a single Company
+  should use its available zone, then add columns as more Companies enter play,
+  without stretching any authentic art.
+- **Put private and always-needed information on the device.** Keep spatial
+  movement and shared-board targets on the main board. Provide a one-tap
+  `PERSONAL / MAIN BOARD` switch; actions that need a board target may switch
+  automatically and return after confirmation. Hide the inactive layer instead
+  of stacking a mini main board over the personal tableau.
+- **Every visible card is an inspection control.** Setup choices, hand cards,
+  Nations, Propaganda, Companies, Assets, Events, references, and Clash cards
+  should all open the same full-size authentic-art dialog. Selection and close-up
+  are separate actions so zooming never accidentally commits a card. Keep hidden
+  opponent cards hidden, and label the dialog for keyboard/screen-reader use.
+- **Keep cards upright and state explicit.** Use `READY` / `USED` text, restrained
+  dimming, and an overlay rather than rotation as the only state cue. Imported
+  Euler rotation made a used Politik card appear edge-on.
+- **Make uncertainty local and proportional.** An uncertain card opens one
+  manual-entry choice only when used, with only type-relevant fields. Verified
+  Startups and structured cards bypass it. Show the authentic card beside the
+  editor and keep the normal play action locked until the entered values are
+  ready; never ask players to approve every OCR field in advance. Companies and
+  Assets ask for their Industries/Margin, Propaganda for Base/Support, and Events
+  for only their applicable timing or printed icons.
+- **Style native controls all the way through.** Apply dark background, light
+  foreground, `color-scheme: dark`, readable type, and touch height to both
+  `select` and `option`. Styling only the closed select still produces a
+  white-on-white dropdown on some browsers. Politik's roughly 40 px controls
+  stayed usable at tablet size.
+- **Use labels instead of ambiguous decorative stacks.** One literal Margin
+  marker belongs on its Company track; Markets and other repeated pieces may be
+  summarized with art plus a count badge when a physical pile would become
+  illegible. Empty states should explain where the missing component is, such as
+  “Startup stays in your hand until played.”
+
+### 5.2 Dislikes — the things that come back (fix before showing)
 
 - **Floating pieces.** Anything not seated flat on the board (§4.2).
 - **Wrong / mirrored placement.** Pieces upside-down, on the wrong slot, or
@@ -466,6 +563,14 @@ below the fold.
   reason; don't let the tap bounce an error toast).
 - **Cards sideways**, hands horizontal, art rotated wrong.
 - **Scrolling** to see your own board/card.
+- **An arbitrary angle on a flat personal mat**, especially when it shifts
+  pieces off printed zones, clips the board, or turns a used card edge-on.
+- **Unreadably small device text or native white-on-white controls.** Check the
+  real tablet viewport and style the opened dropdown options, not just its shell.
+- **Blanket confirmation screens for uncertain OCR.** Ask only when that card is
+  used and only for values needed by that use.
+- **Duplicated or misowned pieces, shared trackers, and stretched art.** Physical
+  ownership and multiplicity must match the source table even in a DOM tableau.
 - **Emoji, em dashes, a hardcoded game name** in the lobby, a dot instead of an
   outline for seat colour — the copy/HUD rules in §5 are hard rules.
 
@@ -498,6 +603,21 @@ the *data and geometry* are right and hand him a working build.
   structure and that images load. The MCP `preview_screenshot` often times out
   on a live WebGL canvas — use the puppeteer drivers below instead, which
   render 3D reliably (they launch Chrome with swiftshader GL flags).
+- **Personal-device geometry checks need a populated live state at the true
+  target viewport**, not only an empty setup screen or a wide desktop preview.
+  At 1024×768, assert that the page has no vertical or horizontal scroll; major
+  zones are ordered, contained, and non-overlapping; inactive board layers are
+  actually hidden; tracker count equals controlled-entity count; and each
+  tracker has exactly one marker. Measure card/tracker aspect ratios, important
+  label/value font sizes, and touch targets. For card-heavy games, verify a
+  close-up is at least about 370×540 in this viewport and that it closes by its
+  button, outside click, and Escape.
+- **Give geometry stable hooks.** Add `data-testid` attributes to the personal
+  root, each major zone, repeated physical components, the main/personal switch,
+  card close-up, and uncertainty editor. Screenshots catch appearance; computed
+  rectangle/count/contrast assertions catch a structurally wrong layout that
+  happens to look plausible in one state. For native selects, inspect computed
+  colours on both `select` and `option`.
 - Golden ↔ `scene.json` ↔ `shared/board-data.json` must agree (snaps, route
   groupings, transform).
 
@@ -559,8 +679,10 @@ This is how you actually see the 3D board and prove a full game plays:
 - Use the dedicated file/search tools, not shell `find`/`grep`, per repo rules.
 - Typecheck the client **from `client/`** (`cd client && npx tsc --noEmit`);
   there's no root tsconfig and the server has none (it's `tsx`-only — engine
-  correctness comes from the test suites). `npm test` at the root is a stub;
-  run the suites individually with `npx tsx shared/src/<game>/<game>-test.ts`.
+  correctness comes from the test suites). Root `npm test` now runs the shared,
+  server, and client suites. For faster iteration, run a focused game suite with
+  `npx tsx shared/src/<game>/<game>-test.ts`, then run the root suite before
+  handoff.
 
 ### 6.2b When the owner says it's broken on the live site
 
@@ -685,11 +807,16 @@ the *engine* can finish a game; neither gate below is covered by it.
 7. Build the TV board + device components: reuse the `ig-*` HUD, sound hooks
    (action/turn/win on TV, click/error on device), the whose-turn indicator,
    Show-deck, and `GameIntro` + rulebook. Seat every piece on the board (§4.2).
-   If the mod has its own control surface, reproduce it (§4.4).
+   If the mod has its own control surface, reproduce it (§4.4). Inventory each
+   personal component's ownership, multiplicity, printed zone, orientation, and
+   aspect ratio before choosing 3D or a fixed top-down tableau (§4.5). Give every
+   displayed card a close-up and every state an explicit text cue.
 8. Add the game tile to `SelectGame`; make sure the lobby is game-aware.
 9. Verify: engine tests green; `page-errors.mjs` clean; `shoot.mjs`/phone-shot
-   zoom-checks that pieces sit right and spawns are correct; a live WS smoke
-   test plays a full game (§6.1). Then hand the owner a running build.
+   zoom-checks that pieces sit right and spawns are correct; a populated
+   personal-device state fits at 1024×768 with readable labels, dark controls,
+   correct tracker/marker counts, preserved art ratios, and no scroll; a live WS
+   smoke test plays a full game (§6.1). Then hand the owner a running build.
 10. Ship gates (§6.4b): rulebook UI-coverage audit of both screens, and a
     4-seat puppeteer game played entirely through the device DOM.
 11. Commit your work; push to `origin main`.
@@ -1082,7 +1209,52 @@ owner's feedback on it is terse and specific — "the conflict needs to be bigge
 item is real, each has a concrete fix, and the right response is to make the
 change, verify it on the actual iPad-landscape size, and push it.
 
-### 9.14 If you are picking this up cold
+### 9.14 A second UI example — Politik and renderer choice
+
+Politik exposed an important limit in the Dune pattern above. Its first personal
+screen also used a gently angled 3D mat, but the source objects were almost all
+flat and coplanar. The camera ended up off vertical, clipped the mat at tablet
+size, made positions look wrong through parallax, and let a used-card rotation
+turn the art edge-on. The authentic layout audit also found deeper modeling
+errors: several Companies sharing one tracker, duplicate Margin markers, Support
+overlapping leaders, a resource display clamped below legal starting values, and
+a Corruption piece drawn on a personal divider even though Corruption lives on
+the shared board.
+
+The successful replacement was a **fixed top-down personal tableau** using the
+real Nation board, cards, Company boards, and token art inside the existing dark
+Politik shell:
+
+- Nation/identity, exact ledger, and controlled Companies form three stable,
+  labeled zones. The cream printed art against black glass, thin borders, and
+  strong white counts looked cleaner than extra decorative chrome.
+- The Nation card and three leader reserves sit in their authentic printed zones.
+  Support and Corruption are exact labeled main-board summaries, not duplicated
+  pieces. Every Company receives its own correctly proportioned board and one
+  Margin marker.
+- Cards stay upright. `READY` / `USED`, Margin, Markets, Assets, and empty states
+  are explicit digital labels, so state never depends on interpreting a tiny
+  rotation or pile.
+- Every authentic card in setup, hand, tableau, reference, or Clash context can
+  open full-height without committing it. This solved both readability and the
+  need to audit unusual printed effects while playing.
+- Uncertain OCR data is deferred until the card is actually used. One dark,
+  high-contrast editor accepts the needed printed values; those human-entered
+  values, never the OCR hint, drive the engine. Verified structured cards skip
+  the editor entirely.
+- The explicit `PERSONAL / MAIN BOARD` switch replaced an always-visible mini
+  board that had covered useful Company space. Board-targeting actions can move
+  to the main board temporarily without making the personal screen crowded.
+
+This was verified in a populated live state at 1024×768, not only in setup: no
+page scroll, no overlapping zones, preserved card/tracker ratios, three leader
+reserves, one Company board and marker per Company, a hidden inactive main-board
+layer, readable controls, and a full-size card dialog. The general rule is to
+choose the personal renderer from the source geometry and the real viewport.
+Authenticity means preserving the physical information and art, not forcing a
+camera where it makes them harder to read.
+
+### 9.15 If you are picking this up cold
 
 Read the mod before you write anything. Write the spec before the engine. Commit
 and push at every milestone, because sessions get interrupted and a pushed

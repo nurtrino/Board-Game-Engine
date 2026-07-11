@@ -144,6 +144,23 @@ function placementEntries(view: PolitikBoardView, value: unknown): { seat: unkno
   return result;
 }
 
+function symmetricPlacement(index: number, total: number): [number, number] {
+  const layouts: Record<number, [number, number][]> = {
+    1: [[0, 0]],
+    2: [[-50, 0], [50, 0]],
+    3: [[-90, 0], [0, 0], [90, 0]],
+    4: [[-50, -48], [50, -48], [-50, 48], [50, 48]],
+    5: [[-90, -48], [0, -48], [90, -48], [-45, 48], [45, 48]],
+    6: [[-90, -48], [0, -48], [90, -48], [-90, 48], [0, 48], [90, 48]],
+  };
+  return (layouts[Math.max(1, Math.min(6, total))] ?? layouts[1])[index] ?? [0, 0];
+}
+
+const seatGrid = (seat: number, xGap: number, yGap: number): [number, number] => [
+  (seat % 3 - 1) * xGap,
+  (Math.floor(seat / 3) - 0.5) * yGap,
+];
+
 export function buildPolitikBoardTokens(scene: PolitikSceneDef, view: PolitikBoardView): PolitikBoardToken[] {
   const tokens: PolitikBoardToken[] = [];
   const addPlacements = (source: unknown, prefix: string, shape: PolitikBoardToken['shape']) => {
@@ -152,12 +169,12 @@ export function buildPolitikBoardTokens(scene: PolitikSceneDef, view: PolitikBoa
     for (const [id, value] of Object.entries(record)) {
       const px = politikBoardPoint(scene, id);
       if (!px) continue;
-      placementEntries(view, value).forEach((entry, index) => {
-        const seat = playerFor(view, entry.seat)?.seat ?? index;
-        const spread = (Number(seat) % 6) - 2.5;
+      const entries = placementEntries(view, value);
+      entries.forEach((entry, index) => {
+        const [offsetX, offsetY] = symmetricPlacement(index, entries.length);
         tokens.push({
           id: `${prefix}-${id}-${String(entry.seat)}-${index}`,
-          px: [px[0] + spread * 34, px[1] + (index % 2 ? 28 : -18)],
+          px: [px[0] + offsetX, px[1] + offsetY],
           color: tokenColor(view, entry.seat),
           shape,
           count: Math.max(1, Math.min(4, entry.count)),
@@ -173,35 +190,67 @@ export function buildPolitikBoardTokens(scene: PolitikSceneDef, view: PolitikBoa
     const imperial = Number(location?.imperialInfluence ?? 0);
     const px = politikBoardPoint(scene, id);
     if (!px || imperial <= 0) continue;
-    tokens.push({ id: `imperial-${id}`, px: [px[0] - 46, px[1] + 32], color: '#d8d1b9', shape: 'marker', count: Math.min(4, imperial), label: `I ${imperial}` });
+    tokens.push({ id: `imperial-${id}`, px, color: '#d8d1b9', shape: 'marker', count: Math.min(4, imperial), label: imperial > 1 ? `I ${imperial}` : undefined });
   }
-  addPlacements(view.councilSupport, 'council', 'disc');
+  for (const station of scene.boardData.stations) {
+    const location = asRecord(locations?.[station.id]);
+    if (!location?.stationCard) continue;
+    const ready = location.stationReady !== false;
+    tokens.push({
+      id: `station-status-${station.id}`,
+      px: [station.px[0] + 74, station.px[1] - 62],
+      color: ready ? '#d9c878' : '#656b68',
+      shape: 'cube',
+      scale: 0.58,
+      lift: 0.03,
+      label: ready ? 'READY' : 'USED',
+    });
+  }
+  const council = asRecord(view.councilSupport);
+  for (const seat of scene.boardData.council) {
+    placementEntries(view, council?.[seat.id]).forEach((entry, index) => {
+      const playerSeat = playerFor(view, entry.seat)?.seat ?? index;
+      const [offsetX, offsetY] = seatGrid(playerSeat, 120, 120);
+      tokens.push({
+        id: `council-${seat.id}-${String(entry.seat)}-${index}`,
+        px: [seat.px[0] + offsetX, seat.px[1] + offsetY],
+        color: tokenColor(view, entry.seat),
+        shape: 'disc',
+        count: Math.max(1, Math.min(4, entry.count)),
+        label: entry.count > 4 ? String(entry.count) : undefined,
+      });
+    });
+  }
+  // Support that has not yet been campaigned remains a public physical piece
+  // in one of the four ideology Bases. Keep each Nation in a stable 3 x 2
+  // seat slot so stacks never obscure one another or the Base icon.
+  for (const base of scene.boardData.bases) {
+    view.players.forEach((player) => {
+      const support = asRecord(player.support);
+      const amount = Number(support?.[base.id] ?? 0);
+      if (amount <= 0) return;
+      const column = player.seat % 3;
+      const row = Math.floor(player.seat / 3);
+      tokens.push({
+        id: `base-support-${base.id}-${player.seat}`,
+        px: [base.px[0] + (column - 1) * 110, base.px[1] + (row - 0.5) * 95],
+        color: SEAT_HEX[player.color] ?? player.color,
+        shape: 'disc',
+        count: Math.min(4, amount),
+        label: amount > 4 ? String(amount) : undefined,
+      });
+    });
+  }
   const supply = asRecord(view.marketSupply);
   for (const industry of scene.boardData.industries) {
     const available = Number(supply?.[industry.id] ?? 0);
     if (available > 0) tokens.push({
       id: `market-supply-${industry.id}`,
-      px: [industry.px[0] - 65, industry.px[1]],
+      px: industry.px,
       color: industry.color,
       shape: 'cube',
       count: Math.min(4, available),
       label: String(available),
-    });
-    view.players.forEach((player) => {
-      const control = (player.companies ?? []).reduce<number>((total, company) => {
-        const markets = asRecord(asRecord(company)?.markets);
-        return total + Number(markets?.[industry.id] ?? 0);
-      }, 0);
-      if (control <= 0) return;
-      tokens.push({
-        id: `market-control-${industry.id}-${player.seat}`,
-        px: [industry.px[0] + 45 + player.seat * 28, industry.px[1]],
-        color: SEAT_HEX[player.color] ?? player.color,
-        shape: 'disc',
-        count: Math.min(3, control),
-        label: String(control),
-        lift: 0.06,
-      });
     });
   }
 
@@ -217,11 +266,13 @@ export function buildPolitikBoardTokens(scene: PolitikSceneDef, view: PolitikBoa
       : Object.entries(player.powerGrabs ?? {}).filter(([, active]) => active).map(([kind, active]) => ({ kind, count: Number(active) || 1 }));
     grabs.forEach(({ kind, count }, index) => {
       const px = scene.boardData.powerGrabs[kind];
+      const [offsetX, offsetY] = seatGrid(player.seat, 72, 76);
       if (px) tokens.push({
         id: `grab-${player.seat}-${kind}`,
-        px: [px[0] + (player.seat - 2.5) * 42, px[1] + index * 26],
+        px: [px[0] + offsetX, px[1] + offsetY + index * 10],
         color: SEAT_HEX[player.color] ?? player.color,
         shape: kind === 'military' ? 'marker' : kind === 'corporate' ? 'cube' : 'disc',
+        scale: 0.68,
         count: Math.min(4, count),
         label: count > 1 ? String(count) : undefined,
       });
@@ -231,9 +282,10 @@ export function buildPolitikBoardTokens(scene: PolitikSceneDef, view: PolitikBoa
       : Object.entries(player.nationalUsed ?? {}).filter(([, active]) => active).map(([kind]) => kind);
     used.forEach((kind) => {
       const px = scene.boardData.nationalActions[kind];
+      const [offsetX, offsetY] = seatGrid(player.seat, 120, 120);
       if (px) tokens.push({
         id: `national-${player.seat}-${kind}`,
-        px: [px[0] + (player.seat - 2.5) * 30, px[1]],
+        px: [px[0] + offsetX, px[1] + offsetY],
         color: SEAT_HEX[player.color] ?? player.color,
         shape: 'disc',
       });

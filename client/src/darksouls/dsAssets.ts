@@ -25,6 +25,7 @@ export interface DsManifest {
   decks: DsDeckArt[];
   dice: Record<string, { image: string; w: number; h: number }>;
   healthDials: { id: string; image: string; w: number; h: number }[];
+  minis?: { id: string; flat?: boolean; texture: string | null; textureBack?: string | null }[];
 }
 
 export interface DsCardArt {
@@ -99,6 +100,32 @@ export const DS_CLASS_BOARD: Record<string, string> = {
   sorcerer: '/dark-souls/class-board-09.webp',
   warrior: '/dark-souls/class-board-10.webp',
 };
+
+const DS_CLASS_MINI_ID: Record<string, string> = {
+  warrior: 'warrior', knight: 'knight', herald: 'herald', assassin: 'assassin',
+  sorcerer: 'sorcerer', thief: 'class-unknown-1', deprived: 'class-unknown-2',
+  cleric: 'class-unknown-2', mercenary: 'class-unknown-1', pyromancer: 'class-unknown-1',
+};
+
+export function dsMiniPortrait(manifest: DsManifest, miniId: string): string | null {
+  const mini = manifest.minis?.find((candidate) => candidate.id === miniId);
+  // OBJ diffuse files are UV atlases, not portraits. Only a flat standee's
+  // source image is a faithful piece portrait on the 2D encounter board.
+  return mini?.flat ? mini.texture : null;
+}
+
+export function dsClassPortrait(manifest: DsManifest, classId: string): string | null {
+  return dsMiniPortrait(manifest, DS_CLASS_MINI_ID[classId] ?? classId);
+}
+
+export function dsBossPortrait(manifest: DsManifest, bossId: string, unitKey: string): string | null {
+  let miniId = bossId;
+  if (unitKey === 'ornstein') miniId = 'dragon-slayer-ornstein';
+  else if (unitKey === 'smough') miniId = 'executioner-smough';
+  else if (unitKey.startsWith('king')) miniId = `four-kings-${unitKey.slice(4)}`;
+  else if (bossId === 'old-iron-king') miniId = 'megaboss-standee';
+  return dsMiniPortrait(manifest, miniId);
+}
 
 /** Printed slot regions on the class boards (fractions of the board image).
  * The ten boards share one layout; measured on the staged scans. */

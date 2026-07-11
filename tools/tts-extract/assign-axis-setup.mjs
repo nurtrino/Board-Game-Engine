@@ -15,6 +15,7 @@ import path from 'node:path';
 const ROOT = path.resolve(import.meta.dirname, '../..');
 const GOLD = path.join(ROOT, 'games/axis-allies/golden');
 const map = JSON.parse(fs.readFileSync(path.join(GOLD, 'map.json'), 'utf8'));
+const asiaSetupCorrections = JSON.parse(fs.readFileSync(path.join(GOLD, 'setup-asia-corrections.json'), 'utf8'));
 const F = map.worldFit;
 const toPx = (wx, wz) => [F.a * wx + F.b * wz + F.e, F.c * wx + F.d * wz + F.f];
 
@@ -291,6 +292,19 @@ for (const scen of ['1941', '1942']) {
     if (stack) stack.count += add;
     if (Math.sqrt(bestD) > 260) flagged.push({ nick: `${chip.nick} x${chip.count ?? 1}`, kind: 'chip', space: best.space, near: best.key, dist: Math.round(Math.sqrt(bestD)) });
   }
+
+  // East Asia is too tightly packed for nearest-center assignment: several
+  // physical pieces sit closer to the wrong side of a printed border. Apply
+  // the national setup charts as an explicit, reviewed source after all raw
+  // pieces/chips are counted. This also tags the U.S.-sculpt Flying Tigers as
+  // China for rules authority while the renderer may still use U.S. artwork.
+  const asia = asiaSetupCorrections[scen];
+  if (!asia) throw new Error(`Missing official East Asia correction for ${scen}`);
+  for (const [space, stacks] of Object.entries(asia.units)) {
+    if (stacks.length > 0) units[space] = stacks.map((stack) => ({ ...stack }));
+    else delete units[space];
+  }
+  for (const [space, holder] of Object.entries(asia.control)) control[space] = holder;
 
   out[scen] = { units, control };
 

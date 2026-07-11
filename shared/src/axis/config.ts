@@ -41,7 +41,7 @@ export const TURN_ORDER: Record<Scenario, PowerKey[]> = {
 // Starting IPCs (rulebook pp3-4 scenario charts).
 export const STARTING_IPCS: Record<Scenario, Record<PowerKey, number>> = {
   '1941': { germany: 31, japan: 17, italy: 10, usa: 40, uk: 43, ussr: 30 },
-  '1942': { germany: 31, japan: 31, italy: 10, usa: 38, uk: 31, ussr: 24 },
+  '1942': { germany: 37, japan: 31, italy: 10, usa: 38, uk: 31, ussr: 24 },
 };
 
 export type UnitKey =
@@ -96,9 +96,9 @@ export interface TechDef { key: TechKey; chart: 1 | 2; roll: number; name: strin
 
 export const TECHS: TechDef[] = [
   { key: 'advancedArtillery', chart: 1, roll: 1, name: 'Advanced Artillery', text: 'Each artillery supports two infantry per attack.' },
-  { key: 'rockets', chart: 1, roll: 2, name: 'Rockets', text: 'Each AA gun may make one rocket attack per turn against an enemy industrial complex within 3 spaces (1d6 damage).' },
-  { key: 'paratroopers', chart: 1, roll: 3, name: 'Paratroopers', text: 'Each bomber may carry one infantry into the first hostile territory it enters.' },
-  { key: 'increasedFactory', chart: 1, roll: 4, name: 'Increased Factory Production', text: 'Each complex produces 2 units over its territory value; repairs cost half.' },
+  { key: 'rockets', chart: 1, roll: 2, name: 'Rockets', text: 'During the strategic bombing raid step of Conduct Combat, each AA gun may launch one 1d6 rocket attack against an enemy industrial complex within 3 spaces. Only one AA gun per territory may launch, each complex may be targeted by only one launcher per turn, and rockets cannot cross neutral territories.' },
+  { key: 'paratroopers', chart: 1, roll: 3, name: 'Paratroopers', text: 'During combat movement, each bomber may carry one infantry when both begin in the same territory. The bomber stops in the first hostile territory it enters; after antiaircraft fire, a surviving bomber drops its infantry and may attack normally, but cannot make a strategic bombing raid that turn. If the bomber is shot down, its infantry is also destroyed. Paratroopers may retreat only when attacking with land units from an adjacent territory.' },
+  { key: 'increasedFactory', chart: 1, roll: 4, name: 'Increased Factory Production', text: 'Complexes in territories worth 3+ IPCs produce 2 extra units; repairs cost half.' },
   { key: 'warBonds', chart: 1, roll: 5, name: 'War Bonds', text: 'Collect 1d6 bonus IPCs during Collect Income.' },
   { key: 'mechanizedInfantry', chart: 1, roll: 6, name: 'Mechanized Infantry', text: 'Each infantry matched with a tank may move 2 spaces with it.' },
   { key: 'superSubs', chart: 2, roll: 1, name: 'Super Submarines', text: 'Submarines attack at 3.' },
@@ -106,7 +106,7 @@ export const TECHS: TechDef[] = [
   { key: 'improvedShipyards', chart: 2, roll: 3, name: 'Improved Shipyards', text: 'Cheaper sea units: BB 17, CV 11, CA 10, DD 7, TP 6, SS 5.' },
   { key: 'radar', chart: 2, roll: 4, name: 'Radar', text: 'AA guns hit on 1 or 2.' },
   { key: 'longRangeAircraft', chart: 2, roll: 5, name: 'Long-Range Aircraft', text: 'Fighters move 6, bombers move 8.' },
-  { key: 'heavyBombers', chart: 2, roll: 6, name: 'Heavy Bombers', text: 'Bombers roll two dice on attack and strategic bombing (defense still one).' },
+  { key: 'heavyBombers', chart: 2, roll: 6, name: 'Heavy Bombers', text: 'Bombers roll two dice and select the best on attack and strategic bombing (defense still one).' },
 ];
 export const TECH_BY_KEY: Record<string, TechDef> = Object.fromEntries(TECHS.map((t) => [t.key, t]));
 
