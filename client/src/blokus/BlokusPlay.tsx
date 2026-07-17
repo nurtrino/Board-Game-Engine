@@ -3,7 +3,7 @@
 // permanent PASS. Placement mirrors the engine's legality check so illegal
 // taps grey out with the reason instead of bouncing errors.
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { BlokusAction, BlokusView } from '@bge/shared';
 import {
   BLOKUS_COLORS, BLOKUS_CORNERS, BLOKUS_PIECE_BY_ID, BLOKUS_PIECES, BLOKUS_SIZE,
@@ -40,6 +40,7 @@ export default function BlokusPlay({ view, act, seat, error }: Props) {
   const [flip, setFlip] = useState(false);
   const [anchor, setAnchor] = useState<[number, number] | null>(null);
   const [confirmPass, setConfirmPass] = useState(false);
+  const dragging = useRef(false);
 
   const myTurn = view.phase === 'playing' && view.turn === seat;
   const done = !me || me.passed || me.remaining.length === 0;
@@ -60,13 +61,26 @@ export default function BlokusPlay({ view, act, seat, error }: Props) {
   const statusLine = view.phase === 'ended'
     ? `${view.winners.map((w) => view.players[w].color.toUpperCase()).join(' · ')} WINS`
     : done ? (me.remaining.length === 0 ? 'ALL 21 PLACED' : 'PASSED · GAME DONE FOR YOU')
-      : myTurn ? (sel ? (anchor ? (placement?.ok ? 'LEGAL · PLACE IT' : placement?.why ?? '') : 'TAP THE BOARD TO AIM')
+      : myTurn ? (sel ? (anchor ? (placement?.ok ? 'LEGAL · PLACE IT' : placement?.why ?? '') : 'DRAG THE PIECE ON THE BOARD')
         : canMove ? 'YOUR TURN · PICK A PIECE' : 'NO LEGAL PLACEMENT · PASS')
         : `${view.players[view.turn]?.color.toUpperCase()} TO PLAY`;
 
   const ghost = shape && anchor
     ? shape.map(([cx, cy]) => [cx + anchor[0], cy + anchor[1]] as [number, number])
     : [];
+
+  /** Center the piece footprint under the pointer, clamped on board. */
+  const aimAt = (e: { clientX: number; clientY: number; currentTarget: EventTarget }) => {
+    if (!shape) return;
+    const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
+    const gx = Math.floor(((e.clientX - rect.left) / rect.width) * BLOKUS_SIZE);
+    const gy = Math.floor(((e.clientY - rect.top) / rect.height) * BLOKUS_SIZE);
+    const w = Math.max(...shape.map(([x]) => x)) + 1;
+    const h = Math.max(...shape.map(([, y]) => y)) + 1;
+    const ax = Math.max(0, Math.min(BLOKUS_SIZE - w, gx - Math.floor(w / 2)));
+    const ay = Math.max(0, Math.min(BLOKUS_SIZE - h, gy - Math.floor(h / 2)));
+    setAnchor((prev) => (prev && prev[0] === ax && prev[1] === ay ? prev : [ax, ay]));
+  };
 
   return (
     <div className="bk-play" data-testid="bk-play">
@@ -85,19 +99,16 @@ export default function BlokusPlay({ view, act, seat, error }: Props) {
       <div className="bk-main">
         <section className="bk-grid-wrap ig-glass" aria-label="Board">
           <svg className="bk-grid" viewBox={`0 0 ${BLOKUS_SIZE} ${BLOKUS_SIZE}`} data-testid="bk-grid"
-            onClick={(e) => {
-              if (!myTurn || done) return;
-              const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
-              const gx = Math.floor(((e.clientX - rect.left) / rect.width) * BLOKUS_SIZE);
-              const gy = Math.floor(((e.clientY - rect.top) / rect.height) * BLOKUS_SIZE);
-              if (!shape) return;
-              // center the piece footprint on the tapped cell, clamped on board
-              const w = Math.max(...shape.map(([x]) => x)) + 1;
-              const h = Math.max(...shape.map(([, y]) => y)) + 1;
-              const ax = Math.max(0, Math.min(BLOKUS_SIZE - w, gx - Math.floor(w / 2)));
-              const ay = Math.max(0, Math.min(BLOKUS_SIZE - h, gy - Math.floor(h / 2)));
-              setAnchor([ax, ay]);
-            }}>
+            onPointerDown={(e) => {
+              if (!myTurn || done || !shape) return;
+              e.preventDefault();
+              (e.currentTarget as SVGSVGElement).setPointerCapture(e.pointerId);
+              dragging.current = true;
+              aimAt(e);
+            }}
+            onPointerMove={(e) => { if (dragging.current) aimAt(e); }}
+            onPointerUp={() => { dragging.current = false; }}
+            onPointerCancel={() => { dragging.current = false; }}>
             {/* board art aligned so the printed grid spans 0..20 */}
             <image href="/blokus/board.webp"
               x={-0.1162 * (BLOKUS_SIZE / 0.7764)} y={-0.1079 * (BLOKUS_SIZE / 0.7764)}
@@ -166,7 +177,7 @@ export default function BlokusPlay({ view, act, seat, error }: Props) {
               {confirmPass ? 'CONFIRM PASS · PERMANENT' : 'PASS'}
             </button>
             <span className="bk-note">
-              {sel ? 'ROTATE AND FLIP, TAP THE BOARD, THEN PLACE' : 'FIRST PIECE MUST COVER YOUR CORNER'}
+              {sel ? 'DRAG THE PIECE INTO POSITION, ROTATE AND FLIP, THEN PLACE' : 'FIRST PIECE MUST COVER YOUR CORNER'}
             </span>
           </div>
         </aside>

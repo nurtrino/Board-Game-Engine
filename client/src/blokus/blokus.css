@@ -167,8 +167,10 @@
   aspect-ratio: 1;
   height: auto;
   display: block;
-  cursor: crosshair;
+  cursor: grab;
+  touch-action: none; /* the piece drags under your finger; no page panning */
 }
+.bk-grid:active { cursor: grabbing; }
 
 .bk-rail { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
 .bk-rail-head {
