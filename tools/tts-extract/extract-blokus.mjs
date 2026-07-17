@@ -82,8 +82,7 @@ const tileSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640
         .map(([x, y]) => `<rect x="${ox + x * 50}" y="${oy + y * 50}" width="46" height="46" rx="5" fill="${c}" stroke="rgba(0,0,0,0.35)" stroke-width="2"/>`)
         .join('')).join('')}
   </g>
-  <text x="320" y="342" text-anchor="middle" font-family="Arial, sans-serif" font-size="86" font-weight="800" letter-spacing="14" fill="#e8ebf0">BLOKUS</text>
-  <text x="320" y="392" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="10" fill="#9aa0ab">20 X 20</text>
+  <text x="320" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="86" font-weight="800" letter-spacing="14" fill="#e8ebf0">BLOKUS</text>
 </svg>`;
 const boardBg = await sharp(boardSrc).resize(640, 640).modulate({ brightness: 0.55, saturation: 1.05 }).toBuffer();
 await sharp(boardBg)

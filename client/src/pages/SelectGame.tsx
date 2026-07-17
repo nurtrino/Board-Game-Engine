@@ -366,9 +366,7 @@ export function SelectGame() {
                 onClick={() => setGame(g)}
               >
                 <span className="game-tile-art" aria-hidden="true">
-                  {g.id === 'seti'
-                    ? <span className="seti-catalog-mark"><i /><b>SETI</b><small>SEARCH FOR<br />EXTRATERRESTRIAL<br />INTELLIGENCE</small></span>
-                    : <img src={g.logo} alt="" />}
+                  <img src={g.logo} alt="" />
                 </span>
                 <span className="game-tile-name">{g.name}</span>
               </button>
