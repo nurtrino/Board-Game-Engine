@@ -368,7 +368,6 @@ export function SelectGame() {
                 <span className="game-tile-art" aria-hidden="true">
                   <img src={g.logo} alt="" />
                 </span>
-                <span className="game-tile-name">{g.name}</span>
               </button>
             ))}
           </div>
