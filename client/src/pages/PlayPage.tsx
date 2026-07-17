@@ -1051,7 +1051,7 @@ export function PlayPage() {
     bloodborne: 'Bloodborne: The Board Game',
     feast: 'A Feast for Odin',
     seti: 'SETI: Search for Extraterrestrial Intelligence',
-    blokus: 'Blokus 20x20',
+    blokus: 'Blokus',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
   const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
