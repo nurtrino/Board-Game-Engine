@@ -49,7 +49,7 @@ export const BLOKUS_PIECE_BY_ID: Record<string, BlokusPieceDef> = Object.fromEnt
   BLOKUS_PIECES.map((p) => [p.id, p]),
 );
 
-export const BLOKUS_SCORING = data.scoring as { perSquare: number; allPlaced: number; monominoLast: number };
+export const BLOKUS_SCORING = data.scoring as { allPlaced: number; monominoLast: number };
 
 /** rot quarter-turns clockwise, optional flip (x mirror), normalized to min (0,0). */
 export function blokusTransform(cells: [number, number][], rot: 0 | 1 | 2 | 3, flip: boolean): [number, number][] {

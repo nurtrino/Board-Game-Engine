@@ -104,9 +104,9 @@ const golden = {
   corners: { Blue: [19, 19], Yellow: [0, 19], Red: [0, 0], Green: [19, 0] },
   turnOrder: ['Blue', 'Yellow', 'Red', 'Green'],
   colors,
-  // scoring per the official rulebook (staged rulebook.pdf): -1 per unplaced
-  // square; +15 for placing all 21; +5 more when the monomino was placed last.
-  scoring: { perSquare: -1, allPlaced: 15, monominoLast: 5 },
+  // positive scoring: squares placed (of 89), +15 for placing all 21, +5
+  // more when the monomino was placed last (rulebook bonuses).
+  scoring: { allPlaced: 15, monominoLast: 5 },
 };
 fs.writeFileSync(path.join(GOLDEN_DIR, 'blokus-data.json'), JSON.stringify(golden, null, 1));
 fs.writeFileSync(path.join(ROOT, 'shared/src/blokus/data.json'), JSON.stringify(golden, null, 1));

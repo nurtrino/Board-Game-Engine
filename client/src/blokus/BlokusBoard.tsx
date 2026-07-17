@@ -133,7 +133,7 @@ export function BlokusBoard({ view }: { view: BlokusView }) {
               <span className="bk-seat-color">{p.color.toUpperCase()}</span>
               <span className="bk-seat-stat">
                 {view.phase === 'ended'
-                  ? `${(p.score ?? 0) > 0 ? '+' : ''}${p.score} PTS`
+                  ? `${p.score} PTS`
                   : done ? 'DONE' : `${view.squaresLeft[p.seat]} SQUARES LEFT`}
               </span>
             </div>
@@ -153,7 +153,7 @@ export function BlokusBoard({ view }: { view: BlokusView }) {
           <div className="bk-end-scores">
             {[...view.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).map((p) => (
               <span key={p.seat} className="bk-end-row" style={{ borderColor: BLOKUS_COLORS[p.color] }}>
-                {p.color.toUpperCase()} · {p.name.toUpperCase()} · {(p.score ?? 0) > 0 ? '+' : ''}{p.score}
+                {p.color.toUpperCase()} · {p.name.toUpperCase()} · {p.score}
               </span>
             ))}
           </div>

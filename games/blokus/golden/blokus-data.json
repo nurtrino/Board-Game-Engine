@@ -35,7 +35,6 @@
   "Green": "#2f974c"
  },
  "scoring": {
-  "perSquare": -1,
   "allPlaced": 15,
   "monominoLast": 5
  }

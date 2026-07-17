@@ -190,7 +190,7 @@ export default function BlokusPlay({ view, act, seat, error }: Props) {
           </span>
           {[...view.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).map((p) => (
             <span key={p.seat} className="bk-end-row" style={{ borderColor: BLOKUS_COLORS[p.color] }}>
-              {p.color.toUpperCase()} · {(p.score ?? 0) > 0 ? '+' : ''}{p.score}
+              {p.color.toUpperCase()} · {p.score}
             </span>
           ))}
         </div>

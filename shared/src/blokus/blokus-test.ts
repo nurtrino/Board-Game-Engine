@@ -112,10 +112,10 @@ function check(name: string, cond: boolean, detail?: string): void {
   s.turn = 0;
   applyBlokusAction(s, 0, { type: 'pass' }); // everyone done -> end
   check('game ended', s.phase === 'ended');
-  check('perfect + monomino last = 20', s.players[0].score === 20, String(s.players[0].score));
-  check('perfect = 15', s.players[1].score === 15, String(s.players[1].score));
-  check('remaining I3 = -3', s.players[2].score === -3, String(s.players[2].score));
-  check('untouched color = -89', s.players[3].score === -89, String(s.players[3].score));
+  check('perfect + monomino last = 109', s.players[0].score === 109, String(s.players[0].score));
+  check('perfect = 104', s.players[1].score === 104, String(s.players[1].score));
+  check('remaining I3 = 86', s.players[2].score === 86, String(s.players[2].score));
+  check('untouched color = 0', s.players[3].score === 0, String(s.players[3].score));
   check('winner is Blue', s.winners.length === 1 && s.winners[0] === 0, s.winners.join(','));
 }
 

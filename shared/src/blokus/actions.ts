@@ -134,14 +134,14 @@ function advance(s: BlokusState): void {
 
 function endGame(s: BlokusState): void {
   s.phase = 'ended';
+  const total = BLOKUS_PIECES.reduce((sum, p) => sum + p.cells.length, 0);
   let best = -Infinity;
   for (const p of s.players) {
-    if (p.remaining.length === 0) {
-      p.score = BLOKUS_SCORING.allPlaced + (p.lastPieceId === 'I1' ? BLOKUS_SCORING.monominoLast : 0);
-    } else {
-      p.score = BLOKUS_SCORING.perSquare
-        * p.remaining.reduce((sum, id) => sum + BLOKUS_PIECE_BY_ID[id].cells.length, 0);
-    }
+    // positive scoring: squares placed, plus the rulebook bonuses
+    const left = p.remaining.reduce((sum, id) => sum + BLOKUS_PIECE_BY_ID[id].cells.length, 0);
+    p.score = total - left
+      + (p.remaining.length === 0 ? BLOKUS_SCORING.allPlaced : 0)
+      + (p.remaining.length === 0 && p.lastPieceId === 'I1' ? BLOKUS_SCORING.monominoLast : 0);
     best = Math.max(best, p.score);
   }
   s.winners = s.players.filter((p) => p.score === best).map((p) => p.seat);
