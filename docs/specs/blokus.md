@@ -29,9 +29,11 @@ art, seat colors, corner assignment, and authentic piece proportions.
 - Pieces may be rotated and flipped freely (8 orientations).
 - A player with no legal placement passes; passing is permanent (the color is
   done for the game). The game ends when all four colors are done.
-- Scoring: minus 1 per unplaced square. A color that placed all 21 pieces
-  scores +15, and +5 more if the monomino was the last piece it placed
-  (score 20). Highest score wins; ties share the win.
+- Scoring (house-positive variant, owner request): squares placed out of 89.
+  A color that placed all 21 pieces adds +15, and +5 more if the monomino
+  was the last piece it placed (max 109). Highest score wins; ties share
+  the win. The rulebook states the equivalent negative form (minus
+  unplaced squares); the ordering is identical.
 
 ## Engine mapping
 
