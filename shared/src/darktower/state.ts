@@ -5,7 +5,7 @@
 // hidden (the original's scorecards are public).
 
 import { mulberry32 } from '../brass/rng.js';
-import { DT_CITADEL_NODE, DT_NODE } from './territories.js';
+import { DT_CITADEL_NODE, DT_NODE, dtLegalDestinations, dtNearestNode } from './territories.js';
 
 export type DtSeat = 'Red' | 'Blue' | 'Yellow' | 'Green';
 export const DT_SEATS: DtSeat[] = ['Red', 'Blue', 'Yellow', 'Green'];
@@ -39,12 +39,14 @@ export interface DtPlayer {
   citadelUsed: 0 | 1; // the once-only quad-4 warrior doubling
   moves: number;
   fed: boolean; // this turn's food check already ran
-  spot: { x: number; z: number }; // free board position (honor-system; players drag it)
+  node: string; // authoritative territory occupied on the exact board graph
+  spot: { x: number; z: number }; // denormalized node coordinates for old clients/saves
 }
 
 /** Each player's pawn starts on their home kingdom's citadel (home = colour). */
+export const dtHomeNode = (color: DtSeat): string => DT_CITADEL_NODE.get(color)!;
 export const dtHomeSpot = (color: DtSeat): { x: number; z: number } => {
-  const n = DT_NODE.get(DT_CITADEL_NODE.get(color)!)!;
+  const n = DT_NODE.get(dtHomeNode(color))!;
   return { x: n.wx, z: n.wz };
 };
 
@@ -86,6 +88,7 @@ export interface DtState {
   } | null;
   riddlePhase: 0 | 1 | 2; // which position is being guessed
   curse: { warriors: number; gold: number } | null; // stored amounts awaiting the victim's turn
+  turnNode: string; // movement anchor at turn start (prevents multi-edge drag movement)
   turnSpot: { x: number; z: number }; // the current player's spot at turn start (lost/cursed snap back here)
   totalMoves: number;
   rolls: number; // draws taken from the seeded rng stream (persistence-safe)
@@ -119,6 +122,7 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
     beast: 0, scout: 0, healer: 0, sword: 0, pegasus: 0,
     brasskey: 0, silverkey: 0, goldkey: 0,
     quad: 0, cursed: 0, citadelUsed: 0, moves: 0, fed: false,
+    node: dtHomeNode(s.color),
     spot: dtHomeSpot(s.color),
   }));
   const first = Math.floor(rng() * players.length);
@@ -128,27 +132,37 @@ export function createDarkTower(seated: { name: string; color: DtSeat }[], seed:
     dragon: { warriors: 2, gold: 6 },
     turn: first, first, players,
     battle: null, bazaar: null, riddlePhase: 0, curse: null,
+    turnNode: players[first].node,
     turnSpot: { ...players[first].spot },
     totalMoves: 0, rolls: 0, winner: null, score: null,
     lastEvent: null, log: [],
   };
 }
 
-/** Migrate a rehydrated state from the old node-based movement model to the free
- *  spot model, so games saved before that change still load. Idempotent. */
+/** Migrate both historical node-only saves and free-position saves to exact
+ *  graph nodes. Idempotent; `spot` remains populated for older renderers. */
 export function dtNormalize(s: DtState): DtState {
   for (const p of s.players) {
     const legacy = p as unknown as { node?: string; spot?: { x: number; z: number } };
-    if (legacy.spot) continue;
-    // old node ids came from a different territory graph; if one no longer
-    // resolves, fall back to the player's citadel rather than board center.
-    const n = legacy.node ? DT_NODE.get(legacy.node) : undefined;
-    p.spot = n ? { x: n.wx, z: n.wz } : dtHomeSpot(p.color);
+    const home = dtHomeNode(p.color);
+    const node = legacy.node && DT_NODE.has(legacy.node)
+      ? legacy.node
+      : dtNearestNode(legacy.spot ?? dtHomeSpot(p.color), home);
+    const n = DT_NODE.get(node)!;
+    p.node = node;
+    p.spot = { x: n.wx, z: n.wz };
   }
   const legacy = s as unknown as { turnNode?: string; turnSpot?: { x: number; z: number } };
-  if (!legacy.turnSpot) s.turnSpot = { ...(s.players[s.turn]?.spot ?? { x: 0, z: 0 }) };
+  const current = s.players[s.turn];
+  s.turnNode = legacy.turnNode && DT_NODE.has(legacy.turnNode)
+    ? legacy.turnNode
+    : dtNearestNode(legacy.turnSpot ?? current?.spot ?? { x: 0, z: 0 }, current?.node ?? DT_NODES_FALLBACK);
+  const turn = DT_NODE.get(s.turnNode);
+  s.turnSpot = turn ? { x: turn.wx, z: turn.wz } : { ...(current?.spot ?? { x: 0, z: 0 }) };
   return s;
 }
+
+const DT_NODES_FALLBACK = 't0';
 
 // Everything is public — the view is the state minus the rng internals and
 // with the riddle answer hidden until the game ends.
@@ -169,6 +183,8 @@ export interface DtView {
   totalMoves: number;
   winner: DtSeat | null;
   score: number | null;
+  turnNode: string;
+  legalSteps: string[]; // current-or-adjacent legal destinations for this viewer
   lastEvent: DtEvent | null;
   log: string[];
 }
@@ -185,6 +201,10 @@ export function dtViewFor(s: DtState, seat: number | null | 'dev'): DtView {
     dtBrigands: s.battle?.tower || over || seat === 'dev' ? s.dtBrigands : null,
     riddle: over || seat === 'dev' ? s.riddle : null,
     totalMoves: s.totalMoves, winner: s.winner, score: s.score,
+    turnNode: s.turnNode,
+    legalSteps: typeof seat === 'number' && s.turn === seat && s.phase === 'playing'
+      ? dtLegalDestinations(s.players[seat], s.turnNode)
+      : [],
     lastEvent: s.lastEvent, log: s.log.slice(-40),
   };
 }

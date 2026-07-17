@@ -10,8 +10,6 @@ import {
   SETI_SEATS,
   SETI_SECTORS,
   SETI_SECTOR_IDS,
-  SETI_SOLAR_ALPHA_MASKS,
-  SETI_SOLAR_LAYER_FEATURES,
   SETI_SPECIES,
   SETI_TECH_BY_ID,
   SETI_TECH_STACKS,
@@ -33,6 +31,15 @@ import {
   type SetiTraceColor,
 } from './data.js';
 import {
+  getSetiVisibleSolarFeatures,
+  setiSolarSupportLayerForCell as pureSetiSolarSupportLayerForCell,
+} from './solarGeometry.js';
+import {
+  SETI_COMPUTER_TECH_TOP_SPACES,
+  setiNeutralMarkersPerThreshold,
+  type SetiComputerTechBoardSlot,
+} from './coreRules.js';
+import {
   SETI_BASE_PROJECT_CATALOG,
   SETI_PROJECT_CATALOG_BY_ID,
   SETI_PROMO_PROJECT_CATALOG,
@@ -44,6 +51,15 @@ import {
   SETI_ALIEN_SPECIES_BY_ID,
   type SetiAlienIncome,
 } from './alienCatalog.js';
+import {
+  SETI_RIVAL_ACTION_CARDS,
+  SETI_SOLO_DIFFICULTY_BY_LEVEL,
+  SETI_SOLO_OBJECTIVES,
+  type SetiRivalArrow,
+  type SetiRivalSpeciesId,
+  type SetiRivalTechType,
+  type SetiSoloDifficulty,
+} from './soloCatalog.js';
 
 export type SetiPhase = 'income-selection' | 'playing' | 'ended';
 export type SetiMode = 'multiplayer' | 'solo';
@@ -68,11 +84,12 @@ export interface SetiAlienIncomeCard {
 export interface SetiOwnedTech {
   stackId: SetiTechStackId;
   tileId: string;
+  computerSlot?: SetiComputerTechBoardSlot;
 }
 
 export interface SetiComputerState {
   top: boolean[];
-  tech: Partial<Record<SetiTechStackId, { upper: boolean; lower: boolean }>>;
+  tech: Partial<Record<SetiTechStackId, { boardSlot: SetiComputerTechBoardSlot; lower: boolean }>>;
 }
 
 export interface SetiTraceMarker {
@@ -85,6 +102,10 @@ export interface SetiTraceMarker {
 export interface SetiGoldClaim {
   threshold: number;
   tileId: SetiGoldTileId;
+  /** Stored when claimed because later players occupy lower-value spaces. */
+  pointsPerSet?: number;
+  /** Global claim order on this tile, used to preserve its exact marker space. */
+  claimOrder?: number;
 }
 
 export interface SetiPlayer {
@@ -93,6 +114,7 @@ export interface SetiPlayer {
   name: string;
   score: number;
   finalScore: number | null;
+  finalScoreBreakdown: { base: number; gold: number; projects: number; aliens: number; total: number } | null;
   publicity: number;
   credits: number;
   energy: number;
@@ -116,6 +138,7 @@ export interface SetiPlayer {
   scoringCards: string[];
   permanentCards: string[];
   goldClaims: SetiGoldClaim[];
+  neutralMilestones: Record<20 | 30, boolean>;
   passed: boolean;
 }
 
@@ -140,6 +163,26 @@ export interface SetiPlanetState {
   orbiters: number[];
   landers: number[];
   firstLandingBonuses: number[];
+}
+
+/**
+ * A physical orbiter or lander after its probe leaves the solar-system board.
+ * `spaceId` records the exact printed space it covers; Dragonfly can therefore
+ * share an occupied space without displacing its original figure, and removal
+ * effects can reopen only the reward that was actually uncovered.
+ */
+export type SetiCoveredSpaceReward =
+  | { kind: 'first-orbit-vp'; amount: 3 }
+  | { kind: 'first-landing-data'; amount: number }
+  | { kind: 'moon-landing' };
+
+export interface SetiPlacedSpacecraft {
+  id: string;
+  owner: number;
+  kind: 'orbiter' | 'lander';
+  body: SetiProjectBody;
+  spaceId: string;
+  coveredReward: SetiCoveredSpaceReward | null;
 }
 
 export interface SetiSignalMarker {
@@ -241,33 +284,60 @@ export interface SetiGoldTileState {
   side: SetiGoldSide;
 }
 
+export interface SetiSoloObjectiveProgressState {
+  objectiveId: string;
+  marked: boolean[];
+}
+
 export interface SetiSoloState {
-  difficulty: 1 | 2 | 3 | 4 | 5;
+  difficulty: SetiSoloDifficulty;
   rivalScore: number;
+  rivalPublicity: number;
   progress: number;
+  progressLoops: number;
   objectiveDeck: string[];
-  activeObjectives: string[];
+  activeObjectives: SetiSoloObjectiveProgressState[];
   completedObjectives: string[];
   actionDeck: string[];
   actionDiscard: string[];
-  techTokens: number;
+  advancedReserve: string[];
+  removedActionCards: string[];
+  currentActionCard: string | null;
+  currentDecisionArrow: SetiRivalArrow;
+  lastActionCard: string | null;
+  lastActionStep: number | null;
+  techs: Record<SetiRivalTechType, string[]>;
+  computer: boolean[];
+  dataPool: number;
+  goldClaims: { threshold: number; tileId: SetiGoldTileId }[];
+  neutralMilestones: Record<20 | 30, boolean>;
+  discoveredSpeciesInOrder: SetiRivalSpeciesId[];
+  centaurianMessagesReserve: number;
+  centaurianMessageTarget: number | null;
+  exertianCards: string[];
+  rivalStartsRound: boolean;
+  passed: boolean;
+  turnsTaken: number;
 }
 
 export type SetiPendingDecision =
   | { kind: 'initial-income-card'; owner: number; options: string[] }
   | { kind: 'discard-to-four'; owner: number; count: number; reason: 'pass' }
   | { kind: 'end-round-card'; owner: number; round: number; options: string[] }
-  | { kind: 'signal-sector'; owner: number; source: 'earth' | 'project-row' | 'effect'; options: SetiSectorId[]; signalColor: SetiSignalColor | null; rowOptions?: number[]; resolutionId?: number }
+  | { kind: 'signal-sector'; owner: number; source: 'earth' | 'project-row' | 'effect'; options: SetiSectorId[]; signalColor: SetiSignalColor | null; rowOptions?: number[]; resolutionId?: number; alienCardId?: string }
   | { kind: 'completed-sector-order'; owner: number; options: SetiSectorId[] }
   | { kind: 'trace-space'; owner: number; color: SetiTraceColor; options: string[]; resolutionId?: number }
   | { kind: 'gold-tile'; owner: number; threshold: number; options: SetiGoldTileId[] }
-  | { kind: 'tech-stack'; owner: number; options: SetiTechStackId[]; free: boolean; resolutionId?: number }
-  | { kind: 'mars-first-data'; owner: number; options: number[] }
+  | { kind: 'tech-stack'; owner: number; options: SetiTechStackId[]; free: boolean; rotateApplied?: true; resolutionId?: number }
+  | { kind: 'computer-tech-slot'; owner: number; stackId: SetiTechStackId; tileId: string; options: SetiComputerTechBoardSlot[] }
+  | { kind: 'mars-first-data'; owner: number; spacecraftId: string; options: number[] }
   | { kind: 'tuck-income-card'; owner: number; options: string[]; optional?: true }
   | { kind: 'card-effect-choice'; owner: number; cardId: string; label: string; min: number; max: number; options: string[]; resolutionId?: number }
   | { kind: 'alien-card-source'; owner: number; speciesSlot: 0 | 1; options: string[] }
   | { kind: 'centaurian-reward'; owner: number; options: string[] }
   | { kind: 'exertian-card'; owner: number; options: string[] }
+  | { kind: 'solo-objective-task'; owner: number; eventId: number; options: string[] }
+  | { kind: 'project-visit-reward'; owner: number; sourceCardId: string; options: ['publicity', 'move'] }
   | { kind: 'manual-trigger-choice'; owner: number; triggerId: string; options: string[] };
 
 export interface SetiEvent {
@@ -284,10 +354,15 @@ export interface SetiEvent {
   sectorId?: SetiSectorId;
 }
 
+export type SetiDeferredEndRoundCard = Extract<SetiPendingDecision, { kind: 'end-round-card' }>;
+
 export interface SetiTurnResolution {
   kind: 'end-turn' | 'pass';
   seat: number;
   milestonesQueued: boolean;
+  soloRivalProcessed?: boolean;
+  passStage?: 'discard' | 'round-card' | 'complete';
+  firstPass?: boolean;
 }
 
 export interface SetiState {
@@ -308,6 +383,8 @@ export interface SetiState {
   players: SetiPlayer[];
   solar: SetiSolarState;
   planets: Record<SetiBody, SetiPlanetState>;
+  placedSpacecraft: SetiPlacedSpacecraft[];
+  nextSpacecraftId: number;
   sectorBoardOrder: string[];
   sectorOrder: SetiSectorId[];
   sectors: Record<SetiSectorId, SetiSectorState>;
@@ -321,8 +398,9 @@ export interface SetiState {
   goldTiles: SetiGoldTileState[];
   species: [SetiSpeciesSlotState, SetiSpeciesSlotState];
   pendingSpeciesDiscoveries: (0 | 1)[];
-  neutralMilestonesResolved: Record<number, boolean>;
+  neutralMilestonesRemaining: Record<20 | 30, number>;
   pending: SetiPendingDecision[];
+  deferredEndRoundCard: SetiDeferredEndRoundCard | null;
   projectRuntime: SetiProjectRuntimeState;
   solo: SetiSoloState | null;
   eventCounter: number;
@@ -389,21 +467,57 @@ function neutralMarkerCount(playerCount: number): number {
   return 0;
 }
 
-function makeSoloState(s: SetiState, difficulty: 1 | 2 | 3 | 4 | 5): SetiSoloState {
-  const objectiveDeck = difficulty === 1
-    ? []
-    : setiShuffle(s, Array.from({ length: 24 }, (_, i) => `seti_solo_objective_${String(i + 1).padStart(2, '0')}`));
-  const actionDeck = setiShuffle(s, Array.from({ length: 19 }, (_, i) => `seti_solo_action_${String(i + 1).padStart(2, '0')}`));
+function makeSoloState(s: SetiState, difficulty: SetiSoloDifficulty): SetiSoloState {
+  const setup = SETI_SOLO_DIFFICULTY_BY_LEVEL[difficulty];
+  const objectiveDeck: string[] = [];
+  if (difficulty !== 1) {
+    const counts = [setup.objectiveCounts.tier1, setup.objectiveCounts.tier2, setup.objectiveCounts.tier3] as const;
+    for (const tier of [1, 2, 3] as const) {
+      const tierDeck = setiShuffle(s, SETI_SOLO_OBJECTIVES.filter((objective) => objective.tier === tier).map((objective) => objective.id));
+      objectiveDeck.push(...tierDeck.slice(0, counts[tier - 1]));
+    }
+  }
+
+  const advancedReserve = setiShuffle(
+    s,
+    SETI_RIVAL_ACTION_CARDS.filter((card) => card.group === 'advanced').map((card) => card.id),
+  );
+  const startingActions: string[] = [...setup.startingActionCards];
+  if (setup.randomAdvancedAtSetup) startingActions.push(advancedReserve.shift()!);
+  const activeObjectives = objectiveDeck.splice(0, Math.min(3, objectiveDeck.length)).map((objectiveId) => ({
+    objectiveId,
+    marked: Array(SETI_SOLO_OBJECTIVES.find((objective) => objective.id === objectiveId)!.tasks.length).fill(false),
+  }));
+
   return {
     difficulty,
-    rivalScore: 0,
-    progress: 0,
+    rivalScore: 2,
+    rivalPublicity: SETI_RULES.startPublicity,
+    progress: setup.startingProgressIndex,
+    progressLoops: 0,
     objectiveDeck,
-    activeObjectives: objectiveDeck.splice(0, difficulty === 1 ? 0 : Math.min(3, objectiveDeck.length)),
+    activeObjectives,
     completedObjectives: [],
-    actionDeck,
+    actionDeck: setiShuffle(s, startingActions),
     actionDiscard: [],
-    techTokens: 0,
+    advancedReserve,
+    removedActionCards: [],
+    currentActionCard: null,
+    currentDecisionArrow: 'left',
+    lastActionCard: null,
+    lastActionStep: null,
+    techs: { probe: [], telescope: [], computer: [] },
+    computer: Array(6).fill(false),
+    dataPool: 0,
+    goldClaims: [],
+    neutralMilestones: { 20: false, 30: false },
+    discoveredSpeciesInOrder: [],
+    centaurianMessagesReserve: 0,
+    centaurianMessageTarget: null,
+    exertianCards: [],
+    rivalStartsRound: false,
+    passed: false,
+    turnsTaken: 0,
   };
 }
 
@@ -427,6 +541,7 @@ export function createSeti(
     name: seat.name,
     score: index + 1,
     finalScore: null,
+    finalScoreBreakdown: null,
     publicity: SETI_RULES.startPublicity,
     credits: SETI_RULES.startCredits,
     energy: SETI_RULES.startEnergy,
@@ -450,6 +565,7 @@ export function createSeti(
     scoringCards: [],
     permanentCards: [],
     goldClaims: [],
+    neutralMilestones: { 20: false, 30: false },
     passed: false,
   }));
 
@@ -486,6 +602,8 @@ export function createSeti(
       nextPieceId: 1,
     },
     planets,
+    placedSpacecraft: [],
+    nextSpacecraftId: 1,
     sectorBoardOrder: [],
     sectorOrder: [...SETI_SECTOR_IDS],
     sectors,
@@ -499,11 +617,16 @@ export function createSeti(
     goldTiles: [],
     species: [] as unknown as [SetiSpeciesSlotState, SetiSpeciesSlotState],
     pendingSpeciesDiscoveries: [],
-    neutralMilestonesResolved: { 20: false, 30: false },
+    neutralMilestonesRemaining: {
+      20: setiNeutralMarkersPerThreshold(players.length),
+      30: setiNeutralMarkersPerThreshold(players.length),
+    },
     pending: [],
+    deferredEndRoundCard: null,
     projectRuntime: {
       nextResolutionId: 1,
       resolution: null,
+      resolutionStack: [],
       resolvingCard: null,
       revision: 0,
       conditionalOfferRevision: {},
@@ -578,7 +701,8 @@ export function createSeti(
   }
   refillSetiProjectRow(s);
   for (let round = 0; round < 4; round++) {
-    for (let i = 0; i < players.length + 1; i++) {
+    const setupPlayerCount = mode === 'solo' ? 2 : players.length;
+    for (let i = 0; i < setupPlayerCount + 1; i++) {
       const card = drawSetiProjectCard(s);
       if (!card) throw new Error('SETI project deck exhausted building round stacks');
       s.roundEndStacks[round].push(card);
@@ -590,8 +714,15 @@ export function createSeti(
     s.pending.push({ kind: 'initial-income-card', owner, options: [...players[owner].hand] });
   }
 
-  if (mode === 'solo') s.solo = makeSoloState(s, difficulty);
-  s.log.push(`SETI setup complete. ${players[s.startingSeat].name} is starting player.`);
+  if (mode === 'solo') {
+    s.solo = makeSoloState(s, difficulty);
+    s.solo.rivalStartsRound = setiRoll(s, 0, 1) === 1;
+    if (s.solo.rivalStartsRound) {
+      players[0].score = 2;
+      s.solo.rivalScore = 1;
+    }
+  }
+  s.log.push(`SETI setup complete. ${s.solo?.rivalStartsRound ? 'The rival' : players[s.startingSeat].name} is starting player.`);
   // Retain this fact in state for invariant tests and neutral resolution policy.
   void neutralMarkerCount(players.length);
   return s;
@@ -604,40 +735,35 @@ export function createSeti(
 export interface SetiResolvedSolarFeature {
   layer: 0 | 1 | 2 | 3;
   cell: SetiCellId;
-  kind: 'planet' | 'asteroid' | 'publicity' | 'comet';
+  kind: 'planet' | 'asteroid' | 'comet';
   body?: SetiPrimaryBody;
-}
-
-function orientationForLayer(s: SetiState, layer: 0 | 1 | 2 | 3): number {
-  if (layer === 0) return s.solar.orientations.base;
-  if (layer === 1) return s.solar.orientations.disc1;
-  if (layer === 2) return s.solar.orientations.disc2;
-  return s.solar.orientations.disc3;
+  grantsPrintedPublicity: boolean;
 }
 
 export function getSetiSolarFeatures(s: SetiState): SetiResolvedSolarFeature[] {
-  const features: SetiResolvedSolarFeature[] = SETI_SOLAR_LAYER_FEATURES.map((feature) => ({
-    layer: feature.layer,
-    cell: setiCellId(feature.ring, feature.sector + orientationForLayer(s, feature.layer)),
-    kind: feature.kind,
-    ...(feature.body ? { body: feature.body } : {}),
-  }));
+  const anomalyCells = new Set<SetiCellId>();
+  let oumuamua: SetiResolvedSolarFeature | null = null;
   for (const slot of s.species) {
-    if (slot.revealed && slot.module?.kind === 'oumuamua') {
-      features.push({ layer: 3, cell: slot.module.cell, kind: 'planet', body: 'Oumuamua' });
-    }
+    if (!slot.revealed) continue;
+    if (slot.module?.kind === 'anomalies') for (const anomaly of slot.module.anomalies) anomalyCells.add(setiCellId(2, anomaly.sector));
+    if (slot.module?.kind === 'oumuamua') oumuamua = { layer: 3, cell: slot.module.cell, kind: 'planet', body: 'Oumuamua', grantsPrintedPublicity: true };
   }
+  const features: SetiResolvedSolarFeature[] = getSetiVisibleSolarFeatures(s.solar.orientations)
+    .filter((feature) => !anomalyCells.has(feature.cell) && feature.cell !== oumuamua?.cell);
+  if (oumuamua && !anomalyCells.has(oumuamua.cell)) features.unshift(oumuamua);
   return features;
 }
 
-function layerPriority(layer: 0 | 1 | 2 | 3): number {
-  return layer === 0 ? 4 : layer;
+export function isSetiAnomalyCell(s: SetiState, cell: SetiCellId): boolean {
+  const parsed = parseSetiCell(cell);
+  return parsed.ring === 2 && s.species.some((slot) => slot.revealed
+    && slot.module?.kind === 'anomalies'
+    && slot.module.anomalies.some((anomaly) => anomaly.sector === parsed.sector));
 }
 
 export function bodyAtSetiCell(s: SetiState, cell: SetiCellId): SetiPrimaryBody | null {
-  const support = setiSupportLayerForCell(s, cell);
   const body = getSetiSolarFeatures(s)
-    .find((feature) => feature.cell === cell && feature.layer === support && feature.kind === 'planet' && feature.body);
+    .find((feature) => feature.cell === cell && feature.kind === 'planet' && feature.body);
   return body?.body ?? null;
 }
 
@@ -661,17 +787,11 @@ export function isSetiAsteroidCell(s: SetiState, cell: SetiCellId): boolean {
 }
 
 export function isSetiPublicityCell(s: SetiState, cell: SetiCellId): boolean {
-  return getSetiSolarFeatures(s).some((feature) => feature.cell === cell && feature.kind === 'publicity');
+  return getSetiSolarFeatures(s).some((feature) => feature.cell === cell && feature.grantsPrintedPublicity);
 }
 
 export function setiSupportLayerForCell(s: SetiState, cell: SetiCellId): 0 | 1 | 2 | 3 {
-  const { ring, sector } = parseSetiCell(cell);
-  for (const layer of [1, 2, 3] as const) {
-    const orientation = orientationForLayer(s, layer);
-    const baselineSector = ((sector - orientation) % 8 + 8) % 8;
-    if (SETI_SOLAR_ALPHA_MASKS[layer][ring][baselineSector] === '1') return layer;
-  }
-  return 0;
+  return pureSetiSolarSupportLayerForCell(s.solar.orientations, cell);
 }
 
 export function earthSetiSectorId(s: SetiState): SetiSectorId {
@@ -699,6 +819,57 @@ export function setiIncomeCounts(player: SetiPlayer): Record<SetiIncomeKind, num
   const result: Record<SetiIncomeKind, number> = { credit: 0, energy: 0, card: 0 };
   for (const income of player.incomeCards) result[income.kind]++;
   return result;
+}
+
+export function setiFirstOrbitSpaceId(body: SetiProjectBody): string {
+  return `seti_${body.toLowerCase()}_first_orbit`;
+}
+
+export function setiFirstLandingSpaceId(body: SetiBody, amount: number): string {
+  return `seti_${body.toLowerCase()}_first_landing_${amount}`;
+}
+
+export function setiMoonLandingSpaceId(body: SetiBody): string {
+  return `seti_${body.toLowerCase()}_moon_landing`;
+}
+
+export function setiFirstOrbitSpaceAvailable(s: SetiState, body: SetiProjectBody): boolean {
+  const spaceId = setiFirstOrbitSpaceId(body);
+  return !s.placedSpacecraft.some((piece) => piece.kind === 'orbiter' && piece.body === body && piece.spaceId === spaceId);
+}
+
+/** Add one physical spacecraft while preserving the legacy per-body owner arrays. */
+export function placeSetiSpacecraft(
+  s: SetiState,
+  placement: Omit<SetiPlacedSpacecraft, 'id' | 'spaceId'> & { spaceId?: string },
+): SetiPlacedSpacecraft {
+  const id = `seti_spacecraft_${s.nextSpacecraftId++}`;
+  const piece: SetiPlacedSpacecraft = {
+    ...placement,
+    id,
+    spaceId: placement.spaceId ?? `seti_${placement.body.toLowerCase()}_${placement.kind}_${id}`,
+    coveredReward: placement.coveredReward ? { ...placement.coveredReward } : null,
+  };
+  s.placedSpacecraft.push(piece);
+  const owners = placement.body === 'Pluto'
+    ? (placement.kind === 'orbiter' ? s.projectRuntime.pluto.orbiters : s.projectRuntime.pluto.landers)
+    : (placement.kind === 'orbiter' ? s.planets[placement.body].orbiters : s.planets[placement.body].landers);
+  owners.push(placement.owner);
+  return piece;
+}
+
+/** Remove exactly one selected physical figure and its matching legacy owner entry. */
+export function removeSetiPlacedSpacecraft(s: SetiState, spacecraftId: string): SetiPlacedSpacecraft | null {
+  const index = s.placedSpacecraft.findIndex((piece) => piece.id === spacecraftId);
+  if (index < 0) return null;
+  const [piece] = s.placedSpacecraft.splice(index, 1);
+  const owners = piece.body === 'Pluto'
+    ? (piece.kind === 'orbiter' ? s.projectRuntime.pluto.orbiters : s.projectRuntime.pluto.landers)
+    : (piece.kind === 'orbiter' ? s.planets[piece.body].orbiters : s.planets[piece.body].landers);
+  const ownerIndex = owners.indexOf(piece.owner);
+  if (ownerIndex < 0) throw new Error(`SETI spacecraft ${spacecraftId} has no matching owner marker`);
+  owners.splice(ownerIndex, 1);
+  return piece;
 }
 
 export function setiPlayerOrbiters(s: SetiState, seat: number): number {
@@ -752,28 +923,24 @@ export function setiComputerSlotIds(player: SetiPlayer): number[] {
   const open: number[] = [];
   const leftmost = player.computer.top.findIndex((filled) => !filled);
   if (leftmost >= 0) open.push(leftmost);
-  const computerTechs = player.techs.filter((tech) => SETI_TECH_BY_ID[tech.stackId]?.type === 'computer');
-  for (let index = 0; index < computerTechs.length; index++) {
-    const tech = computerTechs[index];
-    const state = player.computer.tech[tech.stackId] ?? { upper: false, lower: false };
-    const upperId = SETI_RULES.computerTopSpaces + index * 2;
-    if (!state.upper) open.push(upperId);
-    else if (!state.lower) open.push(upperId + 1);
+  for (const state of Object.values(player.computer.tech)) {
+    if (!state || state.lower) continue;
+    const topSpace = SETI_COMPUTER_TECH_TOP_SPACES[state.boardSlot];
+    if (player.computer.top[topSpace]) open.push(SETI_RULES.computerTopSpaces + state.boardSlot);
   }
   return open;
 }
 
 export function decodeSetiComputerSlot(player: SetiPlayer, slot: number):
   | { kind: 'top'; index: number }
-  | { kind: 'tech'; stackId: SetiTechStackId; part: 'upper' | 'lower' }
+  | { kind: 'tech'; stackId: SetiTechStackId; part: 'lower'; boardSlot: SetiComputerTechBoardSlot }
   | null {
   if (Number.isInteger(slot) && slot >= 0 && slot < SETI_RULES.computerTopSpaces) return { kind: 'top', index: slot };
-  const relative = slot - SETI_RULES.computerTopSpaces;
-  if (!Number.isInteger(relative) || relative < 0) return null;
-  const computerTechs = player.techs.filter((tech) => SETI_TECH_BY_ID[tech.stackId]?.type === 'computer');
-  const tech = computerTechs[Math.floor(relative / 2)];
-  if (!tech) return null;
-  return { kind: 'tech', stackId: tech.stackId, part: relative % 2 === 0 ? 'upper' : 'lower' };
+  const boardSlot = slot - SETI_RULES.computerTopSpaces;
+  if (!Number.isInteger(boardSlot) || boardSlot < 0 || boardSlot >= SETI_COMPUTER_TECH_TOP_SPACES.length) return null;
+  const entry = Object.entries(player.computer.tech).find(([, state]) => state?.boardSlot === boardSlot);
+  if (!entry) return null;
+  return { kind: 'tech', stackId: entry[0] as SetiTechStackId, part: 'lower', boardSlot: boardSlot as SetiComputerTechBoardSlot };
 }
 
 export function setiMoonTargetsForPrimary(s: SetiState, player: SetiPlayer, primary: SetiPrimaryBody): SetiBody[] {
@@ -789,6 +956,7 @@ export interface SetiLegalTargets {
   canPass: boolean;
   canLaunch: boolean;
   canAnalyze: boolean;
+  canResearch: boolean;
   moveTargets: Record<string, SetiCellId[]>;
   moveEnergyCost: Record<string, Partial<Record<SetiCellId, number>>>;
   orbitTargets: Record<string, SetiProjectBody[]>;
@@ -809,6 +977,7 @@ function emptyLegal(): SetiLegalTargets {
     canPass: false,
     canLaunch: false,
     canAnalyze: false,
+    canResearch: false,
     moveTargets: {},
     moveEnergyCost: {},
     orbitTargets: {},
@@ -824,23 +993,46 @@ function emptyLegal(): SetiLegalTargets {
   };
 }
 
+function deferredEndRoundCardBlocksPlay(s: SetiState): boolean {
+  if (!s.deferredEndRoundCard || s.turnResolution?.kind !== 'pass') return false;
+  if (s.turnResolution.passStage === 'round-card') return true;
+  return s.solo
+    ? s.players[0].passed && s.solo.passed
+    : s.players.every((player) => player.passed);
+}
+
+function setiDecisionForSeat(s: SetiState, seat: number): SetiPendingDecision | null {
+  const queued = s.pending[0] ?? null;
+  if (queued?.owner === seat) return queued;
+  if (s.deferredEndRoundCard?.owner === seat) return s.deferredEndRoundCard;
+  return queued ?? (deferredEndRoundCardBlocksPlay(s) ? s.deferredEndRoundCard : null);
+}
+
 export function getSetiLegalTargets(s: SetiState, seat: number): SetiLegalTargets {
   const legal = emptyLegal();
   const player = s.players[seat];
   if (!player || s.phase === 'ended') return legal;
-  const head = s.pending[0];
+  const head = setiDecisionForSeat(s, seat);
   if (head) {
     legal.pendingKind = head.kind;
     if (head.owner !== seat) return legal;
     switch (head.kind) {
       case 'initial-income-card': case 'end-round-card': case 'tuck-income-card': case 'card-effect-choice':
-      case 'alien-card-source': case 'centaurian-reward': case 'exertian-card': case 'manual-trigger-choice':
+      case 'alien-card-source': case 'centaurian-reward': case 'exertian-card': case 'manual-trigger-choice': case 'project-visit-reward':
         legal.pendingOptions = [...head.options]; break;
-      case 'discard-to-four': legal.pendingOptions = [...player.hand]; break;
+      case 'discard-to-four': legal.pendingOptions = [
+        ...player.hand,
+        ...player.alienHand.filter((id) => SETI_ALIEN_CARDS_BY_ID[id]?.species !== 'exertians'),
+      ]; break;
       case 'signal-sector': legal.pendingOptions = [...head.options]; legal.scanSectorTargets = [...head.options]; break;
       case 'completed-sector-order': legal.pendingOptions = [...head.options]; break;
       case 'trace-space': legal.pendingOptions = [...head.options]; legal.traceTargets = [...head.options]; break;
-      case 'gold-tile': case 'tech-stack': legal.pendingOptions = [...head.options]; break;
+      case 'gold-tile': legal.pendingOptions = [...head.options]; break;
+      case 'tech-stack':
+        legal.pendingOptions = [...head.options];
+        legal.techStackTargets = [...head.options];
+        break;
+      case 'computer-tech-slot': legal.pendingOptions = [...head.options]; break;
       case 'mars-first-data': legal.pendingOptions = [...head.options]; break;
     }
     return legal;
@@ -864,7 +1056,9 @@ export function getSetiLegalTargets(s: SetiState, seat: number): SetiLegalTarget
       ? SETI_RULES.asteroidExitEnergy
       : 0;
     const energyCost = SETI_RULES.moveEnergy + surcharge;
-    if (player.energy >= energyCost) {
+    const canPayWithMovementCard = player.energy >= surcharge
+      && player.hand.some((cardId) => SETI_PROJECT_CATALOG_BY_ID[cardId]?.freeCorner === 'move');
+    if (player.energy >= energyCost || canPayWithMovementCard) {
       legal.moveTargets[piece.id] = adjacentSetiCells(piece.cell);
       legal.moveEnergyCost[piece.id] = Object.fromEntries(legal.moveTargets[piece.id].map((cell) => [cell, energyCost]));
     }
@@ -893,17 +1087,18 @@ export function getSetiLegalTargets(s: SetiState, seat: number): SetiLegalTarget
   if (canTakeMain && player.credits >= SETI_RULES.scanCredits && player.energy >= SETI_RULES.scanEnergy && s.projectRow.some(Boolean)) {
     legal.scanSectorTargets = [earthSetiSectorId(s), ...SETI_SECTOR_IDS.filter((id) => id !== earthSetiSectorId(s))];
   }
-  if (canTakeMain && player.publicity >= SETI_RULES.researchPublicity) {
-    legal.techStackTargets = SETI_TECH_STACKS
-      .filter((stack) => s.techStacks[stack.id].tiles.length > 0 && !player.techs.some((tech) => tech.stackId === stack.id))
-      .map((stack) => stack.id);
-  }
+  legal.canResearch = canTakeMain
+    && player.publicity >= SETI_RULES.researchPublicity
+    && SETI_TECH_STACKS.some((stack) => s.techStacks[stack.id].tiles.length > 0 && !player.techs.some((tech) => tech.stackId === stack.id));
   legal.playableCards = canTakeMain
     ? [
       ...player.hand.filter((cardId) => !!SETI_PROJECT_CATALOG_BY_ID[cardId] && player.credits >= SETI_PROJECT_CATALOG_BY_ID[cardId].cost),
       ...player.alienHand.filter((cardId) => {
         const card = SETI_ALIEN_CARDS_BY_ID[cardId];
-        return !!card && card.species !== 'exertians';
+        if (!card?.playCost || card.species === 'exertians') return false;
+        return card.playCost.resource === 'credit'
+          ? player.credits >= card.playCost.amount
+          : player.energy >= card.playCost.amount;
       }),
     ]
     : [];
@@ -956,12 +1151,22 @@ export interface SetiPendingView {
 export interface SetiSoloView {
   difficulty: number;
   rivalScore: number;
+  rivalPublicity: number;
   progress: number;
-  activeObjectives: string[];
+  progressLoops: number;
+  activeObjectives: SetiSoloObjectiveProgressState[];
   completedObjectives: string[];
   objectiveDeckCount: number;
   actionDeckCount: number;
-  techTokens: number;
+  actionDiscardCount: number;
+  currentActionCard: string | null;
+  lastActionCard: string | null;
+  lastActionStep: number | null;
+  techs: Record<SetiRivalTechType, number>;
+  computer: boolean[];
+  dataPool: number;
+  rivalStartsRound: boolean;
+  passed: boolean;
 }
 
 export interface SetiView {
@@ -979,7 +1184,9 @@ export interface SetiView {
   players: SetiPlayerView[];
   solar: SetiSolarState & { features: SetiResolvedSolarFeature[]; bodyCells: Partial<Record<SetiPrimaryBody, SetiCellId>> };
   planets: Record<SetiBody, SetiPlanetState>;
+  placedSpacecraft: SetiPlacedSpacecraft[];
   pluto: SetiPlutoState;
+  neutralMilestonesRemaining: Record<20 | 30, number>;
   sectorBoardOrder: string[];
   sectorOrder: SetiSectorId[];
   sectors: Record<SetiSectorId, SetiSectorState>;
@@ -1017,7 +1224,15 @@ function redactSpeciesModule(module: SetiSpeciesModule | null, dev: boolean): Se
 export function setiViewFor(s: SetiState, seat: number | null | 'dev'): SetiView {
   const dev = seat === 'dev';
   const me = typeof seat === 'number' ? seat : null;
-  const head = s.pending[0] ?? null;
+  const queued = s.pending[0] ?? null;
+  const privateDeferred = me !== null && s.deferredEndRoundCard?.owner === me
+    ? s.deferredEndRoundCard
+    : null;
+  const head = dev
+    ? queued ?? s.deferredEndRoundCard
+    : queued?.owner === me
+      ? queued
+      : privateDeferred ?? queued ?? (deferredEndRoundCardBlocksPlay(s) ? s.deferredEndRoundCard : null);
   const pending: SetiPendingView | null = head
     ? { kind: head.kind, owner: head.owner, ...((dev || head.owner === me) ? { decision: head } : {}) }
     : null;
@@ -1032,6 +1247,11 @@ export function setiViewFor(s: SetiState, seat: number | null | 'dev'): SetiView
     alienDiscardCount: slot.alienDiscard.length,
     module: slot.revealed ? redactSpeciesModule(slot.module, dev) : null,
   })) as [SetiSpeciesView, SetiSpeciesView];
+  const solarPieces = s.solar.pieces.map((piece) => {
+    if (dev || piece.owner === me || !piece.sampleId) return { ...piece };
+    const { sampleId: _hiddenSample, ...publicPiece } = piece;
+    return publicPiece;
+  });
 
   return {
     game: 'seti',
@@ -1063,9 +1283,11 @@ export function setiViewFor(s: SetiState, seat: number | null | 'dev'): SetiView
       // Object spread above copied private arrays, so erase them from public seats.
       ...(!(dev || me === player.seat) ? { hand: undefined, alienHand: undefined, hiddenExertian: undefined } : {}),
     })),
-    solar: { ...s.solar, features: getSetiSolarFeatures(s), bodyCells: getSetiBodyCells(s) },
+    solar: { ...s.solar, pieces: solarPieces, features: getSetiSolarFeatures(s), bodyCells: getSetiBodyCells(s) },
     planets: s.planets,
+    placedSpacecraft: s.placedSpacecraft.map((piece) => ({ ...piece, coveredReward: piece.coveredReward ? { ...piece.coveredReward } : null })),
     pluto: s.projectRuntime.pluto,
+    neutralMilestonesRemaining: { ...s.neutralMilestonesRemaining },
     sectorBoardOrder: [...s.sectorBoardOrder],
     sectorOrder: [...s.sectorOrder],
     sectors: s.sectors,
@@ -1077,7 +1299,9 @@ export function setiViewFor(s: SetiState, seat: number | null | 'dev'): SetiView
       id: stack.id,
       count: s.techStacks[stack.id].tiles.length,
       firstTakeBonusAvailable: s.techStacks[stack.id].firstTakeBonusAvailable,
-      topTileId: dev ? s.techStacks[stack.id].tiles[0] ?? null : null,
+      // The technology side is face down in the physical stack, leaving the
+      // shuffled immediate-reward face publicly visible.
+      topTileId: s.techStacks[stack.id].tiles[0] ?? null,
     })),
     goldTiles: [...s.goldTiles],
     species,
@@ -1085,12 +1309,26 @@ export function setiViewFor(s: SetiState, seat: number | null | 'dev'): SetiView
     solo: s.solo ? {
       difficulty: s.solo.difficulty,
       rivalScore: s.solo.rivalScore,
+      rivalPublicity: s.solo.rivalPublicity,
       progress: s.solo.progress,
-      activeObjectives: [...s.solo.activeObjectives],
+      progressLoops: s.solo.progressLoops,
+      activeObjectives: s.solo.activeObjectives.map((objective) => ({ ...objective, marked: [...objective.marked] })),
       completedObjectives: [...s.solo.completedObjectives],
       objectiveDeckCount: s.solo.objectiveDeck.length,
       actionDeckCount: s.solo.actionDeck.length,
-      techTokens: s.solo.techTokens,
+      actionDiscardCount: s.solo.actionDiscard.length,
+      currentActionCard: s.solo.currentActionCard,
+      lastActionCard: s.solo.lastActionCard,
+      lastActionStep: s.solo.lastActionStep,
+      techs: {
+        probe: s.solo.techs.probe.length,
+        telescope: s.solo.techs.telescope.length,
+        computer: s.solo.techs.computer.length,
+      },
+      computer: [...s.solo.computer],
+      dataPool: s.solo.dataPool,
+      rivalStartsRound: s.solo.rivalStartsRound,
+      passed: s.solo.passed,
     } : null,
     lastEvent: s.lastEvent,
     log: s.log.slice(-80),
@@ -1118,25 +1356,103 @@ export function assertSetiState(s: SetiState): void {
   if (!s.players[s.activeSeat]) throw new Error('Invalid SETI active seat');
   const expectedProjects = SETI_BASE_PROJECT_CATALOG.length + (s.options.promoCards ? SETI_PROMO_PROJECT_CATALOG.length : 0);
   if (setiProjectCardTotal(s) !== expectedProjects) throw new Error(`SETI project conservation failed: ${setiProjectCardTotal(s)} != ${expectedProjects}`);
+  const neutralMarkerLimit = setiNeutralMarkersPerThreshold(s.players.length);
+  for (const threshold of [20, 30] as const) {
+    const remaining = s.neutralMilestonesRemaining[threshold];
+    if (!Number.isInteger(remaining) || remaining < 0 || remaining > neutralMarkerLimit) {
+      throw new Error(`SETI ${threshold}-point neutral marker supply is invalid`);
+    }
+  }
+  if (s.deferredEndRoundCard) {
+    const decision = s.deferredEndRoundCard;
+    if (!s.players[decision.owner]?.passed) throw new Error('SETI deferred end-round card owner has not passed');
+    if (decision.round !== s.round || s.round > 4) throw new Error('SETI deferred end-round card belongs to the wrong round');
+    const stack = s.roundEndStacks[decision.round - 1];
+    if (!decision.options.length || decision.options.some((cardId) => !stack.includes(cardId))) {
+      throw new Error('SETI deferred end-round card options are stale');
+    }
+  }
   for (const player of s.players) {
     if (player.publicity < 0 || player.publicity > SETI_RULES.publicityMax) throw new Error(`SETI publicity limit failed for ${player.color}`);
     if (player.dataPool < 0 || player.dataPool > SETI_RULES.dataMax) throw new Error(`SETI data limit failed for ${player.color}`);
     if (player.credits < 0 || player.energy < 0) throw new Error(`SETI resource below zero for ${player.color}`);
+    if (player.finalScoreBreakdown && player.finalScoreBreakdown.total !== player.finalScore) throw new Error(`SETI final score breakdown is inconsistent for ${player.color}`);
     if (player.computer.top.length !== SETI_RULES.computerTopSpaces) throw new Error('SETI computer top row must contain six spaces');
+    if (typeof player.neutralMilestones[20] !== 'boolean' || typeof player.neutralMilestones[30] !== 'boolean') throw new Error('SETI player neutral milestone state is invalid');
+    const occupiedComputerSlots = new Set<number>();
+    for (const [stackId, computer] of Object.entries(player.computer.tech)) {
+      if (!computer) continue;
+      const stack = SETI_TECH_BY_ID[stackId as SetiTechStackId];
+      const owned = player.techs.find((tech) => tech.stackId === stackId);
+      if (!stack || stack.type !== 'computer' || !owned || owned.computerSlot !== computer.boardSlot) {
+        throw new Error(`SETI computer technology ${stackId} is not installed consistently`);
+      }
+      if (!Number.isInteger(computer.boardSlot) || computer.boardSlot < 0 || computer.boardSlot >= SETI_COMPUTER_TECH_TOP_SPACES.length || occupiedComputerSlots.has(computer.boardSlot)) {
+        throw new Error(`SETI computer technology ${stackId} occupies an invalid board slot`);
+      }
+      occupiedComputerSlots.add(computer.boardSlot);
+      if (computer.lower && !player.computer.top[SETI_COMPUTER_TECH_TOP_SPACES[computer.boardSlot]]) {
+        throw new Error(`SETI computer technology ${stackId} has lower data without its aligned upper data`);
+      }
+    }
+    for (const tech of player.techs) {
+      if (tech.computerSlot === undefined) continue;
+      if (player.computer.tech[tech.stackId]?.boardSlot !== tech.computerSlot) throw new Error(`SETI owned technology ${tech.stackId} has a stale computer slot`);
+    }
+    for (const claim of player.goldClaims) {
+      if (claim.pointsPerSet !== undefined && (!Number.isInteger(claim.pointsPerSet) || claim.pointsPerSet < 0)) throw new Error('SETI gold claim value is invalid');
+    }
     for (const cardId of [...player.missions, ...player.completedMissions, ...player.scoringCards, ...player.permanentCards]) {
       if (!SETI_PROJECT_CATALOG_BY_ID[cardId]) throw new Error(`Unknown SETI project in a persistent zone: ${cardId}`);
     }
   }
   if (s.projectRuntime.resolution && !s.players[s.projectRuntime.resolution.owner]) throw new Error('SETI project resolution has an invalid owner');
+  if (s.projectRuntime.resolutionStack.some((resolution) => !s.players[resolution.owner])) throw new Error('SETI suspended project resolution has an invalid owner');
   if (s.projectRuntime.resolvingCard && !SETI_PROJECT_CATALOG_BY_ID[s.projectRuntime.resolvingCard.cardId]) throw new Error('SETI resolving project card is unknown');
   if (s.projectRuntime.pluto.orbiters.length > 1 || s.projectRuntime.pluto.landers.length > 1) throw new Error('SETI Pluto promo has one orbit and one landing space');
   if (s.projectRuntime.pluto.installedBy !== null && !s.players[s.projectRuntime.pluto.installedBy]) throw new Error('SETI Pluto promo has an invalid owner');
+  const spacecraftIds = new Set<string>();
+  for (const piece of s.placedSpacecraft) {
+    if (spacecraftIds.has(piece.id)) throw new Error(`Duplicate SETI spacecraft id ${piece.id}`);
+    spacecraftIds.add(piece.id);
+    if (piece.owner !== -1 && !s.players[piece.owner]) throw new Error(`SETI spacecraft ${piece.id} has invalid owner`);
+    if (piece.owner === -1 && !s.solo) throw new Error(`SETI rival spacecraft ${piece.id} exists outside solo play`);
+    if (piece.body !== 'Pluto' && !SETI_BODIES[piece.body]) throw new Error(`SETI spacecraft ${piece.id} has invalid body`);
+    if (piece.coveredReward?.kind === 'first-orbit-vp' && piece.kind !== 'orbiter') throw new Error(`SETI lander ${piece.id} covers an orbit reward`);
+    if ((piece.coveredReward?.kind === 'first-landing-data' || piece.coveredReward?.kind === 'moon-landing') && piece.kind !== 'lander') throw new Error(`SETI orbiter ${piece.id} covers a landing reward`);
+    if (piece.coveredReward?.kind === 'first-landing-data' && piece.body !== 'Pluto' && s.planets[piece.body].firstLandingBonuses.includes(piece.coveredReward.amount)) {
+      throw new Error(`SETI first-landing reward ${piece.body}/${piece.coveredReward.amount} is both covered and available`);
+    }
+  }
+  const metadataMarkers = s.placedSpacecraft.map((piece) => `${piece.body}|${piece.kind}|${piece.owner}`).sort();
+  const legacyMarkers = (Object.keys(SETI_BODIES) as SetiBody[]).flatMap((body) => [
+    ...s.planets[body].orbiters.map((owner) => `${body}|orbiter|${owner}`),
+    ...s.planets[body].landers.map((owner) => `${body}|lander|${owner}`),
+  ]).concat(
+    s.projectRuntime.pluto.orbiters.map((owner) => `Pluto|orbiter|${owner}`),
+    s.projectRuntime.pluto.landers.map((owner) => `Pluto|lander|${owner}`),
+  ).sort();
+  if (metadataMarkers.length !== legacyMarkers.length || metadataMarkers.some((marker, index) => marker !== legacyMarkers[index])) {
+    throw new Error('SETI placed-spacecraft metadata does not match the planetary owner arrays');
+  }
   for (const id of SETI_SECTOR_IDS) {
     const sector = s.sectors[id];
     if (sector.dataRemaining < 0 || sector.dataRemaining > sector.capacity) throw new Error(`SETI sector data limit failed for ${id}`);
   }
+  if (s.solo) {
+    if (s.solo.rivalPublicity < 0 || s.solo.rivalPublicity > SETI_RULES.publicityMax) throw new Error('SETI rival publicity limit failed');
+    if (s.solo.dataPool < 0 || !Number.isInteger(s.solo.dataPool)) throw new Error('SETI rival data pool must be a non-negative integer');
+    if (s.solo.computer.length !== 6) throw new Error('SETI rival computer must contain six spaces');
+    for (const progress of s.solo.activeObjectives) {
+      const objective = SETI_SOLO_OBJECTIVES.find((candidate) => candidate.id === progress.objectiveId);
+      if (!objective || progress.marked.length !== objective.tasks.length) throw new Error(`Invalid SETI solo objective ${progress.objectiveId}`);
+    }
+    for (const id of [...s.solo.actionDeck, ...s.solo.actionDiscard, ...s.solo.advancedReserve]) {
+      if (!SETI_RIVAL_ACTION_CARDS.some((card) => card.id === id)) throw new Error(`Unknown SETI rival action ${id}`);
+    }
+  }
   for (const piece of s.solar.pieces) {
-    if (!s.players[piece.owner]) throw new Error(`SETI piece ${piece.id} has invalid owner`);
+    if (!s.players[piece.owner] && !(s.solo && piece.owner === -1)) throw new Error(`SETI piece ${piece.id} has invalid owner`);
     if (!SETI_CELL_IDS.includes(piece.cell)) throw new Error(`SETI piece ${piece.id} has invalid cell`);
   }
 }

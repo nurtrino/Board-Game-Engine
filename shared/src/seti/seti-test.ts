@@ -8,11 +8,9 @@ import {
   SETI_BODIES,
   SETI_CELL_IDS,
   SETI_PROMO_PROJECT_CARDS,
-  SETI_PROJECT_BY_ID,
   SETI_RULES,
   SETI_SEATS,
   SETI_SECTORS,
-  SETI_SOLAR_ART_ANCHORS,
   SETI_TECH_STACKS,
   adjacentSetiCells,
   parseSetiCell,
@@ -22,6 +20,8 @@ import {
   type SetiSectorId,
   type SetiTechStackId,
 } from './data.js';
+import { SETI_SOLAR_FEATURE_CATALOG } from './solarGeometry.js';
+import { SETI_BASE_PROJECT_CATALOG, SETI_PROJECT_CATALOG_BY_ID } from './projectCatalog.js';
 import {
   assertSetiState,
   createSeti,
@@ -70,14 +70,15 @@ function act(s: SetiState, seat: number, action: SetiAction, label: string = act
 }
 
 function drainPending(s: SetiState, max = 100): void {
-  for (let guard = 0; s.pending.length && guard < max; guard++) {
-    const owner = s.pending[0].owner;
+  for (let guard = 0; (s.pending.length || s.deferredEndRoundCard) && guard < max; guard++) {
+    const owner = s.pending[0]?.owner ?? s.deferredEndRoundCard!.owner;
+    const kind = s.pending[0]?.kind ?? s.deferredEndRoundCard!.kind;
     const action = chooseSetiBotAction(s, owner);
-    ok(action !== null, `bot resolves ${s.pending[0].kind}`);
+    ok(action !== null, `bot resolves ${kind}`);
     if (!action) return;
-    act(s, owner, action, `resolve ${s.pending[0]?.kind ?? 'decision'}`);
+    act(s, owner, action, `resolve ${kind}`);
   }
-  ok(s.pending.length === 0, 'pending queue drains');
+  ok(s.pending.length === 0 && !s.deferredEndRoundCard, 'pending queue and deferred pass card drain');
 }
 
 function ready(count = 2, seed = 1): SetiState {
@@ -103,10 +104,10 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   ok(SETI_TECH_STACKS.flatMap((stack) => stack.tiles).every((tile) => tile.immediateReward.status === 'typed'), 'all 48 immediate technology rewards are typed');
   ok((Object.keys(SETI_BODIES) as SetiBody[]).every((body) => ['none', 'typed'].includes(SETI_BODIES[body].orbitReward.status)), 'no fake/untranscribed moon or planet orbit reward');
   ok(SETI_BASE_PROJECT_CARDS.every((card) => card.id === `seti_project_${card.art.sourceCardId}` && !!card.art.faceUrl), 'project ids and authentic art cells are stable');
-  ok(SETI_BASE_PROJECT_CARDS.every((card) => card.printed.effects === null && card.printed.status === 'untranscribed'), 'unverified project effects remain explicit gaps');
-  equal(SETI_PROJECT_BY_ID.seti_project_204400.name, 'Lunar Gateway', 'replacement Lunar Gateway stays in base deck');
+  ok(SETI_BASE_PROJECT_CATALOG.every((card) => card.effects.length > 0), 'all 138 base project cards have typed runtime effects');
+  equal(SETI_PROJECT_CATALOG_BY_ID.seti_project_204400.canonicalName, 'Lunar Gateway', 'replacement Lunar Gateway stays in base deck');
   ok(!SETI_BASE_PROJECT_CARDS.some((card) => card.id === 'seti_promo_41500' || card.id === 'seti_promo_204700'), 'promos excluded by default');
-  equal(SETI_SOLAR_ART_ANCHORS.length, 6, 'six moving planets tied to authentic art centers');
+  equal(SETI_SOLAR_FEATURE_CATALOG.length, 35, 'all printed solar objects are tied to authentic art anchors');
 
   const a = createSeti(seats(4), 998);
   const b = createSeti(seats(4), 998);
@@ -127,7 +128,7 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   const owner = s.pending[0].owner;
   ok(!applySetiAction(s, owner, { type: 'launch' }).ok, 'normal action rejected during income selection');
   const selected = s.players[owner].hand[0];
-  const kind = SETI_PROJECT_BY_ID[selected].printed.incomeCorner;
+  const kind = SETI_PROJECT_CATALOG_BY_ID[selected].income;
   const before = { credits: s.players[owner].credits, energy: s.players[owner].energy, hand: s.players[owner].hand.length };
   act(s, owner, { type: 'choose_initial_income', cardId: selected });
   ok(s.players[owner].incomeCards.some((card) => card.cardId === selected && card.starting), 'selected card tucks as starting income');
@@ -165,7 +166,7 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   ok(!applySetiAction(s, p.seat, { type: 'move', pieceId: id, to: invalid }).ok, 'movement reducer rejects non-adjacent target');
   equal(s.solar.pieces.find((piece) => piece.id === id)!.cell, beforeInvalid, 'failed non-adjacent move leaves piece in place');
 
-  const publicity = getSetiSolarFeatures(s).find((feature) => feature.kind === 'publicity')!.cell;
+  const publicity = getSetiSolarFeatures(s).find((feature) => feature.grantsPrintedPublicity)!.cell;
   const from = adjacentSetiCells(publicity)[0];
   const publicityProbe = addProbeAt(s, p, from);
   p.energy = 5;
@@ -173,6 +174,31 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   act(s, p.seat, { type: 'move', pieceId: publicityProbe, to: publicity });
   equal(p.publicity, 10, 'publicity cell raises publicity and clamps at 10');
   ok(getSetiLegalTargets(s, p.seat).canLaunch === false, 'base probe limit counts only probes in space');
+}
+
+// A printed movement corner is a physical alternative to the base energy
+// payment, so destinations remain legal even when the player has no energy.
+{
+  const s = ready(2, 9);
+  const p = s.players[s.activeSeat];
+  let movementCard: string | null = null;
+  while (!movementCard) {
+    const drawn = drawSetiProjectCard(s);
+    if (!drawn) break;
+    p.hand.push(drawn);
+    if (SETI_PROJECT_CATALOG_BY_ID[drawn].freeCorner === 'move') movementCard = drawn;
+  }
+  ok(movementCard !== null, 'setup contains a project card with a movement corner');
+  if (movementCard) {
+    const from = SETI_CELL_IDS.find((cell) => !getSetiSolarFeatures(s).some((feature) => feature.kind === 'asteroid' && feature.cell === cell))!;
+    const to = adjacentSetiCells(from)[0];
+    const pieceId = addProbeAt(s, p, from);
+    p.energy = 0;
+    ok(getSetiLegalTargets(s, p.seat).moveTargets[pieceId]?.includes(to), 'movement-card payment keeps adjacent cells tactile at zero energy');
+    act(s, p.seat, { type: 'move', pieceId, to, payment: { cardId: movementCard } });
+    ok(!p.hand.includes(movementCard), 'movement payment discards the exact touched card');
+    equal(p.energy, 0, 'movement corner replaces the base energy cost');
+  }
 }
 
 // Exact orbit and landing rewards.
@@ -190,7 +216,7 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   equal(s.planets.Venus.orbiters.length, 1, 'orbiter moves to planetary board');
   equal(s.solar.pieces.some((piece) => piece.id === probe), false, 'orbited probe leaves solar board');
   drainPending(s);
-  equal(p.incomeCards.length, income + 1, 'Venus orbit tucks one income card');
+  equal(p.incomeCards.length, income, 'optional Venus income tuck may be skipped');
 }
 {
   const s = ready(2, 16);
@@ -229,23 +255,47 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   p.energy = 5;
   const earth = earthSetiSectorId(s);
   const sector = s.sectors[earth];
+  const earthColor = SETI_SECTORS.find((definition) => definition.id === earth)!.printedSignalColor;
+  const matchingRow = s.projectRow.findIndex((card) => !!card && SETI_PROJECT_CATALOG_BY_ID[card].signalColor === earthColor);
+  if (matchingRow < 0) {
+    const deckIndex = s.projectDeck.findIndex((card) => SETI_PROJECT_CATALOG_BY_ID[card].signalColor === earthColor);
+    const replacement = s.projectDeck[deckIndex];
+    s.projectDeck[deckIndex] = s.projectRow[0]!;
+    s.projectRow[0] = replacement;
+  } else if (matchingRow !== 0) {
+    [s.projectRow[0], s.projectRow[matchingRow]] = [s.projectRow[matchingRow], s.projectRow[0]];
+  }
   sector.capacity = 2;
   sector.dataRemaining = 2;
   sector.signals = [];
   const score = p.score;
   act(s, p.seat, { type: 'scan' });
+  const scanSteps = s.pending[0];
+  ok(scanSteps?.kind === 'card-effect-choice' && scanSteps.options.includes('earth'), 'scan exposes its printed Earth step on the table');
+  act(s, p.seat, { type: 'choose', choice: { kind: 'option', option: 'earth' } });
   const first = s.pending[0];
-  ok(first?.kind === 'signal-sector', 'scan exposes Earth sector as a board target');
-  const earthTarget = first.kind === 'signal-sector' ? first.options[0] : earth;
+  ok(first?.kind === 'signal-sector', 'Earth scan step exposes the Earth sector as a board target');
+  const earthTarget = first?.kind === 'signal-sector' ? first.options[0] : earth;
   act(s, p.seat, { type: 'choose', choice: { kind: 'sector', sectorId: earthTarget } });
+  const nextSteps = s.pending[0];
+  ok(nextSteps?.kind === 'card-effect-choice' && nextSteps.options.includes('project-row'), 'scan exposes its printed project-row step after Earth');
+  act(s, p.seat, { type: 'choose', choice: { kind: 'option', option: 'project-row' } });
   const second = s.pending[0];
   ok(second?.kind === 'signal-sector' && second.source === 'project-row', 'scan exposes row card and printed sector targets');
-  act(s, p.seat, { type: 'choose', choice: { kind: 'sector', sectorId: earthTarget, row: second.kind === 'signal-sector' ? second.rowOptions![0] : 0 } });
+  const mismatched = SETI_SECTORS.find((definition) => definition.printedSignalColor !== earthColor)!.id;
+  const rowBeforeInvalid = s.projectRow[0];
+  const rejectedSignal = applySetiAction(s, p.seat, { type: 'choose', choice: { kind: 'sector', sectorId: mismatched, row: 0 } });
+  ok(!rejectedSignal.ok, 'scan rejects a project card placed into a nonmatching signal color');
+  equal(s.projectRow[0], rowBeforeInvalid, 'rejected scan signal does not discard the selected card');
+  act(s, p.seat, { type: 'choose', choice: { kind: 'sector', sectorId: earthTarget, row: 0 } });
   ok(p.score >= score + 2, 'second signal space scores 2 VP');
+  const finishScan = s.pending[0];
+  ok(finishScan?.kind === 'card-effect-choice' && finishScan.options.includes('done'), 'scan exposes completion after both printed steps');
+  act(s, p.seat, { type: 'choose', choice: { kind: 'option', option: 'done' } });
   equal(s.projectRow.filter(Boolean).length, 3, 'project row refills after whole scan');
   drainPending(s);
   ok(s.sectors[earthTarget].wins.some((marker) => marker.owner === p.seat), 'sector majority creates persistent win marker');
-  equal(p.publicity, Math.min(10, SETI_RULES.startPublicity + 1), 'sector contributor gains publicity');
+  equal(p.publicity, Math.min(10, SETI_RULES.startPublicity + 2), 'sector contributor and first discovery space each gain publicity');
 }
 {
   const s = ready(2, 24);
@@ -276,7 +326,10 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   const s = ready(2, 29);
   const p = s.players[s.activeSeat];
   p.dataPool = 6;
-  for (let slot = 0; slot < 6; slot++) act(s, p.seat, { type: 'place_data', slot });
+  for (let slot = 0; slot < 6; slot++) {
+    act(s, p.seat, { type: 'place_data', slot });
+    drainPending(s);
+  }
   ok(p.computer.top.every(Boolean), 'six top computer spaces fill left to right');
   p.dataPool = 2;
   p.energy = 2;
@@ -288,8 +341,8 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   equal(p.traceMarkers.filter((trace) => trace.color === 'blue').length, 1, 'blue analysis trace placed');
 }
 
-// Research rotates the indicated hierarchy, takes top tile, types immediate
-// reward, grants first-stack VP, and enables persistent ability.
+// Research rotates first, then the player physically chooses a technology
+// stack; taking its top tile grants the first-stack VP and persistent ability.
 {
   const s = ready(2, 31);
   const p = s.players[s.activeSeat];
@@ -298,10 +351,12 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   const beforeOrientation = s.solar.orientations.disc1;
   const beforeScore = p.score;
   const beforeCount = s.techStacks[stackId].tiles.length;
-  act(s, p.seat, { type: 'research', stackId });
+  act(s, p.seat, { type: 'research' });
   equal(s.solar.orientations.disc1, (beforeOrientation + 7) % 8, 'research rotates disc 1 counter-clockwise');
   equal(s.solar.rotationPointer, 2, 'rotation pointer advances to disc 2');
   equal(s.solar.orientations.base, 0, 'research never rotates printed base');
+  ok(s.pending[0]?.kind === 'tech-stack', 'research exposes the physical technology stacks after rotation');
+  act(s, p.seat, { type: 'choose', choice: { kind: 'tech-stack', stackId } });
   equal(s.techStacks[stackId].tiles.length, beforeCount - 1, 'top technology tile taken');
   ok(p.techs.some((tech) => tech.stackId === stackId), 'persistent technology stored on player board');
   ok(p.score >= beforeScore + 2, 'first take from stack scores 2 VP before typed immediate reward');
@@ -323,16 +378,17 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   const orientation = s.solar.orientations.disc1;
   act(s, first, { type: 'pass' });
   ok(s.pending.some((decision) => decision.kind === 'discard-to-four'), 'pass exposes exact discard-to-four decision');
-  ok(s.pending.some((decision) => decision.kind === 'end-round-card'), 'pass exposes end-round card stack');
-  equal(s.solar.orientations.disc1, (orientation + 7) % 8, 'first passer rotates solar system');
+  ok(!s.pending.some((decision) => decision.kind === 'end-round-card'), 'end-round card waits until the printed discard step is complete');
+  equal(s.solar.orientations.disc1, orientation, 'first passer rotates only after discarding');
   drainPending(s);
+  equal(s.solar.orientations.disc1, (orientation + 7) % 8, 'first passer rotates solar system after discarding');
   equal(p.hand.length, 4, 'first passer discarded to four');
   ok(p.incomeCards.length >= 2, 'first passer added an end-round income card');
   const second = s.activeSeat;
   act(s, second, { type: 'pass' });
   drainPending(s);
   equal(s.round, 2, 'all players passing completes round');
-  equal(s.startingSeat, first, 'first passer starts next round');
+  equal(s.startingSeat, (first + 1) % s.players.length, 'starting-player marker moves one seat clockwise');
   ok(s.players.every((player) => !player.passed), 'passed flags reset for new round');
   equal(s.roundEndStacks[0].length, 0, 'unused final round-stack card discarded');
 }
@@ -408,7 +464,7 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   equal(bumpedBase.solar.pieces.find((piece) => piece.id === baseId)!.cell, setiCellId(1, 4), 'base-supported piece bumps when rotated disc 2 newly overlaps it');
 }
 
-// Redaction: hands, species, tech fronts, and pending details.
+// Redaction: hands, species, public technology reward faces, and pending details.
 {
   const s = ready(2, 53);
   const own = setiViewFor(s, 0);
@@ -419,7 +475,8 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   ok(tv.players.every((player) => player.hand === undefined), 'TV sees hand counts only');
   ok(tv.species.every((slot) => slot.speciesId === null), 'hidden species identities redacted');
   ok(dev.species.every((slot) => slot.speciesId !== null), 'developer view can audit hidden species');
-  ok(own.techStacks.every((stack) => stack.topTileId === null), 'unrevealed technology fronts hidden');
+  ok(own.techStacks.every((stack) => stack.topTileId !== null), 'technology stack reward faces are publicly visible');
+  ok(tv.techStacks.every((stack) => stack.topTileId !== null), 'TV shows the same public technology reward faces');
   ok(dev.techStacks.every((stack) => stack.topTileId !== null), 'developer view can audit technology order');
   s.pending.push({ kind: 'card-effect-choice', owner: 0, cardId: 'test', label: 'Secret', min: 1, max: 1, options: ['a', 'b'] });
   ok(setiViewFor(s, 1).pending?.decision === undefined, 'other player sees pending owner/kind but not private options');
@@ -431,7 +488,7 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
   const a = createSeti(seats(3), 61);
   const b = createSeti(seats(3), 61);
   for (let step = 0; step < 50 && a.phase !== 'ended'; step++) {
-    const owner = a.pending[0]?.owner ?? a.activeSeat;
+    const owner = a.pending[0]?.owner ?? a.deferredEndRoundCard?.owner ?? a.activeSeat;
     const actionA = chooseSetiBotAction(a, owner);
     const actionB = chooseSetiBotAction(b, owner);
     equal(JSON.stringify(actionA), JSON.stringify(actionB), `deterministic bot action ${step}`);
@@ -451,13 +508,29 @@ function addProbeAt(s: SetiState, player: SetiPlayer, cell: SetiCellId): string 
 for (const count of [1, 2, 3, 4]) {
   for (const seed of [5, 17]) {
     const s = createSeti(seats(count), seed);
+    const replay = createSeti(seats(count), seed);
+    const setupTv = setiViewFor(s, null);
+    ok(setupTv.players.every((player) => player.hand === undefined && player.alienHand === undefined && player.hiddenExertian === undefined), `${count}p seed ${seed} TV redacts every private card zone`);
+    ok(setupTv.species.every((slot) => slot.speciesId === null), `${count}p seed ${seed} TV redacts unrevealed species identities`);
+    for (let seat = 0; seat < count; seat++) {
+      const privateView = setiViewFor(s, seat);
+      ok(privateView.players[seat].hand !== undefined, `${count}p seed ${seed} seat ${seat} receives its own hand`);
+      ok(privateView.players.every((player) => player.seat === seat || player.hand === undefined), `${count}p seed ${seed} seat ${seat} receives no opponent hand`);
+    }
     const actions = runSetiBotGame(s, 5000);
+    const replayActions = runSetiBotGame(replay, 5000);
+    equal(replayActions, actions, `${count}p seed ${seed} deterministic replay uses the same action count`);
+    equal(JSON.stringify(replay), JSON.stringify(s), `${count}p seed ${seed} deterministic replay ends byte-identically`);
     equal(s.phase, 'ended', `${count}p seed ${seed} completes all five rounds`);
     equal(s.round, 5, `${count}p seed ${seed} ends in round five`);
     ok(actions > count * 20 && actions < 5000, `${count}p seed ${seed} bot made bounded progress (${actions} actions)`);
     ok(s.players.every((player) => player.finalScore !== null), `${count}p seed ${seed} computes final scores`);
+    ok(s.players.every((player) => player.finalScoreBreakdown?.total === player.finalScore), `${count}p seed ${seed} exposes an exact final-score breakdown`);
     ok(s.winners !== null, `${count}p seed ${seed} records result`);
     assertSetiState(s);
+    const restored = JSON.parse(JSON.stringify(s)) as SetiState;
+    assertSetiState(restored);
+    equal(JSON.stringify(restored), JSON.stringify(s), `${count}p seed ${seed} final state survives JSON round trip`);
     console.log(`${count}p/seed${seed}: ${actions} actions, scores ${s.players.map((player) => `${player.color}:${player.finalScore}`).join(' ')}`);
   }
 }

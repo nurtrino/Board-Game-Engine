@@ -1,0 +1,2074 @@
+{
+  "version": 1,
+  "source": "Printed titles reviewed against authentic 680x950 card art",
+  "reviewedAt": "2026-07-11",
+  "review": {
+    "cards": 412,
+    "correctionProposals": 80,
+    "accepted": 80,
+    "rejected": 0,
+    "ambiguous": 0
+  },
+  "cards": {
+    "10434:3": {
+      "sheet": 10434,
+      "cell": 3,
+      "name": "Top Down"
+    },
+    "10434:2": {
+      "sheet": 10434,
+      "cell": 2,
+      "name": "Allocation"
+    },
+    "10434:1": {
+      "sheet": 10434,
+      "cell": 1,
+      "name": "Polarization"
+    },
+    "10434:0": {
+      "sheet": 10434,
+      "cell": 0,
+      "name": "Domineering"
+    },
+    "10433:23": {
+      "sheet": 10433,
+      "cell": 23,
+      "name": "Assimilation"
+    },
+    "10433:22": {
+      "sheet": 10433,
+      "cell": 22,
+      "name": "Appeasement"
+    },
+    "10425:1": {
+      "sheet": 10425,
+      "cell": 1,
+      "name": "Manipulation"
+    },
+    "10424:21": {
+      "sheet": 10424,
+      "cell": 21,
+      "name": "Follow the Leader"
+    },
+    "10424:13": {
+      "sheet": 10424,
+      "cell": 13,
+      "name": "Crackdown"
+    },
+    "10428:4": {
+      "sheet": 10428,
+      "cell": 4,
+      "name": "Ousted"
+    },
+    "10425:3": {
+      "sheet": 10425,
+      "cell": 3,
+      "name": "Descent"
+    },
+    "10425:9": {
+      "sheet": 10425,
+      "cell": 9,
+      "name": "Spite"
+    },
+    "10425:11": {
+      "sheet": 10425,
+      "cell": 11,
+      "name": "Taste of Power"
+    },
+    "10425:7": {
+      "sheet": 10425,
+      "cell": 7,
+      "name": "Rumors"
+    },
+    "10425:5": {
+      "sheet": 10425,
+      "cell": 5,
+      "name": "Quiet Conversations"
+    },
+    "10424:14": {
+      "sheet": 10424,
+      "cell": 14,
+      "name": "Damning Evidence"
+    },
+    "10425:6": {
+      "sheet": 10425,
+      "cell": 6,
+      "name": "Reconnaissance"
+    },
+    "10425:10": {
+      "sheet": 10425,
+      "cell": 10,
+      "name": "Subtle Gesture"
+    },
+    "10424:10": {
+      "sheet": 10424,
+      "cell": 10,
+      "name": "Another Way"
+    },
+    "10427:3": {
+      "sheet": 10427,
+      "cell": 3,
+      "name": "Exaggeration"
+    },
+    "10424:22": {
+      "sheet": 10424,
+      "cell": 22,
+      "name": "Hardened"
+    },
+    "10430:16": {
+      "sheet": 10430,
+      "cell": 16,
+      "name": "Absolute Control"
+    },
+    "10428:13": {
+      "sheet": 10428,
+      "cell": 13,
+      "name": "Shadow Network"
+    },
+    "10429:3": {
+      "sheet": 10429,
+      "cell": 3,
+      "name": "Skimming"
+    },
+    "10430:9": {
+      "sheet": 10430,
+      "cell": 9,
+      "name": "Authoritarianism"
+    },
+    "10430:10": {
+      "sheet": 10430,
+      "cell": 10,
+      "name": "Autocracy"
+    },
+    "10428:19": {
+      "sheet": 10428,
+      "cell": 19,
+      "name": "Enterprising"
+    },
+    "10428:9": {
+      "sheet": 10428,
+      "cell": 9,
+      "name": "Capitalization"
+    },
+    "10428:8": {
+      "sheet": 10428,
+      "cell": 8,
+      "name": "Individualism"
+    },
+    "10431:5": {
+      "sheet": 10431,
+      "cell": 5,
+      "name": "Unification"
+    },
+    "10424:1": {
+      "sheet": 10424,
+      "cell": 1,
+      "name": "Dayus"
+    },
+    "10424:6": {
+      "sheet": 10424,
+      "cell": 6,
+      "name": "Redbeam"
+    },
+    "10424:9": {
+      "sheet": 10424,
+      "cell": 9,
+      "name": "Pangalo"
+    },
+    "10420:23": {
+      "sheet": 10420,
+      "cell": 23,
+      "name": "Ironbranch"
+    },
+    "10421:6": {
+      "sheet": 10421,
+      "cell": 6,
+      "name": "Outerbound"
+    },
+    "10421:9": {
+      "sheet": 10421,
+      "cell": 9,
+      "name": "Quanto"
+    },
+    "10420:21": {
+      "sheet": 10420,
+      "cell": 21,
+      "name": "Ender & Griffin"
+    },
+    "10420:19": {
+      "sheet": 10420,
+      "cell": 19,
+      "name": "BGN"
+    },
+    "10421:13": {
+      "sheet": 10421,
+      "cell": 13,
+      "name": "Embria"
+    },
+    "10423:7": {
+      "sheet": 10423,
+      "cell": 7,
+      "name": "Xfab"
+    },
+    "10420:9": {
+      "sheet": 10420,
+      "cell": 9,
+      "name": "Everon"
+    },
+    "10420:6": {
+      "sheet": 10420,
+      "cell": 6,
+      "name": "Atoma"
+    },
+    "10420:13": {
+      "sheet": 10420,
+      "cell": 13,
+      "name": "Scatterzero"
+    },
+    "10420:12": {
+      "sheet": 10420,
+      "cell": 12,
+      "name": "Progenitor"
+    },
+    "10423:19": {
+      "sheet": 10423,
+      "cell": 19,
+      "name": "Omnicentra"
+    },
+    "10423:18": {
+      "sheet": 10423,
+      "cell": 18,
+      "name": "Windsor/Wright"
+    },
+    "10426:20": {
+      "sheet": 10426,
+      "cell": 20,
+      "name": "Better Forecasts"
+    },
+    "10424:0": {
+      "sheet": 10424,
+      "cell": 0,
+      "name": "West&Cast"
+    },
+    "10423:23": {
+      "sheet": 10423,
+      "cell": 23,
+      "name": "Tushman, Tushman & Tushman"
+    },
+    "10423:22": {
+      "sheet": 10423,
+      "cell": 22,
+      "name": "Resonant"
+    },
+    "10423:21": {
+      "sheet": 10423,
+      "cell": 21,
+      "name": "Com Co."
+    },
+    "10423:20": {
+      "sheet": 10423,
+      "cell": 20,
+      "name": "Socialbeings"
+    },
+    "10426:19": {
+      "sheet": 10426,
+      "cell": 19,
+      "name": "Volatility"
+    },
+    "10419:18": {
+      "sheet": 10419,
+      "cell": 18,
+      "name": "Liberties"
+    },
+    "10419:20": {
+      "sheet": 10419,
+      "cell": 20,
+      "name": "Influential"
+    },
+    "10419:17": {
+      "sheet": 10419,
+      "cell": 17,
+      "name": "Ubiquity"
+    },
+    "10419:14": {
+      "sheet": 10419,
+      "cell": 14,
+      "name": "Data Modeling"
+    },
+    "10419:21": {
+      "sheet": 10419,
+      "cell": 21,
+      "name": "Integrated Networks"
+    },
+    "10419:13": {
+      "sheet": 10419,
+      "cell": 13,
+      "name": "Brand Loyalty"
+    },
+    "10419:19": {
+      "sheet": 10419,
+      "cell": 19,
+      "name": "Political Machine"
+    },
+    "10419:12": {
+      "sheet": 10419,
+      "cell": 12,
+      "name": "Neuro Lab"
+    },
+    "10419:15": {
+      "sheet": 10419,
+      "cell": 15,
+      "name": "Promoters"
+    },
+    "10426:17": {
+      "sheet": 10426,
+      "cell": 17,
+      "name": "Exposure"
+    },
+    "10426:16": {
+      "sheet": 10426,
+      "cell": 16,
+      "name": "Consolidation"
+    },
+    "10426:18": {
+      "sheet": 10426,
+      "cell": 18,
+      "name": "Propaganda War"
+    },
+    "10426:15": {
+      "sheet": 10426,
+      "cell": 15,
+      "name": "Collapse"
+    },
+    "10427:16": {
+      "sheet": 10427,
+      "cell": 16,
+      "name": "Active Measures"
+    },
+    "10423:17": {
+      "sheet": 10423,
+      "cell": 17,
+      "name": "Pyrrhix"
+    },
+    "10423:16": {
+      "sheet": 10423,
+      "cell": 16,
+      "name": "Qmt"
+    },
+    "10423:15": {
+      "sheet": 10423,
+      "cell": 15,
+      "name": "Lattidor"
+    },
+    "10423:14": {
+      "sheet": 10423,
+      "cell": 14,
+      "name": "Freebeacon"
+    },
+    "10423:13": {
+      "sheet": 10423,
+      "cell": 13,
+      "name": "Finch Digital"
+    },
+    "10423:12": {
+      "sheet": 10423,
+      "cell": 12,
+      "name": "Bcom"
+    },
+    "10419:16": {
+      "sheet": 10419,
+      "cell": 16,
+      "name": "Psychological Operations"
+    },
+    "10426:14": {
+      "sheet": 10426,
+      "cell": 14,
+      "name": "Drone Strikes"
+    },
+    "10423:11": {
+      "sheet": 10423,
+      "cell": 11,
+      "name": "Betahl Engineering"
+    },
+    "10419:11": {
+      "sheet": 10419,
+      "cell": 11,
+      "name": "Superfreighters"
+    },
+    "10419:10": {
+      "sheet": 10419,
+      "cell": 10,
+      "name": "Prototypes"
+    },
+    "10419:8": {
+      "sheet": 10419,
+      "cell": 8,
+      "name": "Gigafactory"
+    },
+    "10419:7": {
+      "sheet": 10419,
+      "cell": 7,
+      "name": "Economic Engine"
+    },
+    "10419:6": {
+      "sheet": 10419,
+      "cell": 6,
+      "name": "Dynamo"
+    },
+    "10419:9": {
+      "sheet": 10419,
+      "cell": 9,
+      "name": "Modernization"
+    },
+    "10419:5": {
+      "sheet": 10419,
+      "cell": 5,
+      "name": "Import/Export"
+    },
+    "10423:10": {
+      "sheet": 10423,
+      "cell": 10,
+      "name": "Polykrom"
+    },
+    "10426:13": {
+      "sheet": 10426,
+      "cell": 13,
+      "name": "Fruitful Harvest"
+    },
+    "10423:9": {
+      "sheet": 10423,
+      "cell": 9,
+      "name": "Wonderfield"
+    },
+    "10423:8": {
+      "sheet": 10423,
+      "cell": 8,
+      "name": "Luncher and Sitwell"
+    },
+    "10423:6": {
+      "sheet": 10423,
+      "cell": 6,
+      "name": "Thrommenfisker"
+    },
+    "10423:5": {
+      "sheet": 10423,
+      "cell": 5,
+      "name": "Terablast"
+    },
+    "10423:4": {
+      "sheet": 10423,
+      "cell": 4,
+      "name": "Riverforge"
+    },
+    "10423:3": {
+      "sheet": 10423,
+      "cell": 3,
+      "name": "Li Heavy Industries"
+    },
+    "10423:2": {
+      "sheet": 10423,
+      "cell": 2,
+      "name": "Herschel P. Fenster & Sons"
+    },
+    "10423:1": {
+      "sheet": 10423,
+      "cell": 1,
+      "name": "Gascon Composites"
+    },
+    "10423:0": {
+      "sheet": 10423,
+      "cell": 0,
+      "name": "Foxphora"
+    },
+    "10421:23": {
+      "sheet": 10421,
+      "cell": 23,
+      "name": "Essential Marine"
+    },
+    "10421:22": {
+      "sheet": 10421,
+      "cell": 22,
+      "name": "Drundlworks"
+    },
+    "10421:21": {
+      "sheet": 10421,
+      "cell": 21,
+      "name": "Ambersmelt"
+    },
+    "10419:3": {
+      "sheet": 10419,
+      "cell": 3,
+      "name": "Rare Earths"
+    },
+    "10419:4": {
+      "sheet": 10419,
+      "cell": 4,
+      "name": "Emergency Production"
+    },
+    "10421:20": {
+      "sheet": 10421,
+      "cell": 20,
+      "name": "Working Lads Institute"
+    },
+    "10419:2": {
+      "sheet": 10419,
+      "cell": 2,
+      "name": "Network Effects"
+    },
+    "10419:1": {
+      "sheet": 10419,
+      "cell": 1,
+      "name": "Breakthrough"
+    },
+    "10432:17": {
+      "sheet": 10432,
+      "cell": 17,
+      "name": "Equality"
+    },
+    "10431:13": {
+      "sheet": 10431,
+      "cell": 13,
+      "name": "Fall in Line"
+    },
+    "10432:16": {
+      "sheet": 10432,
+      "cell": 16,
+      "name": "Sympathies"
+    },
+    "10432:15": {
+      "sheet": 10432,
+      "cell": 15,
+      "name": "The Masses"
+    },
+    "10431:11": {
+      "sheet": 10431,
+      "cell": 11,
+      "name": "Reconciliation"
+    },
+    "10432:14": {
+      "sheet": 10432,
+      "cell": 14,
+      "name": "Reorientation"
+    },
+    "10432:7": {
+      "sheet": 10432,
+      "cell": 7,
+      "name": "Power to Power"
+    },
+    "10431:9": {
+      "sheet": 10431,
+      "cell": 9,
+      "name": "Executive Control"
+    },
+    "10432:8": {
+      "sheet": 10432,
+      "cell": 8,
+      "name": "War Games"
+    },
+    "10433:19": {
+      "sheet": 10433,
+      "cell": 19,
+      "name": "Strength in Numbers"
+    },
+    "10431:23": {
+      "sheet": 10431,
+      "cell": 23,
+      "name": "Meritorious"
+    },
+    "10433:18": {
+      "sheet": 10433,
+      "cell": 18,
+      "name": "Coalitions"
+    },
+    "10433:17": {
+      "sheet": 10433,
+      "cell": 17,
+      "name": "Dominant Position"
+    },
+    "10433:16": {
+      "sheet": 10433,
+      "cell": 16,
+      "name": "Institutionalization"
+    },
+    "10431:22": {
+      "sheet": 10431,
+      "cell": 22,
+      "name": "Trust the Market"
+    },
+    "10433:21": {
+      "sheet": 10433,
+      "cell": 21,
+      "name": "Protectorate"
+    },
+    "10433:20": {
+      "sheet": 10433,
+      "cell": 20,
+      "name": "Centralization"
+    },
+    "10432:0": {
+      "sheet": 10432,
+      "cell": 0,
+      "name": "Grassroots"
+    },
+    "10426:12": {
+      "sheet": 10426,
+      "cell": 12,
+      "name": "Double Agents"
+    },
+    "10419:0": {
+      "sheet": 10419,
+      "cell": 0,
+      "name": "Thinktank"
+    },
+    "10418:23": {
+      "sheet": 10418,
+      "cell": 23,
+      "name": "Inner Circle"
+    },
+    "10418:22": {
+      "sheet": 10418,
+      "cell": 22,
+      "name": "Contact Web"
+    },
+    "10421:19": {
+      "sheet": 10421,
+      "cell": 19,
+      "name": "Scalarwave"
+    },
+    "10430:19": {
+      "sheet": 10430,
+      "cell": 19,
+      "name": "State of Flux"
+    },
+    "10429:2": {
+      "sheet": 10429,
+      "cell": 2,
+      "name": "Restoring Order"
+    },
+    "10431:0": {
+      "sheet": 10431,
+      "cell": 0,
+      "name": "Captive Minds"
+    },
+    "10433:14": {
+      "sheet": 10433,
+      "cell": 14,
+      "name": "Favoritism"
+    },
+    "10433:11": {
+      "sheet": 10433,
+      "cell": 11,
+      "name": "Citizenry"
+    },
+    "10433:13": {
+      "sheet": 10433,
+      "cell": 13,
+      "name": "Economies of Scale"
+    },
+    "10433:15": {
+      "sheet": 10433,
+      "cell": 15,
+      "name": "Moderation"
+    },
+    "10433:12": {
+      "sheet": 10433,
+      "cell": 12,
+      "name": "Coordination"
+    },
+    "10431:20": {
+      "sheet": 10431,
+      "cell": 20,
+      "name": "Hand-In-Hand"
+    },
+    "10431:21": {
+      "sheet": 10431,
+      "cell": 21,
+      "name": "Motherland"
+    },
+    "10432:12": {
+      "sheet": 10432,
+      "cell": 12,
+      "name": "Great Harvest"
+    },
+    "10432:10": {
+      "sheet": 10432,
+      "cell": 10,
+      "name": "Multitudes"
+    },
+    "10432:11": {
+      "sheet": 10432,
+      "cell": 11,
+      "name": "Alignment"
+    },
+    "10432:9": {
+      "sheet": 10432,
+      "cell": 9,
+      "name": "Collectivism"
+    },
+    "10432:13": {
+      "sheet": 10432,
+      "cell": 13,
+      "name": "Shared Prosperity"
+    },
+    "10431:12": {
+      "sheet": 10431,
+      "cell": 12,
+      "name": "The People’s Voice"
+    },
+    "10431:10": {
+      "sheet": 10431,
+      "cell": 10,
+      "name": "Equal Shares"
+    },
+    "10432:19": {
+      "sheet": 10432,
+      "cell": 19,
+      "name": "Deep State"
+    },
+    "10432:18": {
+      "sheet": 10432,
+      "cell": 18,
+      "name": "Art of the Deal"
+    },
+    "10431:18": {
+      "sheet": 10431,
+      "cell": 18,
+      "name": "Pulling Strings"
+    },
+    "10431:17": {
+      "sheet": 10431,
+      "cell": 17,
+      "name": "Alternatives"
+    },
+    "10433:3": {
+      "sheet": 10433,
+      "cell": 3,
+      "name": "Initiation"
+    },
+    "10433:0": {
+      "sheet": 10433,
+      "cell": 0,
+      "name": "Hush Money"
+    },
+    "10432:23": {
+      "sheet": 10432,
+      "cell": 23,
+      "name": "Camaraderie"
+    },
+    "10432:21": {
+      "sheet": 10432,
+      "cell": 21,
+      "name": "Favors"
+    },
+    "10426:11": {
+      "sheet": 10426,
+      "cell": 11,
+      "name": "Win-Win"
+    },
+    "10426:1": {
+      "sheet": 10426,
+      "cell": 1,
+      "name": "Elimination"
+    },
+    "10426:5": {
+      "sheet": 10426,
+      "cell": 5,
+      "name": "Iterate"
+    },
+    "10426:8": {
+      "sheet": 10426,
+      "cell": 8,
+      "name": "Make an Example"
+    },
+    "10426:9": {
+      "sheet": 10426,
+      "cell": 9,
+      "name": "Renaissance"
+    },
+    "10426:7": {
+      "sheet": 10426,
+      "cell": 7,
+      "name": "Kompromat"
+    },
+    "10426:6": {
+      "sheet": 10426,
+      "cell": 6,
+      "name": "Job Growth"
+    },
+    "10426:4": {
+      "sheet": 10426,
+      "cell": 4,
+      "name": "Hunt Down"
+    },
+    "10426:3": {
+      "sheet": 10426,
+      "cell": 3,
+      "name": "Dying Effort"
+    },
+    "10426:2": {
+      "sheet": 10426,
+      "cell": 2,
+      "name": "Desensitized"
+    },
+    "10426:0": {
+      "sheet": 10426,
+      "cell": 0,
+      "name": "Checkpoints"
+    },
+    "10426:10": {
+      "sheet": 10426,
+      "cell": 10,
+      "name": "Undermined"
+    },
+    "10421:18": {
+      "sheet": 10421,
+      "cell": 18,
+      "name": "Verdant Horizon"
+    },
+    "10421:17": {
+      "sheet": 10421,
+      "cell": 17,
+      "name": "The Plumford Academy"
+    },
+    "10421:16": {
+      "sheet": 10421,
+      "cell": 16,
+      "name": "Oko Valley"
+    },
+    "10421:15": {
+      "sheet": 10421,
+      "cell": 15,
+      "name": "Nimbus"
+    },
+    "10421:14": {
+      "sheet": 10421,
+      "cell": 14,
+      "name": "New Oak Reserve"
+    },
+    "10421:12": {
+      "sheet": 10421,
+      "cell": 12,
+      "name": "Dulia & Camp"
+    },
+    "10421:11": {
+      "sheet": 10421,
+      "cell": 11,
+      "name": "Coral Standard"
+    },
+    "10421:10": {
+      "sheet": 10421,
+      "cell": 10,
+      "name": "Blackmoor"
+    },
+    "10418:20": {
+      "sheet": 10418,
+      "cell": 20,
+      "name": "Mentorship"
+    },
+    "10418:21": {
+      "sheet": 10418,
+      "cell": 21,
+      "name": "Private Security"
+    },
+    "10418:18": {
+      "sheet": 10418,
+      "cell": 18,
+      "name": "Institutional Knowledge"
+    },
+    "10418:19": {
+      "sheet": 10418,
+      "cell": 19,
+      "name": "Lesson Plans"
+    },
+    "10418:17": {
+      "sheet": 10418,
+      "cell": 17,
+      "name": "Diversity"
+    },
+    "10418:16": {
+      "sheet": 10418,
+      "cell": 16,
+      "name": "Cunning"
+    },
+    "10421:8": {
+      "sheet": 10421,
+      "cell": 8,
+      "name": "Efegee-Estra"
+    },
+    "10418:15": {
+      "sheet": 10418,
+      "cell": 15,
+      "name": "Seed Fund"
+    },
+    "10425:23": {
+      "sheet": 10425,
+      "cell": 23,
+      "name": "Salvage"
+    },
+    "10418:14": {
+      "sheet": 10418,
+      "cell": 14,
+      "name": "Trusted Advisors"
+    },
+    "10418:13": {
+      "sheet": 10418,
+      "cell": 13,
+      "name": "Tentative Deal"
+    },
+    "10419:22": {
+      "sheet": 10419,
+      "cell": 22,
+      "name": "Concessions"
+    },
+    "10418:9": {
+      "sheet": 10418,
+      "cell": 9,
+      "name": "Joint Ventures"
+    },
+    "10417:15": {
+      "sheet": 10417,
+      "cell": 15,
+      "name": "Hedged Bets"
+    },
+    "10418:7": {
+      "sheet": 10418,
+      "cell": 7,
+      "name": "Global Exchanges"
+    },
+    "10418:6": {
+      "sheet": 10418,
+      "cell": 6,
+      "name": "Foreign Capital"
+    },
+    "10425:21": {
+      "sheet": 10425,
+      "cell": 21,
+      "name": "Outperform"
+    },
+    "10425:20": {
+      "sheet": 10425,
+      "cell": 20,
+      "name": "Moving Markets"
+    },
+    "10425:19": {
+      "sheet": 10425,
+      "cell": 19,
+      "name": "Rising Wages"
+    },
+    "10421:7": {
+      "sheet": 10421,
+      "cell": 7,
+      "name": "Generation Insurance"
+    },
+    "10417:17": {
+      "sheet": 10417,
+      "cell": 17,
+      "name": "Lending Facility"
+    },
+    "10417:14": {
+      "sheet": 10417,
+      "cell": 14,
+      "name": "Guarantees"
+    },
+    "10417:13": {
+      "sheet": 10417,
+      "cell": 13,
+      "name": "General Fund"
+    },
+    "10418:8": {
+      "sheet": 10418,
+      "cell": 8,
+      "name": "Intermediaries"
+    },
+    "10417:10": {
+      "sheet": 10417,
+      "cell": 10,
+      "name": "Credit Lines"
+    },
+    "10417:12": {
+      "sheet": 10417,
+      "cell": 12,
+      "name": "Diversified Fund"
+    },
+    "10417:11": {
+      "sheet": 10417,
+      "cell": 11,
+      "name": "Derivatives"
+    },
+    "10418:5": {
+      "sheet": 10418,
+      "cell": 5,
+      "name": "Bribes"
+    },
+    "10417:9": {
+      "sheet": 10417,
+      "cell": 9,
+      "name": "Balance"
+    },
+    "10425:18": {
+      "sheet": 10425,
+      "cell": 18,
+      "name": "Steady Rise"
+    },
+    "10425:17": {
+      "sheet": 10425,
+      "cell": 17,
+      "name": "Misleading Statements"
+    },
+    "10425:14": {
+      "sheet": 10425,
+      "cell": 14,
+      "name": "Collections"
+    },
+    "10425:16": {
+      "sheet": 10425,
+      "cell": 16,
+      "name": "Maximization"
+    },
+    "10425:15": {
+      "sheet": 10425,
+      "cell": 15,
+      "name": "Incentives"
+    },
+    "10421:5": {
+      "sheet": 10421,
+      "cell": 5,
+      "name": "Suds and Rowley"
+    },
+    "10421:4": {
+      "sheet": 10421,
+      "cell": 4,
+      "name": "Royal Farebank"
+    },
+    "10421:3": {
+      "sheet": 10421,
+      "cell": 3,
+      "name": "Pendergast & Swaddlebill"
+    },
+    "10421:2": {
+      "sheet": 10421,
+      "cell": 2,
+      "name": "Page Street"
+    },
+    "10421:1": {
+      "sheet": 10421,
+      "cell": 1,
+      "name": "Mainland Trust"
+    },
+    "10421:0": {
+      "sheet": 10421,
+      "cell": 0,
+      "name": "Josper and Waverley"
+    },
+    "10420:22": {
+      "sheet": 10420,
+      "cell": 22,
+      "name": "Heavenward Express"
+    },
+    "10420:20": {
+      "sheet": 10420,
+      "cell": 20,
+      "name": "Burr Millstone"
+    },
+    "10418:4": {
+      "sheet": 10418,
+      "cell": 4,
+      "name": "Wealth Management"
+    },
+    "10418:3": {
+      "sheet": 10418,
+      "cell": 3,
+      "name": "Venture Capital"
+    },
+    "10418:2": {
+      "sheet": 10418,
+      "cell": 2,
+      "name": "Subsidized Loans"
+    },
+    "10418:1": {
+      "sheet": 10418,
+      "cell": 1,
+      "name": "Sovereign Fund"
+    },
+    "10418:0": {
+      "sheet": 10418,
+      "cell": 0,
+      "name": "Seed Capital"
+    },
+    "10417:23": {
+      "sheet": 10417,
+      "cell": 23,
+      "name": "Securities Portfolio"
+    },
+    "10417:22": {
+      "sheet": 10417,
+      "cell": 22,
+      "name": "Royalties"
+    },
+    "10418:11": {
+      "sheet": 10418,
+      "cell": 11,
+      "name": "Restructuring Specialists"
+    },
+    "10418:12": {
+      "sheet": 10418,
+      "cell": 12,
+      "name": "Settlements"
+    },
+    "10417:21": {
+      "sheet": 10417,
+      "cell": 21,
+      "name": "Private Capital"
+    },
+    "10417:16": {
+      "sheet": 10417,
+      "cell": 16,
+      "name": "Insider Info"
+    },
+    "10417:20": {
+      "sheet": 10417,
+      "cell": 20,
+      "name": "Offshore Accounts"
+    },
+    "10417:19": {
+      "sheet": 10417,
+      "cell": 19,
+      "name": "Managed Risk"
+    },
+    "10417:18": {
+      "sheet": 10417,
+      "cell": 18,
+      "name": "Loan Sharking"
+    },
+    "10430:15": {
+      "sheet": 10430,
+      "cell": 15,
+      "name": "Protectionism"
+    },
+    "10430:14": {
+      "sheet": 10430,
+      "cell": 14,
+      "name": "Coercion"
+    },
+    "10428:2": {
+      "sheet": 10428,
+      "cell": 2,
+      "name": "Disappeared"
+    },
+    "10430:6": {
+      "sheet": 10430,
+      "cell": 6,
+      "name": "Total War"
+    },
+    "10430:12": {
+      "sheet": 10430,
+      "cell": 12,
+      "name": "Take by Force"
+    },
+    "10430:7": {
+      "sheet": 10430,
+      "cell": 7,
+      "name": "Supremacy"
+    },
+    "10430:8": {
+      "sheet": 10430,
+      "cell": 8,
+      "name": "Strongman"
+    },
+    "10430:2": {
+      "sheet": 10430,
+      "cell": 2,
+      "name": "Amplification"
+    },
+    "10430:5": {
+      "sheet": 10430,
+      "cell": 5,
+      "name": "Patriots"
+    },
+    "10430:4": {
+      "sheet": 10430,
+      "cell": 4,
+      "name": "Mobilization"
+    },
+    "10430:13": {
+      "sheet": 10430,
+      "cell": 13,
+      "name": "Military State"
+    },
+    "10430:11": {
+      "sheet": 10430,
+      "cell": 11,
+      "name": "Hereditary Power"
+    },
+    "10430:3": {
+      "sheet": 10430,
+      "cell": 3,
+      "name": "Autarky"
+    },
+    "10420:18": {
+      "sheet": 10420,
+      "cell": 18,
+      "name": "Partiklaar"
+    },
+    "10420:17": {
+      "sheet": 10420,
+      "cell": 17,
+      "name": "Nordiq"
+    },
+    "10420:16": {
+      "sheet": 10420,
+      "cell": 16,
+      "name": "Hornbill Electric"
+    },
+    "10417:7": {
+      "sheet": 10417,
+      "cell": 7,
+      "name": "Ultra Deepsea Carbon"
+    },
+    "10417:8": {
+      "sheet": 10417,
+      "cell": 8,
+      "name": "Synthesized Carbon"
+    },
+    "10420:15": {
+      "sheet": 10420,
+      "cell": 15,
+      "name": "Confederate Pipelines"
+    },
+    "10420:14": {
+      "sheet": 10420,
+      "cell": 14,
+      "name": "Sutler Drilling"
+    },
+    "10420:11": {
+      "sheet": 10420,
+      "cell": 11,
+      "name": "Pigeonwing"
+    },
+    "10420:10": {
+      "sheet": 10420,
+      "cell": 10,
+      "name": "Moondrop Energy"
+    },
+    "10420:8": {
+      "sheet": 10420,
+      "cell": 8,
+      "name": "Colonel-Sheyly"
+    },
+    "10420:7": {
+      "sheet": 10420,
+      "cell": 7,
+      "name": "Aton"
+    },
+    "10417:1": {
+      "sheet": 10417,
+      "cell": 1,
+      "name": "Carbon Labs"
+    },
+    "10417:4": {
+      "sheet": 10417,
+      "cell": 4,
+      "name": "Deepsea Carbon"
+    },
+    "10417:3": {
+      "sheet": 10417,
+      "cell": 3,
+      "name": "Carbon Seam"
+    },
+    "10417:2": {
+      "sheet": 10417,
+      "cell": 2,
+      "name": "Carbon Pipeline"
+    },
+    "10417:6": {
+      "sheet": 10417,
+      "cell": 6,
+      "name": "Stratified Deposits"
+    },
+    "10417:0": {
+      "sheet": 10417,
+      "cell": 0,
+      "name": "Carbon Field"
+    },
+    "10417:5": {
+      "sheet": 10417,
+      "cell": 5,
+      "name": "Strategic Reserves"
+    },
+    "10429:22": {
+      "sheet": 10429,
+      "cell": 22,
+      "name": "New Inquisition"
+    },
+    "10429:19": {
+      "sheet": 10429,
+      "cell": 19,
+      "name": "Revolutionaries"
+    },
+    "10429:21": {
+      "sheet": 10429,
+      "cell": 21,
+      "name": "Puppet Government"
+    },
+    "10429:18": {
+      "sheet": 10429,
+      "cell": 18,
+      "name": "New Manifesto"
+    },
+    "10429:20": {
+      "sheet": 10429,
+      "cell": 20,
+      "name": "Eternal Leader"
+    },
+    "10429:15": {
+      "sheet": 10429,
+      "cell": 15,
+      "name": "United Front"
+    },
+    "10429:13": {
+      "sheet": 10429,
+      "cell": 13,
+      "name": "Learned History"
+    },
+    "10429:6": {
+      "sheet": 10429,
+      "cell": 6,
+      "name": "Abundance"
+    },
+    "10430:1": {
+      "sheet": 10430,
+      "cell": 1,
+      "name": "Secret Society"
+    },
+    "10429:10": {
+      "sheet": 10429,
+      "cell": 10,
+      "name": "Reassignment"
+    },
+    "10429:16": {
+      "sheet": 10429,
+      "cell": 16,
+      "name": "Party Orders"
+    },
+    "10429:12": {
+      "sheet": 10429,
+      "cell": 12,
+      "name": "Just Society"
+    },
+    "10429:23": {
+      "sheet": 10429,
+      "cell": 23,
+      "name": "Greater Good"
+    },
+    "10429:9": {
+      "sheet": 10429,
+      "cell": 9,
+      "name": "Cooperatives"
+    },
+    "10429:11": {
+      "sheet": 10429,
+      "cell": 11,
+      "name": "Confederation"
+    },
+    "10430:0": {
+      "sheet": 10430,
+      "cell": 0,
+      "name": "Common Cause"
+    },
+    "10429:8": {
+      "sheet": 10429,
+      "cell": 8,
+      "name": "Classless Society"
+    },
+    "10429:17": {
+      "sheet": 10429,
+      "cell": 17,
+      "name": "Standing Committee"
+    },
+    "10429:7": {
+      "sheet": 10429,
+      "cell": 7,
+      "name": "Brotherhood of Man"
+    },
+    "10429:14": {
+      "sheet": 10429,
+      "cell": 14,
+      "name": "Standardization"
+    },
+    "10429:4": {
+      "sheet": 10429,
+      "cell": 4,
+      "name": "Dynamism"
+    },
+    "10429:5": {
+      "sheet": 10429,
+      "cell": 5,
+      "name": "Partnerships"
+    },
+    "10428:22": {
+      "sheet": 10428,
+      "cell": 22,
+      "name": "Privatization"
+    },
+    "10429:1": {
+      "sheet": 10429,
+      "cell": 1,
+      "name": "Oligarchy"
+    },
+    "10429:0": {
+      "sheet": 10429,
+      "cell": 0,
+      "name": "Nation Inc."
+    },
+    "10428:23": {
+      "sheet": 10428,
+      "cell": 23,
+      "name": "Divine Right"
+    },
+    "10428:21": {
+      "sheet": 10428,
+      "cell": 21,
+      "name": "Incrementalism"
+    },
+    "10428:20": {
+      "sheet": 10428,
+      "cell": 20,
+      "name": "Creative Destruction"
+    },
+    "10428:15": {
+      "sheet": 10428,
+      "cell": 15,
+      "name": "Open Borders"
+    },
+    "10428:18": {
+      "sheet": 10428,
+      "cell": 18,
+      "name": "Cosmopolitanism"
+    },
+    "10428:14": {
+      "sheet": 10428,
+      "cell": 14,
+      "name": "Side Dealing"
+    },
+    "10428:11": {
+      "sheet": 10428,
+      "cell": 11,
+      "name": "King of Kings"
+    },
+    "10428:12": {
+      "sheet": 10428,
+      "cell": 12,
+      "name": "Cronyism"
+    },
+    "10428:3": {
+      "sheet": 10428,
+      "cell": 3,
+      "name": "Freefall"
+    },
+    "10428:10": {
+      "sheet": 10428,
+      "cell": 10,
+      "name": "Unregulated"
+    },
+    "10428:17": {
+      "sheet": 10428,
+      "cell": 17,
+      "name": "Survival of the Fittest"
+    },
+    "10428:5": {
+      "sheet": 10428,
+      "cell": 5,
+      "name": "Hyperefficiency"
+    },
+    "10428:7": {
+      "sheet": 10428,
+      "cell": 7,
+      "name": "Profit Motive"
+    },
+    "10428:6": {
+      "sheet": 10428,
+      "cell": 6,
+      "name": "Opportunism"
+    },
+    "10428:16": {
+      "sheet": 10428,
+      "cell": 16,
+      "name": "Free Markets"
+    },
+    "10424:19": {
+      "sheet": 10424,
+      "cell": 19,
+      "name": "Explosion"
+    },
+    "10424:18": {
+      "sheet": 10424,
+      "cell": 18,
+      "name": "Expanding Footprint"
+    },
+    "10424:17": {
+      "sheet": 10424,
+      "cell": 17,
+      "name": "Escalation"
+    },
+    "10424:15": {
+      "sheet": 10424,
+      "cell": 15,
+      "name": "Dirty Politics"
+    },
+    "10424:12": {
+      "sheet": 10424,
+      "cell": 12,
+      "name": "Premeditated"
+    },
+    "10425:0": {
+      "sheet": 10425,
+      "cell": 0,
+      "name": "Interference"
+    },
+    "10424:11": {
+      "sheet": 10424,
+      "cell": 11,
+      "name": "Blackmailed"
+    },
+    "10425:12": {
+      "sheet": 10425,
+      "cell": 12,
+      "name": "Poise"
+    },
+    "10425:13": {
+      "sheet": 10425,
+      "cell": 13,
+      "name": "Tip the Scales"
+    },
+    "10425:4": {
+      "sheet": 10425,
+      "cell": 4,
+      "name": "Undone"
+    },
+    "10425:2": {
+      "sheet": 10425,
+      "cell": 2,
+      "name": "Midnight Raid"
+    },
+    "10424:23": {
+      "sheet": 10424,
+      "cell": 23,
+      "name": "Insurrection"
+    },
+    "10424:20": {
+      "sheet": 10424,
+      "cell": 20,
+      "name": "Fixers"
+    },
+    "10422:3": {
+      "sheet": 10422,
+      "cell": 3,
+      "name": "Omissions"
+    },
+    "10420:4": {
+      "sheet": 10420,
+      "cell": 4,
+      "name": "Commodities Traders"
+    },
+    "10420:3": {
+      "sheet": 10420,
+      "cell": 3,
+      "name": "Oxford Analytica"
+    },
+    "10420:2": {
+      "sheet": 10420,
+      "cell": 2,
+      "name": "Digital Spectrum"
+    },
+    "10420:1": {
+      "sheet": 10420,
+      "cell": 1,
+      "name": "Ad Buys"
+    },
+    "10420:0": {
+      "sheet": 10420,
+      "cell": 0,
+      "name": "Productivity"
+    },
+    "10424:8": {
+      "sheet": 10424,
+      "cell": 8,
+      "name": "Jade Ox"
+    },
+    "10424:7": {
+      "sheet": 10424,
+      "cell": 7,
+      "name": "Verber Mills"
+    },
+    "10422:23": {
+      "sheet": 10422,
+      "cell": 23,
+      "name": "Seed Bank"
+    },
+    "10422:22": {
+      "sheet": 10422,
+      "cell": 22,
+      "name": "Pooled Data"
+    },
+    "10422:21": {
+      "sheet": 10422,
+      "cell": 21,
+      "name": "Industrial Farming"
+    },
+    "10428:1": {
+      "sheet": 10428,
+      "cell": 1,
+      "name": "Hybridization"
+    },
+    "10422:20": {
+      "sheet": 10422,
+      "cell": 20,
+      "name": "Wind Farm"
+    },
+    "10422:19": {
+      "sheet": 10422,
+      "cell": 19,
+      "name": "Solar Array"
+    },
+    "10427:23": {
+      "sheet": 10427,
+      "cell": 23,
+      "name": "Interactivity"
+    },
+    "10427:21": {
+      "sheet": 10427,
+      "cell": 21,
+      "name": "Forced Transfer"
+    },
+    "10427:20": {
+      "sheet": 10427,
+      "cell": 20,
+      "name": "Deep Dive"
+    },
+    "10428:0": {
+      "sheet": 10428,
+      "cell": 0,
+      "name": "Scout Ahead"
+    },
+    "10427:19": {
+      "sheet": 10427,
+      "cell": 19,
+      "name": "Breach"
+    },
+    "10424:5": {
+      "sheet": 10424,
+      "cell": 5,
+      "name": "Prognametra"
+    },
+    "10424:4": {
+      "sheet": 10424,
+      "cell": 4,
+      "name": "Obsidio"
+    },
+    "10424:2": {
+      "sheet": 10424,
+      "cell": 2,
+      "name": "Iconia Logistics"
+    },
+    "10424:3": {
+      "sheet": 10424,
+      "cell": 3,
+      "name": "Ivori"
+    },
+    "10422:18": {
+      "sheet": 10422,
+      "cell": 18,
+      "name": "Trade Secrets"
+    },
+    "10422:17": {
+      "sheet": 10422,
+      "cell": 17,
+      "name": "Satellite Network"
+    },
+    "10422:16": {
+      "sheet": 10422,
+      "cell": 16,
+      "name": "Remote Access"
+    },
+    "10422:15": {
+      "sheet": 10422,
+      "cell": 15,
+      "name": "Redundant Systems"
+    },
+    "10422:14": {
+      "sheet": 10422,
+      "cell": 14,
+      "name": "New Methods"
+    },
+    "10422:13": {
+      "sheet": 10422,
+      "cell": 13,
+      "name": "Logistics Networks"
+    },
+    "10422:9": {
+      "sheet": 10422,
+      "cell": 9,
+      "name": "Augmentation"
+    },
+    "10422:11": {
+      "sheet": 10422,
+      "cell": 11,
+      "name": "Blueprints"
+    },
+    "10422:10": {
+      "sheet": 10422,
+      "cell": 10,
+      "name": "Backdoor"
+    },
+    "10422:12": {
+      "sheet": 10422,
+      "cell": 12,
+      "name": "Data Vault"
+    },
+    "10430:18": {
+      "sheet": 10430,
+      "cell": 18,
+      "name": "Law and Order"
+    },
+    "10430:17": {
+      "sheet": 10430,
+      "cell": 17,
+      "name": "Jingoism"
+    },
+    "10430:22": {
+      "sheet": 10430,
+      "cell": 22,
+      "name": "Specialized Zones"
+    },
+    "10431:3": {
+      "sheet": 10431,
+      "cell": 3,
+      "name": "Prioritization"
+    },
+    "10431:2": {
+      "sheet": 10431,
+      "cell": 2,
+      "name": "Plan & Execute"
+    },
+    "10431:6": {
+      "sheet": 10431,
+      "cell": 6,
+      "name": "Paternalism"
+    },
+    "10430:23": {
+      "sheet": 10430,
+      "cell": 23,
+      "name": "Neoplutocracy"
+    },
+    "10431:1": {
+      "sheet": 10431,
+      "cell": 1,
+      "name": "National Champions"
+    },
+    "10430:21": {
+      "sheet": 10430,
+      "cell": 21,
+      "name": "Elaborate Planning"
+    },
+    "10430:20": {
+      "sheet": 10430,
+      "cell": 20,
+      "name": "Command and Control"
+    },
+    "10431:7": {
+      "sheet": 10431,
+      "cell": 7,
+      "name": "Captured Agents"
+    },
+    "10427:18": {
+      "sheet": 10427,
+      "cell": 18,
+      "name": "The Front"
+    },
+    "10427:17": {
+      "sheet": 10427,
+      "cell": 17,
+      "name": "Roulette"
+    },
+    "10427:15": {
+      "sheet": 10427,
+      "cell": 15,
+      "name": "Fulfillment"
+    },
+    "10422:8": {
+      "sheet": 10422,
+      "cell": 8,
+      "name": "Distribution Channels"
+    },
+    "10427:14": {
+      "sheet": 10427,
+      "cell": 14,
+      "name": "Leverage"
+    },
+    "10422:7": {
+      "sheet": 10422,
+      "cell": 7,
+      "name": "Development Rights"
+    },
+    "10433:9": {
+      "sheet": 10433,
+      "cell": 9,
+      "name": "Overseers"
+    },
+    "10433:6": {
+      "sheet": 10433,
+      "cell": 6,
+      "name": "Charisma"
+    },
+    "10433:8": {
+      "sheet": 10433,
+      "cell": 8,
+      "name": "At Any Cost"
+    },
+    "10433:7": {
+      "sheet": 10433,
+      "cell": 7,
+      "name": "Formalism"
+    },
+    "10433:10": {
+      "sheet": 10433,
+      "cell": 10,
+      "name": "Incorruptible"
+    },
+    "10431:15": {
+      "sheet": 10431,
+      "cell": 15,
+      "name": "The Path Forward"
+    },
+    "10431:14": {
+      "sheet": 10431,
+      "cell": 14,
+      "name": "New Regime"
+    },
+    "10432:2": {
+      "sheet": 10432,
+      "cell": 2,
+      "name": "Fortunemaker"
+    },
+    "10432:6": {
+      "sheet": 10432,
+      "cell": 6,
+      "name": "Freedom"
+    },
+    "10432:3": {
+      "sheet": 10432,
+      "cell": 3,
+      "name": "Self-Reliance"
+    },
+    "10432:5": {
+      "sheet": 10432,
+      "cell": 5,
+      "name": "Commercialism"
+    },
+    "10432:4": {
+      "sheet": 10432,
+      "cell": 4,
+      "name": "Bootstrapping"
+    },
+    "10431:8": {
+      "sheet": 10431,
+      "cell": 8,
+      "name": "The Invisible Hand"
+    },
+    "10432:1": {
+      "sheet": 10432,
+      "cell": 1,
+      "name": "Ambition"
+    },
+    "10431:16": {
+      "sheet": 10431,
+      "cell": 16,
+      "name": "Discovery"
+    },
+    "10433:4": {
+      "sheet": 10433,
+      "cell": 4,
+      "name": "Occupation"
+    },
+    "10433:5": {
+      "sheet": 10433,
+      "cell": 5,
+      "name": "Rule by Fear"
+    },
+    "10431:19": {
+      "sheet": 10431,
+      "cell": 19,
+      "name": "Representation"
+    },
+    "10433:2": {
+      "sheet": 10433,
+      "cell": 2,
+      "name": "Amorality"
+    },
+    "10433:1": {
+      "sheet": 10433,
+      "cell": 1,
+      "name": "Undercutting"
+    },
+    "10432:22": {
+      "sheet": 10432,
+      "cell": 22,
+      "name": "Affiliation"
+    },
+    "10432:20": {
+      "sheet": 10432,
+      "cell": 20,
+      "name": "Fast and Loose"
+    },
+    "10427:13": {
+      "sheet": 10427,
+      "cell": 13,
+      "name": "Synergy"
+    },
+    "10427:11": {
+      "sheet": 10427,
+      "cell": 11,
+      "name": "Reconsideration"
+    },
+    "10427:2": {
+      "sheet": 10427,
+      "cell": 2,
+      "name": "Erase"
+    },
+    "10427:0": {
+      "sheet": 10427,
+      "cell": 0,
+      "name": "Disassociated"
+    },
+    "10427:10": {
+      "sheet": 10427,
+      "cell": 10,
+      "name": "Recalibrate"
+    },
+    "10427:8": {
+      "sheet": 10427,
+      "cell": 8,
+      "name": "Name Recognition"
+    },
+    "10427:7": {
+      "sheet": 10427,
+      "cell": 7,
+      "name": "Summit"
+    },
+    "10427:6": {
+      "sheet": 10427,
+      "cell": 6,
+      "name": "Intercept"
+    },
+    "10427:9": {
+      "sheet": 10427,
+      "cell": 9,
+      "name": "Outwit"
+    },
+    "10427:4": {
+      "sheet": 10427,
+      "cell": 4,
+      "name": "Guerillas"
+    },
+    "10427:12": {
+      "sheet": 10427,
+      "cell": 12,
+      "name": "Scapegoat"
+    },
+    "10427:1": {
+      "sheet": 10427,
+      "cell": 1,
+      "name": "Éminence Grise"
+    },
+    "10426:23": {
+      "sheet": 10426,
+      "cell": 23,
+      "name": "Defection"
+    },
+    "10426:22": {
+      "sheet": 10426,
+      "cell": 22,
+      "name": "Coverup"
+    },
+    "10426:21": {
+      "sheet": 10426,
+      "cell": 21,
+      "name": "Coup"
+    },
+    "10425:22": {
+      "sheet": 10425,
+      "cell": 22,
+      "name": "Correlation"
+    },
+    "10427:5": {
+      "sheet": 10427,
+      "cell": 5,
+      "name": "Incompetence"
+    },
+    "10422:6": {
+      "sheet": 10422,
+      "cell": 6,
+      "name": "Transformation"
+    },
+    "10422:5": {
+      "sheet": 10422,
+      "cell": 5,
+      "name": "Shell Companies"
+    },
+    "10422:4": {
+      "sheet": 10422,
+      "cell": 4,
+      "name": "Political Connections"
+    },
+    "10418:10": {
+      "sheet": 10418,
+      "cell": 10,
+      "name": "Liquidity"
+    },
+    "10422:2": {
+      "sheet": 10422,
+      "cell": 2,
+      "name": "Managed Contracts"
+    },
+    "10422:1": {
+      "sheet": 10422,
+      "cell": 1,
+      "name": "Exclusive Access"
+    },
+    "10422:0": {
+      "sheet": 10422,
+      "cell": 0,
+      "name": "Entrepreneurship"
+    },
+    "10419:23": {
+      "sheet": 10419,
+      "cell": 23,
+      "name": "Embedded Source"
+    },
+    "10425:8": {
+      "sheet": 10425,
+      "cell": 8,
+      "name": "Sabotage"
+    },
+    "10424:16": {
+      "sheet": 10424,
+      "cell": 16,
+      "name": "Entrenchment"
+    },
+    "10427:22": {
+      "sheet": 10427,
+      "cell": 22,
+      "name": "Hijacked"
+    },
+    "10420:5": {
+      "sheet": 10420,
+      "cell": 5,
+      "name": "Shipping Hub"
+    },
+    "10431:4": {
+      "sheet": 10431,
+      "cell": 4,
+      "name": "Solidarity"
+    }
+  }
+}

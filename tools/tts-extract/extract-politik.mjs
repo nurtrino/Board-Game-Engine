@@ -401,8 +401,16 @@ if (fs.existsSync(catalogPath)) {
   const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
   assert(catalog.count === politics.length, `card catalog count ${catalog.count} != ${politics.length}`);
   cards.catalog = Object.fromEntries(Object.entries(catalog.cards).map(([id, card]) => [id, {
-    id: card.id, name: card.name, type: card.type, costText: card.costText,
-    focus: card.focus, margin: card.margin,
+    id: card.id, name: card.name, titleVerified: card.titleVerified === true, type: card.type, costText: card.costText,
+    focus: card.focus, focusVerified: card.focusVerified === true, margin: card.margin,
+    capitalCost: card.capitalCost, carbonCost: card.carbonCost,
+    corruptionRequirement: card.corruptionRequirement,
+    supportCost: card.supportCost, bases: card.bases ?? [],
+    declarationVerified: card.declarationVerified === true,
+    industries: card.industries ?? [], corruption: card.corruption === true,
+    negotiation: card.negotiation === true,
+    edgeTimings: card.edgeTimings ?? [], edgeTriggerText: card.edgeTriggerText ?? [],
+    structureVerified: card.structureVerified === true,
     rulesText: card.rulesText, keywordsText: card.keywordsText,
   }]));
 }

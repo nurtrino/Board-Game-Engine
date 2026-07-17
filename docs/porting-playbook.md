@@ -1264,6 +1264,44 @@ fix with a screenshot or a green test run in the same message — "should work n
 without evidence gets sent back. Everything else is in sections 1–8 above; this
 section was just the story that ties them together.
 
+### 9.16 Card recognition: automate the print, not the rules
+
+Politik also established a safer way to import symbol-heavy cards. Generic OCR
+was useful for finding likely text, but it was not reliable enough to become game
+state: failed digit reads had silently become zeroes, and visually similar icons
+were easy to confuse. The successful pipeline used the fixed card layout instead:
+
+- Crop known fields from the original 680x950 card art. Train or template-match
+  one small symbol family at a time, and measure exact field accuracy against a
+  human-reviewed label set. Do not promote a recognizer merely because its sample
+  output looks plausible.
+- Preserve `null` for a failed read. Never turn "not recognized" into a valid
+  zero-cost or zero-requirement declaration.
+- Keep raw OCR as an audit hint and store reviewed values separately with an
+  explicit verification flag. The server trusts only verified values; the client
+  cannot override them.
+- Review independent field families independently. For Politik that meant titles,
+  three Focus values, fixed costs and Bases, then type/Margin/Industries and Edge
+  timing. A second pass caught mistakes that a single full-card transcription
+  would have hidden.
+- Exact authentic templates worked extremely well for the three fixed-position
+  Focus symbols. A whole-declaration nearest-neighbour experiment did not meet the
+  accuracy bar and was discarded. The lesson is that rejecting a model is a
+  successful outcome when the alternative is quietly encoding wrong rules.
+- Recognition stops at what is visibly and unambiguously structured. An Edge
+  timing icon can safely decide when a card is offered, but it cannot by itself
+  execute the prose beside it. Transcribe and review effect semantics separately,
+  and leave an uncommon unencoded exception behind a clearly labeled manual path.
+
+This changes the UI materially. Fully verified cards play directly with no
+confirmation form. Variable or unverified fields are requested only when that
+specific card is used, using dark high-contrast controls beside a full-size view
+of the authentic art. In a Clash, the ordinary screen offers only verified cards
+whose printed timing matches the current window, plus Pass; generic modifier and
+cancel controls belong in an advanced "unencoded printed exception" disclosure.
+Accuracy and a clean interface are compatible when uncertainty is represented as
+data instead of imposed on every player.
+
 ---
 
 *This doc is a living summary — update it when a convention changes. The

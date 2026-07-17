@@ -21,6 +21,7 @@ const DsBoard = lazy(() => import('../darksouls/DsBoard').then((module) => ({ de
 const FeastBoard = lazy(() => import('../feast/FeastBoard').then((module) => ({ default: module.FeastBoard })));
 const BbBoard = lazy(() => import('../bloodborne/BbBoard').then((module) => ({ default: module.BbBoard })));
 const SetiBoard = lazy(() => import('../seti/SetiBoard').then((module) => ({ default: module.SetiBoard })));
+const BlokusBoard = lazy(() => import('../blokus/BlokusBoard').then((module) => ({ default: module.BlokusBoard })));
 
 function BoardGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} table…</div>;
@@ -287,6 +288,11 @@ export function BoardPage() {
     if (view.game === 'seti') return (
       <Suspense fallback={<BoardGameLoading game="SETI" />}>
         <SetiBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'blokus') return (
+      <Suspense fallback={<BoardGameLoading game="Blokus" />}>
+        <BlokusBoard view={view} />
       </Suspense>
     );
     return <TvBoard view={view} />;

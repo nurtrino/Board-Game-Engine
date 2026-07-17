@@ -104,9 +104,51 @@ export {
 // SETI: Search for Extraterrestrial Intelligence. Every public symbol is
 // Seti/SETI_/seti-prefixed so this full rules engine remains collision-free.
 export * from './seti/data.js';
+export * from './seti/solarGeometry.js';
 export * from './seti/projectCatalog.js';
 export * from './seti/projectRuntime.js';
 export * from './seti/projectExecutor.js';
+export {
+  SETI_ALIEN_CARDS as SETI_TYPED_ALIEN_CARDS,
+  SETI_ALIEN_CARDS_BY_ID,
+  SETI_ALIEN_CARDS_BY_CARD_ID,
+  SETI_ALIEN_CARD_COUNTS,
+  SETI_ALIEN_DISCOVERY_SLOTS,
+  SETI_ALIEN_OVERFLOW,
+  SETI_ALIEN_RESEARCH_RULES,
+  SETI_ALIEN_SPECIES,
+  SETI_ALIEN_SPECIES_BY_ID,
+  SETI_MASCAMITE_SAMPLE_REWARDS,
+  SETI_ANOMALY_TOKENS,
+  SETI_CENTAURIAN_MESSAGE_REWARDS,
+  setiAlienRewardSignature,
+} from './seti/alienCatalog.js';
+export type {
+  SetiAlienSpeciesId,
+  SetiAlienTraceColor,
+  SetiAlienSignalColor,
+  SetiAlienTechType,
+  SetiAlienIncome,
+  SetiAlienBody,
+  SetiAlienReward,
+  SetiAlienCondition,
+  SetiAlienEffect,
+  SetiAlienMission,
+  SetiAlienCardArt,
+  SetiAlienCardDefinition,
+  SetiExertianScoringCondition,
+  SetiAlienResearchSpace,
+  SetiAlienSpeciesDefinition,
+  SetiAlienSpeciesRule,
+} from './seti/alienCatalog.js';
+export * from './seti/alienRuntime.js';
+export * from './seti/soloCatalog.js';
+export * from './seti/soloRuntime.js';
+export * from './seti/coreRules.js';
 export * from './seti/state.js';
 export * from './seti/actions.js';
 export { BB_MAX_HP, BB_MAX_ECHOES, BB_SPEED_RANK, type BbSpeed, type BbStat } from './bloodborne/config.js';
+
+// Blokus 20x20 — all public names are Blokus/BLOKUS_/blokus-prefixed.
+export * from './blokus/state.js';
+export * from './blokus/actions.js';

@@ -5,7 +5,7 @@
     "saveSha256": "4573e1a589571a99297c3d0eebdcc0a18bb55a75f32af9d4fffb77ef55d5e912",
     "extractor": "tools/tts-extract/extract-seti.mjs"
   },
-  "sharedHash": "74a45f48a81c1b7f8b6f64e108d1698ee8ff3551152c2ed5bc595f2399c22c8a",
+  "sharedHash": "15092b17a4ab2804f18be8c953075d5a1f318915e588a3c345c9ec5c93affeaa",
   "assets": [
     {
       "id": "alien-species",
@@ -8749,7 +8749,422 @@
         },
         "snapPoints": []
       }
-    ]
+    ],
+    "geometry": {
+      "fixedBaseOrientation": 0,
+      "sectorConvention": "feature wedge immediately counter-clockwise of sector ray",
+      "cellRadiiWorld": [
+        1.9305,
+        3.1185,
+        4.257
+      ],
+      "alphaThreshold": 128,
+      "alphaSamples": {
+        "1": [
+          [
+            255,
+            255,
+            255,
+            0,
+            255,
+            255,
+            255,
+            255
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "2": [
+          [
+            133,
+            255,
+            255,
+            255,
+            0,
+            0,
+            255,
+            255
+          ],
+          [
+            0,
+            255,
+            255,
+            255,
+            0,
+            0,
+            255,
+            255
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "3": [
+          [
+            255,
+            255,
+            255,
+            0,
+            62,
+            255,
+            255,
+            255
+          ],
+          [
+            206,
+            255,
+            255,
+            0,
+            255,
+            0,
+            255,
+            255
+          ],
+          [
+            0,
+            255,
+            255,
+            255,
+            129,
+            0,
+            255,
+            255
+          ]
+        ]
+      },
+      "supportMasks": {
+        "1": [
+          "11101111",
+          "00000000",
+          "00000000"
+        ],
+        "2": [
+          "11110011",
+          "01110011",
+          "00000000"
+        ],
+        "3": [
+          "11100111",
+          "11101011",
+          "01111011"
+        ]
+      },
+      "features": [
+        {
+          "id": "base-r0s0-comet",
+          "layer": 0,
+          "ring": 0,
+          "sector": 0,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r0s1-asteroid",
+          "layer": 0,
+          "ring": 0,
+          "sector": 1,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r0s2-comet",
+          "layer": 0,
+          "ring": 0,
+          "sector": 2,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r0s4-asteroid",
+          "layer": 0,
+          "ring": 0,
+          "sector": 4,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r0s5-asteroid",
+          "layer": 0,
+          "ring": 0,
+          "sector": 5,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r0s7-comet",
+          "layer": 0,
+          "ring": 0,
+          "sector": 7,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r1s0-asteroid",
+          "layer": 0,
+          "ring": 1,
+          "sector": 0,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r1s2-comet",
+          "layer": 0,
+          "ring": 1,
+          "sector": 2,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r1s3-asteroid",
+          "layer": 0,
+          "ring": 1,
+          "sector": 3,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r1s4-asteroid",
+          "layer": 0,
+          "ring": 1,
+          "sector": 4,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r1s5-comet",
+          "layer": 0,
+          "ring": 1,
+          "sector": 5,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r1s7-asteroid",
+          "layer": 0,
+          "ring": 1,
+          "sector": 7,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r2s0-comet",
+          "layer": 0,
+          "ring": 2,
+          "sector": 0,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r2s1-uranus",
+          "layer": 0,
+          "ring": 2,
+          "sector": 1,
+          "kind": "planet",
+          "body": "Uranus",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r2s2-asteroid",
+          "layer": 0,
+          "ring": 2,
+          "sector": 2,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r2s3-comet",
+          "layer": 0,
+          "ring": 2,
+          "sector": 3,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r2s4-neptune",
+          "layer": 0,
+          "ring": 2,
+          "sector": 4,
+          "kind": "planet",
+          "body": "Neptune",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "base-r2s5-asteroid",
+          "layer": 0,
+          "ring": 2,
+          "sector": 5,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "base-r2s6-comet",
+          "layer": 0,
+          "ring": 2,
+          "sector": 6,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "disc1-earth",
+          "layer": 1,
+          "ring": 0,
+          "sector": 1,
+          "kind": "planet",
+          "body": "Earth",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc1-mercury",
+          "layer": 1,
+          "ring": 0,
+          "sector": 5,
+          "kind": "planet",
+          "body": "Mercury",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "disc1-venus",
+          "layer": 1,
+          "ring": 0,
+          "sector": 7,
+          "kind": "planet",
+          "body": "Venus",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "disc2-r0s0-asteroid",
+          "layer": 2,
+          "ring": 0,
+          "sector": 0,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc2-r0s2-asteroid",
+          "layer": 2,
+          "ring": 0,
+          "sector": 2,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc2-r1s3-asteroid",
+          "layer": 2,
+          "ring": 1,
+          "sector": 3,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc2-mars",
+          "layer": 2,
+          "ring": 1,
+          "sector": 7,
+          "kind": "planet",
+          "body": "Mars",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "disc3-r0s1-comet",
+          "layer": 3,
+          "ring": 0,
+          "sector": 1,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "disc3-r0s2-asteroid",
+          "layer": 3,
+          "ring": 0,
+          "sector": 2,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc3-r0s6-asteroid",
+          "layer": 3,
+          "ring": 0,
+          "sector": 6,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc3-r0s7-asteroid",
+          "layer": 3,
+          "ring": 0,
+          "sector": 7,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc3-r1s0-comet",
+          "layer": 3,
+          "ring": 1,
+          "sector": 0,
+          "kind": "comet",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "disc3-r1s4-asteroid",
+          "layer": 3,
+          "ring": 1,
+          "sector": 4,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc3-r1s7-asteroid",
+          "layer": 3,
+          "ring": 1,
+          "sector": 7,
+          "kind": "asteroid",
+          "grantsPrintedPublicity": false
+        },
+        {
+          "id": "disc3-jupiter",
+          "layer": 3,
+          "ring": 2,
+          "sector": 3,
+          "kind": "planet",
+          "body": "Jupiter",
+          "grantsPrintedPublicity": true
+        },
+        {
+          "id": "disc3-saturn",
+          "layer": 3,
+          "ring": 2,
+          "sector": 7,
+          "kind": "planet",
+          "body": "Saturn",
+          "grantsPrintedPublicity": true
+        }
+      ]
+    }
   },
   "sectors": [
     {

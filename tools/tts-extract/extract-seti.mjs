@@ -561,6 +561,87 @@ for (const [id, guid] of discDefs) {
     id, role: 'solar-disc', guid, relative: `solar/${id}.webp`, maxWidth: null, lossless: true,
   }));
 }
+
+// Canonical solar cells sit on three radii of the 9.9-world-unit outer disc.
+// Sample the staged lossless alpha rather than inferring support from the
+// silhouette. A value >= 128 matches TTS's physical hit at that cell.
+const SOLAR_CELL_RADII = [0.195, 0.315, 0.43].map((ratio) => ratio * discs[2].mapping.orientedSize[0]);
+const solarAlphaSamples = {};
+const solarSupportMasks = {};
+for (const [index, disc] of discs.entries()) {
+  const layer = index + 1;
+  const file = path.join(OUT, disc.image.replace(/^\/seti\//, ''));
+  const { data, info } = await sharp(file, { limitInputPixels: false }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const pixelsPerWorld = info.width / disc.mapping.orientedSize[0];
+  const rows = SOLAR_CELL_RADII.map((radius) => Array.from({ length: 8 }, (_, sector) => {
+    const angle = sector * Math.PI / 4;
+    const x = Math.round(info.width / 2 + Math.cos(angle) * radius * pixelsPerWorld);
+    const y = Math.round(info.height / 2 + Math.sin(angle) * radius * pixelsPerWorld);
+    if (x < 0 || x >= info.width || y < 0 || y >= info.height) return 0;
+    return data[(y * info.width + x) * info.channels + 3];
+  }));
+  solarAlphaSamples[layer] = rows;
+  solarSupportMasks[layer] = rows.map((row) => row.map((alpha) => alpha >= 128 ? '1' : '0').join(''));
+}
+assert(JSON.stringify(solarSupportMasks) === JSON.stringify({
+  1: ['11101111', '00000000', '00000000'],
+  2: ['11110011', '01110011', '00000000'],
+  3: ['11100111', '11101011', '01111011'],
+}), `solar alpha masks changed: ${JSON.stringify(solarSupportMasks)}`);
+
+const SOLAR_FEATURE_SOURCE = `
+base-r0s0-comet 0 0 0 comet
+base-r0s1-asteroid 0 0 1 asteroid
+base-r0s2-comet 0 0 2 comet
+base-r0s4-asteroid 0 0 4 asteroid
+base-r0s5-asteroid 0 0 5 asteroid
+base-r0s7-comet 0 0 7 comet
+base-r1s0-asteroid 0 1 0 asteroid
+base-r1s2-comet 0 1 2 comet
+base-r1s3-asteroid 0 1 3 asteroid
+base-r1s4-asteroid 0 1 4 asteroid
+base-r1s5-comet 0 1 5 comet
+base-r1s7-asteroid 0 1 7 asteroid
+base-r2s0-comet 0 2 0 comet
+base-r2s1-uranus 0 2 1 planet Uranus
+base-r2s2-asteroid 0 2 2 asteroid
+base-r2s3-comet 0 2 3 comet
+base-r2s4-neptune 0 2 4 planet Neptune
+base-r2s5-asteroid 0 2 5 asteroid
+base-r2s6-comet 0 2 6 comet
+disc1-earth 1 0 1 planet Earth
+disc1-mercury 1 0 5 planet Mercury
+disc1-venus 1 0 7 planet Venus
+disc2-r0s0-asteroid 2 0 0 asteroid
+disc2-r0s2-asteroid 2 0 2 asteroid
+disc2-r1s3-asteroid 2 1 3 asteroid
+disc2-mars 2 1 7 planet Mars
+disc3-r0s1-comet 3 0 1 comet
+disc3-r0s2-asteroid 3 0 2 asteroid
+disc3-r0s6-asteroid 3 0 6 asteroid
+disc3-r0s7-asteroid 3 0 7 asteroid
+disc3-r1s0-comet 3 1 0 comet
+disc3-r1s4-asteroid 3 1 4 asteroid
+disc3-r1s7-asteroid 3 1 7 asteroid
+disc3-jupiter 3 2 3 planet Jupiter
+disc3-saturn 3 2 7 planet Saturn
+`;
+const solarFeatures = SOLAR_FEATURE_SOURCE.trim().split('\n').map((line) => {
+  const [id, layer, ring, sector, kind, body] = line.trim().split(/\s+/);
+  return {
+    id,
+    layer: Number(layer),
+    ring: Number(ring),
+    sector: Number(sector),
+    kind,
+    ...(body ? { body } : {}),
+    grantsPrintedPublicity: kind === 'comet' || (kind === 'planet' && body !== 'Earth'),
+  };
+});
+assert(solarFeatures.length === 35, `expected 35 solar features, got ${solarFeatures.length}`);
+assert(solarFeatures.filter((feature) => feature.kind === 'planet').length === 8, 'expected 8 printed solar planets');
+assert(solarFeatures.filter((feature) => feature.kind === 'comet').length === 10, 'expected 10 printed solar comets');
+assert(solarFeatures.filter((feature) => feature.kind === 'asteroid').length === 17, 'expected 17 printed solar asteroid spaces');
 const solarCenter = [-1.38, -0.06];
 const [[w2uA, w2uB, w2uC], [w2vA, w2vB, w2vC]] = board.mapping.worldToArt.matrix;
 const solarCenterArt = [
@@ -1274,6 +1355,15 @@ const shared = {
     rotationDegrees: -45,
     rotationOrder: ['disc-1', 'disc-2', 'disc-3'],
     discs,
+    geometry: {
+      fixedBaseOrientation: 0,
+      sectorConvention: 'feature wedge immediately counter-clockwise of sector ray',
+      cellRadiiWorld: SOLAR_CELL_RADII.map((value) => round(value, 9)),
+      alphaThreshold: 128,
+      alphaSamples: solarAlphaSamples,
+      supportMasks: solarSupportMasks,
+      features: solarFeatures,
+    },
   },
   sectors,
   playerBoards,
@@ -1410,7 +1500,6 @@ const dataGolden = {
   },
   extractionGaps: [
     'The three dead solo objective-back decals have no equivalent in the local mod; all objective fronts are staged.',
-    'A typed 24-cell solar support/bump lookup still needs to be sampled from the staged lossless alpha discs and verified against TTS rotation behavior.',
     'Printed planet/moon rewards, board snap semantics, technology effects, card effects, and alien/solo rules remain transcription tasks.',
   ],
 };

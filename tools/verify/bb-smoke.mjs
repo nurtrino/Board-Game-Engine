@@ -91,6 +91,8 @@ function myMove() {
     if (p.seat !== seat) return;
     switch (p.kind) {
       case 'round-refresh': return act({ type: 'round_refresh', discard: [] });
+      case 'combat-modifiers':
+      case 'combat-reaction': return act({ type: 'choose', pass: true });
       case 'combat-attack': {
         const slot = me.slots.findIndex((x) => x === null);
         const card = me.hand.find((c) => !CARDS[c]?.effects?.dodge) ?? me.hand[0];

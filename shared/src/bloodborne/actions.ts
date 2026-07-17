@@ -243,8 +243,7 @@ export const startCombat = (s: BbState, c: CombatStart): void => {
   if (!c.hunterAttack) {
     s.pending.unshift({ seat: c.seat, kind: 'combat-attack' }); // step 1 (p. 19)
   } else {
-    combatFlip(s);
-    if (s.combat) queueCombatReaction(s);
+    queueCombatModifiers(s);
   }
 };
 
@@ -270,6 +269,19 @@ const combatFlip = (s: BbState): void => {
   } else {
     c.enemyAction = { kind: flipEnemyAction(s) };
   }
+  const effective = enemyActionDef(s);
+  const traits = enemyAttackTraits(effective, s.hunters[c.seat]);
+  c.enemyAction!.action = {
+    name: effective.name,
+    text: effective.text ?? '',
+    speed: effective.speed,
+    damage: effective.damage,
+    isAbility: isAbilityAction(effective, c.enemyAction!.kind),
+    cannotDodge: traits.cannotDodge,
+    cannotStagger: traits.cannotStagger,
+    exactDodgeSpeed: traits.exactDodgeSpeed ?? null,
+    stagger: traits.stagger,
+  };
   applyImmediateAbility(s);
 };
 
@@ -514,9 +526,18 @@ const queueSecondaryAttackTargets = (s: BbState, act: BbAttackDef): void => {
   }
 };
 
-/** The enemy card is now public, but attacks have not resolved. Keeping this
- * explicit even when no Dodge is legal gives reaction firearms and On Attack
- * consumables/rewards their printed timing window. */
+/** Printed On Attack cards are committed while choosing the Hunter's attack,
+ * before the Enemy Action card is revealed (rulebook p. 17/19). */
+const queueCombatModifiers = (s: BbState): void => {
+  const c = s.combat;
+  const hunterAttacking = !!c?.attack || !!(c as unknown as { firearmAttack?: unknown } | null)?.firearmAttack;
+  if (!c || c.noResponse || c.resolved || !hunterAttacking) return;
+  s.pending.push({ seat: c.seat, kind: 'combat-modifiers' });
+};
+
+/** The enemy card is now public, but attacks have not resolved. This explicit
+ * response window is for reaction firearms and for reviewing the revealed
+ * card before Dodge/resolve. */
 const queueCombatReaction = (s: BbState): void => {
   const c = s.combat;
   if (!c || c.noResponse || c.resolved) return;
@@ -535,21 +556,11 @@ const maybeQueueDodge = (s: BbState): void => {
   }
   const act = enemyActionDef(s);
   const isAttack = !isAbilityAction(act, c.enemyAction!.kind);
-  const h = s.hunters[c.seat];
-  const traits = enemyAttackTraits(act, h);
   const needRank = speedRank(act.speed, c.enemySpeedBonus);
-  const canDodge = h.hand.some((id) => {
-    const card = BB_STAT_CARDS[id];
-    if (!card?.effects.dodge) return false;
-    return h.slots.some((filled, slot) => {
-      if (filled !== null) return false;
-      const printed = BB_HUNTERS[h.hunterId!].sides[h.weaponSide].slots[slot]?.speed;
-      if (!printed) return false;
-      const rank = BB_SPEED_RANK[printed] + (card.effects.speedBonus ?? 0);
-      return traits.exactDodgeSpeed ? rank === BB_SPEED_RANK[traits.exactDodgeSpeed] : rank >= needRank;
-    });
-  });
-  if (isAttack && canDodge && !traits.cannotDodge && !c.noResponse) {
+  // Always present the Dodge decision for an Attack. Even when every card or
+  // slot is illegal, the player needs to see those options greyed out with a
+  // concrete reason before consciously taking the hit.
+  if (isAttack && !c.noResponse) {
     s.pending.unshift({ seat: c.seat, kind: 'combat-dodge', speed: needRank });
   } else {
     combatResolve(s);
@@ -570,6 +581,11 @@ const combatResolve = (s: BbState): void => {
     finishCombat(s, c);
     return;
   }
+  const hunterHpBefore = h.hp;
+  const bossPhaseBefore = boss?.phase ?? null;
+  const foeHpBefore = enemy
+    ? Math.max(0, enemyHp(s, enemy) - enemy.damage)
+    : Math.max(0, BB_BOSSES[boss!.type].hp[boss!.phase - 1][String(s.partySize) as '1' | '2' | '3' | '4'] - boss!.damage);
   const act = enemyActionDef(s);
   const stripped = !!(c as unknown as { stripEffects?: boolean }).stripEffects;
   const firearmCancel = !!(c as unknown as { firearmCancel?: boolean }).firearmCancel;
@@ -579,12 +595,15 @@ const combatResolve = (s: BbState): void => {
 
   // hunter attack numbers (a stat card in a slot, or a firearm attack)
   let hAtk: { rank: number; dmg: number; stagger: boolean; splash?: number } | null = null;
+  let hunterAttackName = '';
   const gunAttack = (c as unknown as { firearmAttack?: { speed: BbSpeed; damage: number; stagger?: boolean; splash?: number } }).firearmAttack;
   if (gunAttack) {
+    hunterAttackName = bbItem(h.firearmId).name;
     hAtk = { rank: speedRank(gunAttack.speed, c.hunterSpeedBonus), dmg: gunAttack.damage + c.hunterDmgBonus, stagger: !!gunAttack.stagger, splash: gunAttack.splash };
   } else if (c.attack) {
     const def = BB_HUNTERS[h.hunterId!];
     const slotDef = def.sides[h.weaponSide].slots[c.attack.slot];
+    hunterAttackName = slotDef.name;
     const card = bbStatCard(c.attack.cardId);
     const fx: BbEffects = card.effects ?? {};
     const slotFx = slotDef.effects ?? {};
@@ -621,6 +640,7 @@ const combatResolve = (s: BbState): void => {
   let enemyCancelled = false;
   let hunterCancelled = false;
   let hunterAttackResolved = false;
+  let enemyAttackResolved = false;
   let hunterDied = false;
   const traits = enemyAttackTraits(act, h);
   for (const g of groups) {
@@ -632,7 +652,7 @@ const combatResolve = (s: BbState): void => {
     if (hunterActs) {
       hunterAttackResolved = true;
       const target = enemy ?? boss;
-      if (target && !missionInvulnerable(s, boss)) {
+      if (target && !missionInvulnerable(s, boss) && target.space === h.space) {
         applyDamageToEnemy(s, target, hAtk!.dmg, c.seat, act);
         // Flamesprayer splash: 1 dmg to all OTHER enemies in the space
         if (hAtk!.splash && h.space) {
@@ -643,15 +663,18 @@ const combatResolve = (s: BbState): void => {
         enemyGone = enemy ? !s.enemies.some((x) => x.uid === enemy.uid) : !s.bosses.some((x) => x.uid === boss!.uid);
         // stagger cancels SLOWER opposing attacks (p. 21); Oedon Writhe also ties
         const tiesToo = !!(c as unknown as { staggerTies?: boolean }).staggerTies;
-        if (hAtk!.stagger && eAtk && (stripped || !traits.cannotStagger) && !flags.noStagger && (eAtk.rank < g.rank || (tiesToo && eAtk.rank === g.rank))) enemyCancelled = true;
+        if (hAtk!.stagger && eAtk && !enemyIsAbility && (stripped || !traits.cannotStagger) && !flags.noStagger && (eAtk.rank < g.rank || (tiesToo && eAtk.rank === g.rank))) enemyCancelled = true;
         if (enemyGone && eAtk && eAtk.rank < g.rank) enemyCancelled = true; // dead before acting
       } else if (target && missionInvulnerable(s, boss)) {
         evt(s, `${BB_BOSSES[boss!.type].name.toUpperCase()} CANNOT BE HARMED`, c.seat, 'invulnerable');
+      } else if (target) {
+        evt(s, `${hunterAttackName.toUpperCase()} MISSED · TARGET MOVED OUT OF RANGE`, c.seat, 'miss');
       }
     }
     // enemy side (same rank = simultaneous: both apply, p. 20)
     if (enemyExecutes) {
       if (enemyActs && !enemyIsAbility) {
+        enemyAttackResolved = true;
         hunterDied = hunterSuffer(s, h, eAtk!.dmg, { block: blockPending, attack: true });
         if (!hunterDied && !stripped && (traits.stagger || c.enemyStagger) && hAtk && (hAtk.rank < eAtk!.rank || (traits.staggerTies && hAtk.rank === eAtk!.rank))) {
           hunterCancelled = true;
@@ -661,6 +684,7 @@ const combatResolve = (s: BbState): void => {
           hunterDied = h.space == null;
         }
       } else if (enemyActs && !stripped) {
+        enemyAttackResolved = true;
         resolveRider(s, act, 'ability'); // speed-listed ability fires now
         hunterDied = h.space == null;
       }
@@ -691,6 +715,67 @@ const combatResolve = (s: BbState): void => {
     h.gemSlot = null;
     evt(s, 'TRICK WEAPON TRANSFORMED FREELY', c.seat, 'transform');
   }
+  const remainingEnemy = enemy ? s.enemies.find((x) => x.uid === enemy.uid) : null;
+  const remainingBoss = boss ? s.bosses.find((x) => x.uid === boss.uid) : null;
+  const bossPhaseAfter = remainingBoss?.phase ?? null;
+  const phaseChanged = bossPhaseBefore != null && bossPhaseAfter != null && bossPhaseAfter !== bossPhaseBefore;
+  const foeSlain = enemy ? !remainingEnemy : !remainingBoss;
+  const foeHpAfter = phaseChanged || foeSlain
+    ? 0
+    : remainingEnemy
+      ? Math.max(0, enemyHp(s, remainingEnemy) - remainingEnemy.damage)
+      : remainingBoss
+        ? Math.max(0, BB_BOSSES[remainingBoss.type].hp[remainingBoss.phase - 1][String(s.partySize) as '1' | '2' | '3' | '4'] - remainingBoss.damage)
+        : 0;
+  const hunterHpAfter = hunterDied ? 0 : h.hp;
+  const hunterDamageTaken = Math.max(0, hunterHpBefore - hunterHpAfter);
+  const foeDamageTaken = Math.max(0, foeHpBefore - foeHpAfter);
+  const incomingDamage = eAtk?.dmg ?? 0;
+  const blocked = enemyAttackResolved ? Math.min(blockPending, incomingDamage + (h.frenzy ? 1 : 0)) : 0;
+  const outcome = hunterDied && foeSlain ? 'mutual'
+    : hunterDied ? 'hunter-slain'
+      : foeSlain ? 'foe-slain'
+        : phaseChanged ? 'phase-change'
+          : foeDamageTaken > hunterDamageTaken ? 'hunter-advantage'
+            : hunterDamageTaken > foeDamageTaken ? 'foe-advantage'
+              : 'even';
+  s.lastCombatResult = {
+    seq: (s.lastCombatResult?.seq ?? 0) + 1,
+    seat: c.seat,
+    foeKind: enemy ? 'enemy' : 'boss',
+    foeType: (enemy ?? boss)!.type,
+    foeName: enemy ? BB_ENEMIES[enemy.type].name : BB_BOSSES[boss!.type].name,
+    bossPhaseBefore,
+    bossPhaseAfter,
+    hunterAttack: hAtk ? {
+      name: hunterAttackName || 'Hunter attack',
+      speed: hAtk.rank,
+      damage: hAtk.dmg,
+      resolved: hunterAttackResolved,
+      cancelled: hunterCancelled,
+    } : null,
+    enemyAction: {
+      name: act.name,
+      speed: eAtk?.rank ?? (act.speed == null ? null : speedRank(act.speed, c.enemySpeedBonus)),
+      damage: eAtk?.dmg ?? act.damage,
+      resolved: enemyAttackResolved || (enemyIsAbility && act.speed == null),
+      cancelled: enemyCancelled || firearmCancel,
+      text: act.text ?? '',
+    },
+    hunterHpBefore,
+    hunterHpAfter,
+    foeHpBefore,
+    foeHpAfter,
+    hunterDamageTaken,
+    foeDamageTaken,
+    blocked,
+    dodged,
+    noResponse: c.noResponse,
+    hunterSlain: hunterDied,
+    foeSlain,
+    phaseChanged,
+    outcome,
+  };
   finishCombat(s, c);
 };
 
@@ -1033,6 +1118,13 @@ const inCombatReactionWindow = (s: BbState, seat: number): boolean => {
     && (head.kind === 'combat-reaction' || head.kind === 'combat-dodge');
 };
 
+const inCombatModifierWindow = (s: BbState, seat: number): boolean => {
+  const c = s.combat;
+  const head = s.pending[0];
+  return !!c && c.seat === seat && !c.resolved && !c.enemyAction
+    && !!head && head.seat === seat && head.kind === 'combat-modifiers';
+};
+
 const requireOwnedCopies = (owned: string[], selected: string[], what: string): void => {
   const left = new Map<string, number>();
   for (const id of owned) left.set(id, (left.get(id) ?? 0) + 1);
@@ -1365,7 +1457,7 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
       const id = h.consumables[action.itemIx];
       if (!id) err('No such consumable');
       const item = bbItem(id);
-      const inCombatWindow = inCombatReactionWindow(s, seat);
+      const inCombatWindow = inCombatModifierWindow(s, seat);
       const hunterAttacking = inCombatWindow && (!!s.combat?.attack || !!(s.combat as unknown as { firearmAttack?: unknown })?.firearmAttack);
       if (item.timing === 'On Attack' && !hunterAttacking) err('Usable only when you Attack');
       if (item.timing === 'Hunter Turn' && !inHunterTurnWindow(s, seat)) err('Usable only on your turn');
@@ -1388,12 +1480,14 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
           if (!inCombatReactionWindow(s, seat) || !c?.enemyAction) err('Fire when an enemy makes a Basic Attack');
           if (c.bossUid != null) err('Bosses do not make Basic Attacks');
           if (c.enemyAction.kind !== 'basic') err('That is not a Basic Attack');
+          if (isAbilityAction(enemyActionDef(s), c.enemyAction.kind)) err('That row is an Ability, not an Attack');
           (c as unknown as { firearmCancel?: boolean }).firearmCancel = true;
           break;
         }
         case 'degrade-attack': {
           if (!inCombatReactionWindow(s, seat) || !c?.enemyAction) err('Fire when a non-boss enemy attacks');
           if (c.bossUid != null) err('Bosses shrug off the mist');
+          if (isAbilityAction(enemyActionDef(s), c.enemyAction.kind)) err('That row is an Ability, not an Attack');
           c.enemySpeedBonus -= 1;
           (c as unknown as { stripEffects?: boolean }).stripEffects = true;
           break;
@@ -1454,7 +1548,7 @@ export const applyBloodborneAction = (s: BbState, seat: number, action: BbAction
       const rfx = (bbItem(r.id).effects ?? {}) as BbEffects & { custom?: string; onKill?: boolean; neverExhaust?: boolean };
       const timing = bbItem(r.id).timing;
       if (timing === 'Hunter Turn' && !inHunterTurnWindow(s, seat)) err('Usable only on your turn');
-      if (timing === 'On Attack' && (!inCombatReactionWindow(s, seat)
+      if (timing === 'On Attack' && (!inCombatModifierWindow(s, seat)
         || (!s.combat?.attack && !(s.combat as unknown as { firearmAttack?: unknown })?.firearmAttack))) {
         err('Usable only when you Attack');
       }
@@ -1697,8 +1791,7 @@ const applyChoose = (s: BbState, seat: number, a: Record<string, unknown>): BbSt
         h.firearmExhausted = true;
         if (s.combat) (s.combat as unknown as { firearmAttack?: typeof gunFx.attack }).firearmAttack = gunFx.attack;
         s.pending.shift();
-        combatFlip(s);
-        if (s.combat) queueCombatReaction(s);
+        if (s.combat) queueCombatModifiers(s);
         return s;
       }
       const cardId = String(a.cardId ?? '');
@@ -1709,6 +1802,12 @@ const applyChoose = (s: BbState, seat: number, a: Record<string, unknown>): BbSt
       h.slots[slot] = cardId;
       applyPlacementEffects(s, h, cardId, slot);
       if (s.combat) s.combat.attack = { cardId, slot };
+      s.pending.shift();
+      if (s.combat) queueCombatModifiers(s);
+      return s;
+    }
+    case 'combat-modifiers': {
+      if (!a.pass) err('Use On Attack gear, or reveal the Enemy Action');
       s.pending.shift();
       combatFlip(s);
       if (s.combat) queueCombatReaction(s);

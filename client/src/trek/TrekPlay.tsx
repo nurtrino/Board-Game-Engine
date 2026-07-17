@@ -37,6 +37,26 @@ const CSS = `
 .tp-act:disabled { opacity: 0.35; cursor: default; }
 .tp-act.primary { background: #dfe9ee; color: #06121a; border-color: transparent; }
 .tp-why { font: 400 11px Inter, sans-serif; opacity: 0.6; padding: 4px 4px 0; text-align: center; line-height: 1.4; }
+
+@media (max-width: 720px) and (orientation: portrait) {
+  .tp-responsive-shell { --tp-mobile-board-height: 43dvh; overflow: hidden; }
+  .tp-board-pane {
+    top: 0 !important; right: 0 !important; bottom: auto !important; left: 0 !important;
+    width: 100% !important; height: var(--tp-mobile-board-height) !important; overflow: hidden;
+  }
+  .tp-control-sheet {
+    top: var(--tp-mobile-board-height) !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+    z-index: 25; width: 100% !important; min-height: 0; padding: 12px 12px calc(18px + env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    border-top: 1px solid rgba(255,255,255,.16); background: rgba(5,8,11,.97); box-shadow: 0 -16px 36px rgba(0,0,0,.5);
+  }
+  .tp-act { min-height: 44px; }
+  .tk-map-hand {
+    left: 50% !important; bottom: calc(100dvh - var(--tp-mobile-board-height) + 2px) !important;
+    transform: scale(.58); transform-origin: 50% 100%;
+  }
+  .tp-help-button { top: max(12px, env(safe-area-inset-top)) !important; width: 44px !important; height: 44px !important; }
+}
 `;
 
 const RIGHT_W = 'min(34vw, 420px)';
@@ -160,11 +180,11 @@ export function TrekPlay({ view, act: rawAct, error }: {
   const myStoneTotal = (Object.values(mine.stones) as number[]).reduce((a, b) => a + b, 0);
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#05080b', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
+    <div className="tp-responsive-shell" style={{ position: 'fixed', inset: 0, background: '#05080b', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
       <style>{CSS}</style>
 
       {/* map */}
-      <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: RIGHT_W }}>
+      <div className="tp-board-pane" role="region" aria-label="Trekking trail map" style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: RIGHT_W }}>
         <TrekTable
           scene={scene}
           stones={view.stones}
@@ -176,7 +196,7 @@ export function TrekPlay({ view, act: rawAct, error }: {
       </div>
 
       {/* right rail */}
-      <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: RIGHT_W, padding: 12, display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto' }}>
+      <div className="tp-control-sheet" role="region" aria-label="Trekking status and controls" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: RIGHT_W, padding: 12, display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto' }}>
         <div className="ig-glass" style={{ padding: '12px 14px', borderRadius: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingBottom: 8 }}>
             <span style={{ width: 11, height: 11, borderRadius: '50%', background: SEAT_HEX[mine.color] }} />
@@ -271,7 +291,7 @@ export function TrekPlay({ view, act: rawAct, error }: {
                 {c !== null ? trekFaceByCell(scene, 'trek', TREK_CATALOG[c].cell, 46, 64) : <div style={{ width: 46, height: 64 }} />}
               </button>
             ))}
-            <button className="tp-act" style={{ width: 46, height: 64, padding: 0, fontSize: 10 }}
+            <button className="tp-act" style={{ width: 46, height: 64, padding: 0, fontSize: 11 }}
               disabled={!myTurn || view.actionsLeft <= 0 || (view.trekDeckCount + view.trekDiscardCount) === 0}
               onClick={() => act({ type: 'draw', source: 'deck' })}>
               Deck {view.trekDeckCount}
@@ -484,7 +504,7 @@ export function TrekPlay({ view, act: rawAct, error }: {
       )}
 
       {/* hand fan — selectable in move/discard contexts */}
-      <div className="tk-hand" style={{ left: `calc((100vw - ${RIGHT_W}) / 2)` }}>
+      <div className="tk-hand tk-map-hand" role="group" aria-label={`${hand.length} trek cards in hand`} style={{ left: `calc((100vw - ${RIGHT_W}) / 2)` }}>
         {hand.map((c, i) => {
           const n = hand.length;
           const off = i - (n - 1) / 2;
@@ -498,6 +518,13 @@ export function TrekPlay({ view, act: rawAct, error }: {
           return (
             <div key={i} className={`tk-card${sel.includes(i) ? ' sel' : ''}`}
               onClick={() => selectable && toggleSel(i)}
+              role={selectable ? 'button' : undefined}
+              tabIndex={selectable ? 0 : undefined}
+              aria-label={selectable ? `${sel.includes(i) ? 'Deselect' : 'Select'} trek card ${i + 1}` : undefined}
+              aria-pressed={selectable ? sel.includes(i) : undefined}
+              onKeyDown={selectable ? (event) => {
+                if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleSel(i); }
+              } : undefined}
               style={{
                 overflow: 'hidden',
                 transform: `translateX(${tx}px) translateY(${ty}px) rotate(${rot}deg)`,
@@ -520,7 +547,8 @@ export function TrekPlay({ view, act: rawAct, error }: {
       <button
         onClick={() => setShowIntro(true)}
         title="How to play"
-        className="ig-glass"
+        className="ig-glass tp-help-button"
+        aria-label="Open the Trekking help guide"
         style={{ position: 'absolute', top: 12, left: 12, zIndex: 45, width: 40, height: 40, borderRadius: '50%', font: '700 18px Inter, sans-serif', padding: 0 }}
       >?</button>
 

@@ -1,7 +1,10 @@
 // Live WS smoke: two driver players play a full Dark Tower game.
 // Run: npx tsx tools/verify/dt-smoke.mjs <port>
 import WebSocket from 'ws';
-import { DT_KEYS } from '../../shared/src/index.ts';
+import {
+  DT_KEYS, DT_NODE, DT_FORWARD_FRONTIER,
+  dtActionForNode, dtAdjacent, dtKingdomAt,
+} from '../../shared/src/index.ts';
 
 const URL = `ws://localhost:${process.argv[2] ?? '8787'}/ws`;
 let fails = 0;
@@ -40,13 +43,54 @@ function pick(v, seat) {
     if (bz.offer === 'beast' && bz.prices.beast <= p.gold) return { type: 'bazaar_yes' };
     return Math.random() < 0.25 ? { type: 'bazaar_haggle' } : { type: 'bazaar_no' };
   }
-  const keyOfQuad = p.quad === 1 ? p.brasskey : p.quad === 2 ? p.silverkey : p.quad === 3 ? p.goldkey : 1;
-  if (p.quad === 4 && p.goldkey && p.warriors >= 40) return { type: 'tower' };
-  if (p.quad < 4 && keyOfQuad && p.quad > 0) return { type: 'frontier' };
-  if (p.quad === 0) return { type: 'frontier' };
-  if (p.warriors <= 4 || p.food <= 4) return { type: 'sanctuary' };
-  if (p.gold >= 12 && (p.warriors < 55 || p.food < 20) && Math.random() < 0.8) return { type: 'bazaar' };
-  return Math.random() < 0.65 ? { type: 'tomb' } : { type: 'move' };
+  const legal = v.legalSteps ?? [];
+  const actionAt = (id) => ({ type: dtActionForNode(id) ?? 'move' });
+  if (!legal.length) return actionAt(p.node);
+  if (p.node !== v.turnNode) return actionAt(p.node);
+
+  const currentKingdom = dtKingdomAt(p.color, p.quad);
+  const kindOf = (id) => DT_NODE.get(id)?.kind;
+  const nav = (goal) => {
+    const direct = legal.find(goal);
+    if (direct) return direct;
+    const prev = new Map([[p.node, null]]), queue = [p.node];
+    let found = null;
+    while (queue.length && !found) {
+      const current = queue.shift();
+      for (const neighbor of dtAdjacent(current)) {
+        if (prev.has(neighbor)) continue;
+        const n = DT_NODE.get(neighbor);
+        const pass = n?.kingdom === currentKingdom && n.kind !== 'frontier' && n.kind !== 'darktower'
+          && !(n.kind === 'citadel' && n.kingdom !== p.color);
+        if (goal(neighbor) || pass) {
+          prev.set(neighbor, current); queue.push(neighbor);
+          if (goal(neighbor)) { found = neighbor; break; }
+        }
+      }
+    }
+    if (!found) return null;
+    let hop = found;
+    while (prev.get(hop) !== p.node && prev.get(hop) !== null) hop = prev.get(hop);
+    return legal.includes(hop) ? hop : null;
+  };
+  const isTomb = (id) => kindOf(id) === 'tomb' || kindOf(id) === 'ruin';
+  const isRest = (id) => kindOf(id) === 'sanctuary' || kindOf(id) === 'citadel';
+  const isBazaar = (id) => kindOf(id) === 'bazaar';
+  const haveKey = p.quad === 0 || (p.quad === 1 && p.brasskey) || (p.quad === 2 && p.silverkey) || (p.quad === 3 && p.goldkey);
+  let target = null;
+  if (p.warriors <= 4 || p.food <= 4) target = nav(isRest) ?? nav(isBazaar);
+  if (!target && p.quad >= 4 && p.brasskey && p.silverkey && p.goldkey) {
+    if (p.warriors >= Math.min(44, v.dtBrigands ?? 44)) target = nav((id) => kindOf(id) === 'darktower');
+    if (!target && p.gold >= 8) target = nav(isBazaar);
+    if (!target) target = isTomb(p.node) ? p.node : nav(isTomb);
+  } else if (!target && haveKey) {
+    target = nav((id) => id === DT_FORWARD_FRONTIER.get(currentKingdom));
+  } else if (!target) {
+    if (p.warriors < 12 && p.gold >= 12) target = nav(isBazaar);
+    if (!target) target = isTomb(p.node) ? p.node : nav(isTomb);
+  }
+  target ??= legal.find((id) => id !== p.node && kindOf(id) === 'empty') ?? legal.find((id) => id !== p.node) ?? p.node;
+  return target === p.node ? actionAt(p.node) : { type: 'move_token', node: target };
 }
 
 const [a, b] = await Promise.all([mk('Ada'), mk('Ben')]);
@@ -64,13 +108,13 @@ const t0 = Date.now();
 while (a.view.phase !== 'ended' && acts < 6000 && Date.now() - t0 < 180000) {
   const seat = a.view.turn;
   const c = [a, b][seat];
-  await c.wait((x) => x.view.turn === seat || x.view.phase === 'ended', 15000);
+  await c.wait((x) => x.view && (x.view.turn === seat || x.view.phase === 'ended'), 15000);
   if (c.view.phase === 'ended') break;
   // every successful action emits a fresh event — wait on the seq
-  const before = JSON.stringify([c.view.lastEvent?.seq, c.view.phase, c.view.bazaar, c.view.riddlePhase]);
+  const before = JSON.stringify([c.view.lastEvent?.seq, c.view.phase, c.view.bazaar, c.view.riddlePhase, c.view.players[seat]?.node, c.view.turnNode]);
   c.send({ type: 'action', action: pick(c.view, seat) });
   try {
-    await c.wait((x) => x.view.phase === 'ended' || JSON.stringify([x.view.lastEvent?.seq, x.view.phase, x.view.bazaar, x.view.riddlePhase]) !== before, 8000);
+    await c.wait((x) => x.view.phase === 'ended' || JSON.stringify([x.view.lastEvent?.seq, x.view.phase, x.view.bazaar, x.view.riddlePhase, x.view.players[seat]?.node, x.view.turnNode]) !== before, 8000);
   } catch { ok(false, `stalled at act ${acts}`); break; }
   acts++;
 }

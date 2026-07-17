@@ -19,7 +19,6 @@ import {
 } from './alienCatalog.js';
 import {
   SETI_BODIES,
-  SETI_PROJECT_BY_ID,
   SETI_RULES,
   SETI_SECTORS,
   SETI_SECTOR_IDS,
@@ -29,12 +28,14 @@ import {
   parseSetiCell,
   setiCellId,
   type SetiBody,
+  type SetiCellId,
   type SetiKnownRewardOp,
   type SetiPrimaryBody,
   type SetiSectorId,
   type SetiTechStackId,
   type SetiTraceColor,
 } from './data.js';
+import { SETI_PROJECT_CATALOG_BY_ID, type SetiProjectFreeCorner } from './projectCatalog.js';
 import {
   bodyAtSetiCell,
   drawSetiProjectCard,
@@ -42,7 +43,12 @@ import {
   getSetiBodyCells,
   isSetiAsteroidCell,
   isSetiPublicityCell,
+  placeSetiSpacecraft,
   refillSetiProjectRow,
+  setiFirstLandingSpaceId,
+  setiFirstOrbitSpaceAvailable,
+  setiFirstOrbitSpaceId,
+  setiMoonLandingSpaceId,
   setiPlayerLanders,
   setiPlayerOrbiters,
   setiPlayerHasAbility,
@@ -50,6 +56,7 @@ import {
   setiTraceTargets,
   type SetiPendingDecision,
   type SetiPlayer,
+  type SetiSolarPiece,
   type SetiSpeciesSlotState,
   type SetiState,
 } from './state.js';
@@ -58,6 +65,8 @@ export interface SetiAlienRuntimeHooks {
   rotateSolarSystem(s: SetiState): void;
   markSectorSignal(s: SetiState, seat: number, sectorId: SetiSectorId): void;
   settleCompletedSectors(s: SetiState, owner: number): void;
+  recordSolarVisit?(s: SetiState, player: SetiPlayer, piece: SetiSolarPiece, from: SetiCellId, to: SetiCellId): void;
+  onDiscardFreeCorner?(s: SetiState, player: SetiPlayer, corner: SetiProjectFreeCorner): void;
 }
 
 export interface SetiAlienRuntimeResult {
@@ -87,6 +96,10 @@ function drawProjects(s: SetiState, player: SetiPlayer, amount: number): void {
   }
 }
 
+function nextEmittedEffectId(s: SetiState): number {
+  return s.projectRuntime.nextResolutionId++;
+}
+
 function speciesSlot(s: SetiState, species: string): SetiSpeciesSlotState | null {
   return s.species.find((slot) => slot.revealed && slot.speciesId === species) ?? null;
 }
@@ -101,6 +114,13 @@ function anomalySlot(s: SetiState): SetiSpeciesSlotState | null {
 
 function cardSpeciesSlot(s: SetiState, card: SetiAlienCardDefinition): SetiSpeciesSlotState | null {
   return s.species.find((slot) => slot.speciesId === card.species) ?? null;
+}
+
+function alienProjectCorner(card: SetiAlienCardDefinition): SetiProjectFreeCorner | null {
+  if (card.freeCorner.some((reward) => reward.kind === 'gain' && reward.resource === 'movement')) return 'move';
+  if (card.freeCorner.some((reward) => reward.kind === 'gain' && reward.resource === 'publicity')) return 'publicity';
+  if (card.freeCorner.some((reward) => reward.kind === 'gain' && reward.resource === 'data')) return 'data';
+  return null;
 }
 
 function projectSourceOptions(s: SetiState, source: 'row' | 'row-or-deck'): string[] {
@@ -187,13 +207,14 @@ function applySimpleReward(
       break;
     case 'draw-project': queueProjectDraw(s, player, reward.amount, reward.source); break;
     case 'mark-trace': {
+      const resolutionId = nextEmittedEffectId(s);
       const colors = reward.color === 'any' ? ['purple', 'orange', 'blue'] as const : [reward.color];
       if (colors.length === 1) {
         const color = colors[0];
         const options = traceOptionsForSpecies(s, player, color, speciesId);
-        if (options.length) s.pending.push({ kind: 'trace-space', owner: player.seat, color, options });
+        if (options.length) s.pending.push({ kind: 'trace-space', owner: player.seat, color, options, resolutionId });
       } else {
-        s.pending.push({ kind: 'card-effect-choice', owner: player.seat, cardId: `seti_alien:any-trace:${speciesId ?? 'any'}`, label: 'Choose a life-trace color', min: 1, max: 1, options: [...colors] });
+        s.pending.push({ kind: 'card-effect-choice', owner: player.seat, cardId: `seti_alien:any-trace:${speciesId ?? 'any'}:${resolutionId}`, label: 'Choose a life-trace color', min: 1, max: 1, options: [...colors] });
       }
       break;
     }
@@ -222,7 +243,7 @@ function applySimpleReward(
         .filter((stack) => reward.technology === 'any' || stack.type === reward.technology)
         .filter((stack) => s.techStacks[stack.id]?.tiles.length && !player.techs.some((tech) => tech.stackId === stack.id))
         .map((stack) => stack.id);
-      if (options.length) s.pending.push({ kind: 'tech-stack', owner: player.seat, options, free: true });
+      if (options.length) s.pending.push({ kind: 'tech-stack', owner: player.seat, options, free: true, resolutionId: nextEmittedEffectId(s) });
       break;
     }
     case 'rotate-solar-system': hooks.rotateSolarSystem(s); break;
@@ -317,13 +338,14 @@ export function resolveSetiAlienRotation(s: SetiState, hooks: SetiAlienRuntimeHo
   if (visitor?.module?.kind === 'oumuamua') visitor.module.cell = setiCellId(2, 5 + s.solar.orientations.disc3);
   const slot = anomalySlot(s);
   if (!slot || slot.module?.kind !== 'anomalies') return;
+  const module = slot.module;
   const earth = parseSetiCell(getSetiBodyCells(s).Earth!).sector;
-  slot.module.anomalies.forEach((anomaly, index) => {
+  module.anomalies.forEach((anomaly, index) => {
     if (anomaly.sector !== earth) return;
-    slot.module.triggerCount++;
+    module.triggerCount++;
     const token = SETI_ANOMALY_TOKENS[index];
     const winner = anomalyColumnWinner(slot, token.color);
-    if (winner !== null) applyRewards(s, s.players[winner], token.sides[anomaly.side], hooks, 'anomalies');
+    if (winner !== null && s.players[winner]) applyRewards(s, s.players[winner], token.sides[anomaly.side], hooks, 'anomalies');
   });
 }
 
@@ -343,7 +365,7 @@ function queueAlienTuck(s: SetiState, player: SetiPlayer): void {
 function movementOptions(s: SetiState, player: SetiPlayer, remaining: number): string[] {
   const options = ['done'];
   for (const piece of s.solar.pieces.filter((candidate) => candidate.owner === player.seat)) {
-    const surcharge = isSetiAsteroidCell(s, piece.cell) ? 1 : 0;
+    const surcharge = isSetiAsteroidCell(s, piece.cell) && !setiPlayerHasAbility(player, 'asteroid-navigation') ? 1 : 0;
     const cost = 1 + surcharge;
     if (cost > remaining) continue;
     for (const to of adjacentSetiCells(piece.cell)) options.push(`${piece.id}|${to}|${cost}`);
@@ -367,7 +389,11 @@ function queueOumuamuaSignalChoice(s: SetiState, player: SetiPlayer, forceTile =
   const slot = oumuamuaSlot(s);
   if (!sector || !slot) return;
   const options = forceTile ? [`tile:${slot.slot}`] : [`sector:${sector}`, `tile:${slot.slot}`];
-  s.pending.push({ kind: 'card-effect-choice', owner: player.seat, cardId: `seti_alien:oumuamua-signal:${sourceCardId}`, label: "Mark a signal in the star sector or on 'Oumuamua", min: 1, max: 1, options });
+  const decision: SetiPendingDecision = { kind: 'card-effect-choice', owner: player.seat, cardId: `seti_alien:oumuamua-signal:${sourceCardId}`, label: "Mark a signal in the star sector or on 'Oumuamua", min: 1, max: 1, options };
+  // If this is replacing the currently resolving signal placement, its visual
+  // destination choice must finish before the scan's next signal.
+  if (s.pending[0]?.owner === player.seat && (s.pending[0].kind === 'signal-sector' || s.pending[0].kind === 'card-effect-choice')) s.pending.splice(1, 0, decision);
+  else s.pending.push(decision);
 }
 
 function freeMainOptions(s: SetiState, player: SetiPlayer, card: SetiAlienCardDefinition, mode: 'land' | 'orbit-or-land'): string[] {
@@ -388,11 +414,12 @@ function freeMainOptions(s: SetiState, player: SetiPlayer, card: SetiAlienCardDe
 
 function queueFreeScan(s: SetiState, player: SetiPlayer, cardId: string): void {
   const earth = earthSetiSectorId(s);
-  s.pending.push({ kind: 'signal-sector', owner: player.seat, source: 'earth', options: [earth], signalColor: null });
+  s.pending.push({ kind: 'signal-sector', owner: player.seat, source: 'earth', options: [earth], signalColor: null, alienCardId: cardId });
   if (s.projectRow.some(Boolean)) {
     s.pending.push({
       kind: 'signal-sector', owner: player.seat, source: 'project-row', options: [...SETI_SECTOR_IDS], signalColor: null,
       rowOptions: s.projectRow.flatMap((card, index) => card ? [index] : []),
+      alienCardId: cardId,
     });
   }
   if (cardId === 'seti_alien_oumuamua_01' || cardId === 'seti_alien_oumuamua_10') {
@@ -538,27 +565,17 @@ export function playSetiAlienCard(s: SetiState, player: SetiPlayer, cardId: stri
     if (!slot || slot.module?.kind !== 'centaurians') return 'Centaurian module is unavailable';
     slot.module.messageMilestones[player.seat].push(player.score + card.message.milestoneOffset);
     slot.module.messageQueue[player.seat].push(card.id);
-    for (const effect of card.message.immediate) {
-      const error = applyAlienEffect(s, player, card, effect, hooks);
-      if (error) return error;
-    }
+    s.pending.push({ kind: 'card-effect-choice', owner: player.seat, cardId: `seti_alien:continue:message:${card.id}:0`, label: 'Continue the message effect', min: 1, max: 1, options: ['continue'] });
     return null;
   }
 
-  for (let index = 0; index < card.effects.length; index++) {
-    const effect = card.effects[index];
-    // Research already rotates the system; the adjacent printed rotation icon
-    // is a reminder, not a second rotation.
-    if (effect.kind === 'rotate-solar-system' && card.effects[index + 1]?.kind === 'take-tech') continue;
-    const error = applyAlienEffect(s, player, card, effect, hooks);
-    if (error) return error;
-  }
-  // Living ruling (2025-11-11): a mission enters play only after every part
-  // of the card's main effect, including nested visual choices, has resolved.
+  // Living ruling (2025-11-11): execute one printed effect at a time. The
+  // automatic continuation remains behind every visual/nested choice, and the
+  // mission enters play only when the entire program has completed.
   s.pending.push({
     kind: 'card-effect-choice', owner: player.seat,
-    cardId: `seti_alien:activate:${card.id}`,
-    label: 'Finish resolving the alien card', min: 1, max: 1, options: ['continue'],
+    cardId: `seti_alien:continue:main:${card.id}:0`,
+    label: 'Continue resolving the alien card', min: 1, max: 1, options: ['continue'],
   });
   return null;
 }
@@ -572,18 +589,51 @@ function activateResolvedAlienCard(s: SetiState, player: SetiPlayer, cardId: str
   else if (slot) slot.alienDiscard.push(card.id);
 }
 
+function isAlienAutomaticDecision(decision: SetiPendingDecision): decision is Extract<SetiPendingDecision, { kind: 'card-effect-choice' }> {
+  return decision.kind === 'card-effect-choice'
+    && (decision.cardId.startsWith('seti_alien:activate:') || decision.cardId.startsWith('seti_alien:continue:'));
+}
+
 function moveAlienActivationsToTail(s: SetiState): void {
-  const ordinary = s.pending.filter((decision) => decision.kind !== 'card-effect-choice' || !decision.cardId.startsWith('seti_alien:activate:'));
-  const activations = s.pending.filter((decision) => decision.kind === 'card-effect-choice' && decision.cardId.startsWith('seti_alien:activate:'));
+  const ordinary = s.pending.filter((decision) => !isAlienAutomaticDecision(decision));
+  const activations = s.pending.filter(isAlienAutomaticDecision);
   s.pending = [...ordinary, ...activations];
 }
 
-export function settleSetiAlienAutomaticContinuations(s: SetiState): void {
+export function settleSetiAlienAutomaticContinuations(s: SetiState, hooks?: SetiAlienRuntimeHooks): void {
   moveAlienActivationsToTail(s);
-  while (s.pending[0]?.kind === 'card-effect-choice' && s.pending[0].cardId.startsWith('seti_alien:activate:')) {
+  while (s.pending[0] && isAlienAutomaticDecision(s.pending[0])) {
     const decision = s.pending.shift() as Extract<SetiPendingDecision, { kind: 'card-effect-choice' }>;
     const player = s.players[decision.owner];
-    if (player) activateResolvedAlienCard(s, player, decision.cardId.slice('seti_alien:activate:'.length));
+    if (!player) continue;
+    if (decision.cardId.startsWith('seti_alien:activate:')) {
+      activateResolvedAlienCard(s, player, decision.cardId.slice('seti_alien:activate:'.length));
+      moveAlienActivationsToTail(s);
+      continue;
+    }
+    const match = /^seti_alien:continue:(main|message):(.+):(\d+)$/.exec(decision.cardId);
+    const card = match ? SETI_ALIEN_CARDS_BY_ID[match[2]] : null;
+    const index = match ? Number(match[3]) : -1;
+    const effects = match?.[1] === 'message' ? card?.message?.immediate : card?.effects;
+    if (!match || !card || !effects || !hooks) {
+      s.log.push(`Alien continuation could not resolve ${decision.cardId}.`);
+      continue;
+    }
+    if (index >= effects.length) {
+      if (match[1] === 'main') activateResolvedAlienCard(s, player, card.id);
+      moveAlienActivationsToTail(s);
+      continue;
+    }
+    // The printed rotation beside "take a tech" is the card's representation
+    // of the research rotation; acquireTechnology performs that single turn.
+    const skipReminderRotation = effects[index].kind === 'rotate-solar-system' && effects[index + 1]?.kind === 'take-tech';
+    const error = skipReminderRotation ? null : applyAlienEffect(s, player, card, effects[index], hooks);
+    if (error) s.log.push(`${player.name}: ${card.name} skipped an unavailable effect (${error}).`);
+    s.pending.push({
+      kind: 'card-effect-choice', owner: player.seat,
+      cardId: `seti_alien:continue:${match[1]}:${card.id}:${index + 1}`,
+      label: 'Continue resolving the alien card', min: 1, max: 1, options: ['continue'],
+    });
     moveAlienActivationsToTail(s);
   }
 }
@@ -596,6 +646,26 @@ export function discardSetiAlienCardForCorner(s: SetiState, player: SetiPlayer, 
   player.alienHand.splice(index, 1);
   cardSpeciesSlot(s, card)?.alienDiscard.push(card.id);
   applyRewards(s, player, card.freeCorner, hooks, card.species);
+  const corner = alienProjectCorner(card);
+  if (corner) hooks.onDiscardFreeCorner?.(s, player, corner);
+  return null;
+}
+
+export function discardSetiAlienCardForSignal(
+  s: SetiState,
+  player: SetiPlayer,
+  cardId: string,
+  sectorId: SetiSectorId,
+  hooks: SetiAlienRuntimeHooks,
+): string | null {
+  const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+  if (!card || card.species === 'exertians' || !card.signalCorner) return 'That alien card has no usable signal corner';
+  const index = player.alienHand.indexOf(cardId);
+  if (index < 0) return 'Alien card is not in your hand';
+  if (awaitedSectorColor(sectorId) !== card.signalCorner) return 'The signal sector does not match the card corner';
+  player.alienHand.splice(index, 1);
+  cardSpeciesSlot(s, card)?.alienDiscard.push(card.id);
+  if (!routeSetiSignalThroughOumuamua(s, player, sectorId)) hooks.markSectorSignal(s, player.seat, sectorId);
   return null;
 }
 
@@ -626,39 +696,37 @@ function gainProjectIncomeImmediately(s: SetiState, player: SetiPlayer, kind: 'c
 
 function tuckAnyIncomeCard(s: SetiState, player: SetiPlayer, cardId: string): string | null {
   if (SETI_ALIEN_CARDS_BY_ID[cardId]) return tuckAlienCard(s, player, cardId);
-  const definition = SETI_PROJECT_BY_ID[cardId];
+  const definition = SETI_PROJECT_CATALOG_BY_ID[cardId];
   const index = player.hand.indexOf(cardId);
   if (!definition || index < 0) return 'Card is not in your hand';
   player.hand.splice(index, 1);
-  player.incomeCards.push({ cardId, kind: definition.printed.incomeCorner, starting: false });
-  gainProjectIncomeImmediately(s, player, definition.printed.incomeCorner);
+  player.incomeCards.push({ cardId, kind: definition.income, starting: false });
+  gainProjectIncomeImmediately(s, player, definition.income);
   return null;
 }
 
-function discardProjectForFreeCorner(s: SetiState, player: SetiPlayer, cardId: string): string | null {
-  const definition = SETI_PROJECT_BY_ID[cardId];
+function discardProjectForFreeCorner(s: SetiState, player: SetiPlayer, cardId: string, hooks: SetiAlienRuntimeHooks): string | null {
+  const definition = SETI_PROJECT_CATALOG_BY_ID[cardId];
   const index = player.hand.indexOf(cardId);
-  if (!definition || index < 0 || !definition.printed.freeCorner) return 'That project card has no usable free corner';
+  if (!definition || index < 0) return 'That project card has no usable free corner';
   player.hand.splice(index, 1);
   s.projectDiscard.push(cardId);
-  switch (definition.printed.freeCorner) {
-    case 'credit': player.credits++; break;
-    case 'energy': player.energy++; break;
+  switch (definition.freeCorner) {
     case 'publicity': gainPublicity(player, 1); break;
     case 'data': gainData(player, 1); break;
-    case 'card': drawProjects(s, player, 1); break;
     case 'move': queueAlienMovement(s, player, cardId, 1, false); break;
   }
+  hooks.onDiscardFreeCorner?.(s, player, definition.freeCorner);
   return null;
 }
 
 function discardProjectForIncomeResource(s: SetiState, player: SetiPlayer, cardId: string): string | null {
-  const definition = SETI_PROJECT_BY_ID[cardId];
+  const definition = SETI_PROJECT_CATALOG_BY_ID[cardId];
   const index = player.hand.indexOf(cardId);
   if (!definition || index < 0) return 'That project card is not in your hand';
   player.hand.splice(index, 1);
   s.projectDiscard.push(cardId);
-  gainProjectIncomeImmediately(s, player, definition.printed.incomeCorner);
+  gainProjectIncomeImmediately(s, player, definition.income);
   return null;
 }
 
@@ -676,9 +744,10 @@ function applyKnownBodyRewards(s: SetiState, player: SetiPlayer, rewards: readon
       case 'data': gainData(player, reward.amount); break;
       case 'publicity': gainPublicity(player, reward.amount); break;
       case 'trace': {
+        const resolutionId = nextEmittedEffectId(s);
         for (let i = 0; i < reward.amount; i++) {
           const options = setiTraceTargets(s, reward.color, player.seat);
-          if (options.length) s.pending.push({ kind: 'trace-space', owner: player.seat, color: reward.color, options });
+          if (options.length) s.pending.push({ kind: 'trace-space', owner: player.seat, color: reward.color, options, resolutionId });
         }
         break;
       }
@@ -748,6 +817,20 @@ export function routeSetiSignalThroughOumuamua(
   return true;
 }
 
+export function applySetiOumuamuaOrbitReward(s: SetiState, player: SetiPlayer): void {
+  if (!oumuamuaSlot(s)) return;
+  queueOumuamuaSignalChoice(s, player);
+  queueAlienTuck(s, player);
+  moveAlienActivationsToTail(s);
+}
+
+export function applySetiOumuamuaLandingReward(s: SetiState, player: SetiPlayer): void {
+  const slot = oumuamuaSlot(s);
+  if (slot?.module?.kind !== 'oumuamua') return;
+  gainScore(player, 10);
+  slot.module.exofossils[player.seat] = (slot.module.exofossils[player.seat] ?? 0) + 1;
+}
+
 function resolveFreeSpacecraftAction(
   s: SetiState,
   player: SetiPlayer,
@@ -766,12 +849,16 @@ function resolveFreeSpacecraftAction(
     if (definition.moon || body !== primary) return 'Only a visited planet can be orbited';
     removeSolarPiece(s, piece.id);
     const planet = s.planets[body];
-    const first = planet.orbiters.length === 0;
-    planet.orbiters.push(player.seat);
+    const first = setiFirstOrbitSpaceAvailable(s, body);
+    placeSetiSpacecraft(s, {
+      owner: player.seat,
+      kind: 'orbiter',
+      body,
+      ...(first ? { spaceId: setiFirstOrbitSpaceId(body), coveredReward: { kind: 'first-orbit-vp' as const, amount: 3 as const } } : { coveredReward: null }),
+    });
     if (first) gainScore(player, 3);
     if (body === 'Oumuamua') {
-      queueOumuamuaSignalChoice(s, player);
-      queueAlienTuck(s, player);
+      applySetiOumuamuaOrbitReward(s, player);
     } else if (definition.orbitReward.status === 'typed') {
       applyKnownBodyRewards(s, player, definition.orbitReward.ops);
     }
@@ -780,16 +867,26 @@ function resolveFreeSpacecraftAction(
 
   if (definition.moon ? definition.parent !== primary : body !== primary) return 'The probe is no longer visiting that landing destination';
   removeSolarPiece(s, piece.id);
-  s.planets[body].landers.push(player.seat);
+  let coveredReward: { kind: 'first-landing-data'; amount: number } | { kind: 'moon-landing' } | null = definition.moon ? { kind: 'moon-landing' } : null;
+  let coveredSpaceId = definition.moon ? setiMoonLandingSpaceId(body) : undefined;
+  if (body !== 'Mars' && !definition.moon && s.planets[body].firstLandingBonuses.length) {
+    const amount = s.planets[body].firstLandingBonuses.shift()!;
+    coveredReward = { kind: 'first-landing-data', amount };
+    coveredSpaceId = setiFirstLandingSpaceId(body, amount);
+    gainData(player, amount);
+  }
+  const spacecraft = placeSetiSpacecraft(s, {
+    owner: player.seat,
+    kind: 'lander',
+    body,
+    ...(coveredSpaceId ? { spaceId: coveredSpaceId } : {}),
+    coveredReward,
+  });
   if (body === 'Mars' && s.planets.Mars.firstLandingBonuses.length) {
-    s.pending.push({ kind: 'mars-first-data', owner: player.seat, options: [...s.planets.Mars.firstLandingBonuses] });
-  } else if (!definition.moon && s.planets[body].firstLandingBonuses.length) {
-    gainData(player, s.planets[body].firstLandingBonuses.shift()!);
+    s.pending.push({ kind: 'mars-first-data', owner: player.seat, spacecraftId: spacecraft.id, options: [...s.planets.Mars.firstLandingBonuses] });
   }
   if (body === 'Oumuamua') {
-    gainScore(player, 10);
-    const slot = oumuamuaSlot(s);
-    if (slot?.module?.kind === 'oumuamua') slot.module.exofossils[player.seat] = (slot.module.exofossils[player.seat] ?? 0) + 1;
+    applySetiOumuamuaLandingReward(s, player);
   } else {
     applyKnownBodyRewards(s, player, definition.landingRewards);
   }
@@ -917,10 +1014,12 @@ export function resolveSetiAlienChoice(
     error = tuckAnyIncomeCard(s, player, option);
   } else if (id.startsWith('seti_alien:any-trace:')) {
     const color = option as SetiTraceColor;
-    const speciesId = id.slice('seti_alien:any-trace:'.length);
+    const payload = id.slice('seti_alien:any-trace:'.length).split(':');
+    const speciesId = payload[0];
+    const resolutionId = Number(payload[1]);
     const options = traceOptionsForSpecies(s, player, color, speciesId === 'any' ? undefined : speciesId);
     if (!options.length) error = 'No legal trace space remains';
-    else s.pending.push({ kind: 'trace-space', owner: player.seat, color, options });
+    else s.pending.push({ kind: 'trace-space', owner: player.seat, color, options, ...(Number.isInteger(resolutionId) ? { resolutionId } : {}) });
   } else if (id.startsWith('seti_alien:signals-together:')) {
     const amount = Number(id.slice('seti_alien:signals-together:'.length));
     const sector = option as SetiSectorId;
@@ -938,9 +1037,13 @@ export function resolveSetiAlienChoice(
       const piece = s.solar.pieces.find((candidate) => candidate.id === pieceId && candidate.owner === player.seat);
       if (!piece || !adjacentSetiCells(piece.cell).includes(to as never) || !Number.isInteger(cost) || cost > remaining) error = 'That movement is no longer legal';
       else {
+        const from = piece.cell;
         piece.cell = to as typeof piece.cell;
-        piece.supportLayer = setiSupportLayerForCell(s, piece.cell);
-        if (!player.suppressProbePublicityThisTurn && (isSetiPublicityCell(s, piece.cell) || bodyAtSetiCell(s, piece.cell) === 'Oumuamua')) gainPublicity(player, 1);
+        if (hooks.recordSolarVisit) hooks.recordSolarVisit(s, player, piece, from, piece.cell);
+        else {
+          piece.supportLayer = setiSupportLayerForCell(s, piece.cell);
+          if (!player.suppressProbePublicityThisTurn && (isSetiPublicityCell(s, piece.cell) || bodyAtSetiCell(s, piece.cell) === 'Oumuamua')) gainPublicity(player, 1);
+        }
         const sourceCard = SETI_ALIEN_CARDS_BY_ID[match[1]];
         if (sourceCard?.cardId === 203705 && bodyAtSetiCell(s, piece.cell) === 'Oumuamua') {
           const key = `visited:${sourceCard.id}`;
@@ -974,7 +1077,7 @@ export function resolveSetiAlienChoice(
     queueSampleChoice(s, player, id.slice('seti_alien:sample-probe-inspect:'.length), body, false);
   } else if (id.startsWith('seti_alien:everyday:free:')) {
     const cards = id.slice('seti_alien:everyday:free:'.length).split(',');
-    error = discardProjectForFreeCorner(s, player, option);
+    error = discardProjectForFreeCorner(s, player, option, hooks);
     const remaining = cards.filter((card) => card !== option && player.hand.includes(card));
     if (!error && remaining.length) s.pending.push({ kind: 'card-effect-choice', owner: player.seat, cardId: `seti_alien:everyday:income:${remaining.join(',')}`, label: 'Choose a different card for its income resource', min: 1, max: 1, options: remaining });
   } else if (id.startsWith('seti_alien:everyday:income:')) {
@@ -1034,4 +1137,322 @@ export function resolveSetiAlienChoice(
 
   moveAlienActivationsToTail(s);
   return error ? failure(error) : ok();
+}
+
+function traceMarkersForSpecies(s: SetiState, player: SetiPlayer, speciesId: string): typeof player.traceMarkers {
+  const slot = s.species.find((candidate) => candidate.speciesId === speciesId);
+  return slot ? player.traceMarkers.filter((marker) => marker.speciesSlot === slot.slot) : [];
+}
+
+export function setiAlienConditionSatisfied(
+  s: SetiState,
+  player: SetiPlayer,
+  card: SetiAlienCardDefinition,
+  condition: SetiAlienCondition,
+): boolean {
+  const own = traceMarkersForSpecies(s, player, card.species);
+  switch (condition.kind) {
+    case 'trace-count': {
+      const markers = condition.species === 'this'
+        ? own
+        : player.traceMarkers.filter((marker) => !own.includes(marker));
+      if (condition.color === 'same') {
+        return (['purple', 'orange', 'blue'] as const).some((color) => markers.filter((marker) => marker.color === color).length >= condition.atLeast);
+      }
+      return markers.filter((marker) => condition.color === 'any' || marker.color === condition.color).length >= condition.atLeast;
+    }
+    case 'trace-set': return condition.colors.every((color) => own.some((marker) => marker.color === color));
+    case 'exofossils-held': {
+      const slot = oumuamuaSlot(s);
+      return slot?.module?.kind === 'oumuamua' && (slot.module.exofossils[player.seat] ?? 0) >= condition.atLeast;
+    }
+    case 'lander-at': return s.planets.Oumuamua.landers.includes(player.seat);
+    case 'signal-count': {
+      const slot = oumuamuaSlot(s);
+      return slot?.module?.kind === 'oumuamua' && slot.module.signals.filter((signal) => signal.owner === player.seat).length >= condition.atLeast;
+    }
+    case 'paid-oumuamua-space': {
+      const slot = oumuamuaSlot(s);
+      if (!slot) return false;
+      return player.traceMarkers.some((marker) => {
+        if (marker.speciesSlot !== slot.slot) return false;
+        const space = researchDefinition(slot, marker.spaceId);
+        return space?.payment?.resource === 'exofossil' && condition.acceptedCosts.includes(space.payment.amount);
+      });
+    }
+    case 'event':
+    case 'prior-action-result': return false;
+  }
+}
+
+export function completeSetiAlienMission(
+  s: SetiState,
+  player: SetiPlayer,
+  cardId: string,
+  hooks: SetiAlienRuntimeHooks,
+): string | null {
+  const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+  if (!card || !player.alienMissions.includes(cardId) || card.mission?.kind !== 'conditional') return 'That alien mission is not available to complete';
+  if (!setiAlienConditionSatisfied(s, player, card, card.mission.condition)) return 'The alien mission condition is not fulfilled';
+  for (const effect of card.mission.reward) {
+    const error = applyAlienEffect(s, player, card, effect, hooks);
+    if (error) return error;
+  }
+  player.alienMissions.splice(player.alienMissions.indexOf(cardId), 1);
+  player.completedAlienMissions.push(cardId);
+  moveAlienActivationsToTail(s);
+  return null;
+}
+
+export function deliverSetiMascamiteSample(
+  s: SetiState,
+  player: SetiPlayer,
+  pieceId: string,
+  cardId: string,
+  hooks: SetiAlienRuntimeHooks,
+): string | null {
+  const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+  const mission = card?.mission;
+  if (!card || !player.alienMissions.includes(cardId) || mission?.kind !== 'delivery') return 'That sample-delivery mission is not active';
+  const capsule = s.solar.pieces.find((piece) => piece.id === pieceId && piece.owner === player.seat && piece.kind === 'capsule' && piece.sampleId);
+  if (!capsule?.sampleId || bodyAtSetiCell(s, capsule.cell) !== mission.destination) return `Move a sample capsule to ${mission.destination} first`;
+  const slot = speciesSlot(s, 'mascamites');
+  if (!slot || slot.module?.kind !== 'mascamites') return 'Mascamite samples are unavailable';
+  removeSolarPiece(s, capsule.id);
+  slot.module.capsulesDelivered.push(capsule.sampleId);
+  for (const reward of mission.reward) {
+    if (reward.kind === 'resolve-mascamite-sample') {
+      for (let i = 0; i < reward.multiplier; i++) applyRewards(s, player, sampleReward(capsule.sampleId), hooks, 'mascamites');
+    } else applySimpleReward(s, player, reward, hooks, 'mascamites');
+  }
+  player.alienMissions.splice(player.alienMissions.indexOf(cardId), 1);
+  player.completedAlienMissions.push(cardId);
+  return null;
+}
+
+function triggerSetiAlienMissionEvent(
+  s: SetiState,
+  player: SetiPlayer,
+  event: 'mark-any-trace' | 'research-any-tech',
+  emittedEffectId?: number,
+): boolean {
+  const eventKey = emittedEffectId === undefined ? null : `trigger-event:${event}:${emittedEffectId}`;
+  if (eventKey && player.alienMissionProgress[eventKey]?.length) return false;
+  for (const cardId of player.alienMissions) {
+    const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+    const mission = card?.mission;
+    if (!card || mission?.kind !== 'triggerable' || mission.trigger.kind !== 'event' || mission.trigger.event !== event) continue;
+    const progress = player.alienMissionProgress[cardId] ?? [];
+    const options = mission.rewards.map((_, index) => index).filter((index) => !progress.includes(String(index))).map((index) => `reward:${index}`);
+    if (!options.length) continue;
+    if (eventKey) player.alienMissionProgress[eventKey] = [cardId];
+    s.pending.push({ kind: 'card-effect-choice', owner: player.seat, cardId: `seti_alien:trigger:${cardId}`, label: 'Choose one remaining mission reward', min: 1, max: 1, options });
+    return true;
+  }
+  return false;
+}
+
+export function onSetiAlienTraceMarked(s: SetiState, player: SetiPlayer, emittedEffectId?: number): boolean {
+  return triggerSetiAlienMissionEvent(s, player, 'mark-any-trace', emittedEffectId);
+}
+
+export function onSetiAlienTechnologyResearched(s: SetiState, player: SetiPlayer, emittedEffectId?: number): boolean {
+  return triggerSetiAlienMissionEvent(s, player, 'research-any-tech', emittedEffectId);
+}
+
+function discoveryOwners(s: SetiState, slot: SetiSpeciesSlotState): number[] {
+  return Object.values(slot.discovery)
+    .filter((marker): marker is NonNullable<typeof marker> => marker !== null && marker.owner !== null && !!s.players[marker.owner])
+    .sort((a, b) => a.sequence - b.sequence)
+    .map((marker) => marker.owner!);
+}
+
+export function onSetiAlienSpeciesRevealed(s: SetiState, slot: SetiSpeciesSlotState): void {
+  const owners = discoveryOwners(s, slot);
+  if (slot.speciesId === 'exertians') {
+    for (const player of s.players) {
+      const opportunities = owners.filter((owner) => owner === player.seat).length;
+      const count = 3 + opportunities;
+      for (let i = 0; i < count; i++) {
+        const card = slot.alienDeck.shift();
+        if (card) player.alienHand.push(card);
+      }
+      for (let i = 0; i < opportunities; i++) {
+        const cards = player.alienHand.filter((id) => SETI_ALIEN_CARDS_BY_ID[id]?.species === 'exertians');
+        if (cards.length) s.pending.push({ kind: 'exertian-card', owner: player.seat, options: ['skip', ...cards.map((id) => `0|${id}`)] });
+      }
+    }
+    // In solo the remaining face-down cards are retained for S.19. In a
+    // multiplayer game the unused deck is returned to the box as printed.
+    if (!s.solo) slot.alienDeck = [];
+    slot.alienFaceUp = null;
+    return;
+  }
+
+  for (const owner of owners) {
+    const card = slot.alienDeck.shift();
+    if (card) s.players[owner].alienHand.push(card);
+  }
+  slot.alienFaceUp = slot.alienDeck.shift() ?? null;
+  if (slot.module?.kind === 'centaurians') {
+    for (const player of s.players) {
+      if (!slot.module.messageQueue[player.seat]?.length) slot.module.messageQueue[player.seat] = ['seti_centaurian_board_message'];
+    }
+  }
+  if (slot.module?.kind === 'oumuamua') {
+    const cell = slot.module.cell;
+    for (const piece of s.solar.pieces.filter((candidate) => candidate.kind === 'probe' && candidate.cell === cell)) {
+      const player = s.players[piece.owner];
+      if (player) gainPublicity(player, 1);
+    }
+  }
+}
+
+function resolveCentaurianMessage(
+  s: SetiState,
+  player: SetiPlayer,
+  slot: SetiSpeciesSlotState,
+  hooks: SetiAlienRuntimeHooks,
+): boolean {
+  if (slot.module?.kind !== 'centaurians') return false;
+  const module = slot.module;
+  const milestones = module.messageMilestones[player.seat] ?? [];
+  const queue = module.messageQueue[player.seat] ?? [];
+  if (!milestones.length || milestones[0] > player.score) return false;
+  milestones.shift();
+  const cardId = queue.shift() ?? 'seti_centaurian_board_message';
+  if (cardId !== 'seti_centaurian_board_message') {
+    const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+    if (card?.message) {
+      let tucked = false;
+      for (const effect of card.message.delayed) {
+        if (effect.kind === 'tuck-income') {
+          if (card.incomeCorner) {
+            player.alienIncomeCards.push({ cardId: card.id, kind: card.incomeCorner });
+            gainAlienIncomeImmediately(s, player, card.incomeCorner);
+            tucked = true;
+          }
+        } else applyAlienEffect(s, player, card, effect, hooks);
+      }
+      if (!tucked) slot.alienDiscard.push(card.id);
+    }
+  }
+  const options = SETI_CENTAURIAN_MESSAGE_REWARDS
+    .map((_, index) => `reward:${index}`)
+    .filter((id) => !module.claimedRewards.includes(id));
+  if (options.length) s.pending.push({ kind: 'centaurian-reward', owner: player.seat, options });
+  return true;
+}
+
+function queueExertianMilestone(s: SetiState, player: SetiPlayer, slot: SetiSpeciesSlotState): boolean {
+  if (slot.module?.kind !== 'exertians' || s.solo) return false;
+  const resolved = slot.module.resolvedMilestones[player.seat] ?? [false, false];
+  slot.module.resolvedMilestones[player.seat] = resolved;
+  for (const index of [0, 1] as const) {
+    if (resolved[index] || player.score < slot.module.milestones[index]) continue;
+    resolved[index] = true;
+    const cost = index === 0 ? 0 : 1;
+    if (player.credits < cost) return true; // the paid opportunity is missed permanently
+    const cards = player.alienHand.filter((id) => SETI_ALIEN_CARDS_BY_ID[id]?.species === 'exertians');
+    if (cards.length) s.pending.push({ kind: 'exertian-card', owner: player.seat, options: ['skip', ...cards.map((id) => `${cost}|${id}`)] });
+    return true;
+  }
+  return false;
+}
+
+export function queueSetiAlienMilestone(
+  s: SetiState,
+  turnSeat: number,
+  hooks: SetiAlienRuntimeHooks,
+): boolean {
+  if (s.pending.length) return false;
+  for (let offset = 0; offset < s.players.length; offset++) {
+    const player = s.players[(turnSeat + offset) % s.players.length];
+    for (const slot of s.species) {
+      if (!slot.revealed) continue;
+      if (slot.module?.kind === 'centaurians' && resolveCentaurianMessage(s, player, slot, hooks)) return true;
+      if (slot.module?.kind === 'exertians' && queueExertianMilestone(s, player, slot)) return true;
+    }
+  }
+  return false;
+}
+
+export function applySetiAlienIncome(s: SetiState): void {
+  for (const player of s.players) {
+    for (const income of player.alienIncomeCards) {
+      if (income.kind === 'credit') player.credits++;
+      else if (income.kind === 'energy') player.energy++;
+      else if (income.kind === 'card') drawProjects(s, player, 1);
+      else if (income.kind === 'publicity') gainPublicity(player, 1);
+      else gainData(player, 1);
+    }
+  }
+}
+
+function exertianConditionSatisfied(
+  s: SetiState,
+  player: SetiPlayer,
+  condition: SetiExertianScoringCondition,
+): boolean {
+  const slot = speciesSlot(s, 'exertians');
+  const exertianTraces = slot ? player.traceMarkers.filter((marker) => marker.speciesSlot === slot.slot) : [];
+  switch (condition.kind) {
+    case 'trace-count': {
+      const count = condition.species === 'this' ? exertianTraces.length : player.traceMarkers.length - exertianTraces.length;
+      return count >= condition.atLeast;
+    }
+    case 'spacecraft-at-one-planet-family': {
+      return (Object.keys(SETI_BODIES) as SetiBody[])
+        .filter((body) => !SETI_BODIES[body].moon && body !== 'Earth')
+        .some((body) => {
+          const family = [body, ...(Object.keys(SETI_BODIES) as SetiBody[]).filter((candidate) => SETI_BODIES[candidate].parent === body)];
+          const count = family.reduce((sum, member) => sum
+            + s.planets[member].orbiters.filter((owner) => owner === player.seat).length
+            + s.planets[member].landers.filter((owner) => owner === player.seat).length, 0);
+          return count >= condition.atLeast;
+        });
+    }
+    case 'sector-wins': {
+      const sectors = SETI_SECTORS.filter((sector) => sector.printedSignalColor === condition.color).map((sector) => sector.id);
+      return sectors.reduce((sum, id) => sum + s.sectors[id].wins.filter((marker) => marker.owner === player.seat).length, 0) >= condition.atLeast;
+    }
+    case 'technology-count':
+      return player.techs.filter((tech) => SETI_TECH_BY_ID[tech.stackId]?.type === condition.technology).length >= condition.atLeast;
+    case 'income-cards': return player.incomeCards.length + player.alienIncomeCards.length >= condition.atLeast;
+    case 'lander-count': return setiPlayerLanders(s, player.seat) >= condition.atLeast;
+    case 'same-color-traces':
+      return (['purple', 'orange', 'blue'] as const).some((color) => player.traceMarkers.filter((marker) => marker.color === color).length >= condition.atLeast);
+    case 'orbiter-count': return setiPlayerOrbiters(s, player.seat) >= condition.atLeast;
+    case 'completed-missions': return player.completedMissions.length + player.completedAlienMissions.length >= condition.atLeast;
+  }
+}
+
+export function scoreSetiAlienEndgame(s: SetiState): void {
+  for (const player of s.players) {
+    let final = player.finalScore ?? player.score;
+    for (const cardId of player.alienScoringCards) {
+      const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+      if (card?.mission?.kind !== 'endgame') continue;
+      final += traceMarkersForSpecies(s, player, card.species).length * card.mission.vpPerMatchingMarker;
+    }
+    for (const cardId of player.hiddenExertian) {
+      const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+      if (card?.exertian && exertianConditionSatisfied(s, player, card.exertian.condition)) final += card.exertian.victoryPoints;
+    }
+    player.finalScore = final;
+  }
+
+  const slot = speciesSlot(s, 'exertians');
+  if (slot?.module?.kind !== 'exertians') return;
+  if (s.solo) return; // soloRuntime compares human and rival danger together
+  const module = slot.module;
+  const danger = s.players.map((player) => ({
+    player,
+    amount: (module.dangerBySeat[player.seat] ?? 0)
+      + player.hiddenExertian.reduce((sum, id) => sum + (SETI_ALIEN_CARDS_BY_ID[id]?.exertian?.danger ?? 0), 0),
+  }));
+  const greatest = Math.max(...danger.map((entry) => entry.amount));
+  for (const entry of danger.filter((candidate) => candidate.amount === greatest)) {
+    entry.player.finalScore! -= Math.floor(entry.player.finalScore! / 10);
+  }
 }

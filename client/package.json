@@ -6,13 +6,15 @@
     "dev": "vite",
     "build": "vite build",
     "dev:alt": "set BGE_SERVER=localhost:8899&& vite --port 5273",
-    "test": "tsx src/saveDeletion-test.ts && tsx src/net-battle-readiness-test.ts && tsx src/axis/axis-selection-test.ts && tsx src/axis/axis-battle-presentation-test.ts && tsx src/axis/axis-battle-visual-style-test.ts && tsx src/axis/axis-retreat-presentation-test.ts && tsx src/axis/axis-air-landing-test.ts && tsx src/axis/axis-carrier-presentation-test.ts && tsx src/axis/axis-defending-carrier-presentation-test.ts && tsx src/axis/axis-authority-test.ts && tsx src/axis/axis-casualty-selection-test.ts && tsx src/axis/axis-movement-targets-test.ts && tsx src/axis/axis-mobilization-test.ts && tsx src/axis/axis-inventory-test.ts && tsx src/axis/axis-china-ui-test.ts && tsx src/axis/axis-transport-orders-test.ts && tsx src/axis/axis-capital-presentation-test.ts && tsx src/axis/axis-technology-presentation-test.ts && tsx src/axis/axis-special-technology-presentation-test.ts && tsx src/axis/axis-paratrooper-presentation-test.ts && tsx src/axis/sim/battle-scene-performance-test.ts && tsx src/axis/sim/stylized-battle-layout-test.ts && tsx src/axis/sim/stylized-battle-timing-test.ts && tsx src/axis/sim/stylized-battle-volley-test.ts && tsx src/axis/sim/stylized-battle-airborne-test.ts && tsx src/axis/sim/stylized-battle-resource-test.ts && tsx src/seti/seti-ui-test.ts",
-    "test:seti": "tsx src/seti/seti-ui-test.ts"
+    "test": "tsx src/saveDeletion-test.ts && tsx src/net-battle-readiness-test.ts && tsx src/axis/axis-selection-test.ts && tsx src/axis/axis-battle-presentation-test.ts && tsx src/axis/axis-battle-visual-style-test.ts && tsx src/axis/axis-retreat-presentation-test.ts && tsx src/axis/axis-air-landing-test.ts && tsx src/axis/axis-carrier-presentation-test.ts && tsx src/axis/axis-defending-carrier-presentation-test.ts && tsx src/axis/axis-authority-test.ts && tsx src/axis/axis-casualty-selection-test.ts && tsx src/axis/axis-movement-targets-test.ts && tsx src/axis/axis-mobilization-test.ts && tsx src/axis/axis-inventory-test.ts && tsx src/axis/axis-china-ui-test.ts && tsx src/axis/axis-transport-orders-test.ts && tsx src/axis/axis-capital-presentation-test.ts && tsx src/axis/axis-technology-presentation-test.ts && tsx src/axis/axis-special-technology-presentation-test.ts && tsx src/axis/axis-paratrooper-presentation-test.ts && tsx src/axis/sim/battle-scene-performance-test.ts && tsx src/axis/sim/stylized-battle-layout-test.ts && tsx src/axis/sim/stylized-battle-timing-test.ts && tsx src/axis/sim/stylized-battle-volley-test.ts && tsx src/axis/sim/stylized-battle-airborne-test.ts && tsx src/axis/sim/stylized-battle-resource-test.ts && tsx src/bloodborne/bb-audio-test.ts && tsx src/darksouls/ds-encounter-presentation-test.ts && tsx src/feast/feast-scene-test.ts && tsx src/politik/politik-visual-interaction-test.ts && npm run test:trek && npm run test:seti",
+    "test:trek": "tsx src/trek/trek-card-sprite-test.ts",
+    "test:seti": "tsx src/seti/seti-ui-test.ts && tsx src/seti/seti-pending-presentation-test.ts && tsx src/seti/seti-tech-art-test.ts && tsx src/seti/seti-board-targets-test.ts && tsx src/seti/seti-pending-artifacts-test.ts"
   },
   "dependencies": {
     "@3d-dice/dice-box-threejs": "0.0.12",
     "@bge/shared": "*",
     "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource/cormorant-garamond": "^5.2.8",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@react-three/postprocessing": "^2.19.1",

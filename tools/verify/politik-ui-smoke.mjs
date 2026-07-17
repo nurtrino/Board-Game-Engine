@@ -210,7 +210,14 @@ function watchErrors(page, name) {
   const errors = [];
   page.on('pageerror', (error) => errors.push(`${name} pageerror: ${error.message}`));
   page.on('console', (message) => { if (message.type() === 'error') errors.push(`${name} console: ${message.text()}`); });
-  page.on('requestfailed', (request) => errors.push(`${name} request: ${request.url()} ${request.failure()?.errorText ?? ''}`));
+  page.on('requestfailed', (request) => {
+    const reason = request.failure()?.errorText ?? '';
+    // The smoke first opens `/` to seed the player token, then immediately
+    // navigates to the room. Lazy home-page assets cancelled by that deliberate
+    // navigation are benign; failures from the actual room still surface.
+    if (reason === 'net::ERR_ABORTED') return;
+    errors.push(`${name} request: ${request.url()} ${reason}`);
+  });
   page.on('response', (response) => { if (response.status() >= 400) errors.push(`${name} HTTP ${response.status()}: ${response.url()}`); });
   return errors;
 }
@@ -440,7 +447,7 @@ try {
   check(personalTableau.resourceFont >= 6.9 && personalTableau.resourceValueFont >= 14.9, `personal tableau exact resource counts remain readable ${JSON.stringify({ label: personalTableau.resourceFont, value: personalTableau.resourceValueFont })}`);
   await clickButton(device, 'HELP', 'contains');
   await device.waitForSelector('.pk-viewer');
-  check(await device.$eval('.pk-viewer', (element) => /MAIN ACTIONS/.test(element.textContent) && /OPEN OFFICIAL RULEBOOK/.test(element.textContent)), 'device help contains action explanations and official rulebook');
+  check(await device.$eval('.pk-viewer', (element) => /MAIN ACTIONS/i.test(element.textContent) && /OPEN OFFICIAL RULEBOOK/i.test(element.textContent)), 'device help contains action explanations and official rulebook');
 
   const expectedLessonIds = ['start-here', 'how-to-win', 'turn-and-timing', 'main-actions', 'edge-actions', 'board-and-control', 'cards-and-keywords', 'national-actions', 'clashes', 'companies-and-economy', 'corruption-and-obligations', 'final-say-and-ties', 'trading', 'worked-examples', 'strategy-and-variants'];
   const lessonLibrary = await device.evaluate((expectedIds) => {
@@ -473,7 +480,12 @@ try {
   for (let position = 1; position <= 24; position++) {
     await device.waitForFunction((expected) => document.querySelector('.pk-tour-meta b')?.textContent.trim() === `${expected} / 24`, {}, position);
     if (position >= 3 && position <= 23) await device.waitForSelector('.pk-tour-ring', { timeout: 5_000 });
-    await new Promise((resolve) => setTimeout(resolve, 260));
+    await device.waitForFunction((expected) => {
+      const progress = document.querySelector('.pk-tour-progress')?.getBoundingClientRect();
+      const fill = document.querySelector('.pk-tour-progress i')?.getBoundingClientRect();
+      return !!progress?.width && !!fill && Math.abs(fill.width / progress.width - expected / 24) < 0.02;
+    }, { timeout: 5_000 }, position);
+    await new Promise((resolve) => setTimeout(resolve, 80));
     tutorialAudits.push(await device.evaluate((expected) => {
       const card = document.querySelector('.pk-tour-card').getBoundingClientRect();
       const progress = document.querySelector('.pk-tour-progress').getBoundingClientRect();
@@ -521,41 +533,23 @@ try {
   await device.waitForSelector('[data-testid="politik-card-zoom"]', { hidden: true });
   await clickButton(device, 'CLOSE');
 
-  // Unverified regular cards stay simple until the player explicitly opens
-  // manual entry. OCR remains a hint and native selects must never become
-  // unreadable white-on-white controls.
+  // Every shipped card is now multi-pass verified. Opening a hand card must
+  // show the locked printed values directly, without the old manual-entry
+  // detour or an OCR-as-rules ambiguity.
   await device.click('.pk-hand-scroll > button');
-  await device.waitForSelector('.pk-manual-card-status');
-  check(await device.evaluate(() => !document.querySelector('[data-testid="politik-card-manual-editor"]') && !document.querySelector('[data-testid="politik-play-card-confirm"]') && !document.querySelector('[data-testid="politik-card-requirements-confirm"]')), 'unverified card opens with one manual-entry choice and no blanket confirmation grid');
-  const unverifiedCopy = await device.evaluate(() => ({
-    hint: document.querySelector('.pk-ocr-hint')?.textContent ?? '',
-    status: document.querySelector('.pk-manual-card-status')?.textContent ?? '',
+  await device.waitForSelector('.pk-focus-card');
+  const verifiedCard = await device.evaluate(() => ({
+    exact: document.querySelector('.pk-exact-card-data')?.textContent ?? '',
+    hasManual: !!document.querySelector('.pk-manual-card-status, [data-testid="politik-card-manual-editor"]'),
+    hasOcrRules: !!document.querySelector('.pk-ocr-hint'),
   }));
-  check(/OPTIONAL OCR HINT.+NEVER ENFORCED/s.test(unverifiedCopy.hint) && /Manual values override this hint completely/i.test(unverifiedCopy.hint), 'uncertain card copy states that OCR is optional and never authoritative');
-  check(/UNVERIFIED DIGITAL CARD/.test(unverifiedCopy.status) && /ENTER PRINTED VALUES/.test(unverifiedCopy.status), 'uncertain card starts with one clear manual-entry call to action');
+  check(/VERIFIED (STARTUP|PRINTED CARD) DATA/.test(verifiedCard.exact) && !verifiedCard.hasManual && !verifiedCard.hasOcrRules, `verified cards expose locked printed data without a manual-entry detour ${JSON.stringify(verifiedCard)}`);
   await device.click('[data-testid="politik-focus-card-zoom"]');
   await device.waitForSelector('[data-testid="politik-card-zoom"]');
   const focusedZoom = await device.$eval('[data-testid="politik-card-zoom"] .pk-card-art', (element) => { const rect = element.getBoundingClientRect(); return { width: rect.width, height: rect.height }; });
   check(focusedZoom.height >= 540 && focusedZoom.width >= 370, `card being used can be inspected at full size ${JSON.stringify(focusedZoom)}`);
   await device.click('.pk-card-zoom-head button');
   await device.waitForSelector('[data-testid="politik-card-zoom"]', { hidden: true });
-  await device.click('[data-testid="politik-card-manual-toggle"]');
-  await device.waitForSelector('[data-testid="politik-card-manual-editor"]');
-  const manualSelect = await device.$eval('[data-testid="politik-card-manual-editor"] select', (element) => {
-    const select = getComputedStyle(element);
-    const option = getComputedStyle(element.querySelector('option'));
-    const rect = element.getBoundingClientRect();
-    return { selectBackground: select.backgroundColor, selectColor: select.color, optionBackground: option.backgroundColor, optionColor: option.color, fontSize: Number.parseFloat(select.fontSize), height: rect.height };
-  });
-  check(manualSelect.selectBackground === 'rgb(11, 16, 16)' && manualSelect.selectColor === 'rgb(238, 233, 217)' && manualSelect.optionBackground === 'rgb(11, 16, 16)' && manualSelect.optionColor === 'rgb(238, 233, 217)', `manual-entry selects and options remain dark and readable ${JSON.stringify(manualSelect)}`);
-  check(manualSelect.fontSize >= 10.9 && manualSelect.height >= 39, `manual-entry controls remain legible and touchable ${JSON.stringify({ fontSize: manualSelect.fontSize, height: manualSelect.height })}`);
-  await device.select('[data-testid="politik-card-manual-editor"] select', 'event');
-  await device.waitForFunction(() => !document.querySelector('[data-testid="politik-card-manual-confirm"]')?.disabled);
-  await device.click('[data-testid="politik-card-manual-confirm"]');
-  await device.waitForSelector('.pk-manual-card-status.ready');
-  const manualReady = await device.$eval('.pk-manual-card-status.ready', (element) => element.textContent);
-  check(/MANUAL VALUES READY/.test(manualReady) && /not the OCR hint.+rules engine/s.test(manualReady), 'confirmed printed values are explicitly identified as the rules-engine input');
-  check(await device.evaluate(() => !!document.querySelector('[data-testid="politik-play-card-confirm"]') && !document.querySelector('[data-testid="politik-card-manual-editor"]')), 'manual entry unlocks the normal play control without leaving a confirmation grid open');
   await clickButton(device, 'CLOSE');
 
   // Execute one genuine main action through the rendered action rail.

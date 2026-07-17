@@ -80,9 +80,19 @@ class FakeAudio implements BbAudioPort {
   currentTime = 0;
   pauses = 0;
   plays = 0;
+  private listeners = new Map<string, Array<() => void>>();
   constructor(public src: string) {}
   play(): Promise<void> { this.plays++; return Promise.resolve(); }
   pause(): void { this.pauses++; }
+  addEventListener(type: string, listener: () => void): void {
+    const listeners = this.listeners.get(type) ?? [];
+    listeners.push(listener);
+    this.listeners.set(type, listeners);
+  }
+  emit(type: string): void {
+    for (const listener of this.listeners.get(type) ?? []) listener();
+    this.listeners.delete(type);
+  }
 }
 
 let now = 0;
@@ -107,7 +117,10 @@ const advance = (time: number) => {
 controller.setManifest(manifest);
 controller.setCue({ role: 'menu' });
 assert.equal(audios.length, 0, 'autoplay waits for a gesture');
+controller.setMuted(true);
 controller.unlock();
+assert.equal(audios.length, 0, 'a gesture while muted records permission without starting media');
+controller.setMuted(false);
 await flush();
 assert.equal(audios.length, 1);
 assert.equal(audios[0].volume, 0.6);
@@ -129,5 +142,29 @@ controller.setManifest(null);
 controller.setMuted(false);
 controller.unlock();
 controller.dispose();
+
+const rotatingAudios: FakeAudio[] = [];
+const rotatingController = new BbAudioController({
+  createAudio: (src) => { const audio = new FakeAudio(src); rotatingAudios.push(audio); return audio; },
+  requestFrame: (callback) => { callback(100); return 1; },
+  cancelFrame: () => undefined,
+  playTimeoutMs: 50,
+});
+rotatingController.setManifest({
+  ...variants,
+  tracks: variants.tracks.map((track) => ({ ...track, loop: false, crossfadeMs: 0 })),
+});
+rotatingController.setCue({ role: 'exploration', variant: 0 });
+rotatingController.unlock();
+await flush();
+assert.equal(rotatingAudios[0]?.src, '/bloodborne/audio/tracks/explore-a.ogg');
+assert.equal(rotatingAudios[0]?.loop, false);
+rotatingAudios[0]?.emit('ended');
+await flush();
+assert.equal(rotatingAudios[1]?.src, '/bloodborne/audio/tracks/explore-b.ogg', 'non-looping ambience advances instead of repeating');
+rotatingAudios[1]?.emit('ended');
+await flush();
+assert.equal(rotatingAudios[2]?.src, '/bloodborne/audio/tracks/explore-a.ogg', 'playlist wraps only after every matching track');
+rotatingController.dispose();
 
 console.log('bloodborne audio cue/controller tests passed');

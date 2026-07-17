@@ -85,6 +85,8 @@ export const SEAT_HEX: Record<string, string> = {
   uk: '#b5894e', italy: '#6b4a2b', usa: '#2e7d32',
   // Dark Souls seats (class-agnostic: classes are picked in-game)
   Ember: '#d0722e', Ash: '#c9c4b6', Moss: '#6f8a4d', Slate: '#5d6b7d',
+  // Bloodborne seats (mirror of BB_SEAT_HEX; the lobby swatches read this map)
+  Crimson: '#b03434', Cobalt: '#3a62b8', Verdant: '#3f8a4e', Amber: '#c8952f',
 };
 
 /** Display label for a seat color key (A&A seats are power ids). */

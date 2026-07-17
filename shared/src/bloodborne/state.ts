@@ -104,7 +104,8 @@ export interface BbHunterState {
 
 export type BbPending =
   | { seat: number; kind: 'combat-attack' } // may attack back: pick card+slot or pass
-  | { seat: number; kind: 'combat-reaction' } // use optional On Attack items/firearm reactions, then pass
+  | { seat: number; kind: 'combat-modifiers' } // On Attack gear, before the enemy card is flipped
+  | { seat: number; kind: 'combat-reaction' } // revealed-action review + eligible firearm reactions
   | { seat: number; kind: 'combat-dodge'; speed: BbSpeed | number } // may dodge: pick dodge card+slot or pass
   | { seat: number; kind: 'combat-rider'; rider: string; speed?: BbSpeed; damage?: number; stun?: boolean; poison?: boolean; frenzy?: boolean; push?: number; source?: BbSpaceRef } // curated rider/AoE Dodge prompts
   | { seat: number; kind: 'dream-upgrades'; picks: number } // echoes to spend, pick from row
@@ -129,7 +130,24 @@ export interface BbCombat {
   /** hunter's committed attack, if any */
   attack: { cardId: string; slot: number } | null;
   /** flipped enemy action */
-  enemyAction: { kind: BbEnemyActionKind; bossCardIx?: number } | null;
+  enemyAction: {
+    kind: BbEnemyActionKind;
+    bossCardIx?: number;
+    /** Server-authoritative printed/effective row snapshot. Keeping this on
+     * the combat prevents the client from explaining a base row when a
+     * mission replaced it, or a new Boss phase has already begun. */
+    action?: {
+      name: string;
+      text: string;
+      speed: BbSpeed | null;
+      damage: number;
+      isAbility: boolean;
+      cannotDodge: boolean;
+      cannotStagger: boolean;
+      exactDodgeSpeed: BbSpeed | null;
+      stagger: boolean;
+    };
+  } | null;
   dodge: { cardId: string; slot: number } | null;
   /** interact-aggro combats: no attack, no dodge (p. 16) */
   noResponse: boolean;
@@ -142,6 +160,47 @@ export interface BbCombat {
   blockPending: number;
   enemyStagger: boolean;
   resolved: boolean;
+}
+
+/** Persisted long enough for clients to explain what the last exchange did.
+ * Combat itself is intentionally transient, but its outcome must not vanish in
+ * the same reducer tick that applies damage. */
+export interface BbCombatResult {
+  seq: number;
+  seat: number;
+  foeKind: 'enemy' | 'boss';
+  foeType: string;
+  foeName: string;
+  bossPhaseBefore: number | null;
+  bossPhaseAfter: number | null;
+  hunterAttack: {
+    name: string;
+    speed: number | null;
+    damage: number;
+    resolved: boolean;
+    cancelled: boolean;
+  } | null;
+  enemyAction: {
+    name: string;
+    speed: number | null;
+    damage: number;
+    resolved: boolean;
+    cancelled: boolean;
+    text: string;
+  } | null;
+  hunterHpBefore: number;
+  hunterHpAfter: number;
+  foeHpBefore: number;
+  foeHpAfter: number;
+  hunterDamageTaken: number;
+  foeDamageTaken: number;
+  blocked: number;
+  dodged: boolean;
+  noResponse: boolean;
+  hunterSlain: boolean;
+  foeSlain: boolean;
+  phaseChanged: boolean;
+  outcome: 'foe-slain' | 'hunter-slain' | 'mutual' | 'phase-change' | 'hunter-advantage' | 'foe-advantage' | 'even';
 }
 
 // ---------- missions ----------
@@ -220,6 +279,7 @@ export interface BbState {
   activationQueue: number[]; // enemy uids yet to activate
   pending: BbPending[];
   combat: BbCombat | null;
+  lastCombatResult: BbCombatResult | null;
 
   // ----- meta -----
   lastEvent: BbEvent;
@@ -451,6 +511,7 @@ export const createBloodborne = (opts: BbCreateOptions): BbState => {
     activationQueue: [],
     pending: [],
     combat: null,
+    lastCombatResult: null,
     lastEvent: { seq: 0, text: 'CHOOSE YOUR HUNTERS' },
     seed,
     rolls: 0,
@@ -781,6 +842,7 @@ export interface BbView {
   specialRules: string[];
   pending: BbPending[];
   combat: BbCombat | null;
+  lastCombatResult: BbCombatResult | null;
   lastEvent: BbEvent;
   pickedHunters: string[];
   tileDeckCount: number;
@@ -833,6 +895,7 @@ export const bbViewFor = (s: BbState, viewer: number | null | 'dev'): BbView => 
     specialRules: s.specialRules,
     pending: s.pending,
     combat: s.combat,
+    lastCombatResult: s.lastCombatResult ?? null,
     lastEvent: s.lastEvent,
     pickedHunters: s.pickedHunters,
     tileDeckCount: s.tileDeck.length,

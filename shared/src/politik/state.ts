@@ -39,6 +39,7 @@ for (const [a, b] of POLITIK_EDGES) {
 export interface NationDef {
   id: string;
   name: string;
+  titleVerified: boolean;
   capital: number;
   carbon: number;
   food: number;
@@ -63,7 +64,20 @@ export interface PolitikCardDef {
   type: 'asset' | 'company' | 'event' | 'propaganda';
   costText: string;
   focus: Record<Arena, number>;
-  margin: number | null;
+  focusVerified: boolean;
+  capitalCost: number | null;
+  carbonCost: number | null;
+  corruptionRequirement: number | null;
+  supportCost: number | null;
+  bases: BaseId[];
+  declarationVerified: boolean;
+  margin: number | 'X' | null;
+  industries: IndustryId[];
+  corruption: boolean;
+  negotiation: boolean;
+  edgeTimings: ('at_any_time' | 'after_cost' | 'during_focus' | 'after_reveal' | 'before_resolve' | 'other')[];
+  edgeTriggerText: string[];
+  structureVerified: boolean;
   rulesText: string;
   keywordsText: string;
 }

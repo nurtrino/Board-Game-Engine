@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-11T22:30:00.000Z",
+  "generatedAt": "2026-07-12T04:33:26.921Z",
   "tracks": [
     {
       "id": "amygdala",
@@ -71,7 +71,7 @@
       "durationSeconds": 176.616,
       "bytes": 5664320,
       "sha256": "8140a988d5b0fa255a6723c91d10065679ad7e1538def931cc1bc88fa989c9c4",
-      "loop": true,
+      "loop": false,
       "gain": 0.44,
       "crossfadeMs": 2800,
       "license": "User-provided local personal-use copy; redistribution rights are not granted.",
@@ -243,7 +243,7 @@
       "durationSeconds": 210.264,
       "bytes": 6496684,
       "sha256": "e911cbb17549169e4ebb6f121e6f02ddd3773a111fc404cc34fd4df49f6b3d86",
-      "loop": true,
+      "loop": false,
       "gain": 0.44,
       "crossfadeMs": 2800,
       "license": "User-provided local personal-use copy; redistribution rights are not granted.",
@@ -278,10 +278,10 @@
       "title": "Omen",
       "file": "/bloodborne/audio/tracks/omen.mp3",
       "mime": "audio/mpeg",
-      "durationSeconds": 128.304,
-      "bytes": 3954449,
-      "sha256": "b3c2f842907b9e8bace86d0e93d82692ce421ac8373f2fe4dd84802f7c4d7c74",
-      "loop": true,
+      "durationSeconds": 115.709,
+      "bytes": 2404653,
+      "sha256": "d9495a654bb9ddfb5ea82493b3df9abf909a6189ee8a627d636db59e619f8632",
+      "loop": false,
       "gain": 0.44,
       "crossfadeMs": 2800,
       "license": "User-provided local personal-use copy; redistribution rights are not granted.",
@@ -426,7 +426,7 @@
     {
       "id": "the-night-unfurls",
       "roles": [
-        "exploration"
+        "menu"
       ],
       "title": "The Night Unfurls",
       "file": "/bloodborne/audio/tracks/the-night-unfurls.mp3",
@@ -434,7 +434,7 @@
       "durationSeconds": 127.08,
       "bytes": 4003878,
       "sha256": "9a1a111f5946e7a84c3ed629896eee9d8c95130d5e4b4718f1aaee5591f87777",
-      "loop": true,
+      "loop": false,
       "gain": 0.44,
       "crossfadeMs": 2800,
       "license": "User-provided local personal-use copy; redistribution rights are not granted.",
@@ -503,4 +503,3 @@
     }
   ]
 }
-

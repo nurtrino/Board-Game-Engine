@@ -7,8 +7,16 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
-import { boardWorldToPercent, nestedDiscAngles, parseSetiCell, setiCellPoint, unwrapSector } from './setiGeometry';
+import { SETI_TECH_BY_ID, type SetiTechStackId } from '@bge/shared';
+import { boardWorldToPercent, orientationDegrees, parseSetiCell, setiCellPoint, unwrapSector } from './setiGeometry';
+import { SetiIcon } from './SetiIcons';
 import { setiSeatColor, type SetiUiPiece, type SetiUiView } from './setiView';
+import type { SetiPendingSampleChoice } from './setiPendingPresentation';
+
+if (typeof document !== 'undefined') {
+  void import('./setiBoardTargets.css');
+  void import('./setiMotion.css');
+}
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -296,20 +304,45 @@ export function SetiStarfield({ density = 1 }: { density?: number }) {
   return <canvas className="seti-starfield" ref={canvasRef} aria-hidden="true" />;
 }
 
-export function TactileSurface({ children, className = '', style, testId, disabled = false, onTap, onDrop, ariaLabel }: {
+export function TactileSurface({ children, className = '', style, testId, disabled = false, onPress, onTap, onDrop, ariaLabel }: {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
   testId?: string;
   disabled?: boolean;
+  onPress?: () => void;
   onTap?: () => void;
   onDrop?: (kind: string, value: string) => boolean | void;
   ariaLabel: string;
 }) {
   const [drag, setDrag] = useState<{ id: number; startX: number; startY: number; x: number; y: number; moved: boolean } | null>(null);
   const [spring, setSpring] = useState(false);
+  const [settling, setSettling] = useState(false);
+  const settleTimer = useRef<number | null>(null);
+  const settleFrame = useRef<number | null>(null);
+  useEffect(() => () => {
+    if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
+    if (settleFrame.current !== null) window.cancelAnimationFrame(settleFrame.current);
+  }, []);
+  const settle = () => {
+    if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
+    if (settleFrame.current !== null) window.cancelAnimationFrame(settleFrame.current);
+    setSettling(false);
+    // A frame boundary lets repeated taps restart the physical drop animation.
+    settleFrame.current = window.requestAnimationFrame(() => {
+      settleFrame.current = null;
+      setSettling(true);
+      settleTimer.current = window.setTimeout(() => {
+        settleTimer.current = null;
+        setSettling(false);
+      }, 360);
+    });
+  };
   const down = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (disabled || event.button !== 0) return;
+    // Selection begins when the physical piece is picked up, so its legal
+    // destinations can appear underneath the same continuous drag gesture.
+    onPress?.();
     event.currentTarget.setPointerCapture(event.pointerId);
     setDrag({ id: event.pointerId, startX: event.clientX, startY: event.clientY, x: event.clientX, y: event.clientY, moved: false });
   };
@@ -327,6 +360,7 @@ export function TactileSurface({ children, className = '', style, testId, disabl
     setDrag(null);
     if (!wasMoved) {
       onTap?.();
+      settle();
       return;
     }
     const target = document.elementsFromPoint(event.clientX, event.clientY)
@@ -335,7 +369,9 @@ export function TactileSurface({ children, className = '', style, testId, disabl
     const kind = target?.dataset.setiTarget ?? '';
     const value = target?.dataset.setiValue ?? '';
     const accepted = kind && onDrop?.(kind, value);
-    if (!accepted) {
+    if (accepted) {
+      settle();
+    } else {
       setSpring(true);
       window.setTimeout(() => setSpring(false), 330);
     }
@@ -350,12 +386,19 @@ export function TactileSurface({ children, className = '', style, testId, disabl
       aria-label={ariaLabel}
       data-testid={testId}
       disabled={disabled}
-      className={`seti-tactile ${className} ${drag ? 'is-held' : ''} ${spring ? 'is-springing' : ''}`.trim()}
+      className={`seti-tactile ${className} ${drag ? 'is-held' : ''} ${spring ? 'is-springing' : ''} ${settling ? 'is-settling' : ''}`.trim()}
       style={{ ...style, ...dragStyle }}
       onPointerDown={down}
       onPointerMove={move}
       onPointerUp={up}
       onPointerCancel={() => setDrag(null)}
+      onClick={(event) => {
+        // Native pointer taps resolve in `onPointerUp`. Keyboard activation and
+        // standards-based DOM automation dispatch a zero-detail click instead.
+        if (event.detail !== 0 || disabled) return;
+        onTap?.();
+        settle();
+      }}
     >
       {children}
     </button>
@@ -466,44 +509,155 @@ const PLANET_ART_POINTS: Record<string, [number, number]> = {
   Neptune: [86.5, 30], Triton: [91, 33],
 };
 
-function PlanetPieces({ view }: { view: SetiUiView }) {
+function PlanetPieces({ view, targets, marsDataTargets, onSpacecraft, onMarsData }: {
+  view: SetiUiView;
+  targets: readonly string[];
+  marsDataTargets: readonly number[];
+  onSpacecraft?: (spacecraftId: string) => void;
+  onMarsData?: (amount: number) => void;
+}) {
+  const targetIds = new Set(targets);
+  const marsAmounts = new Set(marsDataTargets);
   return (
     <div className="seti-planet-pieces" aria-label="orbiters and landers">
       {view.planets.flatMap((planet) => {
         const point = PLANET_ART_POINTS[planet.body];
         if (!point) return [];
+        const placed = view.placedSpacecraft.filter((piece) => piece.body === planet.body);
+        const markers = placed.length ? placed.map((piece) => ({ ...piece })) : [
+          ...planet.orbiters.map((owner, index) => ({ id: `legacy-${planet.body}-orbit-${index}`, owner, kind: 'orbiter' as const })),
+          ...planet.landers.map((owner, index) => ({ id: `legacy-${planet.body}-land-${index}`, owner, kind: 'lander' as const })),
+        ];
         return [
-          ...planet.firstLandingBonuses.map((amount, index) => (
-            <span key={`${planet.body}-data-${index}`} className="seti-planet-data" style={{ left: `${point[0] + 3 + index * 2}%`, top: `${point[1] + 1}%` }} aria-label={`${amount} first landing data`}>{amount}</span>
-          )),
-          ...planet.orbiters.map((owner, index) => (
-            <span key={`${planet.body}-orbit-${index}`} className="seti-planet-marker is-orbiter" style={{ left: `${point[0] - 3 + index * 1.7}%`, top: `${point[1] - 2.5}%`, '--seat': setiSeatColor(view.players[owner]?.color) } as CSSProperties} aria-label={`${view.players[owner]?.name ?? 'agency'} orbiter at ${planet.body}`} />
-          )),
-          ...planet.landers.map((owner, index) => (
-            <span key={`${planet.body}-land-${index}`} className="seti-planet-marker is-lander" style={{ left: `${point[0] + index * 1.7}%`, top: `${point[1] + 2.2}%`, '--seat': setiSeatColor(view.players[owner]?.color) } as CSSProperties} aria-label={`${view.players[owner]?.name ?? 'agency'} lander at ${planet.body}`} />
-          )),
+          ...planet.firstLandingBonuses.map((amount, index) => {
+            const style = { left: `${point[0] + 3 + index * 2}%`, top: `${point[1] + 1}%` };
+            const target = planet.body === 'Mars' && marsAmounts.has(amount);
+            const targetStyle = target ? {
+              // The printed Mars tokens sit only a few pixels apart on the
+              // scaled board. Fan the physical tokens while they are live so
+              // each amount has an independent fingertip-sized landing zone.
+              left: `${point[0] + 3}%`,
+              top: `${point[1] + 1}%`,
+              '--seti-mars-offset': `${(index - (planet.firstLandingBonuses.length - 1) / 2) * 44}px`,
+            } as CSSProperties : style;
+            return target ? (
+              <button
+                key={`${planet.body}-data-${index}`}
+                type="button"
+                className="seti-board-mars-data-target"
+                style={targetStyle}
+                data-seti-target="mars-first-data"
+                data-seti-value={amount}
+                data-testid={`seti-mars-first-data-${amount}-${index}`}
+                onClick={() => onMarsData?.(amount)}
+                aria-label={`take ${amount} first landing data from Mars`}
+              >
+                <span className="seti-planet-data" aria-hidden="true">{amount}</span>
+              </button>
+            ) : (
+              <span key={`${planet.body}-data-${index}`} className="seti-planet-data" style={style} aria-label={`${amount} first landing data`}>{amount}</span>
+            );
+          }),
+          ...markers.map((piece, index) => {
+            const sameKindIndex = markers.slice(0, index).filter((candidate) => candidate.kind === piece.kind).length;
+            const target = targetIds.has(piece.id);
+            const style = {
+              left: `${point[0] + (piece.kind === 'orbiter' ? -3 : 0) + sameKindIndex * 1.7}%`,
+              top: `${point[1] + (piece.kind === 'orbiter' ? -2.5 : 2.2)}%`,
+              '--seat': setiSeatColor(view.players[piece.owner]?.color),
+            } as CSSProperties;
+            const label = `${view.players[piece.owner]?.name ?? (piece.owner < 0 ? 'rival' : 'agency')} ${piece.kind} at ${planet.body}`;
+            return target ? (
+              <button
+                key={piece.id}
+                type="button"
+                className={`seti-planet-marker is-${piece.kind} is-choice`}
+                style={style}
+                data-seti-target="spacecraft"
+                data-seti-value={piece.id}
+                data-testid={`seti-spacecraft-${piece.id}`}
+                onClick={() => onSpacecraft?.(piece.id)}
+                aria-label={`choose ${label}`}
+              />
+            ) : <span key={piece.id} className={`seti-planet-marker is-${piece.kind}`} style={style} data-spacecraft-id={piece.id} aria-label={label} />;
+          }),
         ];
       })}
     </div>
   );
 }
 
-function PlanetActionTargets({ orbitTargets, landTargets, onBody }: {
+function MascamiteSamples({ view, targets, onSample }: {
+  view: SetiUiView;
+  targets: readonly SetiPendingSampleChoice[];
+  onSample?: (index: number) => void;
+}) {
+  const module = view.species.map((species) => species.module).find((candidate) => candidate.kind === 'mascamites');
+  if (!module) return null;
+  return (
+    <div className="seti-mascamite-samples" aria-label="Mascamite samples">
+      {(['Jupiter', 'Saturn'] as const).flatMap((body) => {
+        const samples = Array.isArray(module[body === 'Jupiter' ? 'samplesAtJupiter' : 'samplesAtSaturn'])
+          ? module[body === 'Jupiter' ? 'samplesAtJupiter' : 'samplesAtSaturn'] as unknown[]
+          : [];
+        const point = PLANET_ART_POINTS[body];
+        return samples.map((_sample, order) => {
+          const target = targets.find((choice) => choice.body === body && choice.order === order);
+          return (
+            <button
+              key={`${body}-${order}`}
+              type="button"
+              className={target ? 'is-choice' : ''}
+              style={{ left: `${point[0] + 5 + order * 2.2}%`, top: `${point[1] - 1 + order * .8}%` }}
+              disabled={!target}
+              onClick={() => target && onSample?.(target.index)}
+              data-seti-target={target ? 'sample' : undefined}
+              data-seti-value={target ? `${target.index}` : undefined}
+              aria-label={`${target ? 'choose' : 'face-down'} sample at ${body}`}
+            ><img src="/seti/tokens/mascamite-sample-back.webp" alt="" draggable={false} /></button>
+          );
+        });
+      })}
+    </div>
+  );
+}
+
+function TargetCost({ credit, energy, card }: { credit?: number; energy?: number; card?: boolean }) {
+  if (credit === undefined && energy === undefined && !card) return null;
+  return <span className="seti-target-cost" aria-hidden="true">
+    {card && <i className="is-card"><span /></i>}
+    {credit !== undefined && <i className="is-credit"><SetiIcon name="credit" /><b>{credit}</b></i>}
+    {energy !== undefined && <i className="is-energy"><SetiIcon name="energy" /><b>{energy}</b></i>}
+  </span>;
+}
+
+function PlanetActionTargets({ orbitTargets, landTargets, choiceTargets, orbitCosts, landCosts, onBody, onChoice }: {
   orbitTargets: string[];
   landTargets: string[];
+  choiceTargets: string[];
+  orbitCosts: Record<string, { credit: number; energy: number }>;
+  landCosts: Record<string, number>;
   onBody?: (kind: 'orbit' | 'land', body: string) => void;
+  onChoice?: (body: string) => void;
 }) {
   return (
     <div className="seti-planet-action-targets">
       {orbitTargets.map((body) => {
         const point = PLANET_ART_POINTS[body];
         if (!point) return null;
-        return <button key={`orbit-${body}`} type="button" className="seti-planet-target is-orbit" style={{ left: `${point[0] - 2}%`, top: `${point[1] - 2}%` }} data-seti-target="orbit" data-seti-value={body} data-testid={`seti-orbit-target-${body}`} onClick={() => onBody?.('orbit', body)} aria-label={`orbit ${body}`}><span className="seti-orbit-mark" /></button>;
+        const cost = orbitCosts[body];
+        return <button key={`orbit-${body}`} type="button" className="seti-planet-target is-orbit" style={{ left: `${point[0] - 2}%`, top: `${point[1] - 2}%` }} data-seti-target="orbit" data-seti-value={body} data-testid={`seti-orbit-target-${body}`} onClick={() => onBody?.('orbit', body)} aria-label={cost ? `orbit ${body}, ${cost.credit} credit and ${cost.energy} energy` : `orbit ${body}`}><span className="seti-orbit-mark" /><TargetCost credit={cost?.credit} energy={cost?.energy} /></button>;
       })}
       {landTargets.map((body) => {
         const point = PLANET_ART_POINTS[body];
         if (!point) return null;
-        return <button key={`land-${body}`} type="button" className="seti-planet-target is-land" style={{ left: `${point[0] + 2}%`, top: `${point[1] + 2}%` }} data-seti-target="land" data-seti-value={body} data-testid={`seti-land-target-${body}`} onClick={() => onBody?.('land', body)} aria-label={`land on ${body}`}><span className="seti-lander-mark" /></button>;
+        const cost = landCosts[body];
+        return <button key={`land-${body}`} type="button" className="seti-planet-target is-land" style={{ left: `${point[0] + 2}%`, top: `${point[1] + 2}%` }} data-seti-target="land" data-seti-value={body} data-testid={`seti-land-target-${body}`} onClick={() => onBody?.('land', body)} aria-label={cost === undefined ? `land on ${body}` : `land on ${body}, ${cost} energy`}><span className="seti-lander-mark" /><TargetCost energy={cost} /></button>;
+      })}
+      {choiceTargets.filter((body) => !orbitTargets.includes(body) && !landTargets.includes(body)).map((body) => {
+        const point = PLANET_ART_POINTS[body];
+        if (!point) return null;
+        return <button key={`choice-${body}`} type="button" className="seti-planet-target is-choice" style={{ left: `${point[0]}%`, top: `${point[1]}%` }} data-seti-target="body-choice" data-seti-value={body} data-testid={`seti-body-choice-${body}`} onClick={() => onChoice?.(body)} aria-label={`choose spacecraft at ${body}`}><span className="seti-choice-mark" /></button>;
       })}
     </div>
   );
@@ -517,46 +671,261 @@ export function setiGoldTile(scene: SetiSceneDef, tileId: string, side: string):
   return imagePath(sides[side.toUpperCase() === 'B' ? 1 : 0]?.image);
 }
 
-function GoldTiles({ scene, view }: { scene: SetiSceneDef; view: SetiUiView }) {
+function GoldTiles({ scene, view, targets, onGoldTile }: {
+  scene: SetiSceneDef;
+  view: SetiUiView;
+  targets: readonly string[];
+  onGoldTile?: (tileId: string) => void;
+}) {
+  const targetIds = new Set(targets);
   return (
     <div className="seti-gold-rack" aria-label="gold milestones">
-      {view.goldTiles.map((tile) => (
-        <figure key={tile.id}>
-          {setiGoldTile(scene, tile.id, tile.side) && <img src={setiGoldTile(scene, tile.id, tile.side)} alt={`${tile.id.replace(/[-_]/g, ' ')} side ${tile.side}`} />}
-          {view.players.flatMap((player) => player.goldClaims.filter((claim) => claim === tile.id).map((_, index) => <i key={`${player.seat}-${index}`} style={{ '--seat': setiSeatColor(player.color) } as CSSProperties} />))}
-        </figure>
-      ))}
+      {view.goldTiles.map((tile) => {
+        const art = setiGoldTile(scene, tile.id, tile.side);
+        const target = targetIds.has(tile.id);
+        const claims = view.players.flatMap((player) => player.goldClaimDetails
+          .filter((claim) => claim.tileId === tile.id)
+          .map((claim) => ({ player, claim })));
+        return (
+          <figure key={tile.id}>
+            {art && <img src={art} alt={`${tile.id.replace(/[-_]/g, ' ')} side ${tile.side}`} />}
+            {claims.map(({ player, claim }, index) => {
+              const order = claim.claimOrder ?? index;
+              const left = order === 0 ? 20 : order === 1 ? 42 : 62 + Math.min(order - 2, 2) * 10;
+              return <i key={`${player.seat}-${claim.threshold}`} style={{ '--seat': setiSeatColor(player.color), left: `${left}%`, top: '53%' } as CSSProperties} title={`${player.name}: ${claim.pointsPerSet ?? '?'} VP per set`} />;
+            })}
+            {target && (
+              <button
+                type="button"
+                className="seti-board-gold-target"
+                data-seti-target="gold-tile"
+                data-seti-value={tile.id}
+                data-testid={`seti-gold-tile-${tile.id}`}
+                onClick={() => onGoldTile?.(tile.id)}
+                aria-label={`claim ${tile.id.replace(/[-_]/g, ' ')} milestone`}
+              />
+            )}
+          </figure>
+        );
+      })}
     </div>
   );
 }
 
-function AnimatedSolarPiece({ piece, view, selected, enabled, onTap, onDrop }: {
+type AlienPoint = { x: number; y: number };
+
+function alienBoardList(scene: SetiSceneDef): UnknownRecord[] {
+  if (Array.isArray(scene.alienBoards)) return scene.alienBoards.map(record);
+  return Object.entries(scene.alienBoards ?? {}).map(([id, board]) => ({ id, ...record(board) }));
+}
+
+function alienSnapPoints(board: UnknownRecord): AlienPoint[] {
+  return listValue(board.snapPoints).map(record).flatMap((snap) => {
+    const art = Array.isArray(snap.art) ? snap.art.map(Number) : [];
+    return art.length >= 2 && art.every(Number.isFinite) ? [{ x: art[0] * 100, y: art[1] * 100 }] : [];
+  });
+}
+
+function alienSpacePoint(board: UnknownRecord, spaceId: string): AlienPoint | null {
+  const research = /^seti_species_[01]_research_.+_(purple|orange|blue)_(\d+)$/.exec(spaceId);
+  const color = research?.[1] ?? /_(purple|orange|blue)$/.exec(spaceId)?.[1];
+  const colorX: Record<string, number> = { purple: 15, orange: 50, blue: 85 };
+  if (research && color) {
+    const row = Number(research[2]) - 1;
+    const column = alienSnapPoints(board)
+      .filter((point) => color === 'purple' ? point.x < 33 : color === 'orange' ? point.x >= 33 && point.x < 67 : point.x >= 67)
+      .sort((a, b) => a.y - b.y);
+    if (column[row]) return column[row];
+  }
+  if (!color) return null;
+  if (/_discovery_/.test(spaceId)) return { x: colorX[color], y: 88 + (color === 'orange' ? 5 : 0) };
+  if (/_overflow_/.test(spaceId)) return { x: colorX[color], y: 97 };
+  return null;
+}
+
+function AlienBoards({ scene, view, traceTargets, cardTargets, deckTarget, onTrace, onCard, onDeck }: {
+  scene: SetiSceneDef;
+  view: SetiUiView;
+  traceTargets: string[];
+  cardTargets: string[];
+  deckTarget: number | null;
+  onTrace?: (spaceId: string) => void;
+  onCard?: (cardId: string) => void;
+  onDeck?: () => void;
+}) {
+  const boards = alienBoardList(scene);
+  return (
+    <aside className="seti-alien-board-rack" aria-label="alien species boards">
+      {view.species.map((species, slot) => {
+        const board = species.revealed ? boards.find((entry) => String(entry.id) === species.id) : null;
+        const component = board ?? boards[0] ?? {};
+        const art = imagePath(species.revealed ? component.front ?? component.image : component.back) ?? '/seti/aliens/alien-back.webp';
+        const targets = traceTargets.filter((space) => space.startsWith(`seti_species_${slot}_`));
+        return (
+          <figure key={`${slot}-${species.id}`} className={`seti-alien-board ${species.revealed ? 'is-revealed' : 'is-hidden'}`} data-testid={`seti-alien-board-${slot}`}>
+            <img src={art} alt={species.revealed ? species.id.replace(/[-_]/g, ' ') : 'undiscovered alien species'} draggable={false} />
+            {species.revealed && species.deckCount > 0 && <button type="button" className={`seti-alien-deck ${deckTarget === slot ? 'is-choice' : ''}`} disabled={deckTarget !== slot} onClick={onDeck} aria-label={`draw from ${species.id} deck`}><SetiCardArt scene={scene} cardId={species.faceUp || `seti_alien_${species.id}_01`} faceDown /><b>{species.deckCount}</b></button>}
+            {species.revealed && species.faceUp && <button type="button" className={`seti-alien-face-up ${cardTargets.includes(species.faceUp) ? 'is-choice' : ''}`} disabled={!cardTargets.includes(species.faceUp)} onClick={() => onCard?.(species.faceUp)} aria-label={`take face-up ${species.id} card`}><SetiCardArt scene={scene} cardId={species.faceUp} /></button>}
+            {species.markers.flatMap((marker) => {
+              if (!marker.space) return [];
+              const point = alienSpacePoint(component, marker.space);
+              if (!point) return [];
+              return [<i key={marker.id} className={`seti-alien-trace is-${marker.color}`} style={{ left: `${point.x}%`, top: `${point.y}%`, '--seat': setiSeatColor(view.players[marker.owner]?.color) } as CSSProperties} aria-label={`${view.players[marker.owner]?.name ?? 'agency'} ${marker.color} trace`} />];
+            })}
+            <AlienModulePieces species={species} view={view} />
+            {targets.map((spaceId) => {
+              const point = alienSpacePoint(component, spaceId);
+              if (!point) return null;
+              return <button key={spaceId} type="button" className="seti-alien-space-target" style={{ left: `${point.x}%`, top: `${point.y}%` }} data-seti-target="trace" data-seti-value={spaceId} data-testid={`seti-trace-target-${spaceId}`} onClick={() => onTrace?.(spaceId)} aria-label={`place trace on ${species.revealed ? species.id : `alien board ${slot + 1}`}`} />;
+            })}
+            <figcaption>{species.revealed ? species.id.replace(/[-_]/g, ' ') : `CONTACT ${slot + 1}`}</figcaption>
+          </figure>
+        );
+      })}
+    </aside>
+  );
+}
+
+function AlienModulePieces({ species, view }: { species: SetiUiView['species'][number]; view: SetiUiView }) {
+  const module = species.module;
+  const kind = String(module.kind ?? '');
+  if (kind === 'mascamites') {
+    const sample = String(module.revealedBlueSample ?? '');
+    const number = Number(sample.match(/(\d+)$/)?.[1] ?? 0);
+    return number ? <img className="seti-module-sample" src={`/seti/tokens/mascamite-sample-${number}.webp`} alt="revealed Mascamite sample" /> : null;
+  }
+  if (kind === 'centaurians') {
+    const milestones = record(module.messageMilestones);
+    return <div className="seti-module-messages">{Object.entries(milestones).flatMap(([seatText, values]) => listValue(values).map((value, index) => {
+      const seat = Number(seatText);
+      const color = view.players[seat]?.color ?? 'white';
+      return <span key={`${seat}-${index}`} style={{ '--message-index': index } as CSSProperties}><img src={`/seti/tokens/message-${color}.webp`} alt={`${color} message`} /><b>{String(value)}</b></span>;
+    }))}</div>;
+  }
+  if (kind === 'exertians') {
+    const milestones = Array.isArray(module.milestones) ? module.milestones.map(Number) : [];
+    return <div className="seti-module-exertian-milestones">{milestones.map((value, index) => <span key={index}><img src={`/seti/tokens/exertian-milestone-${index + 1}.webp`} alt={`Exertian milestone ${index + 1}`} /><b>{value}</b></span>)}</div>;
+  }
+  if (kind === 'oumuamua') {
+    const exofossils = record(module.exofossils);
+    return <div className="seti-module-exofossils">{Object.entries(exofossils).filter(([, amount]) => Number(amount) > 0).map(([seatText, amount]) => {
+      const seat = Number(seatText);
+      return <span key={seatText} style={{ '--seat': setiSeatColor(view.players[seat]?.color) } as CSSProperties}><img src="/seti/tokens/exofossil.webp" alt="exofossil" /><b>{String(amount)}</b></span>;
+    })}</div>;
+  }
+  if (kind === 'anomalies') return <b className="seti-module-trigger-count">{Number(module.triggerCount ?? 0)}</b>;
+  return null;
+}
+
+function SpeciesSolarPieces({ view, oumuamuaTileTargets, onOumuamuaTile }: { view: SetiUiView; oumuamuaTileTargets: readonly number[]; onOumuamuaTile?: (slot: number) => void }) {
+  return <>
+    {view.species.flatMap((species) => {
+      const module = species.module;
+      if (module.kind === 'anomalies') {
+        return listValue(module.anomalies).map((raw, index) => {
+          const anomaly = record(raw);
+          const sector = Number(anomaly.sector ?? 0);
+          const point = setiCellPoint(`r2s${sector}`, 4);
+          return <span key={`anomaly-${index}`} className="seti-solar-module-orbit" style={{ left: `${point.x}%`, top: `${point.y}%` }}><img className="seti-anomaly-token" src={`/seti/tokens/anomaly-${index + 1}.webp`} alt={`anomaly ${index + 1}`} /></span>;
+        });
+      }
+      if (module.kind === 'oumuamua' && typeof module.cell === 'string') {
+        const point = setiCellPoint(module.cell);
+        const signals = listValue(module.signals);
+        return [<span key="oumuamua-tile" className="seti-oumuamua-module" style={{ left: `${point.x}%`, top: `${point.y}%` }}><img src="/seti/tokens/oumuamua-tile.webp" alt="Oumuamua" /><b>{Number(module.dataRemaining ?? 0)}</b>{signals.map((raw, index) => { const marker = record(raw); return <i key={index} style={{ '--seat': setiSeatColor(view.players[Number(marker.owner)]?.color) } as CSSProperties} />; })}{oumuamuaTileTargets.map((slot, targetIndex) => <button key={slot} type="button" className="seti-oumuamua-target" style={{ left: `${48 + targetIndex * 18}%`, top: '56%' }} data-seti-target="oumuamua-tile" data-seti-value={`${slot}`} data-testid={`seti-oumuamua-tile-${slot}`} onClick={() => onOumuamuaTile?.(slot)} aria-label={`mark signal on Oumuamua tile space ${slot + 1}`} />)}</span>];
+      }
+      return [];
+    })}
+  </>;
+}
+
+function discAngle(value: unknown, degreesPerStep: number): number {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return 0;
+  return Math.abs(numeric) <= 7 ? numeric * degreesPerStep : orientationDegrees(numeric);
+}
+
+function unwrapAngle(previous: number, next: number): number {
+  let candidate = next;
+  while (candidate - previous > 180) candidate -= 360;
+  while (candidate - previous < -180) candidate += 360;
+  return candidate;
+}
+
+/**
+ * Keep each physical disc on its shortest continuous path across orientation
+ * zero, then derive its nested relative transform. The resulting angles are
+ * congruent with the exact engine orientation while avoiding a seven-step
+ * visual rewind when a disc advances from sector 7 to sector 0.
+ */
+function useAnimatedDiscAngles(orientations: unknown[], degreesPerStep: number): [number, number, number] {
+  const targetOne = discAngle(orientations[0], degreesPerStep);
+  const targetTwo = discAngle(orientations[1], degreesPerStep);
+  const targetThree = discAngle(orientations[2], degreesPerStep);
+  const previous = useRef<[number, number, number]>([targetOne, targetTwo, targetThree]);
+  const [absolute, setAbsolute] = useState<[number, number, number]>(previous.current);
+
+  useEffect(() => {
+    const next: [number, number, number] = [targetOne, targetTwo, targetThree].map((target, index) => (
+      unwrapAngle(previous.current[index], target)
+    )) as [number, number, number];
+    if (next.some((angle, index) => angle !== previous.current[index])) {
+      previous.current = next;
+      setAbsolute(next);
+    }
+  }, [targetOne, targetTwo, targetThree]);
+
+  return [absolute[0] - absolute[1], absolute[1] - absolute[2], absolute[2]];
+}
+
+function AnimatedSolarPiece({ piece, view, selected, enabled, onPress, onTap, onDrop }: {
   piece: SetiUiPiece;
   view: SetiUiView;
   selected: boolean;
   enabled: boolean;
+  onPress?: () => void;
   onTap?: () => void;
   onDrop?: (kind: string, value: string) => boolean | void;
 }) {
   const parsed = parseSetiCell(piece.cell) ?? { ring: 1, sector: 0 };
   const previous = useRef(parsed.sector);
   const [sector, setSector] = useState(parsed.sector);
+  const previousMotionKey = useRef(`${piece.cell}:${piece.kind}`);
+  const [motion, setMotion] = useState<'idle' | 'travelling' | 'arriving'>('idle');
   useEffect(() => {
     const unwrapped = unwrapSector(previous.current, parsed.sector);
     previous.current = unwrapped;
     setSector(unwrapped);
   }, [parsed.sector]);
+  useEffect(() => {
+    const motionKey = `${piece.cell}:${piece.kind}`;
+    if (motionKey === previousMotionKey.current) return;
+    previousMotionKey.current = motionKey;
+    setMotion('travelling');
+    const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const travelTime = reduced ? 90 : 1080;
+    const arrivalTime = reduced ? 90 : 430;
+    const arrivalTimer = window.setTimeout(() => setMotion('arriving'), travelTime);
+    const idleTimer = window.setTimeout(() => setMotion('idle'), travelTime + arrivalTime);
+    return () => {
+      window.clearTimeout(arrivalTimer);
+      window.clearTimeout(idleTimer);
+    };
+  }, [piece.cell, piece.kind]);
   const color = setiSeatColor(view.players[piece.owner]?.color);
   return (
     <div
-      className="seti-piece-orbit"
+      className={`seti-piece-orbit is-${motion}`}
+      data-motion-state={motion}
       style={{ '--piece-angle': `${sector * 45}deg`, '--piece-radius': `${[19.5, 31.5, 43][parsed.ring]}%` } as CSSProperties}
     >
       <div className="seti-piece-counter" style={{ '--piece-angle': `${-(sector * 45)}deg` } as CSSProperties}>
         <TactileSurface
           className={`seti-space-piece is-${piece.kind} ${selected ? 'is-selected' : ''}`}
+          style={{ '--seat': color } as CSSProperties}
           disabled={!enabled}
           testId={`seti-piece-${piece.id}`}
+          onPress={onPress}
           onTap={onTap}
           onDrop={onDrop}
           ariaLabel={`${view.players[piece.owner]?.name ?? 'agency'} ${piece.kind}`}
@@ -577,14 +946,42 @@ export interface SetiTableProps {
   legalCells?: string[];
   orbitTargets?: string[];
   landTargets?: string[];
+  bodyChoiceTargets?: string[];
+  spacecraftTargets?: string[];
+  pieceTargets?: string[];
+  rowTargets?: number[];
+  deckTarget?: boolean;
+  traceTargets?: string[];
+  alienCardTargets?: string[];
+  alienDeckTarget?: number | null;
+  sampleTargets?: readonly SetiPendingSampleChoice[];
   sectorTargets?: string[];
+  goldTileTargets?: string[];
+  marsDataTargets?: number[];
+  oumuamuaTileTargets?: number[];
   launchTarget?: boolean;
+  earthStepTarget?: boolean;
+  moveCosts?: Record<string, { energy?: number; card?: boolean }>;
+  orbitCosts?: Record<string, { credit: number; energy: number }>;
+  landCosts?: Record<string, number>;
+  onPiecePress?: (piece: SetiUiPiece) => void;
   onPiece?: (piece: SetiUiPiece) => void;
-  onCell?: (cell: string) => void;
-  onBody?: (kind: 'orbit' | 'land', body: string) => void;
+  onCell?: (cell: string, pieceId?: string) => void;
+  onBody?: (kind: 'orbit' | 'land', body: string, pieceId?: string) => void;
+  onBodyChoice?: (body: string) => void;
+  onSpacecraft?: (spacecraftId: string) => void;
+  onTrace?: (spaceId: string) => void;
+  onDeck?: () => void;
+  onAlienCard?: (cardId: string) => void;
+  onAlienDeck?: () => void;
+  onSample?: (index: number) => void;
   onSector?: (sectorId: string) => void;
+  onGoldTile?: (tileId: string) => void;
+  onMarsData?: (amount: number) => void;
+  onOumuamuaTile?: (slot: number) => void;
   onCardDrop?: (cardId: string, row: number, kind: string, value: string) => boolean | void;
   onLaunch?: () => void;
+  onEarthStep?: () => void;
   onCard?: (cardId: string, row: number) => void;
   onTech?: (stackId: string) => void;
   compact?: boolean;
@@ -598,14 +995,42 @@ export function SetiTable({
   legalCells = [],
   orbitTargets = [],
   landTargets = [],
+  bodyChoiceTargets = [],
+  spacecraftTargets = [],
+  pieceTargets = [],
+  rowTargets = [],
+  deckTarget = false,
+  traceTargets = [],
+  alienCardTargets = [],
+  alienDeckTarget = null,
+  sampleTargets = [],
   sectorTargets = [],
+  goldTileTargets = [],
+  marsDataTargets = [],
+  oumuamuaTileTargets = [],
   launchTarget = false,
+  earthStepTarget = false,
+  moveCosts = {},
+  orbitCosts = {},
+  landCosts = {},
+  onPiecePress,
   onPiece,
   onCell,
   onBody,
+  onBodyChoice,
+  onSpacecraft,
+  onTrace,
+  onDeck,
+  onAlienCard,
+  onAlienDeck,
+  onSample,
   onSector,
+  onGoldTile,
+  onMarsData,
+  onOumuamuaTile,
   onCardDrop,
   onLaunch,
+  onEarthStep,
   onCard,
   onTech,
   compact = false,
@@ -619,7 +1044,7 @@ export function SetiTable({
   // State stores the absolute orientation index. A physical -45 degree turn
   // decrements that index, so the render angle per stored step is +45.
   const stateStepDegrees = -numberValue(scene.solarSystem.rotationDegrees, -45);
-  const [oneRelative, twoRelative, threeAbsolute] = nestedDiscAngles(orientations, stateStepDegrees);
+  const [oneRelative, twoRelative, threeAbsolute] = useAnimatedDiscAngles(orientations, stateStepDegrees);
   const boardHorizontalWorld = Math.hypot(boardMatrix(scene)?.[0]?.[0] ?? 0, boardMatrix(scene)?.[1]?.[0] ?? 17.3015);
   const outerWorldSize = scene.solarSystem.discs?.[2]?.mapping?.orientedSize?.[0] ?? 9.9;
   const middleWorldSize = scene.solarSystem.discs?.[1]?.mapping?.orientedSize?.[0] ?? 7.240834;
@@ -633,9 +1058,11 @@ export function SetiTable({
       <div className="seti-board-stage" data-testid="seti-board-stage" style={{ aspectRatio: `${scene.board.imagePx?.[0] ?? 3507} / ${scene.board.imagePx?.[1] ?? 5612}` }}>
         <img className="seti-main-board" src={boardImage} alt="SETI main board" draggable={false} />
         <SectorArray scene={scene} view={view} targets={sectorTargets} onSector={onSector} />
-        <PlanetPieces view={view} />
-        <PlanetActionTargets orbitTargets={orbitTargets} landTargets={landTargets} onBody={onBody} />
-        <GoldTiles scene={scene} view={view} />
+        <PlanetPieces view={view} targets={spacecraftTargets} marsDataTargets={marsDataTargets} onSpacecraft={onSpacecraft} onMarsData={onMarsData} />
+        <MascamiteSamples view={view} targets={sampleTargets} onSample={onSample} />
+        <PlanetActionTargets orbitTargets={orbitTargets} landTargets={landTargets} choiceTargets={bodyChoiceTargets} orbitCosts={orbitCosts} landCosts={landCosts} onBody={onBody} onChoice={onBodyChoice} />
+        <GoldTiles scene={scene} view={view} targets={goldTileTargets} onGoldTile={onGoldTile} />
+        <AlienBoards scene={scene} view={view} traceTargets={traceTargets} cardTargets={alienCardTargets} deckTarget={alienDeckTarget} onTrace={onTrace} onCard={onAlienCard} onDeck={onAlienDeck} />
         <div className="seti-solar-system" style={solarStyle} data-testid="seti-solar-system">
           <div className="seti-solar-base">
             {baseImage && <img src={baseImage} alt="" draggable={false} />}
@@ -650,6 +1077,7 @@ export function SetiTable({
             </div>
           </div>
           <span className={`seti-rotation-pointer points-${Math.max(1, Math.min(3, view.rotationPointer))}`} aria-label={`disc ${view.rotationPointer} rotates next`} />
+          <SpeciesSolarPieces view={view} oumuamuaTileTargets={oumuamuaTileTargets} onOumuamuaTile={onOumuamuaTile} />
           {Array.from({ length: 24 }, (_, index) => {
             const ring = Math.floor(index / 8);
             const sector = index % 8;
@@ -662,30 +1090,34 @@ export function SetiTable({
               const parsed = parseSetiCell(cell);
               return parsed?.ring === ring && parsed.sector === sector;
             });
-            const launch = launchTarget && !!earthCell && (() => {
+            const earth = !!earthCell && (() => {
               const parsed = parseSetiCell(earthCell);
               return parsed?.ring === ring && parsed.sector === sector;
             })();
-            if (!interactive && !legal && !launch) return null;
+            const earthStep = earthStepTarget && earth;
+            const launch = !earthStep && launchTarget && earth;
+            if (!interactive && !legal && !launch && !earthStep) return null;
             const point = setiCellPoint(id);
             return (
               <button
                 key={id}
                 type="button"
-                className={`seti-cell-target ${legal || launch ? 'is-legal' : ''} ${launch ? 'is-earth' : ''}`}
+                className={`seti-cell-target ${legal || launch || earthStep ? 'is-legal' : ''} ${launch || earthStep ? 'is-earth' : ''} ${earthStep ? 'is-earth-step' : ''}`}
                 style={{ left: `${point.x}%`, top: `${point.y}%` }}
-                data-seti-target={launch ? 'launch' : 'cell'}
-                data-seti-value={launch ? earthCell : legalCell ?? id}
-                data-testid={launch ? 'seti-launch-earth-target' : legal ? `seti-cell-target-${id}` : undefined}
-                disabled={!legal && !launch}
-                onClick={() => launch ? onLaunch?.() : onCell?.(legalCell ?? id)}
-                aria-label={launch ? 'launch at Earth' : `move to ring ${ring + 1} sector ${sector + 1}`}
-              />
+                data-seti-target={earthStep ? 'earth-step' : launch ? 'launch' : 'cell'}
+                data-seti-value={earthStep || launch ? earthCell : legalCell ?? id}
+                data-testid={earthStep ? 'seti-scan-earth-step-target' : launch ? 'seti-launch-earth-target' : legal ? `seti-cell-target-${id}` : undefined}
+                disabled={!legal && !launch && !earthStep}
+                onClick={() => earthStep ? onEarthStep?.() : launch ? onLaunch?.() : onCell?.(legalCell ?? id)}
+                aria-label={earthStep ? 'start scan at Earth' : launch ? 'launch at Earth' : moveCosts[legalCell ?? id] === undefined ? `move to ring ${ring + 1} sector ${sector + 1}` : `move to ring ${ring + 1} sector ${sector + 1}, ${moveCosts[legalCell ?? id].card ? 'movement card' : ''}${moveCosts[legalCell ?? id].card && moveCosts[legalCell ?? id].energy !== undefined ? ' and ' : ''}${moveCosts[legalCell ?? id].energy === undefined ? '' : `${moveCosts[legalCell ?? id].energy} energy`}`}
+              >
+                {!earthStep && !launch && <TargetCost card={moveCosts[legalCell ?? id]?.card} energy={moveCosts[legalCell ?? id]?.energy} />}
+              </button>
             );
           })}
           {view.pieces.filter((piece) => piece.cell).map((piece) => {
             const ownPiece = view.you === piece.owner;
-            const enabled = interactive && ownPiece && (view.legal.moveTargets[piece.id]?.length > 0 || view.legal.orbitTargets[piece.id]?.length > 0 || view.legal.landTargets[piece.id]?.length > 0);
+            const enabled = interactive && ownPiece && (pieceTargets.includes(piece.id) || view.legal.moveTargets[piece.id]?.length > 0 || view.legal.orbitTargets[piece.id]?.length > 0 || view.legal.landTargets[piece.id]?.length > 0);
             return (
               <AnimatedSolarPiece
                 key={piece.id}
@@ -693,11 +1125,12 @@ export function SetiTable({
                 view={view}
                 selected={selectedPieceId === piece.id}
                 enabled={enabled}
+                onPress={() => onPiecePress?.(piece)}
                 onTap={() => onPiece?.(piece)}
                 onDrop={(kind, value) => {
-                  if (kind === 'cell' && view.legal.moveTargets[piece.id]?.includes(value)) { onCell?.(value); return true; }
-                  if (kind === 'orbit' && view.legal.orbitTargets[piece.id]?.includes(value)) { onBody?.('orbit', value); return true; }
-                  if (kind === 'land' && view.legal.landTargets[piece.id]?.includes(value)) { onBody?.('land', value); return true; }
+                  if (kind === 'cell' && (view.legal.moveTargets[piece.id]?.includes(value) || (selectedPieceId === piece.id && legalCells.includes(value)))) { onCell?.(value, piece.id); return true; }
+                  if (kind === 'orbit' && view.legal.orbitTargets[piece.id]?.includes(value)) { onBody?.('orbit', value, piece.id); return true; }
+                  if (kind === 'land' && view.legal.landTargets[piece.id]?.includes(value)) { onBody?.('land', value, piece.id); return true; }
                   return false;
                 }}
               />
@@ -708,19 +1141,20 @@ export function SetiTable({
         <div className="seti-tech-rack" aria-label="technology stacks">
           {view.techStacks.map((stack, index) => {
             const legal = view.legal.techStackTargets.includes(stack.id);
+            const rewardFace = stack.count > 0 ? setiTechBack(scene, stack.id, stack.top) : undefined;
             return (
               <button
                 key={stack.id}
                 type="button"
                 className={`seti-tech-stack tech-${index % 4} ${legal ? 'is-legal' : ''}`}
-                disabled={interactive && !legal}
+                disabled={!interactive || !legal}
                 onClick={() => onTech?.(stack.id)}
                 data-seti-target="tech"
                 data-seti-value={stack.id}
                 data-testid={`seti-tech-stack-${stack.id}`}
                 aria-label={`${stack.type} technology, ${stack.count} remaining`}
               >
-                {setiTechBack(scene, stack.id) && <img className="seti-tech-art" src={setiTechBack(scene, stack.id)} alt="" draggable={false} />}
+                {rewardFace && <img className="seti-tech-art" src={rewardFace} alt="" draggable={false} />}
                 <span className="seti-tech-lines" />
                 <b>{stack.type.slice(0, 2).toUpperCase()}</b>
                 {stack.bonus && <small>2</small>}
@@ -730,8 +1164,12 @@ export function SetiTable({
         </div>
 
         <div className="seti-project-row" aria-label="project row">
+          <TactileSurface testId="seti-table-project-deck" className={`seti-row-deck ${deckTarget ? 'is-choice' : ''}`} disabled={!deckTarget} onTap={onDeck} ariaLabel={deckTarget ? 'choose project deck' : 'project deck'}>
+            <SetiCardArt scene={scene} cardId="project-back" faceDown />
+            <b>{view.projectDeckCount}</b>
+          </TactileSurface>
           {view.projectRow.map((card, row) => (
-            <TactileSurface key={`${card}-${row}`} testId={`seti-project-row-${row}`} className={`seti-row-card ${view.legal.buyableRow.includes(row) ? 'is-buyable' : ''}`} onTap={() => onCard?.(card, row)} onDrop={(kind, value) => onCardDrop?.(card, row, kind, value)} ariaLabel={`inspect project row card ${row + 1}`}>
+            <TactileSurface key={`${card}-${row}`} testId={`seti-project-row-${row}`} className={`seti-row-card ${view.legal.buyableRow.includes(row) ? 'is-buyable' : ''} ${rowTargets.includes(row) ? 'is-choice' : ''}`} disabled={!interactive} onTap={() => onCard?.(card, row)} onDrop={(kind, value) => onCardDrop?.(card, row, kind, value)} ariaLabel={rowTargets.includes(row) ? `choose project row card ${row + 1}` : `inspect project row card ${row + 1}`}>
               <SetiCardArt scene={scene} cardId={card} />
             </TactileSurface>
           ))}
@@ -761,18 +1199,28 @@ export function setiAlienBoard(scene: SetiSceneDef, id: string, revealed: boolea
   return imagePath(boards?.[id] ?? boards?.[id.toLowerCase()]) ?? `/seti/aliens/${id.toLowerCase()}.webp`;
 }
 
-export function setiTechBack(scene: SetiSceneDef, stackId: string): string | undefined {
-  const sourceByStack: Record<string, string> = {
-    probe_1: '5065ac', probe_2: 'b71fb9', probe_3: 'c0c391', probe_4: '00d8a2',
-    telescope_1: '82eb24', telescope_2: '93c0f5', telescope_3: '0fb79c', telescope_4: '9b40d4',
-    computer_1: '00df2d', computer_2: 'b26ea5', computer_3: '84fb8c', computer_4: '9dceb9',
-  };
-  const suffix = stackId.replace(/^seti_tech_stack_/, '');
+function setiSceneTechTile(scene: SetiSceneDef, stackId: string, tileId?: string): UnknownRecord | undefined {
+  const definition = SETI_TECH_BY_ID[stackId as SetiTechStackId];
+  if (!definition) return undefined;
+  const tileDefinition = tileId
+    ? definition.tiles.find((tile) => tile.id === tileId)
+    : definition.tiles[0];
+  if (!tileDefinition) return undefined;
   const stacks = Array.isArray(record(scene.decks).technologyStacks) ? record(scene.decks).technologyStacks as unknown[] : [];
-  const sourceGuid = sourceByStack[suffix];
-  const stack = stacks.map(record).find((entry) => entry.guid === sourceGuid);
-  const tile = record(listValue(stack?.tiles)[0]);
-  return imagePath(tile.back) ?? imagePath(tile.sheet);
+  const stack = stacks.map(record).find((entry) => entry.guid === definition.sourceGuid);
+  return listValue(stack?.tiles).map(record).find((tile) => Number(tile.cardId) === tileDefinition.sourceCardId);
+}
+
+/** The face visible while a technology tile is face down in its table stack. */
+export function setiTechBack(scene: SetiSceneDef, stackId: string, tileId?: string): string | undefined {
+  const tile = setiSceneTechTile(scene, stackId, tileId);
+  return imagePath(tile?.back);
+}
+
+/** The technology-ability face visible after the exact tile is installed. */
+export function setiTechAbilityFace(scene: SetiSceneDef, stackId: string, tileId?: string): string | undefined {
+  const tile = setiSceneTechTile(scene, stackId, tileId);
+  return imagePath(tile?.sheet);
 }
 
 function listValue(value: unknown): unknown[] {

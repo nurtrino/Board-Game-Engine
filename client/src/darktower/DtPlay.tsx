@@ -5,7 +5,7 @@
 // and confirm with YES, exactly like the 1981 tower.
 
 import { useEffect, useRef, useState } from 'react';
-import { DT_KEYS, KINGDOMS, dtHomeSpot, type DtView, type DtAction, type DtKey } from '@bge/shared';
+import { DT_KEYS, DT_NODE, KINGDOMS, dtActionForNode, dtHomeSpot, type DtView, type DtAction, type DtKey } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { DtTable, useDtScene, type DtSceneDef } from './DtScene';
 import { useTowerDisplay, TOWER_AIM, holdsTower } from './DtBoard';
@@ -27,6 +27,7 @@ const CSS = `
 .dtp button:not(:disabled):hover { filter: brightness(1.12); }
 .dtp button:not(:disabled):active { transform: translateY(1px); }
 .dtp button:disabled { filter: grayscale(0.75) brightness(0.45); cursor: default; }
+.dtp button.match { outline: 3px solid #fff0a8; outline-offset: 1px; box-shadow: 0 0 15px rgba(255,224,120,.65); }
 .dtp .split { display: block; border-top: 1.5px solid rgba(0,0,0,0.55); margin-top: 2px; padding-top: 2px; }
 .tp-overlay { position: absolute; inset: 0; background: rgba(3,6,9,0.85); z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
 .tp-act {
@@ -58,12 +59,47 @@ const CSS = `
   font: 700 12px Inter, sans-serif; letter-spacing: 1.2px; text-transform: uppercase;
 }
 .dt-fly:hover { filter: brightness(1.12); }
+.dt-destinations { padding: 10px 12px; border-radius: 12px; }
+.dt-destinations .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 8px; }
+.dt-destination {
+  min-height: 44px; padding: 8px 10px; border-radius: 9px; border: 1px solid rgba(127,231,255,.42);
+  background: rgba(127,231,255,.09); color: #e8ebf0; cursor: pointer; text-align: left;
+  font: 700 11px/1.3 Inter, sans-serif; letter-spacing: .25px;
+}
+.dt-destination.current { border-color: #ffd24a; background: rgba(255,210,74,.12); }
+.dt-destination span { display: block; margin-top: 2px; opacity: .7; font-size: 10px; font-weight: 600; }
+.dt-destination:hover { filter: brightness(1.15); }
+
+@media (max-width: 720px) and (orientation: portrait) {
+  .tp-responsive-shell { --tp-mobile-board-height: 43dvh; overflow: hidden; }
+  .tp-board-pane {
+    top: 0 !important; right: 0 !important; bottom: auto !important; left: 0 !important;
+    width: 100% !important; height: var(--tp-mobile-board-height) !important; overflow: hidden;
+  }
+  .tp-control-sheet {
+    top: var(--tp-mobile-board-height) !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+    z-index: 25; width: 100% !important; min-height: 0; padding: 12px 12px calc(18px + env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    border-top: 1px solid rgba(255,255,255,.16); background: rgba(5,8,11,.97); box-shadow: 0 -16px 36px rgba(0,0,0,.5);
+  }
+  .tp-control-sheet .tp-act, .tp-control-sheet button { min-height: 44px; }
+  .dt-help { top: max(12px, env(safe-area-inset-top)); min-height: 44px; }
+  .dt-map-button { min-height: 44px; }
+}
 `;
 
 const RIGHT_W = 'min(36vw, 440px)';
 // key cycle order matches the tower (gold -> brass -> silver -> gold, L2420)
 const KEY_CYCLE: DtKey[] = ['brasskey', 'silverkey', 'goldkey'];
 const KEY_LABEL: Record<DtKey, string> = { brasskey: 'Brass key', silverkey: 'Silver key', goldkey: 'Gold key' };
+const ACTION_LABEL = {
+  move: 'Move', tomb: 'Tomb / Ruin', bazaar: 'Bazaar', sanctuary: 'Sanctuary / Citadel',
+  frontier: 'Frontier', tower: 'Dark Tower',
+} as const;
+const SPACE_LABEL = {
+  empty: 'Empty trail', tomb: 'Tomb', ruin: 'Ruin', bazaar: 'Bazaar', sanctuary: 'Sanctuary',
+  citadel: 'Citadel', darktower: 'Dark Tower', frontier: 'Frontier',
+} as const;
 
 /** One picture cropped from a reel strip (3 rows per texture). */
 function ReelPic({ scene, pic, w = 84, h = 56 }: { scene: DtSceneDef; pic: string; w?: number; h?: number }) {
@@ -203,10 +239,11 @@ export function DtPlay({ view, act, error }: {
   const shownLcd = myTurn && phase === 'riddle' ? `${view.riddlePhase} `
     : myTurn && phase === 'cursePick' ? `C${victim?.color[0] ?? ' '}` : display.lcd;
 
-  // the panel: YES/NO/REPEAT/HAGGLE drive the sub-phases; the six action buttons
-  // ARE the turn — you press one to act (your pawn's board position is on your
-  // honor). They light only while it is your turn in the playing phase.
+  // The occupied exact graph node authorizes one matching printed action button.
   const canAct = myTurn && phase === 'playing' && !display.active;
+  const occupied = DT_NODE.get(mine.node);
+  const currentAction = occupied ? dtActionForNode(occupied.id) : null;
+  const canResolveOccupied = canAct && view.legalSteps.includes(mine.node);
   const press = {
     yes: myTurn && phase === 'bazaar' ? () => act({ type: 'bazaar_yes' })
       : myTurn && phase === 'battle' ? () => act({ type: 'battle_continue' })
@@ -222,12 +259,12 @@ export function DtPlay({ view, act, error }: {
     haggle: myTurn && phase === 'bazaar' && (view.bazaar?.buying ?? 0) === 0 ? () => act({ type: 'bazaar_haggle' }) : null,
     repeat: view.lastEvent ? () => display.replay() : null,
     clear: null,
-    move: canAct ? () => act({ type: 'move' }) : null,
-    tomb: canAct ? () => act({ type: 'tomb' }) : null,
-    bazaar: canAct ? () => act({ type: 'bazaar' }) : null,
-    sanctuary: canAct ? () => act({ type: 'sanctuary' }) : null,
-    frontier: canAct && mine.quad < 4 ? () => act({ type: 'frontier' }) : null,
-    tower: canAct && mine.quad >= 4 && mine.goldkey === 1 ? () => setConfirmTower(true) : null,
+    move: canResolveOccupied && currentAction === 'move' ? () => act({ type: 'move' }) : null,
+    tomb: canResolveOccupied && currentAction === 'tomb' ? () => act({ type: 'tomb' }) : null,
+    bazaar: canResolveOccupied && currentAction === 'bazaar' ? () => act({ type: 'bazaar' }) : null,
+    sanctuary: canResolveOccupied && currentAction === 'sanctuary' ? () => act({ type: 'sanctuary' }) : null,
+    frontier: canResolveOccupied && currentAction === 'frontier' && mine.quad < 4 ? () => act({ type: 'frontier' }) : null,
+    tower: canResolveOccupied && currentAction === 'tower' && mine.quad >= 4 && mine.brasskey === 1 && mine.silverkey === 1 && mine.goldkey === 1 ? () => setConfirmTower(true) : null,
     inventory: () => setShowInv(true),
   };
 
@@ -247,22 +284,29 @@ export function DtPlay({ view, act, error }: {
   // shown only while it is your turn to act.
   const hints: { text: string; kind?: 'warn' | 'ready' }[] = [];
   if (myTurn && phase === 'playing' && !display.active) {
-    hints.push({ text: 'Drag your pawn one space on the board, then press one action button.' });
-    hints.push(mine.quad < 4
-      ? { text: 'FRONTIER · cross here into the next kingdom.' }
-      : { text: 'FRONTIER greyed · you are already in the final kingdom.', kind: 'warn' });
-    hints.push(mine.quad >= 4 && mine.goldkey === 1
-      ? { text: 'DARK · TOWER ready · storm the tower.', kind: 'ready' }
-      : { text: 'DARK · TOWER greyed · needs the gold key in kingdom 4 of 4.', kind: 'warn' });
+    hints.push({ text: 'Choose a glowing current or adjacent territory. Dragging also snaps to one of these legal spaces.' });
+    if (canResolveOccupied && occupied && currentAction) hints.push({ text: `Pawn on ${SPACE_LABEL[occupied.kind]} · press ${ACTION_LABEL[currentAction]}.`, kind: currentAction === 'tower' ? 'ready' : undefined });
+    else hints.push({ text: 'The frontier behind you is closed · choose a glowing space in the new kingdom.', kind: 'warn' });
+    if (mine.quad < 4) hints.push({ text: 'Only the counter-clockwise frontier ahead is a legal destination.' });
+    else if (!mine.brasskey || !mine.silverkey || !mine.goldkey) hints.push({ text: 'Dark Tower needs all three keys after returning home.', kind: 'warn' });
   }
 
-  const P = ({ id, decor, children }: { id: keyof typeof PANEL_HEX & keyof typeof press; decor?: boolean; children: React.ReactNode }) => (
-    <button className={decor ? 'decor' : undefined} style={{ background: PANEL_HEX[id] }} disabled={!press[id]} onClick={() => press[id]?.()}>{children}</button>
-  );
+  const P = ({ id, decor, children }: { id: keyof typeof PANEL_HEX & keyof typeof press; decor?: boolean; children: React.ReactNode }) => {
+    const boardLabel = ACTION_LABEL[id as keyof typeof ACTION_LABEL];
+    const match = !!boardLabel && canResolveOccupied && currentAction === id;
+    const title = boardLabel && canAct
+      ? match ? `${boardLabel}: matches your occupied ${occupied ? SPACE_LABEL[occupied.kind].toLowerCase() : 'space'}`
+        : `${boardLabel} is unavailable because your pawn occupies ${occupied ? SPACE_LABEL[occupied.kind].toLowerCase() : 'another space'}`
+      : undefined;
+    return (
+      <button className={[decor ? 'decor' : '', match ? 'match' : ''].filter(Boolean).join(' ') || undefined} title={title}
+        style={{ background: PANEL_HEX[id] }} disabled={!press[id]} onClick={() => press[id]?.()}>{children}</button>
+    );
+  };
 
   const statusLine = view.winner ? `${view.players.find((p) => p.color === view.winner)?.name} conquered the tower`
     : !myTurn ? `Waiting — ${view.players[view.turn]?.name} is playing`
-    : phase === 'playing' ? 'Your turn — drag your piece one space, then press an action'
+    : phase === 'playing' ? canResolveOccupied && currentAction && occupied ? `Your turn — on ${SPACE_LABEL[occupied.kind]}; press ${ACTION_LABEL[currentAction]}` : 'Your turn — choose a glowing legal space'
     : phase === 'battle' ? `${view.battle?.brigands} brigands — YES fights, NO retreats`
     : phase === 'bazaar' ? ((view.bazaar?.buying ?? 0) > 0
       ? `Buying ${view.bazaar!.buying} — YES adds one, NO pays`
@@ -272,11 +316,11 @@ export function DtPlay({ view, act, error }: {
     : 'Turn complete — NO | END passes the tower';
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#05080b', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
+    <div className="tp-responsive-shell" style={{ position: 'fixed', inset: 0, background: '#05080b', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
       <style>{CSS}</style>
 
       {/* main area: the board */}
-      <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: RIGHT_W }}>
+      <div className="tp-board-pane" role="region" aria-label="Dark Tower board" style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: RIGHT_W }}>
         <DtTable
           scene={scene}
           tokens={view.players.map((p) => ({ seat: p.seat, color: p.color, spot: p.spot }))}
@@ -290,10 +334,12 @@ export function DtPlay({ view, act, error }: {
             : null}
           youSeat={mine.seat}
           canMove={myTurn && phase === 'playing' && !display.active}
+          legalSteps={myTurn && phase === 'playing' && !display.active ? view.legalSteps : []}
           onMoveToken={(x, z) => act({ type: 'move_token', x, z })}
+          onSelectNode={(node) => act({ type: 'move_token', node })}
           onDragChange={(d) => { if (d && !rulesSeen.current) { rulesSeen.current = true; setShowRules(true); } }}
         />
-        <button className="ig-glass" onClick={() => setFocusTower((f) => !f)} style={{
+        <button className="ig-glass dt-map-button" onClick={() => setFocusTower((f) => !f)} style={{
           position: 'absolute', bottom: 14, left: 14, padding: '9px 13px', borderRadius: 11,
           font: '700 11px Inter, sans-serif', letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer',
         }}>{focusTower ? 'Show board' : 'Focus the tower'}</button>
@@ -303,8 +349,8 @@ export function DtPlay({ view, act, error }: {
             display: 'flex', alignItems: 'center', gap: 10,
             font: '700 11px Inter, sans-serif', letterSpacing: 0.6, textTransform: 'uppercase',
           }}>
-            <span style={{ opacity: 0.9 }}>Drag your piece one space on the board, then press an action</span>
-            <button onClick={() => setShowRules(true)} style={{
+            <span style={{ opacity: 0.9 }}>Tap a glowing space or drag your pawn, then press its matching action</span>
+            <button className="dt-map-button" onClick={() => setShowRules(true)} style={{
               border: '1px solid rgba(255,255,255,0.3)', borderRadius: 8, background: 'rgba(255,255,255,0.08)',
               color: '#e8ebf0', cursor: 'pointer', padding: '4px 9px', font: '700 10px Inter, sans-serif',
               letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap',
@@ -314,7 +360,7 @@ export function DtPlay({ view, act, error }: {
       </div>
 
       {/* right rail: readout, the tower panel, your scorecard */}
-      <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: RIGHT_W, padding: 12, display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto' }}>
+      <div className="tp-control-sheet" role="region" aria-label="Dark Tower status and controls" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: RIGHT_W, padding: 12, display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto' }}>
         <div className="ig-glass" style={{ padding: '10px 14px', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
           <span className="dt-lcd">{shownLcd || '  '}</span>
           <div style={{ flex: 1 }}>
@@ -336,6 +382,33 @@ export function DtPlay({ view, act, error }: {
         <div className="ig-glass" style={{ padding: '9px 12px', borderRadius: 12, textAlign: 'center', font: '700 12px Inter, sans-serif', letterSpacing: 0.8, textTransform: 'uppercase' }}>
           {statusLine}
         </div>
+
+        {/* Accessible movement controls mirror the glowing destinations on the 3D board. */}
+        {canAct && view.legalSteps.length > 0 && (
+          <div className="ig-glass dt-destinations" role="group" aria-label="Legal pawn destinations">
+            <div className="ig-lab">Choose a legal territory</div>
+            <div className="choices">
+              {view.legalSteps.map((id, index) => {
+                const n = DT_NODE.get(id);
+                if (!n) return null;
+                const action = dtActionForNode(id);
+                const current = id === mine.node;
+                return (
+                  <button
+                    key={id}
+                    className={`dt-destination${current ? ' current' : ''}`}
+                    aria-pressed={current}
+                    aria-label={`${current ? 'Stay here' : `Adjacent territory ${index + 1}`}: ${SPACE_LABEL[n.kind]}; then press ${action ? ACTION_LABEL[action] : 'the matching action'}`}
+                    onClick={() => act({ type: 'move_token', node: id })}
+                  >
+                    {current ? 'Stay here' : `Adjacent ${index + 1}`} · {SPACE_LABEL[n.kind]}
+                    <span>Then press {action ? ACTION_LABEL[action] : 'matching action'}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* the tower's control panel */}
         <div className="dtp">
@@ -408,12 +481,12 @@ export function DtPlay({ view, act, error }: {
           <div className="ig-glass" style={{ maxWidth: 380, padding: '20px 22px', borderRadius: 16 }} onClick={(e) => e.stopPropagation()}>
             <div style={{ font: '800 16px Inter, sans-serif', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>Moving your piece</div>
             <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13.5, lineHeight: 1.55, opacity: 0.9 }}>
-              <li>Each turn, move <b>one</b> territory to an adjacent space (one sharing a border) &mdash; or stay put.</li>
+              <li>Each turn, tap a glowing territory or drag your pawn <b>one</b> space to an adjacent territory &mdash; or stay put.</li>
               <li>Travel <b>counter-clockwise</b> from kingdom to kingdom. Within a kingdom, move any direction you like.</li>
               <li>Cross into the next kingdom over its <b>Frontier</b>. You need that kingdom&rsquo;s key to leave, or the guard turns you back.</li>
               <li>Find a key in each of the three foreign kingdoms &mdash; brass, then silver, then gold. There is no key in your home kingdom.</li>
               <li>Never enter another kingdom&rsquo;s Citadel. Return home with all three keys, then storm your Dark Tower.</li>
-              <li>After moving, press the matching action button (<b>Move</b>, <b>Tomb</b>, <b>Bazaar</b>, <b>Sanctuary</b>, <b>Frontier</b>, <b>Tower</b>).</li>
+              <li>The board snaps your pawn to a legal space. Then press its one matching action button (<b>Move</b>, <b>Tomb</b>, <b>Bazaar</b>, <b>Sanctuary</b>, <b>Frontier</b>, or <b>Tower</b>).</li>
             </ul>
             <button className="tp-act" style={{ marginTop: 16 }} onClick={() => setShowRules(false)}>Got it</button>
           </div>
@@ -431,7 +504,7 @@ export function DtPlay({ view, act, error }: {
       )}
 
       {showIntro && <GameIntro intro={DT_INTRO} onClose={() => setShowIntro(false)} />}
-      <button onClick={() => setShowIntro(true)} className="ig-glass dt-help">
+      <button onClick={() => setShowIntro(true)} className="ig-glass dt-help" aria-label="Open the Dark Tower help guide">
         <span className="q">?</span>Help
       </button>
 

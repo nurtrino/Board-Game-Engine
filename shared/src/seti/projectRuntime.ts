@@ -31,10 +31,12 @@ import {
   type SetiProjectTrigger,
   type SetiSignalTarget,
 } from './projectCatalog.js';
+import { SETI_ALIEN_CARDS_BY_ID } from './alienCatalog.js';
 import {
   earthSetiCell,
   getSetiBodyCells,
   getSetiSolarFeatures,
+  type SetiPendingDecision,
   type SetiPlayer,
   type SetiState,
 } from './state.js';
@@ -66,15 +68,31 @@ export interface SetiProjectEffectContext {
   lastDrawnCardId: string | null;
 }
 
+export type SetiProjectScanStep =
+  | 'earth'
+  | 'project-row'
+  | 'discard-extra-signal'
+  | 'mercury-publicity-signal'
+  | 'energy-launch-or-move';
+
 type ProjectOp<K extends SetiProjectOp['kind']> = Extract<SetiProjectOp, { kind: K }>;
 
 export type SetiProjectAwaiting =
   | { kind: 'draw-project'; remaining: number; operation: ProjectOp<'draw-project'> }
   | { kind: 'move'; remaining: number; pieceId: string | null; completion: 'operation' | 'drawn-corner'; resumeMarketCorners?: number }
   | { kind: 'land'; operation: ProjectOp<'land'> }
-  | { kind: 'scan'; phase: 'earth' | 'project-row'; operation: ProjectOp<'scan'> }
+  | {
+      kind: 'scan';
+      phase: 'choose-step' | 'signal' | 'hand-card' | 'energy-choice' | 'move-piece' | 'move-target';
+      operation: ProjectOp<'scan'>;
+      completedBase: ('earth' | 'project-row')[];
+      usedTech: ('discard-extra-signal' | 'mercury-publicity-signal' | 'energy-launch-or-move')[];
+      activeStep: SetiProjectScanStep | null;
+      selectedCardId: string | null;
+      selectedPieceId: string | null;
+    }
   | { kind: 'research'; operation: ProjectOp<'research'> }
-  | { kind: 'signal'; remaining: number; operation: ProjectOp<'mark-signal'> }
+  | { kind: 'signal'; remaining: number; operation: ProjectOp<'mark-signal'>; lockedOptions: SetiSectorId[] | null }
   | { kind: 'market-signals'; remaining: number; operation: ProjectOp<'discard-market-for-signals'>; selectedCardId: string | null; signalColor: SetiSignalColor | null }
   | { kind: 'hand-signals'; used: number; operation: ProjectOp<'discard-hand-for-signals'>; selectedCardId: string | null; signalColor: SetiSignalColor | null }
   | { kind: 'deck-signals'; remaining: number; operation: ProjectOp<'discard-deck-top-for-signal'>; selectedCardId: string | null; signalColor: SetiSignalColor | null }
@@ -94,6 +112,13 @@ export interface SetiProjectResolution {
   index: number;
   context: SetiProjectEffectContext;
   awaiting: SetiProjectAwaiting | null;
+  /** Decisions that were already queued when this resolution began. */
+  deferredPending: SetiPendingDecision[];
+  /** The visual decision and queue tail hidden while an interrupting free action resolves. */
+  resumeDecision: SetiPendingDecision | null;
+  resumePending: SetiPendingDecision[];
+  /** Operation indexes whose mandatory pre-choice step (rotation/trigger) ran. */
+  preparedOperationIndices: number[];
 }
 
 export interface SetiPlutoState {
@@ -106,6 +131,8 @@ export interface SetiPlutoState {
 export interface SetiProjectRuntimeState {
   nextResolutionId: number;
   resolution: SetiProjectResolution | null;
+  /** Suspended parent effects, oldest first, while an emitted reward resolves. */
+  resolutionStack: SetiProjectResolution[];
   resolvingCard: {
     owner: number;
     cardId: string;
@@ -301,6 +328,15 @@ function playerSignalsInSector(s: SetiState, player: SetiPlayer, sectorId: SetiS
   return s.sectors[sectorId].signals.filter((marker) => marker.owner === player.seat).length;
 }
 
+function alienFreeCorner(cardId: string): SetiProjectFreeCorner | null {
+  const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+  if (!card || card.species === 'exertians') return null;
+  if (card.freeCorner.some((reward) => reward.kind === 'gain' && reward.resource === 'movement')) return 'move';
+  if (card.freeCorner.some((reward) => reward.kind === 'gain' && reward.resource === 'publicity')) return 'publicity';
+  if (card.freeCorner.some((reward) => reward.kind === 'gain' && reward.resource === 'data')) return 'data';
+  return null;
+}
+
 function sectorColor(sectorId: SetiSectorId): SetiSignalColor {
   return SETI_SECTORS.find((sector) => sector.id === sectorId)!.printedSignalColor;
 }
@@ -389,7 +425,10 @@ export function evaluateSetiProjectPredicate(
       return player.techs.filter((tech) => SETI_TECH_BY_ID[tech.stackId]?.type === predicate.technology).length >= predicate.atLeast;
     case 'publicity': return player.publicity >= predicate.atLeast;
     case 'score': return player.score >= predicate.atLeast;
-    case 'hand-size': return player.hand.length === predicate.equals;
+    case 'hand-size':
+      return player.hand.length
+        + player.alienHand.filter((cardId) => SETI_ALIEN_CARDS_BY_ID[cardId]?.species !== 'exertians').length
+        === predicate.equals;
     case 'visited-this-turn':
       return predicate.target.kind === 'body'
         ? turn.visitedBodies.includes(predicate.target.body)
@@ -400,6 +439,7 @@ export function evaluateSetiProjectPredicate(
       return !!context?.landedBodies.some((body) => {
         if (body === 'Pluto') return false;
         if (predicate.bodies.includes(body)) return true;
+        if (predicate.anyMoon && SETI_BODIES[body].moon) return true;
         return predicate.includeMoons && SETI_BODIES[body].moon && predicate.bodies.includes(SETI_BODIES[body].parent!);
       });
     case 'marked-signal-with-this-effect':
@@ -433,12 +473,22 @@ export function countSetiProjectMetric(
       const adjacent = adjacentSetiCells(piece.cell);
       return new Set(getSetiSolarFeatures(s).filter((feature) => feature.kind === metric.feature && adjacent.includes(feature.cell)).map((feature) => feature.cell)).size;
     }
-    case 'tucked-income-cards': return player.incomeCards.filter((income) => income.kind === metric.income).length;
-    case 'hand-cards':
-      return player.hand.filter((cardId) => {
+    case 'tucked-income-cards':
+      return player.incomeCards.filter((income) => income.kind === metric.income).length
+        + player.alienIncomeCards.filter((income) => income.kind === metric.income).length;
+    case 'hand-cards': {
+      const projectCards = player.hand.filter((cardId) => {
         const card = SETI_PROJECT_CATALOG_BY_ID[cardId];
         return !!card && (!metric.income || card.income === metric.income) && (!metric.freeCorner || card.freeCorner === metric.freeCorner);
-      }).length;
+      });
+      const alienCards = player.alienHand.filter((cardId) => {
+        const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+        return !!card && card.species !== 'exertians'
+          && (!metric.income || card.incomeCorner === metric.income)
+          && (!metric.freeCorner || alienFreeCorner(cardId) === metric.freeCorner);
+      });
+      return projectCards.length + alienCards.length;
+    }
     case 'traces': {
       const color = metric.color === 'chosen-by-previous-op' ? context?.chosenTraceColor : metric.color;
       return color ? player.traceMarkers.filter((trace) => trace.color === color).length : 0;
@@ -451,7 +501,8 @@ export function countSetiProjectMetric(
     case 'unique-planets-visited-this-turn': return new Set(turn.visitedBodies).size;
     case 'planets-and-comets-in-earth-sector': {
       const earthSector = parseSetiCell(earthSetiCell(s)).sector;
-      const count = getSetiSolarFeatures(s).filter((feature) => parseSetiCell(feature.cell).sector === earthSector && (feature.kind === 'planet' || feature.kind === 'comet')).length;
+      const count = getSetiSolarFeatures(s).filter((feature) => parseSetiCell(feature.cell).sector === earthSector
+        && (feature.kind === 'comet' || (feature.kind === 'planet' && feature.body !== 'Earth'))).length;
       return Math.min(metric.maximum, count);
     }
   }
@@ -504,10 +555,11 @@ export function getSetiTriggerableProjectSlots(
     const card = SETI_PROJECT_CATALOG_BY_ID[cardId];
     if (!card) continue;
     const claimed = new Set(missionClaims[cardId] ?? []);
-    for (const effect of card.effects) {
-      if (effect.timing !== 'triggerable-mission') continue;
-      for (const slot of effect.slots) {
-        if (!claimed.has(slot.id) && setiProjectTriggerMatches(slot.trigger, event)) result.push({ cardId, slot });
+      for (const effect of card.effects) {
+        if (effect.timing !== 'triggerable-mission') continue;
+        for (const slot of effect.slots) {
+          if (slot.trigger.kind === 'visit-feature' && slot.trigger.onlyOnOwnersTurn && s.activeSeat !== player.seat) continue;
+          if (!claimed.has(slot.id) && setiProjectTriggerMatches(slot.trigger, event)) result.push({ cardId, slot });
       }
     }
   }

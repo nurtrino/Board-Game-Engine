@@ -24,6 +24,10 @@ import {
   type SetiProjectOp,
 } from './projectCatalog.js';
 import {
+  SETI_ALIEN_CARDS_BY_ID,
+  type SetiAlienIncome,
+} from './alienCatalog.js';
+import {
   addSetiProjectTurnBody,
   countSetiProjectMetric,
   emptySetiProjectContext,
@@ -37,6 +41,7 @@ import {
   type SetiProjectAwaiting,
   type SetiProjectBody,
   type SetiProjectResolution,
+  type SetiProjectScanStep,
   type SetiProjectTriggerEvent,
 } from './projectRuntime.js';
 import {
@@ -44,8 +49,11 @@ import {
   drawSetiProjectCard,
   earthSetiSectorId,
   getSetiSolarFeatures,
+  removeSetiPlacedSpacecraft,
   refillSetiProjectRow,
   setiPlayerHasAbility,
+  setiProbeLimit,
+  setiProbesInSpace,
   setiTraceTargets,
   type SetiPendingDecision,
   type SetiPlayer,
@@ -70,10 +78,14 @@ export interface SetiProjectExecutorAdapter {
   drawIntoHand(s: SetiState, player: SetiPlayer, amount: number): string[];
   launchProbe(s: SetiState, player: SetiPlayer, ignoreProbeLimit: boolean): SetiSolarPiece | null;
   moveProbeFree(s: SetiState, player: SetiPlayer, pieceId: string, to: SetiCellId): string | null;
-  landProbeFree(s: SetiState, player: SetiPlayer, pieceId: string, body: SetiBody, operation: ProjectLandOp): string | null;
+  landProbeFree(s: SetiState, player: SetiPlayer, pieceId: string, body: SetiBody, operation: ProjectLandOp, occupiedSpacecraftId?: string): string | null;
   markSignal(s: SetiState, player: SetiPlayer, sectorId: SetiSectorId, gainData: boolean): void;
   placeTrace(s: SetiState, player: SetiPlayer, color: SetiTraceColor, spaceId: string): string | null;
+  /** Rotate before choices are offered, as required even when no tech is available. */
+  prepareResearch(s: SetiState, player: SetiPlayer, operation: ProjectResearchOp): void;
   acquireTechnology(s: SetiState, player: SetiPlayer, stackId: SetiTechStackId, operation: ProjectResearchOp): string | null;
+  signalCorner(player: SetiPlayer, cardId: string): SetiSignalColor | null;
+  discardHandCardForSignal(s: SetiState, player: SetiPlayer, cardId: string, sectorId: SetiSectorId): { error: string | null; signalHandled: boolean };
   applyKnownRewards(s: SetiState, player: SetiPlayer, body: SetiBody): void;
   emit(s: SetiState, player: SetiPlayer, title: string, detail?: string): void;
   afterResolution(s: SetiState, player: SetiPlayer): void;
@@ -154,10 +166,12 @@ function removeCurrentCardFromZone(s: SetiState, player: SetiPlayer, cardId: str
   if (income >= 0) player.incomeCards.splice(income, 1);
 }
 
-function gainPrintedIncome(s: SetiState, player: SetiPlayer, kind: SetiIncomeKind, adapter: SetiProjectExecutorAdapter): void {
+function gainPrintedIncome(s: SetiState, player: SetiPlayer, kind: SetiIncomeKind | SetiAlienIncome, adapter: SetiProjectExecutorAdapter): void {
   if (kind === 'credit') player.credits++;
   else if (kind === 'energy') player.energy++;
-  else adapter.drawIntoHand(s, player, 1);
+  else if (kind === 'card') adapter.drawIntoHand(s, player, 1);
+  else if (kind === 'publicity') gainPublicity(player, 1);
+  else gainData(player, 1);
 }
 
 function tuckThisCard(s: SetiState, player: SetiPlayer, resolution: SetiProjectResolution, adapter: SetiProjectExecutorAdapter): void {
@@ -177,8 +191,109 @@ function completeOperation(s: SetiState, player: SetiPlayer, adapter: SetiProjec
   continueSetiProjectResolution(s, player, adapter);
 }
 
+function suspendSetiProjectResolution(s: SetiState, resolution: SetiProjectResolution): void {
+  const runtime = setiProjectRuntime(s);
+  if (runtime.resolution !== resolution) return;
+  runtime.resolution = null;
+  runtime.resolutionStack.push(resolution);
+}
+
+/** Resume a parent card after all decisions emitted by its previous effect. */
+export function resumeSetiProjectResolution(
+  s: SetiState,
+  _player: SetiPlayer,
+  adapter: SetiProjectExecutorAdapter,
+): boolean {
+  const runtime = setiProjectRuntime(s);
+  if (!runtime.resolution && runtime.resolutionStack.length && !s.pending.length) {
+    const parent = runtime.resolutionStack.pop()!;
+    runtime.resolution = parent;
+    if (parent.resumeDecision) {
+      s.pending.unshift(parent.resumeDecision, ...parent.resumePending);
+      parent.resumeDecision = null;
+      parent.resumePending = [];
+    }
+    const owner = s.players[parent.owner];
+    if (!owner) throw new Error(`SETI suspended project resolution ${parent.id} has no owner`);
+    continueSetiProjectResolution(s, owner, adapter);
+  }
+  return !!runtime.resolution || runtime.resolutionStack.length > 0;
+}
+
+/** Suspend an awaiting main-action effect while one complete free action runs. */
+export function suspendSetiProjectForInterrupt(
+  s: SetiState,
+  decision: SetiPendingDecision,
+  pendingBeforeInterrupt: readonly SetiPendingDecision[],
+): boolean {
+  const runtime = setiProjectRuntime(s);
+  const resolution = runtime.resolution;
+  const decisionId = 'resolutionId' in decision ? decision.resolutionId : undefined;
+  if (!resolution || !resolution.awaiting || decisionId !== resolution.id) return false;
+  const prior = new Set(pendingBeforeInterrupt);
+  const added = s.pending.filter((candidate) => !prior.has(candidate));
+  const oldTail = pendingBeforeInterrupt.filter((candidate) => candidate !== decision);
+  resolution.resumeDecision = decision;
+  resolution.resumePending = [...oldTail];
+  s.pending = added;
+  suspendSetiProjectResolution(s, resolution);
+  return true;
+}
+
 function cardEffectOptions(s: SetiState): string[] {
   return ['deck', ...s.projectRow.flatMap((card, index) => card ? [`row:${index}`] : [])];
+}
+
+function signalHandCards(player: SetiPlayer, adapter: SetiProjectExecutorAdapter): string[] {
+  return [...player.hand, ...player.alienHand].filter((cardId) => adapter.signalCorner(player, cardId) !== null);
+}
+
+function incomeHandCards(player: SetiPlayer): string[] {
+  return [
+    ...player.hand.filter((cardId) => !!SETI_PROJECT_CATALOG_BY_ID[cardId]),
+    ...player.alienHand.filter((cardId) => {
+      const card = SETI_ALIEN_CARDS_BY_ID[cardId];
+      return !!card && card.species !== 'exertians' && card.incomeCorner !== null;
+    }),
+  ];
+}
+
+function scanStepOptions(
+  s: SetiState,
+  player: SetiPlayer,
+  awaiting: Extract<SetiProjectAwaiting, { kind: 'scan' }>,
+  adapter: SetiProjectExecutorAdapter,
+): string[] {
+  const options: string[] = [];
+  if (!awaiting.completedBase.includes('earth')) options.push('earth');
+  if (!awaiting.completedBase.includes('project-row') && s.projectRow.some(Boolean)) options.push('project-row');
+  if (!awaiting.usedTech.includes('discard-extra-signal')
+    && setiPlayerHasAbility(player, 'discard-extra-signal')
+    && signalHandCards(player, adapter).length) options.push('discard-extra-signal');
+  if (!awaiting.usedTech.includes('mercury-publicity-signal')
+    && setiPlayerHasAbility(player, 'mercury-publicity-signal')
+    && player.publicity >= 1) options.push('mercury-publicity-signal');
+  const canLaunch = setiProbesInSpace(s, player.seat) < setiProbeLimit(player);
+  const canMove = s.solar.pieces.some((piece) => piece.owner === player.seat);
+  if (!awaiting.usedTech.includes('energy-launch-or-move')
+    && setiPlayerHasAbility(player, 'energy-launch-or-move')
+    && player.energy >= 1 && (canLaunch || canMove)) options.push('energy-launch-or-move');
+  if (awaiting.completedBase.includes('earth') && awaiting.completedBase.includes('project-row')) options.push('done');
+  return options;
+}
+
+function scanStepDecision(
+  s: SetiState,
+  player: SetiPlayer,
+  resolution: SetiProjectResolution,
+  awaiting: Extract<SetiProjectAwaiting, { kind: 'scan' }>,
+  adapter: SetiProjectExecutorAdapter,
+): ProjectPendingDecision {
+  awaiting.phase = 'choose-step';
+  awaiting.activeStep = null;
+  awaiting.selectedCardId = null;
+  awaiting.selectedPieceId = null;
+  return projectDecision(resolution, 'Choose the next Scan element on the table', scanStepOptions(s, player, awaiting, adapter));
 }
 
 function researchOptions(s: SetiState, player: SetiPlayer, op: ProjectResearchOp): SetiTechStackId[] {
@@ -197,14 +312,22 @@ function freeLandOptions(s: SetiState, player: SetiPlayer, op: ProjectLandOp): s
   const options: string[] = [];
   for (const piece of s.solar.pieces.filter((candidate) => candidate.owner === player.seat && candidate.kind === 'probe')) {
     const primary = bodyAtSetiCell(s, piece.cell);
-    if (!primary || primary === 'Earth' || primary === 'Oumuamua') continue;
+    if (!primary || primary === 'Earth') continue;
     options.push(`${piece.id}|${primary}`);
+    if (op.allowOccupiedSpaceAndGainCoveredReward) {
+      for (const occupied of s.placedSpacecraft.filter((candidate) => candidate.kind === 'lander' && candidate.body === primary)) {
+        options.push(`${piece.id}|${primary}|occupied:${occupied.id}`);
+      }
+    }
     for (const body of Object.keys(SETI_BODIES) as SetiBody[]) {
       const definition = SETI_BODIES[body];
       if (!definition.moon || definition.parent !== primary) continue;
       if (!op.ignoreMoonTechnology && !setiPlayerHasAbility(player, 'moon-landing')) continue;
-      if (!op.allowOccupiedSpaceAndGainCoveredReward && s.planets[body].landers.length > 0) continue;
-      options.push(`${piece.id}|${body}`);
+      const occupied = s.placedSpacecraft.filter((candidate) => candidate.kind === 'lander' && candidate.body === body);
+      if (!occupied.length) options.push(`${piece.id}|${body}`);
+      else if (op.allowOccupiedSpaceAndGainCoveredReward) {
+        for (const target of occupied) options.push(`${piece.id}|${body}|occupied:${target.id}`);
+      }
     }
   }
   return options;
@@ -250,7 +373,15 @@ function beginMove(
 }
 
 function finishResolution(s: SetiState, player: SetiPlayer, adapter: SetiProjectExecutorAdapter): void {
-  setiProjectRuntime(s).resolution = null;
+  const runtime = setiProjectRuntime(s);
+  const finished = runtime.resolution;
+  if (!finished) return;
+  runtime.resolution = null;
+  if (finished.deferredPending.length) s.pending.unshift(...finished.deferredPending);
+  if (runtime.resolutionStack.length) {
+    resumeSetiProjectResolution(s, player, adapter);
+    return;
+  }
   adapter.afterResolution(s, player);
 }
 
@@ -265,11 +396,13 @@ export function beginSetiProjectResolution(
 ): void {
   const runtime = setiProjectRuntime(s);
   if (runtime.resolution) throw new Error(`SETI project resolution ${runtime.resolution.id} is already active`);
+  const deferredPending = s.pending.splice(0);
   const context = emptySetiProjectContext();
   if (condition) context.conditionSpeciesSlot = setiProjectConditionSpeciesSlot(player, condition);
   runtime.resolution = {
     id: runtime.nextResolutionId++, owner: player.seat, cardId, source,
-    operations: [...operations], index: 0, context, awaiting: null,
+    operations: [...operations], index: 0, context, awaiting: null, deferredPending,
+    resumeDecision: null, resumePending: [], preparedOperationIndices: [],
   };
   // Temporary rules govern all movement granted by the card, even when their
   // explanatory icon follows the movement icons on the printed card.
@@ -283,6 +416,10 @@ export function beginSetiProjectResolution(
 export function continueSetiProjectResolution(s: SetiState, player: SetiPlayer, adapter: SetiProjectExecutorAdapter): void {
   const resolution = setiProjectRuntime(s).resolution;
   if (!resolution || resolution.owner !== player.seat || resolution.awaiting) return;
+  if (s.pending.length) {
+    suspendSetiProjectResolution(s, resolution);
+    return;
+  }
   while (resolution.index < resolution.operations.length) {
     const op = resolution.operations[resolution.index];
     switch (op.kind) {
@@ -337,17 +474,32 @@ export function continueSetiProjectResolution(s: SetiState, player: SetiPlayer, 
         return;
       }
       case 'scan': {
-        if (!s.projectRow.some(Boolean)) { resolution.index++; break; }
-        const earth = earthSetiSectorId(s);
-        const options = setiPlayerHasAbility(player, 'earth-signal-adjacent')
-          ? [earth, s.sectorOrder[(s.sectorOrder.indexOf(earth) + 7) % 8], s.sectorOrder[(s.sectorOrder.indexOf(earth) + 1) % 8]]
-          : [earth];
-        const awaiting: Extract<SetiProjectAwaiting, { kind: 'scan' }> = { kind: 'scan', phase: 'earth', operation: op };
-        queueSetiProjectTrigger(s, player, { kind: 'scan' }, true);
-        pause(s, resolution, awaiting, signalDecision(resolution, [...new Set(options)], null, 'earth'));
+        if (!resolution.preparedOperationIndices.includes(resolution.index)) {
+          resolution.preparedOperationIndices.push(resolution.index);
+          queueSetiProjectTrigger(s, player, { kind: 'scan' });
+          if (s.pending.length) {
+            suspendSetiProjectResolution(s, resolution);
+            return;
+          }
+        }
+        refillSetiProjectRow(s);
+        const awaiting: Extract<SetiProjectAwaiting, { kind: 'scan' }> = {
+          kind: 'scan', phase: 'choose-step', operation: op,
+          completedBase: s.projectRow.some(Boolean) ? [] : ['project-row'],
+          usedTech: [], activeStep: null, selectedCardId: null, selectedPieceId: null,
+        };
+        pause(s, resolution, awaiting, scanStepDecision(s, player, resolution, awaiting, adapter));
         return;
       }
       case 'research': {
+        if (!resolution.preparedOperationIndices.includes(resolution.index)) {
+          resolution.preparedOperationIndices.push(resolution.index);
+          adapter.prepareResearch(s, player, op);
+          if (s.pending.length) {
+            suspendSetiProjectResolution(s, resolution);
+            return;
+          }
+        }
         const options = researchOptions(s, player, op);
         if (!options.length) { resolution.index++; break; }
         const awaiting: Extract<SetiProjectAwaiting, { kind: 'research' }> = { kind: 'research', operation: op };
@@ -356,9 +508,11 @@ export function continueSetiProjectResolution(s: SetiState, player: SetiPlayer, 
         return;
       }
       case 'mark-signal': {
-        const options = setiProjectSignalOptions(s, player, op.target);
+        const options = op.target.kind === 'own-probe-sector-and-neighbors'
+          ? setiProjectSignalOptions(s, player, { kind: 'own-probe-sector', probeMustBeOnSolarSystem: true })
+          : setiProjectSignalOptions(s, player, op.target);
         if (!options.length) { resolution.index++; break; }
-        const awaiting: Extract<SetiProjectAwaiting, { kind: 'signal' }> = { kind: 'signal', remaining: op.amount, operation: op };
+        const awaiting: Extract<SetiProjectAwaiting, { kind: 'signal' }> = { kind: 'signal', remaining: op.amount, operation: op, lockedOptions: null };
         pause(s, resolution, awaiting, signalDecision(resolution, options, op.target.kind === 'color' ? op.target.color : null));
         return;
       }
@@ -370,9 +524,10 @@ export function continueSetiProjectResolution(s: SetiState, player: SetiPlayer, 
         return;
       }
       case 'discard-hand-for-signals': {
-        if (!player.hand.length || op.maximum <= 0) { resolution.index++; break; }
+        const handCards = signalHandCards(player, adapter);
+        if (!handCards.length || op.maximum <= 0) { resolution.index++; break; }
         const awaiting: Extract<SetiProjectAwaiting, { kind: 'hand-signals' }> = { kind: 'hand-signals', used: 0, operation: op, selectedCardId: null, signalColor: null };
-        const options = [...(op.minimum === 0 ? ['done'] : []), ...player.hand];
+        const options = [...(op.minimum === 0 ? ['done'] : []), ...handCards];
         pause(s, resolution, awaiting, projectDecision(resolution, 'Discard project cards for their signals, or finish', options));
         return;
       }
@@ -400,11 +555,10 @@ export function continueSetiProjectResolution(s: SetiState, player: SetiPlayer, 
         break;
       }
       case 'remove-piece': {
-        const options = (Object.keys(SETI_BODIES) as SetiBody[]).filter((body) => {
-          if (op.from === 'any-planet' && SETI_BODIES[body].moon) return false;
-          const pieces = op.piece === 'orbiter' ? s.planets[body].orbiters : s.planets[body].landers;
-          return pieces.includes(player.seat);
-        });
+        const options = s.placedSpacecraft.filter((piece) => piece.owner === player.seat
+          && piece.kind === op.piece
+          && (piece.body === 'Pluto' || op.from === 'any-planet-or-moon' || !SETI_BODIES[piece.body].moon))
+          .map((piece) => piece.id);
         if (!options.length) { resolution.index++; break; }
         const awaiting: Extract<SetiProjectAwaiting, { kind: 'remove-piece' }> = { kind: 'remove-piece', operation: op };
         pause(s, resolution, awaiting, projectDecision(resolution, `Choose an ${op.piece} to remove`, options));
@@ -439,9 +593,10 @@ export function continueSetiProjectResolution(s: SetiState, player: SetiPlayer, 
           pause(s, resolution, awaiting, projectDecision(resolution, 'Tuck this card as income?', ['skip', resolution.cardId]));
           return;
         }
-        if (!player.hand.length) { resolution.index++; break; }
+        const hand = incomeHandCards(player);
+        if (!hand.length) { resolution.index++; break; }
         const awaiting: Extract<SetiProjectAwaiting, { kind: 'tuck-income' }> = { kind: 'tuck-income', operation: op };
-        pause(s, resolution, awaiting, projectDecision(resolution, 'Choose a card to tuck as income, or skip', ['skip', ...player.hand]));
+        pause(s, resolution, awaiting, projectDecision(resolution, 'Choose a card to tuck as income, or skip', ['skip', ...hand]));
         return;
       }
       case 'resolve-rightmost-unmarked-gold-tile-space':
@@ -458,7 +613,7 @@ export function continueSetiProjectResolution(s: SetiState, player: SetiPlayer, 
         const probes = s.solar.pieces.filter((piece) => piece.kind === 'probe');
         if (!probes.length) { resolution.index++; break; }
         const awaiting: Extract<SetiProjectAwaiting, { kind: 'probe-signals' }> = { kind: 'probe-signals', remaining: op.maximum, selectedProbeIds: [], operation: op };
-        pause(s, resolution, awaiting, projectDecision(resolution, 'Choose a probe whose sector receives a signal', probes.map((probe) => probe.id)));
+        pause(s, resolution, awaiting, projectDecision(resolution, 'Choose a probe whose sector receives a signal, or finish', ['done', ...probes.map((probe) => probe.id)]));
         return;
       }
       case 'survey-selected-probe': {
@@ -487,6 +642,10 @@ export function continueSetiProjectResolution(s: SetiState, player: SetiPlayer, 
         const exhaustive: never = op;
         throw new Error(`Unsupported SETI project operation ${(exhaustive as SetiProjectOp).kind}`);
       }
+    }
+    if (s.pending.length && !resolution.awaiting) {
+      suspendSetiProjectResolution(s, resolution);
+      return;
     }
   }
   finishResolution(s, player, adapter);
@@ -593,35 +752,131 @@ export function resolveSetiProjectPending(
     }
     case 'land': {
       if (decision.kind !== 'card-effect-choice' || !option || !decision.options.includes(option)) return failure('Choose a highlighted landing');
-      const separator = option.lastIndexOf('|');
-      const pieceId = option.slice(0, separator);
-      const body = option.slice(separator + 1) as SetiBody;
-      const error = adapter.landProbeFree(s, player, pieceId, body, awaiting.operation);
+      const [pieceId, bodyValue, occupiedValue] = option.split('|');
+      const body = bodyValue as SetiBody;
+      const occupiedSpacecraftId = occupiedValue?.startsWith('occupied:') ? occupiedValue.slice('occupied:'.length) : undefined;
+      const error = adapter.landProbeFree(s, player, pieceId, body, awaiting.operation, occupiedSpacecraftId);
       if (error) return failure(error);
       resolution.context.landedBodies.push(body);
       return finishHeadAndOperation(s, player, adapter);
     }
     case 'scan': {
-      if (decision.kind !== 'signal-sector' || choice.kind !== 'sector' || !decision.options.includes(choice.sectorId)) return failure('Choose a highlighted scan sector');
-      if (awaiting.phase === 'earth') {
-        recordSignal(s, player, resolution, choice.sectorId, true, adapter);
-        awaiting.phase = 'project-row';
-        const rows = s.projectRow.map((card, index) => card ? index : -1).filter((index) => index >= 0);
-        const colors = new Set(rows.map((row) => SETI_PROJECT_CATALOG_BY_ID[s.projectRow[row]!]!.signalColor));
-        const options = SETI_SECTORS.filter((sector) => colors.has(sector.printedSignalColor)).map((sector) => sector.id);
-        replaceHead(s, signalDecision(resolution, options, null, 'project-row', rows));
+      if (awaiting.phase === 'choose-step') {
+        if (decision.kind !== 'card-effect-choice' || !option || !decision.options.includes(option)) return failure('Choose a highlighted Scan element');
+        if (option === 'done') {
+          refillSetiProjectRow(s);
+          return finishHeadAndOperation(s, player, adapter);
+        }
+        awaiting.activeStep = option as SetiProjectScanStep;
+        if (option === 'earth') {
+          const earth = earthSetiSectorId(s);
+          const options = setiPlayerHasAbility(player, 'earth-signal-adjacent')
+            ? [earth, s.sectorOrder[(s.sectorOrder.indexOf(earth) + 7) % 8], s.sectorOrder[(s.sectorOrder.indexOf(earth) + 1) % 8]]
+            : [earth];
+          awaiting.phase = 'signal';
+          replaceHead(s, signalDecision(resolution, [...new Set(options)], null, 'earth'));
+          return success();
+        }
+        if (option === 'project-row') {
+          const rows = s.projectRow.map((card, index) => card ? index : -1).filter((index) => index >= 0);
+          const colors = new Set(rows.map((row) => SETI_PROJECT_CATALOG_BY_ID[s.projectRow[row]!]!.signalColor));
+          const options = SETI_SECTORS.filter((sector) => colors.has(sector.printedSignalColor)).map((sector) => sector.id);
+          awaiting.phase = 'signal';
+          replaceHead(s, signalDecision(resolution, options, null, 'project-row', rows));
+          return success();
+        }
+        if (option === 'discard-extra-signal') {
+          awaiting.phase = 'hand-card';
+          replaceHead(s, projectDecision(resolution, 'Touch one hand card to discard for its signal', signalHandCards(player, adapter)));
+          return success();
+        }
+        if (option === 'mercury-publicity-signal') {
+          if (player.publicity < 1) return failure('The Mercury telescope tech costs 1 publicity');
+          player.publicity--;
+          awaiting.phase = 'signal';
+          const options = setiProjectSignalOptions(s, player, { kind: 'body-sector', body: 'Mercury' });
+          replaceHead(s, signalDecision(resolution, options, null));
+          return success();
+        }
+        const canLaunch = setiProbesInSpace(s, player.seat) < setiProbeLimit(player);
+        const canMove = s.solar.pieces.some((piece) => piece.owner === player.seat);
+        if (option !== 'energy-launch-or-move' || player.energy < 1 || (!canLaunch && !canMove)) return failure('The energy telescope tech is unavailable');
+        awaiting.phase = 'energy-choice';
+        replaceHead(s, projectDecision(resolution, 'Touch the launch bay or one of your probes', [...(canLaunch ? ['launch'] : []), ...(canMove ? ['move'] : [])]));
         return success();
       }
-      if (typeof choice.row !== 'number' || !decision.rowOptions?.includes(choice.row)) return failure('Choose one project-row card for its printed signal');
-      const cardId = s.projectRow[choice.row];
-      const card = cardId ? SETI_PROJECT_CATALOG_BY_ID[cardId] : null;
-      if (!cardId || !card) return failure('Project-row card is unavailable');
-      if (setiProjectSignalColor(choice.sectorId) !== card.signalColor) return failure(`That card marks only a ${card.signalColor} signal sector`);
-      s.projectRow[choice.row] = null;
-      s.projectDiscard.push(cardId);
-      recordSignal(s, player, resolution, choice.sectorId, true, adapter);
-      refillSetiProjectRow(s);
-      return finishHeadAndOperation(s, player, adapter);
+      if (awaiting.phase === 'hand-card') {
+        if (decision.kind !== 'card-effect-choice' || !option || !decision.options.includes(option) || !signalHandCards(player, adapter).includes(option)) return failure('Choose a signal card that is still in your hand');
+        const color = adapter.signalCorner(player, option);
+        if (!color) return failure('That card has no signal corner');
+        awaiting.selectedCardId = option;
+        awaiting.phase = 'signal';
+        replaceHead(s, signalDecision(resolution, SETI_SECTORS.filter((sector) => sector.printedSignalColor === color).map((sector) => sector.id), color));
+        return success();
+      }
+      if (awaiting.phase === 'energy-choice') {
+        if (decision.kind !== 'card-effect-choice' || !option || !decision.options.includes(option) || player.energy < 1) return failure('Choose a highlighted telescope-tech action');
+        if (option === 'launch') {
+          if (setiProbesInSpace(s, player.seat) >= setiProbeLimit(player)) return failure('Probe limit reached');
+          player.energy--;
+          const launched = adapter.launchProbe(s, player, false);
+          if (!launched) { player.energy++; return failure('The probe could not launch'); }
+          addSetiProjectTurnBody(s, player, 'Earth');
+          queueSetiProjectTrigger(s, player, { kind: 'launch' });
+          awaiting.usedTech.push('energy-launch-or-move');
+          replaceHead(s, scanStepDecision(s, player, resolution, awaiting, adapter));
+          return success();
+        }
+        awaiting.phase = 'move-piece';
+        replaceHead(s, projectDecision(resolution, 'Touch one of your probes', s.solar.pieces.filter((piece) => piece.owner === player.seat).map((piece) => piece.id)));
+        return success();
+      }
+      if (awaiting.phase === 'move-piece') {
+        if (decision.kind !== 'card-effect-choice' || !option || !decision.options.includes(option)) return failure('Choose one of your probes');
+        const piece = s.solar.pieces.find((candidate) => candidate.id === option && candidate.owner === player.seat);
+        if (!piece) return failure('That probe is unavailable');
+        awaiting.selectedPieceId = piece.id;
+        awaiting.phase = 'move-target';
+        replaceHead(s, projectDecision(resolution, 'Move the probe to an adjacent space', adjacentSetiCells(piece.cell)));
+        return success();
+      }
+      if (awaiting.phase === 'move-target') {
+        if (decision.kind !== 'card-effect-choice' || !option || !decision.options.includes(option) || !awaiting.selectedPieceId || player.energy < 1) return failure('Choose a highlighted movement space');
+        player.energy--;
+        const error = adapter.moveProbeFree(s, player, awaiting.selectedPieceId, option as SetiCellId);
+        if (error) { player.energy++; return failure(error); }
+        awaiting.usedTech.push('energy-launch-or-move');
+        replaceHead(s, scanStepDecision(s, player, resolution, awaiting, adapter));
+        return success();
+      }
+      if (decision.kind !== 'signal-sector' || choice.kind !== 'sector' || !decision.options.includes(choice.sectorId) || !awaiting.activeStep) return failure('Choose a highlighted Scan sector');
+      if (awaiting.activeStep === 'project-row') {
+        if (typeof choice.row !== 'number' || !decision.rowOptions?.includes(choice.row)) return failure('Choose one project-row card for its printed signal');
+        const cardId = s.projectRow[choice.row];
+        const card = cardId ? SETI_PROJECT_CATALOG_BY_ID[cardId] : null;
+        if (!cardId || !card) return failure('Project-row card is unavailable');
+        if (setiProjectSignalColor(choice.sectorId) !== card.signalColor) return failure(`That card marks only a ${card.signalColor} signal sector`);
+        s.projectRow[choice.row] = null;
+        s.projectDiscard.push(cardId);
+        recordSignal(s, player, resolution, choice.sectorId, true, adapter);
+        awaiting.completedBase.push('project-row');
+      } else if (awaiting.activeStep === 'discard-extra-signal') {
+        if (!awaiting.selectedCardId) return failure('Choose a hand card first');
+        const discarded = adapter.discardHandCardForSignal(s, player, awaiting.selectedCardId, choice.sectorId);
+        if (discarded.error) return failure(discarded.error);
+        if (discarded.signalHandled) {
+          resolution.context.signalsMarked.push({ sectorId: choice.sectorId, color: setiProjectSignalColor(choice.sectorId) });
+          resolution.context.targetSectorId = choice.sectorId;
+          if (s.sectors[choice.sectorId].completionPending) resolution.context.completedSector = true;
+        } else recordSignal(s, player, resolution, choice.sectorId, true, adapter);
+        awaiting.usedTech.push('discard-extra-signal');
+      } else {
+        recordSignal(s, player, resolution, choice.sectorId, true, adapter);
+        if (awaiting.activeStep === 'earth') awaiting.completedBase.push('earth');
+        else awaiting.usedTech.push('mercury-publicity-signal');
+      }
+      replaceHead(s, scanStepDecision(s, player, resolution, awaiting, adapter));
+      return success();
     }
     case 'research': {
       if (decision.kind !== 'tech-stack' || choice.kind !== 'tech-stack' || !decision.options.includes(choice.stackId)) return failure('Choose a highlighted technology');
@@ -639,7 +894,18 @@ export function resolveSetiProjectPending(
       recordSignal(s, player, resolution, choice.sectorId, awaiting.operation.gainData, adapter);
       awaiting.remaining--;
       if (awaiting.remaining <= 0) return finishHeadAndOperation(s, player, adapter);
-      replaceHead(s, signalDecision(resolution, setiProjectSignalOptions(s, player, awaiting.operation.target), decision.signalColor));
+      if (awaiting.lockedOptions === null) {
+        if (awaiting.operation.target.kind === 'own-probe-sector') {
+          awaiting.lockedOptions = [choice.sectorId];
+        } else if (awaiting.operation.target.kind === 'own-probe-sector-and-neighbors') {
+          const center = s.sectorOrder.indexOf(choice.sectorId);
+          awaiting.lockedOptions = [s.sectorOrder[(center + 7) % 8], s.sectorOrder[(center + 1) % 8]];
+        }
+      } else if (awaiting.operation.target.kind === 'own-probe-sector-and-neighbors') {
+        awaiting.lockedOptions = awaiting.lockedOptions.filter((sectorId) => sectorId !== choice.sectorId);
+      }
+      const options = awaiting.lockedOptions ?? setiProjectSignalOptions(s, player, awaiting.operation.target);
+      replaceHead(s, signalDecision(resolution, options, decision.signalColor));
       return success();
     }
     case 'market-signals': {
@@ -676,23 +942,29 @@ export function resolveSetiProjectPending(
           if (awaiting.used < awaiting.operation.minimum) return failure(`Discard at least ${awaiting.operation.minimum} card(s)`);
           return finishHeadAndOperation(s, player, adapter);
         }
-        const card = SETI_PROJECT_CATALOG_BY_ID[option];
-        if (!card || !removeOne(player.hand, option)) return failure('That card is not in your hand');
-        s.projectDiscard.push(option);
+        const color = adapter.signalCorner(player, option);
+        if (!color) return failure('That card has no usable signal corner');
         awaiting.selectedCardId = option;
-        awaiting.signalColor = card.signalColor;
-        const options = SETI_SECTORS.filter((sector) => sector.printedSignalColor === card.signalColor).map((sector) => sector.id);
-        replaceHead(s, signalDecision(resolution, options, card.signalColor));
+        awaiting.signalColor = color;
+        const options = SETI_SECTORS.filter((sector) => sector.printedSignalColor === color).map((sector) => sector.id);
+        replaceHead(s, signalDecision(resolution, options, color));
         return success();
       }
       if (decision.kind !== 'signal-sector' || choice.kind !== 'sector' || !decision.options.includes(choice.sectorId)) return failure('Choose a matching signal sector');
-      recordSignal(s, player, resolution, choice.sectorId, true, adapter);
+      const discarded = adapter.discardHandCardForSignal(s, player, awaiting.selectedCardId, choice.sectorId);
+      if (discarded.error) return failure(discarded.error);
+      if (discarded.signalHandled) {
+        resolution.context.signalsMarked.push({ sectorId: choice.sectorId, color: setiProjectSignalColor(choice.sectorId) });
+        resolution.context.targetSectorId = choice.sectorId;
+        if (s.sectors[choice.sectorId].completionPending) resolution.context.completedSector = true;
+      } else recordSignal(s, player, resolution, choice.sectorId, true, adapter);
       awaiting.used++;
       awaiting.selectedCardId = null;
       awaiting.signalColor = null;
-      if (awaiting.used >= awaiting.operation.maximum || !player.hand.length) return finishHeadAndOperation(s, player, adapter);
+      const handCards = signalHandCards(player, adapter);
+      if (awaiting.used >= awaiting.operation.maximum || !handCards.length) return finishHeadAndOperation(s, player, adapter);
       const canFinish = awaiting.used >= awaiting.operation.minimum;
-      replaceHead(s, projectDecision(resolution, 'Discard another hand card for its signal, or finish', [...(canFinish ? ['done'] : []), ...player.hand]));
+      replaceHead(s, projectDecision(resolution, 'Discard another hand card for its signal, or finish', [...(canFinish ? ['done'] : []), ...handCards]));
       return success();
     }
     case 'deck-signals': {
@@ -731,11 +1003,16 @@ export function resolveSetiProjectPending(
     }
     case 'remove-piece': {
       if (decision.kind !== 'card-effect-choice' || !option || !decision.options.includes(option)) return failure('Choose a highlighted spacecraft');
-      const body = option as SetiBody;
-      const pieces = awaiting.operation.piece === 'orbiter' ? s.planets[body].orbiters : s.planets[body].landers;
-      const index = pieces.indexOf(player.seat);
-      if (index < 0) return failure('That spacecraft is no longer available');
-      pieces.splice(index, 1);
+      const target = s.placedSpacecraft.find((piece) => piece.id === option && piece.owner === player.seat && piece.kind === awaiting.operation.piece);
+      if (!target || (target.body !== 'Pluto' && awaiting.operation.from === 'any-planet' && SETI_BODIES[target.body].moon)) return failure('That spacecraft is no longer available');
+      const removed = removeSetiPlacedSpacecraft(s, target.id);
+      if (!removed) return failure('That spacecraft is no longer available');
+      const rewardStillCovered = s.placedSpacecraft.some((piece) => piece.spaceId === removed.spaceId);
+      if (!rewardStillCovered && removed.coveredReward?.kind === 'first-landing-data' && removed.body !== 'Pluto') {
+        const bonuses = s.planets[removed.body].firstLandingBonuses;
+        if (!bonuses.includes(removed.coveredReward.amount)) bonuses.push(removed.coveredReward.amount);
+        bonuses.sort((a, b) => a - b);
+      }
       return finishHeadAndOperation(s, player, adapter);
     }
     case 'market-corners': {
@@ -746,7 +1023,6 @@ export function resolveSetiProjectPending(
       if (!cardId || !card) return failure('Project-row card is unavailable');
       s.projectRow[row] = null;
       s.projectDiscard.push(cardId);
-      queueSetiProjectTrigger(s, player, { kind: 'discard-free-corner', freeCorner: card.freeCorner });
       awaiting.remaining--;
       if (card.freeCorner === 'publicity') gainPublicity(player, 1);
       else if (card.freeCorner === 'data') gainData(player, 1);
@@ -778,9 +1054,16 @@ export function resolveSetiProjectPending(
         if (awaiting.operation.card === 'this-card') tuckThisCard(s, player, resolution, adapter);
         else {
           const card = SETI_PROJECT_CATALOG_BY_ID[option];
-          if (!card || !removeOne(player.hand, option)) return failure('That card is not in your hand');
-          player.incomeCards.push({ cardId: option, kind: card.income, starting: false });
-          gainPrintedIncome(s, player, card.income, adapter);
+          const alien = SETI_ALIEN_CARDS_BY_ID[option];
+          if (card) {
+            if (!removeOne(player.hand, option)) return failure('That card is not in your hand');
+            player.incomeCards.push({ cardId: option, kind: card.income, starting: false });
+            gainPrintedIncome(s, player, card.income, adapter);
+          } else if (alien && alien.species !== 'exertians' && alien.incomeCorner) {
+            if (!removeOne(player.alienHand, option)) return failure('That card is not in your hand');
+            player.alienIncomeCards.push({ cardId: option, kind: alien.incomeCorner });
+            gainPrintedIncome(s, player, alien.incomeCorner, adapter);
+          } else return failure('That card cannot become income');
         }
       }
       return finishHeadAndOperation(s, player, adapter);
@@ -842,7 +1125,8 @@ export function touchSetiProjectRevision(s: SetiState): void {
 
 export function queueSetiConditionalMissionOffers(s: SetiState, player: SetiPlayer): void {
   const runtime = setiProjectRuntime(s);
-  if (runtime.resolution) return;
+  if (runtime.resolution || runtime.resolutionStack.length) return;
+  if (s.phase !== 'playing' || s.activeSeat !== player.seat || player.passed) return;
   for (const cardId of player.missions) {
     const card = SETI_PROJECT_CATALOG_BY_ID[cardId];
     const effect = card?.effects.find((candidate): candidate is Extract<SetiProjectEffect, { timing: 'conditional-mission' }> => candidate.timing === 'conditional-mission');
@@ -864,9 +1148,9 @@ export function resolveSetiProjectManualTrigger(
 ): SetiProjectExecutionResult | null {
   if (!decision.triggerId.startsWith('project-')) return null;
   if (!decision.options.includes(option)) return failure('Choose a highlighted project trigger');
-  s.pending.shift();
   if (option === 'skip') {
-    adapter.afterResolution(s, player);
+    s.pending.shift();
+    if (!resumeSetiProjectResolution(s, player, adapter)) adapter.afterResolution(s, player);
     return success();
   }
   if (decision.triggerId.startsWith('project-slot:')) {
@@ -878,18 +1162,20 @@ export function resolveSetiProjectManualTrigger(
     const projectPlayer = player as SetiPlayer & { missionClaims: Record<string, string[]> };
     projectPlayer.missionClaims[cardId] ??= [];
     if (projectPlayer.missionClaims[cardId].includes(slotId)) return failure('That mission slot is already claimed');
+    s.pending.shift();
     projectPlayer.missionClaims[cardId].push(slotId);
+    if (setiProjectMissionIsComplete(player, cardId)) {
+      removeOne(player.missions, cardId);
+      player.completedMissions.push(cardId);
+    }
     for (const pending of s.pending) {
       if (pending.kind !== 'manual-trigger-choice' || !pending.triggerId.startsWith('project-slot:')) continue;
       pending.options = pending.options.filter((candidate) => {
         if (candidate === 'skip') return true;
         const [, pendingCardId, pendingSlotId] = candidate.split('|');
-        return !(pendingCardId === cardId && projectPlayer.missionClaims[cardId].includes(pendingSlotId));
+        if (!player.missions.includes(pendingCardId)) return false;
+        return !(projectPlayer.missionClaims[pendingCardId] ?? []).includes(pendingSlotId);
       });
-    }
-    if (setiProjectMissionIsComplete(player, cardId)) {
-      removeOne(player.missions, cardId);
-      player.completedMissions.push(cardId);
     }
     beginSetiProjectResolution(s, player, cardId, 'mission-slot', slot.operations, adapter);
     return success();
@@ -899,6 +1185,7 @@ export function resolveSetiProjectManualTrigger(
     const card = SETI_PROJECT_CATALOG_BY_ID[cardId];
     const effect = card?.effects.find((candidate): candidate is Extract<SetiProjectEffect, { timing: 'conditional-mission' }> => candidate.timing === 'conditional-mission');
     if (!card || !effect || !player.missions.includes(cardId) || !evaluateSetiProjectPredicate(s, player, effect.condition)) return failure('That conditional mission is not complete');
+    s.pending.shift();
     removeOne(player.missions, cardId);
     player.completedMissions.push(cardId);
     beginSetiProjectResolution(s, player, cardId, 'conditional-mission', effect.operations, adapter, effect.condition);

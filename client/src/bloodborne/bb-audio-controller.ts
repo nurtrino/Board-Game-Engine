@@ -38,6 +38,7 @@ export class BbAudioController {
   private readonly playTimeoutMs: number;
   private manifest: BbAudioManifest | null = null;
   private cue: BbAudioCue | null = null;
+  private rotation = 0;
   private current: PlayingTrack | null = null;
   private pending: PlayingTrack | null = null;
   private resumePending = false;
@@ -75,6 +76,7 @@ export class BbAudioController {
 
   setCue(cue: BbAudioCue): void {
     if (this.disposed) return;
+    if (!sameCue(this.cue, cue)) this.rotation = 0;
     this.cue = cue;
     this.reconcile();
   }
@@ -98,9 +100,9 @@ export class BbAudioController {
 
   /** Call from pointer/keyboard handlers. Repeated calls intentionally retry rejected autoplay. */
   unlock(): void {
-    if (this.disposed || this.muted) return;
+    if (this.disposed) return;
     this.unlocked = true;
-    this.reconcile();
+    if (!this.muted) this.reconcile();
   }
 
   dispose(): void {
@@ -117,7 +119,10 @@ export class BbAudioController {
 
   private reconcile(): void {
     if (this.disposed || this.muted || !this.unlocked || !this.cue) return;
-    const track = selectBbAudioTrack(this.manifest, this.cue);
+    const track = selectBbAudioTrack(this.manifest, {
+      ...this.cue,
+      variant: (this.cue.variant ?? 0) + this.rotation,
+    });
     if (!track) {
       this.operation++;
       this.stopPending();
@@ -156,6 +161,7 @@ export class BbAudioController {
     this.pending = incoming;
     this.active.add(audio);
     audio.addEventListener?.('error', () => this.mediaFailed(incoming), { once: true });
+    audio.addEventListener?.('ended', () => this.trackEnded(incoming), { once: true });
 
     let playResult: Promise<void> | void;
     try {
@@ -289,6 +295,22 @@ export class BbAudioController {
     safePause(track.audio);
     this.active.delete(track.audio);
   }
+
+  private trackEnded(track: PlayingTrack): void {
+    if (this.disposed || this.muted || this.current !== track || track.track.loop) return;
+    this.current = null;
+    this.active.delete(track.audio);
+    this.rotation++;
+    this.reconcile();
+  }
+}
+
+function sameCue(a: BbAudioCue | null, b: BbAudioCue): boolean {
+  return a?.role === b.role
+    && a.bossId === b.bossId
+    && a.bossPhase === b.bossPhase
+    && a.enemyId === b.enemyId
+    && (a.variant ?? 0) === (b.variant ?? 0);
 }
 
 function setVolume(audio: BbAudioPort, volume: number): void {

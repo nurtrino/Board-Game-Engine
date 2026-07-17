@@ -1,0 +1,153 @@
+/* Physical motion for the SETI table. Geometry remains owned by SetiScene. */
+.seti-root {
+  --seti-mechanical-travel: 1080ms;
+  --seti-mechanical-ease: cubic-bezier(.18, .72, .16, 1);
+  --seti-touch-settle: 360ms;
+}
+
+/* All nested discs share timing so a compensating child rotation stays
+   mechanically locked to its parent throughout the turn. */
+.seti-solar-system .seti-disc {
+  backface-visibility: hidden;
+  transition-property: transform;
+  transition-duration: var(--seti-mechanical-travel);
+  transition-timing-function: var(--seti-mechanical-ease);
+}
+
+/* Angular and radial coordinates interpolate together. Animating left is
+   intentional: it is the radial half of the piece's polar path. */
+.seti-solar-system .seti-piece-orbit {
+  transition-property: transform;
+  transition-duration: var(--seti-mechanical-travel);
+  transition-timing-function: var(--seti-mechanical-ease);
+  will-change: transform;
+}
+
+.seti-solar-system .seti-piece-counter {
+  transition-property: left, transform;
+  transition-duration: var(--seti-mechanical-travel);
+  transition-timing-function: var(--seti-mechanical-ease);
+  will-change: left, transform;
+}
+
+.seti-space-piece .seti-piece-body,
+.seti-space-piece .seti-piece-shadow {
+  transition: transform 170ms cubic-bezier(.2, .8, .2, 1), opacity 170ms ease, filter 170ms ease;
+}
+
+.seti-space-piece.is-held .seti-piece-body {
+  transform: translate(-50%, calc(-50% - 7px)) scale(1.04);
+}
+
+.seti-space-piece.is-held .seti-piece-shadow {
+  opacity: .28;
+  filter: blur(5px);
+  transform: translate(-50%, calc(-50% + 8px)) scale(.72);
+}
+
+.seti-space-piece.is-settling .seti-piece-body {
+  animation: seti-piece-drop var(--seti-touch-settle) cubic-bezier(.18, .8, .22, 1) both;
+}
+
+.seti-space-piece.is-settling .seti-piece-shadow {
+  animation: seti-shadow-drop var(--seti-touch-settle) ease-out both;
+}
+
+/* The in-flight halo makes the curved polar movement readable without
+   obscuring the exact cell art or changing the piece's hit box. */
+.seti-piece-orbit.is-travelling .seti-space-piece::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--seat, #7ce8f5) 36%, transparent), transparent 66%);
+  filter: blur(3px);
+  pointer-events: none;
+  animation: seti-probe-flight var(--seti-mechanical-travel) ease-in-out both;
+}
+
+.seti-piece-orbit.is-arriving .seti-space-piece::after {
+  content: '';
+  position: absolute;
+  inset: -34%;
+  border: 2px solid color-mix(in srgb, var(--seat, #7ce8f5) 70%, white);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: seti-probe-arrival 430ms cubic-bezier(.16, .74, .18, 1) both;
+}
+
+/* A newly mounted orbiter/lander is the state boundary where the travelling
+   probe becomes a planetary spacecraft. The short touchdown and wave make
+   that conversion clear even though the engine replaces the source piece. */
+.seti-planet-marker:not(.is-choice) {
+  animation: seti-spacecraft-touchdown 520ms cubic-bezier(.14, .78, .2, 1) both;
+}
+
+.seti-planet-marker:not(.is-choice)::after {
+  content: '';
+  position: absolute;
+  inset: -120%;
+  border: 1px solid color-mix(in srgb, var(--seat, #7ce8f5) 72%, white);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: seti-touchdown-wave 620ms ease-out both;
+}
+
+.seti-planet-target:active {
+  filter: brightness(1.35);
+  transform: translate(-50%, -50%) scale(.9);
+}
+
+@keyframes seti-piece-drop {
+  0% { transform: translate(-50%, calc(-50% - 7px)) scale(1.04); }
+  58% { transform: translate(-50%, calc(-50% + 2px)) scale(.97); }
+  82% { transform: translate(-50%, calc(-50% - 1px)) scale(1.01); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes seti-shadow-drop {
+  0% { opacity: .28; filter: blur(5px); transform: translate(-50%, calc(-50% + 8px)) scale(.72); }
+  65% { opacity: .62; filter: blur(2px); transform: translate(-50%, -50%) scale(1.08); }
+  100% { opacity: 1; filter: blur(3px); transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes seti-probe-flight {
+  0% { opacity: .18; transform: scale(.68); }
+  35% { opacity: .82; transform: scale(1.02); }
+  78% { opacity: .5; transform: scale(.86); }
+  100% { opacity: 0; transform: scale(.7); }
+}
+
+@keyframes seti-probe-arrival {
+  0% { opacity: .9; transform: scale(.32); }
+  100% { opacity: 0; transform: scale(1.45); }
+}
+
+@keyframes seti-spacecraft-touchdown {
+  0% { opacity: 0; transform: translate(-50%, -145%) scale(.46); filter: blur(2px) drop-shadow(0 9px 7px rgba(0, 0, 0, .25)); }
+  68% { opacity: 1; transform: translate(-50%, -43%) scale(1.1); filter: blur(0) drop-shadow(0 2px 2px rgba(0, 0, 0, .72)); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .7)); }
+}
+
+@keyframes seti-touchdown-wave {
+  0%, 28% { opacity: .88; transform: scale(.2); }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seti-root {
+    --seti-mechanical-travel: 90ms;
+    --seti-touch-settle: 90ms;
+  }
+
+  .seti-piece-orbit.is-travelling .seti-space-piece::after,
+  .seti-piece-orbit.is-arriving .seti-space-piece::after,
+  .seti-planet-marker:not(.is-choice)::after {
+    display: none;
+  }
+
+  .seti-planet-marker:not(.is-choice) {
+    animation: none;
+  }
+}

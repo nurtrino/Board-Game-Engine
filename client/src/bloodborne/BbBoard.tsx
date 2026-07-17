@@ -1,37 +1,22 @@
 // Bloodborne TV board: the 3D table (BbScene) under the universal ig-* HUD —
 // hunt track strip, enemy roster chips, mission banner, seat chips with HP and
-// echoes, event narration with TV-voiced sfx. The TV is the shared table; all
+// echoes, event narration, and music. The TV is the shared table; all
 // moves happen on the devices.
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import type { BbView } from '@bge/shared';
 import { BB_HUNT_TRACK } from '@bge/shared';
 import { BbScene } from './BbScene';
 import { BB_SEAT_HEX, bbHunterName, bbEnemyName, useBbManifest, bbCellCss } from './bb-assets';
 import { bloodborneMusicMuted, useBbAudio } from './useBbAudio';
-import { playSfx, sfxEnabled, setSfxEnabled } from '../sfx';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/cormorant-garamond/latin-700.css';
 import './bb.css';
-
-import type { SfxName } from '../sfx';
-const SFX_FOR_KIND: Record<string, SfxName> = {
-  kill: 'build', 'boss-kill': 'win', death: 'error', dream: 'coins',
-  reveal: 'shuffle', 'reveal-mission': 'link', turn: 'turn', reset: 'shuffle',
-  victory: 'win', defeat: 'error', 'boss-phase': 'error', fog: 'link',
-  transform: 'click', firearm: 'build', arena: 'link', boss: 'link',
-};
 
 export function BbBoard({ view }: { view: BbView }) {
   const manifest = useBbManifest();
-  const [muted, setMuted] = useState(() => !sfxEnabled() || bloodborneMusicMuted());
-  const lastSeq = useRef(view.lastEvent.seq);
+  const [muted, setMuted] = useState(() => bloodborneMusicMuted());
   useBbAudio(view, muted);
-
-  useEffect(() => {
-    if (view.lastEvent.seq === lastSeq.current) return;
-    lastSeq.current = view.lastEvent.seq;
-    const name = SFX_FOR_KIND[view.lastEvent.kind ?? ''];
-    if (name) playSfx(name);
-  }, [view.lastEvent.seq, view.lastEvent.kind]);
 
   const trackLen = view.huntTrackLength || BB_HUNT_TRACK.length;
   const activeMissions = Object.values(view.missions).filter((m) => m.revealed && !m.completed).slice(0, 4);
@@ -79,6 +64,20 @@ export function BbBoard({ view }: { view: BbView }) {
         role="status" aria-live="polite" aria-atomic="true">
         <span className="ig-banner-head">{view.lastEvent.text}</span>
       </div>
+
+      {/* camera note: who the table is focused on */}
+      {view.activeSeat != null && view.hunters[view.activeSeat] && (
+        <div className="bb-follow ig-glass" role="status" aria-live="polite"
+          style={{ borderColor: BB_SEAT_HEX[String(view.seats[view.activeSeat]?.color)] }}>
+          <span>FOLLOWING</span>
+          <strong>{bbHunterName(view.hunters[view.activeSeat].hunterId).toUpperCase()}</strong>
+          <small>
+            {view.hunters[view.activeSeat].space === null
+              ? 'IN THE HUNTER\'S DREAM'
+              : `HP ${view.hunters[view.activeSeat].hp}/6 · ECHOES ${view.hunters[view.activeSeat].echoes}`}
+          </small>
+        </div>
+      )}
 
       {/* seats: name + hunter + hp + echoes (outline = seat colour) */}
       <div className="bb-seats">
@@ -139,9 +138,9 @@ export function BbBoard({ view }: { view: BbView }) {
         </div>
       )}
 
-      <button className="bb-mute ig-glass" aria-label={muted ? 'Turn music and sound effects on' : 'Turn music and sound effects off'}
-        onClick={() => { setSfxEnabled(muted); setMuted(!muted); }}>
-        {muted ? 'SOUND OFF' : 'SOUND ON'}
+      <button className="bb-mute ig-glass" aria-label={muted ? 'Turn Bloodborne music on' : 'Turn Bloodborne music off'}
+        onClick={() => setMuted(!muted)}>
+        {muted ? 'MUSIC OFF' : 'MUSIC ON'}
       </button>
     </div>
   );

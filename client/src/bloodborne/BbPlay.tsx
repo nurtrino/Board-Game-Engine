@@ -14,9 +14,23 @@ import {
   bbTileArt, bbSpaceWorld, bbTileSpacesWorld, bbOpenExits, bbNeighbors,
   bbHunterMini, bbEnemyMini, bbBossMini, type BbEdgeT,
 } from './bb-assets';
+import { useBbMiniThumb } from './bb-mini-thumbs';
+import { BB_HUNTER_NOTES } from './bb-hunter-notes';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/cormorant-garamond/latin-700.css';
 import './bb.css';
 
 const RANK: Record<string, number> = { fast: 3, medium: 2, slow: 1 };
+
+// Stat-card footprints printed on the dashboard art, measured from the mod's
+// 1024x579 sheet-2 cells (percent of the card). The layout depends on how
+// many slots the weapon side has: 3 fill the right zone, 2 and 1 are centered.
+const BB_SLOT_GEO: Record<number, { lefts: number[]; width: number; top: number; height: number }> = {
+  3: { lefts: [30.8, 53.3, 75.7], width: 20.1, top: 34.2, height: 54.4 },
+  2: { lefts: [42.2, 64.8], width: 19.8, top: 34.8, height: 53.5 },
+  1: { lefts: [53.1], width: 20, top: 34.6, height: 53 },
+};
+
 const BbHunterViewer = lazy(() => import('./BbHunterViewer'));
 const BbBattleStage = lazy(() => import('./BbBattleStage'));
 
@@ -41,7 +55,10 @@ export default function BbPlay({ view, act, seat, error }: Props) {
   const [targeting, setTargeting] = useState<{ what: 'consumable' | 'firearm' | 'reward'; ix: number; label: string } | null>(null);
   const [offerPick, setOfferPick] = useState<string[] | null>(null);
   const [startSide, setStartSide] = useState<0 | 1>(0);
-  const [zoomCard, setZoomCard] = useState<{ sheet: string; cell: number; back?: boolean; title?: string } | null>(null);
+  const [zoomCard, setZoomCard] = useState<{ sheet: string; cell: number; back?: boolean; title?: string; wide?: boolean } | null>(null);
+  const [inspect, setInspect] = useState<string | null>(null);
+  const [dreamExpanded, setDreamExpanded] = useState(false);
+  const [dismissedCombatResult, setDismissedCombatResult] = useState(0);
 
   const myTurn = view.activeSeat === seat;
   const moving = view.moving?.seat === seat ? view.moving : null;
@@ -53,6 +70,13 @@ export default function BbPlay({ view, act, seat, error }: Props) {
   const weaponSide = hunterDef?.sides[me.weaponSide];
   const weaponCell = (hunterDef?.art as { weaponCell?: number } | undefined)?.weaponCell ?? 0;
   const refreshNeed = me && BB_ITEMS[me.firearmId]?.effects?.refresh === 'discard2' ? 2 : 1;
+  const combatResult = view.lastCombatResult?.seat === seat && view.lastCombatResult.seq > dismissedCombatResult
+    ? view.lastCombatResult
+    : null;
+
+  // The map surfaces itself only while an action resolves on it (moving or
+  // picking a target); otherwise the panel holds the Hunter's Dream board.
+  const needsMap = !!moving || !!targeting;
 
   if (!me) return <div className="page center"><h2>Watching the Hunt</h2></div>;
 
@@ -78,10 +102,10 @@ export default function BbPlay({ view, act, seat, error }: Props) {
             const taken = view.pickedHunters.includes(h.id);
             const mine = me.hunterId === h.id;
             return (
-              <button key={h.id} data-testid={`bb-pick-${h.id}`}
+              <button key={h.id} data-testid={`bb-inspect-${h.id}`}
                 className={'bb-pick-card' + (taken ? ' taken' : '') + (mine ? ' mine' : '')}
-                disabled={taken || !!me.hunterId}
-                onClick={() => act({ type: 'pick_hunter', hunterId: h.id, side: startSide })}>
+                disabled={taken && !mine}
+                onClick={() => setInspect(h.id)}>
                 <div className="bb-pick-art" style={bbCellCss(manifest, 'sheet-2', (h.art as { weaponCell?: number }).weaponCell ?? 0, startSide === 1)} />
                 <span className="bb-pick-name">{h.name.toUpperCase()}</span>
                 {h.set !== 'core' && <span className="bb-pick-tag">EXPANSION</span>}
@@ -91,6 +115,58 @@ export default function BbPlay({ view, act, seat, error }: Props) {
             );
           })}
         </div>
+        {inspect && (() => {
+          const h = BB_HUNTERS[inspect];
+          if (!h) return null;
+          const taken = view.pickedHunters.includes(inspect);
+          const firearm = BB_ITEMS[h.firearmId];
+          return (
+            <BbDialog label={`${h.name} details`} wide onClose={() => setInspect(null)} testId="bb-inspect-dialog">
+              <div className="ig-lab">{h.name.toUpperCase()}{h.set !== 'core' ? ' · EXPANSION' : ''}</div>
+              <div className="bb-inspect">
+                <div className="bb-inspect-stage">
+                  <Suspense fallback={
+                    <div className="bb-hunter-viewer-fallback" aria-hidden="true">
+                      <span className="bb-hunter-viewer-silhouette" />
+                    </div>
+                  }>
+                    <BbHunterViewer hunterId={inspect} hunterName={h.name} accent={hunterAccent} title="THE HUNTER" />
+                  </Suspense>
+                </div>
+                <div className="bb-inspect-info">
+                  <ul className="bb-inspect-notes" aria-label="Playstyle overview">
+                    {(BB_HUNTER_NOTES[inspect] ?? []).map((note) => <li key={note}>{note}</li>)}
+                  </ul>
+                  {h.sides.map((s, i) => (
+                    <div key={i} className="bb-inspect-side">
+                      <span className="bb-inspect-side-name">{s.label.toUpperCase()}{i === 1 ? ' · TRANSFORMED' : ''}</span>
+                      {s.ability && <span className="bb-inspect-ability">{bbIconText(s.ability)}</span>}
+                      <div className="bb-inspect-slots">
+                        {s.slots.map((sl, j) => (
+                          <span key={j} className="bb-chip">{sl.name.toUpperCase()} · {'›'.repeat(RANK[sl.speed] ?? 1)} · {sl.damage}♦</span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <div className="bb-inspect-legend">
+                    <span>› IS ATTACK SPEED. MORE ARROWS STRIKE FIRST IN AN EXCHANGE.</span>
+                    <span>♦ IS DAMAGE DEALT WHEN THE STRIKE RESOLVES.</span>
+                    <span>A STAT CARD FILLS A SLOT TO POWER EACH ATTACK. CLEARED SLOTS RETURN CARDS.</span>
+                    <span>EVERY HUNTER: 6 HP · HAND OF 3 STAT CARDS · {firearm?.name.toUpperCase() ?? 'FIREARM'}</span>
+                  </div>
+                </div>
+              </div>
+              <button className="bb-btn primary" data-testid={`bb-pick-${inspect}`}
+                disabled={taken || !!me.hunterId}
+                onClick={() => { act({ type: 'pick_hunter', hunterId: inspect, side: startSide }); setInspect(null); }}>
+                {taken ? (me.hunterId === inspect ? 'THIS IS YOUR HUNTER' : 'ALREADY TAKEN')
+                  : me.hunterId ? 'YOU ALREADY HAVE A HUNTER'
+                    : `HUNT AS ${h.name.toUpperCase()} · START ${h.sides[startSide]?.label?.toUpperCase() ?? ''}`}
+              </button>
+              <button className="bb-btn ghost" onClick={() => setInspect(null)}>CLOSE</button>
+            </BbDialog>
+          );
+        })()}
         {error && <div className="bb-toast">{error}</div>}
       </div>
     );
@@ -153,7 +229,9 @@ export default function BbPlay({ view, act, seat, error }: Props) {
           ? queuedRoundRefresh
             ? 'ROUND REFRESH QUEUED · WAITING FOR YOUR PROMPT'
             : (me.tookTurnThisRound || me.skipTurn ? 'WAITING FOR THE ROUND' : 'READY TO BEGIN')
-          : `${bbHunterName(activeHunter?.hunterId ?? '').toUpperCase()} IS HUNTING`;
+          : activeHunter?.hunterId
+            ? `${bbHunterName(activeHunter.hunterId).toUpperCase()} IS HUNTING`
+            : 'WAITING FOR ANOTHER HUNTER';
   const mapHint = moving
     ? 'Choose a highlighted path or reveal an open gate.'
     : targeting
@@ -246,36 +324,87 @@ export default function BbPlay({ view, act, seat, error }: Props) {
       </header>
 
       <div className="bb-main">
-        {/* left: the map */}
-        <section className="bb-map-wrap ig-glass" data-testid="bb-map" aria-labelledby="bb-map-title">
-          <div className="bb-map-kicker">
-            <span id="bb-map-title">HUNT MAP</span>
-            <span>{currentLocation}</span>
-          </div>
-          <div className="bb-map-hint" aria-live="polite">{mapHint}</div>
-          <BbMap view={view} seat={seat} moving={!!moving}
-            enemyTargeting={!!targeting || (canAct && !!selCard && emptySlots.length > 0)}
-            onSpace={(ref) => {
-              if (moving) act({ type: 'step', to: ref });
-            }}
-            onExit={(uid, edge) => {
-              if (moving) act({ type: 'step_reveal', edge });
-            }}
-            onEnemy={(uid, isBoss) => {
-              if (targeting) {
-                if (targeting.what === 'firearm') act({ type: 'use_firearm', target: uid });
-                else if (targeting.what === 'reward') act({ type: 'use_reward', rewardIx: targeting.ix, target: uid });
-                else act({ type: 'use_consumable', itemIx: targeting.ix, target: uid });
-                setTargeting(null);
-                return;
-              }
-              if (canAct && selCard && emptySlots.length) setAttackPick(isBoss ? { bossUid: uid } : { enemyUid: uid });
-            }}
-          />
-          {targeting && targeting.label !== 'teleport-lamp' && targeting.label !== 'summon-ally' && (
-            <div className="bb-special-chips targeting">
-              <span className="bb-chip bb-target-callout">{targeting.label}</span>
-              <button className="bb-chip" onClick={() => setTargeting(null)}>CANCEL</button>
+        {/* left: the Hunter's Dream board; the hunt map takes over on its own
+            while you move or pick a target, then hands back */}
+        <section className={'bb-map-wrap ig-glass' + (needsMap ? '' : ' is-dream')} data-testid="bb-map"
+          aria-label={needsMap ? 'Hunt map' : "Hunter's dream"}>
+          {needsMap ? (
+            <>
+              <div className="bb-map-kicker">
+                <span>HUNT MAP</span>
+                <span>{currentLocation}</span>
+              </div>
+              <div className="bb-map-hint" aria-live="polite">{mapHint}</div>
+              <BbMap view={view} seat={seat} moving={!!moving}
+                enemyTargeting={!!targeting || (canAct && !!selCard && emptySlots.length > 0)}
+                onSpace={(ref) => {
+                  if (moving) act({ type: 'step', to: ref });
+                }}
+                onExit={(uid, edge) => {
+                  if (moving) act({ type: 'step_reveal', edge });
+                }}
+                onEnemy={(uid, isBoss) => {
+                  if (targeting) {
+                    if (targeting.what === 'firearm') act({ type: 'use_firearm', target: uid });
+                    else if (targeting.what === 'reward') act({ type: 'use_reward', rewardIx: targeting.ix, target: uid });
+                    else act({ type: 'use_consumable', itemIx: targeting.ix, target: uid });
+                    setTargeting(null);
+                    return;
+                  }
+                  if (canAct && selCard && emptySlots.length) setAttackPick(isBoss ? { bossUid: uid } : { enemyUid: uid });
+                }}
+              />
+              {targeting && targeting.label !== 'teleport-lamp' && targeting.label !== 'summon-ally' && (
+                <div className="bb-special-chips targeting">
+                  <span className="bb-chip bb-target-callout">{targeting.label}</span>
+                  <button className="bb-chip" onClick={() => setTargeting(null)}>CANCEL</button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="bb-personal-board">
+              <aside className="bb-dream-dock" aria-label="Hunter's Dream summary">
+                <button className="bb-dream-dock-head" data-testid="bb-dream-expand" onClick={() => setDreamExpanded(true)}>
+                  <span>THE HUNTER'S DREAM</span>
+                  <strong>EXPAND</strong>
+                </button>
+                <BbHuntBoard view={view} manifest={manifest} onZoom={setZoomCard} compact />
+              </aside>
+
+              <section className="bb-weapon bb-weapon-hero ig-glass" data-testid="bb-weapon" aria-labelledby="bb-weapon-title">
+                <div className="bb-section-head">
+                  <span id="bb-weapon-title">TRICK WEAPON · {weaponSide?.label?.toUpperCase()}</span>
+                  <button className="bb-expand" data-testid="bb-weapon-expand"
+                    onClick={() => setZoomCard({ sheet: 'sheet-2', cell: weaponCell, back: me.weaponSide === 1, title: weaponSide?.label, wide: true })}>
+                    EXPAND
+                  </button>
+                </div>
+                <div className="bb-dashboard">
+                  <button className="bb-weapon-art" style={bbCellCss(manifest, 'sheet-2', weaponCell, me.weaponSide === 1)}
+                    aria-label={`Enlarge ${weaponSide?.label ?? 'weapon'} board`}
+                    onClick={() => setZoomCard({ sheet: 'sheet-2', cell: weaponCell, back: me.weaponSide === 1, title: weaponSide?.label, wide: true })} />
+                  {weaponSide?.slots.map((sl, i) => {
+                    const geo = BB_SLOT_GEO[weaponSide.slots.length] ?? BB_SLOT_GEO[3];
+                    const spot: React.CSSProperties = {
+                      left: `${geo.lefts[i]}%`, top: `${geo.top}%`,
+                      width: `${geo.width}%`, height: `${geo.height}%`,
+                    };
+                    const rules = `${sl.name} · ${'›'.repeat(RANK[sl.speed] ?? 1)} · ${sl.damage}♦`;
+                    const card = me.slots[i] ? BB_STAT_CARDS[me.slots[i]!] : null;
+                    return card ? (
+                      <button key={i} className="bb-dash-slot filled" data-testid={`bb-slot-${i}`} style={spot}
+                        aria-label={`${card.name} occupying ${sl.name}`} title={`${card.name} · ${rules}`}
+                        onClick={() => setZoomCard({ sheet: card.art.sheet, cell: card.art.cell, title: card.name })}>
+                        <span className="bb-dash-card" style={cardArt(me.slots[i]!)} aria-hidden="true" />
+                        <span className="bb-dash-card-name">{card.name.toUpperCase()}</span>
+                      </button>
+                    ) : (
+                      <div key={i} className="bb-dash-slot" data-testid={`bb-slot-${i}`} style={spot}
+                        role="img" aria-label={`${sl.name} is empty`} title={rules} />
+                    );
+                  })}
+                </div>
+              </section>
             </div>
           )}
           {view.specialRules.length > 0 && (
@@ -287,57 +416,8 @@ export default function BbPlay({ view, act, seat, error }: Props) {
           )}
         </section>
 
-        {/* right: dashboard + hand */}
+        {/* right: kit + hand + always-on actions */}
         <aside className="bb-rail" aria-label="Hunter dashboard">
-          {!view.combat && (
-            <Suspense fallback={
-              <section className="bb-hunter-viewer bb-hunter-viewer--loading ig-glass"
-                style={{ '--bb-hunter-accent': hunterAccent } as React.CSSProperties}
-                aria-label={`${bbHunterName(me.hunterId)} miniature loading`} aria-busy="true">
-                <div className="bb-hunter-viewer-head">
-                  <span>HUNTER'S PRESENCE</span>
-                  <span>SUMMONING MINIATURE</span>
-                </div>
-                <div className="bb-hunter-viewer-fallback" aria-hidden="true">
-                  <span className="bb-hunter-viewer-silhouette" />
-                </div>
-                <span className="bb-hunter-viewer-name" aria-hidden="true">
-                  {bbHunterName(me.hunterId).toUpperCase()}
-                </span>
-              </section>
-            }>
-              <BbHunterViewer hunterId={me.hunterId} hunterName={bbHunterName(me.hunterId)} accent={hunterAccent} />
-            </Suspense>
-          )}
-
-          <section className="bb-weapon ig-glass" data-testid="bb-weapon" aria-labelledby="bb-weapon-title">
-            <div className="bb-weapon-visual">
-              <div className="bb-section-head">
-                <span id="bb-weapon-title">TRICK WEAPON</span>
-                <span>{weaponSide?.label?.toUpperCase()}</span>
-              </div>
-              <button className="bb-weapon-art" style={bbCellCss(manifest, 'sheet-2', weaponCell, me.weaponSide === 1)}
-                aria-label={`Enlarge ${weaponSide?.label ?? 'weapon'} card`}
-                onClick={() => setZoomCard({ sheet: 'sheet-2', cell: weaponCell, back: me.weaponSide === 1, title: weaponSide?.label })} />
-            </div>
-            <div className="bb-slots">
-              {weaponSide?.slots.map((sl, i) => (
-                <div key={i} className={'bb-slot bb-slot-visual' + (me.slots[i] ? ' filled' : '')} data-testid={`bb-slot-${i}`}>
-                  <div className="bb-slot-rules">
-                    <span className="bb-slot-name">{sl.name.toUpperCase()}</span>
-                    <span className="bb-slot-meta">{'›'.repeat(RANK[sl.speed] ?? 1)} · {sl.damage}♦</span>
-                  </div>
-                  {me.slots[i]
-                    ? <div className="bb-slot-card-art" role="img" aria-label={`${cardName(me.slots[i]!)} occupying ${sl.name}`}
-                        style={cardArt(me.slots[i]!)}>
-                        <span>{cardName(me.slots[i]!).toUpperCase()}</span>
-                      </div>
-                    : <div className="bb-slot-empty" aria-label={`${sl.name} is empty`}><span aria-hidden="true">◇</span></div>}
-                </div>
-              ))}
-            </div>
-          </section>
-
           <section className="bb-gear ig-glass" aria-labelledby="bb-gear-title">
             <div className="bb-section-head">
               <span id="bb-gear-title">HUNTER'S KIT</span>
@@ -420,46 +500,88 @@ export default function BbPlay({ view, act, seat, error }: Props) {
           </div>
           <div className="bb-hand" data-testid="bb-hand">
             {me.hand.map((id, i) => (
-              <button key={`${id}${i}`} className={'bb-card' + (selCard?.index === i ? ' sel' : '')}
-                data-testid={`bb-hand-${i}`}
-                aria-pressed={selCard?.index === i}
-                onClick={() => setSelCard(selCard?.index === i ? null : { id, index: i })}>
-                <div className="bb-card-art" style={cardArt(id)} />
-                <span className="bb-card-name">{cardName(id).toUpperCase()}</span>
-              </button>
+              <div key={`${id}${i}`} className="bb-card-wrap">
+                <button className={'bb-card' + (selCard?.index === i ? ' sel' : '')}
+                  data-testid={`bb-hand-${i}`}
+                  aria-pressed={selCard?.index === i}
+                  onClick={() => setSelCard(selCard?.index === i ? null : { id, index: i })}>
+                  <div className="bb-card-art" style={cardArt(id)} />
+                  <span className="bb-card-name">{cardName(id).toUpperCase()}</span>
+                </button>
+                <button className="bb-card-zoom" aria-label={`Expand ${cardName(id)}`}
+                  onClick={() => {
+                    const c = BB_STAT_CARDS[id];
+                    if (c) setZoomCard({ sheet: c.art.sheet, cell: c.art.cell, title: c.name });
+                  }}>⤢</button>
+              </div>
             ))}
             {me.hand.length === 0 && <span className="bb-empty-state">NO CARDS IN HAND</span>}
           </div>
 
-          {/* action bar for the selected card */}
-          {selCard && canAct && (
-            <div className="bb-actions ig-glass" data-testid="bb-actions">
-              {actionsFor(selCard.id).map((a) => (
-                <button key={a.label} className="bb-btn" data-testid={a.testid} disabled={!!a.why}
-                  onClick={a.run}>
-                  {a.label}{a.why ? ` · ${a.why}` : ''}
-                </button>
-              ))}
-            </div>
-          )}
-          {selCard && !canAct && !myPending && (
-            <div className="bb-actions ig-glass"><span className="bb-head-note">
-              {moving ? 'FINISH YOUR MOVE FIRST' : myTurn ? 'RESOLVE THE PROMPT FIRST' : 'NOT YOUR TURN'}
-            </span></div>
-          )}
+          {/* action bar: always visible; buttons unlock once a card is selected */}
+          <div className="bb-actions ig-glass" data-testid="bb-actions">
+            {actionsFor(selCard?.id ?? '').map((a) => (
+              <button key={a.label} className="bb-btn" data-testid={a.testid}
+                disabled={!selCard || !canAct || !!a.why}
+                onClick={a.run}>
+                {a.label}{selCard && canAct && a.why ? ` · ${a.why}` : ''}
+              </button>
+            ))}
+            <span className="bb-actions-note" aria-live="polite">
+              {myPending ? 'RESOLVE THE PROMPT FIRST'
+                : moving ? 'FINISH YOUR MOVE ON THE MAP'
+                  : !myTurn ? 'ACTIONS UNLOCK ON YOUR TURN'
+                    : !selCard ? 'SELECT A STAT CARD TO ACT'
+                      : 'EACH ACTION SPENDS THE SELECTED CARD'}
+            </span>
+          </div>
         </aside>
       </div>
 
       {/* ---------- prompts ---------- */}
-      {myPending && (
+      {myPending && !combatResult && (
         <BbPrompt key={myPending.kind} view={view} seat={seat} act={act} pending={myPending} manifest={manifest}
           roundDiscard={roundDiscard} setRoundDiscard={setRoundDiscard} />
+      )}
+
+      {combatResult && (
+        <BbCombatResultDialog result={combatResult} view={view}
+          onContinue={() => setDismissedCombatResult(combatResult.seq)} />
+      )}
+
+      {dreamExpanded && (
+        <BbDialog label="The Hunter's Dream" wide className="bb-dream-dialog" testId="bb-dream-dialog"
+          onClose={() => setDreamExpanded(false)}>
+          <div className="bb-dream-dialog-head">
+            <div><span>THE HUNTER'S DREAM</span><strong>HUNT TRACK {view.huntTrack + 1}/{view.huntTrackLength}</strong></div>
+            <button className="bb-btn ghost" onClick={() => setDreamExpanded(false)}>RETURN TO HUNTER</button>
+          </div>
+          <BbHuntBoard view={view} manifest={manifest} onZoom={setZoomCard} testId="bb-huntboard-expanded" />
+        </BbDialog>
       )}
 
       {/* attack slot picker */}
       {attackPick && selCard && (
         <BbDialog label={`Pick an attack slot for ${cardName(selCard.id)}`} onClose={() => setAttackPick(null)}>
             <div className="ig-lab">PICK AN ATTACK SLOT · {cardName(selCard.id).toUpperCase()}</div>
+            {enemiesHere.length + bossesHere.length > 1 && (
+              <div className="bb-gear-row" aria-label="Choose a target">
+                {enemiesHere.map((e) => (
+                  <button key={`e${e.uid}`} className={'bb-chip' + (attackPick.enemyUid === e.uid ? ' sel' : '')}
+                    aria-pressed={attackPick.enemyUid === e.uid}
+                    onClick={() => setAttackPick({ enemyUid: e.uid })}>
+                    {bbEnemyName(e.type).toUpperCase()}
+                  </button>
+                ))}
+                {bossesHere.map((b) => (
+                  <button key={`b${b.uid}`} className={'bb-chip' + (attackPick.bossUid === b.uid ? ' sel' : '')}
+                    aria-pressed={attackPick.bossUid === b.uid}
+                    onClick={() => setAttackPick({ bossUid: b.uid })}>
+                    {bbBossName(b.type).toUpperCase()} · PHASE {b.phase}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="bb-slot-pick">
               {weaponSide?.slots.map((sl, i) => (
                 <button key={i} className="bb-btn" disabled={me.slots[i] !== null}
@@ -552,6 +674,7 @@ export default function BbPlay({ view, act, seat, error }: Props) {
             <div className="bb-intro-text">
               <p>Each action costs 1 stat card from your hand. MOVE up to 2 spaces. INTERACT to pick up consumables and work missions. ATTACK an enemy in your space: the card goes into an empty attack slot and powers that strike.</p>
               <p>Enemies act on their own after your turn. Faster attacks strike first. Keep a Dodge card and an empty fast slot to survive.</p>
+              <p><strong>Discarding cards normally is temporary:</strong> they go to your discard pile and return when your Hunter deck is reshuffled. When you incorporate an Upgrade in the Hunter&apos;s Dream, however, you remove one card from your deck permanently—usually a weaker Basic card—and replace it with that Upgrade. Your deck stays at 12 cards, but becomes stronger and more specialized.</p>
               <p>Blood Echoes buy upgrades in the Hunter's Dream. Dying costs your echoes and time. Complete the Hunt Mission before the track runs out.</p>
             </div>
             <a className="bb-btn ghost" href="/bloodborne/rulebook.pdf" target="_blank" rel="noreferrer">FULL RULEBOOK</a>
@@ -648,7 +771,8 @@ export default function BbPlay({ view, act, seat, error }: Props) {
         <BbDialog label={zoomCard.title ? `${zoomCard.title} card` : 'Enlarged card'} onClose={() => setZoomCard(null)}
           className="bb-zoom-dialog" testId="bb-zoom">
           <div className="bb-zoom">
-            <div className="bb-zoom-art" style={bbCellCss(manifest, zoomCard.sheet, zoomCard.cell, zoomCard.back)} />
+            <div className={'bb-zoom-art' + (zoomCard.wide ? ' wide' : '')}
+              style={bbCellCss(manifest, zoomCard.sheet, zoomCard.cell, zoomCard.back)} />
             {zoomCard.title && <span className="bb-zoom-title">{zoomCard.title.toUpperCase()}</span>}
             <button className="bb-btn ghost" onClick={() => setZoomCard(null)}>CLOSE</button>
           </div>
@@ -723,30 +847,104 @@ function BbDialog({ label, children, onClose, wide, className, testId, focusKey 
   );
 }
 
-function BbItemVisual({ manifest, itemId, kindLabel, exhausted = false, stateLabel, disabled = false, onClick, testId }: {
+function BbItemVisual({ manifest, itemId, kindLabel, exhausted = false, stateLabel, disabled = false, reason, onClick, testId }: {
   manifest: ReturnType<typeof useBbManifest>;
   itemId: string;
   kindLabel: string;
   exhausted?: boolean;
   stateLabel?: string;
   disabled?: boolean;
+  reason?: string;
   onClick: () => void;
   testId?: string;
 }) {
   const item = BB_ITEMS[itemId];
   if (!item) return null;
   return (
-    <button className={'bb-item-visual' + (exhausted ? ' spent' : '')} data-testid={testId}
-      disabled={disabled} onClick={onClick} title={bbIconText(item.text)}
-      aria-label={`${item.name}, ${exhausted ? (disabled ? 'spent' : 'spent, activate to refresh') : stateLabel ?? 'ready'}`}>
+    <button className={'bb-item-visual' + (exhausted ? ' spent' : '') + (disabled ? ' unavailable' : '')} data-testid={testId}
+      disabled={disabled} onClick={onClick} title={`${bbIconText(item.text)}${reason ? ` — ${reason}` : ''}`}
+      aria-label={`${item.name}, ${reason ?? (exhausted ? (disabled ? 'spent' : 'spent, activate to refresh') : stateLabel ?? 'ready')}`}>
       <span className="bb-item-art" style={bbCellCss(manifest, item.art.sheet, item.art.cell, exhausted)} aria-hidden="true" />
       <span className="bb-item-shade" aria-hidden="true" />
       <span className="bb-item-kind">{kindLabel}</span>
       <span className="bb-item-name">{item.name.toUpperCase()}</span>
       <span className={'bb-item-state' + (exhausted ? ' spent' : '')}>
-        {exhausted ? (disabled ? 'SPENT' : 'SPENT · REFRESH') : stateLabel ?? 'READY'}
+        {exhausted ? (disabled ? 'SPENT' : 'SPENT · REFRESH') : reason ?? stateLabel ?? 'READY'}
       </span>
+      {reason && <span className="bb-item-reason">{reason}</span>}
     </button>
+  );
+}
+
+function BbCombatResultDialog({ result, view, onContinue }: {
+  result: NonNullable<BbView['lastCombatResult']>;
+  view: BbView;
+  onContinue: () => void;
+}) {
+  const title = result.outcome === 'mutual' ? 'BOTH SLAIN'
+    : result.outcome === 'hunter-slain' ? 'HUNTER SLAIN'
+      : result.outcome === 'foe-slain' ? `${result.foeName.toUpperCase()} SLAIN`
+        : result.outcome === 'phase-change' ? `BOSS PHASE ${result.bossPhaseBefore} BROKEN`
+          : result.outcome === 'hunter-advantage' ? 'HUNTER WINS THE EXCHANGE'
+            : result.outcome === 'foe-advantage' ? `${result.foeName.toUpperCase()} WINS THE EXCHANGE`
+              : 'EXCHANGE COMPLETE — BOTH REMAIN';
+  const hunterLine = !result.hunterAttack
+    ? 'The Hunter committed no attack.'
+    : result.hunterAttack.cancelled
+      ? `${result.hunterAttack.name} was cancelled before it resolved.`
+      : result.hunterAttack.resolved
+        ? `${result.hunterAttack.name} resolved for ${result.foeDamageTaken} damage.`
+        : `${result.hunterAttack.name} did not resolve.`;
+  const enemyLine = result.dodged
+    ? `${result.enemyAction?.name ?? 'Enemy attack'} was Dodged.`
+    : result.enemyAction?.cancelled
+      ? `${result.enemyAction.name} was cancelled.`
+      : result.enemyAction?.resolved
+        ? `${result.enemyAction.name} resolved for ${result.hunterDamageTaken} damage${result.blocked ? ` after ${result.blocked} Block` : ''}.`
+        : `${result.enemyAction?.name ?? 'Enemy action'} did not deal damage.`;
+  const speedName = (rank: number | null) => rank == null ? 'Ability'
+    : rank >= 3 ? 'Fast' : rank >= 2 ? 'Medium' : rank >= 1 ? 'Slow' : 'Delayed';
+  const speedOrder = result.hunterAttack && result.enemyAction
+    ? result.hunterAttack.speed === result.enemyAction.speed
+      ? `Equal ${speedName(result.hunterAttack.speed)} speed — both resolve simultaneously unless cancelled.`
+      : (result.hunterAttack.speed ?? -1) > (result.enemyAction.speed ?? -1)
+        ? `${result.hunterAttack.name} resolves first (${speedName(result.hunterAttack.speed)} before ${speedName(result.enemyAction.speed)}).`
+        : `${result.enemyAction.name} resolves first (${speedName(result.enemyAction.speed)} before ${speedName(result.hunterAttack.speed)}).`
+    : null;
+  return (
+    <BbDialog label={title} wide className="bb-combat-result-dialog" testId="bb-combat-result">
+      <div className={`bb-combat-result outcome-${result.outcome}`}>
+        <header>
+          <span>COMBAT EXCHANGE RESOLVED</span>
+          <h2>{title}</h2>
+          <p>{result.noResponse ? 'Interact ambushes allow no Hunter attack or Dodge response; this exchange resolved immediately.'
+            : result.foeSlain ? 'The foe is removed from the Hunt.'
+            : result.phaseChanged ? `Phase ${result.bossPhaseAfter} begins at full phase health; excess damage is discarded.`
+              : result.hunterSlain ? 'All carried Blood Echoes are lost; the Hunter awakens in the Dream.'
+                : 'The fight may continue in a later action or activation.'}</p>
+        </header>
+        <div className="bb-combat-result-score" aria-label="Combat health result">
+          <div><span>HUNTER</span><strong>{result.hunterHpBefore} → {result.hunterHpAfter} HP</strong><small>{result.hunterDamageTaken} DAMAGE TAKEN</small></div>
+          <b aria-hidden="true">◆</b>
+          <div><span>{result.foeName.toUpperCase()}</span><strong>{result.foeHpBefore} → {result.foeHpAfter} HP</strong><small>{result.foeDamageTaken} DAMAGE TAKEN</small></div>
+        </div>
+        <ol className="bb-combat-transcript">
+          {result.noResponse && <li>INTERACT AMBUSH — the enemy resolves without an Attack or Dodge response.</li>}
+          {speedOrder && <li>{speedOrder}</li>}
+          <li>{hunterLine}</li>
+          <li>{enemyLine}</li>
+          {result.phaseChanged && <li>Phase {result.bossPhaseBefore} is broken. The revealed phase action still finishes resolving.</li>}
+          {result.foeSlain && <li>Enemy slain — the Hunter now carries {view.hunters[result.seat]?.echoes ?? 0}/3 Blood Echoes.</li>}
+          {result.hunterSlain && <li>Hunter slain — Hunt Track is now {view.huntTrack + 1}/{view.huntTrackLength}.</li>}
+        </ol>
+        {result.enemyAction?.text && (
+          <details className="bb-combat-result-rule"><summary>REVEALED ACTION TEXT</summary><p>{bbIconText(result.enemyAction.text)}</p></details>
+        )}
+        <button className="bb-btn primary bb-combat-result-continue" data-testid="bb-combat-result-continue" onClick={onContinue}>
+          CONTINUE THE HUNT
+        </button>
+      </div>
+    </BbDialog>
   );
 }
 
@@ -763,22 +961,29 @@ function hasMissionInteract(view: BbView, seat: number): boolean {
 
 // ---------- prompts ----------
 
-function BbBattleStatCard({ manifest, id, selected, onClick, testId }: {
+function BbBattleStatCard({ manifest, id, selected, disabled = false, reason, onClick, testId }: {
   manifest: ReturnType<typeof useBbManifest>;
   id: string;
   selected: boolean;
+  disabled?: boolean;
+  reason?: string | null;
   onClick: () => void;
   testId?: string;
 }) {
   const card = BB_STAT_CARDS[id];
   return (
-    <button className={'bb-battle-stat-card' + (selected ? ' selected' : '')}
-      aria-pressed={selected} onClick={onClick} data-testid={testId}
-      title={`${card?.name ?? id}: ${bbIconText(card?.text)}`}>
+    <button className={'bb-battle-stat-card bb-card' + (selected ? ' selected' : '') + (disabled ? ' unavailable' : '')}
+      aria-pressed={selected} disabled={disabled} onClick={onClick} data-testid={testId}
+      aria-label={`${card?.name ?? id}${reason ? `, unavailable: ${reason}` : ''}`}
+      title={`${card?.name ?? id}: ${bbIconText(card?.text)}${reason ? ` — ${reason}` : ''}`}>
       <span className="bb-battle-stat-art" style={bbCellCss(manifest, card?.art.sheet ?? '', card?.art.cell ?? 0)} aria-hidden="true" />
       <span className="bb-battle-card-gloss" aria-hidden="true" />
-      <span className="bb-battle-stat-name">{(card?.name ?? id).toUpperCase()}</span>
+      <span className="bb-battle-stat-copy">
+        <strong>{card?.name ?? id}</strong>
+        <small>{bbIconText(card?.text) || (card?.effects.dodge ? 'Can be committed to Dodge.' : 'Commit to an open weapon slot.')}</small>
+      </span>
       {card?.effects.dodge && <span className="bb-battle-card-tag">DODGE</span>}
+      {reason && <span className="bb-battle-card-reason">{reason}</span>}
     </button>
   );
 }
@@ -1037,6 +1242,457 @@ function BbBattlePrompt({ view, seat, act, pending, manifest, pick, setPick }: {
   );
 }
 
+function BbBattlePromptBoard({ view, seat, act, pending, manifest, pick, setPick }: {
+  view: BbView;
+  seat: number;
+  act: (action: BbAction) => void;
+  pending: BbPending;
+  manifest: ReturnType<typeof useBbManifest>;
+  pick: { id: string; index: number } | null;
+  setPick: (pick: { id: string; index: number } | null) => void;
+}) {
+  const focusRef = useRef<HTMLDivElement>(null);
+  const resolveTimer = useRef<number | null>(null);
+  const [resolving, setResolving] = useState(false);
+  const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [firstBattle, setFirstBattle] = useState(() => (
+    typeof window !== 'undefined' && window.localStorage.getItem('bb-combat-tutorial-v2') !== 'complete'
+  ));
+  // A hunter-initiated attack may enter this component at modifiers or reveal
+  // because its card and slot were committed by the action that started combat.
+  // The encounter announcement still belongs at the start of every exchange.
+  const [encounterOpen, setEncounterOpen] = useState(true);
+  const me = view.hunters[seat];
+  const hunter = me.hunterId ? BB_HUNTERS[me.hunterId] : null;
+  const weaponSide = hunter?.sides[me.weaponSide];
+  const combat = view.combat;
+  const isRider = pending.kind === 'combat-rider';
+  const foe = combat?.enemyUid != null ? view.enemies.find((enemy) => enemy.uid === combat.enemyUid) : null;
+  const boss = combat?.bossUid != null ? view.bosses.find((candidate) => candidate.uid === combat.bossUid) : null;
+  const foeDef = foe ? BB_ENEMIES[foe.type] : null;
+  const bossDef = boss ? BB_BOSSES[boss.type] : null;
+  const foeName = foeDef?.name ?? bossDef?.name ?? (isRider ? 'Secondary Target' : 'Nightmare Hazard');
+  const foeSide = foe && foeDef ? foeDef.sides[view.enemySides[foe.type] ?? 0] : null;
+  const bossHpKey = String(Math.max(1, Math.min(4, view.seats.length))) as '1' | '2' | '3' | '4';
+  const foeMaxHp = foeSide?.hp ?? (boss && bossDef ? bossDef.hp[boss.phase - 1][bossHpKey] : 1);
+  const foeDamage = foe?.damage ?? boss?.damage ?? 0;
+  const foeHp = Math.max(0, foeMaxHp - foeDamage);
+  const foeArt = foeDef?.art
+    ? { sheet: foeDef.art.sheet, cell: foeDef.art.cell }
+    : bossDef?.art
+      ? { sheet: bossDef.art.hpSheet, cell: bossDef.art.hpCell }
+      : null;
+  const snapshot = combat?.enemyAction?.action;
+  const baseEnemyAct = combat?.enemyAction && foeSide
+    ? foeSide[combat.enemyAction.kind === 'basic' ? 'basic' : combat.enemyAction.kind === 'special' ? 'special' : 'ability']
+    : combat?.enemyAction && boss && bossDef
+      ? bossDef.phases[boss.phase - 1][combat.enemyAction.bossCardIx ?? 0]
+      : null;
+  const enemyAct = snapshot ?? baseEnemyAct;
+  const actionIsAbility = snapshot?.isAbility ?? (!!enemyAct && (enemyAct.speed == null || combat?.enemyAction?.kind === 'ability'));
+  const firearm = BB_ITEMS[me.firearmId];
+  const firearmFx = (firearm?.effects ?? {}) as { custom?: string; attack?: { speed: string; damage: number; stagger?: boolean; splash?: number } };
+  const firearmAttack = (combat as unknown as { firearmAttack?: { speed: string; damage: number; stagger?: boolean; splash?: number } } | null)?.firearmAttack;
+  const cardAttack = !!combat?.attack;
+  const hunterAttacking = cardAttack || !!firearmAttack;
+  const committedCard = combat?.attack ? BB_STAT_CARDS[combat.attack.cardId] : null;
+  const committedSlot = combat?.attack ? weaponSide?.slots[combat.attack.slot] : null;
+  const committedStagger = !!committedCard?.effects.stagger || !!committedSlot?.effects?.stagger
+    || !!(combat as unknown as { hunterStagger?: boolean } | null)?.hunterStagger;
+  const weaponBonusDamage = committedStagger ? weaponSide?.effects?.staggerBonusDmg ?? 0 : 0;
+  const hunterAttackDamage = firearmAttack
+    ? firearmAttack.damage + (combat?.hunterDmgBonus ?? 0)
+    : committedSlot
+      ? committedSlot.damage + (committedCard?.effects.dmgBonus ?? 0) + (combat?.hunterDmgBonus ?? 0)
+        + (me.gemSlot === combat?.attack?.slot ? 1 : 0) + weaponBonusDamage
+      : 0;
+  const hunterAttackRank = firearmAttack
+    ? (RANK[firearmAttack.speed] ?? 0) + (combat?.hunterSpeedBonus ?? 0)
+    : committedSlot
+      ? (RANK[committedSlot.speed] ?? 0) + (committedCard?.effects.speedBonus ?? 0) + (combat?.hunterSpeedBonus ?? 0)
+      : null;
+  const enemyDamage = Math.max(0, (enemyAct?.damage ?? 0) + (combat?.enemyDmgBonus ?? 0));
+  const enemyRank = enemyAct?.speed ? (RANK[enemyAct.speed] ?? 0) + (combat?.enemySpeedBonus ?? 0) : null;
+  const attackCancelled = !!(combat as unknown as { firearmCancel?: boolean } | null)?.firearmCancel;
+  const effectsStripped = !!(combat as unknown as { stripEffects?: boolean } | null)?.stripEffects;
+  const cannotDodge = !effectsStripped && !!snapshot?.cannotDodge;
+  const exactDodgeSpeed = !effectsStripped ? snapshot?.exactDodgeSpeed ?? null : null;
+  const hunterAccent = BB_SEAT_HEX[String(view.seats[seat]?.color)] ?? '#8b929d';
+  const openSlots = me.slots.flatMap((value, index) => value == null ? [index] : []);
+  const requiredRank = pending.kind === 'combat-dodge'
+    ? (typeof pending.speed === 'number' ? pending.speed : RANK[pending.speed] ?? 1)
+    : pending.kind === 'combat-rider' ? RANK[pending.speed ?? 'slow'] ?? 1 : 1;
+  const speedName = (rank: number | null) => rank == null ? 'ABILITY'
+    : rank >= 4 ? 'FAST+' : rank >= 3 ? 'FAST' : rank >= 2 ? 'MEDIUM' : rank >= 1 ? 'SLOW' : 'DELAYED';
+  const speedMarks = (rank: number | null) => rank == null ? 'ABILITY' : `${'›'.repeat(Math.max(1, Math.round(rank)))} ${speedName(rank)}`;
+  const effectiveSlotRank = (slot: number, cardId: string) => (
+    (RANK[weaponSide?.slots[slot]?.speed ?? 'slow'] ?? 1) + (BB_STAT_CARDS[cardId]?.effects.speedBonus ?? 0)
+  );
+  const slotCanDodge = (slot: number, cardId: string) => {
+    const rank = effectiveSlotRank(slot, cardId);
+    return exactDodgeSpeed ? rank === (RANK[exactDodgeSpeed] ?? 0) : rank >= requiredRank;
+  };
+  const dodgeCardReason = (id: string): string | null => {
+    if (!BB_STAT_CARDS[id]?.effects.dodge) return 'NO DODGE KEYWORD';
+    if (attackCancelled) return 'ENEMY ATTACK CANCELLED';
+    if (cannotDodge) return 'THIS ATTACK CANNOT BE DODGED';
+    if (openSlots.length === 0) return 'NO OPEN ATTACK SLOT';
+    if (!openSlots.some((slot) => slotCanDodge(slot, id))) {
+      return exactDodgeSpeed ? `REQUIRES EXACTLY ${speedName(RANK[exactDodgeSpeed])}`
+        : `NO SLOT REACHES ${speedName(requiredRank)} SPEED`;
+    }
+    return null;
+  };
+  const dodgeSlotReason = (slot: number): string | null => {
+    if (me.slots[slot]) return `OCCUPIED BY ${BB_STAT_CARDS[me.slots[slot]!]?.name?.toUpperCase() ?? 'CARD'}`;
+    if (!pick) return 'SELECT A DODGE CARD';
+    if (attackCancelled) return 'ENEMY ATTACK CANCELLED';
+    if (cannotDodge) return 'THIS ATTACK CANNOT BE DODGED';
+    const rank = effectiveSlotRank(slot, pick.id);
+    if (exactDodgeSpeed && rank !== (RANK[exactDodgeSpeed] ?? 0)) return `REQUIRES EXACTLY ${speedName(RANK[exactDodgeSpeed])}`;
+    if (!exactDodgeSpeed && rank < requiredRank) return `${speedName(rank)} — NEEDS ${speedName(requiredRank)} OR FASTER`;
+    return null;
+  };
+  const oldHunterBone = me.rewards.findIndex((reward) => (
+    ((BB_ITEMS[reward.id]?.effects ?? {}) as { custom?: string }).custom === 'auto-dodge'
+  ));
+  const oldBoneReward = oldHunterBone >= 0 ? me.rewards[oldHunterBone] : null;
+  const oldBoneReason = oldBoneReward?.exhausted ? 'EXHAUSTED' : cannotDodge ? 'THIS ATTACK CANNOT BE DODGED' : null;
+  const reactionFirearmReason = (() => {
+    if (!firearm) return 'NO FIREARM';
+    if (me.firearmExhausted) return 'FIREARM EXHAUSTED';
+    if (!combat?.enemyAction) return 'ENEMY ACTION NOT REVEALED';
+    if (combat.bossUid != null) return 'BOSS ACTION';
+    if (actionIsAbility) return 'REVEALED ACTION IS AN ABILITY';
+    if (firearmFx.custom === 'stagger-basic') return combat.enemyAction.kind === 'basic' ? null : 'NOT A BASIC ATTACK';
+    if (firearmFx.custom === 'degrade-attack') return null;
+    return 'THIS FIREARM HAS NO REACTION';
+  })();
+  const modifierReason = (itemId: string, exhausted = false): string | null => {
+    const item = BB_ITEMS[itemId];
+    const fx = (item?.effects ?? {}) as { custom?: string; onKill?: boolean };
+    if (exhausted) return 'EXHAUSTED';
+    if (!hunterAttacking) return 'REQUIRES YOUR ATTACK';
+    if (fx.onKill) return 'ON KILL ONLY';
+    if (item?.timing !== 'On Attack') return 'WRONG TIMING';
+    if ((fx.custom === 'combat-dmg1-stagger' || fx.custom === 'combat-stagger-ties') && !cardAttack) return 'REQUIRES A STAT-CARD ATTACK';
+    return null;
+  };
+  const incomingDamage = pending.kind === 'combat-rider' ? pending.damage ?? 2
+    : Math.max(0, enemyDamage + (me.frenzy ? 1 : 0) - (combat?.blockPending ?? 0));
+  const incomingEffects = pending.kind === 'combat-rider'
+    ? [pending.stun && 'STUN', pending.poison && 'POISON', pending.frenzy && 'FRENZY', pending.push && `PUSH ${pending.push}`].filter(Boolean).join(' + ')
+    : [snapshot?.stagger && 'STAGGER', enemyAct?.text && bbIconText(enemyAct.text)].filter(Boolean).join(' · ');
+  const phaseIndex = pending.kind === 'combat-attack' || pending.kind === 'combat-modifiers' ? 1
+    : pending.kind === 'combat-reaction' ? 2
+      : pending.kind === 'combat-dodge' ? 3 : 4;
+  const phaseTitle = pending.kind === 'combat-attack' ? 'CHOOSE AN ATTACK'
+    : pending.kind === 'combat-modifiers' ? 'BOOST YOUR ATTACK?'
+      : pending.kind === 'combat-reaction' ? 'ENEMY ATTACK REVEALED'
+        : pending.kind === 'combat-dodge' ? 'DODGE OR TAKE THE HIT'
+          : 'DODGE THE SECONDARY HIT';
+  const phaseInstruction = pending.kind === 'combat-attack'
+    ? pick ? 'Now choose which open weapon slot performs the attack.' : 'Choose one card from your hand. You will pick its weapon slot next.'
+    : pending.kind === 'combat-modifiers'
+      ? 'Use one optional On Attack item, or reveal the enemy now.'
+      : pending.kind === 'combat-reaction'
+        ? 'Read what the enemy is doing. Use a legal firearm reaction, or continue.'
+        : pending.kind === 'combat-dodge'
+          ? pick ? 'Choose an open slot fast enough to Dodge.' : 'Choose a Dodge card, or accept the hit shown below.'
+          : pick ? 'Choose an open slot fast enough to escape.' : 'Choose a Dodge card, or suffer this secondary effect.';
+  const foeRows: { key: string; label: string; name: string; text: string; speed: string | null; damage: number; selected: boolean }[] = foeSide
+    ? (['basic', 'special', 'ability'] as const).map((kind) => {
+        const row = foeSide[kind];
+        const selected = combat?.enemyAction?.kind === kind;
+        return {
+          key: kind, label: kind.toUpperCase(),
+          name: selected && snapshot ? snapshot.name : row.name,
+          text: selected && snapshot ? snapshot.text : row.text ?? '',
+          speed: selected && snapshot ? snapshot.speed : row.speed,
+          damage: selected && snapshot ? snapshot.damage : row.damage,
+          selected,
+        };
+      })
+    : boss && bossDef
+      ? bossDef.phases[boss.phase - 1].map((row, index) => ({
+          key: `boss-${index}`, label: `PHASE ${boss.phase} · CARD ${index + 1}`,
+          name: combat?.enemyAction?.bossCardIx === index && snapshot ? snapshot.name : row.name,
+          text: combat?.enemyAction?.bossCardIx === index && snapshot ? snapshot.text : row.text ?? '',
+          speed: combat?.enemyAction?.bossCardIx === index && snapshot ? snapshot.speed : row.speed,
+          damage: combat?.enemyAction?.bossCardIx === index && snapshot ? snapshot.damage : row.damage,
+          selected: combat?.enemyAction?.bossCardIx === index,
+        }))
+      : [];
+
+  useEffect(() => {
+    focusRef.current?.focus({ preventScroll: true });
+  }, [pending.kind]);
+  useEffect(() => () => {
+    if (resolveTimer.current != null) window.clearTimeout(resolveTimer.current);
+  }, []);
+  const resolveExchange = (action: BbAction) => {
+    if (resolving) return;
+    setResolving(true);
+    resolveTimer.current = window.setTimeout(() => {
+      resolveTimer.current = null;
+      act(action);
+    }, 360);
+  };
+  const closeTutorial = () => {
+    setTutorialOpen(false);
+  };
+  const beginExchange = () => {
+    if (firstBattle && typeof window !== 'undefined') window.localStorage.setItem('bb-combat-tutorial-v2', 'complete');
+    setFirstBattle(false);
+    setEncounterOpen(false);
+  };
+
+  return (
+    <div className={`bb-battle-overlay bb-battle-board-ui bb-battle-guided phase-${pending.kind}${resolving ? ' resolving' : ''}`}
+      role="dialog" aria-modal="true" aria-labelledby="bb-battle-title" data-testid={`bb-prompt-${pending.kind}`}
+      tabIndex={-1} ref={focusRef}>
+      <div className="bb-battle-backdrop" aria-hidden="true" />
+
+      <header className="bb-battle-topbar">
+        <div className="bb-battle-foe-portrait" style={foeArt ? bbCellCss(manifest, foeArt.sheet, foeArt.cell) : undefined} aria-hidden="true" />
+        <div className="bb-battle-foe-hud">
+          <span className="bb-battle-kicker">{boss ? `NIGHTMARE · PHASE ${boss.phase}` : isRider ? 'SECONDARY TARGET' : 'ENEMY ATTACK'}</span>
+          <strong>{foeName.toUpperCase()}</strong>
+          {!isRider && <>
+            <div className="bb-battle-hpbar enemy" role="meter" aria-label={`${foeName} health`}
+              aria-valuemin={0} aria-valuemax={foeMaxHp} aria-valuenow={foeHp}>
+              <span style={{ width: `${Math.max(0, Math.min(100, foeHp / Math.max(1, foeMaxHp) * 100))}%` }} />
+            </div>
+            <small>{foeHp} / {foeMaxHp} HP</small>
+          </>}
+        </div>
+        <div className="bb-battle-phase-copy">
+          <span>STEP {phaseIndex} OF 4</span>
+          <strong id="bb-battle-title">{phaseTitle}</strong>
+        </div>
+        <button className="bb-btn ghost bb-battle-explain" data-testid="bb-explain-combat" onClick={() => setTutorialOpen(true)}>HOW COMBAT WORKS</button>
+      </header>
+
+      <main className="bb-battle-flow">
+        <section className="bb-battle-scene" aria-label="Combatants">
+          <div className="bb-battle-stage-wrap" aria-hidden="true">
+            <Suspense fallback={<div className="bb-battle-stage-fallback" />}>
+              <BbBattleStage hunterSlug={bbHunterMini(me.hunterId)}
+                foeSlug={foe ? bbEnemyMini(foe.type) : boss ? bbBossMini(boss.type) : null}
+                foeIsBoss={!!boss} phase={resolving ? 'resolving' : pending.kind} hunterAttacking={hunterAttacking} accent={hunterAccent} />
+            </Suspense>
+          </div>
+          <div className="bb-battle-scene-message" aria-live="polite">
+            <span>{pending.kind === 'combat-reaction' || pending.kind === 'combat-dodge' ? 'THE ENEMY REVEALS' : 'THE HUNT CLOSES IN'}</span>
+            <strong>{enemyAct ? `${enemyAct.name} is coming.` : `${foeName} attacks you.`}</strong>
+          </div>
+          <div className="bb-battle-simple-exchange" aria-label="Current exchange">
+            <div>
+              <span>YOU</span>
+              <strong>{firearmAttack ? firearm?.name : committedSlot?.name ?? 'No attack chosen'}</strong>
+              <small>{hunterAttacking ? `${speedMarks(hunterAttackRank)} · ${hunterAttackDamage} damage${committedStagger ? ' · Stagger' : ''}` : `${me.hp}/6 HP`}</small>
+            </div>
+            <b aria-hidden="true">VS</b>
+            <div>
+              <span>{foeName.toUpperCase()}</span>
+              <strong>{enemyAct?.name ?? 'Action hidden'}</strong>
+              <small>{enemyAct ? `${speedMarks(enemyRank)} · ${enemyDamage} damage` : `${foeHp}/${foeMaxHp} HP`}</small>
+            </div>
+          </div>
+        </section>
+
+        <section className="bb-battle-decision" aria-label="Your current decision">
+          <header>
+            <span>STEP {phaseIndex} OF 4 · YOUR TURN</span>
+            <h2>{phaseTitle}</h2>
+            <p>{phaseInstruction}</p>
+          </header>
+
+          {pending.kind === 'combat-attack' && !pick && (
+            <div className="bb-battle-decision-body">
+              <h3>Choose one card</h3>
+              <div className="bb-battle-card-row" aria-label="Stat cards available to attack">
+                {me.hand.map((id, index) => {
+                  const reason = openSlots.length ? null : 'No open weapon slot';
+                  return <BbBattleStatCard key={`${id}:${index}`} manifest={manifest} id={id} selected={false}
+                    disabled={!!reason} reason={reason} onClick={() => setPick({ id, index })}
+                    testId={`bb-battle-hand-${index}`} />;
+                })}
+                {me.hand.length === 0 && <span className="bb-battle-empty-command">Your hand is empty.</span>}
+              </div>
+              <div className="bb-battle-alternatives">
+                {firearm && <button className="bb-battle-text-choice" disabled={me.firearmExhausted || firearmFx.custom !== 'firearm-attack'}
+                  onClick={() => act({ type: 'choose', firearm: true })}>
+                  <strong>Fire {firearm.name}</strong>
+                  <span>{me.firearmExhausted ? 'Unavailable — firearm exhausted' : firearmFx.custom !== 'firearm-attack' ? 'Unavailable — this firearm cannot attack' : 'Attack without committing a card'}</span>
+                </button>}
+                <button className="bb-battle-text-choice quiet" data-testid="bb-combat-pass" onClick={() => act({ type: 'choose', pass: true })}>
+                  <strong>Brace instead</strong><span>Do not attack. Wait for the enemy reveal.</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {pending.kind === 'combat-attack' && pick && (
+            <div className="bb-battle-decision-body">
+              <div className="bb-battle-picked">
+                <span>CHOSEN CARD</span><strong>{BB_STAT_CARDS[pick.id]?.name}</strong>
+                <button onClick={() => setPick(null)}>CHANGE CARD</button>
+              </div>
+              <h3>Choose its attack slot</h3>
+              <div className="bb-battle-slot-list">
+                {weaponSide?.slots.map((slot, index) => {
+                  const reason = me.slots[index] ? `Unavailable — occupied by ${BB_STAT_CARDS[me.slots[index]!]?.name ?? 'a card'}` : null;
+                  return <button key={index} className="bb-battle-slot-command" disabled={!!reason}
+                    onClick={() => { act({ type: 'choose', cardId: pick.id, slot: index }); setPick(null); }}>
+                    <span>{slot.name}</span><strong>{speedMarks(RANK[slot.speed])} · {slot.damage} damage</strong>
+                    <small>{reason ?? 'Use this attack'}</small>
+                  </button>;
+                })}
+              </div>
+            </div>
+          )}
+
+          {pending.kind === 'combat-modifiers' && (
+            <div className="bb-battle-decision-body">
+              <div className="bb-battle-current-action"><span>YOUR ATTACK</span><strong>{firearmAttack ? firearm?.name : committedSlot?.name ?? 'Brace'}</strong><p>The enemy action is still hidden.</p></div>
+              {(me.consumables.length + me.rewards.length) > 0 && <>
+                <h3>Optional gear</h3>
+                <div className="bb-battle-item-grid" aria-label="On Attack gear">
+                  {me.consumables.map((id, index) => {
+                    const reason = modifierReason(id);
+                    return <BbItemVisual key={`${id}:${index}`} manifest={manifest} itemId={id} kindLabel="CONSUMABLE"
+                      disabled={!!reason} reason={reason ?? undefined} testId={`bb-modifier-consumable-${index}`}
+                      onClick={() => act({ type: 'use_consumable', itemIx: index })} />;
+                  })}
+                  {me.rewards.map((reward, index) => {
+                    const reason = modifierReason(reward.id, reward.exhausted);
+                    return <BbItemVisual key={`${reward.id}:${index}`} manifest={manifest} itemId={reward.id}
+                      kindLabel={BB_ITEMS[reward.id]?.kind.toUpperCase() ?? 'REWARD'} exhausted={reward.exhausted}
+                      disabled={!!reason} reason={reason ?? undefined} testId={`bb-modifier-reward-${index}`}
+                      onClick={() => act({ type: 'use_reward', rewardIx: index })} />;
+                  })}
+                </div>
+              </>}
+              <button className="bb-btn primary bb-battle-primary" data-testid="bb-modifiers-pass"
+                onClick={() => act({ type: 'choose', pass: true })}>REVEAL THE ENEMY ATTACK</button>
+            </div>
+          )}
+
+          {pending.kind === 'combat-reaction' && (
+            <div className="bb-battle-decision-body">
+              <div className="bb-battle-incoming">
+                <span>{boss ? 'BOSS ACTION' : combat?.enemyAction?.kind?.toUpperCase()}</span>
+                <strong>{enemyAct?.name ?? 'Unknown action'}</strong>
+                <b>{actionIsAbility ? 'ABILITY' : `${speedMarks(enemyRank)} · ${enemyDamage} DAMAGE`}</b>
+                <p>{bbIconText(enemyAct?.text ?? '') || 'No additional effect.'}</p>
+              </div>
+              {firearm && <button className="bb-battle-text-choice" disabled={!!reactionFirearmReason}
+                data-testid="bb-reaction-firearm" onClick={() => act({ type: 'use_firearm' })}>
+                <strong>React with {firearm.name}</strong><span>{reactionFirearmReason ? `Unavailable — ${reactionFirearmReason.toLowerCase()}` : 'Use the firearm before the Dodge step'}</span>
+              </button>}
+              <button className="bb-btn primary bb-battle-primary" data-testid="bb-reaction-pass"
+                onClick={() => act({ type: 'choose', pass: true })}>{actionIsAbility ? 'RESOLVE THIS ABILITY' : 'CONTINUE TO DODGE'}</button>
+            </div>
+          )}
+
+          {(pending.kind === 'combat-dodge' || pending.kind === 'combat-rider') && !pick && (
+            <div className="bb-battle-decision-body">
+              <div className="bb-battle-incoming compact">
+                <span>INCOMING HIT</span>
+                <strong>{attackCancelled ? 'The attack was cancelled' : `${incomingDamage} damage${incomingEffects ? ` + ${incomingEffects}` : ''}`}</strong>
+                {!attackCancelled && <p>You need a Dodge card and an open slot at {speedName(requiredRank)} speed or faster.</p>}
+              </div>
+              <h3>Choose a Dodge card</h3>
+              <div className="bb-battle-card-row" aria-label="Cards in hand and Dodge availability">
+                {me.hand.map((id, index) => {
+                  const reason = dodgeCardReason(id);
+                  return <BbBattleStatCard key={`${id}:${index}`} manifest={manifest} id={id}
+                    selected={false} disabled={!!reason} reason={reason}
+                    onClick={() => setPick({ id, index })} testId={`bb-battle-dodge-${index}`} />;
+                })}
+                {me.hand.length === 0 && <span className="bb-battle-empty-command">Your hand is empty. You cannot Dodge.</span>}
+              </div>
+              {oldBoneReward && <button className="bb-battle-text-choice" disabled={!!oldBoneReason}
+                data-testid="bb-dodge-old-hunter-bone" onClick={() => resolveExchange({ type: 'use_reward', rewardIx: oldHunterBone })}>
+                <strong>Use Old Hunter Bone</strong><span>{oldBoneReason ? `Unavailable — ${oldBoneReason.toLowerCase()}` : 'Automatically Dodge this hit'}</span>
+              </button>}
+              <button className="bb-btn ghost danger bb-battle-take-hit" data-testid="bb-dodge-pass" onClick={() => resolveExchange({ type: 'choose', pass: true })}>
+                {attackCancelled ? 'CONTINUE — NO DAMAGE' : `TAKE ${incomingDamage} DAMAGE${incomingEffects ? ` + ${incomingEffects}` : ''}`}
+              </button>
+            </div>
+          )}
+
+          {(pending.kind === 'combat-dodge' || pending.kind === 'combat-rider') && pick && (
+            <div className="bb-battle-decision-body">
+              <div className="bb-battle-picked"><span>CHOSEN DODGE CARD</span><strong>{BB_STAT_CARDS[pick.id]?.name}</strong><button onClick={() => setPick(null)}>CHANGE CARD</button></div>
+              <h3>Choose a fast-enough slot</h3>
+              <div className="bb-battle-slot-list">
+                {weaponSide?.slots.map((slot, index) => {
+                  const reason = dodgeSlotReason(index);
+                  const rank = effectiveSlotRank(index, pick.id);
+                  return <button key={index} className="bb-battle-slot-command dodge" disabled={!!reason}
+                    onClick={() => { resolveExchange({ type: 'choose', cardId: pick.id, slot: index }); setPick(null); }}>
+                    <span>{slot.name}</span><strong>{speedMarks(rank)} · Dodge</strong><small>{reason ? `Unavailable — ${reason.toLowerCase()}` : 'Dodge with this slot'}</small>
+                  </button>;
+                })}
+              </div>
+              <button className="bb-btn ghost danger bb-battle-take-hit" data-testid="bb-dodge-pass" onClick={() => resolveExchange({ type: 'choose', pass: true })}>
+                {attackCancelled ? 'CONTINUE — NO DAMAGE' : `CANCEL DODGE · TAKE ${incomingDamage} DAMAGE`}
+              </button>
+            </div>
+          )}
+        </section>
+      </main>
+
+      <details className="bb-battle-details">
+        <summary>SHOW COMBAT DETAILS</summary>
+        <div className="bb-battle-details-grid">
+          <section><h3>Hunter</h3><p>{bbHunterName(me.hunterId)} · {me.hp}/6 HP · {me.echoes}/3 Echoes</p><p>Firearm: {firearm?.name ?? 'None'} ({me.firearmExhausted ? 'spent' : 'ready'}) · Block: {combat?.blockPending ?? 0}</p><p>Hand / deck / discard: {me.hand.length} / {me.deckCount} / {me.discard.length}</p></section>
+          <section><h3>Weapon slots</h3>{weaponSide?.slots.map((slot, index) => <p key={index}><b>{slot.name}</b> — {speedName(RANK[slot.speed])}, {slot.damage} damage · {me.slots[index] ? `occupied by ${BB_STAT_CARDS[me.slots[index]!]?.name}` : 'open'}</p>)}</section>
+          <section><h3>Enemy deck</h3>{boss ? <p>{boss.actionsLeft} boss cards remain.</p> : <p>{view.enemyActionsLeft.basic} Basic · {view.enemyActionsLeft.special} Special · {view.enemyActionsLeft.ability} Ability remain.</p>}{foeRows.map((row) => <p key={row.key}><b>{row.label}: {row.name}</b> — {row.speed ? `${speedName(RANK[row.speed])}, ${row.damage} damage` : 'Ability'}. {bbIconText(row.text) || 'No extra effect.'}</p>)}</section>
+          <section><h3>Resolution rules</h3><p>Fast resolves before Medium, then Slow. Equal speeds resolve together.</p><p>Stagger cancels only a slower opposing attack. Block reduces incoming damage.</p><p>Committed cards fill weapon slots until an effect clears them or you transform.</p></section>
+        </div>
+      </details>
+
+      {encounterOpen && (
+        <section className="bb-combat-intro" role="dialog" aria-modal="true" aria-labelledby="bb-combat-intro-title">
+          <div className="bb-combat-intro-card">
+            <span>{boss ? 'A NIGHTMARE STIRS' : 'ENEMY ATTACK'}</span>
+            <h2 id="bb-combat-intro-title">{foeName} attacks!</h2>
+            <p>You will handle this exchange one decision at a time.</p>
+            {firstBattle && <ol>
+              <li><b>1</b><span>Choose your attack.</span></li>
+              <li><b>2</b><span>Reveal what the enemy does.</span></li>
+              <li><b>3</b><span>Dodge if the attack can hit you.</span></li>
+              <li><b>4</b><span>Fast actions resolve first. The result is shown clearly.</span></li>
+            </ol>}
+            <button className="bb-btn primary" data-testid="bb-combat-begin" onClick={beginExchange}>BEGIN THE EXCHANGE</button>
+          </div>
+        </section>
+      )}
+
+      {tutorialOpen && (
+        <section className="bb-combat-tutorial" role="dialog" aria-modal="true" aria-labelledby="bb-combat-tutorial-title">
+          <div className="bb-combat-tutorial-card">
+            <span>COMBAT IN FOUR STEPS</span>
+            <h2 id="bb-combat-tutorial-title">One decision at a time</h2>
+            <ol>
+              <li><b>1 · ATTACK</b><p>Choose a card, then an open weapon slot. The slot sets speed and damage.</p></li>
+              <li><b>2 · REVEAL</b><p>Optional On Attack gear comes first. Then the enemy action is shown.</p></li>
+              <li><b>3 · DODGE</b><p>A Dodge card needs another open slot at least as fast as the incoming attack.</p></li>
+              <li><b>4 · RESOLVE</b><p>Fast beats Medium, which beats Slow. Equal speeds happen together.</p></li>
+            </ol>
+            <p className="bb-combat-tutorial-note">Filled slots cannot be used. Stagger cancels a slower attack. Block reduces damage. Unavailable choices always show the reason.</p>
+            <button className="bb-btn primary" data-testid="bb-tutorial-continue" onClick={closeTutorial}>BACK TO THIS STEP</button>
+          </div>
+        </section>
+      )}
+      <div className="bb-battle-resolve-flash" aria-live="assertive" aria-hidden={!resolving}><span>RESOLVING EXCHANGE</span></div>
+    </div>
+  );
+}
+
 function BbPrompt({ view, seat, act, pending, manifest, roundDiscard, setRoundDiscard }: {
   view: BbView; seat: number; act: (a: BbAction) => void; pending: BbPending;
   manifest: ReturnType<typeof useBbManifest>;
@@ -1045,9 +1701,9 @@ function BbPrompt({ view, seat, act, pending, manifest, roundDiscard, setRoundDi
   const me = view.hunters[seat];
   const [pick, setPick] = useState<{ id: string; index: number } | null>(null);
 
-  if (pending.kind === 'combat-attack' || pending.kind === 'combat-reaction'
+  if (pending.kind === 'combat-attack' || pending.kind === 'combat-modifiers' || pending.kind === 'combat-reaction'
     || pending.kind === 'combat-dodge' || pending.kind === 'combat-rider') {
-    return <BbBattlePrompt view={view} seat={seat} act={act} pending={pending} manifest={manifest}
+    return <BbBattlePromptBoard view={view} seat={seat} act={act} pending={pending} manifest={manifest}
       pick={pick} setPick={setPick} />;
   }
 
@@ -1055,7 +1711,7 @@ function BbPrompt({ view, seat, act, pending, manifest, roundDiscard, setRoundDi
             : pending.kind === 'dream-upgrades' ? `THE HUNTER'S DREAM · CHOOSE AN UPGRADE (${pending.picks} LEFT)`
               : pending.kind === 'dream-incorporate' ? 'ADD THE UPGRADE TO YOUR DECK?'
                 : pending.kind === 'return-placement' ? 'RETURN TO THE WAKING WORLD'
-                  : pending.kind === 'tile-orientation' ? 'CHOOSE THE TILE ORIENTATION'
+                  : pending.kind === 'tile-orientation' ? 'CHOOSE WHICH EXIT CONNECTS'
                     : pending.kind === 'reward-overflow' ? 'YOU CARRY TOO MANY · GIVE ONE AWAY?'
                       : pending.kind === 'mission-choice' ? 'THE MISSION DEMANDS A CHOICE'
                         : pending.kind === 'round-refresh' ? 'NEW ROUND · DISCARD ANY, THEN DRAW TO 3'
@@ -1110,13 +1766,17 @@ function BbPrompt({ view, seat, act, pending, manifest, roundDiscard, setRoundDi
         )}
 
         {pending.kind === 'tile-orientation' && (
-          <div className="bb-rot-pick">
-            {pending.options.map((rot) => (
-              <button key={rot} className="bb-rot" data-testid={`bb-rot-${rot}`} onClick={() => act({ type: 'choose', rot })}>
-                <img src={bbTileArt(pending.tileId)} style={{ transform: `rotate(${rot * 90}deg)` }} alt={`rotation ${rot}`} />
-              </button>
-            ))}
-          </div>
+          <>
+            <p className="bb-orientation-rule">The rulebook lets you connect <strong>any exit</strong> on the revealed tile to the space you left. These are the legal placements that keep the map explorable.</p>
+            <div className="bb-rot-pick">
+              {pending.options.map((rot) => (
+                <button key={rot} className="bb-rot" data-testid={`bb-rot-${rot}`} onClick={() => act({ type: 'choose', rot })}>
+                  <img src={bbTileArt(pending.tileId)} style={{ transform: `rotate(${rot * 90}deg)` }} alt={`legal tile placement ${rot + 1}`} />
+                  <span>CONNECT THIS EXIT</span>
+                </button>
+              ))}
+            </div>
+          </>
         )}
 
         {pending.kind === 'reward-overflow' && (
@@ -1248,7 +1908,110 @@ function ReturnPlacement({ view, seat, act, manifest }: {
   );
 }
 
+// ---------- the Hunter's Dream hunt board ----------
+
+// Live-state footprints on the mod's hunt board art (percent of the 4000x4016
+// sheet). Track dot positions were solved against the printed reset dots.
+const HB_GEO = {
+  enemies: { lefts: [4.0, 38.6, 72.5], top: 9.4, width: 22.0, height: 39.4 },
+  upgrades: { lefts: [31.3, 48.2, 65.1, 82.0], top: 63.2, width: 13.9, height: 22.5 },
+  chapter: { left: 3.4, top: 54.6, width: 24.4, height: 32.4 },
+  track: { x0: 7.0, dx: 5.726, y: 93.6 },
+};
+
+function BbHuntBoard({ view, manifest, onZoom, compact = false, testId = 'bb-huntboard' }: {
+  view: BbView;
+  manifest: ReturnType<typeof useBbManifest>;
+  onZoom: (zoom: { sheet: string; cell: number; back?: boolean; title?: string }) => void;
+  compact?: boolean;
+  testId?: string;
+}) {
+  const board = manifest?.huntBoard.face?.rel;
+  return (
+    <div className={'bb-huntboard' + (compact ? ' compact' : '')} data-testid={testId} aria-label="The Hunter's Dream hunt board"
+      style={board ? { backgroundImage: `url(${board})` } : undefined}>
+      {view.enemySlots.map((type, i) => {
+        const def = type ? BB_ENEMIES[type] : null;
+        const spot: React.CSSProperties = {
+          left: `${HB_GEO.enemies.lefts[i]}%`, top: `${HB_GEO.enemies.top}%`,
+          width: `${HB_GEO.enemies.width}%`, height: `${HB_GEO.enemies.height}%`,
+        };
+        if (!def?.art) return (
+          <div key={i} className="bb-hb-slot" style={spot} role="img" aria-label={`Enemy slot ${i + 1} is empty`} />
+        );
+        const contents = <>
+          <span className="bb-hb-art" style={bbCellCss(manifest, def.art.sheet, def.art.cell)} aria-hidden="true" />
+          <span className="bb-hb-name">{def.name.toUpperCase()}</span>
+        </>;
+        return compact ? (
+          <span key={i} className="bb-hb-slot filled" style={spot} aria-label={`Enemy slot ${i + 1}: ${def.name}`}>{contents}</span>
+        ) : (
+          <button key={i} className="bb-hb-slot filled" style={spot}
+            aria-label={`Enemy slot ${i + 1}: ${def.name}`}
+            onClick={() => onZoom({ sheet: def.art.sheet, cell: def.art.cell, title: def.name })}>{contents}</button>
+        );
+      })}
+      {view.upgradeRow.map((id, i) => {
+        const card = BB_STAT_CARDS[id];
+        const spot: React.CSSProperties = {
+          left: `${HB_GEO.upgrades.lefts[i]}%`, top: `${HB_GEO.upgrades.top}%`,
+          width: `${HB_GEO.upgrades.width}%`, height: `${HB_GEO.upgrades.height}%`,
+        };
+        if (!card) return null;
+        const contents = <>
+          <span className="bb-hb-art" style={bbCellCss(manifest, card.art.sheet, card.art.cell)} aria-hidden="true" />
+          <span className="bb-hb-name">{card.name.toUpperCase()}</span>
+        </>;
+        return compact ? (
+          <span key={`${id}${i}`} className="bb-hb-slot filled" style={spot} aria-label={`Upgrade for sale: ${card.name}`}>{contents}</span>
+        ) : (
+          <button key={`${id}${i}`} className="bb-hb-slot filled" style={spot}
+            aria-label={`Upgrade for sale: ${card.name}`}
+            onClick={() => onZoom({ sheet: card.art.sheet, cell: card.art.cell, title: card.name })}>{contents}</button>
+        );
+      })}
+      <span className="bb-hb-chapter"
+        style={{ left: `${HB_GEO.chapter.left + HB_GEO.chapter.width / 2}%`, top: `${HB_GEO.chapter.top + HB_GEO.chapter.height - 3.2}%` }}>
+        CHAPTER {view.chapter}
+      </span>
+      <span className="bb-hb-marker"
+        style={{ left: `${HB_GEO.track.x0 + view.huntTrack * HB_GEO.track.dx}%`, top: `${HB_GEO.track.y}%` }}
+        role="img" aria-label={`Hunt track at ${view.huntTrack + 1} of ${view.huntTrackLength}`} />
+    </div>
+  );
+}
+
 // ---------- the 2D map ----------
+
+/** A miniature portrait standing on the map: rendered model when available,
+ * the classic disc token while it loads or when WebGL is out. */
+function BbMapMini({ slug, height, ring, ringR, fallbackR, fallbackText, me: isMe }: {
+  slug: string | null;
+  height: number;
+  ring: string;
+  ringR: number;
+  fallbackR: number;
+  fallbackText: string;
+  me?: boolean;
+}) {
+  const thumb = useBbMiniThumb(slug);
+  if (!thumb) {
+    return (
+      <>
+        <circle r={fallbackR} fill="#0d0d10" stroke={ring} strokeWidth={0.22} />
+        <text textAnchor="middle" dy={0.32} fill="#e8e8ee" fontSize={fallbackR * 1.1}>{fallbackText}</text>
+      </>
+    );
+  }
+  return (
+    <>
+      <ellipse cy={0.12} rx={ringR} ry={ringR * 0.42} className={'bb-map-base' + (isMe ? ' me' : '')}
+        style={{ stroke: ring, fill: 'rgba(8, 9, 12, .55)' }} />
+      <image href={thumb} x={-height / 2} y={-height + 0.2} width={height} height={height}
+        preserveAspectRatio="xMidYMax meet" />
+    </>
+  );
+}
 
 function BbMap({ view, seat, moving, enemyTargeting, onSpace, onExit, onEnemy }: {
   view: BbView; seat: number; moving: boolean; enemyTargeting: boolean;
@@ -1268,6 +2031,9 @@ function BbMap({ view, seat, moving, enemyTargeting, onSpace, onExit, onEnemy }:
   const nbs = moving && me.space ? bbNeighbors(view, me.space) : [];
   const exits = moving ? bbOpenExits(view) : [];
   const myExitHere = me.space ? exits.filter((e) => `${e.uid}:${e.space}` === me.space) : [];
+  const hunterWorld = me.space ? bbSpaceWorld(view, me.space) : null;
+  const markerScale = Math.max(.9, Math.min(1.55, Math.max(bounds.w, bounds.h) / 34));
+  const exitAngle: Record<BbEdgeT, number> = { N: -90, E: 0, S: 90, W: 180 };
 
   return (
     <svg className="bb-map" viewBox={`${bounds.x0} ${bounds.z0} ${bounds.w} ${bounds.h}`} data-testid="bb-map-svg"
@@ -1283,10 +2049,9 @@ function BbMap({ view, seat, moving, enemyTargeting, onSpace, onExit, onEnemy }:
       {/* spaces */}
       {view.tiles.flatMap((t) => bbTileSpacesWorld(view, t.uid)).map((sp) => {
         const isNb = nbs.includes(sp.ref);
+        const angle = hunterWorld ? Math.atan2(sp.z - hunterWorld[1], sp.x - hunterWorld[0]) * 180 / Math.PI : 0;
         return (
-          <circle key={sp.ref} cx={sp.x} cy={sp.z} r={isNb ? 1.5 : 1.0}
-            className={'bb-map-space' + (isNb ? ' step' : '')}
-            data-testid={isNb ? 'bb-step-target' : undefined}
+          <g key={sp.ref} className={'bb-map-space' + (isNb ? ' step' : '')}
             role={isNb ? 'button' : undefined} tabIndex={isNb ? 0 : undefined}
             aria-label={isNb ? `Move to space ${sp.ref}` : undefined}
             onKeyDown={(event) => {
@@ -1295,7 +2060,20 @@ function BbMap({ view, seat, moving, enemyTargeting, onSpace, onExit, onEnemy }:
                 onSpace(sp.ref);
               }
             }}
-            onClick={() => isNb && onSpace(sp.ref)} />
+            onClick={() => isNb && onSpace(sp.ref)}>
+            <circle cx={sp.x} cy={sp.z} r={isNb ? 1.38 * markerScale : 0.56}
+              className="bb-map-space-hit" data-testid={isNb ? 'bb-step-target' : undefined} />
+            {isNb && (
+              <>
+                <g className="bb-map-move-marker" transform={`translate(${sp.x},${sp.z}) scale(${markerScale})`}>
+                  <circle r={0.72} className="bb-map-space-marker" />
+                  <path className="bb-map-step-glyph" transform={`rotate(${angle})`}
+                    d="M-.42 -.34 L.42 0 L-.42 .34 L-.19 0 Z" />
+                </g>
+                <text className="bb-map-step-label" x={sp.x} y={sp.z + 1.18 * markerScale} textAnchor="middle">MOVE HERE</text>
+              </>
+            )}
+          </g>
         );
       })}
       {/* open exits from my space */}
@@ -1309,8 +2087,14 @@ function BbMap({ view, seat, moving, enemyTargeting, onSpace, onExit, onEnemy }:
             }
           }} onClick={() => onExit(e.uid, e.edge)}
           transform={`translate(${e.x},${e.z})`}>
-          <circle r={1.6} />
-          <text textAnchor="middle" dy={0.6}>{e.edge}</text>
+          <circle className="bb-map-exit-hit" r={1.42 * markerScale} />
+          <g transform={`scale(${markerScale})`}>
+            <circle className="bb-map-exit-marker" r={0.76} />
+            <path className="bb-map-reveal-glyph" transform={`rotate(${exitAngle[e.edge]})`}
+              d="M-.34 -.42 L.42 0 L-.34 .42 M-.08 -.42 L.68 0 L-.08 .42" />
+            <text className="bb-map-exit-edge" textAnchor="middle" y={-.92}>{e.edge}</text>
+          </g>
+          <text className="bb-map-exit-label" textAnchor="middle" y={1.28 * markerScale}>REVEAL TILE</text>
         </g>
       ))}
       {/* consumable tokens */}
@@ -1332,9 +2116,15 @@ function BbMap({ view, seat, moving, enemyTargeting, onSpace, onExit, onEnemy }:
                 onEnemy(e.uid, false);
               }
             }} onClick={() => onEnemy(e.uid, false)} transform={`translate(${w[0]},${w[1] - 1.2})`}>
-            <circle r={1.15} />
-            <text textAnchor="middle" dy={0.45}>{bbEnemyName(e.type).slice(0, 2).toUpperCase()}</text>
-            {e.damage > 0 && <text className="bb-map-dmg" textAnchor="middle" dy={-1.6}>{e.damage}</text>}
+            <circle r={1.3} className="bb-map-hit" />
+            <BbMapMini slug={bbEnemyMini(e.type)} height={2.5} ring="#bf626e" ringR={0.85}
+              fallbackR={1.15} fallbackText={bbEnemyName(e.type).slice(0, 2).toUpperCase()} />
+            {enemyTargeting && <>
+              <circle r={1.52} className="bb-map-target-reticle" />
+              <path className="bb-map-target-cross" d="M-1.8 0h.55 M1.25 0h.55 M0-1.8v.55 M0 1.25v.55" />
+              <text className="bb-map-target-label" textAnchor="middle" y={2}>TARGET</text>
+            </>}
+            {e.damage > 0 && <text className="bb-map-dmg" textAnchor="middle" dy={-2.7}>{e.damage}</text>}
           </g>
         );
       })}
@@ -1351,9 +2141,15 @@ function BbMap({ view, seat, moving, enemyTargeting, onSpace, onExit, onEnemy }:
                 onEnemy(b.uid, true);
               }
             }} onClick={() => onEnemy(b.uid, true)} transform={`translate(${w[0]},${w[1] - 1.2})`}>
-            <circle r={1.6} />
-            <text textAnchor="middle" dy={0.5}>P{b.phase}</text>
-            <text className="bb-map-dmg" textAnchor="middle" dy={-2.1}>{b.damage}</text>
+            <circle r={1.8} className="bb-map-hit" />
+            <BbMapMini slug={bbBossMini(b.type)} height={3.4} ring="#e1564e" ringR={1.15}
+              fallbackR={1.6} fallbackText={`P${b.phase}`} />
+            {enemyTargeting && <>
+              <circle r={2.02} className="bb-map-target-reticle boss" />
+              <path className="bb-map-target-cross" d="M-2.35 0h.65 M1.7 0h.65 M0-2.35v.65 M0 1.7v.65" />
+              <text className="bb-map-target-label" textAnchor="middle" y={2.55}>TARGET BOSS</text>
+            </>}
+            <text className="bb-map-dmg" textAnchor="middle" dy={-3.6}>{b.damage}</text>
           </g>
         );
       })}
@@ -1364,9 +2160,10 @@ function BbMap({ view, seat, moving, enemyTargeting, onSpace, onExit, onEnemy }:
         if (!w) return null;
         const hex = BB_SEAT_HEX[String(view.seats[h.seat]?.color)] ?? '#ccc';
         return (
-          <g key={h.seat} transform={`translate(${w[0] + (h.seat - 1.5) * 0.75},${w[1] + 1.2})`}>
-            <circle r={h.seat === seat ? 0.75 : 0.6} fill="#0d0d10" stroke={hex} strokeWidth={0.22} />
-            <text textAnchor="middle" dy={0.3} fill="#e8e8ee" fontSize={0.85}>{h.seat + 1}</text>
+          <g key={h.seat} transform={`translate(${w[0] + (h.seat - 1.5) * 0.9},${w[1] + 1.2})`}>
+            <BbMapMini slug={bbHunterMini(h.hunterId)} height={h.seat === seat ? 2.8 : 2.4}
+              ring={hex} ringR={h.seat === seat ? 0.85 : 0.7} me={h.seat === seat}
+              fallbackR={h.seat === seat ? 0.75 : 0.6} fallbackText={`${h.seat + 1}`} />
           </g>
         );
       })}

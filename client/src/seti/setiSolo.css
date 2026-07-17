@@ -1,0 +1,93 @@
+.seti-rival-board-graphic { position: relative; min-width: 0; aspect-ratio: 4.35; border: 1px solid rgba(166,225,238,.2); border-radius: 12px; background: #07111b; box-shadow: 0 18px 35px rgba(0,0,0,.42); overflow: hidden; }
+.seti-rival-board-graphic > img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.seti-rival-progress-marker { position: absolute; z-index: 4; width: 3.2%; aspect-ratio: 1; display: grid; place-items: center; border: 2px solid #eaf9fc; border-radius: 50%; background: #57a9c5; box-shadow: 0 0 0 2px rgba(3,11,18,.7),0 0 13px #68d7f0; transform: translate(-50%,-50%); transition: left .45s cubic-bezier(.2,.8,.2,1),top .45s cubic-bezier(.2,.8,.2,1); }
+.seti-rival-progress-marker i { color: #fff; font-size: clamp(4px,.6vw,7px); font-style: normal; font-weight: 900; }
+.seti-rival-publicity-marker,.seti-rival-data-pool { position: absolute; z-index: 3; min-width: 5.8%; aspect-ratio: 1; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.52); border-radius: 50%; background: rgba(4,12,20,.9); box-shadow: 0 4px 12px rgba(0,0,0,.5); }
+.seti-rival-publicity-marker { left: 69%; top: 5%; color: #f1b55e; }
+.seti-rival-data-pool { left: 7%; bottom: 7%; color: #75cbe7; }
+.seti-rival-publicity-marker svg,.seti-rival-data-pool svg { width: 42%; height: 42%; }
+.seti-rival-publicity-marker b,.seti-rival-data-pool b { position: absolute; right: -18%; bottom: -22%; min-width: 56%; padding: 2px; border-radius: 8px; background: #edf8fa; color: #07111b; font-size: clamp(5px,.7vw,9px); text-align: center; }
+.seti-rival-computer-token { position: absolute; z-index: 3; bottom: 8.5%; width: 3.35%; aspect-ratio: 1; border: 1px solid rgba(185,227,237,.2); border-radius: 50%; transform: translateX(-50%); }
+.seti-rival-computer-token.is-filled { border-color: #dff8fb; background: radial-gradient(circle at 35% 30%,#dff9fc 0 22%,#63b6d0 24% 65%,#26647d 68%); box-shadow: 0 0 10px rgba(99,193,220,.8); }
+.seti-rival-tech-count { position: absolute; z-index: 3; top: 27%; width: 4.3%; aspect-ratio: 1; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.66); border-radius: 50%; background: #07111b; box-shadow: 0 5px 13px rgba(0,0,0,.55); }
+.seti-rival-tech-count b { font-size: clamp(5px,.8vw,10px); }
+.seti-rival-tech-count.tech-probe { color: #ec884f; }
+.seti-rival-tech-count.tech-telescope { color: #e25fc4; }
+.seti-rival-tech-count.tech-computer { color: #69bfe9; }
+
+.seti-rival-action-card { position: relative; width: 108px; aspect-ratio: .72; flex: 0 0 auto; border: 1px solid rgba(185,228,238,.24); border-radius: 9px; background-image: url('/seti/solo/rival-actions.webp'); background-size: 500% 400%; background-position: var(--card-x) var(--card-y); box-shadow: 0 12px 26px rgba(0,0,0,.5); overflow: hidden; }
+.seti-rival-action-card > span { position: absolute; left: 6px; bottom: 5px; padding: 3px 5px; border-radius: 5px; background: rgba(3,9,15,.82); font-size: 6px; font-weight: 900; }
+.seti-rival-step-track { position: absolute; z-index: 4; top: 8px; display: grid; gap: 4px; }
+.seti-rival-step-track.is-left { left: 5px; }
+.seti-rival-step-track.is-right { right: 5px; }
+.seti-rival-step-track i { width: 18px; height: 18px; display: grid; place-items: center; border: 1px solid rgba(220,242,247,.45); border-radius: 50%; color: rgba(235,248,251,.7); background: rgba(3,10,16,.74); font-size: 6px; font-style: normal; font-weight: 900; }
+.seti-rival-step-track i.is-selected { border-color: #f3bd63; color: #07111a; background: #f3bd63; box-shadow: 0 0 0 3px rgba(243,189,99,.16),0 0 13px rgba(243,189,99,.75); }
+.seti-rival-action-card.is-back { display: grid; place-items: center; background-image: url('/seti/solo/rival-actions-back.webp'); background-size: cover; }
+.seti-rival-action-card.is-back > span { position: static; background: transparent; }
+.seti-rival-action-card.is-compact { width: 44px; border-radius: 5px; }
+.seti-rival-action-card.is-compact > span { display: none; }
+.seti-rival-action-card.is-compact .seti-rival-step-track { top: 2px; gap: 1px; }
+.seti-rival-action-card.is-compact .seti-rival-step-track.is-left { left: 2px; }
+.seti-rival-action-card.is-compact .seti-rival-step-track.is-right { right: 2px; }
+.seti-rival-action-card.is-compact .seti-rival-step-track i { width: 9px; height: 9px; font-size: 0; }
+
+.seti-solo-objective { position: relative; width: 112px; aspect-ratio: 1; flex: 0 0 auto; margin: 0; border: 1px solid rgba(194,230,238,.18); border-radius: 9px; box-shadow: 0 9px 18px rgba(0,0,0,.42); overflow: visible; }
+.seti-solo-objective > img { width: 100%; height: 100%; display: block; border-radius: inherit; object-fit: cover; }
+.seti-solo-objective.is-compact { width: 62px; opacity: .78; }
+.seti-solo-task { position: absolute; z-index: 3; left: var(--task-x); top: var(--task-y); width: 31%; aspect-ratio: 1; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; transform: translate(-50%,-50%); }
+.seti-solo-task > span { width: 46%; aspect-ratio: 1; border: 1px dashed rgba(214,241,245,.22); border-radius: 50%; }
+.seti-solo-task.is-marked > span { border: 2px solid #eaf8fb; background: radial-gradient(circle at 35% 30%,#d9f6f9 0 20%,#70bad0 23% 66%,#1e5a72 69%); box-shadow: 0 0 10px #77d7ed; }
+button.seti-solo-task.is-eligible { width: 37%; min-width: 40px; min-height: 40px; border: 2px solid rgba(245,194,101,.84); background: rgba(244,188,83,.1); box-shadow: 0 0 0 5px rgba(245,188,83,.12),0 0 22px rgba(245,188,83,.8); cursor: pointer; animation: seti-solo-task-pulse 1.15s ease-in-out infinite; }
+button.seti-solo-task.is-eligible > span { border: 0; background: rgba(248,209,130,.7); box-shadow: 0 0 10px #ffd88a; }
+
+.seti-solo-panel { width: min(940px,95vw); max-height: 92vh; grid-template-rows: auto auto auto; gap: 14px; overflow: auto; }
+.seti-solo-panel-header { display: flex; align-items: center; justify-content: space-between; padding-right: 48px; }
+.seti-solo-panel-header p { margin: 5px 0 0; color: #83ccdc; font-size: 6px; font-weight: 800; }
+.seti-solo-metrics { display: flex; gap: 8px; }
+.seti-solo-metrics > span { min-width: 72px; display: grid; justify-items: center; gap: 2px; padding: 8px; border: 1px solid rgba(255,255,255,.1); border-radius: 9px; background: rgba(255,255,255,.025); }
+.seti-solo-metrics b { font-size: 18px; }
+.seti-solo-metrics small { color: var(--seti-muted); font-size: 5px; }
+.seti-solo-board-row { min-width: 0; display: grid; grid-template-columns: minmax(0,1fr) 122px; align-items: center; gap: 13px; }
+.seti-solo-action-stack { display: grid; justify-items: center; gap: 6px; }
+.seti-solo-action-stack > small { color: var(--seti-muted); font-size: 5px; }
+.seti-solo-action-stack > div:last-child { width: 100%; display: flex; justify-content: center; gap: 5px; }
+.seti-solo-action-stack > div:last-child span { display: grid; justify-items: center; padding: 5px; border: 1px solid rgba(255,255,255,.09); border-radius: 6px; color: var(--seti-muted); font-size: 5px; }
+.seti-solo-action-stack > div b { color: #e6f5f8; font-size: 10px; }
+.seti-rival-objective-row { min-height: 120px; display: flex; align-items: center; gap: 10px; overflow-x: auto; }
+.seti-rival-objective-label { width: 82px; flex: 0 0 auto; }
+.seti-rival-objective-label small,.seti-rival-objective-label span { display: block; color: var(--seti-muted); font-size: 6px; }
+.seti-rival-objective-label b { display: block; margin: 4px 0; font-size: 21px; }
+
+.seti-solo-objective-decision { position: absolute; z-index: 68; left: 50%; top: 163px; width: min(560px,calc(100vw - 28px)); padding: 12px; border: 1px solid rgba(243,190,91,.4); border-radius: 15px; box-shadow: 0 0 35px rgba(243,190,91,.14),0 20px 45px rgba(0,0,0,.5); transform: translateX(-50%); }
+.seti-solo-objective-decision > header { display: flex; align-items: center; justify-content: center; gap: 9px; padding-bottom: 8px; }
+.seti-solo-objective-decision > header svg { width: 20px; color: var(--seti-amber); }
+.seti-solo-objective-decision > header small { display: block; color: var(--seti-muted); font-size: 5px; }
+.seti-solo-objective-decision > header b { display: block; margin-top: 2px; font-size: 9px; }
+.seti-solo-objective-decision > div { display: flex; justify-content: center; gap: 12px; }
+.seti-solo-objective-decision .seti-solo-objective { width: min(150px,28vw); }
+
+.seti-tv-solo { position: absolute; z-index: 18; left: 150px; top: 96px; width: 310px; display: grid; gap: 5px; padding: 7px; border-radius: 12px; }
+.seti-tv-solo > header { display: flex; align-items: center; justify-content: space-between; }
+.seti-tv-solo > header small { display: block; color: var(--seti-muted); font-size: 5px; }
+.seti-tv-solo > header b { font-size: 12px; }
+.seti-tv-solo > header > span:last-child { display: flex; align-items: center; gap: 3px; color: var(--seti-amber); font-size: 8px; font-weight: 900; }
+.seti-tv-solo > header svg { width: 12px; }
+.seti-tv-solo .seti-rival-board-graphic { width: 100%; border-radius: 7px; }
+.seti-tv-solo .seti-rival-progress-marker { border-width: 1px; }
+.seti-tv-solo .seti-rival-publicity-marker { display: none; }
+.seti-tv-solo-bottom { display: flex; align-items: center; gap: 5px; }
+.seti-tv-solo-objectives { display: flex; gap: 4px; overflow: hidden; }
+.seti-tv-solo-objectives .seti-solo-objective { width: 48px; border-radius: 5px; }
+.seti-tv-solo-objectives .seti-solo-task { display: none; }
+
+@keyframes seti-solo-task-pulse { 0%,100% { transform: translate(-50%,-50%) scale(.96); } 50% { transform: translate(-50%,-50%) scale(1.06); } }
+
+@media (max-width: 720px) {
+  .seti-solo-panel { padding: 13px; }
+  .seti-solo-panel-header { align-items: flex-start; }
+  .seti-solo-metrics > span { min-width: 51px; padding: 6px; }
+  .seti-solo-metrics b { font-size: 14px; }
+  .seti-solo-board-row { grid-template-columns: 1fr 78px; }
+  .seti-rival-action-card { width: 70px; }
+  .seti-rival-objective-row .seti-solo-objective { width: 88px; }
+}

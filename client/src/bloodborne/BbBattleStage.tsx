@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { ContactShadows, useGLTF } from '@react-three/drei';
+import { ContactShadows, useGLTF, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface Props {
@@ -77,19 +77,30 @@ function BattleMini({ slug, side, boss, active, reduced }: {
 
   const baseX = side === 'hunter' ? -2.15 : 2.15;
   const direction = side === 'hunter' ? 1 : -1;
+  const strikeStartedAt = useRef<number | null>(null);
+  const wasActive = useRef(active);
+  useEffect(() => {
+    if (!active || (active && !wasActive.current)) strikeStartedAt.current = null;
+    wasActive.current = active;
+  }, [active]);
   useFrame((state) => {
     const actor = group.current;
-    if (!actor || reduced) return;
-    const time = state.clock.elapsedTime;
-    const strike = active ? Math.pow(Math.max(0, Math.sin(time * 4.2)), 7) * 0.52 : 0;
+    if (!actor) return;
+    let strike = 0;
+    if (active && !reduced) {
+      strikeStartedAt.current ??= state.clock.elapsedTime;
+      const progress = Math.min((state.clock.elapsedTime - strikeStartedAt.current) / 0.48, 1);
+      strike = Math.sin(progress * Math.PI) * 0.42;
+    }
     actor.position.x = baseX + direction * strike;
-    actor.position.y = Math.sin(time * 1.55 + (side === 'hunter' ? 0 : 1.7)) * 0.018;
-    actor.rotation.z = direction * strike * -0.035;
+    actor.position.y = 0;
+    actor.rotation.z = direction * strike * -0.025;
   });
 
+  // Sculpt fronts are +Z-flipped, so the half-turn keeps both actors facing the camera.
   return (
     <group ref={group} position={[baseX, 0, side === 'hunter' ? 0.12 : -0.04]}
-      rotation={[0, side === 'hunter' ? -0.2 : Math.PI + 0.18, 0]}>
+      rotation={[0, side === 'hunter' ? Math.PI - 0.2 : 0.18, 0]}>
       <primitive object={fitted.scene} position={fitted.offset} scale={fitted.scale} dispose={null} />
     </group>
   );
@@ -97,39 +108,37 @@ function BattleMini({ slug, side, boss, active, reduced }: {
 
 function BattlePawn({ side, accent, boss }: { side: ActorSide; accent: string; boss?: boolean }) {
   const x = side === 'hunter' ? -2.15 : 2.15;
-  const color = side === 'hunter' ? accent : '#833530';
+  const color = side === 'hunter' ? '#4b4d49' : '#54413d';
   const height = boss ? 2.8 : 2.25;
   return (
     <group position={[x, 0.12, 0]}>
       <mesh position={[0, height * 0.47, 0]} castShadow>
         <capsuleGeometry args={[height * 0.2, height * 0.58, 7, 16]} />
-        <meshStandardMaterial color={color} roughness={0.72} metalness={0.08} />
+        <meshStandardMaterial color={color} roughness={0.82} metalness={0.06} />
       </mesh>
     </group>
   );
 }
 
-function Motes({ reduced }: { reduced: boolean }) {
-  const points = useRef<THREE.Points>(null);
-  const positions = useMemo(() => {
-    const values = new Float32Array(72 * 3);
-    for (let index = 0; index < 72; index++) {
-      const angle = index * 2.399963;
-      const radius = 1.4 + (index % 13) * 0.34;
-      values[index * 3] = Math.cos(angle) * radius;
-      values[index * 3 + 1] = 0.35 + ((index * 17) % 41) * 0.075;
-      values[index * 3 + 2] = Math.sin(angle) * radius * 0.42 - 0.8;
-    }
-    return values;
-  }, []);
-  useFrame((_, delta) => {
-    if (!reduced && points.current) points.current.rotation.y += delta * 0.025;
-  });
+function ArenaFloor() {
+  const texture = useTexture('/bloodborne/tiles/arena.webp');
+  const maxAnisotropy = useThree((state) => state.gl.capabilities.getMaxAnisotropy());
+  useEffect(() => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = Math.min(8, maxAnisotropy);
+    texture.needsUpdate = true;
+  }, [texture, maxAnisotropy]);
   return (
-    <points ref={points}>
-      <bufferGeometry><bufferAttribute attach="attributes-position" args={[positions, 3]} /></bufferGeometry>
-      <pointsMaterial color="#a9b5c6" size={0.026} transparent opacity={0.34} depthWrite={false} />
-    </points>
+    <>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.025, 0]} receiveShadow>
+        <circleGeometry args={[7.7, 96]} />
+        <meshStandardMaterial color="#050504" roughness={0.98} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+        <planeGeometry args={[11.4, 11.4]} />
+        <meshStandardMaterial map={texture} color="#aaa69b" roughness={0.94} metalness={0.01} />
+      </mesh>
+    </>
   );
 }
 
@@ -137,26 +146,16 @@ function StageContents({ hunterSlug, foeSlug, foeIsBoss, phase, hunterAttacking,
   const enemyActive = phase === 'combat-dodge' || phase === 'combat-reaction' || phase === 'resolving';
   return (
     <>
-      <color attach="background" args={['#050609']} />
-      <fog attach="fog" args={['#08080d', 7, 17]} />
-      <hemisphereLight intensity={0.48} color="#9bb4d5" groundColor="#16070a" />
-      <ambientLight intensity={0.12} color="#8ea4bd" />
-      <directionalLight position={[-4, 6.5, 4]} intensity={2.85} color="#c6ddf6" castShadow
+      <color attach="background" args={['#030302']} />
+      <fog attach="fog" args={['#050504', 8, 18]} />
+      <hemisphereLight intensity={0.34} color="#c5c2b7" groundColor="#100d0a" />
+      <ambientLight intensity={0.08} color="#a8a397" />
+      <directionalLight position={[-4, 6.5, 4]} intensity={2.45} color="#d5d1c7" castShadow
         shadow-mapSize-width={1024} shadow-mapSize-height={1024} shadow-bias={-0.0001}
         shadow-camera-left={-6} shadow-camera-right={6} shadow-camera-top={5} shadow-camera-bottom={-1} />
-      <spotLight position={[4.8, 4.5, 3.5]} intensity={58} color="#e5aa76" angle={0.68} penumbra={0.9} distance={15} decay={2} />
-      <pointLight position={[2.4, 1.25, -2]} intensity={26} color="#a83231" distance={8} decay={2} />
-      <pointLight position={[-2.5, 1.4, -1.5]} intensity={18} color={accent} distance={7} decay={2} />
+      <spotLight position={[4.8, 4.5, 3.5]} intensity={34} color="#bca47d" angle={0.72} penumbra={0.94} distance={15} decay={2} />
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <circleGeometry args={[8, 72]} />
-        <meshStandardMaterial color="#0b0b10" roughness={0.91} metalness={0.04} />
-      </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.012, 0]}>
-        <ringGeometry args={[2.7, 5.1, 72]} />
-        <meshStandardMaterial color="#271419" emissive="#21080b" emissiveIntensity={0.3} roughness={0.78} />
-      </mesh>
-      <Motes reduced={reduced} />
+      <ArenaFloor />
 
       <Suspense fallback={<BattlePawn side="hunter" accent={accent} />}>
         {hunterSlug ? <BattleMini slug={hunterSlug} side="hunter" active={hunterAttacking} reduced={reduced} />

@@ -121,7 +121,7 @@ Their presence in this workspace does not grant redistribution rights.
 - Rights: User-provided local personal-use copy; redistribution rights are not granted.
 - Source: User-provided Bloodborne Original Soundtrack files from this PC.
 - Credit: Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.
-- SHA-256: `b3c2f842907b9e8bace86d0e93d82692ce421ac8373f2fe4dd84802f7c4d7c74`
+- SHA-256: `d9495a654bb9ddfb5ea82493b3df9abf909a6189ee8a627d636db59e619f8632`
 
 ## Queen of the Vilebloods · annalise-queen-of-the-vilebloods
 
@@ -181,7 +181,7 @@ Their presence in this workspace does not grant redistribution rights.
 
 ## The Night Unfurls
 
-- Roles: exploration
+- Roles: menu
 - Rights: User-provided local personal-use copy; redistribution rights are not granted.
 - Source: User-provided Bloodborne Original Soundtrack files from this PC.
 - Credit: Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.
@@ -210,5 +210,3 @@ Their presence in this workspace does not grant redistribution rights.
 - Source: User-provided Bloodborne Original Soundtrack files from this PC.
 - Credit: Bloodborne Original Soundtrack © 2015 Sony Computer Entertainment Inc.
 - SHA-256: `dc10942c5cb4ed0cd8b2cbb144870ef13ded6cb98e3083309ad0691be134c22e`
-
-

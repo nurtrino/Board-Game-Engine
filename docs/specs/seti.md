@@ -367,6 +367,23 @@ clockwise/counter-clockwise within a ring and inward/outward within a sector.
 Cell contents are derived from the four layer orientations and alpha/support
 maps extracted from the source PNGs.
 
+The baseline art transcription is exact (a sector names the wedge immediately
+counter-clockwise of that sector ray):
+
+| Layer | Ring 0 | Ring 1 | Ring 2 |
+|---|---|---|---|
+| Fixed base | s0 comet; s1 asteroid; s2 comet; s4 asteroid; s5 asteroid; s7 comet | s0 asteroid; s2 comet; s3 asteroid; s4 asteroid; s5 comet; s7 asteroid | s0 comet; s1 Uranus; s2 asteroid; s3 comet; s4 Neptune; s5 asteroid; s6 comet |
+| Disc 1 | s1 Earth; s5 Mercury; s7 Venus | - | - |
+| Disc 2 | s0 asteroid; s2 asteroid | s3 asteroid; s7 Mars | - |
+| Disc 3 | s1 comet; s2 asteroid; s6 asteroid; s7 asteroid | s0 comet; s4 asteroid; s7 asteroid | s3 Jupiter; s7 Saturn |
+
+The sampled support masks (s0 through s7) are disc 1
+`11101111/00000000/00000000`, disc 2
+`11110011/01110011/00000000`, and disc 3
+`11100111/11101011/01111011`. A covered lower-layer object is not a feature of
+the current cell; all body, comet, asteroid, and publicity predicates use the
+single top-visible layer.
+
 Rotation cycles disc 1, disc 2, disc 3, then repeats. Each turn is one sector
 counter-clockwise (rulebook p. 16, global Lua `rotate_solar_system`).
 

@@ -11,6 +11,8 @@ interface Props {
   hunterId: string | null;
   hunterName: string;
   accent: string;
+  /** Panel kicker, e.g. "HUNTER'S DREAM" on the stage view. */
+  title?: string;
 }
 
 interface BoundaryProps {
@@ -119,6 +121,24 @@ function HunterMini({ slug, yaw }: { slug: string; yaw: number }) {
     const bounds = new THREE.Box3().setFromObject(clone);
     const size = bounds.getSize(new THREE.Vector3());
     const center = bounds.getCenter(new THREE.Vector3());
+    // Anchor on the miniature's molded base, not the full silhouette — a
+    // weapon held out to one side otherwise drags the figure off the ring.
+    const baseCeiling = bounds.min.y + size.y * 0.12;
+    const base = new THREE.Box3();
+    const probe = new THREE.Vector3();
+    clone.updateWorldMatrix(true, true);
+    clone.traverse((child) => {
+      const mesh = child as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      const position = mesh.geometry?.attributes?.position;
+      if (!position) return;
+      const stride = Math.max(1, Math.floor(position.count / 4000));
+      for (let i = 0; i < position.count; i += stride) {
+        probe.fromBufferAttribute(position, i).applyMatrix4(mesh.matrixWorld);
+        if (probe.y <= baseCeiling) base.expandByPoint(probe);
+      }
+    });
+    const anchor = base.isEmpty() ? center : base.getCenter(new THREE.Vector3());
     const heightScale = 2.48 / Math.max(size.y, 1e-6);
     const footprintScale = 2.18 / Math.max(size.x, size.z, 1e-6);
     const fittedScale = Math.min(heightScale, footprintScale);
@@ -126,9 +146,9 @@ function HunterMini({ slug, yaw }: { slug: string; yaw: number }) {
       scene: clone,
       scale: fittedScale,
       offset: new THREE.Vector3(
-        -center.x * fittedScale,
+        -anchor.x * fittedScale,
         0.15 - bounds.min.y * fittedScale,
-        -center.z * fittedScale,
+        -anchor.z * fittedScale,
       ),
     };
   }, [source, maxAnisotropy]);
@@ -188,12 +208,13 @@ function StaticFallback({ label }: { label: string }) {
   );
 }
 
-export default function BbHunterViewer({ hunterId, hunterName, accent }: Props) {
+export default function BbHunterViewer({ hunterId, hunterName, accent, title = "HUNTER'S PRESENCE" }: Props) {
   const slug = bbHunterMini(hunterId);
   const webGlAvailable = useMemo(supportsWebGl, []);
   const reducedMotion = useReducedMotion();
   const [contextLost, setContextLost] = useState(false);
-  const [yaw, setYaw] = useState(-0.18);
+  // Sculpts face +Z-flipped; start half-turned so the hunter faces the camera.
+  const [yaw, setYaw] = useState(Math.PI - 0.18);
   const labelId = useId();
   const hintId = useId();
   const markContextLost = useCallback(() => setContextLost(true), []);
@@ -211,7 +232,7 @@ export default function BbHunterViewer({ hunterId, hunterName, accent }: Props) 
     <section className="bb-hunter-viewer ig-glass" data-testid="bb-hunter-viewer"
       style={style} aria-labelledby={labelId}>
       <div className="bb-hunter-viewer-head">
-        <span id={labelId}>HUNTER'S PRESENCE</span>
+        <span id={labelId}>{title}</span>
         <span id={hintId}>{canRender ? 'DRAG TO TURN / ARROW KEYS' : 'MINIATURE UNAVAILABLE'}</span>
       </div>
       {canRender ? (
@@ -226,7 +247,7 @@ export default function BbHunterViewer({ hunterId, hunterName, accent }: Props) 
               frameloop="demand"
               dpr={[1, 1.5]}
               gl={{ antialias: true, alpha: true, stencil: false, powerPreference: 'high-performance' }}
-              camera={{ fov: 30, near: 0.1, far: 30, position: [0.18, 1.4, 5.25] }}
+              camera={{ fov: 30, near: 0.1, far: 30, position: [0, 1.42, 5.2] }}
               onCreated={({ gl }) => {
                 gl.toneMapping = THREE.ACESFilmicToneMapping;
                 gl.toneMappingExposure = 1.04;
@@ -256,7 +277,7 @@ export default function BbHunterViewer({ hunterId, hunterName, accent }: Props) 
                 <ContactShadows position={[0, 0.14, 0]} opacity={0.72} scale={4.2}
                   blur={2.4} far={3.4} resolution={256} frames={1} color="#020204" />
               </Suspense>
-              <OrbitControls makeDefault target={[0, 1.28, 0]} enablePan={false} enableZoom={false}
+              <OrbitControls makeDefault target={[0, 1.3, 0]} enablePan={false} enableZoom={false}
                 minPolarAngle={1.08} maxPolarAngle={1.48} rotateSpeed={0.58}
                 enableDamping={!reducedMotion} dampingFactor={0.08} />
             </Canvas>

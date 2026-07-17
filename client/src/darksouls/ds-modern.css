@@ -754,7 +754,7 @@
   font-size: 9px;
 }
 
-.ds-page .ds-main-encounter .ds-col.rail > .ds-rail-body > .ds-btn:last-child {
+.ds-page .ds-main-encounter .ds-col.rail > .ds-rail-body > .ds-btn.primary:last-child {
   position: sticky;
   z-index: 3;
   bottom: 0;
@@ -1164,6 +1164,48 @@
   border-radius: 7px;
   background: rgba(73, 25, 20, 0.96);
   box-shadow: 0 16px 42px rgba(0,0,0,.48);
+}
+
+.ds-page [role='dialog'].ig-glass:not(.ds-prompt) {
+  border-radius: 10px !important;
+  border-color: rgba(218, 207, 188, 0.24);
+  background: linear-gradient(155deg, rgba(22, 23, 24, 0.99), rgba(7, 8, 9, 0.99));
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.76);
+}
+
+.ds-page [role='dialog'].ig-glass:not(.ds-prompt)::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ds-ember), transparent);
+}
+
+.ds-page [role='dialog'].ig-glass:not(.ds-prompt) h1 {
+  color: var(--ds-ivory);
+  font-family: var(--ds-display);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.ds-page [role='dialog'].ig-glass:not(.ds-prompt) .tp-act {
+  min-height: 44px;
+  border-radius: 6px;
+  border-color: var(--ds-line-strong);
+  background: #181a1b;
+  color: var(--ds-ivory);
+}
+
+.ds-page [role='dialog'].ig-glass:not(.ds-prompt) .tp-act.primary {
+  border-color: var(--ds-ember);
+  background: linear-gradient(145deg, rgba(114, 72, 30, 0.82), rgba(42, 29, 16, 0.96));
+  color: var(--ds-ivory);
+}
+
+.ds-page [role='dialog'].ig-glass:not(.ds-prompt) > a.ig-glass {
+  border-radius: 6px !important;
 }
 
 .ds-page .ds-over {
@@ -1681,4 +1723,49 @@
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+/* Device UI readability: do not scale the printed cards, mats, or TV board. */
+.ds-page .ig-lab,
+.ds-page .ds-resource small,
+.ds-page .ds-map-head small,
+.ds-page .ds-map-roster b,
+.ds-page .ds-map-roster small,
+.ds-page .ds-map-legend,
+.ds-page .ds-cost,
+.ds-page .ds-btn-detail,
+.ds-page .ds-reason,
+.ds-page .ds-board-pick-hint small,
+.ds-page .ds-dice em,
+.ds-page .ds-btn-detail em,
+.ds-page .ds-spatial-copy small,
+.ds-page .ds-choice small,
+.ds-page .ds-tile small,
+.ds-page .ds-tile em,
+.ds-page .ds-pick-name small,
+.ds-page .ds-pick-name em {
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.ds-page .ds-cast-text,
+.ds-page .ds-prompt-note,
+.ds-page .ds-wait small,
+.ds-page .ds-gate,
+.ds-page .ds-over-log,
+.ds-page [role='dialog'].ig-glass:not(.ds-prompt) p {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ds-page .ds-btn,
+.ds-page .ds-choice,
+.ds-page .ds-mini-btn,
+.ds-page [role='dialog'].ig-glass:not(.ds-prompt) .tp-act {
+  min-height: 44px;
+}
+
+@media (max-width: 720px) {
+  .ds-page .ds-prompt-row { flex-wrap: wrap; }
+  .ds-page .ds-prompt-row .ds-choice { min-width: min(100%, 180px); }
 }

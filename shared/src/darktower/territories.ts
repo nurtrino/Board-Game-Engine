@@ -145,3 +145,75 @@ for (const n of DT_NODES) {
   if (n.kind === 'citadel' && n.kingdom) DT_CITADEL_NODE.set(n.kingdom, n.id);
   if (n.kind === 'darktower' && n.kingdom) DT_DARKTOWER_NODE.set(n.kingdom, n.id);
 }
+
+export type DtBoardAction = 'move' | 'tomb' | 'bazaar' | 'sanctuary' | 'frontier' | 'tower';
+
+/** The printed tower button that resolves a pawn's occupied board space. */
+export const dtActionForNode = (id: string): DtBoardAction | null => {
+  const kind = DT_NODE.get(id)?.kind;
+  if (!kind) return null;
+  if (kind === 'tomb' || kind === 'ruin') return 'tomb';
+  if (kind === 'sanctuary' || kind === 'citadel') return 'sanctuary';
+  if (kind === 'darktower') return 'tower';
+  if (kind === 'empty') return 'move';
+  return kind;
+};
+
+export interface DtMovementPlayer {
+  color: DtSeat;
+  quad: number;
+  node: string;
+  brasskey: number;
+  silverkey: number;
+  goldkey: number;
+}
+
+export const dtTowerReady = (p: DtMovementPlayer): boolean =>
+  p.quad >= 4 && !!p.brasskey && !!p.silverkey && !!p.goldkey;
+
+/**
+ * Current-or-adjacent destinations that obey the board's one-way kingdom
+ * circuit. `anchor` is the node occupied at turn start, so repeated drag/drop
+ * messages cannot walk a pawn several graph edges before resolving its space.
+ */
+export function dtLegalDestinations(p: DtMovementPlayer, anchor = p.node): string[] {
+  const from = DT_NODE.get(anchor);
+  if (!from) return [];
+  const currentKingdom = dtKingdomAt(p.color, p.quad);
+  const forwardFrontier = DT_FORWARD_FRONTIER.get(currentKingdom);
+  const candidates = [anchor, ...dtAdjacent(anchor)];
+  const out: string[] = [];
+
+  for (const id of candidates) {
+    const to = DT_NODE.get(id);
+    if (!to) continue;
+
+    // A crossed frontier is the starting point for the following turn, but is
+    // behind the pawn now: it must step off into the newly entered kingdom.
+    if (id === anchor && from.kind === 'frontier' && anchor !== forwardFrontier) continue;
+    if (to.kind === 'citadel' && to.kingdom !== p.color) continue;
+    if (to.kind === 'darktower' && !(to.kingdom === p.color && dtTowerReady(p))) continue;
+
+    if (to.kind === 'frontier') {
+      if (p.quad >= 4 || id !== forwardFrontier) continue;
+    } else if (from.kind === 'frontier') {
+      if (to.kingdom !== currentKingdom) continue;
+    } else if (to.kingdom && to.kingdom !== currentKingdom) {
+      continue;
+    }
+    out.push(id);
+  }
+  return out;
+}
+
+/** Nearest exact graph node to a legacy free-position pawn. */
+export function dtNearestNode(spot: { x: number; z: number }, fallback: string): string {
+  if (!Number.isFinite(spot?.x) || !Number.isFinite(spot?.z)) return fallback;
+  let best = fallback;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  for (const n of DT_NODES) {
+    const d = (n.wx - spot.x) ** 2 + (n.wz - spot.z) ** 2;
+    if (d < bestDistance) { best = n.id; bestDistance = d; }
+  }
+  return best;
+}

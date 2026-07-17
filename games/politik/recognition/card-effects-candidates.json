@@ -1,0 +1,2328 @@
+{
+  "version": 1,
+  "authority": "reviewed_transcription",
+  "safeForAutomaticResolution": false,
+  "reason": "Independently reviewed effect text is not executable until each operation has a tested engine implementation. Entries explicitly marked ambiguous must remain manual.",
+  "source": "Two-pass visual transcription from authentic TTS card art",
+  "batches": [
+    {
+      "version": 1,
+      "scope": "Sheets 10417-10422; verified at_any_time and named Clash-window Edge effects",
+      "source": "Direct visual transcription from authentic TTS card art",
+      "reviewStatus": "second_review_complete",
+      "notation": {
+        "exhaust_self": "printed black/grey rotate/exhaust token",
+        "discard_self": "printed X token after the Edge arrow",
+        "develop": "printed crossed-tools Develop token",
+        "research": "printed magnifier Research token",
+        "educate": "printed lectern Educate token",
+        "carbon": "printed three-node Carbon token",
+        "capital": "printed currency token",
+        "support": "printed bullseye Support token",
+        "margin": "printed diagonal-bar Margin token",
+        "price": "printed hourglass Price token"
+      },
+      "cards": {
+        "10417:5": {
+          "title": "Strategic Reserves",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 10 Capital.",
+          "cost": [
+            {
+              "kind": "discard_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "capital",
+              "amount": 10
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10417:10": {
+          "title": "Credit Lines",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 10 Capital.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": 1
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "capital",
+              "amount": 10
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10417:13": {
+          "title": "General Fund",
+          "timing": "at_any_time",
+          "printedText": "At any time, Research 2.",
+          "cost": [
+            {
+              "kind": "discard_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "research",
+              "amount": 2
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10417:19": {
+          "title": "Managed Risk",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 5 Capital.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "capital",
+              "amount": 5
+            }
+          ],
+          "confidence": "exact",
+          "note": "Card also has a separate After you Develop 1+ Edge that readies this card."
+        },
+        "10417:23": {
+          "title": "Securities Portfolio",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 5 Capital for each Asset this Company controls. At any time, Price 3.",
+          "abilities": [
+            {
+              "cost": [
+                {
+                  "kind": "exhaust_self"
+                }
+              ],
+              "effect": [
+                {
+                  "op": "gain_per",
+                  "resource": "capital",
+                  "amount": 5,
+                  "per": "asset_controlled_by_this_company"
+                }
+              ]
+            },
+            {
+              "cost": [
+                {
+                  "kind": "exhaust_self"
+                }
+              ],
+              "effect": [
+                {
+                  "op": "price",
+                  "amount": 3
+                }
+              ]
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10418:0": {
+          "title": "Seed Capital",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 15 Capital.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": 2
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "capital",
+              "amount": 15
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10418:5": {
+          "title": "Bribes",
+          "timing": "at_any_time",
+          "printedText": "At any time, choose 1 Support in the Council. Move it to a different Seat.",
+          "cost": [
+            {
+              "kind": "discard_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "move_support",
+              "amount": 1,
+              "from": "council",
+              "to": "different_seat"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10418:7": {
+          "title": "Global Exchanges",
+          "timing": "at_any_time",
+          "printedText": "At any time, Exchange.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "exchange"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10418:10": {
+          "title": "Liquidity",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 2X Capital.",
+          "cost": [
+            {
+              "kind": "influence",
+              "amount": "X"
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "capital",
+              "amount": {
+                "multiply": [
+                  2,
+                  "X"
+                ]
+              }
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10418:12": {
+          "title": "Settlements",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 10 Capital.",
+          "cost": [
+            {
+              "kind": "discard_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "capital",
+              "amount": 10
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10418:16": {
+          "title": "Cunning",
+          "timing": "at_any_time",
+          "printedText": "At any time, Educate 1.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": 2
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "educate",
+              "amount": 1
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10418:21": {
+          "title": "Private Security",
+          "timing": "at_any_time",
+          "printedText": "At any time, Research 1.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "research",
+              "amount": 1
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10418:23": {
+          "title": "Inner Circle",
+          "timing": "at_any_time",
+          "printedText": "At any time, if you control 2+ Seats, gain 2 Support.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "requirements": [
+            {
+              "kind": "control_seats",
+              "minimum": 2
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "support",
+              "amount": 2
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10419:3": {
+          "title": "Rare Earths",
+          "timing": "at_any_time",
+          "printedText": "At any time, Price 1.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "price",
+              "amount": 1
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10419:4": {
+          "title": "Emergency Production",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 4X Capital.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": "X"
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "capital",
+              "amount": {
+                "multiply": [
+                  4,
+                  "X"
+                ]
+              }
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10419:16": {
+          "title": "Psychological Operations",
+          "timing": "at_any_time",
+          "printedText": "At any time, change the Bases of X Support.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "change_support_bases",
+              "amount": "X"
+            }
+          ],
+          "confidence": "exact",
+          "note": "X is chosen/resolved under the printed operation; no separate X cost is printed."
+        },
+        "10419:19": {
+          "title": "Political Machine",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain X Support.",
+          "cost": [
+            {
+              "kind": "leader",
+              "amount": "X"
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "support",
+              "amount": "X"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10419:20": {
+          "title": "Influential",
+          "timing": "at_any_time",
+          "printedText": "At any time, Price 2.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "price",
+              "amount": 2
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10419:21": {
+          "title": "Integrated Networks",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain X Margin equal to the number of Assets this Company controls.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "margin",
+              "amount": {
+                "count": "assets_controlled_by_this_company"
+              }
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10419:23": {
+          "title": "Embedded Source",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 1 Support.",
+          "cost": [
+            {
+              "kind": "discard_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "support",
+              "amount": 1
+            }
+          ],
+          "confidence": "exact",
+          "note": "Card also has a separate Before Noise Edge: gain Immunity."
+        },
+        "10420:0": {
+          "title": "Productivity",
+          "timing": "at_any_time",
+          "printedText": "At any time, Ready another Asset.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "ready",
+              "target": {
+                "type": "asset",
+                "relation": "another_controlled"
+              }
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10420:2": {
+          "title": "Digital Spectrum",
+          "timing": "at_any_time",
+          "printedText": "At any time, Research 3.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": 1,
+              "restriction": "media"
+            }
+          ],
+          "effect": [
+            {
+              "op": "research",
+              "amount": 3
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10420:4": {
+          "title": "Commodities Traders",
+          "timing": "at_any_time",
+          "printedText": "At any time, choose — pay 1 Food for 2 Carbon — or — pay 1 Carbon for 2 Food. After either, Exchange.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "choose",
+              "options": [
+                [
+                  {
+                    "op": "pay",
+                    "resource": "food",
+                    "amount": 1
+                  },
+                  {
+                    "op": "gain",
+                    "resource": "carbon",
+                    "amount": 2
+                  }
+                ],
+                [
+                  {
+                    "op": "pay",
+                    "resource": "carbon",
+                    "amount": 1
+                  },
+                  {
+                    "op": "gain",
+                    "resource": "food",
+                    "amount": 2
+                  }
+                ]
+              ]
+            },
+            {
+              "op": "exchange"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10420:8": {
+          "title": "Colonel-Sheyly",
+          "timing": "at_any_time",
+          "printedText": "At any time, Research X.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": "X"
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "research",
+              "amount": "X"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10420:9": {
+          "title": "Everon",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 2 Carbon.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": 1
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "carbon",
+              "amount": 2
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10420:14": {
+          "title": "Sutler Drilling",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain X Carbon. At any time, Exchange.",
+          "abilities": [
+            {
+              "cost": [
+                {
+                  "kind": "develop",
+                  "amount": "X"
+                },
+                {
+                  "kind": "exhaust_self"
+                }
+              ],
+              "effect": [
+                {
+                  "op": "gain",
+                  "resource": "carbon",
+                  "amount": "X"
+                }
+              ]
+            },
+            {
+              "cost": [
+                {
+                  "kind": "pay",
+                  "resource": "carbon",
+                  "amount": 1
+                }
+              ],
+              "effect": [
+                {
+                  "op": "exchange"
+                }
+              ]
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10420:17": {
+          "title": "Nordiq",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 2 Carbon.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": 2
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "carbon",
+              "amount": 2
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10420:19": {
+          "title": "BGN",
+          "timing": "at_any_time",
+          "printedText": "At any time, Price 4.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "price",
+              "amount": 4
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10420:23": {
+          "title": "Ironbranch",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain 12 Capital.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": 1,
+              "restriction": "financial"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "capital",
+              "amount": 12
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10421:12": {
+          "title": "Dulia & Camp",
+          "timing": "at_any_time",
+          "printedText": "At any time, Educate 1.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": 2
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "educate",
+              "amount": 1
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10421:13": {
+          "title": "Embria",
+          "timing": "at_any_time",
+          "printedText": "At any time, Research 3.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "research",
+              "amount": 3
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10421:21": {
+          "title": "Ambersmelt",
+          "timing": "at_any_time",
+          "printedText": "At any time, gain X Carbon.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": "X"
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "carbon",
+              "amount": "X"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10422:5": {
+          "title": "Shell Companies",
+          "timing": "at_any_time",
+          "printedText": "At any time, choose a Company. It gains X Margin equal to the number of Negotiation you control.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "gain",
+              "resource": "margin",
+              "target": {
+                "type": "company",
+                "selection": "chosen"
+              },
+              "amount": {
+                "count": "negotiation_controlled"
+              }
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10422:6": {
+          "title": "Transformation",
+          "timing": "at_any_time",
+          "printedText": "At any time, change the Bases of X Support you control.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "change_support_bases",
+              "amount": "X",
+              "restriction": "controlled_by_actor"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10422:10": {
+          "title": "Backdoor",
+          "timing": "during_focus",
+          "printedText": "During Focus, add 2 to a Clash.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "modify_clash_focus",
+              "amount": 2,
+              "target": "a_clash"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10422:17": {
+          "title": "Satellite Network",
+          "timing": "during_focus",
+          "printedText": "During Focus, add X to a Clash equal to the number of Technology you control.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "modify_clash_focus",
+              "amount": {
+                "count": "technology_controlled"
+              },
+              "target": "a_clash"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10422:20": {
+          "title": "Wind Farm",
+          "timing": "at_any_time",
+          "printedText": "At any time, choose — gain 2 Margin — or — Research 1.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "choose",
+              "options": [
+                [
+                  {
+                    "op": "gain",
+                    "resource": "margin",
+                    "amount": 2
+                  }
+                ],
+                [
+                  {
+                    "op": "research",
+                    "amount": 1
+                  }
+                ]
+              ]
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10422:21": {
+          "title": "Industrial Farming",
+          "timing": "at_any_time",
+          "printedText": "At any time, Exchange.",
+          "cost": [
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "exchange"
+            }
+          ],
+          "confidence": "exact"
+        },
+        "10422:22": {
+          "title": "Pooled Data",
+          "timing": "at_any_time",
+          "printedText": "At any time, Research X.",
+          "cost": [
+            {
+              "kind": "develop",
+              "amount": "X"
+            },
+            {
+              "kind": "exhaust_self"
+            }
+          ],
+          "effect": [
+            {
+              "op": "research",
+              "amount": "X"
+            }
+          ],
+          "confidence": "exact"
+        }
+      },
+      "summary": {
+        "cards": 39,
+        "exact": 39,
+        "ambiguous": 0,
+        "ambiguousCardIds": []
+      },
+      "secondReview": {
+        "reviewer": "edge_effects_c",
+        "method": "Independent direct visual comparison of every entry against enlarged authentic card crops.",
+        "cardsReviewed": 39,
+        "cardsAcceptedWithoutSubstantiveChange": 36,
+        "substantiveCorrections": 3,
+        "resolvedAmbiguities": 2,
+        "remainingAmbiguities": 0,
+        "corrections": [
+          "10417:23 Securities Portfolio: its Price 3 ability prints Activate/turn sideways, not discard self.",
+          "10418:10 Liquidity: the X cost glyph is Influence; the same Influence glyph is printed with its name on other authentic cards such as Lattidor.",
+          "10419:19 Political Machine: the X cost glyph is Leader."
+        ]
+      }
+    },
+    {
+      "version": 1,
+      "scope": {
+        "sheets": [
+          10423,
+          10424,
+          10425,
+          10426,
+          10427,
+          10428
+        ],
+        "eligibleTimings": [
+          "at_any_time",
+          "after_cost",
+          "during_focus",
+          "after_reveal",
+          "before_resolve"
+        ]
+      },
+      "reviewMethod": "Direct visual transcription from authentic 680x950 TTS card crops. Words are authoritative only where status is verified. Unresolved printed icons are retained as bracketed tokens and make the entry ambiguous.",
+      "notation": {
+        "[EDGE]": "printed Edge arrow",
+        "[CLASH]": "printed crossed Clash symbol",
+        "[RESEARCH]": "printed Research symbol",
+        "[READY]": "printed Ready symbol",
+        "[INFLUENCE]": "printed Influence symbol",
+        "[SUPPORT]": "printed Support symbol",
+        "[MARGIN]": "printed Margin symbol",
+        "[MARKET]": "printed Market symbol",
+        "[COMPANY]": "printed Company symbol",
+        "[LEADER]": "printed Leader symbol",
+        "[NATION]": "printed Nation symbol",
+        "[SEAT]": "printed Seat symbol",
+        "[PROPAGANDA]": "printed Propaganda symbol",
+        "[EVENT]": "printed Event symbol",
+        "[USE_PAIR]": "two printed parenthesized Use target icons; precise types unresolved",
+        "[RESOURCE_PAIR]": "two printed resource icons; precise resource names unresolved",
+        "[REMOVABLE_TRIPLE]": "three slash-separated printed removable target icons; precise types unresolved",
+        "[TARGET]": "printed target-type icon whose glossary identity remains unresolved",
+        "[COST_ICON]": "printed activation-cost icon whose glossary identity remains unresolved"
+      },
+      "cards": {
+        "10423:1": {
+          "title": "Gascon Composites",
+          "timings": [
+            "during_focus"
+          ],
+          "printedText": "[EDGE]: During Focus, lose X [MARGIN]. Add X to a [CLASH].",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "lose_margin",
+              "amount": "X"
+            },
+            {
+              "op": "add_to_clash",
+              "amount": "X"
+            }
+          ],
+          "status": "verified"
+        },
+        "10423:7": {
+          "title": "Xfab",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], Develop X, Exhaust: At any time, gain 4X Capital.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "develop",
+                "amount": "X"
+              },
+              {
+                "kind": "exhaust_self"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "gain_capital",
+              "amount": "4X"
+            }
+          ],
+          "status": "verified"
+        },
+        "10423:12": {
+          "title": "Bcom",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], Exhaust: At any time, Ready 1 Propaganda.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "exhaust_self"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "ready_card",
+              "target": "propaganda",
+              "amount": 1
+            }
+          ],
+          "status": "verified"
+        },
+        "10423:15": {
+          "title": "Lattidor",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], 3 [INFLUENCE]: At any time, Research 1.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "influence",
+                "amount": 3
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "research",
+              "amount": 1
+            }
+          ],
+          "status": "verified"
+        },
+        "10424:2": {
+          "title": "Iconia Logistics",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], Exhaust: At any time, Exchange.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "exhaust_self"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "exchange"
+            }
+          ],
+          "status": "verified"
+        },
+        "10424:10": {
+          "title": "Another Way",
+          "timings": [
+            "during_focus"
+          ],
+          "printedText": "[EDGE]: During Focus, choose 1 State you control. It can contribute X Influence to the [CLASH] regardless of the [CLASH] type.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "permit_state_influence",
+              "state": "one_controlled",
+              "amount": "X",
+              "ignoreClashType": true
+            }
+          ],
+          "status": "verified"
+        },
+        "10424:14": {
+          "title": "Damning Evidence",
+          "timings": [
+            "before_resolve"
+          ],
+          "printedText": "[EDGE]: Before a Political [CLASH] resolves, Remove all Focus Cards another Nation contributed.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "remove_focus_cards",
+              "source": "one_other_nation",
+              "scope": "all_contributed_to_current_clash",
+              "arena": "political"
+            }
+          ],
+          "status": "verified"
+        },
+        "10424:20": {
+          "title": "Fixers",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE]: At any time, Ready 1 card.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "ready_card",
+              "target": "any_card",
+              "amount": 1
+            }
+          ],
+          "status": "verified"
+        },
+        "10425:0": {
+          "title": "Interference",
+          "timings": [
+            "after_cost"
+          ],
+          "printedText": "[EDGE]: After an Action's cost is paid, Cancel it.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "cancel_action",
+              "when": "after_cost_paid"
+            }
+          ],
+          "status": "verified"
+        },
+        "10425:3": {
+          "title": "Descent",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], X [INFLUENCE]: At any time, Research X.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "influence",
+                "amount": "X"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "research",
+              "amount": "X"
+            }
+          ],
+          "status": "verified"
+        },
+        "10425:6": {
+          "title": "Reconnaissance",
+          "timings": [
+            "during_focus"
+          ],
+          "printedText": "[EDGE]: During Focus, add 2 to a [CLASH] for each Region you occupy.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "add_to_clash",
+              "amount": "2 * occupied_regions"
+            }
+          ],
+          "status": "verified"
+        },
+        "10425:13": {
+          "title": "Tip the Scales",
+          "timings": [
+            "at_any_time",
+            "during_focus"
+          ],
+          "printedText": "[EDGE]: Choose - At any time, Ready 1 card - or - During Focus, add 3 to a [CLASH].",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "choose",
+              "options": [
+                {
+                  "timing": "at_any_time",
+                  "op": "ready_card",
+                  "amount": 1
+                },
+                {
+                  "timing": "during_focus",
+                  "op": "add_to_clash",
+                  "amount": 3
+                }
+              ]
+            }
+          ],
+          "status": "verified"
+        },
+        "10426:3": {
+          "title": "Dying Effort",
+          "timings": [
+            "during_focus"
+          ],
+          "printedText": "[EDGE], 1 [LEADER]: During Focus, add 4 to the [CLASH].",
+          "activation": {
+            "costs": [
+              {
+                "kind": "leader",
+                "amount": 1
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "add_to_clash",
+              "amount": 4
+            }
+          ],
+          "status": "verified"
+        },
+        "10426:4": {
+          "title": "Hunt Down",
+          "timings": [
+            "during_focus"
+          ],
+          "printedText": "[EDGE]: During Focus, choose a Nation. Remove X Leaders they control. Research X.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "remove",
+              "target": "leader_controlled_by_chosen_nation",
+              "amount": "X"
+            },
+            {
+              "op": "research",
+              "amount": "X"
+            }
+          ],
+          "status": "verified"
+        },
+        "10426:8": {
+          "title": "Make an Example",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE]: At any time, Remove 1 Leader. Educate 1.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "remove",
+              "target": "leader",
+              "amount": 1
+            },
+            {
+              "op": "educate",
+              "amount": 1
+            }
+          ],
+          "status": "verified"
+        },
+        "10426:10": {
+          "title": "Undermined",
+          "timings": [
+            "after_cost"
+          ],
+          "printedText": "[EDGE]: After costs are paid for an Event, Cancel it. Gain 1 Corruption.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "cancel_event",
+              "when": "after_cost_paid"
+            },
+            {
+              "op": "gain_corruption",
+              "amount": 1
+            }
+          ],
+          "status": "verified"
+        },
+        "10426:12": {
+          "title": "Double Agents",
+          "timings": [
+            "after_cost"
+          ],
+          "printedText": "[EDGE]: After [CLASH] costs are paid, Cancel it. [EDGE]: After an Edge Action's costs are paid, Cancel it.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "cancel_clash",
+              "when": "after_cost_paid"
+            },
+            {
+              "op": "cancel_edge_action",
+              "when": "after_cost_paid"
+            }
+          ],
+          "status": "verified"
+        },
+        "10426:20": {
+          "title": "Better Forecasts",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], Develop X: At any time, Research X.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "develop",
+                "amount": "X"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "research",
+              "amount": "X"
+            }
+          ],
+          "status": "verified"
+        },
+        "10426:22": {
+          "title": "Coverup",
+          "timings": [
+            "after_cost"
+          ],
+          "printedText": "[EDGE]: After costs are paid for an Event, Cancel it. Research 1.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "cancel_event",
+              "when": "after_cost_paid"
+            },
+            {
+              "op": "research",
+              "amount": 1
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:2": {
+          "title": "Erase",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE]: At any time, Remove 1 Company/Leader/Influence; Remove 1 Company/Leader/Influence; Remove 1 Company/Leader/Influence.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "remove",
+              "targetChoices": [
+                "company",
+                "leader",
+                "influence"
+              ],
+              "amount": 1,
+              "repeat": 3
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:3": {
+          "title": "Exaggeration",
+          "timings": [
+            "after_reveal"
+          ],
+          "printedText": "[EDGE]: After Focus Cards are revealed, add 2 to a [CLASH].",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "add_to_clash",
+              "amount": 2
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:6": {
+          "title": "Intercept",
+          "timings": [
+            "after_cost"
+          ],
+          "printedText": "[EDGE], Develop X: After Campaign X costs are paid, Cancel it.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "develop",
+                "amount": "X"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "cancel_campaign",
+              "when": "after_cost_paid",
+              "campaignAmount": "X"
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:9": {
+          "title": "Outwit",
+          "timings": [
+            "after_cost"
+          ],
+          "printedText": "[EDGE]: After costs are paid to Use [USE_PAIR], Cancel it. Educate 1.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "cancel_use",
+              "targets": "[USE_PAIR]",
+              "when": "after_cost_paid"
+            },
+            {
+              "op": "educate",
+              "amount": 1
+            }
+          ],
+          "status": "ambiguous",
+          "ambiguities": [
+            "Two parenthesized Use target icons are unresolved."
+          ]
+        },
+        "10427:10": {
+          "title": "Recalibrate",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE]: At any time, Ready 1 Propaganda. You may change the Base of 1 Support you control.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "ready_card",
+              "target": "propaganda",
+              "amount": 1
+            },
+            {
+              "op": "change_support_base",
+              "amount": 1,
+              "optional": true
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:11": {
+          "title": "Reconsideration",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE]: At any time, Research 1. Change the Bases of X Support you control.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "research",
+              "amount": 1
+            },
+            {
+              "op": "change_support_bases",
+              "amount": "X"
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:12": {
+          "title": "Scapegoat",
+          "timings": [
+            "before_resolve"
+          ],
+          "printedText": "[EDGE], 1 [LEADER]: Before a [CLASH] resolves, ignore all Influence, Support, Margin, and Market that would be lost.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "leader",
+                "amount": 1
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "prevent_clash_losses",
+              "resources": [
+                "influence",
+                "support",
+                "margin",
+                "market"
+              ],
+              "scope": "all"
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:13": {
+          "title": "Synergy",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], Develop X: At any time, gain a total of X Food/Carbon.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "develop",
+                "amount": "X"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "gain_split_resources",
+              "amount": "X",
+              "resources": [
+                "food",
+                "carbon"
+              ]
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:17": {
+          "title": "Roulette",
+          "timings": [
+            "during_focus"
+          ],
+          "printedText": "[EDGE], Develop X: During Focus, choose - Research X - or - Add X to a [CLASH].",
+          "activation": {
+            "costs": [
+              {
+                "kind": "develop",
+                "amount": "X"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "choose",
+              "options": [
+                {
+                  "op": "research",
+                  "amount": "X"
+                },
+                {
+                  "op": "add_to_clash",
+                  "amount": "X"
+                }
+              ]
+            }
+          ],
+          "status": "verified"
+        },
+        "10427:21": {
+          "title": "Forced Transfer",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE]: At any time, choose an Asset. Gain control of it and move it to a Company ignoring costs and requirements.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "transfer_asset",
+              "gainControl": true,
+              "destination": "company",
+              "ignoreCosts": true,
+              "ignoreRequirements": true
+            }
+          ],
+          "status": "verified"
+        },
+        "10428:2": {
+          "title": "Disappeared",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE]: At any time, Research 2. Remove up to 5 Leaders.",
+          "activation": {
+            "costs": []
+          },
+          "effects": [
+            {
+              "op": "research",
+              "amount": 2
+            },
+            {
+              "op": "remove",
+              "target": "leader",
+              "amount": {
+                "min": 0,
+                "max": 5
+              }
+            }
+          ],
+          "status": "verified"
+        },
+        "10428:4": {
+          "title": "Ousted",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], Develop X: At any time, choose a Nation. Remove X Support they control from 1 Seat.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "develop",
+                "amount": "X"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "remove_support",
+              "amount": "X",
+              "controller": "chosen_nation",
+              "location": "one_seat"
+            }
+          ],
+          "status": "verified"
+        },
+        "10428:10": {
+          "title": "Unregulated",
+          "timings": [
+            "after_reveal"
+          ],
+          "printedText": "[EDGE], Exhaust: After Focus Cards are revealed, add 2 to a Corporate [CLASH].",
+          "activation": {
+            "costs": [
+              {
+                "kind": "exhaust_self"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "add_to_clash",
+              "amount": 2,
+              "arena": "corporate"
+            }
+          ],
+          "status": "verified"
+        },
+        "10428:12": {
+          "title": "Cronyism",
+          "timings": [
+            "at_any_time"
+          ],
+          "printedText": "[EDGE], Develop 5: At any time, choose a Company. It gains 1 Market.",
+          "activation": {
+            "costs": [
+              {
+                "kind": "develop",
+                "amount": 5
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "gain_market",
+              "target": "chosen_company",
+              "amount": 1
+            }
+          ],
+          "status": "verified"
+        },
+        "10428:23": {
+          "title": "Divine Right",
+          "timings": [
+            "during_focus"
+          ],
+          "printedText": "[EDGE], 1 Support: During Focus, add 2 to a Military [CLASH].",
+          "activation": {
+            "costs": [
+              {
+                "kind": "support",
+                "amount": 1
+              }
+            ]
+          },
+          "effects": [
+            {
+              "op": "add_to_clash",
+              "amount": 2,
+              "arena": "military"
+            }
+          ],
+          "status": "verified"
+        }
+      },
+      "counts": {
+        "cards": 34,
+        "verified": 33,
+        "ambiguous": 1
+      },
+      "secondReview": {
+        "method": "Independent direct comparison with authentic card art",
+        "cardsReviewed": 34,
+        "definiteCorrections": 18,
+        "resolvedAmbiguities": 13,
+        "remainingAmbiguous": 1,
+        "remainingAmbiguousCardIds": [
+          "10427:9"
+        ]
+      }
+    },
+    {
+      "version": 1,
+      "scope": {
+        "sheets": [
+          10429,
+          10430,
+          10431,
+          10432,
+          10433,
+          10434
+        ],
+        "includedTimings": [
+          "at_any_time",
+          "after_cost",
+          "during_focus",
+          "after_reveal",
+          "before_resolve"
+        ],
+        "note": "Human transcription from the authentic fixed-layout card art. Text is normalized only by spelling out printed icons in square brackets. No OCR text is treated as authority. Entries with ambiguous glyph semantics are not safe for automatic resolution."
+      },
+      "cards": {
+        "10429:9": {
+          "title": "Cooperatives",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], [ACTIVATE]: At any time, redistribute X Margin among Companies you control (min 0, max 9).",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "redistribute_margin",
+                  "amount": "X",
+                  "targets": "companies_you_control",
+                  "minPerCompany": 0,
+                  "maxPerCompany": 9,
+                  "conserveTotal": true
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10429:10": {
+          "title": "Reassignment",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], 1 [LEADER]: At any time, Research 2.",
+              "cost": [
+                {
+                  "kind": "leader",
+                  "amount": 1
+                }
+              ],
+              "operations": [
+                {
+                  "op": "research",
+                  "amount": 2
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10429:18": {
+          "title": "New Manifesto",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], [ACTIVATE]: At any time, change the Bases of up to 2 Support.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "change_support_bases",
+                  "amount": {
+                    "min": 0,
+                    "max": 2
+                  },
+                  "targets": "support_you_control"
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10429:19": {
+          "title": "Revolutionaries",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], [ACTIVATE]: At any time, change the Bases of up to 5 Support.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "change_support_bases",
+                  "amount": {
+                    "min": 0,
+                    "max": 5
+                  },
+                  "targets": "support_you_control"
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10429:21": {
+          "title": "Puppet Government",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], 1 Influence: At any time, Research 2.",
+              "cost": [
+                {
+                  "kind": "influence",
+                  "amount": 1
+                }
+              ],
+              "operations": [
+                {
+                  "op": "research",
+                  "amount": 2
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10429:23": {
+          "title": "Greater Good",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], X Influence, [ACTIVATE]: At any time, Research X.",
+              "cost": [
+                {
+                  "kind": "influence",
+                  "amount": "X"
+                }
+              ],
+              "operations": [
+                {
+                  "op": "research",
+                  "amount": "X"
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10430:4": {
+          "title": "Mobilization",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], Clash 1, [ACTIVATE]: At any time, Educate 1.",
+              "cost": [
+                {
+                  "kind": "clash",
+                  "amount": 1
+                }
+              ],
+              "operations": [
+                {
+                  "op": "educate",
+                  "amount": 1
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10430:8": {
+          "title": "Strongman",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], Clash 1, [ACTIVATE]: Clash. During Focus, add X to the Clash equal to your Corruption.",
+              "cost": [
+                {
+                  "kind": "clash",
+                  "amount": 1
+                }
+              ],
+              "operations": [
+                {
+                  "op": "add_clash_focus",
+                  "amount": {
+                    "source": "controller_corruption"
+                  }
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10430:13": {
+          "title": "Military State",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], [ACTIVATE]: During Focus, add 3 to a Clash.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "add_clash_focus",
+                  "amount": 3
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10430:14": {
+          "title": "Coercion",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], Clash 2: During Focus, add 3 to a Clash.",
+              "cost": [
+                {
+                  "kind": "clash",
+                  "amount": 2
+                }
+              ],
+              "operations": [
+                {
+                  "op": "add_clash_focus",
+                  "amount": 3
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10430:16": {
+          "title": "Absolute Control",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], [ACTIVATE]: At any time, choose — Ready 1 card — or — Activate 1 card.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "choose_one",
+                  "choices": [
+                    {
+                      "op": "ready_card",
+                      "amount": 1
+                    },
+                    {
+                      "op": "activate_card",
+                      "amount": 1
+                    }
+                  ]
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10430:19": {
+          "title": "State of Flux",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], Clash X, [ACTIVATE]: At any time, Research X.",
+              "cost": [
+                {
+                  "kind": "clash",
+                  "amount": "X"
+                }
+              ],
+              "operations": [
+                {
+                  "op": "research",
+                  "amount": "X"
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10431:6": {
+          "title": "Paternalism",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], [ACTIVATE]: At any time, choose a Company you control. Set its Margin to 9. It gains 1 Market.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "set_margin",
+                  "amount": 9,
+                  "target": "company_you_control"
+                },
+                {
+                  "op": "gain_market",
+                  "amount": 1,
+                  "target": "same_company"
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10431:15": {
+          "title": "The Path Forward",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], [ACTIVATE]: During Focus, Educate 1.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "educate",
+                  "amount": 1
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10431:17": {
+          "title": "Alternatives",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], [ACTIVATE]: During Focus, Research 3, Develop 2.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "research",
+                  "amount": 3
+                },
+                {
+                  "op": "develop",
+                  "amount": 2
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10431:18": {
+          "title": "Pulling Strings",
+          "abilities": [
+            {
+              "timing": "after_reveal",
+              "printed": "[EDGE], [ACTIVATE]: After Focus Cards are revealed, add 1 additional Focus Card from your hand.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "add_focus_card_from_hand",
+                  "amount": 1
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10431:20": {
+          "title": "Hand-In-Hand",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "X Influence, [ACTIVATE]: At any time, a Company you control gains X Margin.",
+              "cost": [
+                {
+                  "kind": "influence",
+                  "amount": "X"
+                }
+              ],
+              "operations": [
+                {
+                  "op": "gain_margin",
+                  "amount": "X",
+                  "target": "company_you_control"
+                }
+              ],
+              "confidence": "exact"
+            },
+            {
+              "timing": "other",
+              "trigger": "before_clash",
+              "printed": "[EDGE], X Margin, [ACTIVATE]: Before a Clash, a State you control gains X Influence.",
+              "cost": [
+                {
+                  "kind": "margin",
+                  "amount": "X"
+                }
+              ],
+              "operations": [
+                {
+                  "op": "gain_influence",
+                  "amount": "X",
+                  "target": "state_you_control"
+                }
+              ],
+              "confidence": "exact",
+              "note": "Recorded because it shares the card with the in-scope at-any-time ability; not eligible for the named timing set in this review."
+            }
+          ]
+        },
+        "10432:1": {
+          "title": "Ambition",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], [ACTIVATE]: During Focus, add 2 to a Clash.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "add_clash_focus",
+                  "amount": 2
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10432:8": {
+          "title": "War Games",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], [ACTIVATE]: During Focus, add 6 to a Clash.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "add_clash_focus",
+                  "amount": 6
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10432:14": {
+          "title": "Reorientation",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], [ACTIVATE]: During Focus, reveal a Focus Card. Double its Focus Values.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "reveal_focus_card_from_hand",
+                  "amount": 1
+                },
+                {
+                  "op": "double_revealed_focus_values",
+                  "target": "same_card"
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10432:20": {
+          "title": "Fast and Loose",
+          "abilities": [
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], Clash X, [ACTIVATE]: At any time, gain 5X Capital.",
+              "cost": [
+                {
+                  "kind": "clash",
+                  "amount": "X"
+                }
+              ],
+              "operations": [
+                {
+                  "op": "gain_capital",
+                  "amount": {
+                    "multiply": 5,
+                    "by": "X"
+                  }
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10432:23": {
+          "title": "Camaraderie",
+          "abilities": [
+            {
+              "timing": "during_focus",
+              "printed": "[EDGE], [ACTIVATE]: During Focus, add X to a Clash equal to the number of Leaders you control.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "add_clash_focus",
+                  "amount": {
+                    "source": "leaders_you_control"
+                  }
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10433:6": {
+          "title": "Charisma",
+          "abilities": [
+            {
+              "timing": "other",
+              "trigger": "after_you_clash_or_campaign_1",
+              "printed": "[EDGE], [ACTIVATE]: After you Clash (Political) or Campaign 1, Research 2.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "research",
+                  "amount": 2
+                }
+              ],
+              "confidence": "exact",
+              "note": "Recorded because it shares the card with the in-scope at-any-time ability; not eligible for the named timing set in this review."
+            },
+            {
+              "timing": "at_any_time",
+              "printed": "[EDGE], Clash 4: At any time, gain 1 Support.",
+              "cost": [
+                {
+                  "kind": "clash",
+                  "amount": 4
+                }
+              ],
+              "operations": [
+                {
+                  "op": "gain_support",
+                  "amount": 1
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        },
+        "10433:8": {
+          "title": "At Any Cost",
+          "abilities": [
+            {
+              "timing": "after_reveal",
+              "printed": "[EDGE], [ACTIVATE]: After Focus Cards are revealed, pay X ([RESOURCE_ICON_A]/[RESOURCE_ICON_B]/Influence) to add X to the Clash.",
+              "cost": [
+                {
+                  "kind": "resource_choice",
+                  "amount": "X",
+                  "choices": [
+                    "unresolved_resource_icon_a",
+                    "unresolved_resource_icon_b",
+                    "influence"
+                  ]
+                }
+              ],
+              "operations": [
+                {
+                  "op": "add_clash_focus",
+                  "amount": "X"
+                }
+              ],
+              "confidence": "ambiguous",
+              "ambiguity": "The first two payment icons have not been safely mapped to resource names; the third is Influence. Do not automate until the icon glossary mapping is independently verified."
+            }
+          ]
+        },
+        "10433:17": {
+          "title": "Dominant Position",
+          "abilities": [
+            {
+              "timing": "after_reveal",
+              "printed": "[EDGE], [ACTIVATE]: After Focus Cards are revealed, add 2 to a Clash.",
+              "cost": [],
+              "operations": [
+                {
+                  "op": "add_clash_focus",
+                  "amount": 2
+                }
+              ],
+              "confidence": "exact"
+            }
+          ]
+        }
+      },
+      "review": {
+        "reviewer": "edge_effects_c",
+        "method": "Direct visual inspection of 1020x1425 crops from the authentic 3060x2850 sheets; every included card was read from art, not OCR.",
+        "cardCount": 25,
+        "abilityCount": 27,
+        "exactAbilityCount": 27,
+        "ambiguousAbilityCount": 0,
+        "automationBoundary": "All entries are transcription-safe. This artifact does not assert that every operation already exists in the game engine."
+      },
+      "secondReview": {
+        "reviewer": "edge_effects_b",
+        "method": "Independent comparison of every included ability against authentic 680x950 TTS card crops.",
+        "reviewedCards": 25,
+        "reviewedAbilities": 27,
+        "correctedAbilities": 6,
+        "exactAbilityCountAfterReview": 26,
+        "ambiguousAbilityCountAfterReview": 1,
+        "corrections": [
+          "10429:23 Greater Good: activation payment is X Influence, not X Support.",
+          "10430:8 Strongman: restored the printed Clash 1 activation payment.",
+          "10431:20 Hand-In-Hand first ability: payment is X Influence, not X Support.",
+          "10431:20 Hand-In-Hand second ability: payment is X Margin, not Clash X.",
+          "10433:6 Charisma: parenthesized Clash arena is Political, not Military.",
+          "10433:8 At Any Cost: removed the unsupported Capital/Carbon/Food mapping; two payment icons remain unresolved and the third is verified as Influence."
+        ],
+        "automationBoundary": "At Any Cost remains unsafe for automatic payment resolution. The other 26 ability transcriptions passed second review; engine support is a separate concern.",
+        "result": "pass_with_corrections"
+      }
+    }
+  ]
+}

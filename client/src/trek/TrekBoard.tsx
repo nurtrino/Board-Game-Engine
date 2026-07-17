@@ -2,20 +2,76 @@
 // chips top, the shared trek river + park river + major parks along the bottom
 // (public info), and a caption with camera fly-to on every action.
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PARKS, MAJORS, STONE_COLORS, SCORING, TREK_CATALOG, type TrekView, type StoneColor } from '@bge/shared';
 import { SEAT_HEX } from '../brass/TableScene';
 import { TrekTable, useTrekScene, nodePos, type TrekSceneDef, type TrekFocus } from './TrekScene';
 import { playSfx } from '../sfx';
+import { fitCardSprite } from './trekCardSpriteGeometry';
+
+interface SpriteSheetSize { width: number; height: number }
+
+const spriteSheetSizes = new Map<string, SpriteSheetSize>();
+const pendingSpriteSheetSizes = new Map<string, Promise<SpriteSheetSize>>();
+
+function loadSpriteSheetSize(face: string): Promise<SpriteSheetSize> {
+  const cached = spriteSheetSizes.get(face);
+  if (cached) return Promise.resolve(cached);
+  const pending = pendingSpriteSheetSizes.get(face);
+  if (pending) return pending;
+  if (typeof Image === 'undefined') return Promise.reject(new Error('Image loading is unavailable.'));
+
+  const request = new Promise<SpriteSheetSize>((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      const size = { width: image.naturalWidth, height: image.naturalHeight };
+      spriteSheetSizes.set(face, size);
+      resolve(size);
+    };
+    image.onerror = () => reject(new Error(`Unable to read sprite sheet dimensions: ${face}`));
+    image.src = face;
+  }).finally(() => pendingSpriteSheetSizes.delete(face));
+  pendingSpriteSheetSizes.set(face, request);
+  return request;
+}
+
+function useSpriteSheetSize(face: string, enabled: boolean): SpriteSheetSize | null {
+  const [size, setSize] = useState<SpriteSheetSize | null>(() => enabled ? spriteSheetSizes.get(face) ?? null : null);
+  useEffect(() => {
+    if (!enabled) {
+      setSize(null);
+      return undefined;
+    }
+    const cached = spriteSheetSizes.get(face);
+    if (cached) {
+      setSize(cached);
+      return undefined;
+    }
+    setSize(null);
+    let live = true;
+    void loadSpriteSheetSize(face).then((next) => { if (live) setSize(next); }).catch(() => undefined);
+    return () => { live = false; };
+  }, [face, enabled]);
+  return size;
+}
 
 /** One card cropped out of a 10x7 sheet. Park/major sheets store the card art
  *  rotated 90 degrees inside portrait cells — pass `rotated` to counter-rotate
  *  the crop into a landscape frame that reads upright. The trek sheet's cells
  *  are upright portrait cards; render those directly. */
-export function CardSprite({ face, cols, rows, cell, w, h, radius = 6, rotated = false }: {
-  face: string; cols: number; rows: number; cell: number; w: number; h: number; radius?: number; rotated?: boolean;
+export function CardSprite({ face, cols, rows, cell, w, h, radius = 6, rotated = false, preserveSourceAspect = false }: {
+  face: string; cols: number; rows: number; cell: number; w: number; h: number; radius?: number; rotated?: boolean; preserveSourceAspect?: boolean;
 }) {
+  const sheetSize = useSpriteSheetSize(face, preserveSourceAspect);
   const col = cell % cols, row = Math.floor(cell / cols);
+  // Until the image metadata is cached, use the frame's aspect so the initial
+  // render matches the old layout. Once loaded, fit the real atlas cell inside
+  // that frame; the dark card bed becomes a subtle letterbox instead of art
+  // being squeezed to an unrelated width/height.
+  const cellAspect = sheetSize
+    ? (sheetSize.width / cols) / (sheetSize.height / rows)
+    : rotated ? h / w : w / h;
+  const fit = fitCardSprite(w, h, cellAspect, rotated);
   const crop = {
     backgroundImage: `url(${face})`,
     backgroundSize: `${cols * 100}% ${rows * 100}%`,
@@ -26,14 +82,10 @@ export function CardSprite({ face, cols, rows, cell, w, h, radius = 6, rotated =
       width: w, height: h, borderRadius: radius, overflow: 'hidden', position: 'relative',
       border: '1px solid rgba(255,255,255,0.18)', background: '#0a0e12',
     }}>
-      {rotated ? (
-        <div style={{
-          position: 'absolute', width: h, height: w, left: '50%', top: '50%',
-          transform: 'translate(-50%,-50%) rotate(-90deg)', ...crop,
-        }} />
-      ) : (
-        <div style={{ position: 'absolute', inset: 0, ...crop }} />
-      )}
+      <div style={{
+        position: 'absolute', width: fit.spriteWidth, height: fit.spriteHeight, left: '50%', top: '50%',
+        transform: `translate(-50%,-50%)${rotated ? ' rotate(-90deg)' : ''}`, ...crop,
+      }} />
     </div>
   );
 }
@@ -44,12 +96,12 @@ export function trekCardSprite(scene: TrekSceneDef, deck: 'trek' | 'parks' | 'ma
   if (!c) return null;
   const sheet = d.sheets[String(c.sheet)];
   if (!sheet) return null;
-  return <CardSprite face={sheet.face} cols={sheet.cols} rows={sheet.rows} cell={c.cell} w={w} h={h} />;
+  return <CardSprite face={sheet.face} cols={sheet.cols} rows={sheet.rows} cell={c.cell} w={w} h={h} rotated={deck !== 'trek'} preserveSourceAspect />;
 }
 
 export const trekFaceByCell = (scene: TrekSceneDef, deck: 'trek' | 'parks' | 'majors', cell: number, w: number, h: number) => {
   const sheet = Object.values(scene.decks[deck].sheets)[0];
-  return <CardSprite face={sheet.face} cols={sheet.cols} rows={sheet.rows} cell={cell} w={w} h={h} rotated={deck !== 'trek'} />;
+  return <CardSprite face={sheet.face} cols={sheet.cols} rows={sheet.rows} cell={cell} w={w} h={h} rotated={deck !== 'trek'} preserveSourceAspect />;
 };
 
 export function TrekBoard({ view }: { view: TrekView }) {
@@ -155,7 +207,7 @@ export function TrekBoard({ view }: { view: TrekView }) {
           <div style={{ display: 'flex', gap: 4 }}>
             {STONE_COLORS.map((color) => {
               const m = scene.bonusCards.most[color];
-              return m ? <CardSprite key={color} face={m.face} cols={m.cols} rows={m.rows} cell={m.cell} w={34} h={50} radius={4} rotated /> : null;
+              return m ? <CardSprite key={color} face={m.face} cols={m.cols} rows={m.rows} cell={m.cell} w={34} h={50} radius={4} rotated preserveSourceAspect /> : null;
             })}
           </div>
           <div className="ig-lab" style={{ paddingTop: 4, fontSize: 12 }}>Stone awards</div>
@@ -236,8 +288,8 @@ export function TrekBoard({ view }: { view: TrekView }) {
               );
               return (
                 <div key={color} style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-                  <div>{mc && <CardSprite face={mc.face} cols={mc.cols} rows={mc.rows} cell={mc.cell} w={132} h={93} rotated />}{winnerTag(most)}</div>
-                  <div>{sc && <CardSprite face={sc.face} cols={sc.cols} rows={sc.rows} cell={sc.cell} w={104} h={73} rotated />}{winnerTag(second)}</div>
+                  <div>{mc && <CardSprite face={mc.face} cols={mc.cols} rows={mc.rows} cell={mc.cell} w={132} h={93} rotated preserveSourceAspect />}{winnerTag(most)}</div>
+                  <div>{sc && <CardSprite face={sc.face} cols={sc.cols} rows={sc.rows} cell={sc.cell} w={104} h={73} rotated preserveSourceAspect />}{winnerTag(second)}</div>
                 </div>
               );
             })}

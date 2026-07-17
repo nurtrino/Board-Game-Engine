@@ -1,0 +1,4092 @@
+{
+  "version": 1,
+  "source": "Two independent visual reviews of authentic 680x950 card crops from TTS workshop 3460664356",
+  "reviewedAt": "2026-07-11",
+  "review": {
+    "cards": 412,
+    "fields": 2060,
+    "firstPassAmbiguities": 0,
+    "secondPassDisagreements": 0,
+    "secondPassAmbiguities": 0,
+    "sheetGroups": [
+      [
+        10417,
+        10418,
+        10419,
+        10420,
+        10421,
+        10422
+      ],
+      [
+        10423,
+        10424,
+        10425,
+        10426,
+        10427,
+        10428
+      ],
+      [
+        10429,
+        10430,
+        10431,
+        10432,
+        10433,
+        10434
+      ]
+    ]
+  },
+  "cards": {
+    "10417:0": {
+      "sheet": 10417,
+      "cell": 0,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:1": {
+      "sheet": 10417,
+      "cell": 1,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:2": {
+      "sheet": 10417,
+      "cell": 2,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:3": {
+      "sheet": 10417,
+      "cell": 3,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:4": {
+      "sheet": 10417,
+      "cell": 4,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:5": {
+      "sheet": 10417,
+      "cell": 5,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:6": {
+      "sheet": 10417,
+      "cell": 6,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:7": {
+      "sheet": 10417,
+      "cell": 7,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:8": {
+      "sheet": 10417,
+      "cell": 8,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:9": {
+      "sheet": 10417,
+      "cell": 9,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:10": {
+      "sheet": 10417,
+      "cell": 10,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:11": {
+      "sheet": 10417,
+      "cell": 11,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:12": {
+      "sheet": 10417,
+      "cell": 12,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:13": {
+      "sheet": 10417,
+      "cell": 13,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:14": {
+      "sheet": 10417,
+      "cell": 14,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:15": {
+      "sheet": 10417,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:16": {
+      "sheet": 10417,
+      "cell": 16,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:17": {
+      "sheet": 10417,
+      "cell": 17,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:18": {
+      "sheet": 10417,
+      "cell": 18,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:19": {
+      "sheet": 10417,
+      "cell": 19,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:20": {
+      "sheet": 10417,
+      "cell": 20,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:21": {
+      "sheet": 10417,
+      "cell": 21,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:22": {
+      "sheet": 10417,
+      "cell": 22,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10417:23": {
+      "sheet": 10417,
+      "cell": 23,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:0": {
+      "sheet": 10418,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:1": {
+      "sheet": 10418,
+      "cell": 1,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:2": {
+      "sheet": 10418,
+      "cell": 2,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:3": {
+      "sheet": 10418,
+      "cell": 3,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:4": {
+      "sheet": 10418,
+      "cell": 4,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:5": {
+      "sheet": 10418,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:6": {
+      "sheet": 10418,
+      "cell": 6,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:7": {
+      "sheet": 10418,
+      "cell": 7,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:8": {
+      "sheet": 10418,
+      "cell": 8,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:9": {
+      "sheet": 10418,
+      "cell": 9,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:10": {
+      "sheet": 10418,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:11": {
+      "sheet": 10418,
+      "cell": 11,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:12": {
+      "sheet": 10418,
+      "cell": 12,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:13": {
+      "sheet": 10418,
+      "cell": 13,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:14": {
+      "sheet": 10418,
+      "cell": 14,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:15": {
+      "sheet": 10418,
+      "cell": 15,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:16": {
+      "sheet": 10418,
+      "cell": 16,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:17": {
+      "sheet": 10418,
+      "cell": 17,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:18": {
+      "sheet": 10418,
+      "cell": 18,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:19": {
+      "sheet": 10418,
+      "cell": 19,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:20": {
+      "sheet": 10418,
+      "cell": 20,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:21": {
+      "sheet": 10418,
+      "cell": 21,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:22": {
+      "sheet": 10418,
+      "cell": 22,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10418:23": {
+      "sheet": 10418,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:0": {
+      "sheet": 10419,
+      "cell": 0,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:1": {
+      "sheet": 10419,
+      "cell": 1,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:2": {
+      "sheet": 10419,
+      "cell": 2,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:3": {
+      "sheet": 10419,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 2,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:4": {
+      "sheet": 10419,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:5": {
+      "sheet": 10419,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:6": {
+      "sheet": 10419,
+      "cell": 6,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:7": {
+      "sheet": 10419,
+      "cell": 7,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:8": {
+      "sheet": 10419,
+      "cell": 8,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:9": {
+      "sheet": 10419,
+      "cell": 9,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:10": {
+      "sheet": 10419,
+      "cell": 10,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:11": {
+      "sheet": 10419,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 2,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:12": {
+      "sheet": 10419,
+      "cell": 12,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:13": {
+      "sheet": 10419,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:14": {
+      "sheet": 10419,
+      "cell": 14,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:15": {
+      "sheet": 10419,
+      "cell": 15,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:16": {
+      "sheet": 10419,
+      "cell": 16,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:17": {
+      "sheet": 10419,
+      "cell": 17,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:18": {
+      "sheet": 10419,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:19": {
+      "sheet": 10419,
+      "cell": 19,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:20": {
+      "sheet": 10419,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:21": {
+      "sheet": 10419,
+      "cell": 21,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:22": {
+      "sheet": 10419,
+      "cell": 22,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10419:23": {
+      "sheet": 10419,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:0": {
+      "sheet": 10420,
+      "cell": 0,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:1": {
+      "sheet": 10420,
+      "cell": 1,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:2": {
+      "sheet": 10420,
+      "cell": 2,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:3": {
+      "sheet": 10420,
+      "cell": 3,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:4": {
+      "sheet": 10420,
+      "cell": 4,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:5": {
+      "sheet": 10420,
+      "cell": 5,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:6": {
+      "sheet": 10420,
+      "cell": 6,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:7": {
+      "sheet": 10420,
+      "cell": 7,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:8": {
+      "sheet": 10420,
+      "cell": 8,
+      "capitalCost": 25,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:9": {
+      "sheet": 10420,
+      "cell": 9,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:10": {
+      "sheet": 10420,
+      "cell": 10,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:11": {
+      "sheet": 10420,
+      "cell": 11,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:12": {
+      "sheet": 10420,
+      "cell": 12,
+      "capitalCost": 25,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:13": {
+      "sheet": 10420,
+      "cell": 13,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:14": {
+      "sheet": 10420,
+      "cell": 14,
+      "capitalCost": 10,
+      "carbonCost": 2,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:15": {
+      "sheet": 10420,
+      "cell": 15,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:16": {
+      "sheet": 10420,
+      "cell": 16,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:17": {
+      "sheet": 10420,
+      "cell": 17,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:18": {
+      "sheet": 10420,
+      "cell": 18,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:19": {
+      "sheet": 10420,
+      "cell": 19,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:20": {
+      "sheet": 10420,
+      "cell": 20,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:21": {
+      "sheet": 10420,
+      "cell": 21,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:22": {
+      "sheet": 10420,
+      "cell": 22,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10420:23": {
+      "sheet": 10420,
+      "cell": 23,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:0": {
+      "sheet": 10421,
+      "cell": 0,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:1": {
+      "sheet": 10421,
+      "cell": 1,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:2": {
+      "sheet": 10421,
+      "cell": 2,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:3": {
+      "sheet": 10421,
+      "cell": 3,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:4": {
+      "sheet": 10421,
+      "cell": 4,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:5": {
+      "sheet": 10421,
+      "cell": 5,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:6": {
+      "sheet": 10421,
+      "cell": 6,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:7": {
+      "sheet": 10421,
+      "cell": 7,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:8": {
+      "sheet": 10421,
+      "cell": 8,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:9": {
+      "sheet": 10421,
+      "cell": 9,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:10": {
+      "sheet": 10421,
+      "cell": 10,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 1,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:11": {
+      "sheet": 10421,
+      "cell": 11,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 1,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:12": {
+      "sheet": 10421,
+      "cell": 12,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:13": {
+      "sheet": 10421,
+      "cell": 13,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:14": {
+      "sheet": 10421,
+      "cell": 14,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:15": {
+      "sheet": 10421,
+      "cell": 15,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:16": {
+      "sheet": 10421,
+      "cell": 16,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:17": {
+      "sheet": 10421,
+      "cell": 17,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:18": {
+      "sheet": 10421,
+      "cell": 18,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:19": {
+      "sheet": 10421,
+      "cell": 19,
+      "capitalCost": 15,
+      "carbonCost": 2,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:20": {
+      "sheet": 10421,
+      "cell": 20,
+      "capitalCost": 25,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:21": {
+      "sheet": 10421,
+      "cell": 21,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:22": {
+      "sheet": 10421,
+      "cell": 22,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10421:23": {
+      "sheet": 10421,
+      "cell": 23,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:0": {
+      "sheet": 10422,
+      "cell": 0,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:1": {
+      "sheet": 10422,
+      "cell": 1,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:2": {
+      "sheet": 10422,
+      "cell": 2,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:3": {
+      "sheet": 10422,
+      "cell": 3,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:4": {
+      "sheet": 10422,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 6,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:5": {
+      "sheet": 10422,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:6": {
+      "sheet": 10422,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:7": {
+      "sheet": 10422,
+      "cell": 7,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:8": {
+      "sheet": 10422,
+      "cell": 8,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:9": {
+      "sheet": 10422,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 2,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:10": {
+      "sheet": 10422,
+      "cell": 10,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:11": {
+      "sheet": 10422,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:12": {
+      "sheet": 10422,
+      "cell": 12,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:13": {
+      "sheet": 10422,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:14": {
+      "sheet": 10422,
+      "cell": 14,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:15": {
+      "sheet": 10422,
+      "cell": 15,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:16": {
+      "sheet": 10422,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:17": {
+      "sheet": 10422,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:18": {
+      "sheet": 10422,
+      "cell": 18,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:19": {
+      "sheet": 10422,
+      "cell": 19,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:20": {
+      "sheet": 10422,
+      "cell": 20,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:21": {
+      "sheet": 10422,
+      "cell": 21,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:22": {
+      "sheet": 10422,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 2,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10422:23": {
+      "sheet": 10422,
+      "cell": 23,
+      "capitalCost": 5,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:0": {
+      "sheet": 10423,
+      "cell": 0,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:1": {
+      "sheet": 10423,
+      "cell": 1,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:2": {
+      "sheet": 10423,
+      "cell": 2,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:3": {
+      "sheet": 10423,
+      "cell": 3,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:4": {
+      "sheet": 10423,
+      "cell": 4,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:5": {
+      "sheet": 10423,
+      "cell": 5,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:6": {
+      "sheet": 10423,
+      "cell": 6,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:7": {
+      "sheet": 10423,
+      "cell": 7,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:8": {
+      "sheet": 10423,
+      "cell": 8,
+      "capitalCost": 10,
+      "carbonCost": 2,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:9": {
+      "sheet": 10423,
+      "cell": 9,
+      "capitalCost": 10,
+      "carbonCost": 2,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:10": {
+      "sheet": 10423,
+      "cell": 10,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:11": {
+      "sheet": 10423,
+      "cell": 11,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:12": {
+      "sheet": 10423,
+      "cell": 12,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:13": {
+      "sheet": 10423,
+      "cell": 13,
+      "capitalCost": 25,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:14": {
+      "sheet": 10423,
+      "cell": 14,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:15": {
+      "sheet": 10423,
+      "cell": 15,
+      "capitalCost": 10,
+      "carbonCost": 1,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:16": {
+      "sheet": 10423,
+      "cell": 16,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:17": {
+      "sheet": 10423,
+      "cell": 17,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:18": {
+      "sheet": 10423,
+      "cell": 18,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:19": {
+      "sheet": 10423,
+      "cell": 19,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:20": {
+      "sheet": 10423,
+      "cell": 20,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:21": {
+      "sheet": 10423,
+      "cell": 21,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:22": {
+      "sheet": 10423,
+      "cell": 22,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10423:23": {
+      "sheet": 10423,
+      "cell": 23,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:0": {
+      "sheet": 10424,
+      "cell": 0,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:1": {
+      "sheet": 10424,
+      "cell": 1,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:2": {
+      "sheet": 10424,
+      "cell": 2,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:3": {
+      "sheet": 10424,
+      "cell": 3,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:4": {
+      "sheet": 10424,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:5": {
+      "sheet": 10424,
+      "cell": 5,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:6": {
+      "sheet": 10424,
+      "cell": 6,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:7": {
+      "sheet": 10424,
+      "cell": 7,
+      "capitalCost": 20,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:8": {
+      "sheet": 10424,
+      "cell": 8,
+      "capitalCost": 20,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:9": {
+      "sheet": 10424,
+      "cell": 9,
+      "capitalCost": 15,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:10": {
+      "sheet": 10424,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:11": {
+      "sheet": 10424,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:12": {
+      "sheet": 10424,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:13": {
+      "sheet": 10424,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:14": {
+      "sheet": 10424,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:15": {
+      "sheet": 10424,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:16": {
+      "sheet": 10424,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:17": {
+      "sheet": 10424,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:18": {
+      "sheet": 10424,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:19": {
+      "sheet": 10424,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 3,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:20": {
+      "sheet": 10424,
+      "cell": 20,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:21": {
+      "sheet": 10424,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:22": {
+      "sheet": 10424,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10424:23": {
+      "sheet": 10424,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:0": {
+      "sheet": 10425,
+      "cell": 0,
+      "capitalCost": 5,
+      "carbonCost": 2,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:1": {
+      "sheet": 10425,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 6,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:2": {
+      "sheet": 10425,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:3": {
+      "sheet": 10425,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:4": {
+      "sheet": 10425,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:5": {
+      "sheet": 10425,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:6": {
+      "sheet": 10425,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:7": {
+      "sheet": 10425,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:8": {
+      "sheet": 10425,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:9": {
+      "sheet": 10425,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:10": {
+      "sheet": 10425,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:11": {
+      "sheet": 10425,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:12": {
+      "sheet": 10425,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:13": {
+      "sheet": 10425,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:14": {
+      "sheet": 10425,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:15": {
+      "sheet": 10425,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:16": {
+      "sheet": 10425,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:17": {
+      "sheet": 10425,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:18": {
+      "sheet": 10425,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:19": {
+      "sheet": 10425,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:20": {
+      "sheet": 10425,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:21": {
+      "sheet": 10425,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:22": {
+      "sheet": 10425,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10425:23": {
+      "sheet": 10425,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:0": {
+      "sheet": 10426,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 1,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:1": {
+      "sheet": 10426,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:2": {
+      "sheet": 10426,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:3": {
+      "sheet": 10426,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:4": {
+      "sheet": 10426,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:5": {
+      "sheet": 10426,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:6": {
+      "sheet": 10426,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:7": {
+      "sheet": 10426,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 6,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:8": {
+      "sheet": 10426,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:9": {
+      "sheet": 10426,
+      "cell": 9,
+      "capitalCost": 15,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:10": {
+      "sheet": 10426,
+      "cell": 10,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:11": {
+      "sheet": 10426,
+      "cell": 11,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:12": {
+      "sheet": 10426,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:13": {
+      "sheet": 10426,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:14": {
+      "sheet": 10426,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:15": {
+      "sheet": 10426,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:16": {
+      "sheet": 10426,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:17": {
+      "sheet": 10426,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:18": {
+      "sheet": 10426,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:19": {
+      "sheet": 10426,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:20": {
+      "sheet": 10426,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:21": {
+      "sheet": 10426,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:22": {
+      "sheet": 10426,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10426:23": {
+      "sheet": 10426,
+      "cell": 23,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:0": {
+      "sheet": 10427,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:1": {
+      "sheet": 10427,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:2": {
+      "sheet": 10427,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:3": {
+      "sheet": 10427,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:4": {
+      "sheet": 10427,
+      "cell": 4,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:5": {
+      "sheet": 10427,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:6": {
+      "sheet": 10427,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:7": {
+      "sheet": 10427,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:8": {
+      "sheet": 10427,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:9": {
+      "sheet": 10427,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:10": {
+      "sheet": 10427,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:11": {
+      "sheet": 10427,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:12": {
+      "sheet": 10427,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:13": {
+      "sheet": 10427,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:14": {
+      "sheet": 10427,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:15": {
+      "sheet": 10427,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:16": {
+      "sheet": 10427,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:17": {
+      "sheet": 10427,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:18": {
+      "sheet": 10427,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 2,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:19": {
+      "sheet": 10427,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:20": {
+      "sheet": 10427,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 1,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:21": {
+      "sheet": 10427,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:22": {
+      "sheet": 10427,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10427:23": {
+      "sheet": 10427,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10428:0": {
+      "sheet": 10428,
+      "cell": 0,
+      "capitalCost": 5,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10428:1": {
+      "sheet": 10428,
+      "cell": 1,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10428:2": {
+      "sheet": 10428,
+      "cell": 2,
+      "capitalCost": 10,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10428:3": {
+      "sheet": 10428,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10428:4": {
+      "sheet": 10428,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 0,
+      "bases": []
+    },
+    "10428:5": {
+      "sheet": 10428,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:6": {
+      "sheet": 10428,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:7": {
+      "sheet": 10428,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:8": {
+      "sheet": 10428,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:9": {
+      "sheet": 10428,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:10": {
+      "sheet": 10428,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:11": {
+      "sheet": 10428,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "fascism"
+      ]
+    },
+    "10428:12": {
+      "sheet": 10428,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "fascism"
+      ]
+    },
+    "10428:13": {
+      "sheet": 10428,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 6,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "fascism"
+      ]
+    },
+    "10428:14": {
+      "sheet": 10428,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "fascism"
+      ]
+    },
+    "10428:15": {
+      "sheet": 10428,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:16": {
+      "sheet": 10428,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:17": {
+      "sheet": 10428,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:18": {
+      "sheet": 10428,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:19": {
+      "sheet": 10428,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10428:20": {
+      "sheet": 10428,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10428:21": {
+      "sheet": 10428,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10428:22": {
+      "sheet": 10428,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10428:23": {
+      "sheet": 10428,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10429:0": {
+      "sheet": 10429,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10429:1": {
+      "sheet": 10429,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10429:2": {
+      "sheet": 10429,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10429:3": {
+      "sheet": 10429,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 6,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10429:4": {
+      "sheet": 10429,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10429:5": {
+      "sheet": 10429,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10429:6": {
+      "sheet": 10429,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:7": {
+      "sheet": 10429,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:8": {
+      "sheet": 10429,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:9": {
+      "sheet": 10429,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:10": {
+      "sheet": 10429,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:11": {
+      "sheet": 10429,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:12": {
+      "sheet": 10429,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:13": {
+      "sheet": 10429,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:14": {
+      "sheet": 10429,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:15": {
+      "sheet": 10429,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:16": {
+      "sheet": 10429,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 3,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:17": {
+      "sheet": 10429,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10429:18": {
+      "sheet": 10429,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10429:19": {
+      "sheet": 10429,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10429:20": {
+      "sheet": 10429,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10429:21": {
+      "sheet": 10429,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10429:22": {
+      "sheet": 10429,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10429:23": {
+      "sheet": 10429,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10430:0": {
+      "sheet": 10430,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10430:1": {
+      "sheet": 10430,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10430:2": {
+      "sheet": 10430,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:3": {
+      "sheet": 10430,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:4": {
+      "sheet": 10430,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:5": {
+      "sheet": 10430,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:6": {
+      "sheet": 10430,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:7": {
+      "sheet": 10430,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:8": {
+      "sheet": 10430,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:9": {
+      "sheet": 10430,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:10": {
+      "sheet": 10430,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 2,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:11": {
+      "sheet": 10430,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 2,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:12": {
+      "sheet": 10430,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:13": {
+      "sheet": 10430,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 3,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10430:14": {
+      "sheet": 10430,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10430:15": {
+      "sheet": 10430,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 2,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10430:16": {
+      "sheet": 10430,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 6,
+      "supportCost": 1,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10430:17": {
+      "sheet": 10430,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10430:18": {
+      "sheet": 10430,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10430:19": {
+      "sheet": 10430,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10430:20": {
+      "sheet": 10430,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10430:21": {
+      "sheet": 10430,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10430:22": {
+      "sheet": 10430,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10430:23": {
+      "sheet": 10430,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:0": {
+      "sheet": 10431,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:1": {
+      "sheet": 10431,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:2": {
+      "sheet": 10431,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 3,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:3": {
+      "sheet": 10431,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:4": {
+      "sheet": 10431,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:5": {
+      "sheet": 10431,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:6": {
+      "sheet": 10431,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 3,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:7": {
+      "sheet": 10431,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:8": {
+      "sheet": 10431,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10431:9": {
+      "sheet": 10431,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "fascism"
+      ]
+    },
+    "10431:10": {
+      "sheet": 10431,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10431:11": {
+      "sheet": 10431,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10431:12": {
+      "sheet": 10431,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10431:13": {
+      "sheet": 10431,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10431:14": {
+      "sheet": 10431,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10431:15": {
+      "sheet": 10431,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10431:16": {
+      "sheet": 10431,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10431:17": {
+      "sheet": 10431,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10431:18": {
+      "sheet": 10431,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10431:19": {
+      "sheet": 10431,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism",
+        "statism"
+      ]
+    },
+    "10431:20": {
+      "sheet": 10431,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:21": {
+      "sheet": 10431,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10431:22": {
+      "sheet": 10431,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10431:23": {
+      "sheet": 10431,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "statism"
+      ]
+    },
+    "10432:0": {
+      "sheet": 10432,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10432:1": {
+      "sheet": 10432,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10432:2": {
+      "sheet": 10432,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10432:3": {
+      "sheet": 10432,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10432:4": {
+      "sheet": 10432,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10432:5": {
+      "sheet": 10432,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10432:6": {
+      "sheet": 10432,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 3,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10432:7": {
+      "sheet": 10432,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "fascism"
+      ]
+    },
+    "10432:8": {
+      "sheet": 10432,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 3,
+      "bases": [
+        "capitalism",
+        "fascism"
+      ]
+    },
+    "10432:9": {
+      "sheet": 10432,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10432:10": {
+      "sheet": 10432,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10432:11": {
+      "sheet": 10432,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10432:12": {
+      "sheet": 10432,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10432:13": {
+      "sheet": 10432,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism"
+      ]
+    },
+    "10432:14": {
+      "sheet": 10432,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism",
+        "communism"
+      ]
+    },
+    "10432:15": {
+      "sheet": 10432,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism",
+        "communism"
+      ]
+    },
+    "10432:16": {
+      "sheet": 10432,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10432:17": {
+      "sheet": 10432,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10432:18": {
+      "sheet": 10432,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10432:19": {
+      "sheet": 10432,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "communism"
+      ]
+    },
+    "10432:20": {
+      "sheet": 10432,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10432:21": {
+      "sheet": 10432,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 2,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "communism"
+      ]
+    },
+    "10432:22": {
+      "sheet": 10432,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "statism"
+      ]
+    },
+    "10432:23": {
+      "sheet": 10432,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 3,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "statism"
+      ]
+    },
+    "10433:0": {
+      "sheet": 10433,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10433:1": {
+      "sheet": 10433,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 4,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "communism"
+      ]
+    },
+    "10433:2": {
+      "sheet": 10433,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 1,
+      "bases": [
+        "capitalism"
+      ]
+    },
+    "10433:3": {
+      "sheet": 10433,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 5,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "statism"
+      ]
+    },
+    "10433:4": {
+      "sheet": 10433,
+      "cell": 4,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 6,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10433:5": {
+      "sheet": 10433,
+      "cell": 5,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 6,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "fascism"
+      ]
+    },
+    "10433:6": {
+      "sheet": 10433,
+      "cell": 6,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10433:7": {
+      "sheet": 10433,
+      "cell": 7,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10433:8": {
+      "sheet": 10433,
+      "cell": 8,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 2,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10433:9": {
+      "sheet": 10433,
+      "cell": 9,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10433:10": {
+      "sheet": 10433,
+      "cell": 10,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10433:11": {
+      "sheet": 10433,
+      "cell": 11,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10433:12": {
+      "sheet": 10433,
+      "cell": 12,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10433:13": {
+      "sheet": 10433,
+      "cell": 13,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10433:14": {
+      "sheet": 10433,
+      "cell": 14,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10433:15": {
+      "sheet": 10433,
+      "cell": 15,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "statism"
+      ]
+    },
+    "10433:16": {
+      "sheet": 10433,
+      "cell": 16,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10433:17": {
+      "sheet": 10433,
+      "cell": 17,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism",
+        "statism"
+      ]
+    },
+    "10433:18": {
+      "sheet": 10433,
+      "cell": 18,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "statism"
+      ]
+    },
+    "10433:19": {
+      "sheet": 10433,
+      "cell": 19,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "statism"
+      ]
+    },
+    "10433:20": {
+      "sheet": 10433,
+      "cell": 20,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10433:21": {
+      "sheet": 10433,
+      "cell": 21,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    },
+    "10433:22": {
+      "sheet": 10433,
+      "cell": 22,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 1,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "communism"
+      ]
+    },
+    "10433:23": {
+      "sheet": 10433,
+      "cell": 23,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "capitalism",
+        "communism"
+      ]
+    },
+    "10434:0": {
+      "sheet": 10434,
+      "cell": 0,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 2,
+      "bases": [
+        "fascism"
+      ]
+    },
+    "10434:1": {
+      "sheet": 10434,
+      "cell": 1,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "capitalism",
+        "communism"
+      ]
+    },
+    "10434:2": {
+      "sheet": 10434,
+      "cell": 2,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "communism",
+        "statism"
+      ]
+    },
+    "10434:3": {
+      "sheet": 10434,
+      "cell": 3,
+      "capitalCost": 0,
+      "carbonCost": 0,
+      "corruptionRequirement": 0,
+      "supportCost": 1,
+      "bases": [
+        "fascism",
+        "statism"
+      ]
+    }
+  }
+}

@@ -27,6 +27,10 @@ MODS = Path(r"C:\Users\chase\Documents\My Games\Tabletop Simulator\Mods")
 SAVE = MODS / "Workshop" / "3460664356.json"
 CARDS = ROOT / "games" / "politik" / "golden" / "cards.json"
 OUTPUT = ROOT / "games" / "politik" / "golden" / "card-catalog.json"
+FOCUS_LABELS = ROOT / "games" / "politik" / "recognition" / "focus-labels.json"
+DECLARATION_LABELS = ROOT / "games" / "politik" / "recognition" / "card-declarations.json"
+STRUCTURE_LABELS = ROOT / "games" / "politik" / "recognition" / "card-structures.json"
+TITLE_LABELS = ROOT / "games" / "politik" / "recognition" / "card-titles.json"
 
 
 def munge(url: str) -> str:
@@ -63,13 +67,13 @@ def recognize_single(recognizer: RapidOCR, image: Image.Image) -> tuple[str, flo
     return str(result[0][1]).strip(), float(result[0][2])
 
 
-def digit(recognizer: RapidOCR, card: Image.Image, box: tuple[int, int, int, int]) -> tuple[int, float]:
+def digit(recognizer: RapidOCR, card: Image.Image, box: tuple[int, int, int, int]) -> tuple[int | None, float]:
     text, score = recognize_single(recognizer, card.crop(box))
     match = re.search(r"[0-4]", text)
-    # Zero is printed in a very faint tint and often produces no OCR glyph;
-    # the other Focus values use dark ink. No glyph in the fixed number box is
-    # therefore the printed 0, not missing data.
-    return (int(match.group(0)) if match else 0), score
+    # Recognition failure is never a printed zero. Politik prints zero in a
+    # deliberately faint tint, so a verified symbol label must distinguish the
+    # two before the value can become rules authority.
+    return (int(match.group(0)) if match else None), score
 
 
 def main() -> None:
@@ -81,6 +85,26 @@ def main() -> None:
     detector = RapidOCR(use_angle_cls=False)
     recognizer = RapidOCR(use_text_det=False, use_angle_cls=False, text_score=0.03)
     catalog: dict[str, dict[str, object]] = {}
+    focus_labels = (
+        json.loads(FOCUS_LABELS.read_text(encoding="utf-8")).get("cards", {})
+        if FOCUS_LABELS.exists()
+        else {}
+    )
+    declaration_labels = (
+        json.loads(DECLARATION_LABELS.read_text(encoding="utf-8")).get("cards", {})
+        if DECLARATION_LABELS.exists()
+        else {}
+    )
+    structure_labels = (
+        json.loads(STRUCTURE_LABELS.read_text(encoding="utf-8")).get("cards", {})
+        if STRUCTURE_LABELS.exists()
+        else {}
+    )
+    title_labels = (
+        json.loads(TITLE_LABELS.read_text(encoding="utf-8")).get("cards", {})
+        if TITLE_LABELS.exists()
+        else {}
+    )
 
     by_sheet: dict[int, list[dict[str, object]]] = {}
     for card in cards:
@@ -109,7 +133,9 @@ def main() -> None:
                 if item["y"] < 132 and item["x"] < 510
                 and re.search(r"[A-Za-z]{2}", item["text"])
             ]
-            title = clean_title(" ".join(title_parts)) if title_parts else f"Politik {sheet_id}:{cell}"
+            title_ocr = clean_title(" ".join(title_parts)) if title_parts else f"Politik {sheet_id}:{cell}"
+            verified_title = title_labels.get(str(ref["id"]), {}).get("name")
+            title = verified_title or title_ocr
 
             type_text = next((
                 item["text"] for item in lines
@@ -118,14 +144,24 @@ def main() -> None:
             normalized_type = re.sub(r"[^a-z]", "", type_text.lower())
             card_type = next((kind for kind in ("asset", "company", "propaganda", "event")
                               if normalized_type.startswith(kind[:4])), "unknown")
+            verified_structure = structure_labels.get(str(ref["id"]))
+            if verified_structure:
+                card_type = verified_structure["type"]
 
-            military, military_score = digit(recognizer, card, (100, 220, 145, 285))
-            political, political_score = digit(recognizer, card, (100, 300, 145, 370))
-            corporate, corporate_score = digit(recognizer, card, (100, 385, 145, 455))
-            margin = None
+            military_ocr, military_score = digit(recognizer, card, (100, 220, 145, 285))
+            political_ocr, political_score = digit(recognizer, card, (100, 300, 145, 370))
+            corporate_ocr, corporate_score = digit(recognizer, card, (100, 385, 145, 455))
+            verified_focus = focus_labels.get(str(ref["id"]), {}).get("focus")
+            verified_declaration = declaration_labels.get(str(ref["id"]))
+            focus = verified_focus or {
+                "military": military_ocr,
+                "political": political_ocr,
+                "corporate": corporate_ocr,
+            }
+            margin_ocr = None
             margin_score = 0.0
             if card_type in {"asset", "company"}:
-                margin, margin_score = digit(recognizer, card, (205, 385, 250, 455))
+                margin_ocr, margin_score = digit(recognizer, card, (205, 385, 250, 455))
 
             cost_text, cost_score = recognize_single(recognizer, card.crop((500, 45, 660, 155)))
             rules_text = " | ".join(item["text"] for item in lines if 188 <= item["y"] <= 525)
@@ -136,16 +172,37 @@ def main() -> None:
                 "sheet": sheet_id,
                 "cell": cell,
                 "name": title,
+                "titleVerified": bool(verified_title),
                 "type": card_type,
                 "costText": cost_text,
-                "focus": {"military": military, "political": political, "corporate": corporate},
-                "margin": margin,
+                "focus": focus,
+                "focusVerified": bool(verified_focus),
+                "capitalCost": verified_declaration.get("capitalCost") if verified_declaration else None,
+                "carbonCost": verified_declaration.get("carbonCost") if verified_declaration else None,
+                "corruptionRequirement": verified_declaration.get("corruptionRequirement") if verified_declaration else None,
+                "supportCost": verified_declaration.get("supportCost") if verified_declaration else None,
+                "bases": verified_declaration.get("bases", []) if verified_declaration else [],
+                "declarationVerified": bool(verified_declaration),
+                "margin": verified_structure.get("margin") if verified_structure else margin_ocr,
+                "industries": verified_structure.get("industries", []) if verified_structure else [],
+                "corruption": bool(verified_structure.get("corruption")) if verified_structure else False,
+                "negotiation": bool(verified_structure.get("negotiation")) if verified_structure else False,
+                "edgeTimings": verified_structure.get("edgeTimings", []) if verified_structure else [],
+                "edgeTriggerText": verified_structure.get("edgeTriggerText", []) if verified_structure else [],
+                "structureVerified": bool(verified_structure),
                 "rulesText": rules_text,
                 "keywordsText": keywords_text,
                 "ocr": {
                     "costScore": round(cost_score, 3),
+                    "titleValue": title_ocr,
                     "focusScores": [round(military_score, 3), round(political_score, 3), round(corporate_score, 3)],
+                    "focusValues": {
+                        "military": military_ocr,
+                        "political": political_ocr,
+                        "corporate": corporate_ocr,
+                    },
                     "marginScore": round(margin_score, 3),
+                    "marginValue": margin_ocr,
                     "lines": lines,
                 },
             }
@@ -161,7 +218,15 @@ def main() -> None:
     OUTPUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     unknown = [card for card in catalog.values() if card["type"] == "unknown"]
     missing_focus = [card for card in catalog.values() if None in card["focus"].values()]
-    print(f"wrote {OUTPUT}: {len(catalog)} cards, {len(unknown)} unknown types, {len(missing_focus)} missing focus", flush=True)
+    verified_focus_count = sum(1 for card in catalog.values() if card["focusVerified"])
+    verified_declaration_count = sum(1 for card in catalog.values() if card["declarationVerified"])
+    verified_structure_count = sum(1 for card in catalog.values() if card["structureVerified"])
+    print(
+        f"wrote {OUTPUT}: {len(catalog)} cards, {len(unknown)} unknown types, "
+        f"{len(missing_focus)} missing focus, {verified_focus_count} verified focus, "
+        f"{verified_declaration_count} verified declarations, {verified_structure_count} verified structures",
+        flush=True,
+    )
 
 
 if __name__ == "__main__":

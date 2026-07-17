@@ -74,9 +74,24 @@ function tickInPage() {
   const over = document.querySelector('.bb-end-title');
   if (over) return 'ENDED:' + text(over);
 
-  // setup: pick any free hunter
-  const picks = enabled(q('[data-testid^="bb-pick-"]'));
-  if (picks.length) { pick(picks).click(); return 'pick-hunter'; }
+  const tutorialContinue = document.querySelector('[data-testid="bb-tutorial-continue"]');
+  if (tutorialContinue) { tutorialContinue.click(); return 'combat-tutorial'; }
+  const combatResultContinue = document.querySelector('[data-testid="bb-combat-result-continue"]');
+  if (combatResultContinue) { combatResultContinue.click(); return 'combat-result'; }
+
+  // setup: open a hunter's inspect dialog, then confirm the pick inside it
+  const confirmPick = document.querySelector('[data-testid="bb-inspect-dialog"] [data-testid^="bb-pick-"]');
+  if (confirmPick) {
+    if (!confirmPick.disabled) { confirmPick.click(); return 'pick-hunter'; }
+    const close = q('[data-testid="bb-inspect-dialog"] button.bb-btn.ghost').pop();
+    if (close) { close.click(); return 'inspect-close'; }
+  }
+  const picked = text(document.querySelector('[data-testid="bb-setup"] .bb-head-note')).includes('WAITING');
+  const inspects = enabled(q('[data-testid^="bb-inspect-"]'));
+  if (inspects.length && !picked && !document.querySelector('.bb-modal')) {
+    pick(inspects).click();
+    return 'inspect-hunter';
+  }
 
   // prompt modal?
   const prompt = document.querySelector('[data-testid^="bb-prompt-"]');
@@ -84,7 +99,7 @@ function tickInPage() {
     const kind = prompt.getAttribute('data-testid').replace('bb-prompt-', '');
     // generic flow: try slot buttons (visible after a card pick), then cards,
     // then confirm/primary, then pass/ghost options
-    const slotBtns = enabled(q('.bb-slot-pick .bb-btn', prompt));
+    const slotBtns = enabled(q('.bb-slot-pick .bb-btn, .bb-battle-slot-command', prompt));
     if (slotBtns.length) { pick(slotBtns).click(); return kind + ':slot'; }
     const confirm = q('[data-testid="bb-refresh-confirm"]', prompt);
     if (confirm.length) { confirm[0].click(); return 'round-refresh'; }
@@ -96,6 +111,10 @@ function tickInPage() {
     if (lamps.length) { pick(lamps).click(); return 'return-lamp'; }
     const options = enabled(q('[data-testid="bb-mission-option"]', prompt));
     if (options.length) { pick(options).click(); return 'mission-choice'; }
+    if (kind === 'combat-modifiers') {
+      const modifierPass = q('[data-testid="bb-modifiers-pass"]', prompt);
+      if (modifierPass.length) { modifierPass[0].click(); return 'combat-modifiers:reveal'; }
+    }
     if (kind === 'combat-reaction') {
       const reactions = enabled(q('[data-testid^="bb-reaction-"]', prompt))
         .filter((b) => b.getAttribute('data-testid') !== 'bb-reaction-pass');

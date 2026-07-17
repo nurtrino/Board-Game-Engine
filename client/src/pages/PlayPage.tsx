@@ -27,6 +27,7 @@ const DsPlay = lazy(() => import('../darksouls/DsPlay'));
 const FeastPlay = lazy(() => import('../feast/FeastPlay').then((module) => ({ default: module.FeastPlay })));
 const BbPlay = lazy(() => import('../bloodborne/BbPlay'));
 const SetiPlay = lazy(() => import('../seti/SetiPlay').then((module) => ({ default: module.SetiPlay })));
+const BlokusPlay = lazy(() => import('../blokus/BlokusPlay'));
 
 function PlayerGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} command table…</div>;
@@ -120,6 +121,56 @@ const HAND_CSS = `
 .brass-gloss h3 { font: 700 15px Inter, sans-serif; margin: 0 0 14px; letter-spacing: .02em; }
 .brass-gloss dt { font: 700 13px Inter, sans-serif; margin-top: 13px; }
 .brass-gloss dd { font: 13px/1.5 Inter, sans-serif; opacity: 0.78; margin: 3px 0 0; }
+
+@media (max-width: 720px) and (orientation: portrait) {
+  .brass-responsive-shell { --brass-board-height: 38dvh; overflow: hidden; }
+  .brass-scene-main {
+    top: 0 !important; right: 0 !important; bottom: auto !important; left: 0 !important;
+    width: 100% !important; height: var(--brass-board-height) !important;
+  }
+  .brass-scene-mini {
+    top: 54px !important; right: 8px !important; bottom: auto !important; left: auto !important;
+    width: 39vw !important; height: 22dvh !important; overflow: hidden;
+    border: 1px solid rgba(255,255,255,.2); border-radius: 10px; background: #090c10;
+    box-shadow: 0 8px 22px rgba(0,0,0,.5);
+  }
+  .brass-turn {
+    top: 8px !important; max-width: calc(100vw - 112px); padding: 8px 12px !important;
+    font-size: 12px !important; white-space: normal; text-align: center;
+  }
+  .brass-help-button { width: 44px !important; height: 44px !important; }
+  .brass-player-holdings {
+    top: calc(var(--brass-board-height) + 6px) !important; right: 8px !important; left: 8px !important;
+    width: auto !important; padding: 8px 10px !important; border-radius: 12px !important;
+    background: rgba(8,10,13,.96) !important;
+  }
+  .brass-player-holdings > div:first-child { padding-bottom: 6px !important; }
+  .brass-player-holdings .ig-hold > div { padding: 5px 3px; }
+  .brass-control-sheet {
+    top: calc(var(--brass-board-height) + 94px) !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+    z-index: 28 !important; width: 100% !important; min-height: 0; padding: 10px 12px calc(18px + env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    border-top: 1px solid rgba(255,255,255,.16); background: rgba(5,8,11,.97); box-shadow: 0 -12px 30px rgba(0,0,0,.5);
+  }
+  .brass-control-sheet > .ig-prompt { position: sticky; top: 0; z-index: 2; background: rgba(14,17,22,.98); }
+  .brass-control-sheet .ig-act { min-height: 52px; padding: 8px 6px; }
+  .brass-acts .ba-sub { font-size: 11px; line-height: 1.25; }
+  .brass-hand-fan {
+    left: 50% !important; bottom: calc(100dvh - var(--brass-board-height) + 2px) !important;
+    transform: scale(.54); transform-origin: 50% 100%;
+  }
+  .picker-backdrop {
+    justify-content: flex-start; overflow-x: hidden; overflow-y: auto;
+    padding: 56px 12px 24px; -webkit-overflow-scrolling: touch;
+  }
+  .picker-backdrop > div { max-width: 100% !important; }
+  .picker-backdrop button { min-height: 44px; }
+  .picker-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; max-width: 100%; gap: 10px; }
+  .picker-card { width: 100%; height: auto; aspect-ratio: 5 / 7; }
+  .card-focus-backdrop { overflow: auto; padding: 28px 20px; }
+  .card-focus { max-width: 100%; }
+  .brass-gloss { width: calc(100vw - 32px); padding: 18px; }
+}
 `;
 
 const ACTIONS = [
@@ -465,15 +516,15 @@ function GameView({ scene, view, act, error }: {
   );
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#08090c', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
+    <div className="brass-responsive-shell" style={{ position: 'fixed', inset: 0, background: '#08090c', color: '#e8ebf0', font: '14px Inter, sans-serif' }}>
       <style>{HAND_CSS}</style>
 
       {/* both boards stay mounted; styles swap them between main and mini */}
-      <div style={mainStyle(tableIsMain)} onClick={tableIsMain ? undefined : () => setTableIsMain(true)}
+      <div className={`brass-scene ${tableIsMain ? 'brass-scene-main' : 'brass-scene-mini'}`} style={mainStyle(tableIsMain)} onClick={tableIsMain ? undefined : () => setTableIsMain(true)}
         title={tableIsMain ? undefined : 'Show the table'}>
         <div style={{ position: 'absolute', inset: 0, pointerEvents: tableIsMain ? 'auto' : 'none' }}>{tableScene}</div>
       </div>
-      <div style={mainStyle(!tableIsMain)} onClick={!tableIsMain ? undefined : () => setTableIsMain(false)}
+      <div className={`brass-scene ${!tableIsMain ? 'brass-scene-main' : 'brass-scene-mini'}`} style={mainStyle(!tableIsMain)} onClick={!tableIsMain ? undefined : () => setTableIsMain(false)}
         title={!tableIsMain ? undefined : 'Show my board'}>
         <div style={{ position: 'absolute', inset: 0, pointerEvents: !tableIsMain ? 'auto' : 'none' }}>{matScene}</div>
       </div>
@@ -481,7 +532,7 @@ function GameView({ scene, view, act, error }: {
       {/* clear whose-turn indicator — pops on every turnover */}
       {view.phase === 'playing' && (
         <div
-          className={`ig-turn ig-glass${isMyTurn ? ' mine' : ''}`}
+          className={`ig-turn ig-glass brass-turn${isMyTurn ? ' mine' : ''}`}
           key={view.currentColor}
           style={seatStyle(view.currentColor, { zIndex: 40 })}
         >
@@ -493,7 +544,7 @@ function GameView({ scene, view, act, error }: {
       )}
 
       {/* right column, bottom: actions */}
-      <div style={{
+      <div className="brass-control-sheet" style={{
         position: 'absolute', right: 0, top: '62vh', bottom: 0, width: RIGHT_W,
         display: 'flex', flexDirection: 'column', padding: '10px 22px 16px', zIndex: 25,
       }}>
@@ -573,6 +624,7 @@ function GameView({ scene, view, act, error }: {
         <button
           onClick={() => setFocus(-1)}
           title="Reference: costs, counts and card distribution"
+          className="brass-help-button"
           style={{
             position: 'absolute', top: 12, left: 12, zIndex: 30,
             width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.25)',
@@ -583,7 +635,7 @@ function GameView({ scene, view, act, error }: {
       )}
 
       {/* holdings: labelled tabular stats */}
-      <div className="ig-glass" data-testid="brass-player-holdings" style={{
+      <div className="ig-glass brass-player-holdings" data-testid="brass-player-holdings" style={{
         position: 'absolute', top: 12, right: 12, zIndex: 30,
         width: 'min(258px, calc(100vw - 24px))',
         padding: '12px 14px', borderRadius: 16,
@@ -610,7 +662,7 @@ function GameView({ scene, view, act, error }: {
       </div>
 
       {/* the hand, splayed and centered within the main view */}
-      <div className="hand-fan" style={{ zIndex: 30, left: `calc((100vw - ${RIGHT_W}) / 2)` }}>
+      <div className="hand-fan brass-hand-fan" style={{ zIndex: 30, left: `calc((100vw - ${RIGHT_W}) / 2)` }}>
         {hand.map((c, i) => {
           const off = i - (n - 1) / 2;
           const tx = off * 64;
@@ -975,6 +1027,11 @@ export function PlayPage() {
         <SetiPlay view={view} act={act} error={error} />
       </Suspense>
     );
+    if (view.game === 'blokus') return (
+      <Suspense fallback={<PlayerGameLoading game="Blokus" />}>
+        <BlokusPlay view={view} act={act} seat={me ?? 0} error={error} />
+      </Suspense>
+    );
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
@@ -994,6 +1051,7 @@ export function PlayPage() {
     bloodborne: 'Bloodborne: The Board Game',
     feast: 'A Feast for Odin',
     seti: 'SETI: Search for Extraterrestrial Intelligence',
+    blokus: 'Blokus 20x20',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
   const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
@@ -1004,6 +1062,7 @@ export function PlayPage() {
     : room.game === 'bloodborne' ? 'Your colour marks your seat. Choose a hunter once the Hunt begins.'
     : room.game === 'feast' ? 'Your colour marks your Vikings, action spaces, and personal boards.'
     : room.game === 'seti' ? 'Your colour marks your probes, landers, orbiters, signals, and discoveries.'
+    : room.game === 'blokus' ? 'Your colour is your 21 pieces and your starting corner. Unpicked colours play themselves.'
     : "Your piece marks your income on the board's turn-order track.";
 
   return (

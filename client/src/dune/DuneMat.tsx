@@ -3,7 +3,7 @@
 // councilor disc and combat marker laid out like the physical table (no
 // storage bowls). Same OBJ + tint pipeline as the main board renderer.
 
-import { Suspense, useMemo } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
@@ -105,15 +105,80 @@ function spread(cx: number, cz: number, n: number, stepX: number, perRow = 5): [
 export function DuneMat({ scene, view, me, height }: {
   scene: DuneSceneDef; view: DuneView; me: DunePlayerView; height: number | string;
 }) {
+  const [compact, setCompact] = useState(() => (
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 720px)').matches
+  ));
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 720px)');
+    const update = () => setCompact(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
   const tint = scene.pieces.tints[me.color];
   const m = scene.mat;
   const flagsLeft = 3 - Object.values(view.control).filter((s) => s === me.seat).length;
   const spice5 = Math.floor(me.spice / 5), spice1 = me.spice % 5;
   const sol5 = Math.floor(me.solari / 5), sol1 = me.solari % 5;
 
+  // Phones get a light, high-contrast summary instead of initializing a full
+  // WebGL scene for a decorative player mat. All decisions already live in
+  // the DOM controls around this panel, and the summary keeps the same game
+  // information visible without the heat and input lag of software WebGL.
+  if (compact) {
+    const leaderImage = me.leader ? LEADER_BY_ID[me.leader]?.image : null;
+    const summary = [
+      ['Agents', me.agentsLeft + (me.mentat ? 1 : 0)],
+      ['Garrison', me.garrison],
+      ['Water', me.water],
+      ['Spice', me.spice],
+      ['Solari', me.solari],
+      ['Flags', Math.max(0, flagsLeft)],
+    ] as const;
+    return (
+      <div
+        role="img"
+        aria-label={`Your board: ${summary.map(([label, value]) => `${value} ${label.toLowerCase()}`).join(', ')}`}
+        style={{
+          width: '100%', height, borderRadius: 14, overflow: 'hidden', position: 'relative',
+          display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 126px', gap: 10, padding: 12,
+          background: `linear-gradient(90deg, rgba(5,8,11,.25), rgba(5,8,11,.82)), url(${scene.mat.board}) center/cover no-repeat`,
+        }}
+      >
+        <div style={{ alignSelf: 'end', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 7 }}>
+          {summary.map(([label, value]) => (
+            <div key={label} style={{ padding: '8px 9px', borderRadius: 10, background: 'rgba(5,8,11,.84)', border: '1px solid rgba(255,255,255,.16)' }}>
+              <div style={{ font: '800 20px/1 Inter, sans-serif', color: '#fff' }}>{value}</div>
+              <div style={{ marginTop: 4, font: '700 10px/1 Inter, sans-serif', letterSpacing: '.7px', textTransform: 'uppercase', color: 'rgba(255,255,255,.72)' }}>{label}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ alignSelf: 'stretch', minHeight: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 8 }}>
+          {leaderImage ? (
+            <img src={leaderImage} alt={`${LEADER_BY_ID[me.leader!]?.name ?? 'House'} leader`} style={{ width: '100%', maxHeight: '56%', objectFit: 'contain', borderRadius: 8, background: 'rgba(5,8,11,.72)' }} />
+          ) : <div />}
+          <div style={{ padding: '9px 8px', borderRadius: 10, textAlign: 'center', background: 'rgba(5,8,11,.86)', border: '1px solid rgba(255,255,255,.16)' }}>
+            <div style={{ font: '800 13px/1.1 Inter, sans-serif', textTransform: 'uppercase' }}>{me.color}</div>
+            <div style={{ marginTop: 5, font: '600 10px/1.2 Inter, sans-serif', color: 'rgba(255,255,255,.7)' }}>
+              {me.hasHighCouncil ? 'High Council' : 'No council seat'}<br />
+              {me.hasSwordmaster ? 'Swordmaster ready' : '2 agents'}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ width: '100%', height, borderRadius: 14, overflow: 'hidden' }}>
-      <Canvas camera={{ position: [0, 13.9, 4.4], fov: 44 }} dpr={[1, 2]} gl={{ antialias: true }} style={{ background: '#05080b' }}>
+      <Canvas
+        camera={{ position: [0, 13.9, 4.4], fov: 44 }}
+        dpr={[1, 1.5]}
+        frameloop="demand"
+        gl={{ antialias: true, powerPreference: 'low-power' }}
+        style={{ background: '#05080b' }}
+      >
         <ambientLight intensity={0.9} />
         <directionalLight position={[6, 14, 6]} intensity={1.35} />
         <directionalLight position={[-8, 10, -6]} intensity={0.4} />

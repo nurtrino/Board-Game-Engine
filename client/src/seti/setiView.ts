@@ -2,23 +2,46 @@ type UnknownRecord = Record<string, unknown>;
 
 export type SetiSeatColor = 'white' | 'green' | 'purple' | 'orange' | string;
 
+export interface SetiUiOwnedTech {
+  stackId: string;
+  tileId: string;
+  computerSlot: number | null;
+}
+
+export interface SetiUiComputerTech {
+  stackId: string;
+  boardSlot: number;
+  lower: boolean;
+}
+
+export interface SetiUiComputer {
+  top: boolean[];
+  tech: SetiUiComputerTech[];
+}
+
 export interface SetiUiPlayer {
   seat: number;
   name: string;
   color: SetiSeatColor;
   score: number;
+  finalScore: number | null;
+  finalScoreBreakdown: { base: number; gold: number; projects: number; aliens: number; total: number } | null;
   publicity: number;
   credits: number;
   energy: number;
   dataPool: number;
-  computer: unknown[];
-  techs: string[];
+  computer: SetiUiComputer;
+  techs: SetiUiOwnedTech[];
   hand: string[];
   alienHand: string[];
   hiddenExertian: string[];
   income: string[];
   missions: string[];
+  completedMissions: string[];
+  scoringCards: string[];
+  permanentCards: string[];
   goldClaims: string[];
+  goldClaimDetails: { threshold: number; tileId: string; pointsPerSet: number | null; claimOrder: number | null }[];
   passed: boolean;
 }
 
@@ -47,6 +70,15 @@ export interface SetiUiPlanet {
   firstLandingBonuses: number[];
 }
 
+export interface SetiUiPlacedSpacecraft {
+  id: string;
+  owner: number;
+  kind: 'orbiter' | 'lander';
+  body: string;
+  spaceId: string;
+  coveredReward: { kind: string; amount?: number } | null;
+}
+
 export interface SetiUiTechStack {
   id: string;
   type: string;
@@ -58,6 +90,9 @@ export interface SetiUiTechStack {
 export interface SetiUiSpecies {
   id: string;
   revealed: boolean;
+  faceUp: string;
+  deckCount: number;
+  module: UnknownRecord;
   markers: { id: string; owner: number; color: string; space?: string }[];
 }
 
@@ -74,6 +109,7 @@ export interface SetiUiLegal {
   canPass: boolean;
   canLaunch: boolean;
   canAnalyze: boolean;
+  canResearch: boolean;
   moveTargets: Record<string, string[]>;
   orbitTargets: Record<string, string[]>;
   landTargets: Record<string, string[]>;
@@ -97,11 +133,23 @@ export interface SetiUiEvent {
 export interface SetiUiSolo {
   difficulty: number;
   rivalScore: number;
+  rivalPublicity: number;
   progress: number;
-  activeObjectives: string[];
+  progressLoops: number;
+  activeObjectives: { objectiveId: string; marked: boolean[] }[];
   completedObjectives: string[];
   objectiveDeckCount: number;
   actionDeckCount: number;
+  actionDiscardCount: number;
+  currentActionCard: string | null;
+  lastActionCard: string | null;
+  lastActionStep: number | null;
+  techs: { probe: number; telescope: number; computer: number };
+  computer: boolean[];
+  dataPool: number;
+  rivalStartsRound: boolean;
+  passed: boolean;
+  /** Legacy aggregate retained for old presentation components. */
   techTokens: number;
 }
 
@@ -126,10 +174,12 @@ export interface SetiUiView {
   sectorBoardOrder: string[];
   sectors: SetiUiSector[];
   planets: SetiUiPlanet[];
+  placedSpacecraft: SetiUiPlacedSpacecraft[];
   projectRow: string[];
   projectDeckCount: number;
   projectDiscard: string[];
   roundEndCount: number;
+  neutralMilestonesRemaining: { 20: number; 30: number };
   techStacks: SetiUiTechStack[];
   goldTiles: SetiUiGoldTile[];
   species: SetiUiSpecies[];
@@ -173,31 +223,83 @@ function normalizePlayer(value: unknown, index: number, passedSeats: number[]): 
     name: text(player.name ?? player.agency, `AGENCY ${seat + 1}`),
     color: text(player.color ?? player.seatColor, ['white', 'green', 'purple', 'orange'][seat] ?? 'white').toLowerCase(),
     score: number(player.score ?? player.vp ?? player.points),
+    finalScore: player.finalScore === null || player.finalScore === undefined ? null : number(player.finalScore),
+    finalScoreBreakdown: (() => {
+      const breakdown = record(player.finalScoreBreakdown);
+      return Object.keys(breakdown).length ? {
+        base: number(breakdown.base),
+        gold: number(breakdown.gold),
+        projects: number(breakdown.projects),
+        aliens: number(breakdown.aliens),
+        total: number(breakdown.total),
+      } : null;
+    })(),
     publicity: number(player.publicity ?? resources.publicity),
     credits: number(player.credits ?? resources.credits ?? resources.credit),
     energy: number(player.energy ?? resources.energy),
     dataPool: number(player.dataPool ?? player.data ?? resources.data),
     computer: normalizeComputer(player.computer ?? player.computerData ?? player.dataComputer),
-    techs: stringList(player.techs ?? player.technologies),
+    techs: normalizeOwnedTechs(player.techs ?? player.technologies),
     hand: stringList(player.hand ?? player.projectHand),
     alienHand: stringList(player.alienHand ?? player.alienCards),
     hiddenExertian: stringList(player.hiddenExertian),
-    income: stringList(player.incomeCards ?? player.tuckedCards ?? player.income),
-    missions: stringList(player.missions ?? player.projects ?? player.tableau),
+    income: [
+      ...stringList(player.incomeCards ?? player.tuckedCards ?? player.income),
+      ...stringList(player.alienIncomeCards),
+    ],
+    missions: [
+      ...stringList(player.missions ?? player.projects ?? player.tableau),
+      ...stringList(player.alienMissions),
+    ],
+    completedMissions: [
+      ...stringList(player.completedMissions),
+      ...stringList(player.completedAlienMissions),
+    ],
+    scoringCards: [
+      ...stringList(player.scoringCards),
+      ...stringList(player.alienScoringCards),
+    ],
+    permanentCards: stringList(player.permanentCards),
     goldClaims: stringList(player.goldClaims),
+    goldClaimDetails: list(player.goldClaims).map((entry) => {
+      const claim = record(entry);
+      return {
+        threshold: number(claim.threshold),
+        tileId: text(claim.tileId ?? claim.id),
+        pointsPerSet: claim.pointsPerSet === undefined || claim.pointsPerSet === null ? null : number(claim.pointsPerSet),
+        claimOrder: claim.claimOrder === undefined || claim.claimOrder === null ? null : number(claim.claimOrder),
+      };
+    }).filter((claim) => !!claim.tileId),
     passed: boolean(player.passed) || passedSeats.includes(seat),
   };
 }
 
-function normalizeComputer(value: unknown): unknown[] {
+function normalizeOwnedTechs(value: unknown): SetiUiOwnedTech[] {
+  return list(value).map((entry) => {
+    if (typeof entry === 'string') return { stackId: entry, tileId: entry, computerSlot: null };
+    const tech = record(entry);
+    return {
+      stackId: text(tech.stackId ?? tech.id),
+      tileId: text(tech.tileId ?? tech.tile ?? tech.id),
+      computerSlot: tech.computerSlot === undefined || tech.computerSlot === null ? null : number(tech.computerSlot),
+    };
+  }).filter((tech) => !!tech.stackId);
+}
+
+function normalizeComputer(value: unknown): SetiUiComputer {
   const computer = record(value);
-  if (Array.isArray(value)) return value;
-  const top = list(computer.top);
-  const tech = Object.values(record(computer.tech)).flatMap((entry) => {
+  if (Array.isArray(value)) return { top: value.slice(0, 6).map(boolean), tech: [] };
+  const top = list(computer.top).slice(0, 6).map(boolean);
+  const tech = Object.entries(record(computer.tech)).flatMap(([stackId, entry]) => {
     const slot = record(entry);
-    return [slot.upper === true, slot.lower === true];
+    if (!Object.keys(slot).length) return [];
+    return [{
+      stackId,
+      boardSlot: number(slot.boardSlot ?? slot.slot),
+      lower: boolean(slot.lower),
+    }];
   });
-  return [...top, ...tech];
+  return { top: [...top, ...Array.from({ length: Math.max(0, 6 - top.length) }, () => false)], tech };
 }
 
 function normalizePiece(value: unknown, index: number): SetiUiPiece {
@@ -248,6 +350,9 @@ function normalizeSpecies(value: unknown, index: number): SetiUiSpecies {
   return {
     id: text(species.id ?? species.speciesId, `species-${number(species.slot, index)}`),
     revealed: boolean(species.revealed) || boolean(species.isRevealed),
+    faceUp: cardId(species.alienFaceUp ?? species.faceUp),
+    deckCount: number(species.alienDeckCount ?? species.deckCount),
+    module: record(species.module),
     markers: [...list(species.markers ?? species.researchMarkers), ...discovery, ...research].map((entry, markerIndex) => {
       const marker = record(entry);
       return {
@@ -338,10 +443,26 @@ export function normalizeSetiView(input: unknown): SetiUiView {
         firstLandingBonuses: list(planet.firstLandingBonuses).map((amount) => number(amount)),
       };
     }),
+    placedSpacecraft: list(view.placedSpacecraft).map((value, index) => {
+      const piece = record(value);
+      const reward = record(piece.coveredReward);
+      return {
+        id: text(piece.id, `seti-spacecraft-${index}`),
+        owner: number(piece.owner, -1),
+        kind: text(piece.kind, 'lander') === 'orbiter' ? 'orbiter' as const : 'lander' as const,
+        body: text(piece.body),
+        spaceId: text(piece.spaceId),
+        coveredReward: Object.keys(reward).length ? { kind: text(reward.kind), ...(reward.amount === undefined ? {} : { amount: number(reward.amount) }) } : null,
+      };
+    }),
     projectRow: list(view.projectRow ?? view.cardRow).map(cardId),
     projectDeckCount: number(view.projectDeckCount ?? view.deckCount),
     projectDiscard: stringList(view.projectDiscard ?? view.discard),
     roundEndCount: number(view.roundEndCount ?? view.endRoundCount),
+    neutralMilestonesRemaining: {
+      20: number(record(view.neutralMilestonesRemaining)[20] ?? record(view.neutralMilestonesRemaining)['20']),
+      30: number(record(view.neutralMilestonesRemaining)[30] ?? record(view.neutralMilestonesRemaining)['30']),
+    },
     techStacks: indexedValues(view.techStacks ?? view.technologyStacks).map(normalizeTech),
     goldTiles: indexedValues(view.goldTiles).map((value, index) => {
       const tile = record(value);
@@ -351,15 +472,36 @@ export function normalizeSetiView(input: unknown): SetiUiView {
     pending,
     solo: Object.keys(record(view.solo)).length ? (() => {
       const solo = record(view.solo);
+      const techs = record(solo.techs);
+      const normalizedTechs = {
+        probe: number(techs.probe),
+        telescope: number(techs.telescope),
+        computer: number(techs.computer),
+      };
       return {
         difficulty: number(solo.difficulty, 1),
         rivalScore: number(solo.rivalScore),
+        rivalPublicity: number(solo.rivalPublicity),
         progress: number(solo.progress),
-        activeObjectives: stringList(solo.activeObjectives),
+        progressLoops: number(solo.progressLoops),
+        activeObjectives: list(solo.activeObjectives).map((value) => {
+          if (typeof value === 'string') return { objectiveId: value, marked: [] };
+          const objective = record(value);
+          return { objectiveId: text(objective.objectiveId ?? objective.id), marked: list(objective.marked).map(boolean) };
+        }).filter((objective) => !!objective.objectiveId),
         completedObjectives: stringList(solo.completedObjectives),
         objectiveDeckCount: number(solo.objectiveDeckCount),
         actionDeckCount: number(solo.actionDeckCount),
-        techTokens: number(solo.techTokens),
+        actionDiscardCount: number(solo.actionDiscardCount),
+        currentActionCard: cardId(solo.currentActionCard) || null,
+        lastActionCard: cardId(solo.lastActionCard) || null,
+        lastActionStep: solo.lastActionStep === null || solo.lastActionStep === undefined ? null : number(solo.lastActionStep),
+        techs: normalizedTechs,
+        computer: list(solo.computer).map(boolean),
+        dataPool: number(solo.dataPool),
+        rivalStartsRound: boolean(solo.rivalStartsRound),
+        passed: boolean(solo.passed),
+        techTokens: number(solo.techTokens, normalizedTechs.probe + normalizedTechs.telescope + normalizedTechs.computer),
       };
     })() : null,
     lastEvent: normalizeEvent(view.lastEvent ?? list(view.log).at(-1)),
@@ -369,6 +511,7 @@ export function normalizeSetiView(input: unknown): SetiUiView {
       canPass: boolean(legal.canPass),
       canLaunch: boolean(legal.canLaunch),
       canAnalyze: boolean(legal.canAnalyze),
+      canResearch: boolean(legal.canResearch),
       moveTargets: stringMap(legal.moveTargets),
       orbitTargets: stringMap(legal.orbitTargets),
       landTargets: stringMap(legal.landTargets),

@@ -152,7 +152,46 @@ function tuneMiniMaterial(material: THREE.Material, maxAnisotropy: number) {
   }
 }
 
-function Mini({ slug, x, z, tint, targetH = 1.15, maxFootprint = 2, yaw = 0 }: {
+/**
+ * Find the center of the geometry that actually meets the board. Full-model
+ * bounds are a poor anchor for minis: a long weapon or trailing coat can move
+ * their center far away from the molded base. Averaging a thin slice at the
+ * bottom keeps the table marker locked to the contact footprint instead.
+ */
+function miniContactCenter(root: THREE.Object3D, bounds: THREE.Box3): THREE.Vector2 {
+  root.updateMatrixWorld(true);
+  const height = Math.max(bounds.max.y - bounds.min.y, 1e-6);
+  const contactCeiling = bounds.min.y + Math.max(0.065, height * 0.035);
+  const point = new THREE.Vector3();
+  let sumX = 0;
+  let sumZ = 0;
+  let count = 0;
+
+  root.traverse((child) => {
+    const mesh = child as THREE.Mesh;
+    if (!mesh.isMesh) return;
+    const positions = mesh.geometry.getAttribute('position');
+    if (!positions) return;
+    for (let index = 0; index < positions.count; index += 1) {
+      point.fromBufferAttribute(positions, index).applyMatrix4(mesh.matrixWorld);
+      if (point.y > contactCeiling) continue;
+      sumX += point.x;
+      sumZ += point.z;
+      count += 1;
+    }
+  });
+
+  return count > 0
+    ? new THREE.Vector2(sumX / count, sumZ / count)
+    : new THREE.Vector2(
+        (bounds.min.x + bounds.max.x) / 2,
+        (bounds.min.z + bounds.max.z) / 2,
+      );
+}
+
+// The staged sculpts face +Z while the table camera sits at +Z looking in:
+// without the half-turn every model shows the camera its back.
+function Mini({ slug, x, z, tint, targetH = 1.15, maxFootprint = 2, yaw = Math.PI }: {
   slug: string; x: number; z: number; tint?: string; targetH?: number; maxFootprint?: number; yaw?: number;
 }) {
   // useGLTF caches by URL and only requests models that are actually on board.
@@ -175,14 +214,18 @@ function Mini({ slug, x, z, tint, targetH = 1.15, maxFootprint = 2, yaw = 0 }: {
     });
     const box = new THREE.Box3().setFromObject(clone);
     const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
+    const contactCenter = miniContactCenter(clone, box);
     const heightScale = targetH / Math.max(size.y, 1e-6);
     const footprintScale = maxFootprint / Math.max(size.x, size.z, 1e-6);
     const modelScale = Math.min(heightScale, footprintScale);
     return {
       scene: clone,
       scale: modelScale,
-      offset: new THREE.Vector3(-center.x * modelScale, -box.min.y * modelScale + 0.018, -center.z * modelScale),
+      offset: new THREE.Vector3(
+        -contactCenter.x * modelScale,
+        -box.min.y * modelScale + 0.018,
+        -contactCenter.y * modelScale,
+      ),
     };
   }, [source, targetH, maxFootprint, maxAnisotropy]);
 
@@ -190,10 +233,10 @@ function Mini({ slug, x, z, tint, targetH = 1.15, maxFootprint = 2, yaw = 0 }: {
     <group position={[x, BOARD_Y, z]} rotation={[0, yaw, 0]}>
       <SoftContactShadow size={Math.min(maxFootprint * 0.72, Math.max(0.82, targetH * 0.82))} />
       {tint && (
-        <mesh position={[0, 0.026, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <mesh position={[0, 0.014, 0]} rotation={[-Math.PI / 2, 0, 0]} renderOrder={2}>
           <ringGeometry args={[targetH * 0.36, targetH * 0.44, 40]} />
-          <meshStandardMaterial color={tint} emissive={tint} emissiveIntensity={0.48}
-            roughness={0.62} transparent opacity={0.88} depthWrite={false} />
+          <meshBasicMaterial color={tint} transparent opacity={0.88} depthWrite={false}
+            toneMapped={false} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
         </mesh>
       )}
       <primitive object={scene} position={offset} scale={scale} dispose={null} />
@@ -304,8 +347,17 @@ function CameraRig({ view }: { view: BbView }) {
     .map((tile) => `${tile.x},${tile.y}`)
     .sort()
     .join('|');
+  // Follow the hunter whose turn it is, zoomed in tight; fall back to the
+  // whole-map frame between turns.
+  const activeHunter = view.activeSeat != null ? view.hunters[view.activeSeat] : null;
+  const activeSpace = activeHunter?.space ?? null;
+  const focusKey = `${view.activeSeat ?? ''}:${activeSpace ?? ''}`;
   const frame = useMemo(() => {
     if (!view.tiles.length) return { center: new THREE.Vector3(), distance: 16 };
+    const focus = activeSpace ? bbSpaceWorld(view, activeSpace) : null;
+    if (focus) {
+      return { center: new THREE.Vector3(focus[0], 0.55, focus[1]), distance: 13, follow: true };
+    }
     const xs = view.tiles.map((tile) => tile.x * BB_TILE_W);
     const zs = view.tiles.map((tile) => tile.y * BB_TILE_W);
     const minX = Math.min(...xs) - BB_TILE_W / 2;
@@ -318,7 +370,8 @@ function CameraRig({ view }: { view: BbView }) {
       center: new THREE.Vector3((minX + maxX) / 2, 0.42, (minZ + maxZ) / 2),
       distance: THREE.MathUtils.clamp(fittedSpan * 1.28, 15, 68),
     };
-  }, [tileFrameKey, size.width, size.height]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tileFrameKey, focusKey, size.width, size.height]);
 
   useEffect(() => {
     const orbit = controls.current;
@@ -354,12 +407,15 @@ function CameraRig({ view }: { view: BbView }) {
       return;
     }
 
-    // Preserve the player's viewing angle, but expand the orbit enough to fit
-    // newly revealed tiles and ease the target toward the new map center.
+    // Preserve the player's viewing angle. While following the active hunter,
+    // commit to the tight follow distance; otherwise only expand the orbit
+    // enough to fit newly revealed tiles.
     const direction = camera.position.clone().sub(orbit.target);
     if (direction.lengthSq() < 1e-6) direction.set(0.12, 0.72, 0.69);
     direction.normalize();
-    const distance = Math.max(frame.distance, camera.position.distanceTo(orbit.target));
+    const distance = (frame as { follow?: boolean }).follow
+      ? frame.distance
+      : Math.max(frame.distance, camera.position.distanceTo(orbit.target));
     transition.current.position.copy(frame.center).addScaledVector(direction, distance);
     transition.current.target.copy(frame.center);
     if (reducedMotion) {
@@ -488,7 +544,7 @@ function TableStage({ view }: { view: BbView }) {
 
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[frame.cx, -0.19, frame.cz]} receiveShadow>
         <circleGeometry args={[frame.groundRadius, 96]} />
-        <meshStandardMaterial color="#09070a" roughness={0.955} metalness={0.018} />
+        <meshBasicMaterial color="#000000" toneMapped={false} />
       </mesh>
 
     </>
@@ -565,11 +621,11 @@ export function BbScene({ view }: { view: BbView }) {
         gl.outputColorSpace = THREE.SRGBColorSpace;
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
       }}
-      style={{ background: '#050407' }}
+      style={{ background: '#000000' }}
       camera={{ fov: 44, near: 0.15, far: 320, position: [0, 14, 11] }}
     >
-      <color attach="background" args={['#050407']} />
-      <fog attach="fog" args={['#07060a', 58, 158]} />
+      <color attach="background" args={['#000000']} />
+      <fog attach="fog" args={['#000000', 58, 158]} />
       <TableStage view={view} />
 
       {view.tiles.map((tile) => (

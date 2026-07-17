@@ -301,7 +301,13 @@ export function DunePlay({ view, act, error }: {
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, justifyContent: 'center', maxWidth: 780, margin: '0 auto' }}>
             {view.leaderPool.map((l) => (
-              <button key={l} className="dn-card" disabled={!picking} onClick={() => send({ type: 'pick_leader', leader: l })}>
+              <button
+                key={l}
+                className="dn-card"
+                disabled={!picking}
+                aria-label={`Choose ${LEADER_BY_ID[l].name}`}
+                onClick={() => send({ type: 'pick_leader', leader: l })}
+              >
                 <img src={LEADER_BY_ID[l].image} alt={LEADER_BY_ID[l].name}
                   style={{ width: 216, maxWidth: '44vw', borderRadius: 10, opacity: picking ? 1 : 0.45, boxShadow: '0 6px 20px rgba(0,0,0,0.5)' }} />
               </button>

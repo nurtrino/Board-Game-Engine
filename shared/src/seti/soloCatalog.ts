@@ -389,3 +389,435 @@ export const SETI_SOLO_OBJECTIVES: readonly SetiSoloObjective[] = [
 export const SETI_SOLO_OBJECTIVE_BY_ID: Readonly<Record<string, SetiSoloObjective>> = Object.fromEntries(
   SETI_SOLO_OBJECTIVES.map((entry) => [entry.id, entry]),
 );
+
+const PROBE_TRACK: readonly SetiRivalProgressNode[] = [
+  { stackId: 'seti_tech_stack_probe_1', type: 'probe', glyph: 'single' },
+  { stackId: 'seti_tech_stack_probe_2', type: 'probe', glyph: 'infinity' },
+  { stackId: 'seti_tech_stack_probe_3', type: 'probe', glyph: 'chain' },
+  { stackId: 'seti_tech_stack_probe_4', type: 'probe', glyph: 'cluster' },
+];
+const TELESCOPE_TRACK: readonly SetiRivalProgressNode[] = [
+  { stackId: 'seti_tech_stack_telescope_1', type: 'telescope', glyph: 'single' },
+  { stackId: 'seti_tech_stack_telescope_3', type: 'telescope', glyph: 'infinity' },
+  { stackId: 'seti_tech_stack_telescope_2', type: 'telescope', glyph: 'chain' },
+  { stackId: 'seti_tech_stack_telescope_4', type: 'telescope', glyph: 'cluster' },
+];
+const COMPUTER_TRACK: readonly SetiRivalProgressNode[] = [
+  { stackId: 'seti_tech_stack_computer_1', type: 'computer', glyph: 'single' },
+  { stackId: 'seti_tech_stack_computer_2', type: 'computer', glyph: 'infinity' },
+  { stackId: 'seti_tech_stack_computer_3', type: 'computer', glyph: 'chain' },
+  { stackId: 'seti_tech_stack_computer_4', type: 'computer', glyph: 'cluster' },
+];
+const BASIC_ACTIONS = [
+  'seti_solo_action_s01', 'seti_solo_action_s02', 'seti_solo_action_s03', 'seti_solo_action_s04',
+] as const;
+
+export const SETI_SOLO_DIFFICULTIES: readonly SetiSoloDifficultySetup[] = [
+  {
+    difficulty: 1, boardArt: '/seti/solo/rival-board-1-2.webp', startingActionCards: BASIC_ACTIONS,
+    randomAdvancedAtSetup: 0, objectiveCounts: { tier1: 0, tier2: 0, tier3: 0 },
+    progressTrack: [...COMPUTER_TRACK, ...TELESCOPE_TRACK, ...PROBE_TRACK], startingProgressIndex: 0,
+  },
+  {
+    difficulty: 2, boardArt: '/seti/solo/rival-board-1-2.webp', startingActionCards: BASIC_ACTIONS,
+    randomAdvancedAtSetup: 0, objectiveCounts: { tier1: 2, tier2: 3, tier3: 5 },
+    progressTrack: [...COMPUTER_TRACK, ...TELESCOPE_TRACK, ...PROBE_TRACK], startingProgressIndex: 0,
+  },
+  {
+    difficulty: 3, boardArt: '/seti/solo/rival-board-3.webp', startingActionCards: BASIC_ACTIONS,
+    randomAdvancedAtSetup: 1, objectiveCounts: { tier1: 2, tier2: 4, tier3: 6 },
+    progressTrack: [...TELESCOPE_TRACK, ...PROBE_TRACK, ...COMPUTER_TRACK], startingProgressIndex: 0,
+  },
+  {
+    difficulty: 4, boardArt: '/seti/solo/rival-board-4.webp', startingActionCards: BASIC_ACTIONS,
+    randomAdvancedAtSetup: 1, objectiveCounts: { tier1: 2, tier2: 6, tier3: 7 },
+    progressTrack: [...COMPUTER_TRACK, ...TELESCOPE_TRACK, ...PROBE_TRACK], startingProgressIndex: 3,
+  },
+  {
+    difficulty: 5, boardArt: '/seti/solo/rival-board-5.webp', startingActionCards: BASIC_ACTIONS,
+    randomAdvancedAtSetup: 1, objectiveCounts: { tier1: 2, tier2: 7, tier3: 8 },
+    progressTrack: [...PROBE_TRACK, ...COMPUTER_TRACK, ...TELESCOPE_TRACK], startingProgressIndex: 8,
+  },
+] as const;
+
+export const SETI_SOLO_DIFFICULTY_BY_LEVEL: Readonly<Record<SetiSoloDifficulty, SetiSoloDifficultySetup>> = Object.fromEntries(
+  SETI_SOLO_DIFFICULTIES.map((entry) => [entry.difficulty, entry]),
+) as Readonly<Record<SetiSoloDifficulty, SetiSoloDifficultySetup>>;
+
+export const SETI_RIVAL_SETUP_RULES = {
+  useOrdinaryTwoPlayerSetup: true,
+  roundEndProjectCardsPerRound: 3,
+  neutralMarkersAtTwentyAndThirty: 2,
+  randomStartingPlayer: true,
+  startingVictoryPoints: { first: 1, second: 2 },
+  startingPublicity: 4,
+  rivalStartingIncomeCard: false,
+  rivalStartingCredits: 0,
+  rivalStartingEnergy: 0,
+  startingPlayerMarkerAlternatesEveryRound: true,
+  basicActionCards: BASIC_ACTIONS,
+  advancedActionCards: SETI_RIVAL_ACTION_CARDS.filter((card) => card.group === 'advanced').map((card) => card.id),
+  speciesActionCards: SETI_RIVAL_ACTION_CARDS.filter((card) => card.group === 'species').map((card) => card.id),
+  actionDeckSetup: 'shuffle-basic-plus-optional-random-advanced',
+  objectiveSetup: {
+    shuffleTiersSeparately: true,
+    stackOrderTopToBottom: [1, 2, 3] as const,
+    reveal: 3,
+    difficultyOneHasNoObjectives: true,
+  },
+} as const;
+
+export const SETI_RIVAL_RESOURCE_RULES = {
+  creditEnergyOrProjectCardToProgress: 1,
+  incomeIncreaseToProgress: 4,
+  cardFromPassingCounts: true,
+  cardFromAlienDiscoveryCounts: true,
+  noRoundIncome: true,
+  publicityCap: 10,
+  dataPoolLimit: null,
+} as const;
+
+export const SETI_RIVAL_COMPUTER_RULES = {
+  spaces: 6,
+  fillOrder: 'left-to-right',
+  rewards: [null, gain('publicity', 1), null, gain('progress', 4), null, null] as const,
+  gainedDataFillsComputerBeforeUnlimitedPool: true,
+  analyzeRequiresFullComputer: true,
+  analyzeClearsComputerOnly: true,
+  analyzeAlwaysMarksBlueTrace: true,
+  afterAnalyzeRefillFromPoolImmediately: true,
+  refillRewardsResolveAsCovered: true,
+} as const;
+
+export const SETI_RIVAL_TECH_RULES = {
+  normalPersistentAbilitiesIgnored: true,
+  storedByType: true,
+  selection: 'preferred-progress-stack-then-clockwise',
+  preferStacksWithFirstTakeTwoPointBonus: true,
+  ifNoTwoPointBonusSelectFirstAvailableClockwise: true,
+  gainPrintedImmediateReward: true,
+  gainFirstTakeTwoPointBonus: true,
+  ignoredImmediateRewards: [
+    { kind: 'mark-trace', color: 'orange', amount: 1 },
+    { kind: 'gain', resource: 'data', amount: 2 },
+  ] as const,
+  rotateSolarSystemWheneverTechGained: true,
+  consumableBonuses: {
+    probe: 'discard-one-to-prioritize-an-open-moon',
+    telescope: 'discard-one-to-mark-one-extra-project-row-signal',
+    computer: 'discard-at-most-one-after-analyze-for-three-vp-and-one-progress',
+  },
+} as const;
+
+export const SETI_RIVAL_SIGNAL_RULES = {
+  cardRowChoiceUsesDecisionArrow: true,
+  replaceCardRowAfterAllSignals: true,
+  sectorPriority: ['would-win-sector', 'would-score-second-signal-vp', 'most-rival-markers', 'largest-capacity'] as const,
+  largestCapacityBreaksEachPriorityTie: true,
+  normalSignalsNeverUseOumuamuaTile: true,
+  specialOumuamuaSignalAlwaysUsesTile: true,
+  telescopeActionIsAlwaysLegal: true,
+} as const;
+
+export const SETI_RIVAL_TRACE_RULES = {
+  compareMatchingColumnsAcrossBothSpecies: true,
+  universalTraceConsidersAllColumns: true,
+  chooseLowestAvailableSpace: true,
+  ignoreOverflowUnlessAllOtherEligibleSpacesAreFull: true,
+  equalHeightTieUsesDecisionArrow: true,
+  gainMarkedSpaceReward: true,
+} as const;
+
+export const SETI_RIVAL_SCORE_AND_MILESTONE_RULES = {
+  scoreAllOrdinaryRewards: true,
+  triggerNeutralMilestones: true,
+  triggerGoldMilestones: true,
+  goldClaimOnlyFirstMostValuableSpace: true,
+  goldTileTieUsesDecisionArrow: true,
+  noGoldClaimIfEveryFirstSpaceOccupied: true,
+  neverScoreGoldTilesAtGameEnd: true,
+} as const;
+
+export const SETI_RIVAL_PASS_RULES = {
+  passWhenTurnStartsWithEmptyActionDeck: true,
+  shufflePlayedCardsForNextRoundImmediately: true,
+  takeOneRoundEndProjectCard: true,
+  roundEndCardConvertsToProgress: 1,
+  rotateSolarSystemIfFirstToPass: true,
+  rivalNeverKeepsTheRoundEndProjectCard: true,
+} as const;
+
+export const SETI_SOLO_OBJECTIVE_RULES = {
+  activeCount: 3,
+  oneTaskAcrossAllObjectivesPerSingleTrigger: true,
+  objectiveAndTriggerableMissionMayBothMarkFromSameTrigger: true,
+  replaceCompletedAtEndOfHumanTurn: true,
+  replacementContinuesUntilNoCompletedObjectiveOrStackEmpty: true,
+  roundSpend: { 1: 1, 2: 2, 3: 3, 4: 4 } as const,
+  missingCompletedObjectiveProgress: 3,
+  finalVictoryPointsPerIncompleteObjective: 5,
+  incompleteIncludesActiveAndStack: true,
+  difficultyOneIgnoresAllObjectiveRules: true,
+} as const;
+
+export const SETI_SOLO_END_GAME_RULES = {
+  rounds: 5,
+  humanScoresNormally: true,
+  rivalScoresGoldTiles: false,
+  rivalIncompleteObjectiveVictoryPoints: 5,
+  rivalPlayedExertianCardsAlwaysFulfilled: true,
+  exertianDangerPenaltyAfterAllOtherScoring: true,
+  exertianDangerPenalty: 'floor-one-tenth-own-final-score',
+  tiedMostDangerAllPenalized: true,
+  humanMustStrictlyOutscoreRival: true,
+  tieWinner: 'rival',
+} as const;
+
+export interface SetiRivalStepContext {
+  computerFull: boolean;
+  publicity: number;
+  probeOnEarth: boolean;
+  minimumMovesToBody: Partial<Record<Exclude<SetiRivalBody, 'Earth'>, number>>;
+  availableTechnologyStacks: number;
+  discoveredSpeciesInOrder: readonly SetiRivalSpeciesId[];
+  nextAnomalyWonByRival: boolean;
+  centaurianMessagesInReserve: number;
+  centaurianMessagesOnScoreTrack: number;
+  rivalPlayedExertians: number;
+  rivalDangerTraceMarkers: number;
+}
+
+export function isSetiRivalStepLegal(step: SetiRivalActionStep, context: SetiRivalStepContext): boolean {
+  switch (step.kind) {
+    case 'analyze': return context.computerFull;
+    case 'launch': return !context.probeOnEarth;
+    case 'research-tech': return context.availableTechnologyStacks > 0 && context.publicity >= step.publicityCost;
+    case 'fly-orbit-land': return context.probeOnEarth && step.targets.some((target) => {
+      const distance = context.minimumMovesToBody[target.body];
+      return distance !== undefined && distance <= target.maxMoves;
+    });
+    case 'scan': return true;
+    case 'replace-for-discovered-species': return context.discoveredSpeciesInOrder.length >= step.discoveryOrder;
+    case 'anomalies': return !context.nextAnomalyWonByRival;
+    case 'centaurian-message': return context.centaurianMessagesInReserve > 0 && context.centaurianMessagesOnScoreTrack === 0;
+    case 'play-exertian': return context.rivalPlayedExertians + context.rivalDangerTraceMarkers < step.legalOnlyIfPlayedPlusDangerTracesBelow;
+  }
+}
+
+export function selectSetiRivalActionStep(
+  card: SetiRivalActionCard,
+  context: SetiRivalStepContext,
+): { index: number; step: SetiRivalActionStep } | null {
+  const index = card.steps.findIndex((step) => isSetiRivalStepLegal(step, context));
+  return index < 0 ? null : { index, step: card.steps[index] };
+}
+
+export interface SetiRivalSectorCandidate {
+  id: string;
+  wouldWin: boolean;
+  wouldScoreSecondSignal: boolean;
+  rivalMarkers: number;
+  capacity: number;
+  boardOrder: number;
+}
+
+export function chooseSetiRivalSector(candidates: readonly SetiRivalSectorCandidate[]): SetiRivalSectorCandidate | null {
+  return [...candidates].sort((left, right) =>
+    Number(right.wouldWin) - Number(left.wouldWin)
+    || Number(right.wouldScoreSecondSignal) - Number(left.wouldScoreSecondSignal)
+    || right.rivalMarkers - left.rivalMarkers
+    || right.capacity - left.capacity
+    || left.boardOrder - right.boardOrder,
+  )[0] ?? null;
+}
+
+export interface SetiRivalTechStackAvailability {
+  id: SetiRivalTechStackId;
+  tiles: number;
+  firstTakeBonusAvailable: boolean;
+}
+
+export function chooseSetiRivalTechStack(
+  setup: SetiSoloDifficultySetup,
+  progressIndex: number,
+  stacks: readonly SetiRivalTechStackAvailability[],
+): SetiRivalTechStackId | null {
+  const byId = new Map(stacks.map((stack) => [stack.id, stack]));
+  const ordered = Array.from({ length: setup.progressTrack.length }, (_, offset) =>
+    setup.progressTrack[(progressIndex + offset + setup.progressTrack.length) % setup.progressTrack.length],
+  );
+  const withBonus = ordered.find((node) => {
+    const stack = byId.get(node.stackId);
+    return !!stack && stack.tiles > 0 && stack.firstTakeBonusAvailable;
+  });
+  if (withBonus) return withBonus.stackId;
+  return ordered.find((node) => (byId.get(node.stackId)?.tiles ?? 0) > 0)?.stackId ?? null;
+}
+
+export interface SetiRivalProgressResult {
+  index: number;
+  strengthCardsGained: number;
+  preferredStackId: SetiRivalTechStackId;
+}
+
+export function advanceSetiRivalProgress(
+  setup: SetiSoloDifficultySetup,
+  progressIndex: number,
+  spaces: number,
+): SetiRivalProgressResult {
+  if (!Number.isInteger(spaces) || spaces < 0) throw new Error('Rival progress must be a non-negative integer');
+  const length = setup.progressTrack.length;
+  const normalized = ((progressIndex % length) + length) % length;
+  const absolute = normalized + spaces;
+  const index = absolute % length;
+  return {
+    index,
+    strengthCardsGained: Math.floor(absolute / length),
+    preferredStackId: setup.progressTrack[index].stackId,
+  };
+}
+
+export interface SetiRivalComputerState {
+  spaces: readonly boolean[];
+  dataPool: number;
+}
+
+export interface SetiRivalComputerPlacementResult {
+  spaces: boolean[];
+  dataPool: number;
+  publicity: number;
+  progress: number;
+  placed: number;
+}
+
+export function placeSetiRivalData(
+  state: SetiRivalComputerState,
+  amount: number,
+): SetiRivalComputerPlacementResult {
+  if (state.spaces.length !== SETI_RIVAL_COMPUTER_RULES.spaces) throw new Error('Rival computer must have six spaces');
+  if (!Number.isInteger(amount) || amount < 0) throw new Error('Rival data gain must be a non-negative integer');
+  const spaces = [...state.spaces];
+  let dataPool = state.dataPool;
+  let publicity = 0;
+  let progress = 0;
+  let placed = 0;
+  for (let token = 0; token < amount; token++) {
+    const index = spaces.findIndex((filled) => !filled);
+    if (index < 0) {
+      dataPool++;
+      continue;
+    }
+    spaces[index] = true;
+    placed++;
+    const reward = SETI_RIVAL_COMPUTER_RULES.rewards[index];
+    if (reward?.kind === 'gain' && reward.resource === 'publicity') publicity += reward.amount;
+    if (reward?.kind === 'gain' && reward.resource === 'progress') progress += reward.amount;
+  }
+  return { spaces, dataPool, publicity, progress, placed };
+}
+
+export function refillSetiRivalComputerFromPool(state: SetiRivalComputerState): SetiRivalComputerPlacementResult {
+  const open = state.spaces.filter((filled) => !filled).length;
+  const moved = Math.min(open, state.dataPool);
+  const result = placeSetiRivalData({ spaces: state.spaces, dataPool: state.dataPool - moved }, moved);
+  return result;
+}
+
+export interface SetiSoloObjectiveStats {
+  vp: number;
+  publicity: number;
+  dataPool: number;
+}
+
+export function setiSoloTaskMatchesEvent(
+  task: SetiSoloObjectiveTask,
+  event: SetiSoloObjectiveEvent,
+): boolean {
+  switch (task.kind) {
+    case 'threshold':
+      if (task.stat === 'vp') return event.kind === 'score-reached' && event.victoryPoints >= task.atLeast;
+      if (task.stat === 'publicity') return event.kind === 'publicity-reached' && event.publicity >= task.atLeast;
+      return event.kind === 'data-pool-reached' && event.dataPool >= task.atLeast;
+    case 'main-action': return event.kind === 'main-action' && event.action === task.action;
+    case 'research-tech': return event.kind === 'research-tech' && (task.technology === 'any' || event.technology === task.technology);
+    case 'complete-mission': return event.kind === 'complete-mission';
+    case 'visit-feature': return event.kind === 'visit-feature' && event.feature === task.feature;
+    case 'play-project-for-effect': return event.kind === 'play-project-for-effect' && event.printedCreditCost === task.printedCreditCost;
+    case 'orbit-or-land': return event.kind === 'orbit-or-land' && task.bodies.includes(event.body);
+    case 'win-sector': return event.kind === 'win-sector' && task.colors.includes(event.color);
+    case 'either': return task.options.some((option) => setiSoloTaskMatchesEvent(option, event));
+  }
+}
+
+export function setiSoloThresholdSatisfied(task: SetiSoloObjectiveTask, stats: SetiSoloObjectiveStats): boolean {
+  if (task.kind === 'either') return task.options.some((option) => setiSoloThresholdSatisfied(option, stats));
+  if (task.kind !== 'threshold') return false;
+  if (task.stat === 'vp') return stats.vp >= task.atLeast;
+  if (task.stat === 'publicity') return stats.publicity >= task.atLeast;
+  return stats.dataPool >= task.atLeast;
+}
+
+export interface SetiSoloObjectiveProgress {
+  objectiveId: string;
+  marked: readonly boolean[];
+}
+
+export interface SetiSoloObjectiveCandidate {
+  objectiveId: string;
+  taskIndex: number;
+}
+
+export function getSetiSoloObjectiveCandidates(
+  active: readonly SetiSoloObjectiveProgress[],
+  event: SetiSoloObjectiveEvent,
+): SetiSoloObjectiveCandidate[] {
+  const candidates: SetiSoloObjectiveCandidate[] = [];
+  for (const progress of active) {
+    const objectiveDefinition = SETI_SOLO_OBJECTIVE_BY_ID[progress.objectiveId];
+    if (!objectiveDefinition) continue;
+    objectiveDefinition.tasks.forEach((task, taskIndex) => {
+      if (!progress.marked[taskIndex] && setiSoloTaskMatchesEvent(task, event)) {
+        candidates.push({ objectiveId: progress.objectiveId, taskIndex });
+      }
+    });
+  }
+  return candidates;
+}
+
+export function setiSoloRoundObjectivePenalty(round: 1 | 2 | 3 | 4, completedAvailable: number): {
+  spent: number;
+  missing: number;
+  rivalProgress: number;
+} {
+  const required = SETI_SOLO_OBJECTIVE_RULES.roundSpend[round];
+  const spent = Math.min(required, Math.max(0, completedAvailable));
+  const missing = required - spent;
+  return { spent, missing, rivalProgress: missing * SETI_SOLO_OBJECTIVE_RULES.missingCompletedObjectiveProgress };
+}
+
+export function setiSoloFinalObjectiveScore(active: number, stack: number, difficulty: SetiSoloDifficulty): number {
+  if (difficulty === 1) return 0;
+  return (Math.max(0, active) + Math.max(0, stack)) * SETI_SOLO_OBJECTIVE_RULES.finalVictoryPointsPerIncompleteObjective;
+}
+
+export function setiSoloHumanWins(humanFinalScore: number, rivalFinalScore: number): boolean {
+  return humanFinalScore > rivalFinalScore;
+}
+
+// Catalog integrity assertions deliberately fail at module load. A missing
+// component or placeholder must never silently produce a playable solo game.
+if (SETI_RIVAL_ACTION_CARDS.length !== 19) throw new Error('SETI solo must contain 19 rival action cards');
+if (SETI_SOLO_OBJECTIVES.length !== 24) throw new Error('SETI solo must contain 24 objectives');
+if (SETI_SOLO_DIFFICULTIES.length !== 5) throw new Error('SETI solo must contain five difficulty setups');
+if (new Set(SETI_RIVAL_ACTION_CARDS.map((card) => card.id)).size !== 19) throw new Error('Duplicate SETI rival action id');
+if (new Set(SETI_RIVAL_ACTION_CARDS.map((card) => card.cardId)).size !== 19) throw new Error('Duplicate SETI rival CardID');
+if (new Set(SETI_RIVAL_ACTION_CARDS.map((card) => card.sourceGuid)).size !== 19) throw new Error('Duplicate SETI rival source GUID');
+if (new Set(SETI_SOLO_OBJECTIVES.map((objectiveDefinition) => objectiveDefinition.id)).size !== 24) throw new Error('Duplicate SETI objective id');
+if (new Set(SETI_SOLO_OBJECTIVES.map((objectiveDefinition) => objectiveDefinition.sourceGuid)).size !== 24) throw new Error('Duplicate SETI objective source GUID');
+if (SETI_RIVAL_ACTION_CARDS.some((card) => !card.steps.length)) throw new Error('Every SETI rival card needs an action flow');
+if (SETI_SOLO_OBJECTIVES.some((objectiveDefinition) => !objectiveDefinition.tasks.length)) throw new Error('Every SETI objective needs a task');
+if (/untranscribed|placeholder|todo|tbd/i.test(JSON.stringify({
+  actions: SETI_RIVAL_ACTION_CARDS,
+  objectives: SETI_SOLO_OBJECTIVES,
+  difficulties: SETI_SOLO_DIFFICULTIES,
+}))) throw new Error('SETI solo catalog contains an incomplete transcription');

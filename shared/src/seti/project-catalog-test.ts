@@ -7,6 +7,9 @@ import {
   SETI_PROJECT_CATALOG,
   SETI_PROJECT_CATALOG_BY_CARD_ID,
   SETI_PROJECT_CATALOG_BY_ID,
+  SETI_PROJECT_FAQ_BASE_CARD_NUMBERS,
+  SETI_PROJECT_FAQ_PROMO_CARD_IDS,
+  SETI_PROJECT_FAQ_RUNTIME_COVERAGE,
   SETI_PROMO_PROJECT_CATALOG,
   type SetiProjectCatalogCard,
   type SetiProjectEffect,
@@ -98,6 +101,18 @@ equal(
 equal(JSON.stringify(SETI_PROJECT_CATALOG).includes('untranscribed'), false, 'catalog contains no untranscribed fields');
 equal(JSON.stringify(SETI_PROJECT_CATALOG).includes('TODO'), false, 'catalog contains no TODO placeholders');
 equal(JSON.stringify(SETI_PROJECT_CATALOG).includes('unknown-effect'), false, 'catalog contains no opaque effects');
+
+equal(SETI_PROJECT_FAQ_BASE_CARD_NUMBERS.length, 74, 'all 74 base-card entries on official FAQ pages 12-22 are inventoried');
+equal(SETI_PROJECT_FAQ_PROMO_CARD_IDS.length, 1, 'the promo entry on official FAQ page 26 is inventoried');
+equal(SETI_PROJECT_FAQ_RUNTIME_COVERAGE.length, 75, 'every FAQ-listed project has a machine-readable runtime coverage record');
+equal(new Set(SETI_PROJECT_FAQ_RUNTIME_COVERAGE.map((entry) => entry.sourceCardId)).size, 75, 'FAQ coverage records are unique');
+for (const entry of SETI_PROJECT_FAQ_RUNTIME_COVERAGE) {
+  const card = SETI_PROJECT_CATALOG_BY_CARD_ID[entry.sourceCardId];
+  ok(!!card, `FAQ CardID ${entry.sourceCardId} resolves to a typed catalog card`);
+  equal(entry.coverage, 'typed-catalog-and-executor', `${card.canonicalName} has explicit FAQ runtime classification`);
+  equal(entry.cardType, card.cardType, `${card.canonicalName} FAQ classification matches its runtime destination`);
+  ok(card.effects.length > 0, `${card.canonicalName} FAQ entry has executable effects`);
+}
 
 // Official FAQ corrections and current replacement-card art.
 for (const number of [58, 60] as const) {

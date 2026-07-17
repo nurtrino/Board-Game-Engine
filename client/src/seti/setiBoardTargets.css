@@ -1,0 +1,92 @@
+.seti-board-gold-target,
+.seti-board-mars-data-target {
+  appearance: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seti-board-gold-target {
+  position: absolute;
+  z-index: 8;
+  left: 50%;
+  top: 50%;
+  width: max(100%, 40px);
+  height: max(100%, 40px);
+  border: 2px solid rgba(124, 232, 245, 0.88);
+  border-radius: 7px;
+  background: radial-gradient(circle, rgba(124, 232, 245, 0.18), transparent 64%);
+  box-shadow: 0 0 0 3px rgba(124, 232, 245, 0.1), 0 0 16px rgba(124, 232, 245, 0.64);
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  animation: seti-target-arrive 500ms ease both;
+}
+
+.seti-board-mars-data-target {
+  position: absolute;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 232, 245, 0.16), transparent 66%);
+  box-shadow: 0 0 13px rgba(124, 232, 245, 0.58);
+  transform: translate(calc(-50% + var(--seti-mars-offset, 0px)), -50%);
+  pointer-events: auto;
+  animation: seti-target-arrive 500ms ease both;
+}
+
+.seti-board-mars-data-target > .seti-planet-data {
+  left: 50%;
+  top: 50%;
+  width: 17px;
+  min-width: 17px;
+  font-size: 6px;
+  pointer-events: none;
+}
+
+.seti-board-gold-target:active,
+.seti-board-mars-data-target:active {
+  transform: translate(calc(-50% + var(--seti-mars-offset, 0px)), -50%) scale(0.93);
+}
+
+.seti-board-gold-target:active {
+  transform: translate(-50%, -50%) scale(0.93);
+}
+
+.seti-gold-rack:has(.seti-board-gold-target) {
+  z-index: 31;
+  width: max(28%, 184px);
+  gap: 8px;
+}
+
+.seti-table.is-compact .seti-gold-rack:has(.seti-board-gold-target) {
+  left: -49%;
+  bottom: 39%;
+  width: 184px;
+}
+
+.seti-board-gold-target:focus-visible,
+.seti-board-mars-data-target:focus-visible,
+.seti-cell-target.is-earth-step:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+.seti-cell-target.is-earth-step {
+  width: max(8.5%, 40px);
+  min-height: 40px;
+  border-width: 2px;
+  border-color: rgba(240, 188, 106, 0.95);
+  background: radial-gradient(circle, rgba(240, 188, 106, 0.34), rgba(124, 232, 245, 0.08) 58%, transparent 65%);
+  box-shadow: 0 0 0 4px rgba(240, 188, 106, 0.12), 0 0 22px rgba(240, 188, 106, 0.82);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seti-board-gold-target,
+  .seti-board-mars-data-target {
+    animation: none;
+  }
+}

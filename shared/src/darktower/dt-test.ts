@@ -1,10 +1,14 @@
 // Dark Tower engine test: bot playthroughs at 2-4 players with invariants,
-// plus directed rules tests. Movement is honor-system (players drag their pawn
-// freely); each turn a player presses ONE action button. Run:
+// plus directed rules tests. Movement is snapped to the exact territory graph;
+// each turn a player chooses a current/adjacent node and presses its button. Run:
 //   npx tsx shared/src/darktower/dt-test.ts
 
-import { createDarkTower, dtViewFor, DT_SEATS, DT_KEYS, dtHomeSpot, type DtState } from './state.js';
+import { createDarkTower, dtNormalize, dtViewFor, DT_SEATS, DT_KEYS, dtHomeSpot, type DtPlayer, type DtState } from './state.js';
 import { applyDtAction, currentDtPlayer, dtBotAction, type DtAction } from './actions.js';
+import {
+  DT_DARKTOWER_NODE, DT_FORWARD_FRONTIER, DT_NODE, DT_NODES,
+  dtActionForNode, dtAdjacent, dtKingdomAt, dtLegalDestinations,
+} from './territories.js';
 
 let pass = 0, fail = 0;
 const ok = (c: boolean, m: string) => { if (c) pass++; else { fail++; console.error(`FAIL: ${m}`); } };
@@ -17,6 +21,8 @@ function checkInvariants(s: DtState, tag: string): void {
     if (p.food < 0 || p.food > 99) ok(false, `${tag}: ${p.color} food ${p.food}`);
     if (p.quad < 0 || p.quad > 4) ok(false, `${tag}: ${p.color} quad ${p.quad}`);
     if (Math.hypot(p.spot.x, p.spot.z) > 13) ok(false, `${tag}: ${p.color} pawn off the board`);
+    const node = DT_NODE.get(p.node);
+    if (!node || node.wx !== p.spot.x || node.wz !== p.spot.z) ok(false, `${tag}: ${p.color} pawn is not snapped to ${p.node}`);
   }
 }
 
@@ -89,6 +95,20 @@ for (const P of [2, 3, 4]) {
 
 const mk = (P = 2, seed = 5) => createDarkTower(DT_SEATS.slice(0, P).map((c) => ({ name: c, color: c })), seed);
 
+function place(s: DtState, p: DtPlayer, node: string): void {
+  const n = DT_NODE.get(node)!;
+  p.node = node; p.spot = { x: n.wx, z: n.wz };
+  s.turnNode = node; s.turnSpot = { ...p.spot };
+  s.turn = p.seat; s.phase = 'playing'; p.fed = true;
+}
+
+function frontierApproach(p: DtPlayer): { frontier: string; approach: string } {
+  const kingdom = dtKingdomAt(p.color, p.quad);
+  const frontier = DT_FORWARD_FRONTIER.get(kingdom)!;
+  const approach = dtAdjacent(frontier).find((id) => DT_NODE.get(id)?.kingdom === kingdom)!;
+  return { frontier, approach };
+}
+
 // pawns start on their home citadel
 {
   const s = mk(4, 1);
@@ -102,19 +122,25 @@ const mk = (P = 2, seed = 5) => createDarkTower(DT_SEATS.slice(0, P).map((c) => 
 {
   const s = mk();
   const p = currentDtPlayer(s);
+  let edge = frontierApproach(p);
+  place(s, p, edge.approach);
+  applyDtAction(s, p.seat, { type: 'move_token', node: edge.frontier });
   applyDtAction(s, p.seat, { type: 'frontier' });
   ok(p.quad === 1 && s.phase === 'turnDone', 'quad 0->1 free');
   // kingdom 1 without the brass key: the guard turns you back
-  s.phase = 'playing'; p.fed = true; p.brasskey = 0;
+  edge = frontierApproach(p);
+  place(s, p, edge.approach); p.brasskey = 0;
+  applyDtAction(s, p.seat, { type: 'move_token', node: edge.frontier });
   applyDtAction(s, p.seat, { type: 'frontier' });
-  ok(p.quad === 1 && s.phase === 'turnDone', 'no brass key: frontier does not advance');
+  ok(p.quad === 1 && p.node === edge.approach && s.phase === 'turnDone', 'no brass key: frontier turns the pawn back');
   // with the key it advances
-  s.phase = 'playing'; p.fed = true; p.brasskey = 1;
+  place(s, p, edge.approach); p.brasskey = 1;
+  applyDtAction(s, p.seat, { type: 'move_token', node: edge.frontier });
   applyDtAction(s, p.seat, { type: 'frontier' });
-  ok(p.quad === 2, 'brass key opens the frontier');
+  ok(p.quad === 2 && p.node === edge.frontier, 'brass key opens the forward frontier');
   // cannot advance past home (quad 4)
-  s.phase = 'playing'; p.fed = true; p.quad = 4;
-  ok(!applyDtAction(s, p.seat, { type: 'frontier' }).ok, 'cannot cross a frontier past home');
+  p.quad = 4; place(s, p, p.node);
+  ok(!dtLegalDestinations(p, s.turnNode).some((id) => DT_NODE.get(id)?.kind === 'frontier'), 'no frontier is legal after returning home');
 }
 
 // acting out of turn, and the tower gate
@@ -125,13 +151,18 @@ const mk = (P = 2, seed = 5) => createDarkTower(DT_SEATS.slice(0, P).map((c) => 
   ok(!applyDtAction(s, p.seat, { type: 'tower' }).ok, 'Dark Tower sealed before you are ready');
 }
 
-// free pawn placement: move_token repositions your own pawn, clamped to the board
+// drag/tap placement snaps to the exact current-or-adjacent legal graph nodes
 {
   const s = mk();
   const p = currentDtPlayer(s);
-  ok(applyDtAction(s, p.seat, { type: 'move_token', x: 3, z: -4 }).ok && p.spot.x === 3 && p.spot.z === -4, 'pawn drags freely');
+  const legal = dtLegalDestinations(p, s.turnNode);
+  const target = legal.find((id) => id !== p.node)!;
+  const n = DT_NODE.get(target)!;
+  ok(applyDtAction(s, p.seat, { type: 'move_token', x: n.wx + 0.2, z: n.wz - 0.2 }).ok && p.node === target && p.spot.x === n.wx && p.spot.z === n.wz, 'drag snaps to the nearest legal territory');
+  const illegal = DT_NODES.find((q) => !legal.includes(q.id))!;
+  ok(!applyDtAction(s, p.seat, { type: 'move_token', node: illegal.id }).ok, 'tap cannot select a non-adjacent territory');
   applyDtAction(s, p.seat, { type: 'move_token', x: 40, z: 0 });
-  ok(Math.abs(p.spot.x - 12.4) < 0.01, 'placement clamps inside the board disc');
+  ok(legal.includes(p.node) && DT_NODE.get(p.node)!.wx === p.spot.x, 'far drag still snaps within the legal set');
   ok(!applyDtAction(s, (p.seat + 1) % 2, { type: 'move_token', x: 0, z: 0 }).ok, 'cannot drag another player\'s pawn');
 }
 
@@ -141,12 +172,13 @@ const mk = (P = 2, seed = 5) => createDarkTower(DT_SEATS.slice(0, P).map((c) => 
   const p = currentDtPlayer(s);
   p.quad = 4; p.goldkey = 1; p.brasskey = 1; p.silverkey = 1; p.warriors = 90; p.moves = 10; p.fed = true;
   s.dtBrigands = 3;
+  place(s, p, DT_DARKTOWER_NODE.get(p.color)!);
   applyDtAction(s, p.seat, { type: 'tower' });
   ok(s.phase === 'riddle' && s.riddlePhase === 1, 'riddle starts');
   const wrong = DT_KEYS.find((k) => k !== s.riddle[0])!;
   applyDtAction(s, p.seat, { type: 'riddle_guess', key: wrong });
   ok(s.phase === 'turnDone', 'wrong key ends the turn');
-  s.phase = 'playing'; p.fed = true;
+  place(s, p, DT_DARKTOWER_NODE.get(p.color)!);
   applyDtAction(s, p.seat, { type: 'tower' });
   ok(s.phase === 'riddle', 'retry the riddle');
   applyDtAction(s, p.seat, { type: 'riddle_guess', key: s.riddle[0] });
@@ -163,15 +195,18 @@ const mk = (P = 2, seed = 5) => createDarkTower(DT_SEATS.slice(0, P).map((c) => 
 {
   const s = mk(2, 33);
   const p = currentDtPlayer(s);
+  const anchor = DT_NODES.find((n) => n.kind === 'empty' && n.kingdom === p.color
+    && dtAdjacent(n.id).some((id) => DT_NODE.get(id)?.kind === 'empty' && DT_NODE.get(id)?.kingdom === p.color))!;
+  const destination = dtAdjacent(anchor.id).find((id) => DT_NODE.get(id)?.kind === 'empty' && DT_NODE.get(id)?.kingdom === p.color)!;
   let snapped = false;
   for (let i = 0; i < 400 && !snapped; i++) {
     const st = JSON.parse(JSON.stringify(s)) as DtState;
     const q = st.players[p.seat];
-    st.turnSpot = { x: 1, z: 2 }; q.spot = { x: 9, z: -9 }; // dragged away from turn start
-    q.scout = 0; q.fed = true; st.turn = q.seat; st.phase = 'playing';
+    place(st, q, anchor.id); q.scout = 0; q.fed = true;
+    applyDtAction(st, q.seat, { type: 'move_token', node: destination });
     applyDtAction(st, q.seat, { type: 'move' });
     const ev = st.lastEvent;
-    if (ev && /lost/.test(ev.title) && !q.scout) { ok(q.spot.x === 1 && q.spot.z === 2, 'lost snaps the pawn back to turn start'); snapped = true; }
+    if (ev && /lost/.test(ev.title) && !q.scout) { ok(q.node === anchor.id, 'lost snaps the pawn back to the turn-start node'); snapped = true; }
     s.rolls++;
   }
   ok(snapped, 'a MOVE roll produced a lost result');
@@ -182,6 +217,8 @@ const mk = (P = 2, seed = 5) => createDarkTower(DT_SEATS.slice(0, P).map((c) => 
   const s = mk(2, 21);
   const p = currentDtPlayer(s);
   p.food = 0; p.warriors = 2; p.gold = 0; p.fed = false;
+  const empty = DT_NODES.find((n) => n.kind === 'empty' && n.kingdom === p.color)!;
+  place(s, p, empty.id); p.fed = false;
   applyDtAction(s, p.seat, { type: 'move' });
   ok(p.warriors <= 2 && p.warriors >= 1, `starvation cost a warrior (${p.warriors})`);
 }
@@ -197,9 +234,38 @@ const mk = (P = 2, seed = 5) => createDarkTower(DT_SEATS.slice(0, P).map((c) => 
   applyDtAction(s, a.seat, { type: 'end_turn' });
   ok(s.turn === b.seat, 'victim to act');
   const wBefore = b.warriors;
-  applyDtAction(s, b.seat, { type: 'move' }); // any action runs upkeep → curse pays
+  applyDtAction(s, b.seat, { type: 'sanctuary' }); // matching current citadel action runs upkeep
   ok(b.warriors <= wBefore - 5 + 8, 'victim paid the curse at turn start');
   ok(b.cursed === 0 && s.curse === null, 'curse cleared');
+}
+
+// the occupied space, not the client, selects the only valid panel action
+{
+  const s = mk(2, 41);
+  const p = currentDtPlayer(s);
+  const target = dtLegalDestinations(p, s.turnNode).find((id) => {
+    const a = dtActionForNode(id);
+    return a && a !== 'sanctuary';
+  })!;
+  applyDtAction(s, p.seat, { type: 'move_token', node: target });
+  const expected = dtActionForNode(target)!;
+  const wrong = (['move', 'tomb', 'bazaar', 'sanctuary', 'frontier', 'tower'] as const).find((a) => a !== expected)!;
+  ok(!applyDtAction(s, p.seat, { type: wrong }).ok, `rejects ${wrong} while standing on ${DT_NODE.get(target)!.kind}`);
+  ok(applyDtAction(s, p.seat, { type: expected }).ok, `accepts matching ${expected} action`);
+}
+
+// saved free-position games migrate by snapping to the nearest exact node
+{
+  const s = mk(2, 47);
+  const p = currentDtPlayer(s);
+  const target = DT_NODES.find((n) => n.kind === 'bazaar' && n.kingdom === p.color)!;
+  delete (p as unknown as { node?: string }).node;
+  p.spot = { x: target.wx + 0.12, z: target.wz - 0.08 };
+  delete (s as unknown as { turnNode?: string }).turnNode;
+  s.turnSpot = { ...p.spot };
+  dtNormalize(s);
+  ok(p.node === target.id && p.spot.x === target.wx && p.spot.z === target.wz, 'legacy free position snaps to its nearest graph node');
+  ok(s.turnNode === target.id, 'legacy turn anchor migrates with the pawn');
 }
 
 // sub-phase actions rejected outside their phase

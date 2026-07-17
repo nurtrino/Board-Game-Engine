@@ -13,7 +13,7 @@ import {
   type Arena, type BaseId, type ClashCommitment, type ClashPending, type ClashStage, type ClashTarget,
   type CompanyState, type CouncilId, type HandCard, type IndustryId,
   type LocationId, type NationalActionId, type PolitikLocation, type PolitikPending,
-  type PolitikPlayer, type PolitikResume, type PolitikState, type PriceId, type PublicClash,
+  type PolitikCardDef, type PolitikPlayer, type PolitikResume, type PolitikState, type PriceId, type PublicClash,
   type ResourceId, type SetupBonus, type TableauCard, type TradeTransfer,
 } from './state.js';
 
@@ -853,31 +853,52 @@ function interruptResume(s: PolitikState, seat: number): PolitikResume | null {
   return null;
 }
 
+function currentEdgeTiming(s: PolitikState): PolitikCardDef['edgeTimings'][number] | null {
+  if (s.pending?.kind === 'edge_window') return 'at_any_time';
+  if (s.pending?.kind !== 'clash') return null;
+  if (s.pending.stage === 'after_cost') return 'after_cost';
+  if (s.pending.stage === 'attacker_focus' || s.pending.stage === 'defender_focus') return 'during_focus';
+  if (s.pending.stage === 'after_reveal') return 'after_reveal';
+  if (s.pending.stage === 'before_resolve') return 'before_resolve';
+  return null;
+}
+
+function verifiedEdgeIsOpen(s: PolitikState, definition: PolitikCardDef): boolean {
+  const timing = currentEdgeTiming(s);
+  return timing !== null && (definition.edgeTimings.includes('at_any_time') || definition.edgeTimings.includes(timing));
+}
+
 function doPlayCard(s: PolitikState, seat: number, a: Extract<PolitikAction, { type: 'play_card' }>): PolitikResult {
   const p = s.players[seat];
   if (!p) return err('bad seat');
   const card = p.hand[a.handIndex];
   if (!card) return err('bad hand-card index');
+  const definition = card.kind === 'politik' ? POLITIK_CARDS[card.id] : null;
   const catalogType = playType(card);
   // Regular Politik cards were OCR-cataloged. A confirmed manual declaration
   // is authoritative for their physical card type; exact Startups and
   // Obligations remain locked to structured data.
-  const actual = card.kind === 'politik' ? a.spec.kind : catalogType;
+  const actual = definition?.structureVerified ? definition.type : card.kind === 'politik' ? a.spec.kind : catalogType;
   if (card.kind !== 'politik' && actual !== a.spec.kind) return err(`that card is ${actual ?? 'not playable'}, not ${a.spec.kind}`);
+  if (definition?.structureVerified && actual !== a.spec.kind) return err(`verified printed card type is ${actual}`);
   if (actual === 'company' && s.players.reduce((total, player) => total + player.companies.length, 0) >= MAX_COMPANIES) return err(`all ${MAX_COMPANIES} physical Company boards and Margin tokens are in use`);
-  if (card.kind === 'politik' && a.spec.requirementsConfirmed !== true) return err('enter and confirm the printed values before playing this unverified card');
-  const corruptionRequirement = a.spec.corruptionRequirement ?? 0;
+  const variableStructure = definition?.structureVerified && definition.margin === 'X';
+  if (card.kind === 'politik' && (!definition?.structureVerified || variableStructure) && a.spec.requirementsConfirmed !== true) return err('enter and confirm the unresolved printed values before playing this card');
+  const corruptionRequirement = definition?.declarationVerified
+    ? definition.corruptionRequirement ?? 0
+    : a.spec.corruptionRequirement ?? 0;
   if (!integer(corruptionRequirement, 0, 100)) return err('declared Corruption requirement must be a nonnegative integer');
   if (p.corruption < corruptionRequirement) return err(`this card requires at least ${corruptionRequirement} Corruption`);
   const obligationAtLimit = s.pending?.kind === 'hand_limit' && s.pending.seat === seat && actual === 'obligation';
   const edge = a.spec.kind === 'event' && !!a.spec.edge;
+  if (edge && definition?.structureVerified && !verifiedEdgeIsOpen(s, definition)) return err('this printed Edge timing is not open now');
   const resume = interruptResume(s, seat);
   if (s.pending && !(edge && resume) && !obligationAtLimit) return err('finish the current decision first');
   if (!edge && (s.phase !== 'playing' || s.turn !== seat || s.actionsTaken >= s.actionsAllowed)) return err('Play is not a legal Main Action now');
   if (edge && s.phase !== 'playing') return err('Edge Event timing is not open');
   const startup = card.kind === 'startup' ? STARTUP_BY_ID[card.id] : null;
-  let cost = a.spec.capitalCost ?? 0;
-  let carbonCost = a.spec.carbonCost ?? 0;
+  let cost = definition?.declarationVerified ? definition.capitalCost ?? 0 : a.spec.capitalCost ?? 0;
+  let carbonCost = definition?.declarationVerified ? definition.carbonCost ?? 0 : a.spec.carbonCost ?? 0;
   if (startup) {
     if (a.spec.kind !== 'company') return err('Startup cards are Companies');
     if (a.spec.capitalCost !== undefined && a.spec.capitalCost !== startup.capitalCost) return err(`printed Startup cost is ${startup.capitalCost} Capital`);
@@ -891,10 +912,10 @@ function doPlayCard(s: PolitikState, seat: number, a: Extract<PolitikAction, { t
   if (!integer(carbonCost, 0, 10) || p.carbon < carbonCost) return err(`cannot pay the declared ${carbonCost} Carbon card cost`);
 
   if (startup && a.spec.title !== undefined && a.spec.title.trim() !== startup.name) return err(`Startup name is ${startup.name}`);
-  const title = startup?.name ?? (a.spec.title?.trim() || cardName(card));
-  const corruption = !!a.spec.corruption || !!startup?.corruption;
-  const negotiation = a.spec.kind === 'propaganda' && !!a.spec.negotiation;
-  const declaredIndustry = ('industries' in a.spec ? a.spec.industries : []) ?? [];
+  const title = startup?.name ?? (definition?.structureVerified ? definition.name : (a.spec.title?.trim() || cardName(card)));
+  const corruption = definition?.structureVerified ? definition.corruption : !!a.spec.corruption || !!startup?.corruption;
+  const negotiation = definition?.structureVerified ? definition.negotiation : a.spec.kind === 'propaganda' && !!a.spec.negotiation;
+  const declaredIndustry = definition?.structureVerified ? definition.industries : ('industries' in a.spec ? a.spec.industries : []) ?? [];
   const startupIndustry = startup?.industries ?? [];
   const industries = [...new Set([...startupIndustry, ...declaredIndustry])];
   if (industries.some((x) => !INDUSTRIES.includes(x))) return err('unknown Industry keyword');
@@ -905,7 +926,7 @@ function doPlayCard(s: PolitikState, seat: number, a: Extract<PolitikAction, { t
   let destination: TableauCard | CompanyState | null = null;
 
   if (a.spec.kind === 'company') {
-    const startingMargin = a.spec.startingMargin ?? startup?.startingMargin;
+    const startingMargin = typeof definition?.margin === 'number' ? definition.margin : a.spec.startingMargin ?? startup?.startingMargin;
     if (startingMargin === undefined || !integer(startingMargin, 0, 9) || !industries.length) return err('Company needs an Industry and starting Margin 0-9');
     const company: CompanyState = {
       id: nextInstanceId(s, 'company'), card, title, ready: true,
@@ -923,7 +944,8 @@ function doPlayCard(s: PolitikState, seat: number, a: Extract<PolitikAction, { t
   } else if (a.spec.kind === 'asset') {
     const company = ownCompany(p, a.targetCompany);
     if (!company) return err('attach the Asset to one of your Companies');
-    if (!integer(a.spec.startingMargin, 0, 9)) return err('Asset Margin must be 0-9');
+    const assetMargin = typeof definition?.margin === 'number' ? definition.margin : a.spec.startingMargin;
+    if (!integer(assetMargin, 0, 9)) return err('Asset Margin must be 0-9');
     const asset: TableauCard = {
       instanceId: nextInstanceId(s, 'asset'), card, title, ready: true,
       bases: [], corruption, negotiation, industries,
@@ -931,11 +953,12 @@ function doPlayCard(s: PolitikState, seat: number, a: Extract<PolitikAction, { t
     company.assets.push(asset);
     if (negotiation) p.negotiation++;
     company.industries = [...new Set([...company.industries, ...industries])];
-    const marginBad = addAssetMargin(s, company, a.spec.startingMargin, a.marginMarket); if (marginBad) return err(marginBad);
+    const marginBad = addAssetMargin(s, company, assetMargin, a.marginMarket); if (marginBad) return err(marginBad);
     destination = asset;
   } else if (a.spec.kind === 'propaganda') {
     const bases = [a.spec.base];
-    const supportCost = a.spec.supportCost ?? 1;
+    if (definition?.declarationVerified && definition.bases.length && !definition.bases.includes(a.spec.base)) return err('Support must come from a Base printed on this Propaganda');
+    const supportCost = definition?.declarationVerified ? definition.supportCost ?? 0 : a.spec.supportCost ?? 1;
     if (!integer(supportCost, 0, 10) || p.support[a.spec.base] < supportCost) return err(`not enough ${a.spec.base} Support`);
     if (p.propaganda.length >= 4) {
       const replace = p.propaganda.findIndex((x) => x.instanceId === a.replacePropaganda);
@@ -1010,6 +1033,8 @@ function doAbility(s: PolitikState, seat: number, a: Extract<PolitikAction, { ty
   if (!a.asEdge && (s.turn !== seat || s.actionsTaken >= s.actionsAllowed)) return err('Use Ability is not a legal Main Action now');
   const source = abilityCard(s, p, a.source);
   if (!source) return err('you do not control that ability');
+  const definition = source.card?.kind === 'politik' ? POLITIK_CARDS[source.card.id] : null;
+  if (a.asEdge && definition?.structureVerified && !verifiedEdgeIsOpen(s, definition)) return err('this printed Edge ability is not eligible in the current timing window');
   if (a.activate && !source.ready) return err('that Activate-cost ability is already Activated');
   if (a.activate) source.setReady(false);
   if (!a.asEdge) { const bad = consumeMain(s, seat); if (bad) return bad; }
@@ -1190,10 +1215,13 @@ function focusFor(card: HandCard, arena: Arena, supplied: number | undefined): n
     return 1;
   }
   if (card.kind !== 'politik') return null;
-  // Explicit player input corrects OCR-derived Focus. Bots omit the value and
-  // continue using the catalog hint for unattended play.
+  const definition = POLITIK_CARDS[card.id];
+  // A fully art-reviewed Focus value is authoritative for humans, bots, and
+  // Imperial draws. Client-supplied values cannot override verified print.
+  if (definition?.focusVerified) return definition.focus[arena];
+  // Unverified future cards retain the manual physical-card fallback.
   if (supplied !== undefined) return integer(supplied, 0, 10) ? supplied : null;
-  const printed = POLITIK_CARDS[card.id]?.focus[arena];
+  const printed = definition?.focus[arena];
   return printed !== undefined && printed !== null ? printed : null;
 }
 

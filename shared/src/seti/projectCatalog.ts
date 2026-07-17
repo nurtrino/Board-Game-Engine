@@ -1041,7 +1041,7 @@ function buildCatalogCard(authored: AuthoredDefinition): SetiProjectCatalogCard 
     signalColor: metadata.signalColor,
     matchingSectorRule: 'either active sector of signalColor',
     freeCorner: metadata.freeCorner,
-    income: source.printed.incomeCorner,
+    income: source.incomeCorner,
     cardType: cardTypeFor(authored.effects),
     requirements,
     effects: authored.effects,
@@ -1060,6 +1060,32 @@ export const SETI_PROJECT_CATALOG_BY_ID: Readonly<Record<string, SetiProjectCata
 export const SETI_PROJECT_CATALOG_BY_CARD_ID: Readonly<Record<number, SetiProjectCatalogCard>> = Object.fromEntries(
   SETI_PROJECT_CATALOG.map((card) => [card.sourceCardId, card]),
 );
+
+/**
+ * Every base/promo project entry called out in the bundled official FAQ,
+ * pages 12-26. Keeping this inventory executable prevents a FAQ card from
+ * silently falling outside the typed catalog/runtime acceptance sweep.
+ */
+export const SETI_PROJECT_FAQ_BASE_CARD_NUMBERS = [
+  1, 2, 3, 4, 9, 11, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+  45, 46, 47, 50, 51, 52, 53, 54, 55, 58, 60, 65, 67, 73, 74, 78, 79, 80, 81,
+  84, 88, 89, 91, 92, 93, 98, 99, 100, 101, 103, 106, 107, 112, 113, 114, 116,
+  117, 118, 119, 120, 122, 123, 124, 125, 126, 127, 128, 129, 133, 134, 135, 136, 138,
+] as const;
+export const SETI_PROJECT_FAQ_PROMO_CARD_IDS = [204700] as const;
+
+export const SETI_PROJECT_FAQ_RUNTIME_COVERAGE = [
+  ...SETI_PROJECT_FAQ_BASE_CARD_NUMBERS.map((officialNumber) => {
+    const card = SETI_BASE_PROJECT_CATALOG.find((candidate) => candidate.officialNumber === officialNumber);
+    if (!card) throw new Error(`SETI FAQ references missing base project #${officialNumber}`);
+    return { officialNumber, sourceCardId: card.sourceCardId, cardType: card.cardType, coverage: 'typed-catalog-and-executor' as const };
+  }),
+  ...SETI_PROJECT_FAQ_PROMO_CARD_IDS.map((sourceCardId) => {
+    const card = SETI_PROJECT_CATALOG_BY_CARD_ID[sourceCardId];
+    if (!card) throw new Error(`SETI FAQ references missing promo CardID ${sourceCardId}`);
+    return { officialNumber: null, sourceCardId, cardType: card.cardType, coverage: 'typed-catalog-and-executor' as const };
+  }),
+] as const;
 
 // Fail fast if source extraction or an authored entry drifts. These assertions
 // deliberately live beside the catalog so incomplete decks cannot boot.

@@ -12,7 +12,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import * as THREE from 'three';
-import { dtHomeSpot, type DtSeat } from '@bge/shared';
+import { DT_NODE, dtHomeSpot, type DtSeat } from '@bge/shared';
 
 export interface DtModel { mesh: string | null; diffuse: string | null; pos: number[]; rot: number[]; scale: number[] }
 export interface DtSceneDef {
@@ -46,8 +46,10 @@ const FOV_TAN = Math.tan((FOV * Math.PI) / 360);
 
 const BOARD_Y = 0.96; // the painted board plane
 
-// A pawn's board position is honor-system: on your turn you drag it wherever you
-// like, then press an action button on the panel. move_token syncs the position.
+const KIND_COLOR: Record<string, string> = {
+  empty: '#7fe7ff', tomb: '#b06cff', ruin: '#c7c2b6', bazaar: '#4aa0ff',
+  sanctuary: '#66e6a0', citadel: '#ffd24a', darktower: '#ff5a4a', frontier: '#ff9a3c',
+};
 
 function Model({ def, tint, centerXZ = false, seatY, lift = 0 }: {
   def: DtModel; tint: number[] | null; centerXZ?: boolean;
@@ -179,9 +181,8 @@ function TowerLcd({ lcd }: { lcd: string }) {
   );
 }
 
-/** A player's token: rendered at its board `spot`, seated on the board, and —
- *  for the local player on their turn — free to pick up and drop anywhere
- *  (honor-system movement). A drag calls onPlace with the world position. */
+/** A player's token. A drag reports its drop point; the server snaps that point
+ *  to the current-or-adjacent legal territory before broadcasting it. */
 function Token({ def, tint, spot, draggable, onPlace, onDragChange }: {
   def: DtModel; tint: number[] | null;
   spot: { x: number; z: number };
@@ -251,6 +252,31 @@ function Token({ def, tint, spot, draggable, onPlace, onDragChange }: {
   );
 }
 
+/** A server-authorized destination, colored by the action its space requires. */
+function MoveMarker({ wx, wz, color, selected, onPick }: {
+  wx: number; wz: number; color: string; selected: boolean; onPick: () => void;
+}) {
+  const { gl } = useThree();
+  const [hover, setHover] = useState(false);
+  return (
+    <group
+      position={[wx, BOARD_Y + 0.04, -wz]}
+      onPointerDown={(e) => { e.stopPropagation(); onPick(); }}
+      onPointerOver={() => { setHover(true); gl.domElement.style.cursor = 'pointer'; }}
+      onPointerOut={() => { setHover(false); gl.domElement.style.cursor = 'auto'; }}
+    >
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[selected ? 1.05 : 0.78, selected ? 1.34 : 1.12, 30]} />
+        <meshBasicMaterial color={hover ? '#ffffff' : color} transparent opacity={0.96} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <circleGeometry args={[selected ? 1.03 : 0.76, 30]} />
+        <meshBasicMaterial color={color} transparent opacity={hover ? 0.4 : selected ? 0.28 : 0.18} />
+      </mesh>
+    </group>
+  );
+}
+
 function AimCamera({ controls, aim }: {
   controls: React.RefObject<OrbitControlsImpl | null>;
   aim?: { x: number; z: number; h: number; y?: number } | null;
@@ -274,7 +300,7 @@ function AimCamera({ controls, aim }: {
 
 export interface DtTokenView { seat: number; color: DtSeat; spot: { x: number; z: number } }
 
-export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canMove, onMoveToken, onDragChange, interactive = true, children }: {
+export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canMove, legalSteps = [], onMoveToken, onSelectNode, onDragChange, interactive = true, children }: {
   scene: DtSceneDef;
   tokens: DtTokenView[];
   pic: string;
@@ -283,7 +309,9 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canM
   aim?: { x: number; z: number; h: number; y?: number } | null;
   youSeat?: number | null; // the local player's seat (their pawn is draggable)
   canMove?: boolean; // is it the local player's turn (may they drag their pawn)
+  legalSteps?: string[]; // server-authorized current-or-adjacent node ids
   onMoveToken?: (x: number, z: number) => void;
+  onSelectNode?: (node: string) => void;
   onDragChange?: (dragging: boolean) => void;
   interactive?: boolean;
   children?: React.ReactNode;
@@ -304,6 +332,12 @@ export function DtTable({ scene, tokens, pic, lcd, wedgeMaps, aim, youSeat, canM
         {scene.buildings.map((b, i) => b.mesh && (
           <Model key={i} def={b} tint={b.tint ?? null} seatY={BOARD_Y} />
         ))}
+        {/* Legal spaces remain tappable even when dragging is awkward. */}
+        {legalSteps.map((id) => {
+          const n = DT_NODE.get(id);
+          const selected = tokens.some((t) => t.seat === youSeat && t.spot?.x === n?.wx && t.spot?.z === n?.wz);
+          return n ? <MoveMarker key={`legal-${id}`} wx={n.wx} wz={n.wz} color={KIND_COLOR[n.kind] ?? '#7fe7ff'} selected={selected} onPick={() => onSelectNode?.(id)} /> : null;
+        })}
         {/* player pawns at their board spots; your own is free to drag on your turn */}
         {tokens.map((t) => {
           const def = scene.tokens[t.seat];

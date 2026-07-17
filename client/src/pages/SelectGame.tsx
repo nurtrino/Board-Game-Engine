@@ -67,6 +67,11 @@ const GAMES = [
     name: 'SETI: Search for Extraterrestrial Intelligence',
     logo: '/seti/box.webp',
   },
+  {
+    id: 'blokus',
+    name: 'Blokus 20x20',
+    logo: '/blokus/box.webp',
+  },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
     name: 'Axis & Allies Anniversary',
@@ -207,11 +212,59 @@ const SETI_OPTION_DEFS = [
 const dateOf = (t: number) =>
   new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
+interface CreateOptionChoice {
+  readonly v: string | number | boolean;
+  readonly label: string;
+}
+
+function CreateOption({
+  id,
+  label,
+  help,
+  values,
+  current,
+  onSelect,
+}: {
+  id: string;
+  label: string;
+  help?: string;
+  values: readonly CreateOptionChoice[];
+  current: string | number | boolean;
+  onSelect: (value: string | number | boolean) => void;
+}) {
+  const labelId = `${id}-label`;
+  return (
+    <div className="create-option" role="group" aria-labelledby={labelId}>
+      <div className="create-option-copy">
+        <span id={labelId} className="create-option-label">{label}</span>
+        {help && <span className="pk-create-help">{help}</span>}
+      </div>
+      <div className="create-option-values">
+        {values.map((value) => {
+          const selected = current === value.v;
+          return (
+            <button
+              type="button"
+              key={String(value.v)}
+              className={selected ? 'opt on' : 'opt'}
+              aria-pressed={selected}
+              onClick={() => onSelect(value.v)}
+            >{value.label}</button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function statusLine(s: SaveInfo): string {
+  if (!s.compatible) return 'Incompatible old save · delete and start fresh';
   if (s.status === 'ended') return 'Finished';
   if (s.status === 'lobby') return 'In lobby';
-  if (s.era) return `${s.era === 'rail' ? 'Rail' : 'Canal'} era, round ${s.round}/${s.numRounds}`;
+  if (s.game === 'brass' && s.era) return `${s.era === 'rail' ? 'Rail' : 'Canal'} era, round ${s.round}/${s.numRounds}`;
+  if (s.game === 'seti' && s.round !== null) return `Round ${s.round}/5`;
   if (s.round !== null && s.numRounds !== null) return `Round ${s.round}/${s.numRounds}`;
+  if (s.round !== null) return `Round ${s.round}`;
   return 'In play';
 }
 
@@ -303,10 +356,21 @@ export function SelectGame() {
         </div>
 
         {!game && (
-          <div className="game-grid">
+          <div className="game-grid" role="group" aria-label="Available games">
             {GAMES.map((g) => (
-              <button key={g.id} className="game-tile" onClick={() => setGame(g)}>
-                <img src={g.logo} alt={g.name} />
+              <button
+                type="button"
+                key={g.id}
+                className={`game-tile game-tile-${g.id}`}
+                aria-label={`Choose ${g.name}`}
+                onClick={() => setGame(g)}
+              >
+                <span className="game-tile-art" aria-hidden="true">
+                  {g.id === 'seti'
+                    ? <span className="seti-catalog-mark"><i /><b>SETI</b><small>SEARCH FOR<br />EXTRATERRESTRIAL<br />INTELLIGENCE</small></span>
+                    : <img src={g.logo} alt="" />}
+                </span>
+                <span className="game-tile-name">{g.name}</span>
               </button>
             ))}
           </div>
@@ -315,14 +379,19 @@ export function SelectGame() {
         {game && (
           <div className="save-panel">
             <div className="save-new">
-              <input
-                className="save-name"
-                value={name}
-                maxLength={40}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') createRoom(); }}
-              />
+              <label className="save-name-field" htmlFor="new-save-name">
+                <span>Save name</span>
+                <input
+                  id="new-save-name"
+                  className="save-name"
+                  value={name}
+                  maxLength={40}
+                  onChange={(e) => setName(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') createRoom(); }}
+                />
+              </label>
               <button
+                type="button"
                 className="primary"
                 onClick={createRoom}
               >New save</button>
@@ -333,18 +402,14 @@ export function SelectGame() {
                 {AXIS_OPTION_DEFS.map((def) => {
                   const current = options[def.key] ?? def.values[0].v;
                   return (
-                    <div key={def.key} className="create-option">
-                      <span className="create-option-label">{def.label}</span>
-                      <div className="create-option-values">
-                        {def.values.map((val) => (
-                          <button
-                            key={String(val.v)}
-                            className={current === val.v ? 'opt on' : 'opt'}
-                            onClick={() => setOptions((o) => ({ ...o, [def.key]: val.v }))}
-                          >{val.label}</button>
-                        ))}
-                      </div>
-                    </div>
+                    <CreateOption
+                      key={def.key}
+                      id={`axis-${def.key}`}
+                      label={def.label}
+                      values={def.values}
+                      current={current}
+                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
+                    />
                   );
                 })}
               </div>
@@ -355,15 +420,15 @@ export function SelectGame() {
                 {POLITIK_OPTION_DEFS.map((def) => {
                   const current = options[def.key] ?? def.values[0].v;
                   return (
-                    <div key={def.key} className="create-option">
-                      <span className="create-option-label">{def.label}</span>
-                      <span className="pk-create-help">{def.help}</span>
-                      <div className="create-option-values">
-                        {def.values.map((val) => (
-                          <button key={String(val.v)} className={current === val.v ? 'opt on' : 'opt'} onClick={() => setOptions((state) => ({ ...state, [def.key]: val.v }))}>{val.label}</button>
-                        ))}
-                      </div>
-                    </div>
+                    <CreateOption
+                      key={def.key}
+                      id={`politik-${def.key}`}
+                      label={def.label}
+                      help={def.help}
+                      values={def.values}
+                      current={current}
+                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
+                    />
                   );
                 })}
               </div>
@@ -374,18 +439,14 @@ export function SelectGame() {
                 {DS_OPTION_DEFS.map((def) => {
                   const current = options[def.key] ?? def.values[0].v;
                   return (
-                    <div key={def.key} className="create-option">
-                      <span className="create-option-label">{def.label}</span>
-                      <div className="create-option-values">
-                        {def.values.map((val) => (
-                          <button
-                            key={String(val.v)}
-                            className={current === val.v ? 'opt on' : 'opt'}
-                            onClick={() => setOptions((o) => ({ ...o, [def.key]: val.v }))}
-                          >{val.label}</button>
-                        ))}
-                      </div>
-                    </div>
+                    <CreateOption
+                      key={def.key}
+                      id={`darksouls-${def.key}`}
+                      label={def.label}
+                      values={def.values}
+                      current={current}
+                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
+                    />
                   );
                 })}
               </div>
@@ -396,18 +457,14 @@ export function SelectGame() {
                 {BB_OPTION_DEFS.map((def) => {
                   const current = options[def.key] ?? def.values[0].v;
                   return (
-                    <div key={def.key} className="create-option">
-                      <span className="create-option-label">{def.label}</span>
-                      <div className="create-option-values">
-                        {def.values.map((val) => (
-                          <button
-                            key={String(val.v)}
-                            className={current === val.v ? 'opt on' : 'opt'}
-                            onClick={() => setOptions((o) => ({ ...o, [def.key]: val.v }))}
-                          >{val.label}</button>
-                        ))}
-                      </div>
-                    </div>
+                    <CreateOption
+                      key={def.key}
+                      id={`bloodborne-${def.key}`}
+                      label={def.label}
+                      values={def.values}
+                      current={current}
+                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
+                    />
                   );
                 })}
               </div>
@@ -422,18 +479,14 @@ export function SelectGame() {
                 {FEAST_OPTION_DEFS.map((def) => {
                   const current = options[def.key] ?? def.values[0].v;
                   return (
-                    <div key={def.key} className="create-option">
-                      <span className="create-option-label">{def.label}</span>
-                      <div className="create-option-values">
-                        {def.values.map((val) => (
-                          <button
-                            key={String(val.v)}
-                            className={current === val.v ? 'opt on' : 'opt'}
-                            onClick={() => setOptions((state) => ({ ...state, [def.key]: val.v }))}
-                          >{val.label}</button>
-                        ))}
-                      </div>
-                    </div>
+                    <CreateOption
+                      key={def.key}
+                      id={`feast-${def.key}`}
+                      label={def.label}
+                      values={def.values}
+                      current={current}
+                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
+                    />
                   );
                 })}
               </div>
@@ -448,18 +501,14 @@ export function SelectGame() {
                 {SETI_OPTION_DEFS.map((def) => {
                   const current = options[def.key] ?? def.values[0].v;
                   return (
-                    <div key={def.key} className="create-option">
-                      <span className="create-option-label">{def.label}</span>
-                      <div className="create-option-values">
-                        {def.values.map((val) => (
-                          <button
-                            key={String(val.v)}
-                            className={current === val.v ? 'opt on' : 'opt'}
-                            onClick={() => setOptions((state) => ({ ...state, [def.key]: val.v }))}
-                          >{val.label}</button>
-                        ))}
-                      </div>
-                    </div>
+                    <CreateOption
+                      key={def.key}
+                      id={`seti-${def.key}`}
+                      label={def.label}
+                      values={def.values}
+                      current={current}
+                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
+                    />
                   );
                 })}
               </div>
@@ -471,7 +520,13 @@ export function SelectGame() {
               <div className="save-list">
                 {saves.map((s) => (
                   <div key={s.roomId} className="save-row">
-                    <button className="save-row-open" disabled={deleting !== null} onClick={() => nav(`/board/${s.roomId}`)}>
+                    <button
+                      type="button"
+                      className="save-row-open"
+                      disabled={deleting !== null || !s.compatible}
+                      title={!s.compatible ? 'This old save contains state from a different game engine and cannot be resumed.' : undefined}
+                      onClick={() => nav(`/board/${s.roomId}`)}
+                    >
                       <span className="save-row-main">
                         <b>{s.name}</b>
                         <span className="dim">{statusLine(s)}</span>
@@ -487,13 +542,13 @@ export function SelectGame() {
                     </button>
                     {confirming === s.roomId ? (
                       <div className="save-confirm">
-                        <button className="save-confirm-yes" disabled={deleting !== null} onClick={() => void deleteSave(s.roomId)}>
+                        <button type="button" className="save-confirm-yes" disabled={deleting !== null} onClick={() => void deleteSave(s.roomId)}>
                           {deleting === s.roomId ? 'Deleting…' : 'Delete'}
                         </button>
-                        <button className="save-confirm-no" disabled={deleting !== null} onClick={() => { setConfirming(null); setDeleteError(null); }}>Cancel</button>
+                        <button type="button" className="save-confirm-no" disabled={deleting !== null} onClick={() => { setConfirming(null); setDeleteError(null); }}>Cancel</button>
                       </div>
                     ) : (
-                      <button className="save-del" disabled={deleting !== null} aria-label={`Delete ${s.name}`} title="Delete save" onClick={() => { setConfirming(s.roomId); setDeleteError(null); }}>✕</button>
+                      <button type="button" className="save-del" disabled={deleting !== null} aria-label={`Delete ${s.name}`} title="Delete save" onClick={() => { setConfirming(s.roomId); setDeleteError(null); }}>✕</button>
                     )}
                   </div>
                 ))}
@@ -507,7 +562,7 @@ export function SelectGame() {
               </div>
             )}
 
-            <button className="save-back" disabled={deleting !== null} onClick={() => { setGame(null); setSaves(null); setDeleteError(null); }}>Back</button>
+            <button type="button" className="save-back" disabled={deleting !== null} onClick={() => { setGame(null); setSaves(null); setDeleteError(null); }}>Back</button>
           </div>
         )}
       </div>

@@ -44,9 +44,15 @@ const mustAct = (s: BbState, seat: number, a: BbAction, label: string): void => 
   }
 };
 
-const passCombatReaction = (s: BbState, label: string): void => {
+const passCombatReaction = (s: BbState, label: string, finish = true): void => {
+  if (s.pending[0]?.kind === 'combat-modifiers') {
+    mustAct(s, s.pending[0].seat, { type: 'choose', pass: true }, `${label}: reveal enemy action`);
+  }
   if (s.pending[0]?.kind === 'combat-reaction') {
     mustAct(s, s.pending[0].seat, { type: 'choose', pass: true }, `${label}: pass reaction`);
+  }
+  if (finish && s.pending[0]?.kind === 'combat-dodge') {
+    mustAct(s, s.pending[0].seat, { type: 'choose', pass: true }, `${label}: take hit`);
   }
 };
 
@@ -464,10 +470,12 @@ const giveHand = (h: BbState['hunters'][number], cards: string[]): void => {
   s.enemies = [{ uid: 7002, type: 'hunter-mob', space: h.space!, damage: 0 }];
   startCombat(s, { seat: 0, enemyUid: 7002 });
   mustAct(s, 0, { type: 'choose', pass: true }, 'Tactical: decline attack-back');
-  passCombatReaction(s, 'Tactical');
+  passCombatReaction(s, 'Tactical', false);
   ok(s.pending[0]?.kind === 'combat-dodge', 'Tactical: legal boosted Dodge is offered');
   mustAct(s, 0, { type: 'choose', cardId: 'up-tactical', slot: 2 }, 'Tactical: Dodge from Slow slot');
   eq(h.hp, 6, 'Tactical: boosted Dodge avoids attack');
+  ok(!!s.lastCombatResult?.dodged, 'Tactical: exchange result persists the successful Dodge');
+  eq(s.lastCombatResult?.hunterDamageTaken, 0, 'Tactical: result reports zero Hunter damage');
 }
 
 // Printed "Cannot be Dodged" and enemy Stagger keywords are enforced.
@@ -481,8 +489,10 @@ const giveHand = (h: BbState['hunters'][number], cards: string[]): void => {
   s.enemies = [{ uid: 7003, type: 'scourge-beast', space: h.space!, damage: 0 }];
   startCombat(s, { seat: 0, enemyUid: 7003 });
   mustAct(s, 0, { type: 'choose', pass: true }, 'cannot-dodge: decline attack-back');
-  passCombatReaction(s, 'cannot-dodge');
-  ok(!s.pending.some((p) => p.kind === 'combat-dodge'), 'cannot-dodge attack offers no Dodge');
+  passCombatReaction(s, 'cannot-dodge', false);
+  ok(s.pending[0]?.kind === 'combat-dodge', 'cannot-dodge attack shows a locked Dodge decision');
+  ok(!act(s, 0, { type: 'choose', cardId: 'basic-endurance', slot: 0 }), 'cannot-dodge attack rejects every Dodge option');
+  mustAct(s, 0, { type: 'choose', pass: true }, 'cannot-dodge: acknowledge incoming hit');
 
   const t = setupGame(1, 7004);
   const th = t.hunters[0];
@@ -531,6 +541,7 @@ const giveHand = (h: BbState['hunters'][number], cards: string[]): void => {
   mustAct(s, 0, { type: 'attack', cardId: 'up-rallying', slot: 2, enemyUid: 7006 }, 'Rallying simultaneous combat');
   passCombatReaction(s, 'Rallying simultaneous combat');
   ok(h.pendingReturn, 'Rallying does not save a simultaneously slain Hunter');
+  ok(!!s.lastCombatResult?.hunterSlain, 'Rallying: persistent result identifies the slain Hunter');
 }
 
 // Death is remembered even though the Dream immediately heals the dashboard:
@@ -647,7 +658,7 @@ const giveHand = (h: BbState['hunters'][number], cards: string[]): void => {
   s.enemies = [{ uid: 7020, type: 'hunter-mob', space: h.space!, damage: 0 }];
   mustAct(s, 0, { type: 'begin_turn' }, 'reaction timing turn');
   mustAct(s, 0, { type: 'attack', cardId: 'basic-strength', slot: 0, enemyUid: 7020 }, 'reaction timing attack');
-  eq(s.pending[0]?.kind, 'combat-reaction', 'no-Dodge combat still exposes reaction window');
+  eq(s.pending[0]?.kind, 'combat-modifiers', 'On Attack modifiers happen before the enemy reveal');
   ok(!act(s, 0, { type: 'use_consumable', itemIx: 0, target: 7020 }), 'Molotov cannot fire illegally during Combat');
   eq(h.consumables.join('|'), 'molotov-cocktail|fire-paper', 'rejected Hunter Turn item is not consumed');
   mustAct(s, 0, { type: 'use_consumable', itemIx: 1 }, 'Fire Paper On Attack reaction');
@@ -657,6 +668,9 @@ const giveHand = (h: BbState['hunters'][number], cards: string[]): void => {
   eq(s.enemies.find((enemy) => enemy.uid === 7020)?.damage,
     slot.damage + (BB_STAT_CARDS['basic-strength'].effects.dmgBonus ?? 0) + 1,
     'On Attack modifier affects pending Attack');
+  eq(s.lastCombatResult?.foeDamageTaken,
+    slot.damage + (BB_STAT_CARDS['basic-strength'].effects.dmgBonus ?? 0) + 1,
+    'persistent result uses the reducer-authoritative modified damage');
 
   const pending = setupGame(1, 7021);
   const ph = pending.hunters[0];
@@ -887,6 +901,7 @@ const botAnswerPending = (s: BbState): boolean => {
       if (slot >= 0 && card) return act(s, p.seat, { type: 'choose', cardId: card, slot });
       return act(s, p.seat, { type: 'choose', pass: true });
     }
+    case 'combat-modifiers': return act(s, p.seat, { type: 'choose', pass: true });
     case 'combat-reaction': return act(s, p.seat, { type: 'choose', pass: true });
     case 'combat-dodge': {
       // dodge with an endurance card if a fast-enough slot exists

@@ -20,6 +20,7 @@ import {
   createFeast, feastViewFor, applyFeastAction, feastActingSeat, feastBotAction,
   createBloodborne, bbViewFor, applyBloodborneAction, bbPostProcess,
   createSeti, setiViewFor, applySetiAction,
+  createBlokus, blokusViewFor, applyBlokusAction, blokusBotAction,
   BB_STAT_CARDS, BB_HUNTERS, BB_MISSIONS, bbLampSpaces, bbSpaceNeighbors, bbTileDef, bbWorldExits,
   DS_CLASSES, DS_CLASS_IDS, DS_TREASURE_BY_ID, dsNodeDistance, dsTileGraph, dsNodeBlocked, dsOccupancy,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
@@ -30,6 +31,7 @@ import {
   type FeastState, type FeastAction, type FeastSeatColor,
   type BbState, type BbAction, type BbPending,
   type SetiState, type SetiAction, type SetiSeatColor,
+  type BlokusState, type BlokusAction, type BlokusSeat,
   type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat, type DuneSeat, type Faction,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo, type GameOptions, type AxisSeat, type PolitikSeat,
 } from '@bge/shared';
@@ -44,11 +46,13 @@ import {
 } from './axis-authority.js';
 import { createStore, type SavedRoom } from './store.js';
 import { bearerToken, canDeleteSave } from './save-auth.js';
+import { resolveRoomSeed } from './room-seed.js';
+import { stateMatchesGame } from './save-compat.js';
 
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState | PolitikState | DsState | FeastState | BbState | SetiState;
+type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState | PolitikState | DsState | FeastState | BbState | SetiState | BlokusState;
 
 const engines = {
   brass: {
@@ -189,6 +193,16 @@ const engines = {
     minSeats: 1,
     soloSeats: 1,
   },
+  blokus: {
+    // All four colors always play (rulebook); unclaimed colors are CPU seats
+    // handled by the engine's own player list, so no padding is needed.
+    create: (seated: { name: string; color: SeatColor }[], seed: number, _options?: GameOptions): GameState =>
+      createBlokus(seated as { name: string; color: BlokusSeat }[], seed),
+    view: (state: GameState, viewer: number | null | 'dev') => blokusViewFor(state as BlokusState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyBlokusAction(state as BlokusState, seat, action as BlokusAction),
+    minSeats: 1,
+    soloSeats: 1,
+  },
 } as const;
 
 const engineOf = (game: string) => engines[game as keyof typeof engines] ?? engines.brass;
@@ -275,6 +289,10 @@ function isLiveRoom(room: Room): boolean {
   return !room.deleted && rooms.get(room.id) === room;
 }
 
+function roomStateCompatible(room: Room): boolean {
+  return stateMatchesGame(room.game, room.state);
+}
+
 function toSaved(room: Room): SavedRoom {
   return {
     id: room.id,
@@ -314,7 +332,7 @@ function stale(r: { started: boolean; state: unknown; updatedAt: number }): bool
       try { await store.remove(r.id); } catch (err) { console.error(`failed to retire stale room ${r.id}:`, err); }
       continue;
     }
-    // migrate Dark Tower games saved under the old node-based movement model
+    // migrate Dark Tower games from either historical node-only or free-position movement
     if (r.game === 'darktower' && r.state) dtNormalize(r.state as never);
     // Fighters are independent units; older Axis saves stored them as carrier
     // cargo and would otherwise hide them from movement and combat.
@@ -395,6 +413,10 @@ function viewSeat(ws: WebSocket, realSeat: number | null): number | null | 'dev'
 
 function sendState(room: Room, ws: WebSocket, realSeat: number | null): void {
   if (!room.state) return;
+  if (!roomStateCompatible(room)) {
+    send(ws, { type: 'error', message: 'This save was created with an incompatible game engine. Delete it from New Game and start a fresh save.' });
+    return;
+  }
   const view = engineOf(room.game).view(room.state, viewSeat(ws, realSeat));
   if (view.game === 'axis') {
     view.battleVisualReady = axisBattleVisualReady(room);
@@ -488,6 +510,27 @@ function scheduleBots(room: Room): void {
   if (room.game === 'darksouls') return scheduleDsBots(room);
   if (room.game === 'feast') return scheduleFeastBots(room);
   if (room.game === 'bloodborne') return scheduleBbBots(room);
+  if (room.game === 'blokus') return scheduleBlokusBots(room);
+}
+
+// Blokus: unclaimed colors are engine CPU seats; a deliberate beat per move
+// lets the TV narrate each placement.
+function scheduleBlokusBots(room: Room): void {
+  const s = room.state as BlokusState;
+  if (s.phase !== 'playing') return;
+  const player = s.players[s.turn];
+  const isBot = player?.isCpu || s.turn >= room.players.length || !!room.players[s.turn]?.isBot;
+  if (!isBot || botTimers.has(room.id)) return;
+  botTimers.set(room.id, setTimeout(() => {
+    botTimers.delete(room.id);
+    try {
+      const state = room.state as BlokusState;
+      if (state.phase !== 'playing') return;
+      const result = applyBlokusAction(state, state.turn, blokusBotAction(state, state.turn));
+      if (result.ok) broadcast(room);
+      else console.error('blokus bot rejected:', result.error);
+    } catch (err) { console.error('bot error:', err); }
+  }, 1700));
 }
 
 // Bloodborne is fully co-op: a seat is CPU only when no human holds it. The
@@ -831,7 +874,7 @@ function dtBotAct(room: Room, seat: number): void {
     else if (rand() < 0.3) acted = attempt({ type: 'bazaar_haggle' });
     else acted = attempt({ type: 'bazaar_no' });
   } else {
-    // press an action button (the pawn's board position is honor-system)
+    // choose a legal graph destination, then press its matching action button
     acted = attempt(dtBotAction(s, seat));
   }
 
@@ -1146,6 +1189,7 @@ function bbBotAct(room: Room): void {
     const h = s.hunters[p.seat];
     switch (p.kind) {
       case 'round-refresh': return attempt(p.seat, { type: 'round_refresh', discard: [] });
+      case 'combat-modifiers': return attempt(p.seat, { type: 'choose', pass: true });
       case 'combat-reaction': return attempt(p.seat, { type: 'choose', pass: true });
       case 'combat-attack': {
         const slot = h.slots.findIndex((x) => x === null);
@@ -1309,12 +1353,15 @@ app.get('/api/saves', (_req, res) => {
       roomId: r.id,
       name: r.name,
       game: r.game,
+      compatible: roomStateCompatible(r),
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,
       status: r.state?.phase === 'ended' ? 'ended' : r.started ? 'playing' : 'lobby',
-      era: (r.state && 'era' in r.state ? r.state.era : null),
+      era: (r.game === 'brass' && r.state && 'era' in r.state ? r.state.era : null),
       round: (r.state && 'round' in r.state ? r.state.round : null),
-      numRounds: (r.state && 'numRounds' in r.state ? r.state.numRounds : null),
+      numRounds: (r.state && 'numRounds' in r.state
+        ? r.state.numRounds
+        : r.state && 'rounds' in r.state ? r.state.rounds : null),
       players: r.players.map((p) => ({ name: p.name, color: p.color })),
     }))
     .sort((a, b) => b.updatedAt - a.updatedAt);
@@ -1569,7 +1616,11 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
       room.started = true;
       // "Start script": build the authoritative initial state for this room's
       // game (deals hands, fills markets, sets turn order).
-      const seed = crypto.randomInt(2 ** 31);
+      const seed = resolveRoomSeed(
+        room.options,
+        ALLOW_DEVELOPMENT_CONTROL,
+        () => crypto.randomInt(2 ** 31),
+      );
       const engine = engineOf(room.game);
       const seats = seatsOf(room.game);
       const seated = room.players.map((p) => ({ name: p.name, color: p.color }));

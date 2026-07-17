@@ -111,6 +111,9 @@ function cardWithFocus(arena: (typeof ARENAS)[number], highest: boolean): string
 
 // Authentic catalog/count gates.
 check(Object.keys(POLITIK_CARDS).length === 412, '412 compact Politik catalog entries');
+check(Object.values(POLITIK_CARDS).every((x) => x.focusVerified), 'all 1,236 Politik Focus fields are independently art-verified');
+check(Object.values(POLITIK_CARDS).every((x) => x.declarationVerified && Number.isInteger(x.capitalCost) && Number.isInteger(x.carbonCost) && Number.isInteger(x.corruptionRequirement) && Number.isInteger(x.supportCost) && x.bases.every((base) => BASES.includes(base))), 'all 2,060 fixed declaration fields are two-pass art-verified');
+check(Object.values(POLITIK_CARDS).every((x) => x.titleVerified && x.structureVerified && x.industries.every((industry) => INDUSTRIES.includes(industry)) && x.edgeTimings.every((timing) => ['at_any_time', 'after_cost', 'during_focus', 'after_reveal', 'before_resolve', 'other'].includes(timing)) && (x.edgeTimings.includes('other') === (x.edgeTriggerText.length > 0))), 'all titles and 2,884 structural symbol fields are multi-pass art-verified');
 check(NATIONS.length === 12, '12 Nations');
 check(Object.keys(PROPAGANDA_BY_ID).length === 24, '24 Starting Propaganda');
 check(Object.values(POLITIK_CARDS).every((x) => ARENAS.every((a) => Number.isInteger(x.focus[a]))), 'every Politik card has normalized Focus');
@@ -324,13 +327,14 @@ for (const [index, def] of LANDSCAPES.entries()) {
   act(s, seat, { type: 'resolve_guided', operations: [{ kind: 'acknowledge', text: 'Company text checked.' }], note: 'Company text resolved' }, 'Company guided resolver');
   p = s.players[seat];
   s.actionsTaken = 0;
-  const assetAt = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'asset');
-  p.hand.push({ kind: 'politik', id: s.politicsDeck.splice(assetAt, 1)[0] });
-  const industry = startupDef.industries[0];
-  const assetMargin = 10 - startupDef.startingMargin;
-  act(s, seat, { type: 'play_card', handIndex: p.hand.length - 1, spec: { kind: 'asset', title: 'Confirmed Asset', capitalCost: 0, requirementsConfirmed: true, industries: [industry], startingMargin: assetMargin }, targetCompany: p.companies[0].id, marginMarket: industry }, 'Asset play');
+  const assetAt = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'asset' && typeof POLITIK_CARDS[id].margin === 'number' && POLITIK_CARDS[id].margin! > 0);
+  const assetId = s.politicsDeck.splice(assetAt, 1)[0]; const assetDef = POLITIK_CARDS[assetId];
+  p.hand.push({ kind: 'politik', id: assetId });
+  const industry = assetDef.industries[0]; const assetMargin = assetDef.margin as number;
+  p.companies[0].margin = 10 - assetMargin; const marketBefore = p.companies[0].markets[industry] ?? 0;
+  act(s, seat, { type: 'play_card', handIndex: p.hand.length - 1, spec: { kind: 'asset', industries: assetDef.industries, startingMargin: assetMargin }, targetCompany: p.companies[0].id, marginMarket: industry }, 'Asset play');
   p = s.players[seat];
-  check(p.companies[0].assets.length === 1 && p.companies[0].markets[industry] === 2 && p.companies[0].margin === 0, 'Asset targets Company; crossing 9 takes Market, resets, and continues');
+  check(p.companies[0].assets.length === 1 && p.companies[0].markets[industry] === marketBefore + 1 && p.companies[0].margin === 0, 'Asset targets Company; crossing 9 takes Market, resets, and continues');
   act(s, seat, { type: 'resolve_guided', operations: [{ kind: 'acknowledge', text: 'Asset text checked.' }], note: 'Asset text resolved' }, 'Asset guided resolver');
 }
 
@@ -350,6 +354,7 @@ for (const [index, def] of LANDSCAPES.entries()) {
   const s = ready(2, 136); const seat = s.turn; const p = s.players[seat];
   const at = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'event' && !POLITIK_CARDS[id].keywordsText.toLowerCase().includes('corruption'));
   const id = s.politicsDeck.splice(at, 1)[0]; p.hand.push({ kind: 'politik', id }); p.capital = 100; p.carbon = 1; p.corruption = 0;
+  const verifiedDeclaration = POLITIK_CARDS[id].declarationVerified; const verifiedStructure = POLITIK_CARDS[id].structureVerified; POLITIK_CARDS[id].declarationVerified = false; POLITIK_CARDS[id].structureVerified = false;
   const handIndex = p.hand.length - 1; const before = JSON.stringify(s);
   check(!applyPolitikAction(s, seat, { type: 'play_card', handIndex, spec: { kind: 'event', capitalCost: 0, carbonCost: 1 } }).ok && JSON.stringify(s) === before, 'regular card declaration requires explicit printed-requirement confirmation');
   check(!applyPolitikAction(s, seat, { type: 'play_card', handIndex, spec: { kind: 'event', capitalCost: 0, carbonCost: 1, corruptionRequirement: 1, requirementsConfirmed: true } }).ok && JSON.stringify(s) === before, 'insufficient declared Corruption rejects atomically');
@@ -360,6 +365,24 @@ for (const [index, def] of LANDSCAPES.entries()) {
   check(s.players[seat].carbon === 0 && s.actionsTaken === 1 && s.players[seat].eventsInPlay.some((card) => card.card.id === id), 'confirmed declaration pays Carbon and places the card atomically');
   act(s, seat, { type: 'resolve_guided', operations: [], note: 'Printed effect canceled after declaration costs', canceled: true }, 'cancel guided card effect');
   check(s.players[seat].carbon === 0 && s.actionsTaken === 1 && s.players[seat].eventsInPlay.some((card) => card.card.id === id), 'guided cancellation retains paid costs, consumed action, and card placement');
+  POLITIK_CARDS[id].declarationVerified = verifiedDeclaration;
+  POLITIK_CARDS[id].structureVerified = verifiedStructure;
+}
+
+// Verified costs and requirements are server authority and cannot be reduced
+// by a forged or stale client declaration.
+{
+  const s = ready(2, 139); const seat = s.turn; const p = s.players[seat];
+  const at = s.politicsDeck.findIndex((id) => {
+    const card = POLITIK_CARDS[id];
+    return card.type === 'event' && (card.capitalCost! > 0 || card.carbonCost! > 0);
+  });
+  const id = s.politicsDeck.splice(at, 1)[0]; const card = POLITIK_CARDS[id];
+  p.hand.push({ kind: 'politik', id }); p.capital = 100; p.carbon = 10; p.corruption = 10;
+  const capital = p.capital; const carbon = p.carbon;
+  act(s, seat, { type: 'play_card', handIndex: p.hand.length - 1, spec: { kind: 'event', capitalCost: 0, carbonCost: 0, corruptionRequirement: 0, requirementsConfirmed: true } }, 'play card with forged zero declaration');
+  check(s.players[seat].capital === capital - card.capitalCost! && s.players[seat].carbon === carbon - card.carbonCost!, 'server charges verified printed costs instead of client-supplied zeroes');
+  act(s, seat, { type: 'resolve_guided', operations: [], note: 'Verified declaration authority test', canceled: true }, 'close verified declaration authority test');
 }
 
 // OCR is a hint only. A human's confirmed physical-card declaration controls
@@ -368,19 +391,25 @@ for (const [index, def] of LANDSCAPES.entries()) {
   const s = ready(2, 137); const seat = s.turn; const p = s.players[seat];
   const at = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'event');
   const id = s.politicsDeck.splice(at, 1)[0]; p.hand.push({ kind: 'politik', id });
+  const verifiedDeclaration = POLITIK_CARDS[id].declarationVerified; const verifiedStructure = POLITIK_CARDS[id].structureVerified; POLITIK_CARDS[id].declarationVerified = false; POLITIK_CARDS[id].structureVerified = false;
   p.support.capitalism = 2;
   act(s, seat, { type: 'play_card', handIndex: p.hand.length - 1, spec: { kind: 'propaganda', title: 'Manual physical declaration', base: 'capitalism', supportCost: 1, capitalCost: 0, carbonCost: 0, corruption: false, negotiation: false, requirementsConfirmed: true } }, 'manual type overrides OCR card classification');
   check(s.players[seat].propaganda.some((card) => card.card.id === id && card.bases.length === 1 && card.bases[0] === 'capitalism'), 'manual Propaganda Base is authoritative instead of OCR keywords');
   act(s, seat, { type: 'resolve_guided', operations: [{ kind: 'acknowledge', text: 'Physical card resolved.' }], note: 'Physical card resolved' }, 'resolve manually declared card');
+  POLITIK_CARDS[id].declarationVerified = verifiedDeclaration;
+  POLITIK_CARDS[id].structureVerified = verifiedStructure;
 }
 {
   const s = ready(2, 138); const seat = s.turn; const p = s.players[seat];
   const at = s.politicsDeck.findIndex((id) => /corruption|negotiation/i.test(POLITIK_CARDS[id].keywordsText));
   const id = s.politicsDeck.splice(at, 1)[0]; p.hand.push({ kind: 'politik', id });
+  const verifiedDeclaration = POLITIK_CARDS[id].declarationVerified; const verifiedStructure = POLITIK_CARDS[id].structureVerified; POLITIK_CARDS[id].declarationVerified = false; POLITIK_CARDS[id].structureVerified = false;
   const corruption = p.corruption; const negotiation = p.negotiation;
   act(s, seat, { type: 'play_card', handIndex: p.hand.length - 1, spec: { kind: 'event', title: 'Manual no-icon declaration', capitalCost: 0, carbonCost: 0, corruption: false, requirementsConfirmed: true } }, 'manual icon declaration overrides OCR keyword hint');
   check(s.players[seat].corruption === corruption && s.players[seat].negotiation === negotiation, 'OCR keyword hints cannot add Corruption or Negotiation mechanics');
   act(s, seat, { type: 'resolve_guided', operations: [{ kind: 'acknowledge', text: 'Physical card resolved.' }], note: 'Physical card resolved' }, 'resolve manual icon test');
+  POLITIK_CARDS[id].declarationVerified = verifiedDeclaration;
+  POLITIK_CARDS[id].structureVerified = verifiedStructure;
 }
 
 // Refresh uses exact definitions. A multi-Industry Company receives the delta
@@ -474,8 +503,8 @@ for (const [index, def] of LANDSCAPES.entries()) {
   while (p.propaganda.length < 4) p.propaganda.push({ ...structuredClone(p.propaganda[0]), instanceId: `setup-extra-${p.propaganda.length}` });
   const at = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'propaganda');
   const id = s.politicsDeck.splice(at, 1)[0];
-  const base = BASES.find((x) => POLITIK_CARDS[id].keywordsText.toLowerCase().includes(x)) ?? 'capitalism';
-  p.hand.push({ kind: 'politik', id }); p.support[base] = 5; p.capital = 100;
+  const definition = POLITIK_CARDS[id]; const base = definition.bases[0] ?? 'capitalism';
+  p.hand.push({ kind: 'politik', id }); p.support[base] = 5; p.capital = 100; p.carbon = 10; p.corruption = definition.corruptionRequirement ?? 0;
   const snapshot = JSON.stringify(s);
   const rejected = applyPolitikAction(s, seat, { type: 'play_card', handIndex: p.hand.length - 1, spec: { kind: 'propaganda', base, capitalCost: 0, requirementsConfirmed: true } });
   check(!rejected.ok && JSON.stringify(s) === snapshot, 'fifth Propaganda without replacement is rejected atomically');
@@ -563,7 +592,8 @@ for (const [index, def] of LANDSCAPES.entries()) {
   const window = structuredClone(s.pending!);
   if (window.kind !== 'edge_window') throw new Error('expected edge window');
   const responder = window.seat;
-  const at = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'event');
+  const at = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'event' && POLITIK_CARDS[id].edgeTimings.includes('at_any_time'));
+  s.players[responder].capital = 100; s.players[responder].carbon = 10; s.players[responder].corruption = 10;
   s.players[responder].hand.push({ kind: 'politik', id: s.politicsDeck.splice(at, 1)[0] });
   act(s, responder, { type: 'play_card', handIndex: s.players[responder].hand.length - 1, spec: { kind: 'event', edge: true, capitalCost: 0, requirementsConfirmed: true } }, 'play Edge Event inside window');
   check(s.pending?.kind === 'guided' && s.pending.resume?.seat === responder && s.pending.resume.cursor === window.cursor, 'Edge Event guided prompt retains exact response window');
@@ -673,10 +703,11 @@ for (const [index, def] of LANDSCAPES.entries()) {
   const sourceBefore = source.influence[seat];
   act(s, seat, { type: 'clash', target: { arena: 'military', location: targetId }, payment: 'carbon' }, 'Military Clash declaration');
   passClashWindow(s, 'Military after cost');
-  act(s, seat, { type: 'clash_commit', cards: [{ handIndex: 0, focus: 10 }], leaders: 1, focusInfluence: { [source.id]: 2 } }, 'Military hidden commitment with manually entered Focus');
+  const verifiedPrintedFocus = POLITIK_CARDS[high].focus.military;
+  act(s, seat, { type: 'clash_commit', cards: [{ handIndex: 0, focus: 10 }], leaders: 1, focusInfluence: { [source.id]: 2 } }, 'Military hidden commitment with verified printed Focus');
   p = s.players[seat];
-  const manualFocus = politikViewFor(s, seat).pending;
-  check(manualFocus?.kind === 'clash' && manualFocus.yourCommitment?.cards[0].focus === 10, 'explicit player Focus overrides the OCR catalog hint');
+  const verifiedFocus = politikViewFor(s, seat).pending;
+  check(verifiedFocus?.kind === 'clash' && verifiedFocus.yourCommitment?.cards[0].focus === verifiedPrintedFocus, 'verified printed Focus cannot be overridden by client input');
   check(s.locations[source.id].influence[seat] === sourceBefore - 2 && p.leaders.military === 1, 'committed adjacent Influence and leader are spent');
   finishClashResponses(s, 'Military timing');
   check(locationController(s, targetId) === seat && s.politicsDiscard.includes(high), 'Military difference removes Imperial Influence, adds winner Influence, and discards Focus card');
@@ -751,11 +782,11 @@ for (const [index, def] of LANDSCAPES.entries()) {
 }
 {
   const s = ready(2, 141); const attacker = s.turn; const defender = (attacker + 1) % 2;
-  s.players[attacker].carbon = 10; s.players[attacker].capital = 100; s.councilSupport.chair[defender] = 1;
+  s.players[attacker].carbon = 10; s.players[attacker].capital = 500; s.players[attacker].corruption = 10; s.councilSupport.chair[defender] = 1;
   act(s, attacker, { type: 'clash', target: { arena: 'political', council: 'chair', defender }, payment: 'carbon' }, 'interruptible Clash declaration');
   passClashWindow(s, 'interruptible Clash after cost');
   act(s, attacker, { type: 'clash_commit', cards: [] }, 'interruptible attacker commitment');
-  const eventAt = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'event');
+  const eventAt = s.politicsDeck.findIndex((id) => POLITIK_CARDS[id].type === 'event' && POLITIK_CARDS[id].edgeTimings.some((timing) => timing === 'at_any_time' || timing === 'during_focus'));
   s.players[attacker].hand.push({ kind: 'politik', id: s.politicsDeck.splice(eventAt, 1)[0] });
   act(s, attacker, { type: 'play_card', handIndex: s.players[attacker].hand.length - 1, spec: { kind: 'event', edge: true, capitalCost: 0, requirementsConfirmed: true } }, 'Edge Event during Clash Focus');
   check(s.pending?.kind === 'guided' && s.pending.resume?.kind === 'clash' && s.pending.resume.stage === 'attacker_focus', 'Edge Event serializes and suspends the exact Clash stage');

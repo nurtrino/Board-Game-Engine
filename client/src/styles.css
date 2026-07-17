@@ -128,10 +128,13 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 /* ============================================================
    SELECT GAME
    ============================================================ */
-.select-game { max-width: 1100px; position: relative; z-index: 1; }
+.select-game { width: 100%; max-width: 1100px; position: relative; z-index: 1; }
+.select-game .brand { min-width: 0; }
+.select-game .brand .eyebrow,
+.select-game .brand h1 { display: block; max-width: 100%; overflow-wrap: anywhere; }
 .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.6rem; }
 .game-tile {
-  display: flex; flex-direction: column; text-align: left; padding: 0; overflow: hidden;
+  min-width: 0; display: flex; flex-direction: column; text-align: left; padding: 0; overflow: hidden;
   background: var(--glass); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
   border: 1px solid var(--brd); border-radius: var(--r-lg);
 }
@@ -140,15 +143,47 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 /* Tiles are square regardless of the source art's aspect (owner: square HD
    box art only) — non-square uploads centre-crop instead of stretching the
    grid row and leaving neighbours with dead space. */
-.game-tile img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.game-tile-art { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; background: rgba(0,0,0,.3); }
+.game-tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-tile-name {
+  flex: 1; display: flex; align-items: center; min-height: 56px; padding: .75rem .9rem;
+  font-size: .94rem; font-weight: 650; line-height: 1.28; overflow-wrap: anywhere;
+}
+/* SETI uses portrait box art, so show the complete cover instead of cropping it. */
+.game-tile-seti .game-tile-art { padding: 4%; background: #071217; }
+.game-tile-seti img { object-fit: contain; }
+.seti-catalog-mark {
+  position: relative; display: flex; width: 100%; height: 100%; flex-direction: column;
+  align-items: center; justify-content: center; overflow: hidden; color: #f5fbff;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.9) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 78% 29%, rgba(255,255,255,.72) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 67% 76%, rgba(112,225,255,.7) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 28% 83%, rgba(255,255,255,.6) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 50% 55%, #123c52 0, #071b28 48%, #03090f 100%);
+  border: 1px solid rgba(118,220,255,.2); border-radius: 8px;
+}
+.seti-catalog-mark::before,
+.seti-catalog-mark::after {
+  content: ''; position: absolute; left: 50%; top: 49%; border: 1px solid rgba(112,225,255,.28);
+  border-radius: 50%; transform: translate(-50%, -50%) rotate(-18deg); pointer-events: none;
+}
+.seti-catalog-mark::before { width: 78%; aspect-ratio: 1; }
+.seti-catalog-mark::after { width: 112%; aspect-ratio: 1; }
+.seti-catalog-mark i { position: absolute; width: 7px; height: 7px; right: 17%; top: 24%; border-radius: 50%; background: #ffd67a; box-shadow: 0 0 15px 5px rgba(255,190,70,.5); }
+.seti-catalog-mark b { position: relative; z-index: 1; font: 800 clamp(2rem, 4.5vw, 3.25rem)/.9 Inter, sans-serif; letter-spacing: .16em; text-indent: .16em; text-shadow: 0 3px 18px #000; }
+.seti-catalog-mark small { position: relative; z-index: 1; margin-top: 10px; color: rgba(225,246,255,.82); font: 700 clamp(.5rem, 1vw, .68rem)/1.35 Inter, sans-serif; letter-spacing: .12em; text-align: center; }
 
 /* save chooser (new game -> select save) */
 .save-panel { margin: 1.6rem auto 0; display: flex; flex-direction: column; gap: 1rem; max-width: 620px; }
-.save-new { display: flex; gap: .6rem; }
+.save-new { min-width: 0; display: flex; align-items: flex-end; gap: .6rem; }
+.save-name-field { min-width: 0; flex: 1; display: grid; gap: .35rem; }
+.save-name-field > span { color: var(--ink-2); font-size: .72rem; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
 .save-name {
-  flex: 1; padding: .8rem 1rem; border-radius: var(--r); font-size: 1rem;
+  min-width: 0; min-height: 44px; padding: .8rem 1rem; border-radius: var(--r); font-size: 1rem;
   background: var(--glass); border: 1px solid var(--brd); color: inherit;
 }
+.save-new > .primary { flex: none; min-height: 44px; }
 .save-name:focus { outline: none; border-color: var(--brd-2); background: var(--glass-2); }
 .save-list { display: flex; flex-direction: column; gap: .55rem; }
 .save-row { display: flex; align-items: stretch; gap: .5rem; }
@@ -1118,6 +1153,27 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .pk-clash-modifier-log small { color: #aaa89e; text-transform: none; }
 .pk-clash-response { margin-top: 7px; padding: 8px; border: 1px solid rgba(224,187,105,.26); border-radius: 8px; }
 .pk-clash-direct-note { margin: 6px 0; color: #aaa89e; font-size: 6px; line-height: 1.35; text-transform: none; }
+.pk-clash-exception-toggle { width: 100%; min-height: 32px; margin: 7px 0; padding: 6px 9px; border-color: rgba(238,233,217,.12); background: rgba(0,0,0,.14); color: #aaa89e; font-size: 7px; letter-spacing: .055em; }
+.pk-clash-exception-tools { margin: 0 0 7px; padding: 7px; border: 1px solid rgba(224,187,105,.2); border-radius: 7px; background: rgba(0,0,0,.18); }
+.pk-visual-picker { margin: 10px 0; padding: 9px; border: 1px solid rgba(224,187,105,.2); border-radius: 10px; background: rgba(0,0,0,.2); }
+.pk-visual-picker > .ig-lab { display: block; margin-bottom: 7px; }
+.pk-card-targets, .pk-nation-targets, .pk-token-targets { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 5px; scrollbar-width: thin; }
+.pk-card-targets > button, .pk-nation-targets > button, .pk-token-targets > button { position: relative; flex: 0 0 auto; display: grid; gap: 4px; align-content: start; min-width: 112px; padding: 7px; border: 1px solid rgba(238,233,217,.16); border-radius: 9px; background: #080d0c; color: #eee9d9; text-align: left; }
+.pk-card-targets > button { width: 126px; }
+.pk-nation-targets > button { width: 138px; }
+.pk-card-targets > button.on, .pk-nation-targets > button.on, .pk-token-targets > button.on { border-color: #e0bb69; background: rgba(224,187,105,.12); box-shadow: 0 0 0 2px rgba(224,187,105,.16), 0 8px 24px rgba(0,0,0,.35); transform: translateY(-2px); }
+.pk-card-targets > button > :is(.pk-card, .pk-card-art), .pk-nation-targets > button > :is(.pk-card, .pk-card-art) { width: 100%; aspect-ratio: 680 / 950; max-height: 150px; pointer-events: none; }
+.pk-card-targets b, .pk-nation-targets b, .pk-token-targets b { font-size: 8px; line-height: 1.2; }
+.pk-card-targets small, .pk-nation-targets small, .pk-token-targets small { color: #aaa89e; font-size: 7px; line-height: 1.25; }
+.pk-nation-targets > button > i:first-child { position: absolute; z-index: 2; top: 11px; left: 11px; width: 10px; height: 10px; border: 2px solid #f1ecdc; border-radius: 50%; box-shadow: 0 1px 5px #000; }
+.pk-token-targets > button { place-items: center; min-width: 104px; text-align: center; }
+.pk-market-token, .pk-margin-nine { display: grid; place-items: center; width: 44px; height: 44px; border: 3px solid #e9e2c9; border-radius: 50%; background: #59675e; box-shadow: inset 0 0 0 4px rgba(0,0,0,.24), 0 4px 12px #0008; color: #f4eedc; font-size: 18px; font-style: normal; font-weight: 900; }
+.pk-market-token.media { background: #8e3c59; }.pk-market-token.energy { background: #bc7435; }.pk-market-token.financial { background: #436f86; }.pk-market-token.humanities { background: #705b8d; }.pk-market-token.technology { background: #49806e; }.pk-market-token.manufacturing { background: #8c5842; }
+.pk-company-duel { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.pk-edge-ability-card { flex: 0 0 126px; display: grid; gap: 4px; padding: 7px; border: 1px solid rgba(238,233,217,.16); border-radius: 9px; background: #080d0c; }
+.pk-edge-ability-card > .pk-card-art { width: 100%; aspect-ratio: 680 / 950; max-height: 150px; }
+.pk-edge-ability-card > b { font-size: 8px; }.pk-edge-ability-card > small { color: #aaa89e; font-size: 7px; }
+.pk-edge-ability-card > div { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }.pk-edge-ability-card > div button { min-height: 28px; padding: 4px; font-size: 7px; }
 .pk-clash-edge-options { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 6px 0; }
 .pk-clash-edge-options > div { min-width: 0; max-height: 86px; overflow: auto; padding: 5px; border: 1px solid rgba(255,255,255,.08); border-radius: 6px; }
 .pk-clash-edge-options > div > small { display: block; margin-bottom: 3px; color: #929189; font-size: 5.4px; line-height: 1.2; text-transform: none; }
@@ -1388,9 +1444,6 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
   .pk-choice-card { flex-basis: 102px; }
   .pk-setup-card { padding: 12px; }
 }
-@media (orientation: portrait) and (max-width: 850px) {
-  .pk-device::after { content: 'ROTATE DEVICE FOR THE FULL POLITIK TABLE'; position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 30px; background: #030707; color: #eee9d9; font-size: 18px; font-weight: 800; letter-spacing: .08em; text-align: center; }
-}
 @media (prefers-reduced-motion: reduce) {
   .pk-scene-layer, .pk-device button, .pk-tv button, .pk-receipt, .pk-tv-event { transition: none; animation: none; }
 }
@@ -1515,6 +1568,120 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .pk-device select:disabled { background-color: #080b0b !important; color: #73766f !important; opacity: 1; }
 .pk-device input:not([type='checkbox']) { background-color: #0b1010 !important; color: #eee9d9 !important; caret-color: #eee9d9; }
 .pk-device input::placeholder { color: #777a73; opacity: 1; }
+
+/* Portrait phones keep the full Politik turn available. The board occupies
+   the upper stage, while actions become a scrollable bottom sheet and the
+   resource ledger becomes a swipeable second header row. */
+@media (orientation: portrait) and (max-width: 850px) {
+  .pk-device-head {
+    height: 120px;
+    grid-template-columns: minmax(0, 1fr) minmax(116px, 38vw);
+    grid-template-rows: 55px 65px;
+    padding-top: env(safe-area-inset-top);
+  }
+  .pk-identity { grid-column: 1; grid-row: 1; padding: 6px 8px; }
+  .pk-identity b { font-size: 13px; }
+  .pk-identity small { font-size: 9px; }
+  .pk-turn-status { grid-column: 2; grid-row: 1; padding: 5px 8px; }
+  .pk-turn-status b { font-size: 10px; }
+  .pk-head-resources {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-top: 1px solid rgba(235,229,207,.1);
+    border-inline: 0;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .pk-head-resources > span { min-width: 69px; flex: 1 0 69px; padding: 6px 4px; }
+  .pk-head-resources > .pk-grab { min-width: 112px; flex-basis: 112px; }
+  .pk-device .pk-head-resources small { font-size: 9px; }
+  .pk-device .pk-head-resources b { font-size: 16px; }
+  .pk-device .pk-head-resources em { font-size: 8px; }
+
+  .pk-device-stage { inset: 120px 0 170px; }
+  .pk-device-stage.playing .pk-scene-layer.active { inset: 0 0 44%; }
+  .pk-scene-layer.mini { display: none; }
+  .pk-board-switch { top: 8px; left: 8px; }
+  .pk-board-switch button { min-width: 94px; min-height: 44px; }
+  .pk-device-market,
+  .pk-device-stage:not(.playing) .pk-device-market {
+    top: 58px;
+    right: 8px;
+    left: 8px;
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+  .pk-device .pk-device-market-head small { font-size: 8px; }
+  .pk-device .pk-device-market-grid > span > small { font-size: 8px; }
+  .pk-device .pk-device-market-grid b { font-size: 10px; }
+  .pk-device .pk-device-market-grid em { display: none; }
+  .pk-legal-targets,
+  .pk-device-stage.setup .pk-legal-targets {
+    top: 120px;
+    left: 8px;
+    width: calc(100% - 16px);
+    max-height: calc(44% - 128px);
+    overflow: auto;
+  }
+  .pk-legal-targets button { min-height: 44px; }
+  .pk-device .pk-legal-targets b { font-size: 11px; }
+  .pk-device .pk-legal-targets button small { font-size: 10px; }
+
+  .pk-action-rail {
+    top: auto;
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    width: auto;
+    height: calc(44% - 12px);
+    min-height: 210px;
+    padding: 8px;
+    overflow: hidden;
+  }
+  .pk-action-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .pk-action-grid > button { min-height: 46px; padding: 5px; }
+  .pk-device .pk-action-grid > button b { font-size: 10px; }
+  .pk-device .pk-action-grid > button small { font-size: 9px; }
+  .pk-action-detail-wrap { overscroll-behavior: contain; }
+  .pk-device .pk-action-empty p,
+  .pk-device .pk-action-detail p { font-size: 12px; }
+  .pk-device .pk-action-detail > button,
+  .pk-device .pk-action-detail .pk-primary { min-height: 44px; font-size: 11px; }
+  .pk-device .pk-detail-list small,
+  .pk-device .pk-national-grid small,
+  .pk-device .pk-exchange-grid small { font-size: 10px; }
+  .pk-device .pk-detail-list b,
+  .pk-device .pk-national-grid b,
+  .pk-device .pk-exchange-grid b { font-size: 11px; }
+  .pk-end-turn { min-height: 48px; flex: 0 0 auto; }
+
+  .pk-hand-dock {
+    height: 170px;
+    grid-template-columns: 112px minmax(0, 1fr);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pk-hand-tools { padding: 6px; }
+  .pk-hand-tools button { min-height: 44px; }
+  .pk-hand-scroll { gap: 7px; padding-inline: 8px; }
+  .pk-hand-scroll > button { flex-basis: 96px; height: 148px; }
+  .pk-device .pk-hand-tools b,
+  .pk-device .pk-hand-scroll > button > span { font-size: 10px; }
+  .pk-device .pk-hand-tools small,
+  .pk-device .pk-hand-scroll > button > small { font-size: 9px; }
+
+  .pk-prompt-card,
+  .pk-prompt-wait,
+  .pk-landscape-prompt { width: calc(100vw - 24px); max-height: calc(100% - 18px); }
+  .pk-setup-card { width: calc(100vw - 20px); }
+  .pk-nation-columns { grid-template-columns: 1fr; }
+  .pk-setup-actions { flex-wrap: wrap; }
+  .pk-setup-actions button { min-width: min(210px, 100%); min-height: 44px; }
+  .pk-bonus-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pk-tour-card { max-height: calc(100dvh - 24px); }
+}
 
 /* Politik personal tableau: an exact, fixed top-down inventory. The authentic
    component art remains visible, while every live piece has one unambiguous
@@ -1783,7 +1950,7 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
   .pk-mat-company-grid { gap: 5px; padding: 5px; }
 }
 .pk-create-options .create-option { align-items: center; }
-.pk-create-help { flex: 1; color: var(--ink-3); font-size: .62rem; line-height: 1.35; letter-spacing: .04em; }
+.pk-create-help { color: var(--ink-3); font-size: .62rem; line-height: 1.35; letter-spacing: .04em; }
 
 /* ---------- create-screen options (A&A scenario/variants) ---------- */
 .create-options {
@@ -1793,14 +1960,55 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 .create-option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.create-option-label { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.65; white-space: nowrap; }
+.create-option-copy { min-width: 0; flex: 1; display: flex; align-items: center; gap: 12px; }
+.create-option-label { font-size: 12px; line-height: 1.35; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.65; white-space: normal; overflow-wrap: anywhere; }
 .create-option-values { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .create-option .opt {
-  padding: 6px 12px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+  min-height: 40px; padding: 7px 12px; font-size: 12px; letter-spacing: 1px; line-height: 1.25; text-transform: uppercase;
   background: rgba(255, 255, 255, 0.04); color: inherit;
   border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 6px; cursor: pointer;
 }
 .create-option .opt.on { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.45); }
+.create-option .opt:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+@media (max-width: 520px) {
+  .select-game { padding: .75rem; }
+  .select-game .brand { margin: 1rem 0 1.1rem; }
+  .select-game .brand .eyebrow { padding-inline: .25rem; font-size: .66rem; line-height: 1.45; letter-spacing: .12em; }
+  .select-game .brand h1 { margin-top: .25rem; font-size: clamp(1.8rem, 9vw, 2.25rem); }
+  .select-game .brand .rule { margin-top: .65rem; }
+
+  .game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin-top: .9rem; }
+  .game-tile { border-radius: 14px; }
+  .game-tile-name { min-height: 54px; padding: .6rem .65rem; font-size: .76rem; line-height: 1.25; }
+
+  .save-panel { width: 100%; min-width: 0; margin-top: 1rem; }
+  .save-new { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .save-new > .primary { width: 100%; min-height: 44px; }
+  .save-name { width: 100%; }
+
+  .create-options { gap: 14px; margin-top: .35rem; padding: 12px; }
+  .create-option,
+  .pk-create-options .create-option { flex-direction: column; align-items: stretch; gap: 8px; }
+  .create-option-copy { width: 100%; display: grid; gap: 4px; }
+  .create-option-label { font-size: 11px; letter-spacing: 1.1px; }
+  .pk-create-help { font-size: .68rem; }
+  .create-option-values { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .create-option .opt { width: 100%; min-height: 44px; padding: 8px 6px; font-size: 12px; letter-spacing: .45px; white-space: normal; }
+  .feast-edition-note .dim,
+  .create-options > .create-option:not([role="group"]) .dim { overflow-wrap: anywhere; }
+
+  .save-row { flex-wrap: wrap; }
+  .save-row-open { min-height: 52px; flex-direction: column; align-items: stretch; gap: .35rem; padding: .75rem .85rem; }
+  .save-row-main b { white-space: normal; overflow-wrap: anywhere; }
+  .save-row-side { width: 100%; justify-content: space-between; }
+  .save-del { width: 44px; min-height: 44px; }
+  .save-confirm { flex: 1 0 100%; }
+  .save-confirm button { flex: 1; min-height: 44px; }
+  .save-delete-error { align-items: stretch; flex-direction: column; }
+  .save-delete-error button,
+  .save-back { min-height: 44px; }
+}
 
 /* ---------- Axis & Allies phone portal ---------- */
 .ax-page { min-height: 100vh; min-height: 100dvh; background: #05070b; color: #e8ebf0; display: flex; flex-direction: column; overflow: hidden; }
@@ -2872,4 +3080,154 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
   .ax-def-carrier-card { grid-template-columns: auto minmax(0, 1fr) auto; }
   .ax-def-carrier-deck { grid-column: 2; justify-self: start; }
   .ax-def-carrier-check { grid-column: 3; grid-row: 1 / span 2; }
+}
+
+/* Axis device UI readability. Printed map, unit, card, and TV labels remain unchanged. */
+.ax-page2 .ax-command-kicker,
+.ax-page2 .ax-command-nation > span:last-child,
+.ax-page2 .ax-phase-rail small,
+.ax-page2 .ax-phase-rail em,
+.ax-page2 .ax-capital-alert b,
+.ax-page2 .ax-capital-alert span,
+.ax-page2 .ax-command-stats small,
+.ax-page2 .ax-command-stats span,
+.ax-page2 .ax-phase-capital-context strong,
+.ax-page2 .ax-phase-capital-context span,
+.ax-page2 .ax-sheet-body > .ig-lab,
+.ax-page2 .ax-command-footer,
+.ax-page2 .ax-carrier-obligation-head span,
+.ax-page2 .ax-carrier-obligation-head b,
+.ax-page2 .ax-carrier-obligation > span b,
+.ax-page2 .ax-carrier-obligation small,
+.ax-page2 .ax-carrier-obligation em,
+.ax-page2 .ax-required-carrier-title > span,
+.ax-page2 .ax-required-carrier-title > small,
+.ax-page2 .ax-required-carrier > span small,
+.ax-page2 .ax-staged-reserved,
+.ax-page2 .ax-flow-guide span,
+.ax-page2 .ax-special-tech-heading > span,
+.ax-page2 .ax-special-tech-heading > small,
+.ax-page2 .ax-special-order-card > div:first-child small,
+.ax-page2 .ax-airborne-pairs > button span,
+.ax-page2 .ax-airborne-pairs > button em,
+.ax-page2 .ax-airborne-support small,
+.ax-page2 .ax-buy-name em,
+.ax-page2 .ax-buy-price small,
+.ax-page2 .ax-buy-foot,
+.ax-page2 .ax-bank-mark,
+.ax-page2 .ax-bank-copy small,
+.ax-page2 .ax-order-summary small,
+.ax-page2 .ax-carrier-plan-choices b,
+.ax-page2 .ax-carrier-plan-choices span,
+.ax-page2 .ax-battle-mini span,
+.ax-page2 .ax-battle-mini small,
+.ax-page2 .ax-battle-loading-note,
+.ax-page2 .ax-air-warning-list small,
+.ax-page2 .ax-retreat-route-prompt,
+.ax-page2 .ax-retreat-route small,
+.ax-page2 .ax-retreat-blocked,
+.ax-page2 .ax-retreat-submitted,
+.ax-page2 .ax-retreat-receipt,
+.ax-page2 .ax-volley-recap > div:first-child,
+.ax-page2 .ax-chip.ax-casualty small,
+.ax-page2 .ax-chip.ax-casualty em,
+.ax-operation-progress > small,
+.ax-transport-heading small,
+.ax-transport-title em,
+.ax-transport-manifest > span,
+.ax-transport-toggle > small,
+.ax-transport-reason,
+.ax-transport-cargo-pick > span,
+.ax-transport-load-picks span,
+.ax-def-carrier-hero span,
+.ax-def-carrier-hero > b small,
+.ax-def-carrier-route small,
+.ax-def-carrier-ambiguity b,
+.ax-def-carrier-card-copy small,
+.ax-def-carrier-card-copy em,
+.ax-def-carrier-deck > small,
+.ax-def-carrier-footnote,
+.ax-def-carrier-invalid span,
+.ax-def-carrier-invalid small {
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.ax-page2 .ax-phase-brief p,
+.ax-page2 .ax-helper-copy,
+.ax-page2 .ax-air-warning p,
+.ax-transport-load-modal > p,
+.ax-def-carrier-hero p,
+.ax-def-carrier-ambiguity span {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ax-transport-route-summary { font-size: 11px !important; line-height: 1.35 !important; }
+
+.ax-page2 .ax-tool-button,
+.ax-page2 button.ax-mini,
+.ax-page2 .ax-chip,
+.ax-page2 .ax-airborne-pairs > button,
+.ax-transport-toggle,
+.ax-transport-load-modal button,
+.ax-def-carrier-sheet button {
+  min-height: 44px;
+  font-size: 11px;
+}
+
+@media (max-width: 720px) {
+  .ax-page2 .ax-phase-rail small,
+  .ax-page2 .ax-phase-rail em {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+}
+
+/* Axis decisions are portaled to document.body, so scope their type separately. */
+.ax-modal .ax-decision-kicker,
+.ax-modal .ig-lab,
+.ax-buy .ax-buy-name em,
+.ax-buy .ax-buy-price small,
+.ax-buy .ax-buy-foot,
+.ax-order.center .ax-order-summary small,
+.ax-order.center .ax-carrier-plan-choices b,
+.ax-order.center .ax-carrier-plan-choices span,
+.ax-battle-center .ax-decision-kicker,
+.ax-battle-center .ax-battle-mini span,
+.ax-battle-center .ax-battle-mini small,
+.ax-battle-center .ax-battle-loading-note,
+.ax-battle-center .ax-retreat-route-prompt,
+.ax-battle-center .ax-retreat-route small,
+.ax-battle-center .ax-retreat-blocked,
+.ax-battle-center .ax-retreat-submitted,
+.ax-battle-center .ax-retreat-receipt,
+.ax-battle-center .ax-volley-recap > div:first-child,
+.ax-battle-center .ax-chip.ax-casualty small,
+.ax-battle-center .ax-chip.ax-casualty em {
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.ax-buy .ax-buy-head p,
+.ax-battle-center .ax-battle-order-card > p,
+.ax-battle-center .ax-battle-cas > p {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ax-modal .ax-chip,
+.ax-buy .ax-buy-btn,
+.ax-order.center button,
+.ax-battle-center .ax-mega,
+.ax-battle-center .ax-retreat-route,
+.ax-battle-center .ax-chip {
+  min-height: 44px;
+  font-size: 11px;
+}
+
+.ax-buy .ax-buy-btn,
+.ax-order.center .ax-order-cancel {
+  min-width: 44px;
 }

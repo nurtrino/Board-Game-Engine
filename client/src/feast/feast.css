@@ -771,3 +771,73 @@
   .ft-demo-score > div,
   .ft-demo-score > footer { transition: none; }
 }
+
+/* Device UI readability: keep printed board/card artwork at its authored scale. */
+.ft-root .ft-status span,
+.ft-root .ft-mode-tabs button span,
+.ft-root .ft-live-score > span,
+.ft-root .ft-live-score small,
+.ft-root .ft-final-placement-banner b,
+.ft-root .ft-final-placement-banner span,
+.ft-root .ft-placement-confirm > span,
+.ft-root .ft-resource span,
+.ft-root .ft-section-heading span,
+.ft-root .ft-good-button span,
+.ft-root .ft-ship-list span,
+.ft-root .ft-ship-list b,
+.ft-root .ft-special-reference span,
+.ft-root .ft-special-reference b,
+.ft-root .ft-home-rule-references b,
+.ft-root .ft-home-rule-references span,
+.ft-root .ft-home-rule-references small,
+.ft-root .ft-action-detail .ft-action-meta,
+.ft-root .ft-action-reference-row > span,
+.ft-root .ft-action-reference-row b,
+.ft-root .ft-card-effect-copy > div b,
+.ft-root .ft-card-effect-copy small,
+.ft-root .ft-effect-impact > span,
+.ft-root .ft-decision-board-targets > span,
+.ft-root .ft-effect-impact b,
+.ft-root .ft-effect-impact strong,
+.ft-root .ft-decision-board-targets b,
+.ft-root .ft-decision-board-targets small,
+.ft-root .ft-decision-card b,
+.ft-root .ft-decision-card small,
+.ft-root .ft-allocation-guide b,
+.ft-root .ft-allocation-guide span,
+.ft-root .ft-allocation b,
+.ft-root .ft-allocation span,
+.ft-root .ft-number-choice,
+.ft-root .ft-number-choice span small,
+.ft-root .ft-card-usage-hint b {
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.ft-root .ft-action-detail p,
+.ft-root .ft-card-effect-copy p,
+.ft-root .ft-choice span,
+.ft-root .ft-card-usage-hint span,
+.ft-root .ft-final-score p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ft-root .ft-icon-button,
+.ft-root .ft-button,
+.ft-root .ft-mode-tabs button,
+.ft-root .ft-ship-list button {
+  min-height: 44px;
+  font-size: 11px;
+}
+
+.ft-root .ft-icon-button { min-width: 44px; }
+.ft-root .ft-ship-list button { min-width: 44px; }
+.ft-root .ft-toast { min-height: 44px; font-size: 12px; line-height: 1.35; }
+
+@media (max-width: 720px) {
+  .ft-root .ft-end-turn { min-height: 44px; }
+  .ft-root .ft-allocation > div:last-child { grid-template-columns: 44px 32px 44px; }
+  .ft-root .ft-allocation button { width: 44px; height: 44px; }
+  .ft-root .ft-number-choice input { min-height: 44px; font-size: 13px; }
+}

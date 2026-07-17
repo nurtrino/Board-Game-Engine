@@ -87,68 +87,6 @@ export const SETI_BODIES: Readonly<Record<SetiBody, SetiBodyDef>> = {
   Triton: { id: 'Triton', parent: 'Neptune', moon: true, landingRewards: [{ kind: 'vp', amount: 26 }], firstLandingData: 0, firstLandingSpaces: 1, orbitReward: { status: 'none' } },
 };
 
-export interface SetiSolarLayerFeature {
-  layer: 0 | 1 | 2 | 3;
-  ring: SetiRing;
-  sector: SetiSectorIndex;
-  kind: 'planet' | 'asteroid' | 'publicity' | 'comet';
-  body?: SetiPrimaryBody;
-}
-
-// Baselines are read from the authentic base/disc art. Orientations shift these
-// sectors in state; they are kept separate from renderer coordinates so the
-// alpha/support table can replace this adapter without changing actions.
-export const SETI_SOLAR_LAYER_FEATURES: readonly SetiSolarLayerFeature[] = [
-  { layer: 0, ring: 2, sector: 1, kind: 'planet', body: 'Uranus' },
-  { layer: 0, ring: 2, sector: 4, kind: 'planet', body: 'Neptune' },
-  { layer: 0, ring: 0, sector: 2, kind: 'asteroid' },
-  { layer: 0, ring: 1, sector: 5, kind: 'asteroid' },
-  { layer: 0, ring: 2, sector: 0, kind: 'publicity' },
-  { layer: 1, ring: 0, sector: 5, kind: 'planet', body: 'Mercury' },
-  { layer: 1, ring: 0, sector: 7, kind: 'planet', body: 'Venus' },
-  { layer: 1, ring: 0, sector: 1, kind: 'planet', body: 'Earth' },
-  { layer: 1, ring: 0, sector: 3, kind: 'publicity' },
-  { layer: 2, ring: 1, sector: 7, kind: 'planet', body: 'Mars' },
-  { layer: 2, ring: 1, sector: 0, kind: 'asteroid' },
-  { layer: 2, ring: 1, sector: 2, kind: 'asteroid' },
-  { layer: 2, ring: 1, sector: 4, kind: 'asteroid' },
-  { layer: 3, ring: 2, sector: 3, kind: 'planet', body: 'Jupiter' },
-  { layer: 3, ring: 2, sector: 7, kind: 'planet', body: 'Saturn' },
-  { layer: 3, ring: 2, sector: 4, kind: 'asteroid' },
-  { layer: 3, ring: 2, sector: 5, kind: 'asteroid' },
-  { layer: 3, ring: 2, sector: 0, kind: 'comet' },
-  { layer: 3, ring: 2, sector: 6, kind: 'publicity' },
-];
-
-// Lossless-alpha samples at the 24 canonical UI cell centers. Each string is
-// s0..s7 with sector 0 at screen-right; rows are inner/middle/outer ring. A 1
-// means that physical disc supports a piece at that baseline cell. Runtime
-// rotates the lookup with the disc and checks physical top-to-bottom order.
-export const SETI_SOLAR_ALPHA_MASKS = {
-  1: ['11101111', '10001000', '00000000'],
-  2: ['11110011', '01110011', '00000000'],
-  3: ['11100111', '11101011', '01111011'],
-} as const satisfies Record<1 | 2 | 3, readonly [string, string, string]>;
-
-export const SETI_SOLAR_ART_ANCHORS = [
-  { body: 'Mercury', layer: 1, image: { width: 396, height: 396, x: 68, y: 130 }, expectedSector: 5 },
-  { body: 'Venus', layer: 1, image: { width: 396, height: 396, x: 270, y: 60 }, expectedSector: 7 },
-  { body: 'Earth', layer: 1, image: { width: 396, height: 396, x: 335, y: 285 }, expectedSector: 1 },
-  { body: 'Mars', layer: 2, image: { width: 608, height: 608, x: 470, y: 65 }, expectedSector: 7 },
-  { body: 'Jupiter', layer: 3, image: { width: 1008, height: 1008, x: 327, y: 927 }, expectedSector: 3 },
-  { body: 'Saturn', layer: 3, image: { width: 1008, height: 1008, x: 718, y: 102 }, expectedSector: 7 },
-] as const;
-
-for (const anchor of SETI_SOLAR_ART_ANCHORS) {
-  const dx = anchor.image.x - anchor.image.width / 2;
-  const dy = anchor.image.y - anchor.image.height / 2;
-  const sector = ((Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) % 8) + 8) % 8;
-  const feature = SETI_SOLAR_LAYER_FEATURES.find((candidate) => candidate.body === anchor.body && candidate.layer === anchor.layer);
-  if (sector !== anchor.expectedSector || feature?.sector !== anchor.expectedSector) {
-    throw new Error(`SETI solar-art anchor mismatch for ${anchor.body}`);
-  }
-}
-
 export const SETI_SECTOR_IDS = [
   'seti_sector_kepler_22', 'seti_sector_proxima_centauri', 'seti_sector_sirius_a',
   'seti_sector_barnards_star', 'seti_sector_procyon', 'seti_sector_vega',
@@ -183,31 +121,6 @@ export const SETI_SECTORS: readonly SetiSectorDef[] = [
   printedWinReward: { status: 'typed' as const, first: [{ kind: 'trace' as const, color: 'purple' as const, amount: 1 }], later: [{ kind: 'vp' as const, amount: 3 }] },
 }));
 
-export type SetiCardType = 'ordinary' | 'conditional-mission' | 'triggerable-mission' | 'end-game';
-export type SetiFreeCorner = 'move' | 'credit' | 'energy' | 'publicity' | 'data' | 'card';
-
-export type SetiEffectOp =
-  | SetiKnownRewardOp
-  | { kind: 'launch'; amount: number; ignoreProbeLimit?: boolean }
-  | { kind: 'move'; amount: number }
-  | { kind: 'scan'; amount: number }
-  | { kind: 'analyze'; amount: number }
-  | { kind: 'research'; technologyType?: SetiTechnologyType }
-  | { kind: 'choice'; choose: number; options: readonly (readonly SetiEffectOp[])[] }
-  | { kind: 'conditional'; condition: string; ops: readonly SetiEffectOp[] };
-
-export interface SetiPrintedCardFields {
-  status: 'typed' | 'untranscribed';
-  cost: number | null;
-  sectorColors: readonly [SetiSignalColor, SetiSignalColor] | null;
-  freeCorner: SetiFreeCorner | null;
-  incomeCorner: SetiIncomeKind;
-  incomeProvenance: 'non-authoritative-ocr-hint';
-  cardType: SetiCardType | null;
-  conditions: readonly string[] | null;
-  effects: readonly SetiEffectOp[] | null;
-}
-
 export interface SetiCardArtRef {
   ref: string;
   sourceCardId: number;
@@ -226,7 +139,8 @@ export interface SetiProjectCardDef {
   sourceGuid: string;
   promo: boolean;
   art: SetiCardArtRef;
-  printed: SetiPrintedCardFields;
+  /** Asset-sheet metadata; rules fields live exclusively in projectCatalog. */
+  incomeCorner: SetiIncomeKind;
 }
 
 const SETI_PROJECT_SHEETS: Readonly<Record<number, { width: number; height: number; faceUrl: string }>> = {
@@ -406,24 +320,13 @@ function setiProjectDef(raw: RawProject, promo: boolean): SetiProjectCardDef {
       sheetHeight: sheet.height,
       faceUrl: sheet.faceUrl,
     },
-    printed: {
-      status: 'untranscribed',
-      cost: null,
-      sectorColors: null,
-      freeCorner: null,
-      incomeCorner,
-      incomeProvenance: 'non-authoritative-ocr-hint',
-      cardType: null,
-      conditions: null,
-      effects: null,
-    },
+    incomeCorner,
   };
 }
 
 export const SETI_BASE_PROJECT_CARDS: readonly SetiProjectCardDef[] = SETI_BASE_PROJECT_RAW.map((raw) => setiProjectDef(raw, false));
 export const SETI_PROMO_PROJECT_CARDS: readonly SetiProjectCardDef[] = SETI_PROMO_PROJECT_RAW.map((raw) => setiProjectDef(raw, true));
 export const SETI_PROJECT_CARDS: readonly SetiProjectCardDef[] = [...SETI_BASE_PROJECT_CARDS, ...SETI_PROMO_PROJECT_CARDS];
-export const SETI_PROJECT_BY_ID: Readonly<Record<string, SetiProjectCardDef>> = Object.fromEntries(SETI_PROJECT_CARDS.map((card) => [card.id, card]));
 
 export type SetiSpeciesId = 'mascamites' | 'anomalies' | 'oumuamua' | 'centaurians' | 'exertians';
 export const SETI_SPECIES: readonly SetiSpeciesId[] = ['mascamites', 'anomalies', 'oumuamua', 'centaurians', 'exertians'];
@@ -493,14 +396,17 @@ export interface SetiTechStackDef {
 }
 
 const SETI_TECH_RAW: readonly [string, SetiTechnologyType, SetiTechAbility, string, readonly number[]][] = [
-  ['probe_1', 'probe', 'probe-limit-and-launch', '5065ac', [39600, 39700, 39800, 39900]],
-  ['probe_2', 'probe', 'asteroid-navigation', 'b71fb9', [40000, 40100, 40200, 40300]],
-  ['probe_3', 'probe', 'landing-discount', 'c0c391', [202800, 40400, 40500, 40600]],
-  ['probe_4', 'probe', 'moon-landing', '00d8a2', [6000, 6100, 6200, 40700]],
-  ['telescope_1', 'telescope', 'earth-signal-adjacent', '82eb24', [5200, 5300, 5400, 5500]],
-  ['telescope_2', 'telescope', 'discard-extra-signal', '93c0f5', [40800, 40900, 41000, 41100]],
-  ['telescope_3', 'telescope', 'mercury-publicity-signal', '0fb79c', [202900, 203000, 4400, 203100]],
-  ['telescope_4', 'telescope', 'energy-launch-or-move', '9b40d4', [41200, 203200, 203300, 203400]],
+  // Physical orange stacks 05-08 are probe technologies. Physical magenta
+  // stacks 09-12 are telescope technologies. Keep semantic ids stable while
+  // binding them to the authentic stack GUID/card sheet seen on the table.
+  ['probe_1', 'probe', 'probe-limit-and-launch', '9b40d4', [41200, 203200, 203300, 203400]],
+  ['probe_2', 'probe', 'asteroid-navigation', '0fb79c', [202900, 203000, 4400, 203100]],
+  ['probe_3', 'probe', 'landing-discount', '93c0f5', [40800, 40900, 41000, 41100]],
+  ['probe_4', 'probe', 'moon-landing', '82eb24', [5200, 5300, 5400, 5500]],
+  ['telescope_1', 'telescope', 'earth-signal-adjacent', 'c0c391', [202800, 40400, 40500, 40600]],
+  ['telescope_2', 'telescope', 'discard-extra-signal', 'b71fb9', [40000, 40100, 40200, 40300]],
+  ['telescope_3', 'telescope', 'mercury-publicity-signal', '00d8a2', [6000, 6100, 6200, 40700]],
+  ['telescope_4', 'telescope', 'energy-launch-or-move', '5065ac', [39600, 39700, 39800, 39900]],
   ['computer_1', 'computer', 'computer-bonus-slot', '00df2d', [205100, 2200, 2300, 205200]],
   ['computer_2', 'computer', 'computer-bonus-slot', 'b26ea5', [2900, 3000, 2600, 2700]],
   ['computer_3', 'computer', 'computer-bonus-slot', '84fb8c', [3500, 3300, 3100, 3400]],

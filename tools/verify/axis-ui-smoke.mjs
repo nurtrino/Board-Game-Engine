@@ -65,6 +65,33 @@ async function setupRoom() {
   return { roomId, tokens };
 }
 
+// Headless SwiftShader cannot satisfy the production renderer's interactive
+// readiness checks reliably. This watcher acknowledges only the exact combat
+// generation currently broadcast by the server; it never submits a gameplay
+// action. The real board route remains open so its layout and connection are
+// still exercised while every rules decision stays in the device DOM.
+function attachHeadlessBattleReadiness(roomId) {
+  const ws = new WebSocket(WS_URL);
+  let generation = '';
+  ws.on('open', () => ws.send(JSON.stringify({ type: 'watch', roomId })));
+  ws.on('message', (raw) => {
+    const message = JSON.parse(String(raw));
+    if (message.type !== 'state') return;
+    const combat = message.view?.combat;
+    if (!combat) { generation = ''; return; }
+    const next = `${combat.id}:${combat.visualSeq}`;
+    if (next === generation) return;
+    generation = next;
+    ws.send(JSON.stringify({
+      type: 'axis_battle_visual_ready',
+      combatId: combat.id,
+      visualSeq: combat.visualSeq,
+      ready: true,
+    }));
+  });
+  return ws;
+}
+
 // One decision tick inside the page DOM. Returns what was clicked, or null.
 function tickInPage() {
   const q = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -88,7 +115,8 @@ function tickInPage() {
   // battle first: the big center buttons block everything else
   const megas = q('button.ax-mega').filter((b) => !b.disabled);
   const mega = (re) => megas.find((b) => re.test(text(b)));
-  if (/Battle ·/.test(labs) || megas.length) {
+  const battlePanel = q('.ax-battle-cas').length > 0;
+  if (/Battle ·/.test(labs) || megas.length || battlePanel) {
     // battle over: both commanders confirm the report
     const cont = mega(/^CONTINUE ·/i);
     if (cont) { cont.click(); return 'battle-continue'; }
@@ -104,7 +132,7 @@ function tickInPage() {
     if (strike) { strike.click(); return 'strike'; }
     const sub = mega(/^SUBMERGE$/i);
     if (sub) { sub.click(); return 'submerge'; }
-    if (/Battle ·/.test(labs)) {
+    if (/Battle ·/.test(labs) || battlePanel) {
       // casualty picking: chips inside the centered card
       const disabledConfirm = q('button.ax-mega').find((b) => /^CONFIRM/i.test(text(b)) && b.disabled);
       const unitChips = q('.ax-battle-cas button.ax-chip').filter((b) => !b.disabled);
@@ -139,8 +167,20 @@ function tickInPage() {
   if (/Combat move\./i.test(labs) || /Noncombat move\./i.test(labs)) {
     const combat = /Noncombat move\./i.test(labs) ? false : true;
     // an armed order? the big HOI4 button executes it
-    const orderGo = q('button.ax-order-go').find((b) => !b.disabled);
+    const orderButtons = q('button.ax-order-go');
+    const orderGo = orderButtons.find((b) => !b.disabled);
     if (orderGo) { orderGo.click(); return 'order-go'; }
+    // Transport/carrier assignment modals keep the order button disabled until
+    // exact hull capacity is allocated. Fill an enabled + control inside that
+    // modal before returning to origin/destination choices behind it.
+    const waitingOrder = orderButtons.find((b) => b.disabled);
+    if (waitingOrder) {
+      const modal = waitingOrder.closest('.ax-modal-card') ?? waitingOrder.parentElement;
+      const modalPlus = modal ? q('button', modal).find((b) => text(b) === '+' && !b.disabled) : null;
+      if (modalPlus) { modalPlus.click(); return 'assign-order-capacity'; }
+      const cancel = modal?.querySelector('button.ax-order-cancel');
+      if (cancel && !cancel.disabled) { cancel.click(); return 'cancel-unfillable-order'; }
+    }
     // in a picked-origin state?
     const changeOrigin = by(/^Back$/i);
     if (changeOrigin) {
@@ -151,7 +191,9 @@ function tickInPage() {
       if (plus.length) { pick(plus).click(); return 'stepper'; }
       changeOrigin.click(); return 'back';
     }
-    const endChip = by(combat ? /^No more attacks$/i : /^Done moving$/i);
+    const endChip = by(combat
+      ? /^(No more attacks|Finish .* combat)$/i
+      : /^(Done moving|Finish .* movement)$/i);
     const headerChips = /^(Nation|\?|Close)$/;
     const origins = chips.filter((b) => b !== endChip && b.dataset.tone !== 'gold' && !headerChips.test(text(b)));
     const wantAct = Math.random() < (combat ? 0.4 : 0.18);
@@ -173,7 +215,7 @@ function tickInPage() {
     const plus = q('.ax-step button').filter((b) => text(b) === '+' && !b.disabled);
     if (plus.length && Math.random() < 0.75) { pick(plus).click(); return 'pick-staged'; }
     // mobilize + collect income are one merged stage: End turn does both
-    const end = by(/^End turn$/i);
+    const end = by(/^End turn(?: ·|$)/i);
     if (end) { end.click(); return 'end-turn'; }
   }
 
@@ -188,8 +230,23 @@ const browser = await puppeteer.launch({
   args: ['--no-sandbox', '--disable-setuid-sandbox', '--use-gl=angle', '--use-angle=swiftshader',
     '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl', '--disable-dev-shm-usage'],
 });
+const readinessWatcher = attachHeadlessBattleReadiness(roomId);
 
 try {
+  // Axis battle decisions intentionally remain locked until the shared TV has
+  // loaded the cinematic battlefield and physical dice. Keep the real board
+  // route connected for the entire smoke so visual readiness is exercised,
+  // not bypassed.
+  const boardPage = await browser.newPage();
+  await boardPage.setViewport({ width: 1280, height: 800, deviceScaleFactor: 1 });
+  await boardPage.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  // The stylized diorama is the supported low-overhead TV presentation. It
+  // still performs the full visual-readiness handshake while keeping this
+  // two-round rules smoke focused on gameplay instead of cinematic GLB load.
+  await boardPage.evaluate(() => localStorage.setItem('axis:battle-visual-style:v1', 'diorama'));
+  await boardPage.goto(`${BASE}/board/${roomId}`, { waitUntil: 'domcontentloaded', timeout: 90000 });
+  await boardPage.waitForSelector('.ax-tv', { timeout: 90000 });
+
   const pages = [];
   for (let i = 0; i < SEATS; i++) {
     const page = await browser.newPage();
@@ -200,6 +257,10 @@ try {
     await new Promise((r) => setTimeout(r, 12000)); // let the map + meshes stream in
     pages.push(page);
   }
+  // Headless Chrome marks all but the foreground tab hidden. The TV correctly
+  // revokes battle readiness while hidden, so return it to the foreground
+  // after opening the four controller tabs and leave it there for combat.
+  await boardPage.bringToFront();
 
   const started = Date.now();
   let lastAct = Date.now();
@@ -248,5 +309,6 @@ try {
     await new Promise((res) => setTimeout(res, 90));
   }
 } finally {
+  readinessWatcher.close();
   await browser.close();
 }

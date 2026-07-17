@@ -1,5 +1,5 @@
-import { useEffect, useState, type CSSProperties } from 'react';
-import { SETI_PROJECT_BY_ID, type SetiAction, type SetiView } from '@bge/shared';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { SETI_ALIEN_CARDS_BY_ID, SETI_PROJECT_CATALOG_BY_ID, SETI_RULES, SETI_SECTORS, SETI_TECH_BY_ID, type SetiAction, type SetiView } from '@bge/shared';
 import { SetiIcon, type SetiIconName } from './SetiIcons';
 import {
   SetiCardArt,
@@ -8,12 +8,21 @@ import {
   TactileSurface,
   setiPlayerBoard,
   setiGoldTile,
-  setiTechBack,
+  setiTechAbilityFace,
   useSetiCardCatalog,
   useSetiScene,
   type SetiSceneDef,
 } from './SetiScene';
 import { normalizeSetiView, setiSeatColor, type SetiUiPending, type SetiUiPiece, type SetiUiPlayer, type SetiUiView } from './setiView';
+import {
+  setiPendingCue,
+  setiPendingPresentation,
+  type SetiPendingMissionChoice,
+  type SetiPendingPresentation,
+} from './setiPendingPresentation';
+import { SetiSoloObjectiveDecision, SetiSoloRivalPanel } from './SetiSoloRival';
+import { SetiPendingArtifacts, setiPendingArtifactModel } from './SetiPendingArtifacts';
+import { setiAffordableMoveCells, setiMovePaymentForCost } from './setiMovePayment';
 import './seti.css';
 
 export type SetiClientChoice =
@@ -36,9 +45,11 @@ export type SetiClientAction =
   | { type: 'scan' }
   | { type: 'place_data'; slot: number }
   | { type: 'analyze' }
-  | { type: 'research'; stackId: string }
+  | { type: 'research' }
   | { type: 'play_card'; cardId: string }
   | { type: 'discard_for_corner'; cardId: string }
+  | { type: 'complete_alien_mission'; cardId: string }
+  | { type: 'deliver_sample'; pieceId: string; cardId: string }
   | { type: 'buy_card'; source: 'deck' | number }
   | { type: 'exchange'; give: 'cards' | 'credits' | 'energy'; receive: 'card' | 'credit' | 'energy'; cardIds?: string[]; row?: number }
   | { type: 'pass' }
@@ -52,7 +63,6 @@ type Selection =
   | { kind: 'piece'; piece: SetiUiPiece }
   | { kind: 'launch' }
   | { kind: 'data' }
-  | { kind: 'research' }
   | null;
 
 const pendingKey = (pending: SetiUiPending | null) => pending ? `${pending.kind}:${pending.owner}:${JSON.stringify(pending.options)}` : '';
@@ -71,28 +81,142 @@ export function SetiPlay({ view: rawView, act, error }: {
   const [showDeck, setShowDeck] = useState(false);
   const [showSolo, setShowSolo] = useState(false);
   const [exchange, setExchange] = useState<{ give: 'credits' | 'energy' | 'cards'; cardIds: string[] } | null>(null);
+  const [exchangeCardSource, setExchangeCardSource] = useState(false);
   const [pendingChosen, setPendingChosen] = useState<number[]>([]);
   const [pendingSignalRow, setPendingSignalRow] = useState<number | null>(null);
+  const [pendingPieceId, setPendingPieceId] = useState<string | null>(null);
+  const [deliveryCardId, setDeliveryCardId] = useState<string | null>(null);
+  const [moveCardId, setMoveCardId] = useState<string | null>(null);
+  const [handExpanded, setHandExpanded] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  const pendingCommitRef = useRef('');
+  const scanProjectRowRef = useRef<number | null>(null);
+  const scanEnergyPieceRef = useRef<string | null>(null);
   const myTurn = !!me && me.seat === view.activeSeat && view.phase !== 'ended';
   const pendingForMe = !!view.pending && (view.pending.owner < 0 || view.pending.owner === me?.seat);
-  const canTouch = myTurn && (!view.pending || pendingForMe);
-  const cornerCards = canTouch && !view.pending ? me?.hand.filter((id) => !!SETI_PROJECT_BY_ID[id]?.printed.freeCorner) ?? [] : [];
+  const canTouch = view.phase !== 'ended' && (myTurn || pendingForMe) && (!view.pending || pendingForMe);
+  const pendingSurface = setiPendingPresentation(pendingForMe ? view.pending : null, view);
+  const scanStepIndex = (surface: SetiPendingPresentation['scanStepChoices'][number]['surface']) => pendingSurface.scanStepChoices.find((choice) => choice.surface === surface)?.index;
+  const scanEarthStepIndex = scanStepIndex('earth-body');
+  const scanProjectRowStepIndex = scanStepIndex('project-row');
+  const scanTechChoiceIndexes = new Map<string, number>([
+    ['seti_tech_stack_telescope_2', scanStepIndex('telescope-tech-discard')],
+    ['seti_tech_stack_telescope_3', scanStepIndex('telescope-tech-mercury')],
+    ['seti_tech_stack_telescope_4', scanStepIndex('telescope-tech-energy')],
+  ].filter((entry): entry is [string, number] => entry[1] !== undefined));
+  const scanEnergyBranch = view.pending?.kind === 'card-effect-choice'
+    && /launch bay|telescope.tech action/i.test(view.pending.prompt);
+  const pendingEnergyLaunchIndex = scanEnergyBranch ? view.pending!.options.findIndex((option) => String(option) === 'launch') : -1;
+  const pendingEnergyMoveIndex = scanEnergyBranch ? view.pending!.options.findIndex((option) => String(option) === 'move') : -1;
+  const ordinaryAlienCards = me?.alienHand.filter((id) => SETI_ALIEN_CARDS_BY_ID[id]?.species !== 'exertians') ?? [];
+  const exchangeableCards = [...(me?.hand ?? []), ...ordinaryAlienCards];
+  const cornerCards = canTouch && !view.pending ? [
+    ...(me?.hand.filter((id) => !!SETI_PROJECT_CATALOG_BY_ID[id]?.freeCorner) ?? []),
+    ...ordinaryAlienCards.filter((id) => (SETI_ALIEN_CARDS_BY_ID[id]?.freeCorner.length ?? 0) > 0),
+  ] : [];
+  const movementPaymentCards = canTouch && !view.pending
+    ? me?.hand.filter(isProjectMovementCorner) ?? []
+    : [];
   const selectedPiece = selection?.kind === 'piece' ? selection.piece : null;
-  const legalCells = selectedPiece ? view.legal.moveTargets[selectedPiece.id] ?? [] : [];
+  const rawLegalCells = selectedPiece ? view.legal.moveTargets[selectedPiece.id] ?? [] : [];
   const orbitTargets = selectedPiece ? view.legal.orbitTargets[selectedPiece.id] ?? [] : [];
   const landTargets = selectedPiece ? view.legal.landTargets[selectedPiece.id] ?? [] : [];
+  const rawMoveCosts = selectedPiece ? moveCostMap(view, selectedPiece.id) : {};
+  const legalCells = setiAffordableMoveCells(rawLegalCells, rawMoveCosts, me?.energy ?? 0, moveCardId, movementPaymentCards);
+  const movePaymentCardTargets = selectedPiece
+    ? movementPaymentCards.filter((cardId) => rawLegalCells.some((cell) => setiMovePaymentForCost(
+        rawMoveCosts[cell], me?.energy ?? 0, cardId, movementPaymentCards,
+      ) !== null))
+    : [];
+  const movementCardRequired = !!selectedPiece && moveCardId === null && rawLegalCells.some((cell) => (
+    setiMovePaymentForCost(rawMoveCosts[cell], me?.energy ?? 0, null, movementPaymentCards) === null
+    && movePaymentCardTargets.some((cardId) => setiMovePaymentForCost(rawMoveCosts[cell], me?.energy ?? 0, cardId, movementPaymentCards) !== null)
+  ));
+  const moveCosts = Object.fromEntries(legalCells.flatMap((cell) => {
+    const cost = rawMoveCosts[cell] ?? SETI_RULES.moveEnergy;
+    const payment = setiMovePaymentForCost(cost, me?.energy ?? 0, moveCardId, movementPaymentCards);
+    if (!payment) return [];
+    return [[cell, 'cardId' in payment
+      ? { card: true, ...(cost > SETI_RULES.moveEnergy ? { energy: cost - SETI_RULES.moveEnergy } : {}) }
+      : { energy: payment.energy }]];
+  }));
+  const orbitCosts = Object.fromEntries(orbitTargets.map((body) => [body, { credit: SETI_RULES.orbitCredits, energy: SETI_RULES.orbitEnergy }]));
+  const landingDiscount = me?.techs.some((tech) => SETI_TECH_BY_ID[tech.stackId as keyof typeof SETI_TECH_BY_ID]?.ability === 'landing-discount') ? 1 : 0;
+  const landCosts = Object.fromEntries(landTargets.map((body) => {
+    const planet = view.planets.find((candidate) => candidate.body === body);
+    const hasOrbiter = (planet?.orbiters.length ?? 0) > 0 || view.placedSpacecraft.some((piece) => piece.body === body && piece.kind === 'orbiter');
+    return [body, Math.max(0, (hasOrbiter ? SETI_RULES.landWithOrbiterEnergy : SETI_RULES.landEnergy) - landingDiscount)];
+  }));
+  const pendingPieceChoices = new Set([
+    ...pendingSurface.pieceIndexes.keys(),
+    ...pendingSurface.bodyChoices.flatMap((choice) => choice.pieceId ? [choice.pieceId] : []),
+    ...pendingSurface.moveChoices.map((choice) => choice.pieceId),
+    ...(deliveryCardId ? view.pieces.filter((piece) => piece.owner === me.seat && piece.kind === 'capsule').map((piece) => piece.id) : []),
+    ...(pendingEnergyMoveIndex >= 0 ? view.pieces.filter((piece) => piece.owner === me.seat).map((piece) => piece.id) : []),
+  ]);
+  const pendingBodyChoices = pendingSurface.bodyChoices.filter((choice) => choice.pieceId === pendingPieceId);
+  const pendingOrbitTargets = pendingBodyChoices.filter((choice) => choice.action === 'orbit' && !choice.spacecraftId).map((choice) => choice.body);
+  const pendingLandTargets = pendingBodyChoices.filter((choice) => choice.action === 'land' && !choice.spacecraftId).map((choice) => choice.body);
+  const pendingRemoveTargets = pendingSurface.bodyChoices.filter((choice) => choice.action === 'remove').map((choice) => choice.body);
+  const pendingSpacecraftTargets = [
+    ...pendingSurface.spacecraftIndexes.keys(),
+    ...pendingBodyChoices.flatMap((choice) => choice.spacecraftId ? [choice.spacecraftId] : []),
+  ];
+  const pendingMoveCells = pendingSurface.moveChoices.filter((choice) => choice.pieceId === pendingPieceId).map((choice) => choice.cell);
+  const exchangeRowTargets = exchangeCardSource ? view.projectRow.map((id, row) => id ? row : -1).filter((row) => row >= 0) : [];
+  const signalRowTargets = view.pending?.kind === 'signal-sector' && Array.isArray(view.pending.raw.rowOptions)
+    ? view.pending.raw.rowOptions.map(Number).filter(Number.isInteger)
+    : [];
+  const effectiveSignalRow = pendingSignalRow ?? (
+    signalRowTargets.includes(scanProjectRowRef.current ?? -1) ? scanProjectRowRef.current : null
+  );
+  const scanProjectRows = scanProjectRowStepIndex === undefined ? [] : view.projectRow.map((id, row) => id ? row : -1).filter((row) => row >= 0);
+  const visualRowTargets = [...new Set([...pendingSurface.rowIndexes.keys(), ...exchangeRowTargets, ...signalRowTargets, ...scanProjectRows])];
+  const visualDeckTarget = pendingSurface.projectDeckIndex !== null || exchangeCardSource;
+  const pendingSignalSectors = (() => {
+    if (view.pending?.kind !== 'signal-sector') return [...pendingSurface.sectorIndexes.keys()];
+    if (!Array.isArray(view.pending.raw.rowOptions)) return [...pendingSurface.sectorIndexes.keys()];
+    if (effectiveSignalRow === null) return [];
+    const card = SETI_PROJECT_CATALOG_BY_ID[view.projectRow[effectiveSignalRow]];
+    return card ? SETI_SECTORS.filter((sector) => sector.printedSignalColor === card.signalColor).map((sector) => sector.id) : [];
+  })();
+  const computerInstallTargets = pendingSurface.computerTechChoices.map((choice) => choice.boardSlot);
 
   useEffect(() => {
+    pendingCommitRef.current = '';
     setSelection(null);
     setExchange(null);
+    setExchangeCardSource(false);
     setPendingChosen([]);
     setPendingSignalRow(null);
-  }, [view.activeSeat, pendingKey(view.pending)]);
+    setPendingPieceId(scanEnergyPieceRef.current);
+    setDeliveryCardId(null);
+    setMoveCardId(null);
+  }, [rawView, view.activeSeat, pendingKey(view.pending)]);
+
+  useEffect(() => {
+    if (view.pending?.kind !== 'signal-sector' && scanProjectRowStepIndex === undefined) scanProjectRowRef.current = null;
+    const carriedPiece = scanEnergyPieceRef.current;
+    if (!carriedPiece || !view.pending || !pendingForMe) return;
+    const pieceIndex = pendingSurface.pieceIndexes.get(carriedPiece);
+    if (pieceIndex === undefined) return;
+    const key = pendingKey(view.pending);
+    if (pendingCommitRef.current === key) return;
+    const action = pendingAction(view.pending, [pieceIndex]);
+    if (!action) return;
+    pendingCommitRef.current = key;
+    act(action as SetiAction);
+    setPendingPieceId(carriedPiece);
+    setNote('PROBE LIFTED · DROP ON A GLOWING DESTINATION');
+  }, [rawView, view.pending, pendingForMe, pendingSurface, scanProjectRowStepIndex, act]);
+
+  useEffect(() => {
+    if (error) pendingCommitRef.current = '';
+  }, [error]);
 
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') { setCard(null); setShowDeck(false); setShowSolo(false); setExchange(null); }
+      if (event.key === 'Escape') { setCard(null); setShowDeck(false); setShowSolo(false); setExchange(null); setExchangeCardSource(false); setDeliveryCardId(null); setMoveCardId(null); setHandExpanded(false); }
     };
     addEventListener('keydown', close);
     return () => removeEventListener('keydown', close);
@@ -113,27 +237,136 @@ export function SetiPlay({ view: rawView, act, error }: {
     if (message) setNote(message);
   };
 
+  const pieceNeedsMovementCard = (piece: SetiUiPiece): boolean => {
+    const cells = view.legal.moveTargets[piece.id] ?? [];
+    const costs = moveCostMap(view, piece.id);
+    return cells.some((cell) => (
+      setiMovePaymentForCost(costs[cell], me.energy, null, movementPaymentCards) === null
+      && movementPaymentCards.some((cardId) => setiMovePaymentForCost(costs[cell], me.energy, cardId, movementPaymentCards) !== null)
+    ));
+  };
+
+  const armMovementCard = (cardId: string) => {
+    if (!selectedPiece || !movePaymentCardTargets.includes(cardId)) return;
+    setMoveCardId(cardId);
+    setCard(null);
+    setLayer('solar');
+    setNote('MOVEMENT CORNER ARMED · TOUCH OR DROP ON A GLOWING DESTINATION');
+  };
+
   const selectPiece = (piece: SetiUiPiece) => {
     if (piece.owner !== me.seat) return;
+    if (pendingEnergyMoveIndex >= 0) {
+      scanEnergyPieceRef.current = piece.id;
+      setPendingPieceId(piece.id);
+      commitPending([pendingEnergyMoveIndex]);
+      setLayer('solar');
+      return;
+    }
+    if (deliveryCardId && piece.kind === 'capsule') {
+      send({ type: 'deliver_sample', pieceId: piece.id, cardId: deliveryCardId }, 'SAMPLE DELIVERED');
+      setDeliveryCardId(null);
+      return;
+    }
+    const pendingIndex = pendingSurface.pieceIndexes.get(piece.id);
+    if (pendingIndex !== undefined) {
+      commitPending([pendingIndex]);
+      return;
+    }
+    if (String(view.pending?.raw.cardId ?? '').startsWith('seti_alien:sample-probe-inspect:')) {
+      const sampleProbe = pendingSurface.bodyChoices.find((choice) => choice.pieceId === piece.id);
+      if (sampleProbe) {
+        commitPending([sampleProbe.index]);
+        return;
+      }
+    }
+    if (pendingSurface.bodyChoices.some((choice) => choice.pieceId === piece.id)) {
+      setPendingPieceId(piece.id);
+      setLayer('solar');
+      return;
+    }
+    if (pendingSurface.moveChoices.some((choice) => choice.pieceId === piece.id)) {
+      setPendingPieceId(piece.id);
+      setLayer('solar');
+      return;
+    }
     setSelection({ kind: 'piece', piece });
+    setLayer('solar');
+    if (pieceNeedsMovementCard(piece) && !moveCardId) setNote('TOUCH OR DRAG A GLOWING MOVEMENT CORNER CARD');
+  };
+
+  const preparePieceDrag = (piece: SetiUiPiece) => {
+    if (piece.owner !== me.seat) return;
+    if (pendingEnergyMoveIndex >= 0) {
+      scanEnergyPieceRef.current = piece.id;
+      setPendingPieceId(piece.id);
+      commitPending([pendingEnergyMoveIndex]);
+      setLayer('solar');
+      return;
+    }
+    if (pendingSurface.bodyChoices.some((choice) => choice.pieceId === piece.id)
+      || pendingSurface.moveChoices.some((choice) => choice.pieceId === piece.id)) {
+      setPendingPieceId(piece.id);
+    } else if (!view.pending && (
+      (view.legal.moveTargets[piece.id]?.length ?? 0) > 0
+      || (view.legal.orbitTargets[piece.id]?.length ?? 0) > 0
+      || (view.legal.landTargets[piece.id]?.length ?? 0) > 0
+    )) {
+      setSelection({ kind: 'piece', piece });
+      if (pieceNeedsMovementCard(piece) && !moveCardId) setNote('TOUCH OR DRAG A GLOWING MOVEMENT CORNER CARD');
+    }
     setLayer('solar');
   };
 
-  const moveSelected = (cell: string) => {
-    if (!selectedPiece || !legalCells.includes(cell)) return;
-    const payment = movePayment(view, selectedPiece.id, cell);
-    send({ type: 'move', pieceId: selectedPiece.id, to: cell, payment }, 'TRAJECTORY TRANSMITTED');
+  const moveSelected = (cell: string, draggedPieceId?: string) => {
+    const activePieceId = draggedPieceId ?? pendingPieceId ?? selectedPiece?.id ?? null;
+    const pendingMove = pendingSurface.moveChoices.find((choice) => choice.pieceId === activePieceId && choice.cell === cell);
+    if (pendingMove) {
+      commitPending([pendingMove.index]);
+      return;
+    }
+    const pendingIndex = pendingSurface.cellIndexes.get(cell);
+    if (pendingIndex !== undefined) {
+      commitPending([pendingIndex]);
+      return;
+    }
+    const piece = activePieceId ? view.pieces.find((candidate) => candidate.id === activePieceId) : null;
+    if (!piece || !view.legal.moveTargets[piece.id]?.includes(cell)) return;
+    const cost = moveCostMap(view, piece.id)[cell] ?? SETI_RULES.moveEnergy;
+    const payment = setiMovePaymentForCost(cost, me.energy, moveCardId, movementPaymentCards);
+    if (!payment) {
+      setNote(!moveCardId && movementPaymentCards.length
+        ? 'CHOOSE A GLOWING MOVEMENT CORNER CARD FIRST'
+        : 'NOT ENOUGH ENERGY FOR THIS TRAJECTORY');
+      return;
+    }
+    send({ type: 'move', pieceId: piece.id, to: cell, payment }, 'TRAJECTORY TRANSMITTED');
     setSelection(null);
+    setMoveCardId(null);
   };
 
-  const bodySelected = (kind: 'orbit' | 'land', body: string) => {
-    if (!selectedPiece) return;
-    if (kind === 'orbit' && orbitTargets.includes(body)) send({ type: 'orbit', pieceId: selectedPiece.id, body }, 'ORBIT CONFIRMED');
-    if (kind === 'land' && landTargets.includes(body)) send({ type: 'land', pieceId: selectedPiece.id, body }, 'LANDING CONFIRMED');
+  const bodySelected = (kind: 'orbit' | 'land', body: string, draggedPieceId?: string) => {
+    const activePieceId = draggedPieceId ?? pendingPieceId ?? selectedPiece?.id ?? null;
+    if (activePieceId) {
+      const pendingChoice = pendingSurface.bodyChoices.find((choice) => choice.pieceId === activePieceId && choice.body === body && choice.action === kind);
+      if (pendingChoice) {
+        commitPending([pendingChoice.index]);
+        setPendingPieceId(null);
+        return;
+      }
+    }
+    const piece = activePieceId ? view.pieces.find((candidate) => candidate.id === activePieceId) : null;
+    if (!piece) return;
+    if (kind === 'orbit' && view.legal.orbitTargets[piece.id]?.includes(body)) send({ type: 'orbit', pieceId: piece.id, body }, 'ORBIT CONFIRMED');
+    if (kind === 'land' && view.legal.landTargets[piece.id]?.includes(body)) send({ type: 'land', pieceId: piece.id, body }, 'LANDING CONFIRMED');
     setSelection(null);
   };
 
   const beginLaunch = () => {
+    if (pendingEnergyLaunchIndex >= 0) {
+      commitPending([pendingEnergyLaunchIndex]);
+      return;
+    }
     if (!view.legal.canLaunch) return;
     setSelection({ kind: 'launch' });
     setLayer('solar');
@@ -146,14 +379,14 @@ export function SetiPlay({ view: rawView, act, error }: {
   };
 
   const beginResearch = () => {
-    if (!view.legal.techStackTargets.length) return;
-    setSelection({ kind: 'research' });
+    if (!view.legal.canResearch) return;
+    send({ type: 'research' }, 'TOUCH A GLOWING TECH STACK');
     setLayer('solar');
-    setNote('TOUCH A GLOWING TECH STACK');
   };
 
   const pickResource = (kind: 'credits' | 'energy') => {
     if (!canTouch || (kind === 'credits' ? me.credits : me.energy) < 2) return;
+    setExchangeCardSource(false);
     setExchange((current) => current?.give === kind ? null : { give: kind, cardIds: [] });
   };
 
@@ -165,15 +398,38 @@ export function SetiPlay({ view: rawView, act, error }: {
 
   const completeExchange = (receive: 'card' | 'credit' | 'energy') => {
     if (!exchange) return;
+    if (receive === 'card') {
+      setExchangeCardSource(true);
+      setLayer('solar');
+      setNote('TOUCH THE PROJECT DECK OR A ROW CARD');
+      return;
+    }
     send({ type: 'exchange', give: exchange.give, receive, cardIds: exchange.give === 'cards' ? exchange.cardIds : undefined }, 'EXCHANGE COMPLETE');
     setExchange(null);
+    setExchangeCardSource(false);
+  };
+
+  const completeCardExchange = (row?: number) => {
+    if (!exchange || !exchangeCardSource) return false;
+    send({ type: 'exchange', give: exchange.give, receive: 'card', cardIds: exchange.give === 'cards' ? exchange.cardIds : undefined, ...(row === undefined ? {} : { row }) }, 'EXCHANGE COMPLETE');
+    setExchange(null);
+    setExchangeCardSource(false);
+    return true;
   };
 
   const commitPending = (indexes: number[]) => {
     if (!view.pending) return;
-    const action = pendingAction(view.pending, indexes, pendingSignalRow ?? undefined);
-    if (action) send(action, 'DECISION TRANSMITTED');
+    const key = pendingKey(view.pending);
+    if (pendingCommitRef.current === key) return;
+    const action = pendingAction(view.pending, indexes, effectiveSignalRow ?? undefined);
+    if (action) {
+      pendingCommitRef.current = key;
+      send(action, 'DECISION TRANSMITTED');
+    }
     setPendingChosen([]);
+    setPendingPieceId(null);
+    if (view.pending.kind === 'signal-sector') scanProjectRowRef.current = null;
+    if (pendingSurface.cellIndexes.size > 0 && scanEnergyPieceRef.current) scanEnergyPieceRef.current = null;
   };
 
   const pendingOptionIndex = (value: string) => view.pending?.options.findIndex((option) => {
@@ -188,14 +444,14 @@ export function SetiPlay({ view: rawView, act, error }: {
       <SetiStarfield density={0.9} />
 
       <header className="seti-device-header seti-glass">
-        <div className="seti-device-agency"><span className="seti-seat-outline" /><div><small>AGENCY</small><b>{me.name}</b></div></div>
-        <ResourcePiece icon="score" label="VP" value={me.score} />
+        <div className="seti-device-agency"><span className="seti-seat-outline" />{me.seat === view.startingSeat && <span className="seti-device-starting" title="starting agency"><img src="/seti/tokens/first-player.webp" alt="starting player token" /></span>}<div><small>AGENCY</small><b>{me.name}</b></div></div>
+        <ResourcePiece icon="score" label="VP" value={view.phase === 'ended' ? me.finalScore ?? me.score : me.score} />
         <ResourcePiece icon="publicity" label="PUBLICITY" value={me.publicity} />
-        <ResourcePiece icon="credit" label="CREDITS" value={me.credits} onClick={() => pickResource('credits')} active={exchange?.give === 'credits'} disabled={!canTouch || me.credits < 2} />
-        <ResourcePiece icon="energy" label="ENERGY" value={me.energy} onClick={() => pickResource('energy')} active={exchange?.give === 'energy'} disabled={!canTouch || me.energy < 2} />
+        <ResourcePiece icon="credit" label="CREDITS" value={me.credits} tokenSrc={`/seti/tokens/credit-${me.color.toLowerCase()}.webp`} onClick={() => pickResource('credits')} active={exchange?.give === 'credits'} disabled={!canTouch || me.credits < 2} />
+        <ResourcePiece icon="energy" label="ENERGY" value={me.energy} tokenSrc={`/seti/tokens/energy-${me.color.toLowerCase()}.webp`} onClick={() => pickResource('energy')} active={exchange?.give === 'energy'} disabled={!canTouch || me.energy < 2} />
         <ResourcePiece icon="data" label="DATA" value={me.dataPool} onClick={() => { if (view.legal.placeDataSlots.length) { setSelection({ kind: 'data' }); setLayer('personal'); } }} active={selection?.kind === 'data'} disabled={!canTouch || view.legal.placeDataSlots.length === 0} />
         <div className="seti-header-actions">
-          <button type="button" className="seti-icon-button" onClick={() => setExchange((current) => current?.give === 'cards' ? null : { give: 'cards', cardIds: [] })} disabled={!canTouch || me.hand.length < 2} aria-label="exchange cards"><SetiIcon name="card" /><span>EXCHANGE</span></button>
+          <button type="button" className="seti-icon-button" onClick={() => { setExchangeCardSource(false); setExchange((current) => current?.give === 'cards' ? null : { give: 'cards', cardIds: [] }); }} disabled={!canTouch || exchangeableCards.length < 2} aria-label="exchange cards"><SetiIcon name="card" /><span>EXCHANGE</span></button>
           <button type="button" className="seti-icon-button" data-testid="seti-show-deck" onClick={() => setShowDeck(true)} aria-label="show deck"><SetiIcon name="deck" /><span>SHOW DECK</span></button>
         </div>
       </header>
@@ -208,15 +464,15 @@ export function SetiPlay({ view: rawView, act, error }: {
       )}
 
       <nav className="seti-layer-switch seti-glass" aria-label="table layer">
-        <button type="button" data-testid="seti-layer-personal" className={layer === 'personal' ? 'is-active' : ''} onClick={() => setLayer('personal')}>PERSONAL</button>
-        <button type="button" data-testid="seti-layer-solar" className={layer === 'solar' ? 'is-active' : ''} onClick={() => setLayer('solar')}>SOLAR SYSTEM</button>
+        <button type="button" data-testid="seti-layer-personal" className={layer === 'personal' ? 'is-active' : ''} aria-pressed={layer === 'personal'} onClick={() => setLayer('personal')}>PERSONAL</button>
+        <button type="button" data-testid="seti-layer-solar" className={layer === 'solar' ? 'is-active' : ''} aria-pressed={layer === 'solar'} onClick={() => setLayer('solar')}>SOLAR SYSTEM</button>
         <span className={layer} />
       </nav>
 
-      <div className={`seti-turn-line ${myTurn ? 'is-yours' : ''}`}>
+      <div className={`seti-turn-line ${myTurn || pendingForMe ? 'is-yours' : ''}`}>
         <span />
-        <b>{view.phase === 'ended' ? 'MISSION COMPLETE' : myTurn ? view.pending ? 'YOUR DECISION' : 'YOUR TURN' : `${view.players.find((player) => player.seat === view.activeSeat)?.name ?? 'AGENCY'} OPERATING`}</b>
-        <small>{view.phase === 'ended' ? finalMessage(view) : view.pending ? view.pending.prompt : myTurn ? view.mainActionTaken ? 'FREE ACTIONS OR END TURN' : 'TOUCH A PIECE OR PRINTED ACTION' : `ROUND ${view.round} OF 5`}</small>
+        <b>{view.phase === 'ended' ? 'MISSION COMPLETE' : pendingForMe ? 'YOUR DECISION' : myTurn ? 'YOUR TURN' : `${view.players.find((player) => player.seat === view.activeSeat)?.name ?? 'AGENCY'} OPERATING`}</b>
+        <small>{view.phase === 'ended' ? finalMessage(view) : pendingForMe ? view.pending!.prompt : myTurn ? view.mainActionTaken ? 'FREE ACTIONS OR END TURN' : 'TOUCH A PIECE OR PRINTED ACTION' : `ROUND ${view.round} OF 5`}</small>
       </div>
 
       <section className="seti-device-stage">
@@ -230,14 +486,40 @@ export function SetiPlay({ view: rawView, act, error }: {
                 selection={selection}
                 canTouch={canTouch}
                 onLaunch={beginLaunch}
+                launchOverride={pendingEnergyLaunchIndex >= 0}
                 onScan={beginScan}
                 onAnalyze={() => send({ type: 'analyze' }, 'ANALYSIS STARTED')}
                 onResearch={beginResearch}
                 onPlaceData={(slot) => { send({ type: 'place_data', slot }, 'DATA PLACED'); setSelection(null); }}
+                computerInstallTargets={computerInstallTargets}
+                onInstallComputer={(slot) => {
+                  const choice = pendingSurface.computerTechChoices.find((candidate) => candidate.boardSlot === slot);
+                  if (choice) commitPending([choice.index]);
+                }}
+                scanTechChoiceIndexes={scanTechChoiceIndexes}
+                onScanTech={(index) => commitPending([index])}
                 onIncomeCard={(id) => setCard({ id, origin: 'income' })}
-                onMissionCard={(id) => setCard({ id, origin: 'mission' })}
+                missionTargets={[...pendingSurface.missionIndexes.keys()]}
+                missionChoices={pendingSurface.missionChoices}
+                onMissionChoice={(index) => commitPending([index])}
+                onMissionCard={(id) => {
+                  const index = pendingSurface.missionIndexes.get(id) ?? pendingSurface.cardIndexes.get(id);
+                  if (index !== undefined) commitPending([index]);
+                  else setCard({ id, origin: 'mission' });
+                }}
               />
-              <ProjectDock scene={scene} view={view} canBuyDeck={canTouch && me.publicity >= 3} onInspect={(id, row) => setCard({ id, origin: 'row', row })} onDeckBuy={() => send({ type: 'buy_card', source: 'deck' }, 'PROJECT ACQUIRED')} />
+              <ProjectDock scene={scene} view={view} canBuyDeck={canTouch && !view.pending && me.publicity >= 3} deckTarget={visualDeckTarget} rowTargets={visualRowTargets} onInspect={(id, row) => {
+                if (scanProjectRowStepIndex !== undefined) { scanProjectRowRef.current = row; setPendingSignalRow(row); commitPending([scanProjectRowStepIndex]); return; }
+                const index = pendingSurface.rowIndexes.get(row);
+                if (index !== undefined) commitPending([index]);
+                else if (signalRowTargets.includes(row)) setPendingSignalRow(row);
+                else if (exchangeRowTargets.includes(row)) completeCardExchange(row);
+                else setCard({ id, origin: 'row', row });
+              }} onDeckBuy={() => {
+                if (pendingSurface.projectDeckIndex !== null) commitPending([pendingSurface.projectDeckIndex]);
+                else if (exchangeCardSource) completeCardExchange();
+                else send({ type: 'buy_card', source: 'deck' }, 'PROJECT ACQUIRED');
+              }} />
             </div>
             <div className={`seti-layer seti-solar-layer ${layer === 'solar' ? 'is-visible' : ''}`} aria-hidden={layer !== 'solar'}>
               <SetiTable
@@ -245,20 +527,57 @@ export function SetiPlay({ view: rawView, act, error }: {
                 view={view}
                 compact
                 interactive={canTouch}
-                selectedPieceId={selectedPiece?.id}
-                legalCells={legalCells}
-                orbitTargets={orbitTargets}
-                landTargets={landTargets}
-                sectorTargets={pendingForMe && view.pending?.kind === 'signal-sector'
-                  ? Array.isArray(view.pending.raw.rowOptions) && pendingSignalRow === null ? [] : view.legal.scanSectorTargets
-                  : pendingForMe && view.pending?.kind === 'completed-sector-order'
-                    ? view.pending.options.map((option) => String(option))
-                    : []}
+                selectedPieceId={selectedPiece?.id ?? pendingPieceId ?? scanEnergyPieceRef.current}
+                legalCells={selectedPiece ? legalCells : [...pendingSurface.cellIndexes.keys(), ...pendingMoveCells]}
+                orbitTargets={[...orbitTargets, ...pendingOrbitTargets]}
+                landTargets={[...landTargets, ...pendingLandTargets]}
+                bodyChoiceTargets={pendingRemoveTargets}
+                spacecraftTargets={pendingSpacecraftTargets}
+                pieceTargets={[...pendingPieceChoices]}
+                rowTargets={visualRowTargets}
+                deckTarget={visualDeckTarget}
+                alienCardTargets={[...pendingSurface.cardIndexes.keys()]}
+                alienDeckTarget={pendingSurface.alienDeckIndex !== null ? Number(view.pending?.raw.speciesSlot ?? -1) : null}
+                traceTargets={view.legal.traceTargets}
+                sampleTargets={pendingSurface.sampleChoices}
+                sectorTargets={pendingSignalSectors}
                 launchTarget={selection?.kind === 'launch'}
+                earthStepTarget={scanEarthStepIndex !== undefined}
+                moveCosts={moveCosts}
+                orbitCosts={orbitCosts}
+                landCosts={landCosts}
+                goldTileTargets={view.pending?.kind === 'gold-tile' ? view.pending.options.map(String) : []}
+                marsDataTargets={view.pending?.kind === 'mars-first-data' ? view.pending.options.map(Number).filter(Number.isFinite) : []}
+                oumuamuaTileTargets={pendingSurface.oumuamuaTileChoices.map((choice) => choice.tileSlot)}
+                onPiecePress={preparePieceDrag}
                 onPiece={selectPiece}
                 onCell={moveSelected}
                 onBody={bodySelected}
-                onSector={(sectorId) => { const index = pendingOptionIndex(sectorId); if (index >= 0 && (!Array.isArray(view.pending?.raw.rowOptions) || pendingSignalRow !== null)) commitPending([index]); }}
+                onBodyChoice={(body) => {
+                  const choice = pendingSurface.bodyChoices.find((candidate) => candidate.action === 'remove' && candidate.body === body);
+                  if (choice) commitPending([choice.index]);
+                }}
+                onSpacecraft={(spacecraftId) => {
+                  const direct = pendingSurface.spacecraftIndexes.get(spacecraftId);
+                  if (direct !== undefined) { commitPending([direct]); return; }
+                  const occupied = pendingBodyChoices.find((choice) => choice.spacecraftId === spacecraftId);
+                  if (occupied) commitPending([occupied.index]);
+                }}
+                onTrace={(spaceId) => {
+                  const index = pendingOptionIndex(spaceId);
+                  if (index >= 0) commitPending([index]);
+                }}
+                onDeck={() => {
+                  if (pendingSurface.projectDeckIndex !== null) commitPending([pendingSurface.projectDeckIndex]);
+                  else if (exchangeCardSource) completeCardExchange();
+                }}
+                onAlienCard={(cardId) => {
+                  const index = pendingSurface.cardIndexes.get(cardId);
+                  if (index !== undefined) commitPending([index]);
+                }}
+                onAlienDeck={() => { if (pendingSurface.alienDeckIndex !== null) commitPending([pendingSurface.alienDeckIndex]); }}
+                onSample={(index) => commitPending([index])}
+                onSector={(sectorId) => { const index = pendingSurface.sectorIndexes.get(sectorId) ?? pendingOptionIndex(sectorId); if (index >= 0 && (!Array.isArray(view.pending?.raw.rowOptions) || effectiveSignalRow !== null)) commitPending([index]); }}
                 onCardDrop={(_cardId, row, kind, value) => {
                   if (kind !== 'sector' || view.pending?.kind !== 'signal-sector') return false;
                   const index = pendingOptionIndex(value);
@@ -269,17 +588,28 @@ export function SetiPlay({ view: rawView, act, error }: {
                   return true;
                 }}
                 onLaunch={() => { send({ type: 'launch' }, 'PROBE LAUNCHED'); setSelection(null); }}
-                onCard={(id, row) => setCard({
-                  id,
-                  origin: view.pending?.kind === 'signal-sector' && Array.isArray(view.pending.raw.rowOptions) ? 'pending-row' : 'row',
-                  row,
-                })}
+                onEarthStep={() => { if (scanEarthStepIndex !== undefined) commitPending([scanEarthStepIndex]); }}
+                onGoldTile={(tileId) => { const index = pendingOptionIndex(tileId); if (index >= 0) commitPending([index]); }}
+                onMarsData={(amount) => { const index = view.pending?.options.findIndex((option) => Number(option) === amount) ?? -1; if (index >= 0) commitPending([index]); }}
+                onOumuamuaTile={(slot) => { const choice = pendingSurface.oumuamuaTileChoices.find((candidate) => candidate.tileSlot === slot); if (choice) commitPending([choice.index]); }}
+                onCard={(id, row) => {
+                  if (scanProjectRowStepIndex !== undefined) { scanProjectRowRef.current = row; setPendingSignalRow(row); commitPending([scanProjectRowStepIndex]); return; }
+                  const choiceIndex = pendingSurface.rowIndexes.get(row);
+                  if (choiceIndex !== undefined) { commitPending([choiceIndex]); return; }
+                  if (signalRowTargets.includes(row)) { setPendingSignalRow(row); return; }
+                  if (exchangeRowTargets.includes(row)) { completeCardExchange(row); return; }
+                  setCard({
+                    id,
+                    origin: view.pending?.kind === 'signal-sector' && Array.isArray(view.pending.raw.rowOptions) ? 'pending-row' : 'row',
+                    row,
+                  });
+                }}
                 onTech={(stackId) => {
                   if (!view.legal.techStackTargets.includes(stackId)) return;
                   if (view.pending?.kind === 'tech-stack') {
                     const index = pendingOptionIndex(stackId);
                     if (index >= 0) commitPending([index]);
-                  } else send({ type: 'research', stackId }, 'TECHNOLOGY ACQUIRED');
+                  }
                   setSelection(null);
                 }}
               />
@@ -293,9 +623,45 @@ export function SetiPlay({ view: rawView, act, error }: {
         me={me}
         playable={view.legal.playableCards}
         cornerCards={cornerCards}
+        pendingCards={[...pendingSurface.cardIndexes.keys()]}
+        pendingSelectedCards={[...pendingSurface.cardIndexes.entries()].filter(([, index]) => pendingChosen.includes(index)).map(([id]) => id)}
         exchange={exchange}
-        onCard={(id) => exchange?.give === 'cards' && me.hand.includes(id) ? pickExchangeCard(id) : setCard({ id, origin: 'hand' })}
-        onPlayDrop={(id) => { if (view.legal.playableCards.includes(id)) { send({ type: 'play_card', cardId: id }, 'PROJECT COMMITTED'); return true; } return false; }}
+        moveCardId={moveCardId}
+        movePaymentCards={movePaymentCardTargets}
+        expanded={handExpanded}
+        onToggleExpanded={() => setHandExpanded((current) => !current)}
+        onCardPress={(id) => { if (selectedPiece && movePaymentCardTargets.includes(id)) armMovementCard(id); }}
+        onCard={(id) => {
+          if (selectedPiece && movePaymentCardTargets.includes(id)) { armMovementCard(id); return; }
+          const pendingIndex = pendingSurface.cardIndexes.get(id);
+          if (pendingIndex !== undefined) {
+            if (/initial[-_]income/i.test(view.pending?.kind ?? '')) {
+              // The setup choice is still a physical tuck, but the player may
+              // inspect the full card before committing it to the income lane.
+              setCard({ id, origin: 'hand' });
+              return;
+            }
+            const pick = pendingPick(view.pending);
+            if (pick === 1) commitPending([pendingIndex]);
+            else setPendingChosen((current) => current.includes(pendingIndex) ? current.filter((value) => value !== pendingIndex) : [...current, pendingIndex].slice(-pick));
+            return;
+          }
+          if (exchange?.give === 'cards' && exchangeableCards.includes(id)) pickExchangeCard(id);
+          else setCard({ id, origin: 'hand' });
+        }}
+        onPlayDrop={(id, kind, value) => {
+          if (kind === 'mission' && view.legal.playableCards.includes(id)) { send({ type: 'play_card', cardId: id }, 'PROJECT COMMITTED'); return true; }
+          if (kind === 'cell' && selectedPiece && rawLegalCells.includes(value) && isProjectMovementCorner(id)) {
+            const cost = rawMoveCosts[value] ?? SETI_RULES.moveEnergy;
+            const payment = setiMovePaymentForCost(cost, me.energy, id, movementPaymentCards);
+            if (!payment) return false;
+            send({ type: 'move', pieceId: selectedPiece.id, to: value, payment }, 'TRAJECTORY TRANSMITTED');
+            setSelection(null);
+            setMoveCardId(null);
+            return true;
+          }
+          return false;
+        }}
       />
 
       <div className="seti-device-controls">
@@ -303,8 +669,17 @@ export function SetiPlay({ view: rawView, act, error }: {
         <button type="button" className="seti-end-turn" data-testid="seti-end-turn" disabled={!view.legal.canEndTurn} onClick={() => { setSelection(null); send({ type: 'end_turn' }); }}><span>END TURN</span><i /></button>
       </div>
 
-      {exchange && <ExchangeTray exchange={exchange} onReceive={completeExchange} onClose={() => setExchange(null)} />}
-      {view.pending && (
+      {exchange && <ExchangeTray exchange={exchange} color={me.color} choosingSource={exchangeCardSource} onReceive={completeExchange} onClose={() => { setExchange(null); setExchangeCardSource(false); }} />}
+      {view.pending?.kind === 'solo-objective-task' && view.solo ? (
+        <SetiSoloObjectiveDecision
+          solo={view.solo}
+          options={view.pending.options.map(String)}
+          onChoose={(option) => {
+            const index = view.pending?.options.findIndex((candidate) => String(candidate) === option) ?? -1;
+            if (index >= 0) commitPending([index]);
+          }}
+        />
+      ) : view.pending && (
         <PendingDecision
           scene={scene}
           view={view}
@@ -316,7 +691,8 @@ export function SetiPlay({ view: rawView, act, error }: {
           }}
           onCommit={commitPending}
           onInspectCard={(id, index) => setCard({ id, origin: 'pending', pendingIndex: index })}
-          pendingRow={pendingSignalRow}
+          pendingRow={effectiveSignalRow}
+          presentation={pendingSurface}
           onInspectRow={(id, row) => setCard({ id, origin: 'pending-row', row })}
           onLayer={setLayer}
         />
@@ -330,7 +706,15 @@ export function SetiPlay({ view: rawView, act, error }: {
           cornerCards={cornerCards}
           onClose={() => setCard(null)}
           onPlay={() => { send({ type: 'play_card', cardId: card.id }, 'PROJECT COMMITTED'); setCard(null); }}
-          onCorner={() => { send({ type: 'discard_for_corner', cardId: card.id }, 'CORNER EFFECT USED'); setCard(null); }}
+          onCorner={() => {
+            if (isProjectMovementCorner(card.id)) {
+              setMoveCardId(card.id);
+              setSelection(null);
+              setLayer('solar');
+              setNote('TOUCH A PROBE, THEN ITS DESTINATION');
+            } else send({ type: 'discard_for_corner', cardId: card.id }, 'CORNER EFFECT USED');
+            setCard(null);
+          }}
           onBuy={() => { send({ type: 'buy_card', source: card.row ?? 'deck' }, 'PROJECT ACQUIRED'); setCard(null); }}
           onInitialIncome={() => { send({ type: 'choose_initial_income', cardId: card.id }, 'INCOME CARD TUCKED'); setCard(null); }}
           onPending={() => {
@@ -341,61 +725,75 @@ export function SetiPlay({ view: rawView, act, error }: {
             setCard(null);
           }}
           onPendingRow={() => { if (card.row !== undefined) setPendingSignalRow(card.row); setCard(null); }}
+          onCompleteAlien={() => { send({ type: 'complete_alien_mission', cardId: card.id }, 'ALIEN MISSION COMPLETED'); setCard(null); }}
+          onDeliverSample={() => { setDeliveryCardId(card.id); setLayer('solar'); setNote('TOUCH THE SAMPLE CAPSULE AT ITS DESTINATION'); setCard(null); }}
           pendingSelected={card.pendingIndex !== undefined && pendingChosen.includes(card.pendingIndex)}
         />
       )}
       {showDeck && scene && <DeckBrowser scene={scene} includePromos={(view.raw.options as { promoCards?: boolean } | undefined)?.promoCards === true} onClose={() => setShowDeck(false)} onInspect={(id) => setCard({ id, origin: 'deck' })} />}
-      {showSolo && scene && view.solo && <SoloPanel scene={scene} solo={view.solo} onClose={() => setShowSolo(false)} />}
+      {showSolo && view.solo && <SetiSoloRivalPanel solo={view.solo} onClose={() => setShowSolo(false)} />}
+      {deliveryCardId && <div className="seti-direct-cue seti-glass"><SetiIcon name="probe" /><b>TOUCH THE GLOWING SAMPLE CAPSULE</b></div>}
+      {exchangeCardSource && <div className="seti-direct-cue seti-glass"><SetiIcon name="card" /><b>TOUCH THE PROJECT DECK OR A ROW CARD</b></div>}
+      {movementCardRequired && <div className="seti-direct-cue seti-glass"><SetiIcon name="card" /><b>TOUCH OR DRAG A GLOWING MOVEMENT CORNER CARD</b></div>}
       {note && <div className="seti-note" role="status">{note}</div>}
       {error && <div className="seti-error" role="alert">{error}</div>}
     </main>
   );
 }
 
-function movePayment(view: SetiUiView, pieceId: string, cell: string): { energy?: number; cardId?: string } {
+function moveCostMap(view: SetiUiView, pieceId: string): Record<string, number> {
   const legal = (view.raw.legal && typeof view.raw.legal === 'object' ? view.raw.legal : {}) as Record<string, unknown>;
-  const paymentsValue = legal.moveEnergyCost ?? legal.movePayments;
-  const payments = (paymentsValue && typeof paymentsValue === 'object' ? paymentsValue : {}) as Record<string, unknown>;
+  const payments = (legal.moveEnergyCost && typeof legal.moveEnergyCost === 'object' ? legal.moveEnergyCost : {}) as Record<string, unknown>;
   const perPiece = (payments[pieceId] && typeof payments[pieceId] === 'object' ? payments[pieceId] : {}) as Record<string, unknown>;
-  const payment = perPiece[cell];
-  if (typeof payment === 'number') return { energy: payment };
-  if (payment && typeof payment === 'object') return payment as { energy?: number; cardId?: string };
-  return { energy: 1 };
+  return Object.fromEntries(Object.entries(perPiece).flatMap(([cell, value]) => typeof value === 'number' ? [[cell, value]] : []));
 }
 
-function ResourcePiece({ icon, label, value, onClick, active, disabled }: {
+function isProjectMovementCorner(cardId: string): boolean {
+  return SETI_PROJECT_CATALOG_BY_ID[cardId]?.freeCorner === 'move';
+}
+
+function ResourcePiece({ icon, label, value, tokenSrc, onClick, active, disabled }: {
   icon: SetiIconName;
   label: string;
   value: number;
+  tokenSrc?: string;
   onClick?: () => void;
   active?: boolean;
   disabled?: boolean;
 }) {
-  const content = <><span className="seti-resource-icon"><SetiIcon name={icon} /></span><span><b>{value}</b><small>{label}</small></span></>;
-  return onClick ? <button type="button" className={`seti-resource-piece ${active ? 'is-active' : ''}`} onClick={onClick} disabled={disabled}>{content}</button> : <div className="seti-resource-piece">{content}</div>;
+  const content = <><span className={`seti-resource-icon ${tokenSrc ? 'has-token-art' : ''}`}>{tokenSrc ? <img src={tokenSrc} alt="" /> : <SetiIcon name={icon} />}</span><span><b>{value}</b><small>{label}</small></span></>;
+  return onClick ? <button type="button" className={`seti-resource-piece ${active ? 'is-active' : ''}`} aria-label={`${label}: ${value}`} aria-pressed={active} onClick={onClick} disabled={disabled}>{content}</button> : <div className="seti-resource-piece" aria-label={`${label}: ${value}`}>{content}</div>;
 }
 
-function PersonalBoard({ scene, view, me, selection, canTouch, onLaunch, onScan, onAnalyze, onResearch, onPlaceData, onIncomeCard, onMissionCard }: {
+function PersonalBoard({ scene, view, me, selection, canTouch, onLaunch, launchOverride, onScan, onAnalyze, onResearch, onPlaceData, computerInstallTargets, onInstallComputer, scanTechChoiceIndexes, onScanTech, onIncomeCard, missionTargets, missionChoices, onMissionChoice, onMissionCard }: {
   scene: SetiSceneDef;
   view: SetiUiView;
   me: SetiUiPlayer;
   selection: Selection;
   canTouch: boolean;
   onLaunch: () => void;
+  launchOverride: boolean;
   onScan: () => void;
   onAnalyze: () => void;
   onResearch: () => void;
   onPlaceData: (slot: number) => void;
+  computerInstallTargets: number[];
+  onInstallComputer: (slot: number) => void;
+  scanTechChoiceIndexes: ReadonlyMap<string, number>;
+  onScanTech: (index: number) => void;
   onIncomeCard: (id: string) => void;
+  missionTargets: string[];
+  missionChoices: readonly SetiPendingMissionChoice[];
+  onMissionChoice: (index: number) => void;
   onMissionCard: (id: string) => void;
 }) {
   const probesInSpace = view.pieces.filter((piece) => piece.owner === me.seat && piece.kind === 'probe').length;
-  const supplyCount = Math.max(view.legal.canLaunch ? 1 : 0, (me.techs.some((id) => /probe/i.test(id)) ? 2 : 1) - probesInSpace);
+  const supplyCount = Math.max(view.legal.canLaunch ? 1 : 0, (me.techs.some((tech) => /probe/i.test(tech.stackId)) ? 2 : 1) - probesInSpace);
   return (
     <div className="seti-personal-board-wrap">
       <img className="seti-personal-board-art" src={setiPlayerBoard(scene, me.color)} alt={`${me.name} player board`} draggable={false} />
 
-      <button type="button" data-testid="seti-action-launch" className={`seti-printed-action seti-action-launch ${view.legal.canLaunch ? 'is-legal' : ''}`} disabled={!canTouch || !view.legal.canLaunch} onClick={onLaunch}>
+      <button type="button" data-testid="seti-action-launch" className={`seti-printed-action seti-action-launch ${view.legal.canLaunch || launchOverride ? 'is-legal' : ''}`} disabled={!canTouch || (!view.legal.canLaunch && !launchOverride)} onClick={onLaunch}>
         <SetiIcon name="probe" /><span>LAUNCH</span><small>2</small>
       </button>
       <button type="button" data-testid="seti-action-scan" className={`seti-printed-action seti-action-scan ${view.legal.scanSectorTargets.length ? 'is-legal' : ''}`} disabled={!canTouch || view.legal.scanSectorTargets.length === 0} onClick={onScan}>
@@ -404,21 +802,21 @@ function PersonalBoard({ scene, view, me, selection, canTouch, onLaunch, onScan,
       <button type="button" data-testid="seti-action-analyze" className={`seti-printed-action seti-action-analyze ${view.legal.canAnalyze ? 'is-legal' : ''}`} disabled={!canTouch || !view.legal.canAnalyze} onClick={onAnalyze}>
         <SetiIcon name="analyze" /><span>ANALYZE</span>
       </button>
-      <button type="button" data-testid="seti-action-research" className={`seti-printed-action seti-action-research ${view.legal.techStackTargets.length ? 'is-legal' : ''}`} disabled={!canTouch || !view.legal.techStackTargets.length} onClick={onResearch}>
+      <button type="button" data-testid="seti-action-research" className={`seti-printed-action seti-action-research ${view.legal.canResearch ? 'is-legal' : ''}`} disabled={!canTouch || !view.legal.canResearch} onClick={onResearch}>
         <SetiIcon name="research" /><span>RESEARCH</span><small>6</small>
       </button>
 
       <div className="seti-probe-supply" aria-label="probe supply">
         {Array.from({ length: Math.max(1, supplyCount) }, (_, index) => (
-          <TactileSurface key={index} className={`seti-supply-probe ${view.legal.canLaunch ? 'is-legal' : ''}`} disabled={!canTouch || !view.legal.canLaunch} onTap={onLaunch} ariaLabel="take probe from supply">
+          <TactileSurface key={index} className={`seti-supply-probe ${view.legal.canLaunch || launchOverride ? 'is-legal' : ''}`} disabled={!canTouch || (!view.legal.canLaunch && !launchOverride)} onTap={onLaunch} ariaLabel="take probe from supply">
             <span className="seti-piece-body" />
           </TactileSurface>
         ))}
       </div>
 
       <div className="seti-computer-track" aria-label="computer data track">
-        {Array.from({ length: Math.max(6, me.computer.length) }, (_, slot) => {
-          const filled = !!me.computer[slot];
+        {Array.from({ length: 6 }, (_, slot) => {
+          const filled = !!me.computer.top[slot];
           const legal = selection?.kind === 'data' && view.legal.placeDataSlots.includes(slot);
           return (
             <button
@@ -435,8 +833,39 @@ function PersonalBoard({ scene, view, me, selection, canTouch, onLaunch, onScan,
         })}
       </div>
 
+      <div className="seti-computer-tech-track" aria-label="computer technology positions">
+        {Array.from({ length: 4 }, (_, boardSlot) => {
+          const installed = me.computer.tech.find((tech) => tech.boardSlot === boardSlot);
+          const owned = installed ? me.techs.find((tech) => tech.stackId === installed.stackId) : null;
+          const installable = computerInstallTargets.includes(boardSlot);
+          const dataSlot = 6 + boardSlot;
+          const canPlaceLower = selection?.kind === 'data' && view.legal.placeDataSlots.includes(dataSlot);
+          return (
+            <button
+              key={boardSlot}
+              type="button"
+              className={`seti-computer-tech-slot ${installed ? 'is-installed' : ''} ${installable || canPlaceLower ? 'is-legal' : ''}`}
+              disabled={!installable && !canPlaceLower}
+              data-seti-target="computer-tech"
+              data-seti-value={`${boardSlot}`}
+              data-testid={`seti-computer-tech-slot-${boardSlot}`}
+              onClick={() => installable ? onInstallComputer(boardSlot) : onPlaceData(dataSlot)}
+              aria-label={installable ? `install computer technology in position ${boardSlot + 1}` : installed ? `computer technology position ${boardSlot + 1}` : `empty computer technology position ${boardSlot + 1}`}
+            >
+              {owned && (setiTechAbilityFace(scene, owned.stackId, owned.tileId)
+                ? <img src={setiTechAbilityFace(scene, owned.stackId, owned.tileId)} alt="computer technology" />
+                : <span>{owned.stackId.replace(/^seti_tech_stack_/, '').replace('_', ' ').toUpperCase()}</span>)}
+              {installed?.lower && <i className="seti-data-cube" />}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="seti-installed-tech" aria-label="installed technology">
-        {me.techs.map((tech, index) => <span key={`${tech}-${index}`} title={tech}><i />{setiTechBack(scene, tech) ? <img src={setiTechBack(scene, tech)} alt="installed technology" /> : tech.slice(0, 2)}</span>)}
+        {me.techs.filter((tech) => !/computer/i.test(tech.stackId)).map((tech, index) => {
+          const scanChoice = scanTechChoiceIndexes.get(tech.stackId);
+          return <button key={`${tech.tileId}-${index}`} type="button" title={tech.stackId} className={scanChoice === undefined ? '' : 'is-choice'} disabled={scanChoice === undefined} onClick={() => { if (scanChoice !== undefined) onScanTech(scanChoice); }}><i />{setiTechAbilityFace(scene, tech.stackId, tech.tileId) ? <img src={setiTechAbilityFace(scene, tech.stackId, tech.tileId)} alt="installed technology" /> : tech.stackId.replace(/^seti_tech_stack_/, '').slice(0, 2)}</button>;
+        })}
       </div>
 
       <div className="seti-income-tuck" data-seti-target="income" data-seti-value="income">
@@ -445,28 +874,60 @@ function PersonalBoard({ scene, view, me, selection, canTouch, onLaunch, onScan,
       </div>
 
       <div className="seti-mission-strip" data-seti-target="mission" data-seti-value="mission">
-        {me.missions.slice(-4).map((id, index) => <button key={`${id}-${index}`} type="button" onClick={() => onMissionCard(id)}><SetiCardArt scene={scene} cardId={id} /></button>)}
+        {[...me.missions, ...me.permanentCards, ...me.scoringCards, ...me.completedMissions].map((id, index) => {
+          const choices = missionChoices.filter((choice) => choice.cardId === id);
+          const claimChoices = choices.filter((choice) => choice.action === 'claim');
+          const printedMissionSlots = SETI_PROJECT_CATALOG_BY_ID[id]?.effects.flatMap((effect) => (
+            effect.timing === 'triggerable-mission' ? [...effect.slots] : []
+          )) ?? [];
+          return (
+            <div key={`${id}-${index}`} className={`seti-mission-card-wrap ${choices.length ? 'has-hotspots' : ''}`}>
+              <button type="button" className={`seti-mission-card ${missionTargets.includes(id) ? 'is-choice' : ''}`} onClick={() => onMissionCard(id)}><SetiCardArt scene={scene} cardId={id} /></button>
+              {claimChoices.map((choice, fallbackIndex) => {
+                const printedIndex = Math.max(0, printedMissionSlots.findIndex((slot) => slot.id === choice.slotId));
+                const slotIndex = printedMissionSlots.length ? printedIndex : fallbackIndex;
+                const slotCount = printedMissionSlots.length || claimChoices.length;
+                return (
+                  <button
+                    key={choice.targetId}
+                    type="button"
+                    className="seti-mission-slot-target"
+                    style={{ '--slot-index': slotIndex, '--slot-count': slotCount } as CSSProperties}
+                    data-seti-target="mission-slot"
+                    data-seti-value={choice.targetId}
+                    data-testid={choice.targetId}
+                    onClick={() => onMissionChoice(choice.index)}
+                    aria-label={`claim printed mission reward ${slotIndex + 1}`}
+                  />
+                );
+              })}
+              {choices.filter((choice) => choice.action === 'complete').map((choice) => <button key={choice.targetId} type="button" className="seti-mission-complete-target" data-seti-target="mission-complete" data-seti-value={choice.targetId} data-testid={choice.targetId} onClick={() => onMissionChoice(choice.index)} aria-label="complete this mission" />)}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-function ProjectDock({ scene, view, canBuyDeck, onInspect, onDeckBuy }: {
+function ProjectDock({ scene, view, canBuyDeck, deckTarget, rowTargets, onInspect, onDeckBuy }: {
   scene: SetiSceneDef;
   view: SetiUiView;
   canBuyDeck: boolean;
+  deckTarget: boolean;
+  rowTargets: number[];
   onInspect: (id: string, row: number) => void;
   onDeckBuy: () => void;
 }) {
   return (
     <aside className="seti-project-dock seti-glass">
       <div className="seti-dock-label"><span>PROJECT ARRAY</span><small>{view.projectDeckCount} REMAIN</small></div>
-      <TactileSurface testId="seti-project-deck" className={`seti-project-deck ${canBuyDeck ? 'is-buyable' : ''}`} disabled={!canBuyDeck} onTap={onDeckBuy} ariaLabel="buy from project deck">
+      <TactileSurface testId="seti-project-deck" className={`seti-project-deck ${canBuyDeck ? 'is-buyable' : ''} ${deckTarget ? 'is-choice' : ''}`} disabled={!canBuyDeck && !deckTarget} onTap={onDeckBuy} ariaLabel={deckTarget ? 'choose project deck' : 'buy from project deck'}>
         <SetiCardArt scene={scene} cardId="project-back" faceDown />
         <span className="seti-cost-ring">3</span>
       </TactileSurface>
       {view.projectRow.map((id, row) => (
-        <TactileSurface key={`${id}-${row}`} className={`seti-dock-card ${view.legal.buyableRow.includes(row) ? 'is-buyable' : ''}`} onTap={() => onInspect(id, row)} ariaLabel={`inspect project card ${row + 1}`}>
+        <TactileSurface key={`${id}-${row}`} className={`seti-dock-card ${view.legal.buyableRow.includes(row) ? 'is-buyable' : ''} ${rowTargets.includes(row) ? 'is-choice' : ''}`} onTap={() => onInspect(id, row)} ariaLabel={rowTargets.includes(row) ? `choose project card ${row + 1}` : `inspect project card ${row + 1}`}>
           <SetiCardArt scene={scene} cardId={id} />
         </TactileSurface>
       ))}
@@ -474,37 +935,55 @@ function ProjectDock({ scene, view, canBuyDeck, onInspect, onDeckBuy }: {
   );
 }
 
-function HandRail({ scene, me, playable, cornerCards, exchange, onCard, onPlayDrop }: {
+function HandRail({ scene, me, playable, cornerCards, pendingCards, pendingSelectedCards, exchange, moveCardId, movePaymentCards, expanded, onToggleExpanded, onCardPress, onCard, onPlayDrop }: {
   scene: SetiSceneDef | null;
   me: SetiUiPlayer;
   playable: string[];
   cornerCards: string[];
+  pendingCards: string[];
+  pendingSelectedCards: string[];
   exchange: { give: 'credits' | 'energy' | 'cards'; cardIds: string[] } | null;
+  moveCardId: string | null;
+  movePaymentCards: string[];
+  expanded: boolean;
+  onToggleExpanded: () => void;
+  onCardPress: (id: string) => void;
   onCard: (id: string) => void;
-  onPlayDrop: (id: string) => boolean;
+  onPlayDrop: (id: string, kind: string, value: string) => boolean;
 }) {
   const cards = [...me.hand, ...me.alienHand, ...me.hiddenExertian];
+  const handGroups = [
+    { label: 'PROJECT', count: me.hand.length },
+    { label: 'ALIEN', count: me.alienHand.length },
+    { label: 'EXERTIAN', count: me.hiddenExertian.length },
+  ].filter((group) => group.count > 0);
+  const groupBreaks = [me.hand.length, me.hand.length + me.alienHand.length].filter((index) => index > 0 && index < cards.length);
   return (
-    <footer className="seti-hand-rail seti-glass">
-      <div className="seti-hand-label"><small>MISSION HAND</small><b>{cards.length}</b></div>
+    <footer className={`seti-hand-rail seti-glass ${expanded ? 'is-expanded' : ''}`}>
+      <div className="seti-hand-label"><small>MISSION HAND</small><b>{cards.length}</b><button type="button" className="seti-hand-expand" onClick={onToggleExpanded} aria-label={expanded ? 'collapse whole hand' : 'view whole hand'} aria-pressed={expanded}><SetiIcon name="card" /><span>{expanded ? 'CLOSE' : 'FAN'}</span></button></div>
       <div className="seti-hand-cards">
+        {expanded && <div className="seti-hand-groups" aria-hidden="true">{handGroups.map((group) => <span key={group.label} style={{ flexGrow: group.count }}><b>{group.count}</b>{group.label}</span>)}</div>}
         {cards.map((id, index) => {
           const offset = index - (cards.length - 1) / 2;
-          const cardGap = Math.min(68, 560 / Math.max(1, cards.length - 1));
+          const cardGap = expanded ? Math.min(92, 760 / Math.max(1, cards.length - 1)) : Math.min(68, 560 / Math.max(1, cards.length - 1));
+          const totalGroupGap = expanded ? groupBreaks.length * 28 : 0;
+          const groupShift = expanded ? groupBreaks.filter((boundary) => index >= boundary).length * 28 - totalGroupGap / 2 : 0;
           const selected = exchange?.give === 'cards' && exchange.cardIds.includes(id);
+          const pendingSelected = pendingSelectedCards.includes(id);
           return (
             <TactileSurface
               key={`${id}-${index}`}
               testId={`seti-hand-card-${index}`}
-              className={`seti-hand-card ${me.alienHand.includes(id) || me.hiddenExertian.includes(id) ? 'is-alien' : ''} ${playable.includes(id) ? 'is-playable' : ''} ${cornerCards.includes(id) ? 'has-corner' : ''} ${selected ? 'is-exchange-selected' : ''}`}
-              style={{ '--hand-x': `${offset * cardGap}px`, '--hand-r': `${offset * 1.7}deg`, '--hand-z': index } as CSSProperties}
+              className={`seti-hand-card ${me.alienHand.includes(id) || me.hiddenExertian.includes(id) ? 'is-alien' : ''} ${playable.includes(id) ? 'is-playable' : ''} ${cornerCards.includes(id) ? 'has-corner' : ''} ${movePaymentCards.includes(id) ? 'is-move-option' : ''} ${pendingCards.includes(id) ? 'is-choice' : ''} ${pendingSelected ? 'is-pending-selected' : ''} ${selected ? 'is-exchange-selected' : ''} ${moveCardId === id ? 'is-move-payment' : ''}`}
+              style={{ '--hand-x': `${offset * cardGap + groupShift}px`, '--hand-r': `${offset * 1.7}deg`, '--hand-z': index } as CSSProperties}
+              onPress={() => onCardPress(id)}
               onTap={() => onCard(id)}
-              onDrop={(kind) => kind === 'mission' ? onPlayDrop(id) : false}
+              onDrop={(kind, value) => onPlayDrop(id, kind, value)}
               ariaLabel={`inspect hand card ${index + 1}`}
             >
               <span className="seti-hand-transform">
                 <SetiCardArt scene={scene} cardId={id} />
-                {selected && <i className="seti-selection-notch" />}
+                {(selected || pendingSelected) && <i className="seti-selection-notch" />}
               </span>
             </TactileSurface>
           );
@@ -514,8 +993,10 @@ function HandRail({ scene, me, playable, cornerCards, exchange, onCard, onPlayDr
   );
 }
 
-function ExchangeTray({ exchange, onReceive, onClose }: {
+function ExchangeTray({ exchange, color, choosingSource, onReceive, onClose }: {
   exchange: { give: 'credits' | 'energy' | 'cards'; cardIds: string[] };
+  color: string;
+  choosingSource: boolean;
   onReceive: (receive: 'card' | 'credit' | 'energy') => void;
   onClose: () => void;
 }) {
@@ -524,17 +1005,17 @@ function ExchangeTray({ exchange, onReceive, onClose }: {
     <div className="seti-exchange-tray seti-glass">
       <button type="button" className="seti-close" onClick={onClose} aria-label="cancel exchange"><SetiIcon name="close" /></button>
       <small>{exchange.give === 'cards' ? `${exchange.cardIds.length} / 2 CARDS SELECTED` : `2 ${exchange.give.toUpperCase()} SELECTED`}</small>
-      <b>TOUCH WHAT YOU NEED</b>
-      <div>
+      <b>{choosingSource ? 'TOUCH A PHYSICAL CARD SOURCE' : 'TOUCH WHAT YOU NEED'}</b>
+      {!choosingSource && <div>
         <button type="button" disabled={!ready} onClick={() => onReceive('card')}><SetiIcon name="card" /><span>CARD</span></button>
-        <button type="button" disabled={!ready} onClick={() => onReceive('credit')}><SetiIcon name="credit" /><span>CREDIT</span></button>
-        <button type="button" disabled={!ready} onClick={() => onReceive('energy')}><SetiIcon name="energy" /><span>ENERGY</span></button>
-      </div>
+        <button type="button" disabled={!ready} onClick={() => onReceive('credit')}><img src={`/seti/tokens/credit-${color.toLowerCase()}.webp`} alt="" /><span>CREDIT</span></button>
+        <button type="button" disabled={!ready} onClick={() => onReceive('energy')}><img src={`/seti/tokens/energy-${color.toLowerCase()}.webp`} alt="" /><span>ENERGY</span></button>
+      </div>}
     </div>
   );
 }
 
-function CardCloseup({ scene, card, view, pending, cornerCards, onClose, onPlay, onCorner, onBuy, onInitialIncome, onPending, onPendingRow, pendingSelected }: {
+function CardCloseup({ scene, card, view, pending, cornerCards, onClose, onPlay, onCorner, onBuy, onInitialIncome, onPending, onPendingRow, onCompleteAlien, onDeliverSample, pendingSelected }: {
   scene: SetiSceneDef;
   card: InspectedCard;
   view: SetiUiView;
@@ -547,6 +1028,8 @@ function CardCloseup({ scene, card, view, pending, cornerCards, onClose, onPlay,
   onInitialIncome: () => void;
   onPending: () => void;
   onPendingRow: () => void;
+  onCompleteAlien: () => void;
+  onDeliverSample: () => void;
   pendingSelected: boolean;
 }) {
   const canPlay = card.origin === 'hand' && view.legal.playableCards.includes(card.id);
@@ -555,12 +1038,15 @@ function CardCloseup({ scene, card, view, pending, cornerCards, onClose, onPlay,
   const canIncome = card.origin === 'hand' && /initial[-_]income/i.test(pending?.kind ?? '');
   const canPending = card.origin === 'pending' && card.pendingIndex !== undefined;
   const canPendingRow = card.origin === 'pending-row' && card.row !== undefined;
+  const alienMission = SETI_ALIEN_CARDS_BY_ID[card.id]?.mission;
+  const canCompleteAlien = card.origin === 'mission' && alienMission?.kind === 'conditional' && !pending;
+  const canDeliverSample = card.origin === 'mission' && alienMission?.kind === 'delivery' && !pending;
   return (
     <div className="seti-modal-layer seti-card-modal" onPointerDown={onClose}>
       <section className="seti-card-closeup" data-testid="seti-card-closeup" onPointerDown={(event) => event.stopPropagation()}>
         <button type="button" className="seti-close" onClick={onClose} aria-label="close card"><SetiIcon name="close" /></button>
         <SetiCardArt scene={scene} cardId={card.id} />
-        {(canPlay || canCorner || canBuy || canIncome || canPending || canPendingRow) && (
+        {(canPlay || canCorner || canBuy || canIncome || canPending || canPendingRow || canCompleteAlien || canDeliverSample) && (
           <div className="seti-card-commit seti-glass">
             {canPlay && <button type="button" onClick={onPlay}><SetiIcon name="card" /><span>PLAY MAIN</span></button>}
             {canCorner && <button type="button" onClick={onCorner}><span className="seti-corner-mark" /><span>USE CORNER</span></button>}
@@ -568,6 +1054,8 @@ function CardCloseup({ scene, card, view, pending, cornerCards, onClose, onPlay,
             {canIncome && <button type="button" onClick={onInitialIncome}><SetiIcon name="card" /><span>TUCK FOR INCOME</span></button>}
             {canPending && <button type="button" onClick={onPending}><SetiIcon name="card" /><span>{pendingSelected ? 'UNMARK CARD' : pendingPick(pending) > 1 ? 'MARK CARD' : 'SELECT CARD'}</span></button>}
             {canPendingRow && <button type="button" onClick={onPendingRow}><SetiIcon name="scan" /><span>USE FOR SIGNAL</span></button>}
+            {canCompleteAlien && <button type="button" onClick={onCompleteAlien}><SetiIcon name="analyze" /><span>COMPLETE MISSION</span></button>}
+            {canDeliverSample && <button type="button" onClick={onDeliverSample}><SetiIcon name="probe" /><span>SELECT CAPSULE</span></button>}
           </div>
         )}
       </section>
@@ -591,33 +1079,7 @@ function DeckBrowser({ scene, includePromos, onClose, onInspect }: { scene: Seti
   );
 }
 
-function SoloPanel({ scene, solo, onClose }: { scene: SetiSceneDef; solo: NonNullable<SetiUiView['solo']>; onClose: () => void }) {
-  const rivalBoards = Array.isArray(scene.solo?.rivalBoards) ? scene.solo.rivalBoards as unknown[] : [];
-  const board = rivalBoards.map((entry) => entry as Record<string, unknown>).find((entry) => Array.isArray(entry.difficulty) && entry.difficulty.map(Number).includes(solo.difficulty));
-  const objectives = Array.isArray(scene.solo?.objectives) ? scene.solo.objectives as unknown[] : [];
-  const objectiveArt = (id: string) => {
-    const number = Number(id.match(/(\d+)$/)?.[1] ?? 0);
-    const entry = objectives[number - 1] as Record<string, unknown> | undefined;
-    return typeof entry?.face === 'string' ? entry.face : '';
-  };
-  return (
-    <div className="seti-modal-layer seti-solo-modal" onPointerDown={onClose}>
-      <section className="seti-solo-panel seti-glass" data-testid="seti-solo-panel" onPointerDown={(event) => event.stopPropagation()}>
-        <button type="button" className="seti-close" onClick={onClose} aria-label="close rival board"><SetiIcon name="close" /></button>
-        <header><div><small>OFFICIAL SOLO RIVAL</small><h2>DIFFICULTY {solo.difficulty}</h2></div><div><span>{solo.rivalScore}<small>VP</small></span><span>{solo.progress}<small>PROGRESS</small></span><span>{solo.techTokens}<small>TECH</small></span></div></header>
-        {typeof board?.image === 'string' && <img className="seti-rival-board-art" src={board.image} alt={`rival board difficulty ${solo.difficulty}`} />}
-        <div className="seti-rival-objectives">
-          <div><small>ACTIVE OBJECTIVES</small><b>{solo.activeObjectives.length}</b></div>
-          {solo.activeObjectives.map((id) => objectiveArt(id) && <img key={id} src={objectiveArt(id)} alt="active rival objective" />)}
-          {solo.completedObjectives.map((id) => objectiveArt(id) && <img key={id} className="is-complete" src={objectiveArt(id)} alt="completed rival objective" />)}
-          <span className="seti-rival-decks"><i>{solo.objectiveDeckCount}<small>OBJECTIVES</small></i><i>{solo.actionDeckCount}<small>ACTIONS</small></i></span>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function PendingDecision({ scene, view, me, chosen, onToggle, onCommit, onInspectCard, pendingRow, onInspectRow, onLayer }: {
+function PendingDecision({ scene, view, me, chosen, onToggle, onCommit, onInspectCard, pendingRow, presentation, onInspectRow, onLayer }: {
   scene: SetiSceneDef | null;
   view: SetiUiView;
   me: SetiUiPlayer;
@@ -626,26 +1088,43 @@ function PendingDecision({ scene, view, me, chosen, onToggle, onCommit, onInspec
   onCommit: (indexes: number[]) => void;
   onInspectCard: (id: string, index: number) => void;
   pendingRow: number | null;
+  presentation: SetiPendingPresentation;
   onInspectRow: (id: string, row: number) => void;
   onLayer: (layer: Layer) => void;
 }) {
   const pending = view.pending!;
   const mine = pending.owner < 0 || pending.owner === me.seat;
+  const artifactModel = setiPendingArtifactModel(view, pending);
   const pick = pendingPick(pending);
   const cardOptions = pending.options.every((option) => optionCardId(option));
   const rowOptions = Array.isArray(pending.raw.rowOptions) ? pending.raw.rowOptions.map(Number).filter(Number.isInteger) : [];
+  const presentationLayer: Layer | null = pending.kind === 'computer-tech-slot' ? 'personal' : /signal|sector|tech|trace|moon|planet|alien-card-source/i.test(pending.kind)
+    || presentation.pieceIndexes.size
+    || presentation.cellIndexes.size
+    || presentation.sectorIndexes.size
+    || presentation.rowIndexes.size
+    || presentation.bodyChoices.length
+    || presentation.moveChoices.length
+    || presentation.sampleChoices.length
+    || presentation.projectDeckIndex !== null
+    || presentation.alienDeckIndex !== null
+    ? 'solar'
+    : presentation.cardIndexes.size || presentation.missionIndexes.size ? 'personal' : null;
   useEffect(() => {
-    if (/signal|sector|tech|trace|moon|planet/i.test(pending.kind)) onLayer('solar');
-  }, [pending.kind, onLayer]);
+    if (presentationLayer) onLayer(presentationLayer);
+  }, [pending.kind, presentationLayer, onLayer]);
   if (!mine) return <div className="seti-pending-wait seti-glass"><span className="seti-loader-orbits"><i /><i /><i /></span><div><small>AWAITING DECISION</small><b>{view.players.find((player) => player.seat === pending.owner)?.name ?? 'AGENCY'}</b></div></div>;
+  if (artifactModel) return <SetiPendingArtifacts scene={scene} view={view} pending={pending} onChoose={(index) => onCommit([index])} />;
 
   const directCue = pending.kind === 'signal-sector'
     ? rowOptions.length > 0 && pendingRow === null ? 'TOUCH OR DRAG A PROJECT CARD' : 'TOUCH THE GLOWING STAR SECTOR'
     : pending.kind === 'tech-stack' ? 'TOUCH A GLOWING TECH TILE'
+    : pending.kind === 'computer-tech-slot' ? 'TOUCH A GLOWING COMPUTER POSITION'
     : pending.kind === 'completed-sector-order' ? 'TOUCH A COMPLETED STAR SECTOR'
-    : null;
+    : pending.kind === 'card-effect-choice' && /launch bay|telescope.tech action/i.test(pending.prompt) ? 'TOUCH THE LAUNCH BAY OR ONE OF YOUR PROBES'
+    : setiPendingCue(presentation, pending);
   if (directCue) {
-    return <div className="seti-direct-cue seti-glass"><SetiIcon name={pending.kind === 'tech-stack' ? 'research' : 'scan'} /><b>{directCue}</b></div>;
+    return <div className={`seti-direct-cue seti-glass ${presentation.finishIndexes.length || pick > 1 ? 'has-actions' : ''}`}><SetiIcon name={/tech/i.test(pending.kind) ? 'research' : /card|mission/i.test(directCue) ? 'card' : 'scan'} /><b>{directCue}</b>{pick > 1 && <span>{chosen.length} / {pick}</span>}{presentation.finishIndexes.map((index) => <button key={index} type="button" onClick={() => onCommit([index])}>{optionLabel(pending.options[index], index)}</button>)}{pick > 1 && <button type="button" disabled={chosen.length !== pick} onClick={() => onCommit(chosen)}>CONFIRM</button>}</div>;
   }
 
   const toggle = (index: number) => {
@@ -694,7 +1173,7 @@ function pendingAsset(scene: SetiSceneDef | null, view: SetiUiView, kind: string
 
 function pendingPick(pending: SetiUiPending | null): number {
   if (!pending) return 1;
-  return Math.max(1, Number(pending.raw.pick ?? pending.raw.count ?? pending.raw.required ?? 1));
+  return Math.max(1, Number(pending.raw.pick ?? pending.raw.count ?? pending.raw.required ?? pending.raw.max ?? pending.raw.min ?? 1));
 }
 
 function pendingAction(pending: SetiUiPending, indexes: number[], row?: number): SetiClientAction | null {
@@ -739,6 +1218,7 @@ function makeChoice(pending: SetiUiPending, values: unknown[], indexes: number[]
   if (/trace-space/.test(kind)) return { kind: 'trace-space', spaceId: String(firstRecord.spaceId ?? firstRecord.id ?? first) };
   if (/gold-tile/.test(kind)) return { kind: 'gold-tile', tileId: String(firstRecord.tileId ?? firstRecord.id ?? first) };
   if (/tech-stack/.test(kind)) return { kind: 'tech-stack', stackId: String(firstRecord.stackId ?? firstRecord.id ?? first) };
+  if (/computer-tech-slot/.test(kind)) return { kind: 'number', value: Number(firstRecord.value ?? firstRecord.id ?? first) };
   if (/mars-first-data/.test(kind)) return { kind: 'number', value: Number(firstRecord.value ?? firstRecord.id ?? first) };
   const options = values.map((value) => String(recordChoiceValue(value)));
   return options.length > 1 ? { kind: 'options', options } : { kind: 'option', option: options[0] ?? String(indexes[0]) };

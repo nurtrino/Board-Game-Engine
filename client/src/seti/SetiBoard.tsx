@@ -1,8 +1,9 @@
-import { useState, type CSSProperties } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import type { SetiView } from '@bge/shared';
 import { SetiIcon } from './SetiIcons';
-import { SetiStarfield, SetiTable, setiAlienBoard, useSetiScene } from './SetiScene';
+import { SetiCardArt, SetiStarfield, SetiTable, setiGoldTile, setiTechAbilityFace, useSetiScene } from './SetiScene';
 import { normalizeSetiView, setiSeatColor } from './setiView';
+import { SetiSoloTvHud } from './SetiSoloRival';
 import './seti.css';
 
 export function SetiBoard({ view: rawView }: { view: SetiView }) {
@@ -37,42 +38,29 @@ export function SetiBoard({ view: rawView }: { view: SetiView }) {
           <button
             key={player.seat}
             type="button"
-            className={`seti-score-chip seti-glass ${player.seat === view.activeSeat ? 'is-active' : ''}`}
+            className={`seti-score-chip seti-glass ${player.seat === view.activeSeat ? 'is-active' : ''} ${player.passed ? 'is-passed' : ''}`}
             style={{ '--seat': setiSeatColor(player.color) } as CSSProperties}
             onClick={() => setDetailSeat(player.seat)}
           >
             <span className="seti-seat-outline" />
             <span className="seti-score-name">{player.name}</span>
-            <span className="seti-score-value">{player.score}<small>VP</small></span>
+            {player.seat === view.startingSeat && <span className="seti-starting-marker" title="starting player"><img src="/seti/tokens/first-player.webp" alt="starting player token" /></span>}
+            <span className="seti-score-value">{view.phase === 'ended' ? player.finalScore ?? player.score : player.score}<small>VP</small></span>
             <span className="seti-pub-value"><SetiIcon name="publicity" />{player.publicity}</span>
           </button>
         ))}
       </aside>
 
-      {scene && view.species.length > 0 && (
-        <aside className="seti-species-rail" aria-label="alien species">
-          {view.species.slice(0, 2).map((species, index) => (
-            <figure key={`${species.id}-${index}`} className={`seti-species-tile ${species.revealed ? 'is-revealed' : ''}`}>
-              <img src={setiAlienBoard(scene, species.id, species.revealed)} alt={species.revealed ? species.id : `hidden species ${index + 1}`} />
-              {species.markers.map((marker, markerIndex) => (
-                <span
-                  key={marker.id}
-                  className={`seti-alien-marker trace-${marker.color}`}
-                  style={{ '--seat': setiSeatColor(view.players[marker.owner]?.color), left: `${22 + markerIndex % 3 * 28}%`, bottom: `${8 + Math.floor(markerIndex / 3) * 9}%` } as CSSProperties}
-                />
-              ))}
-              <figcaption>{species.revealed ? species.id.replace(/[-_]/g, ' ') : `SIGNAL ${index + 1}`}</figcaption>
-            </figure>
-          ))}
-        </aside>
-      )}
-
       <div className="seti-rotation-chip seti-glass">
         <span className={`seti-rotation-mini disc-${view.rotationPointer}`} />
-        <div><small>NEXT ROTATION</small><b>DISC {view.rotationPointer}</b></div>
+        <div><small>NEXT ROTATION</small><b>DISC {view.rotationPointer}</b><small>{view.roundEndCount} ROUND CARDS</small></div>
       </div>
 
-      {view.solo && <div className="seti-tv-solo seti-glass"><small>SOLO RIVAL</small><b>{view.solo.rivalScore} VP</b><span>{view.solo.progress} PROGRESS</span></div>}
+      <aside className="seti-neutral-supply seti-glass" aria-label="neutral discovery markers">
+        {([20, 30] as const).map((threshold) => <div key={threshold}><span>{Array.from({ length: view.neutralMilestonesRemaining[threshold] }, (_, index) => <i key={index} />)}</span><b>{threshold} VP</b></div>)}
+      </aside>
+
+      {view.solo && <SetiSoloTvHud solo={view.solo} />}
 
       {view.lastEvent && (
         <div className="seti-event-caption seti-glass" key={view.lastEvent.seq} style={{ '--seat': setiSeatColor(view.players[view.lastEvent.seat ?? -1]?.color) } as CSSProperties}>
@@ -91,21 +79,58 @@ export function SetiBoard({ view: rawView }: { view: SetiView }) {
               <span className="seti-seat-outline" />
               <small>AGENCY TELEMETRY</small>
               <h2>{player.name}</h2>
+              {player.seat === view.startingSeat && <div className="seti-detail-starting"><span className="seti-starting-marker"><img src="/seti/tokens/first-player.webp" alt="starting player token" /></span><b>STARTING AGENCY</b></div>}
               <div className="seti-detail-grid">
-                <Metric icon="score" label="VICTORY" value={player.score} />
+                <Metric icon="score" label="VICTORY" value={view.phase === 'ended' ? player.finalScore ?? player.score : player.score} />
                 <Metric icon="publicity" label="PUBLICITY" value={player.publicity} />
                 <Metric icon="credit" label="CREDITS" value={player.credits} />
                 <Metric icon="energy" label="ENERGY" value={player.energy} />
                 <Metric icon="data" label="DATA" value={player.dataPool} />
                 <Metric icon="research" label="TECH" value={player.techs.length} />
               </div>
-              <div className="seti-detail-strip"><span>PROBES {view.pieces.filter((piece) => piece.owner === player.seat && piece.kind === 'probe').length}</span><span>MISSIONS {player.missions.length}</span><span>{player.passed ? 'PASSED' : 'ACTIVE'}</span></div>
+              <div className="seti-detail-strip"><span>PROBES {view.pieces.filter((piece) => piece.owner === player.seat && piece.kind === 'probe').length}</span><span>ORBITERS {view.placedSpacecraft.filter((piece) => piece.owner === player.seat && piece.kind === 'orbiter').length}</span><span>LANDERS {view.placedSpacecraft.filter((piece) => piece.owner === player.seat && piece.kind === 'lander').length}</span><span>TRACES {view.species.flatMap((species) => species.markers).filter((marker) => marker.owner === player.seat).length}</span><span>MISSIONS {player.missions.length}</span><span>{player.passed ? 'PASSED' : 'ACTIVE'}</span></div>
+              {player.finalScoreBreakdown && <div className="seti-final-breakdown"><span><small>BOARD</small><b>{player.finalScoreBreakdown.base}</b></span><span><small>GOLD</small><b>{player.finalScoreBreakdown.gold}</b></span><span><small>PROJECTS</small><b>{player.finalScoreBreakdown.projects}</b></span><span><small>ALIENS</small><b>{player.finalScoreBreakdown.aliens >= 0 ? '+' : ''}{player.finalScoreBreakdown.aliens}</b></span><span><small>FINAL</small><b>{player.finalScoreBreakdown.total}</b></span></div>}
+              {scene && (
+                <div className="seti-detail-tableau">
+                  <TableauLane label="TECHNOLOGY">
+                    {player.techs.map((tech) => <span key={tech.tileId} className="seti-detail-tech">{setiTechAbilityFace(scene, tech.stackId, tech.tileId) ? <img src={setiTechAbilityFace(scene, tech.stackId, tech.tileId)} alt={tech.stackId.replace(/[-_]/g, ' ')} /> : <b>{tech.stackId.replace(/^seti_tech_stack_/, '').slice(0, 3)}</b>}</span>)}
+                  </TableauLane>
+                  <TableauLane label="COMPUTER">
+                    <div className="seti-detail-computer">
+                      <div className="seti-detail-computer-top">{Array.from({ length: 6 }, (_, slot) => <i key={slot} className={player.computer.top[slot] ? 'is-filled' : ''} />)}</div>
+                      <div className="seti-detail-computer-tech">{Array.from({ length: 4 }, (_, boardSlot) => {
+                        const installed = player.computer.tech.find((tech) => tech.boardSlot === boardSlot);
+                        const owned = installed && player.techs.find((tech) => tech.stackId === installed.stackId);
+                        const art = installed && setiTechAbilityFace(scene, installed.stackId, owned?.tileId);
+                        return <span key={boardSlot} className={installed ? 'is-installed' : ''}>{art ? <img src={art} alt={`computer technology ${boardSlot + 1}`} /> : installed ? <b>CO</b> : null}{installed?.lower && <i />}</span>;
+                      })}</div>
+                    </div>
+                  </TableauLane>
+                  <TableauLane label="INCOME">
+                    {player.income.map((id, index) => <span key={`${id}-${index}`} className="seti-detail-card"><SetiCardArt scene={scene} cardId={id} /></span>)}
+                  </TableauLane>
+                  <TableauLane label="MISSIONS & SCORING">
+                    {[...player.missions, ...player.completedMissions, ...player.scoringCards, ...player.permanentCards].map((id, index) => <span key={`${id}-${index}`} className="seti-detail-card"><SetiCardArt scene={scene} cardId={id} /></span>)}
+                  </TableauLane>
+                  <TableauLane label="GOLD MILESTONES">
+                    {player.goldClaims.map((id, index) => {
+                      const tile = view.goldTiles.find((candidate) => candidate.id === id);
+                      const art = setiGoldTile(scene, id, tile?.side ?? 'A');
+                      return <span key={`${id}-${index}`} className="seti-detail-gold">{art ? <img src={art} alt={id.replace(/[-_]/g, ' ')} /> : <b>{id.replace(/^seti_gold_/, '')}</b>}</span>;
+                    })}
+                  </TableauLane>
+                </div>
+              )}
             </section>
           </div>
         );
       })()}
     </main>
   );
+}
+
+function TableauLane({ label, children }: { label: string; children: ReactNode }) {
+  return <section className="seti-detail-lane"><small>{label}</small><div>{children}</div></section>;
 }
 
 function Metric({ icon, label, value }: { icon: 'score' | 'publicity' | 'credit' | 'energy' | 'data' | 'research'; label: string; value: number }) {
