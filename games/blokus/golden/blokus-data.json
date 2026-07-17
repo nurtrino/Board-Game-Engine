@@ -1,0 +1,42 @@
+{
+ "workshop": 295656883,
+ "size": 20,
+ "cellWorld": 0.775,
+ "pieceHeight": 0.284,
+ "boardArt": "/blokus/board.webp",
+ "corners": {
+  "Blue": [
+   19,
+   19
+  ],
+  "Yellow": [
+   0,
+   19
+  ],
+  "Red": [
+   0,
+   0
+  ],
+  "Green": [
+   19,
+   0
+  ]
+ },
+ "turnOrder": [
+  "Blue",
+  "Yellow",
+  "Red",
+  "Green"
+ ],
+ "colors": {
+  "Blue": "#3d5aaa",
+  "Yellow": "#cfc331",
+  "Red": "#bf3835",
+  "Green": "#2f974c"
+ },
+ "scoring": {
+  "perSquare": -1,
+  "allPlaced": 15,
+  "monominoLast": 5
+ }
+}
