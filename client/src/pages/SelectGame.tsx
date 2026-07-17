@@ -70,7 +70,7 @@ const GAMES = [
   {
     id: 'blokus',
     name: 'Blokus',
-    logo: '/blokus/box.webp',
+    logo: '/blokus/box.webp?v=2', // cache-bust: the tile art changed under the same path
   },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
