@@ -180,7 +180,7 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
   const s = useMemo(() => pseudoState(view), [view]);
   const [closeup, setCloseup] = useState<{ card: string; source: 'hand' | 'meadow' | 'city' | 'ref'; meadowIndex?: number } | null>(null);
   const [placing, setPlacing] = useState(false);
-  const [showDeck, setShowDeck] = useState(false);
+  const [eventView, setEventView] = useState<{ img: string; name: string; sub: string } | null>(null);
   const [showHand, setShowHand] = useState(false);
   const [intro, setIntro] = useState(false);
   const [confirmPass, setConfirmPass] = useState(false);
@@ -275,42 +275,6 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
     );
   };
 
-  // ---------- reference: full deck ----------
-  const renderDeck = () => {
-    if (!showDeck) return null;
-    return (
-      <div className="ev-overlay" onClick={() => setShowDeck(false)}>
-        <div className="ev-sheet" onClick={(e) => e.stopPropagation()}>
-          <h3>THE DECK · 48 CARDS · 128 COPIES</h3>
-          <div className="ev-picks">
-            {EV_CARDS.map((c) => (
-              <button key={c.id} className="ev-pick" style={{ backgroundImage: `url(${cardImg(c.id)})` }}
-                onClick={() => setCloseup({ card: c.id, source: 'ref' })} aria-label={c.name}>
-                <span style={{
-                  position: 'absolute', right: 3, bottom: 3, background: 'rgba(10,12,15,0.85)',
-                  color: '#e8ebf0', font: '800 9px Inter', padding: '1px 5px', borderRadius: 4,
-                }}>×{c.copies}</span>
-              </button>
-            ))}
-          </div>
-          <h3>FOREST LOCATIONS</h3>
-          <div className="ev-picks">
-            {EV_FOREST.map((f) => (
-              <span key={f.id} className="ev-pick wide" style={{ backgroundImage: `url(${forestImg(f.id)})` }} />
-            ))}
-          </div>
-          <h3>SPECIAL EVENTS IN PLAY</h3>
-          <div className="ev-picks">
-            {view.specialEvents.map((e) => (
-              <span key={e.id} className="ev-pick" style={{ backgroundImage: `url(${specialEventImg(e.id)})` }} />
-            ))}
-          </div>
-          <button className="ev-btn" onClick={() => setShowDeck(false)}>CLOSE</button>
-        </div>
-      </div>
-    );
-  };
-
   // ---------- whole hand grouped ----------
   const renderHand = () => {
     if (!showHand) return null;
@@ -355,7 +319,6 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
         </span>
         <span className={'ev-status' + (myTurn || pending ? ' active' : '')} aria-live="polite" data-testid="ev-status">{statusLine}</span>
         <button className="ev-btn" onClick={() => setShowHand(true)} data-tour="hand-all">HAND</button>
-        <button className="ev-btn" onClick={() => setShowDeck(true)} data-tour="show-deck">SHOW DECK</button>
         <button className="ev-btn" onClick={() => setIntro(true)} aria-label="How to play">?</button>
         <button className={'ev-btn' + (view.turnDone && view.turn === seat ? ' primary' : '')}
           disabled={!(view.turnDone && view.turn === seat && !view.pending)}
@@ -396,20 +359,47 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
               </button>
             )}
           </div>
-          <div className="ev-rail-label">EVENTS</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, font: '600 10px Inter, sans-serif' }}>
-            {view.basicEvents.map((e) => (
-              <span key={e.id} className={e.claimedBy !== null ? 'dim' : ''}>
-                {EV_BASIC_EVENT_BY_ID[e.id].name.toUpperCase()}
-                {e.claimedBy !== null ? ` · ${view.players[e.claimedBy].name.toUpperCase()}` : ''}
-              </span>
-            ))}
-            {view.specialEvents.map((e) => (
-              <span key={e.id} className={e.claimedBy !== null ? 'dim' : ''}>
-                {EV_SPECIAL_BY_ID[e.id].name.toUpperCase()}
-                {e.claimedBy !== null ? ` · ${view.players[e.claimedBy].name.toUpperCase()}` : ''}
-              </span>
-            ))}
+          <div className="ev-rail-label">EVENTS · TAP TO READ</div>
+          <div className="ev-events-strip" data-testid="ev-events-strip">
+            {view.basicEvents.map((e) => {
+              const d = EV_BASIC_EVENT_BY_ID[e.id];
+              const claimed = e.claimedBy !== null;
+              return (
+                <button key={e.id}
+                  className={'ev-event-thumb tile' + (claimed ? ' claimed' : '')}
+                  style={claimed ? { ['--claim' as never]: EVERDELL_SEAT_HEX[view.players[e.claimedBy!].color] } : undefined}
+                  onClick={() => setEventView({
+                    img: d.img,
+                    name: d.name.toUpperCase(),
+                    sub: claimed
+                      ? `ACHIEVED BY ${view.players[e.claimedBy!].name.toUpperCase()}`
+                      : `${d.count} ${d.requiresColor.toUpperCase()} CARDS · ${d.points} PTS`,
+                  })}
+                  aria-label={d.name}>
+                  <img src={d.img} alt={d.name} />
+                </button>
+              );
+            })}
+            {view.specialEvents.map((e) => {
+              const d = EV_SPECIAL_BY_ID[e.id];
+              const claimed = e.claimedBy !== null;
+              const req = d.requiresCards
+                ? d.requiresCards.map((id) => EV_CARD_BY_ID[id]?.name.toUpperCase() ?? id).join(' + ')
+                : '2 OF EACH COLOR';
+              return (
+                <button key={e.id}
+                  className={'ev-event-thumb' + (claimed ? ' claimed' : '')}
+                  style={claimed ? { ['--claim' as never]: EVERDELL_SEAT_HEX[view.players[e.claimedBy!].color] } : undefined}
+                  onClick={() => setEventView({
+                    img: specialEventImg(e.id),
+                    name: d.name.toUpperCase(),
+                    sub: claimed ? `ACHIEVED BY ${view.players[e.claimedBy!].name.toUpperCase()}` : req,
+                  })}
+                  aria-label={d.name}>
+                  <img src={specialEventImg(e.id)} alt={d.name} />
+                </button>
+              );
+            })}
           </div>
           <div className="ev-rail-label">OPPONENTS</div>
           <div className="ev-opps" data-testid="ev-opps">
@@ -487,8 +477,17 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
       {renderCloseup()}
       {renderPlacing()}
       {renderPending()}
-      {renderDeck()}
       {renderHand()}
+      {eventView && (
+        <div className="ev-overlay" onClick={() => setEventView(null)}>
+          <div className="ev-sheet" onClick={(e) => e.stopPropagation()} data-testid="ev-event-view">
+            <h3>{eventView.name}</h3>
+            <small className="dim" style={{ font: '700 11px Inter, sans-serif', letterSpacing: 0.5 }}>{eventView.sub}</small>
+            <img src={eventView.img} alt={eventView.name} style={{ maxWidth: 'min(420px, 80vw)', borderRadius: 10 }} />
+            <button className="ev-btn" onClick={() => setEventView(null)}>CLOSE</button>
+          </div>
+        </div>
+      )}
       {oppSeat !== null && (() => {
         const p = view.players[oppSeat];
         if (!p) return null;

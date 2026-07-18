@@ -33,8 +33,18 @@ const MEADOW_PX: [number, number][] = [
 ];
 const MEADOW_W_PX = 265;
 
-// forest card anchors (art px): the bush shelves left + right
-const FOREST_PX: [number, number][] = [[175, 1030], [195, 1340], [1945, 1030], [1925, 1340]];
+// forest card anchors (art px): the bush shelves left + right, clear of the
+// meadow columns (cards may overhang the board edge like a real table)
+const FOREST_PX: [number, number][] = [[150, 1030], [170, 1345], [2000, 1030], [1980, 1345]];
+
+// printed supply piles on the board art: the mod's resource models sit here
+const PILES: { kind: 'twig' | 'resin' | 'pebble' | 'berry' | 'point'; px: [number, number]; n: number }[] = [
+  { kind: 'twig', px: [335, 700], n: 4 },
+  { kind: 'point', px: [760, 712], n: 5 },
+  { kind: 'resin', px: [975, 690], n: 4 },
+  { kind: 'pebble', px: [1180, 780], n: 4 },
+  { kind: 'berry', px: [1895, 640], n: 4 },
+];
 
 // deck + discard at the Ever Tree roots (top center of the art)
 const DECK_PX: [number, number] = [880, 190];
@@ -76,6 +86,72 @@ function BoardPlate() {
         <planeGeometry args={[BW, BH]} />
         <meshStandardMaterial map={tex} roughness={0.9} metalness={0.02} transparent alphaTest={0.35} />
       </mesh>
+    </group>
+  );
+}
+
+/** The Ever Tree: the mod's two standee pieces (event canopy below, season
+ * crown above) standing at the board's painted root mass. */
+function EverTree() {
+  const canopy = useLoader(THREE.TextureLoader, '/everdell/tree-events.webp');   // 1635x1104, trunk at top
+  const crown = useLoader(THREE.TextureLoader, '/everdell/tree-meeples.webp');   // 1257x808, trunk at bottom
+  useEffect(() => {
+    for (const t of [canopy, crown]) {
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = 8;
+      t.needsUpdate = true;
+    }
+  }, [canopy, crown]);
+  const X = -1.1;                       // painted root mass center (art x ~950)
+  const Z = -(BH / 2) - 1.1;
+  const canopyW = 6.6, canopyH = canopyW * (1104 / 1635);
+  const crownW = 4.3, crownH = crownW * (808 / 1257);
+  return (
+    <group>
+      <mesh position={[X, canopyH / 2 + 0.02, Z]}>
+        <planeGeometry args={[canopyW, canopyH]} />
+        <meshStandardMaterial map={canopy} roughness={0.9} transparent alphaTest={0.35} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh position={[X, canopyH + crownH / 2 - 0.9, Z - 0.06]}>
+        <planeGeometry args={[crownW, crownH]} />
+        <meshStandardMaterial map={crown} roughness={0.9} transparent alphaTest={0.35} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  );
+}
+
+/** A small pile of the mod's actual resource models on a printed supply spot. */
+function ResourcePile({ kind, px, n }: { kind: string; px: [number, number]; n: number }) {
+  const obj = useLoader(OBJLoader, `/everdell/models/${kind}.obj`);
+  const tex = useLoader(THREE.TextureLoader, `/everdell/models/${kind}.webp`);
+  const { instances, scale, lift } = useMemo(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const base = obj.clone(true);
+    const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.05 });
+    base.traverse((m) => {
+      if ((m as THREE.Mesh).isMesh) {
+        (m as THREE.Mesh).material = mat;
+        (m as THREE.Mesh).castShadow = true;
+      }
+    });
+    const bb = new THREE.Box3().setFromObject(base);
+    const size = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z, bb.max.y - bb.min.y) || 1;
+    const s = 0.52 / size;
+    const out = Array.from({ length: n }, (_, i) => {
+      const a = (i / n) * Math.PI * 2 + i * 1.7;
+      const r = i === 0 ? 0 : 0.34;
+      return { obj: i === 0 ? base : base.clone(true), dx: Math.cos(a) * r, dz: Math.sin(a) * r, yaw: a * 1.3 };
+    });
+    return { instances: out, scale: s, lift: -bb.min.y * s };
+  }, [obj, tex, n]);
+  const [x, z] = px2w(px[0], px[1]);
+  return (
+    <group>
+      {instances.map((s, i) => (
+        <primitive key={i} object={s.obj}
+          position={[x + s.dx, lift + 0.03, z + s.dz]}
+          scale={[scale, scale, scale]} rotation={[0, s.yaw, 0]} />
+      ))}
     </group>
   );
 }
@@ -217,7 +293,7 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
   const [statsSeat, setStatsSeat] = useState<number | null>(null);
   const meadowW = (MEADOW_W_PX / ART_W) * BW;
   const meadowH = meadowW * (1664 / 1179);
-  const forestW = (330 / ART_W) * BW;
+  const forestW = (300 / ART_W) * BW;
   const forestH = forestW * (1034 / 1478);
   const deckW = (210 / ART_W) * BW;
   const deckH = deckW * (1664 / 1179);
@@ -226,7 +302,7 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
     <div className="ev-board" data-testid="ev-board" aria-label="Everdell shared board">
       <Canvas shadows="soft" frameloop="demand" dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-        camera={{ fov: 42, near: 0.1, far: 160, position: [0, 24, 19] }}
+        camera={{ fov: 42, near: 0.1, far: 160, position: [0, 22, 23] }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.outputColorSpace = THREE.SRGBColorSpace;
@@ -246,6 +322,8 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
           <meshStandardMaterial color="#0b0c0e" roughness={0.96} />
         </mesh>
         <BoardPlate />
+        <EverTree />
+        {PILES.map((p) => <ResourcePile key={p.kind} kind={p.kind} px={p.px} n={p.n} />)}
 
         {/* meadow: 8 face-up cards */}
         {view.meadow.map((m, i) => {
@@ -305,7 +383,8 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
         ) : (
           <OrbitControls makeDefault enablePan={false} minDistance={13} maxDistance={52}
             maxPolarAngle={Math.PI * 0.42} enableDamping dampingFactor={0.08}
-            target={[0, 0, -1]} />
+            target={[0, 1.2, -2.5]} />
+
         )}
       </Canvas>
 

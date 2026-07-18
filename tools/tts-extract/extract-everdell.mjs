@@ -137,6 +137,15 @@ await sharp(img('http://cloud-3.steamusercontent.com/ugc/2170232209282356276/D28
 await sharp(img('http://cloud-3.steamusercontent.com/ugc/1019445328402096111/C5EFF40C8CB14E1E1DA5AAE9043DE6E28BC90525/'), { limitInputPixels: false })
   .resize({ width: 2048 }).webp({ quality: 88 }).toFile(path.join(OUT, 'pboard.webp'));
 
+// ---------- the Ever Tree pieces (event tree + meeple tree, alpha art) ----------
+for (const [name, guid] of Object.entries({ 'tree-events': 'a61672', 'tree-meeples': '332bfa' })) {
+  const o = byGuid[guid];
+  const src = img(o.CustomImage.ImageURL);
+  const meta = await sharp(src, { limitInputPixels: false }).metadata();
+  await sharp(src, { limitInputPixels: false }).resize({ width: 1024 }).webp({ quality: 88 }).toFile(path.join(OUT, `${name}.webp`));
+  console.log(name, meta.width + 'x' + meta.height);
+}
+
 // ---------- basic event tiles ----------
 const EVENT_TILES = {
   harvest: '276261', tour: 'defbce', monument: '51d24a', expedition: '2b321b',

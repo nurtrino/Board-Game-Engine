@@ -441,8 +441,23 @@ and must not be duplicated as loose personal pieces.
   and the win; **devices** click on actions and blip on errors. Dark Tower plays
   its own authentic tower sounds (respects the global mute) — don't double it.
 
-**Show deck** — every card game's device has a button to view the full card
-sheets as a reference.
+**No Show Deck button** (owner directive Jul 17 2026, reversing the earlier
+"show deck" rule): never add a deck-contents reference viewer to the device.
+Tap-to-read close-ups on the cards actually in view are the reference.
+
+**No hover zoom on cards** (owner directive): cards must not scale/lift on
+hover; a border highlight is the most a hover may do. Reading happens in the
+tap close-up.
+
+**Shared-state summaries are art, not text lists** (owner directive): a rail
+or panel that lists events/objectives as uppercase text lines is clutter —
+render the actual tile/card art as small thumbnails (claimed = seat-colour
+ring + dim) with tap-to-enlarge.
+
+**The shared board carries the mod's physical extras**: supply piles (the
+actual resource models seated on the printed pile spots) and standee pieces
+(Everdell's two-part Ever Tree) belong on the TV board — their absence reads
+as a missing component.
 
 **Every game has an explicit End Turn button** (owner directive): pressing it
 is how you know your own turn is over — never auto-advance the turn silently.

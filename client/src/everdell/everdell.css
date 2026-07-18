@@ -131,6 +131,17 @@
 
 .ev-rail-city-note { margin-top: auto; font: 600 10px Inter, sans-serif; opacity: 0.5; letter-spacing: 0.4px; }
 
+/* visual events strip in the rail: art thumbnails, claimed = seat ring + dim */
+.ev-events-strip { display: flex; flex-wrap: wrap; gap: 5px; }
+.ev-event-thumb {
+  position: relative; border: 2px solid transparent; border-radius: 7px; padding: 0;
+  background: none; cursor: pointer;
+}
+.ev-event-thumb img { display: block; height: 54px; border-radius: 5px; }
+.ev-event-thumb.tile img { width: 54px; object-fit: contain; }
+.ev-event-thumb.claimed { opacity: 0.45; }
+.ev-event-thumb.claimed { border-color: var(--claim); }
+
 .ev-opps { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; }
 .ev-opp {
   display: flex; flex-direction: column; gap: 2px; align-items: flex-start; text-align: left;
@@ -176,9 +187,9 @@
   flex: 0 0 auto; height: calc(100% - 6px); aspect-ratio: 1179 / 1664; border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; position: relative;
   background-size: cover; background-position: center;
-  transition: transform 0.12s ease, border-color 0.12s ease;
+  transition: border-color 0.12s ease; /* no hover zoom (owner directive) */
 }
-.ev-hcard:hover { transform: translateY(-5px); border-color: #ffe9a8; }
+.ev-hcard:hover { border-color: #ffe9a8; }
 
 /* overlays */
 .ev-overlay {

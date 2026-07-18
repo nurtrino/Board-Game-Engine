@@ -13,7 +13,7 @@ import { cardImg, forestImg, specialEventImg } from './ev-assets';
 
 const ART_W = 2111, ART_H = 2064;
 // forest bush shelves (art px) — matches the TV board layout
-const FOREST_PX: [number, number][] = [[175, 1030], [195, 1340], [1945, 1030], [1925, 1340]];
+const FOREST_PX: [number, number][] = [[150, 1030], [170, 1345], [2000, 1030], [1980, 1345]];
 
 const pct = (px: number, py: number) => ({ left: `${(px / ART_W) * 100}%`, top: `${(py / ART_H) * 100}%` });
 
