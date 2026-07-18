@@ -150,7 +150,8 @@ export interface EverdellState {
   pending: EvPending[];
   nextUid: number;
   winners: number[];
-  lastEvent: { seq: number; text: string; kind?: string };
+  /** loc lets the TV fly the camera to where the action landed. */
+  lastEvent: { seq: number; text: string; kind?: string; loc?: EvLocRef };
 }
 
 // ---------- seeded rng ----------
@@ -296,7 +297,7 @@ export interface EverdellView {
   pending: EvPending | null;
   pendingCount: number;
   winners: number[];
-  lastEvent: { seq: number; text: string; kind?: string };
+  lastEvent: { seq: number; text: string; kind?: string; loc?: EvLocRef };
 }
 
 export function everdellViewFor(state: EverdellState, viewer: number | null | 'dev'): EverdellView {

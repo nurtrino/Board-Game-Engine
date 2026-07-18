@@ -38,8 +38,8 @@ export interface EverdellResult { ok: boolean; error?: string }
 const upper = (t: string) => t.replace(/^\p{Ll}/u, (m) => m.toUpperCase());
 const err = (error: string): EverdellResult => ({ ok: false, error: upper(error.replace(/\s+—\s+/g, ', ')) });
 
-function evt(s: EverdellState, text: string, kind?: string): void {
-  s.lastEvent = { seq: s.lastEvent.seq + 1, text, kind };
+function evt(s: EverdellState, text: string, kind?: string, loc?: EvLocRef): void {
+  s.lastEvent = { seq: s.lastEvent.seq + 1, text, kind, ...(loc ? { loc } : {}) };
 }
 
 const nameOf = (s: EverdellState, seat: number) => s.players[seat].name.toUpperCase();
@@ -582,7 +582,7 @@ function achieveBasicEvent(s: EverdellState, seat: number, id: string): void {
   const st = s.basicEvents.find((e) => e.id === id)!;
   st.claimedBy = seat;
   s.players[seat].achievedBasic.push(id);
-  evt(s, `${nameOf(s, seat)} ACHIEVES ${EV_BASIC_EVENT_BY_ID[id].name.toUpperCase()}`, 'event');
+  evt(s, `${nameOf(s, seat)} ACHIEVES ${EV_BASIC_EVENT_BY_ID[id].name.toUpperCase()}`, 'event', { t: 'basicEvent', id });
 }
 
 function achieveSpecialEvent(s: EverdellState, seat: number, id: string): void {
@@ -592,7 +592,7 @@ function achieveSpecialEvent(s: EverdellState, seat: number, id: string): void {
   st.claimedBy = seat;
   p.achievedSpecial.push(id);
   if (def.cost) pay(p, def.cost);
-  evt(s, `${nameOf(s, seat)} ACHIEVES ${def.name.toUpperCase()}`, 'event');
+  evt(s, `${nameOf(s, seat)} ACHIEVES ${def.name.toUpperCase()}`, 'event', { t: 'specialEvent', id });
   switch (id) {
     case 'tax-relief': activateAllProduction(s, seat); break;
     case 'evening-fireworks': if (p.res.twig > 0) s.pending.push({ kind: 'fireworks-twigs', seat, eventId: id }); break;
@@ -939,7 +939,7 @@ export function applyEverdellAction(s: EverdellState, seat: number, a: EverdellA
       const permanent = a.loc.t === 'journey'
         || (a.loc.t === 'city' && EV_CARD_BY_ID[cardAtLoc(s, a.loc as EvLocRef & { t: 'city' }) ?? '']?.permanentSpot === true);
       p.workers.push({ loc: a.loc, permanent });
-      evt(s, `${nameOf(s, seat)} PLACES A WORKER · ${locLabel(s, a.loc)}`, 'place');
+      evt(s, `${nameOf(s, seat)} PLACES A WORKER · ${locLabel(s, a.loc)}`, 'place', a.loc);
       resolveWorkerEffect(s, seat, a.loc);
       finishIfIdle(s);
       return { ok: true };
@@ -1271,7 +1271,7 @@ function resolveChoose(s: EverdellState, seat: number, a: Choose): EverdellResul
         || (to.t === 'city' && EV_CARD_BY_ID[cardAtLoc(s, to as EvLocRef & { t: 'city' }) ?? '']?.permanentSpot === true);
       p.workers.push({ loc: to, permanent });
       s.pending.shift();
-      evt(s, `${nameOf(s, seat)} MOVES A WORKER · ${locLabel(s, to)}`, 'place');
+      evt(s, `${nameOf(s, seat)} MOVES A WORKER · ${locLabel(s, to)}`, 'place', to);
       resolveWorkerEffect(s, seat, to);
       finishIfIdle(s);
       return { ok: true };

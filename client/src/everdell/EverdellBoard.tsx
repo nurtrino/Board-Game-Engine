@@ -4,8 +4,9 @@
 // critter-meeple workers tinted per seat — plus the universal ig-* HUD.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useLoader, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import type { EverdellView, EvLocRef } from '@bge/shared';
@@ -262,6 +263,54 @@ function Workers({ view }: { view: EverdellView }) {
   );
 }
 
+/** Fly the camera to each movement/claim, dwell a readable beat, ease home
+ * (owner directive: movement must be zoomed in on on the main screen). */
+interface EvFocus { seq: number; x: number; z: number }
+function FocusFly({ focus, controls }: {
+  focus: EvFocus | null;
+  controls: React.RefObject<OrbitControlsImpl | null>;
+}) {
+  const camera = useThree((st) => st.camera);
+  const anim = useRef<{ start: number; seq: number } | null>(null);
+  const home = useRef<{ pos: THREE.Vector3; target: THREE.Vector3 } | null>(null);
+  const doneSeq = useRef(-1);
+  const IN = 1.1, HOLD = 2.4, OUT = 1.1;
+  useFrame(({ clock }) => {
+    const c = controls.current;
+    if (!focus || !c || focus.seq === doneSeq.current) return;
+    if (anim.current?.seq !== focus.seq) {
+      // a new focus: remember (or keep) the resting view to return to
+      home.current ??= { pos: camera.position.clone(), target: c.target.clone() };
+      anim.current = { start: clock.elapsedTime, seq: focus.seq };
+    }
+    const t = clock.elapsedTime - anim.current.start;
+    const ease = (x: number) => x * x * (3 - 2 * x);
+    const inPos = new THREE.Vector3(focus.x, 7.5, focus.z + 5.6);
+    const inTarget = new THREE.Vector3(focus.x, 0, focus.z);
+    const h = home.current!;
+    if (t < IN) {
+      const k = ease(t / IN);
+      camera.position.lerpVectors(h.pos, inPos, k);
+      c.target.lerpVectors(h.target, inTarget, k);
+    } else if (t < IN + HOLD) {
+      camera.position.copy(inPos);
+      c.target.copy(inTarget);
+    } else if (t < IN + HOLD + OUT) {
+      const k = ease((t - IN - HOLD) / OUT);
+      camera.position.lerpVectors(inPos, h.pos, k);
+      c.target.lerpVectors(inTarget, h.target, k);
+    } else {
+      camera.position.copy(h.pos);
+      c.target.copy(h.target);
+      doneSeq.current = focus.seq;
+      anim.current = null;
+      home.current = null;
+    }
+    c.update();
+  });
+  return null;
+}
+
 /** Dev harness: ?cam=x,z,h[,y] pins the camera for zoomed verification shots. */
 function CamOverride() {
   const camera = useThree((st) => st.camera);
@@ -291,6 +340,14 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
   }, [view.lastEvent.seq, view.lastEvent.kind]);
 
   const [statsSeat, setStatsSeat] = useState<number | null>(null);
+  const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const focus = useMemo<EvFocus | null>(() => {
+    const ev = view.lastEvent;
+    if (!ev?.loc) return null;
+    const at = locWorld(view, ev.loc);
+    return at ? { seq: ev.seq, x: at[0], z: at[1] } : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view.lastEvent?.seq]);
   const meadowW = (MEADOW_W_PX / ART_W) * BW;
   const meadowH = meadowW * (1664 / 1179);
   const forestW = (300 / ART_W) * BW;
@@ -300,7 +357,7 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
 
   return (
     <div className="ev-board" data-testid="ev-board" aria-label="Everdell shared board">
-      <Canvas shadows="soft" frameloop="demand" dpr={[1, 1.5]}
+      <Canvas shadows="soft" dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
         camera={{ fov: 42, near: 0.1, far: 160, position: [0, 22, 23] }}
         onCreated={({ gl }) => {
@@ -381,10 +438,12 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
         {new URLSearchParams(location.search).get('cam') ? (
           <CamOverride />
         ) : (
-          <OrbitControls makeDefault enablePan={false} minDistance={13} maxDistance={52}
-            maxPolarAngle={Math.PI * 0.42} enableDamping dampingFactor={0.08}
-            target={[0, 1.2, -2.5]} />
-
+          <>
+            <OrbitControls ref={controlsRef} makeDefault enablePan={false} minDistance={13} maxDistance={52}
+              maxPolarAngle={Math.PI * 0.42} enableDamping dampingFactor={0.08}
+              target={[0, 1.2, -2.5]} />
+            <FocusFly focus={focus} controls={controlsRef} />
+          </>
         )}
       </Canvas>
 

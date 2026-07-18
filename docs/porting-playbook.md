@@ -426,6 +426,11 @@ and must not be duplicated as loose personal pieces.
   text. Non-build/simple actions stay a single line, no big icon.
 - **Clear turnover** indicator on both the TV and the device (pops on each turn
   change).
+- **The TV zooms in on movement** (owner directive Jul 17 2026): every worker
+  placement/movement and event claim flies the camera to the spot, dwells a
+  readable beat, then eases back to the resting view (Everdell `FocusFly`;
+  Brass/Trek fly-tos are the same pattern). Carry the action's location in the
+  engine's `lastEvent` so the TV can aim — don't try to re-derive it client-side.
 - Cards should be **big and clear**. Trekking: park river down the **left**,
   major parks down the **right**, both labelled; awards small during play,
   **large + distributed** at game end. Expect the owner to fine-tune sizes
