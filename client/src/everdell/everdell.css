@@ -170,10 +170,12 @@
   position: absolute; left: 3px; bottom: 3px; background: rgba(122, 96, 58, 0.92); color: #f2ead2;
   font: 800 8px Inter, sans-serif; letter-spacing: 0.6px; border-radius: 4px; padding: 1px 4px;
 }
-.ev-meadow-row { display: flex; gap: 6px; flex: 0 0 96px; }
+.ev-meadow-row { display: flex; gap: 8px; flex: 0 0 108px; }
 .ev-meadow-row .ev-mcard {
-  flex: 1; border-radius: 7px; border: 1px solid rgba(255, 255, 255, 0.18);
-  background-size: cover; background-position: center top; cursor: pointer; position: relative;
+  /* true card aspect: 'cover' then fits exactly, no crop-zoom */
+  flex: 0 0 auto; height: 100%; aspect-ratio: 1179 / 1664;
+  border-radius: 7px; border: 1px solid rgba(255, 255, 255, 0.18);
+  background-size: cover; background-position: center; cursor: pointer; position: relative;
 }
 .ev-meadow-row .ev-mcard:hover { border-color: #ffe9a8; }
 
@@ -365,5 +367,5 @@
 
 @media (max-height: 800px) {
   .ev-hand-wrap { flex-basis: 140px; }
-  .ev-meadow-row { flex-basis: 84px; }
+  .ev-meadow-row { flex-basis: 92px; }
 }

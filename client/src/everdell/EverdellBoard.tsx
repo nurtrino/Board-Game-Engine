@@ -51,10 +51,17 @@ const PILES: { kind: 'twig' | 'resin' | 'pebble' | 'berry' | 'point'; px: [numbe
 const DECK_PX: [number, number] = [880, 190];
 const DISCARD_PX: [number, number] = [1090, 190];
 
-// event row floats on the table above the board's top edge
-const EVENT_Z = -(BH / 2) - 1.7;
-const BASIC_EVENT_X = [-10.4, -7.8, -5.2, -2.6];
-const SPECIAL_EVENT_X = [1.6, 4.3, 7.0, 9.7];
+// the two Ever Tree pieces lie FLAT as leafy beds above the board's top edge
+// (that is how the mod lays them: events on the canopy, tiles on the crown)
+const CANOPY = { x: -4.6, z: -(BH / 2) - 3.4, w: 11.2, h: 11.2 * (1104 / 1635) };
+const CROWN = { x: 6.6, z: -(BH / 2) - 2.9, w: 8.6, h: 8.6 * (808 / 1257) };
+// special event cards sit on the canopy bed; basic tiles on the crown bed
+const SPECIAL_EVENT_POS: [number, number][] = [
+  [-8.6, CANOPY.z + 0.4], [-5.9, CANOPY.z + 0.4], [-3.2, CANOPY.z + 0.4], [-0.5, CANOPY.z + 0.4],
+];
+const BASIC_EVENT_POS: [number, number][] = [
+  [3.6, CROWN.z + 0.2], [5.6, CROWN.z + 0.2], [7.6, CROWN.z + 0.2], [9.6, CROWN.z + 0.2],
+];
 
 function FlatImage({ url, w, h, pos, ry = 0, opacity = 1 }: {
   url: string; w: number; h: number; pos: [number, number, number]; ry?: number; opacity?: number;
@@ -91,35 +98,27 @@ function BoardPlate() {
   );
 }
 
-/** The Ever Tree: the mod's two standee pieces (event canopy below, season
- * crown above) standing at the board's painted root mass. */
-function EverTree() {
-  const canopy = useLoader(THREE.TextureLoader, '/everdell/tree-events.webp');   // 1635x1104, trunk at top
-  const crown = useLoader(THREE.TextureLoader, '/everdell/tree-meeples.webp');   // 1257x808, trunk at bottom
-  useEffect(() => {
-    for (const t of [canopy, crown]) {
-      t.colorSpace = THREE.SRGBColorSpace;
-      t.anisotropy = 8;
-      t.needsUpdate = true;
-    }
-  }, [canopy, crown]);
-  const X = -1.1;                       // painted root mass center (art x ~950)
-  const Z = -(BH / 2) - 1.1;
-  const canopyW = 6.6, canopyH = canopyW * (1104 / 1635);
-  const crownW = 4.3, crownH = crownW * (808 / 1257);
+/** The Ever Tree pieces lying flat: leafy beds the events and tiles sit on. */
+function LeafBeds() {
   return (
     <group>
-      <mesh position={[X, canopyH / 2 + 0.02, Z]}>
-        <planeGeometry args={[canopyW, canopyH]} />
-        <meshStandardMaterial map={canopy} roughness={0.9} transparent alphaTest={0.35} side={THREE.DoubleSide} />
-      </mesh>
-      <mesh position={[X, canopyH + crownH / 2 - 0.9, Z - 0.06]}>
-        <planeGeometry args={[crownW, crownH]} />
-        <meshStandardMaterial map={crown} roughness={0.9} transparent alphaTest={0.35} side={THREE.DoubleSide} />
-      </mesh>
+      <FlatImage url="/everdell/tree-events.webp" w={CANOPY.w} h={CANOPY.h} pos={[CANOPY.x, 0.015, CANOPY.z]} />
+      <FlatImage url="/everdell/tree-meeples.webp" w={CROWN.w} h={CROWN.h} pos={[CROWN.x, 0.015, CROWN.z]} />
     </group>
   );
 }
+
+// The mod's own item tints + scales (ColorDiffuse / Transform.scaleX of the
+// bag items): the pebble is tinted blue-grey and the berry magenta over
+// their diffuse maps; sizes keep the authentic relative proportions.
+const PIECE_TINT: Record<string, string | undefined> = {
+  pebble: '#5db0b5', berry: '#ad1776',
+};
+/** Target world size (largest dimension) per piece — the mod's relative
+ * proportions (long twig logs, small round berries) at table scale. */
+const PIECE_SIZE: Record<string, number> = {
+  twig: 0.95, resin: 0.52, pebble: 0.48, berry: 0.4, point: 0.5,
+};
 
 /** A small pile of the mod's actual resource models on a printed supply spot. */
 function ResourcePile({ kind, px, n }: { kind: string; px: [number, number]; n: number }) {
@@ -128,7 +127,10 @@ function ResourcePile({ kind, px, n }: { kind: string; px: [number, number]; n: 
   const { instances, scale, lift } = useMemo(() => {
     tex.colorSpace = THREE.SRGBColorSpace;
     const base = obj.clone(true);
-    const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.05 });
+    const mat = new THREE.MeshStandardMaterial({
+      map: tex, roughness: 0.65, metalness: 0.05,
+      color: PIECE_TINT[kind] ?? '#ffffff',
+    });
     base.traverse((m) => {
       if ((m as THREE.Mesh).isMesh) {
         (m as THREE.Mesh).material = mat;
@@ -137,14 +139,14 @@ function ResourcePile({ kind, px, n }: { kind: string; px: [number, number]; n: 
     });
     const bb = new THREE.Box3().setFromObject(base);
     const size = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z, bb.max.y - bb.min.y) || 1;
-    const s = 0.52 / size;
+    const s = (PIECE_SIZE[kind] ?? 0.5) / size;
     const out = Array.from({ length: n }, (_, i) => {
       const a = (i / n) * Math.PI * 2 + i * 1.7;
-      const r = i === 0 ? 0 : 0.34;
+      const r = i === 0 ? 0 : 0.36;
       return { obj: i === 0 ? base : base.clone(true), dx: Math.cos(a) * r, dz: Math.sin(a) * r, yaw: a * 1.3 };
     });
     return { instances: out, scale: s, lift: -bb.min.y * s };
-  }, [obj, tex, n]);
+  }, [obj, tex, n, kind]);
   const [x, z] = px2w(px[0], px[1]);
   return (
     <group>
@@ -225,11 +227,11 @@ function locWorld(view: EverdellView, loc: EvLocRef): [number, number] | null {
     }
     case 'basicEvent': {
       const i = view.basicEvents.findIndex((e) => e.id === loc.id);
-      return i >= 0 ? [BASIC_EVENT_X[i], EVENT_Z] : null;
+      return i >= 0 ? BASIC_EVENT_POS[i] : null;
     }
     case 'specialEvent': {
       const i = view.specialEvents.findIndex((e) => e.id === loc.id);
-      return i >= 0 ? [SPECIAL_EVENT_X[i], EVENT_Z] : null;
+      return i >= 0 ? SPECIAL_EVENT_POS[i] : null;
     }
     case 'city': return null;
   }
@@ -379,7 +381,7 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
           <meshStandardMaterial color="#0b0c0e" roughness={0.96} />
         </mesh>
         <BoardPlate />
-        <EverTree />
+        <LeafBeds />
         {PILES.map((p) => <ResourcePile key={p.kind} kind={p.kind} px={p.px} n={p.n} />)}
 
         {/* meadow: 8 face-up cards */}
@@ -406,32 +408,37 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
           return <FlatImage url={BACK_MAIN} w={deckW} h={deckH} pos={[x, 0.06, z]} opacity={0.55} />;
         })()}
 
-        {/* event row above the board: 4 basic tiles + 4 special event cards */}
+        {/* events on the leafy beds: 4 basic tiles on the crown bed, 4 special
+            event cards on the canopy bed */}
         {view.basicEvents.map((e, i) => {
           const def = EV_BASIC_EVENT_BY_ID[e.id];
+          const [ex, ez] = BASIC_EVENT_POS[i];
           return (
             <group key={e.id}>
-              <FlatImage url={def.img} w={2.3} h={2.3} pos={[BASIC_EVENT_X[i], 0.03, EVENT_Z]} />
+              <FlatImage url={def.img} w={1.9} h={1.9} pos={[ex, 0.04, ez]} />
               {e.claimedBy !== null && (
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[BASIC_EVENT_X[i], 0.045, EVENT_Z]}>
-                  <ringGeometry args={[1.18, 1.34, 40]} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[ex, 0.055, ez]}>
+                  <ringGeometry args={[0.98, 1.12, 40]} />
                   <meshBasicMaterial color={EVERDELL_SEAT_HEX[view.players[e.claimedBy].color]} />
                 </mesh>
               )}
             </group>
           );
         })}
-        {view.specialEvents.map((e, i) => (
-          <group key={e.id}>
-            <FlatImage url={specialEventImg(e.id)} w={2.1} h={2.1 * (1478 / 1032)} pos={[SPECIAL_EVENT_X[i], 0.03, EVENT_Z]} />
-            {e.claimedBy !== null && (
-              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[SPECIAL_EVENT_X[i], 0.045, EVENT_Z]}>
-                <ringGeometry args={[1.28, 1.44, 40]} />
-                <meshBasicMaterial color={EVERDELL_SEAT_HEX[view.players[e.claimedBy].color]} />
-              </mesh>
-            )}
-          </group>
-        ))}
+        {view.specialEvents.map((e, i) => {
+          const [ex, ez] = SPECIAL_EVENT_POS[i];
+          return (
+            <group key={e.id}>
+              <FlatImage url={specialEventImg(e.id)} w={2.15} h={2.15 * (1478 / 1032)} pos={[ex, 0.04, ez]} />
+              {e.claimedBy !== null && (
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[ex, 0.055, ez]}>
+                  <ringGeometry args={[1.3, 1.46, 40]} />
+                  <meshBasicMaterial color={EVERDELL_SEAT_HEX[view.players[e.claimedBy].color]} />
+                </mesh>
+              )}
+            </group>
+          );
+        })}
 
         <Workers view={view} />
 
