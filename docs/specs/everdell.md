@@ -221,6 +221,59 @@ free-critter link, effect id, copies, sheet/cell for art).
   play card with payment/ability picker, prepare for season, End Turn), Show
   deck, card close-ups, greyed-out illegal/unaffordable options with reasons.
 
+## Ship gate 1: rulebook UI-coverage audit (Jul 17 2026)
+
+Every player decision, optional cost, amount choice, and piece of public
+information was walked against the built screens; the reverse pass checked the
+engine action union for fields the UI never sends.
+
+Covered (decision → where it lives):
+- One action per turn → device rail (PLACE WORKER / card close-up play /
+  PREPARE / PASS), explicit END TURN in the header (turnDone gate).
+- Worker placement, all location kinds → visual board sheet (real art,
+  glowing legal spots, per-spot disabled reasons); destinations render as
+  card art incl. open opponents'; events as tiles/cards with requirements.
+- Haven discard set + gains; Journey discard picks; forest choice effects;
+  Lookout/forest copy → visual board picker; Inn/Queen/Cemetery/Pigeon plays
+  → card pick sheets with per-card reasons; Post Office give+redraw;
+  University target + gain-any; Monastery give+opponent; Chapel automatic
+  (no choice per rules).
+- Card play cost abilities → close-up options: pay, occupied-token free
+  critter (per construction + Ever Tree), Innkeeper, Crane, Judge (from/to
+  pickers), Dungeon (prisoner picker); Crane/Dungeon discount allocation is
+  player-editable steppers (engine accepts arbitrary allocation).
+- Shepherd pay-to-opponent picker; Fool target picker.
+- Production choices (Storehouse set, Woodcarver/Doctor amounts, Peddler
+  trade, Monk gift, Chip Sweep / Miner Mole targets, Teacher keep/give,
+  Harvester any) → typed prompts; Clock Tower pre-recall prompt; summer
+  meadow draws (skippable, "up to 2").
+- Special-event onAchieve choices (fireworks/performer/new-management
+  amounts, acorn/graduation/scrolls card sets, marketing donations, croak
+  city discards, well-run worker recall) → typed prompts.
+- Public info: TV chips + city modal; device rail OPPONENTS summaries
+  (season, workers, hand count, resources, points) with a tap-through city
+  browser; deck/discard counts on both screens; events state on both.
+
+Deliberate simplifications (recorded, rules-safe):
+- Post-play triggers (Shopkeeper/Courthouse/Historian) resolve in fixed city
+  order instead of active-player-chosen order (no known base-game
+  interaction where the order matters materially).
+- Gatherer/Harvester auto-pair into a shared space when a partner is
+  unpaired (sharing is strictly beneficial in the base game).
+- Give-cards effects let the giver pick any opponent; overflow beyond the
+  receiver's hand limit discards (rulebook prefers an opponent with room).
+- Production during Prepare resolves mandatory gains immediately and queues
+  choice cards as prompts, rather than full any-order sequencing.
+- Chip Sweep may not activate a Chip Sweep (self-loop guard); Miner Mole may
+  not copy Storehouse (Archive p6) or Miner Mole.
+
+## Ship gate 2: UI-driven full game
+
+`tools/verify/everdell-ui-smoke.mjs` — 4 puppeteer pages, one per seat, play
+a complete game by clicking the real device DOM (close-ups, visual placement
+board, pending prompts, END TURN). `tools/verify/ev-room.mjs` spins a room;
+`ev-place-shot.mjs` screenshots the placement sheet.
+
 ## Open items / decisions
 
 - Fool plays into an OPPONENT's city (takes a slot there, -2 to them).

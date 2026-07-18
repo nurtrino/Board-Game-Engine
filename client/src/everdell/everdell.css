@@ -131,6 +131,16 @@
 
 .ev-rail-city-note { margin-top: auto; font: 600 10px Inter, sans-serif; opacity: 0.5; letter-spacing: 0.4px; }
 
+.ev-opps { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; }
+.ev-opp {
+  display: flex; flex-direction: column; gap: 2px; align-items: flex-start; text-align: left;
+  padding: 7px 9px; border-radius: 9px; border: 2px solid #666;
+  background: rgba(255, 255, 255, 0.04); color: #e8ebf0; cursor: pointer;
+}
+.ev-opp .nm { font: 800 10.5px Inter, sans-serif; letter-spacing: 0.5px; }
+.ev-opp .ln { font: 600 9.5px Inter, sans-serif; opacity: 0.85; display: inline-flex; align-items: center; }
+.ev-opp .ln.dim { opacity: 0.5; }
+
 /* center: city + meadow */
 .ev-center { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; padding: 8px; gap: 6px; }
 .ev-zone-label { font: 800 10px Inter, sans-serif; letter-spacing: 1.2px; opacity: 0.55; display: flex; justify-content: space-between; }

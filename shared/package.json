@@ -6,7 +6,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "npm run test:brass && npm run test:ttr && npm run test:trek && npm run test:darktower && npm run test:dune && npm run test:politik && npm run test:axis && npm run test:darksouls && npm run test:feast && npm run test:bloodborne && npm run test:seti && npm run test:blokus",
+    "test": "npm run test:brass && npm run test:ttr && npm run test:trek && npm run test:darktower && npm run test:dune && npm run test:politik && npm run test:axis && npm run test:darksouls && npm run test:feast && npm run test:bloodborne && npm run test:seti && npm run test:blokus && npm run test:everdell",
     "test:brass": "tsx src/brass/setup-test.ts && tsx src/brass/actions-test.ts && tsx src/brass/connectivity-test.ts && tsx src/brass/playercount-test.ts",
     "test:ttr": "tsx src/ttr/ttr-test.ts",
     "test:trek": "tsx src/trek/trek-test.ts",
@@ -18,7 +18,8 @@
     "test:bloodborne": "tsx src/bloodborne/bloodborne-test.ts",
     "test:feast": "tsx src/feast/feast-test.ts && tsx src/feast/action-space-parity-test.ts && tsx src/feast/occupation-rules-test.ts && tsx src/feast/occupation-runtime-test.ts && tsx src/feast/occupation-executor-test.ts && tsx src/feast/occupation-decisions-test.ts && tsx src/feast/occupation-deferred-test.ts && tsx src/feast/occupation-deferred-reducer-integration-test.ts && tsx src/feast/occupation-action-replacement-reducer-integration-test.ts && tsx src/feast/occupation-draw-replacement-reducer-integration-test.ts && tsx src/feast/occupation-modifier-integration-test.ts && tsx src/feast/occupation-modifier-gap-reducer-test.ts && tsx src/feast/occupation-action-facts-reducer-test.ts && tsx src/feast/occupation-worker-action-reducer-integration-test.ts && tsx src/feast/occupation-crafting-facts-reducer-test.ts && tsx src/feast/occupation-material-modifier-reducer-test.ts && tsx src/feast/occupation-bonus-replacement-reducer-integration-test.ts && tsx src/feast/occupation-bonus-cascade-reducer-integration-test.ts && tsx src/feast/occupation-event-cascade-reducer-integration-test.ts && tsx src/feast/occupation-phase-scheduler-reducer-integration-test.ts && tsx src/feast/occupation-pipeline-integration-test.ts && tsx src/feast/occupation-event-integration-audit-test.ts && tsx src/feast/occupation-final-acceptance-reducer-test.ts",
     "test:seti": "tsx src/seti/core-rules-test.ts && tsx src/seti/solar-geometry-test.ts && tsx src/seti/solar-actions-test.ts && tsx src/seti/project-catalog-test.ts && tsx src/seti/project-runtime-test.ts && tsx src/seti/alien-catalog-test.ts && tsx src/seti/alien-runtime-test.ts && tsx src/seti/solo-runtime-test.ts && tsx src/seti/seti-test.ts && tsx src/seti/core-flow-test.ts",
-    "test:blokus": "tsx src/blokus/blokus-test.ts"
+    "test:blokus": "tsx src/blokus/blokus-test.ts",
+    "test:everdell": "tsx src/everdell/everdell-test.ts"
   },
   "devDependencies": {
     "tsx": "^4.19.0",

@@ -184,6 +184,7 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
   const [showHand, setShowHand] = useState(false);
   const [intro, setIntro] = useState(false);
   const [confirmPass, setConfirmPass] = useState(false);
+  const [oppSeat, setOppSeat] = useState<number | null>(null);
 
   if (!me) return <div className="page center"><h2>Watching the board</h2></div>;
 
@@ -406,6 +407,25 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
               </span>
             ))}
           </div>
+          <div className="ev-rail-label">OPPONENTS</div>
+          <div className="ev-opps" data-testid="ev-opps">
+            {view.players.filter((p) => p.seat !== seat).map((p) => (
+              <button key={p.seat} className="ev-opp" style={{ borderColor: EVERDELL_SEAT_HEX[p.color] }}
+                onClick={() => setOppSeat(p.seat)}>
+                <span className="nm">{p.name.toUpperCase()}{p.passed ? ' · PASSED' : ''}</span>
+                <span className="ln">{p.season.toUpperCase()} · {p.workersTotal - p.workers.length}/{p.workersTotal} WORKERS · HAND {p.handCount}</span>
+                <span className="ln">
+                  {EV_RESOURCES.map((r) => (
+                    <span key={r} style={{ display: 'inline-flex', alignItems: 'center', gap: 2, marginRight: 6 }}>
+                      {p.res[r]}<ResIcon kind={r} size={11} />
+                    </span>
+                  ))}
+                  {p.points}<ResIcon kind="point" size={11} />
+                </span>
+                <span className="ln dim">CITY {p.city.length} · TAP TO BROWSE</span>
+              </button>
+            ))}
+          </div>
           <span className="ev-rail-city-note">DECK {view.deckCount} · DISCARD {view.discardCount} · TAP ANY CARD TO READ IT</span>
         </aside>
 
@@ -465,7 +485,56 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
       {renderPending()}
       {renderDeck()}
       {renderHand()}
+      {oppSeat !== null && (() => {
+        const p = view.players[oppSeat];
+        if (!p) return null;
+        return (
+          <div className="ev-overlay" onClick={() => setOppSeat(null)}>
+            <div className="ev-sheet" onClick={(e) => e.stopPropagation()} data-testid="ev-opp-city">
+              <h3 style={{ color: EVERDELL_SEAT_HEX[p.color] }}>
+                {p.name.toUpperCase()} · {p.season.toUpperCase()} · CITY {p.city.filter((c) => !EV_CARD_BY_ID[c.card]?.noSpace).length}/15
+              </h3>
+              <div className="ev-picks">
+                {p.city.map((cc) => (
+                  <button key={cc.uid} className="ev-pick" style={{ backgroundImage: `url(${cardImg(cc.card)})`, width: 108 }}
+                    onClick={() => { setOppSeat(null); setCloseup({ card: cc.card, source: 'ref' }); }}
+                    aria-label={EV_CARD_BY_ID[cc.card]?.name ?? cc.card}>
+                    {cc.sharedWith && (
+                      <img src={cardImg(cc.sharedWith)} alt={cc.sharedWith}
+                        style={{ position: 'absolute', right: -4, bottom: -4, width: '58%', borderRadius: 5, border: '1px solid rgba(255,255,255,0.5)' }} />
+                    )}
+                    {cc.storedPoints > 0 && <span className="ev-badge pts">{cc.storedPoints}</span>}
+                    {cc.prisoners.length > 0 && <span className="ev-badge pri">{cc.prisoners.length}</span>}
+                  </button>
+                ))}
+                {p.city.length === 0 && <span className="dim">NO CARDS YET</span>}
+              </div>
+              <button className="ev-btn" onClick={() => setOppSeat(null)}>CLOSE</button>
+            </div>
+          </div>
+        );
+      })()}
       {intro && <GameIntro intro={EVERDELL_INTRO} onClose={() => setIntro(false)} />}
+      {view.phase === 'ended' && (
+        <div className="ev-end" role="alert" data-testid="ev-play-end">
+          <div className="ev-end-title">
+            {view.winners.map((w) => view.players[w].name.toUpperCase()).join(' · ')} WINS
+          </div>
+          <div className="ev-end-scores">
+            {[...view.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).map((p) => (
+              <div key={p.seat} className="ev-end-row ig-glass" style={{ borderColor: EVERDELL_SEAT_HEX[p.color] }}>
+                <b>{p.name.toUpperCase()}{p.seat === seat ? ' · YOU' : ''}</b>
+                <span>{p.score} PTS</span>
+                {p.scoreParts && (
+                  <small>
+                    CARDS {p.scoreParts.cards} · TOKENS {p.scoreParts.tokens} · PROSPERITY {p.scoreParts.prosperity} · JOURNEY {p.scoreParts.journey} · EVENTS {p.scoreParts.events}
+                  </small>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {error && <div className="ev-toast" role="alert">{error}</div>}
     </div>
   );
@@ -485,6 +554,7 @@ function PlayOptions({ view, s, seat, def, source, meadowIndex, onPlay }: {
   const [foolTarget, setFoolTarget] = useState<number | null>(null);
   const [payTo, setPayTo] = useState<number | null>(null);
   const [prisonerUid, setPrisonerUid] = useState<number | null>(null);
+  const [manualDisc, setManualDisc] = useState<EvResMap | null>(null);
 
   const roomWhy = everdellCityRoomFor(s, seat, def);
   const isFool = def.id === 'fool';
@@ -511,7 +581,7 @@ function PlayOptions({ view, s, seat, def, source, meadowIndex, onPlay }: {
     }
     const dungeon = me.city.find((c) => c.card === 'dungeon');
     if (dungeon) {
-      const disc = autoDiscount(def.cost, me.res, 3);
+      const disc = manualDisc ?? autoDiscount(def.cost, me.res, 3);
       options.push({
         key: 'dungeon', label: 'DUNGEON · −3 ANY', sub: 'Imprison a critter from your city',
         ability: { kind: 'dungeon', uid: dungeon.uid, prisonerUid: prisonerUid ?? -1, discount: disc },
@@ -522,7 +592,7 @@ function PlayOptions({ view, s, seat, def, source, meadowIndex, onPlay }: {
   if (def.kind === 'construction') {
     const crane = me.city.find((c) => c.card === 'crane');
     if (crane) {
-      const disc = autoDiscount(def.cost, me.res, 3);
+      const disc = manualDisc ?? autoDiscount(def.cost, me.res, 3);
       options.push({ key: 'crane', label: 'CRANE · −3 ANY', sub: 'Discards your Crane', ability: { kind: 'crane', uid: crane.uid, discount: disc }, cost: applyDisc(def.cost, disc) });
     }
   }
@@ -562,6 +632,16 @@ function PlayOptions({ view, s, seat, def, source, meadowIndex, onPlay }: {
           <small>{o.cost === null ? 'Does not apply' : <>PAY <CostChips cost={o.cost} size={11} /></>}{o.sub ? ` · ${o.sub}` : ''}</small>
         </button>
       ))}
+      {(selected.ability.kind === 'crane' || selected.ability.kind === 'dungeon') && (
+        <>
+          <div className="ev-rail-label">DISCOUNT UP TO 3 · WHICH RESOURCES</div>
+          <ResSteppers
+            value={selected.ability.discount}
+            onChange={(v) => setManualDisc(v)}
+            max={3}
+            limits={Object.fromEntries(EV_RESOURCES.map((r) => [r, def.cost[r]]))} />
+        </>
+      )}
       {selected.ability.kind === 'judge' && (
         <div className="row" style={{ font: '700 11px Inter' }}>
           SWAP
