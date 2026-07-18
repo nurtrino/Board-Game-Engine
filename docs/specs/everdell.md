@@ -267,12 +267,19 @@ Deliberate simplifications (recorded, rules-safe):
 - Chip Sweep may not activate a Chip Sweep (self-loop guard); Miner Mole may
   not copy Storehouse (Archive p6) or Miner Mole.
 
-## Ship gate 2: UI-driven full game
+## Ship gate 2: UI-driven full game — PASSED Jul 17 2026
 
-`tools/verify/everdell-ui-smoke.mjs` — 4 puppeteer pages, one per seat, play
-a complete game by clicking the real device DOM (close-ups, visual placement
-board, pending prompts, END TURN). `tools/verify/ev-room.mjs` spins a room;
-`ev-place-shot.mjs` screenshots the placement sheet.
+`tools/verify/everdell-ui-smoke.mjs` — 4 puppeteer pages (one isolated
+browser context per seat; four tabs on one origin overwrite each other's
+`bge-token` and steal seats), playing a complete game by clicking the real
+device DOM (close-ups, visual placement board, pending prompts, END TURN).
+Result: full 4-seat game to the end overlay, `UI SMOKE PASSED`.
+`ev-play-e2e.mjs` proves the positive card-play path (human vs CPU: gather
+with workers across seasons, play a Farm via the close-up — cost paid, city
+grows, production fires). `ev-room.mjs` spins rooms; `ev-place-shot.mjs` /
+`ev-spot-dump.mjs` / `ev-play-probe.mjs` are placement/play inspectors.
+Point drivers at the Vite dev client (5173) — the Express port serves the
+last production build, which can be stale.
 
 ## Open items / decisions
 
