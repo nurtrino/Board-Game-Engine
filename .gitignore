@@ -33,3 +33,5 @@ scratch-tmp/
 eng.traineddata
 /page.png
 server/.rooms.backup.json
+
+server/.rooms.json.lock

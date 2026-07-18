@@ -1,13 +1,16 @@
 // Everdell ship gate: a full 4-seat game played entirely by clicking the real
 // device DOM — hand/meadow close-ups, the visual placement board, pending
 // prompts, END TURN — never raw WS actions. A stall is a UI finding.
-// Usage: node everdell-ui-smoke.mjs [port] [seats]
+// Usage: node everdell-ui-smoke.mjs [wsPort] [seats] [pageBase]
+// wsPort talks to the game server; pageBase is the CLIENT the pages load —
+// default the Vite dev server (5173). Pointing pages at the Express port
+// serves the last production build, which can be stale.
 import puppeteer from 'puppeteer';
 import WebSocket from 'ws';
 
 const PORT = process.argv[2] ?? '8787';
 const SEATS = Number(process.argv[3] ?? '4');
-const BASE = `http://localhost:${PORT}`;
+const BASE = process.argv[4] ?? 'http://localhost:5173';
 
 // ---------- room setup (lobby only; play is all DOM) ----------
 // One socket per seat: the host socket creates, joins first, and starts.
@@ -102,9 +105,15 @@ async function step(page) {
     if (place) {
       const spot = [...place.querySelectorAll('.ev-spot.ok')].find(enabled)
         ?? [...place.querySelectorAll('.ev-map-forest.ok, .ev-map-event.ok, .ev-map-dest.ok')].find(enabled);
-      if (spot) return click(spot, 'place-worker');
+      if (spot) return click(spot, 'place-worker(' + (spot.getAttribute('aria-label') ?? '') + ')');
       const close = [...place.querySelectorAll('.ev-btn')].find((b) => /CLOSE/.test(b.textContent));
-      if (close) return click(close, 'place-close');
+      const diag = `spots:${place.querySelectorAll('.ev-spot').length}`
+        + ` map:${place.querySelectorAll('.ev-map').length}`
+        + ` wrap:${place.querySelectorAll('.ev-mapwrap').length}`
+        + ` forest:${place.querySelectorAll('.ev-map-forest').length}`
+        + ` events:${place.querySelectorAll('.ev-map-event').length}`
+        + ` html:${place.innerHTML.length}`;
+      if (close) return click(close, 'place-close(' + diag + ')');
     }
 
     // 4. try a card first (hand then meadow), sometimes; else worker; else season
@@ -145,6 +154,9 @@ for (let i = 0; i < tokens.length; i++) {
   // four tabs sharing one origin would overwrite each other's seat token
   const context = await browser.createBrowserContext();
   const page = await context.newPage();
+  const label = `page${i + 1}`;
+  page.on('pageerror', (e) => console.log(`${label} pageerror:`, e.message.slice(0, 240)));
+  page.on('console', (m) => { if (m.type() === 'error') console.log(`${label} console:`, m.text().slice(0, 200)); });
   await page.setViewport({ width: 1024, height: 768 });
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.evaluate(([r, t]) => localStorage.setItem('bge-token-' + r.toUpperCase(), t), [roomId, tokens[i]]);
@@ -183,7 +195,9 @@ for (let iter = 0; iter < 12000 && !ended; iter++) {
     if (what && what !== 'no-move' && !String(what).startsWith('wait')) {
       acted = true;
       steps++;
-      if (steps % 60 === 0) console.log(`[${steps}] seat${i + 1}: ${what}`);
+      if (steps % 60 === 0 || String(what).startsWith('place-close') || steps <= 12) {
+        console.log(`[${steps}] seat${i + 1}: ${what}`);
+      }
     }
   }
   if (!acted) {

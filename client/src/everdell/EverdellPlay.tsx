@@ -5,7 +5,7 @@
 // the engine (everdellPlayCost / everdellCanPlace / everdellCityRoomFor) so
 // illegal options grey out with a reason instead of bouncing errors.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type {
   EverdellAction, EverdellView, EvLocRef, EvPending, EvPlayAbility, EvResMap, EvResource,
   EverdellState, EvCardDef,
@@ -185,6 +185,10 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
   const [intro, setIntro] = useState(false);
   const [confirmPass, setConfirmPass] = useState(false);
   const [oppSeat, setOppSeat] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (error) playSfx('error'); // device blips on rejected actions (house rule)
+  }, [error]);
 
   if (!me) return <div className="page center"><h2>Watching the board</h2></div>;
 

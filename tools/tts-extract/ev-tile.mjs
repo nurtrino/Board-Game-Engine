@@ -15,6 +15,7 @@ const bg = await sharp(path.join(PUB, 'board.webp'))
   .extract({ left: 320, top: 60, width: 1500, height: 1500 })
   .resize(640, 640)
   .modulate({ brightness: 0.62, saturation: 1.05 })
+  .flatten({ background: '#0a0d10' }) // board alpha corners go dark, not grey
   .toBuffer();
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640">
