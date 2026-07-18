@@ -1,0 +1,170 @@
+{
+ "workshop": 3745603443,
+ "seats": [
+  "Brown",
+  "Pink",
+  "Teal",
+  "Purple",
+  "Orange"
+ ],
+ "seatHex": {
+  "Brown": "#713B17",
+  "Pink": "#F570CE",
+  "Teal": "#21B19B",
+  "Purple": "#A020F0",
+  "Orange": "#F4641D"
+ },
+ "colors": [
+  "Blue",
+  "White",
+  "Yellow",
+  "Red",
+  "Green"
+ ],
+ "supplyByPlayers": {
+  "3": {
+   "auctionTokens": 1,
+   "warehouses": 12,
+   "factoriesPerColor": 2,
+   "containersPerColor": {
+    "short": 9,
+    "standard": 11,
+    "extended": 12
+   }
+  },
+  "4": {
+   "auctionTokens": 1,
+   "warehouses": 16,
+   "factoriesPerColor": 3,
+   "containersPerColor": {
+    "short": 11,
+    "standard": 14,
+    "extended": 16
+   }
+  },
+  "5": {
+   "auctionTokens": 2,
+   "warehouses": 20,
+   "factoriesPerColor": 4,
+   "containersPerColor": {
+    "short": 13,
+    "standard": 17,
+    "extended": 20
+   }
+  }
+ },
+ "tracks": {
+  "factoryCosts": [
+   0,
+   6,
+   9,
+   12
+  ],
+  "factoryLotPrices": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "factoryLimitPer": 2,
+  "warehouseCosts": [
+   0,
+   4,
+   5,
+   6,
+   7
+  ],
+  "harborLotPrices": [
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "harborLimitPer": 1
+ },
+ "shipCapacity": 5,
+ "loans": {
+  "value": 10,
+  "interest": 1,
+  "max": 2,
+  "endPenalty": 11
+ },
+ "bankSetup": {
+  "cash": [
+   1,
+   2,
+   3
+  ],
+  "containerLots": [
+   2,
+   1,
+   0
+  ]
+ },
+ "startingCash": 20,
+ "startingContainerLot": 2,
+ "scoringCards": {
+  "White": {
+   "twoValue": "White",
+   "values": {
+    "Yellow": 10,
+    "Green": 6,
+    "Red": 4,
+    "Blue": 2
+   }
+  },
+  "Green": {
+   "twoValue": "Green",
+   "values": {
+    "White": 10,
+    "Red": 6,
+    "Blue": 4,
+    "Yellow": 2
+   }
+  },
+  "Yellow": {
+   "twoValue": "Yellow",
+   "values": {
+    "Blue": 10,
+    "White": 6,
+    "Green": 4,
+    "Red": 2
+   }
+  },
+  "Red": {
+   "twoValue": "Red",
+   "values": {
+    "Green": 10,
+    "Blue": 6,
+    "Yellow": 4,
+    "White": 2
+   }
+  },
+  "Blue": {
+   "twoValue": "Blue",
+   "values": {
+    "Red": 10,
+    "Yellow": 6,
+    "White": 4,
+    "Green": 2
+   }
+  }
+ },
+ "twoValueHigh": 10,
+ "twoValueLow": 5,
+ "leftoverValues": {
+  "ship": 3,
+  "holding": 3,
+  "harbor": 2,
+  "factory": 0
+ },
+ "endColorsOut": 2,
+ "actions": {
+  "perTurn": 2,
+  "oncePerTurn": [
+   "produce",
+   "call_bank"
+  ]
+ }
+}

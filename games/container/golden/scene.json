@@ -1,0 +1,663 @@
+{
+ "mat": {
+  "img": "/container/mat.webp",
+  "px": [
+   4203,
+   3681
+  ],
+  "transform": {
+   "ax": 0.02461232465070458,
+   "bx": -52.98537335762949,
+   "az": -0.023719970053189376,
+   "bz": 42.47528813803909
+  }
+ },
+ "boards": {
+  "Brown": {
+   "img": "/container/pboard-brown.webp",
+   "px": [
+    2712,
+    1702
+   ],
+   "pos": [
+    0,
+    -21.42
+   ],
+   "yaw": 180
+  },
+  "Pink": {
+   "img": "/container/pboard-pink.webp",
+   "px": [
+    2712,
+    1702
+   ],
+   "pos": [
+    -30.5,
+    -12
+   ],
+   "yaw": 270
+  },
+  "Teal": {
+   "img": "/container/pboard-teal.webp",
+   "px": [
+    2712,
+    1702
+   ],
+   "pos": [
+    30.5,
+    -12
+   ],
+   "yaw": 90
+  },
+  "Purple": {
+   "img": "/container/pboard-purple.webp",
+   "px": [
+    2712,
+    1702
+   ],
+   "pos": [
+    30.5,
+    12
+   ],
+   "yaw": 90
+  },
+  "Orange": {
+   "img": "/container/pboard-orange.webp",
+   "px": [
+    2712,
+    1702
+   ],
+   "pos": [
+    -30.5,
+    12
+   ],
+   "yaw": 270
+  }
+ },
+ "pb": {
+  "px": [
+   2712,
+   1702
+  ],
+  "s": 0.005246,
+  "cx": 1356,
+  "cy": 851,
+  "factoryTrack": [
+   [
+    140,
+    787
+   ],
+   [
+    140,
+    1045
+   ],
+   [
+    140,
+    1300
+   ],
+   [
+    140,
+    1565
+   ]
+  ],
+  "warehouseTrack": [
+   [
+    2495,
+    160
+   ],
+   [
+    2495,
+    370
+   ],
+   [
+    2495,
+    575
+   ],
+   [
+    2495,
+    785
+   ],
+   [
+    2495,
+    1000
+   ]
+  ],
+  "factoryLots": {
+   "1": [
+    2320,
+    1430
+   ],
+   "2": [
+    1740,
+    1430
+   ],
+   "3": [
+    1170,
+    1430
+   ],
+   "4": [
+    520,
+    1430
+   ]
+  },
+  "harborLots": {
+   "2": [
+    2040,
+    570
+   ],
+   "3": [
+    1580,
+    570
+   ],
+   "4": [
+    1205,
+    570
+   ],
+   "5": [
+    830,
+    570
+   ],
+   "6": [
+    455,
+    570
+   ]
+  },
+  "docks": [
+   [
+    470,
+    55
+   ],
+   [
+    895,
+    55
+   ],
+   [
+    1265,
+    55
+   ],
+   [
+    1680,
+    55
+   ],
+   [
+    2095,
+    55
+   ]
+  ]
+ },
+ "models": {
+  "ship": {
+   "mesh": "/container/models/ship.obj",
+   "tex": "/container/models/ship.webp"
+  },
+  "container": {
+   "mesh": "/container/models/container.obj",
+   "tex": {
+    "Blue": "/container/models/container-blue.webp",
+    "White": "/container/models/container-white.webp",
+    "Yellow": "/container/models/container-yellow.webp",
+    "Green": "/container/models/container-green.webp",
+    "Red": "/container/models/container-red.webp"
+   }
+  }
+ },
+ "shipTint": {
+  "Brown": "#56534f",
+  "Pink": "#e87f9f",
+  "Teal": "#4eb8b6",
+  "Purple": "#8a679f",
+  "Orange": "#f3a359"
+ },
+ "shipStarts": {
+  "Brown": [
+   -4.22,
+   -14.73
+  ],
+  "Pink": [
+   -23.99,
+   -7.93
+  ],
+  "Orange": [
+   -23.99,
+   7.8
+  ],
+  "Teal": [
+   23.81,
+   -7.8
+  ],
+  "Purple": [
+   24,
+   8.04
+  ]
+ },
+ "factoryArt": {
+  "Green": {
+   "img": "/container/factory-green.webp",
+   "px": [
+    448,
+    358
+   ]
+  },
+  "Blue": {
+   "img": "/container/factory-blue.webp",
+   "px": [
+    196,
+    151
+   ]
+  },
+  "Yellow": {
+   "img": "/container/factory-yellow.webp",
+   "px": [
+    506,
+    435
+   ]
+  },
+  "White": {
+   "img": "/container/factory-white.webp",
+   "px": [
+    454,
+    386
+   ]
+  },
+  "Red": {
+   "img": "/container/factory-red.webp",
+   "px": [
+    374,
+    337
+   ]
+  }
+ },
+ "warehouseArt": {
+  "img": "/container/warehouse.webp",
+  "px": [
+   407,
+   286
+  ]
+ },
+ "auctionTokenArt": {
+  "img": "/container/auction-token.webp",
+  "px": [
+   224,
+   224
+  ]
+ },
+ "reserveTokenArt": {
+  "img": "/container/reserve-token.webp",
+  "px": [
+   224,
+   224
+  ]
+ },
+ "scoreDiscArt": {
+  "img": "/container/score-disc.webp",
+  "px": [
+   914,
+   839
+  ]
+ },
+ "hexArt": {
+  "Brown:scoring": [
+   1859,
+   2016
+  ],
+  "Brown:holding": [
+   2658,
+   1930
+  ],
+  "Pink:scoring": [
+   1666,
+   1874
+  ],
+  "Pink:holding": [
+   2559,
+   1844
+  ],
+  "Teal:scoring": [
+   1863,
+   1553
+  ],
+  "Teal:holding": [
+   2671,
+   1643
+  ],
+  "Purple:scoring": [
+   1873,
+   1784
+  ],
+  "Purple:holding": [
+   2670,
+   1781
+  ],
+  "Orange:scoring": [
+   1670,
+   1670
+  ],
+  "Orange:holding": [
+   2557,
+   1714
+  ]
+ },
+ "bankLots": {
+  "containers": [
+   [
+    2392,
+    1495
+   ],
+   [
+    2546,
+    1493
+   ],
+   [
+    2705,
+    1488
+   ]
+  ],
+  "cash": [
+   [
+    2401,
+    2200
+   ],
+   [
+    2547,
+    2200
+   ],
+   [
+    2694,
+    2200
+   ]
+  ]
+ },
+ "supply": {
+  "containers": {
+   "z": [
+    27.4,
+    28.9
+   ],
+   "xByColor": {
+    "Blue": -9.8,
+    "White": -4.8,
+    "Yellow": 0,
+    "Red": 4.9,
+    "Green": 9.9
+   }
+  },
+  "factories": {
+   "z": 31.3,
+   "xByColor": {
+    "Blue": -10.5,
+    "White": -5.2,
+    "Yellow": 0,
+    "Red": 4.9,
+    "Green": 10.2
+   }
+  },
+  "warehouses": {
+   "z": 34,
+   "x": [
+    -10.4,
+    10.5
+   ]
+  },
+  "bankSide": {
+   "loans": [
+    9.48,
+    17.05
+   ],
+   "bidCash": [
+    3.07,
+    17.05
+   ],
+   "bidContainers": [
+    -2.43,
+    17.04
+   ],
+   "auctionTokens": [
+    [
+     6.77,
+     16.46
+    ],
+    [
+     6.77,
+     17.63
+    ]
+   ],
+   "reserves": [
+    6.77,
+    15.29
+   ]
+  }
+ },
+ "zones": {
+  "Brown": {
+   "hand": {
+    "pos": [
+     -0.0476176366,
+     -27.3047523
+    ],
+    "size": [
+     30,
+     24.8642578
+    ]
+   },
+   "harbor": {
+    "pos": [
+     0.0311553478,
+     -20.925251
+    ],
+    "size": [
+     10.2064819,
+     2.84585
+    ]
+   },
+   "holding": {
+    "pos": [
+     12.6903534,
+     -2.95213842
+    ],
+    "size": [
+     2.1589036,
+     2.725378
+    ]
+   },
+   "scoring": {
+    "pos": [
+     -7.17148733,
+     -5.29518843
+    ],
+    "size": [
+     3.49050355,
+     4.62469673
+    ]
+   }
+  },
+  "Pink": {
+   "hand": {
+    "pos": [
+     -37.2070656,
+     -11.069149
+    ],
+    "size": [
+     26.1743259,
+     21.8262978
+    ]
+   },
+   "harbor": {
+    "pos": [
+     -30.03536,
+     -12.0401926
+    ],
+    "size": [
+     2.94461441,
+     10.18231
+    ]
+   },
+   "holding": {
+    "pos": [
+     9.852708,
+     -1.33394527
+    ],
+    "size": [
+     2.13398814,
+     2.74086285
+    ]
+   },
+   "scoring": {
+    "pos": [
+     -11.8358259,
+     -2.513764
+    ],
+    "size": [
+     3.40093,
+     4.637911
+    ]
+   }
+  },
+  "Teal": {
+   "hand": {
+    "pos": [
+     37.3935,
+     -13.3640213
+    ],
+    "size": [
+     26.509655,
+     22.3558617
+    ]
+   },
+   "harbor": {
+    "pos": [
+     29.9930458,
+     -11.9700089
+    ],
+    "size": [
+     2.87827682,
+     10.2584763
+    ]
+   },
+   "holding": {
+    "pos": [
+     12.7495871,
+     3.51134324
+    ],
+    "size": [
+     2.09638453,
+     2.73786879
+    ]
+   },
+   "scoring": {
+    "pos": [
+     -7.130808,
+     5.64864874
+    ],
+    "size": [
+     3.423686,
+     4.62469673
+    ]
+   }
+  },
+  "Purple": {
+   "hand": {
+    "pos": [
+     37.2409134,
+     11.03517
+    ],
+    "size": [
+     25.85881,
+     22.29023
+    ]
+   },
+   "harbor": {
+    "pos": [
+     29.9868279,
+     12.002346
+    ],
+    "size": [
+     2.95998,
+     10.2216139
+    ]
+   },
+   "holding": {
+    "pos": [
+     12.7097092,
+     0.2726339
+    ],
+    "size": [
+     2.2570672,
+     2.717635
+    ]
+   },
+   "scoring": {
+    "pos": [
+     -7.130808,
+     0.198113322
+    ],
+    "size": [
+     3.57036829,
+     4.664337
+    ]
+   }
+  },
+  "Orange": {
+   "hand": {
+    "pos": [
+     -37.4495163,
+     12.8255167
+    ],
+    "size": [
+     26.4494667,
+     22.0284977
+    ]
+   },
+   "harbor": {
+    "pos": [
+     -29.9967575,
+     11.9642506
+    ],
+    "size": [
+     2.92734146,
+     10.1767235
+    ]
+   },
+   "holding": {
+    "pos": [
+     9.872896,
+     1.89561558
+    ],
+    "size": [
+     2.27082515,
+     2.73015642
+    ]
+   },
+   "scoring": {
+    "pos": [
+     -11.8612137,
+     2.900257
+    ],
+    "size": [
+     3.61196542,
+     4.67755032
+    ]
+   }
+  }
+ },
+ "cards": {
+  "money": {
+   "1": "/container/cards/money-1.webp",
+   "2": "/container/cards/money-2.webp",
+   "5": "/container/cards/money-5.webp",
+   "10": "/container/cards/money-10.webp",
+   "20": "/container/cards/money-20.webp"
+  },
+  "bluff": "/container/cards/bluff.webp",
+  "loan": "/container/cards/loan.webp",
+  "scoring": {
+   "Blue": "/container/cards/scoring-blue.webp",
+   "White": "/container/cards/scoring-white.webp",
+   "Yellow": "/container/cards/scoring-yellow.webp",
+   "Red": "/container/cards/scoring-red.webp",
+   "Green": "/container/cards/scoring-green.webp"
+  },
+  "aid": "/container/cards/aid.webp",
+  "bidCash": "/container/cards/bid-cash.webp",
+  "bidContainers": "/container/cards/bid-containers.webp"
+ }
+}
