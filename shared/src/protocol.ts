@@ -26,6 +26,8 @@ import type { BlokusView, BlokusSeat } from './blokus/state.js';
 import type { BlokusAction } from './blokus/actions.js';
 import type { EverdellView, EverdellSeat } from './everdell/state.js';
 import type { EverdellAction } from './everdell/actions.js';
+import type { ContainerView, ContainerSeat } from './container/state.js';
+import type { ContAction } from './container/actions.js';
 import { SEAT_COLORS } from './brass/state.js';
 import { TTR_COLORS } from './ttr/state.js';
 import { TREK_SEATS } from './trek/state.js';
@@ -39,9 +41,10 @@ import { BB_SEATS } from './bloodborne/state.js';
 import { SETI_SEATS } from './seti/data.js';
 import { BLOKUS_SEATS } from './blokus/state.js';
 import { EVERDELL_SEATS } from './everdell/state.js';
+import { CONTAINER_SEATS } from './container/state.js';
 
 /** Any seat color across games. */
-export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat | AxisSeat | PolitikSeat | DsSeat | FeastSeatColor | BbSeat | SetiSeatColor | BlokusSeat | EverdellSeat;
+export type SeatColor = Color | TtrColor | TrekSeat | DtSeat | DuneSeat | AxisSeat | PolitikSeat | DsSeat | FeastSeatColor | BbSeat | SetiSeatColor | BlokusSeat | EverdellSeat | ContainerSeat;
 
 /** Per-game lobby facts: seat colors in pick order + max players. */
 export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: number }> = {
@@ -58,10 +61,11 @@ export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: num
   seti: { colors: SETI_SEATS, max: 4 },
   blokus: { colors: BLOKUS_SEATS, max: 4 },
   everdell: { colors: EVERDELL_SEATS, max: 4 },
+  container: { colors: CONTAINER_SEATS, max: 5 },
 };
 
-export type GameView = BrassView | TtrView | TrekView | DtView | DuneView | AxisView | PolitikView | DsView | FeastView | BbView | SetiView | BlokusView | EverdellView;
-export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction | AxisAction | PolitikAction | DsAction | FeastAction | BbAction | SetiAction | BlokusAction | EverdellAction;
+export type GameView = BrassView | TtrView | TrekView | DtView | DuneView | AxisView | PolitikView | DsView | FeastView | BbView | SetiView | BlokusView | EverdellView | ContainerView;
+export type GameAction = BrassAction | TtrAction | TrekAction | DtAction | DuneAction | AxisAction | PolitikAction | DsAction | FeastAction | BbAction | SetiAction | BlokusAction | EverdellAction | ContAction;
 
 /** Per-game create options chosen on the create screen (scenario, variants). */
 export type GameOptions = Record<string, string | number | boolean>;

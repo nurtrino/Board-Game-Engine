@@ -22,6 +22,7 @@ import {
   createSeti, setiViewFor, applySetiAction,
   createBlokus, blokusViewFor, applyBlokusAction, blokusBotAction,
   createEverdell, everdellViewFor, applyEverdellAction, everdellBotAction,
+  createContainer, containerViewFor, applyContainerAction, containerBotAction, containerSeatsToAct,
   BB_STAT_CARDS, BB_HUNTERS, BB_MISSIONS, bbLampSpaces, bbSpaceNeighbors, bbTileDef, bbWorldExits,
   DS_CLASSES, DS_CLASS_IDS, DS_TREASURE_BY_ID, dsNodeDistance, dsTileGraph, dsNodeBlocked, dsOccupancy,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
@@ -34,6 +35,7 @@ import {
   type SetiState, type SetiAction, type SetiSeatColor,
   type BlokusState, type BlokusAction, type BlokusSeat,
   type EverdellState, type EverdellAction, type EverdellSeat,
+  type ContainerState, type ContAction, type ContainerSeat, type ContGameLength,
   type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat, type DuneSeat, type Faction,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo, type GameOptions, type AxisSeat, type PolitikSeat,
 } from '@bge/shared';
@@ -54,7 +56,7 @@ import { stateMatchesGame } from './save-compat.js';
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState | PolitikState | DsState | FeastState | BbState | SetiState | BlokusState | EverdellState;
+type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState | PolitikState | DsState | FeastState | BbState | SetiState | BlokusState | EverdellState | ContainerState;
 
 const engines = {
   brass: {
@@ -211,6 +213,21 @@ const engines = {
     view: (state: GameState, viewer: number | null | 'dev') => everdellViewFor(state as EverdellState, viewer),
     apply: (state: GameState, seat: number, action: unknown) => applyEverdellAction(state as EverdellState, seat, action as EverdellAction),
     soloSeats: 2, // dev convenience: a lone table gets one CPU opponent
+  },
+  container: {
+    // 3-5 players; a short table is padded to the 3-player minimum with CPUs.
+    create: (seated: { name: string; color: SeatColor }[], seed: number, options?: GameOptions): GameState => {
+      const length = options?.length === 'short' || options?.length === 'extended' ? options.length as ContGameLength : 'standard';
+      return createContainer(
+        seated.map((s) => ({ name: s.name, color: s.color as ContainerSeat, isCpu: /^CPU /.test(s.name) })),
+        seed,
+        { length },
+      );
+    },
+    view: (state: GameState, viewer: number | null | 'dev') => containerViewFor(state as ContainerState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyContainerAction(state as ContainerState, seat, action as ContAction),
+    minSeats: 3,
+    soloSeats: 3,
   },
 } as const;
 
@@ -521,6 +538,33 @@ function scheduleBots(room: Room): void {
   if (room.game === 'bloodborne') return scheduleBbBots(room);
   if (room.game === 'blokus') return scheduleBlokusBots(room);
   if (room.game === 'everdell') return scheduleEverdellBots(room);
+  if (room.game === 'container') return scheduleContainerBots(room);
+}
+
+// Container: several seats can owe a move at once (secret delivery bids,
+// pending bank decisions, the turn itself). Bids come in briskly; turns keep
+// the narration pace.
+function scheduleContainerBots(room: Room): void {
+  const s = room.state as ContainerState;
+  if (s.phase !== 'playing') return;
+  const isBot = (seat: number) => seat >= room.players.length || !!room.players[seat]?.isBot;
+  const owed = containerSeatsToAct(s).filter(isBot);
+  if (owed.length === 0 || botTimers.has(room.id)) return;
+  const delay = s.delivery ? 1300 : s.pending.length > 0 ? 1100 : 2000;
+  botTimers.set(room.id, setTimeout(() => {
+    botTimers.delete(room.id);
+    try {
+      const state = room.state as ContainerState;
+      if (state.phase !== 'playing') return;
+      const seat = containerSeatsToAct(state).filter(isBot)[0];
+      if (seat === undefined) return;
+      const action = containerBotAction(state, seat);
+      if (!action) return;
+      const result = applyContainerAction(state, seat, action);
+      if (result.ok) broadcast(room);
+      else console.error('container bot rejected:', result.error, JSON.stringify(action).slice(0, 160));
+    } catch (err) { console.error('bot error:', err); }
+  }, delay));
 }
 
 // Everdell: bots answer their pendings briskly and take turns at a narration
