@@ -21,6 +21,7 @@ import {
   createBloodborne, bbViewFor, applyBloodborneAction, bbPostProcess,
   createSeti, setiViewFor, applySetiAction,
   createBlokus, blokusViewFor, applyBlokusAction, blokusBotAction,
+  createEverdell, everdellViewFor, applyEverdellAction, everdellBotAction,
   BB_STAT_CARDS, BB_HUNTERS, BB_MISSIONS, bbLampSpaces, bbSpaceNeighbors, bbTileDef, bbWorldExits,
   DS_CLASSES, DS_CLASS_IDS, DS_TREASURE_BY_ID, dsNodeDistance, dsTileGraph, dsNodeBlocked, dsOccupancy,
   CARD_BY_ID as DUNE_CARDS, INTRIGUE_BY_ID as DUNE_INTRIGUE, SPACES as DUNE_SPACES, FACTIONS as DUNE_FACTIONS,
@@ -32,6 +33,7 @@ import {
   type BbState, type BbAction, type BbPending,
   type SetiState, type SetiAction, type SetiSeatColor,
   type BlokusState, type BlokusAction, type BlokusSeat,
+  type EverdellState, type EverdellAction, type EverdellSeat,
   type TtrColor, type Color, type TrekSeat, type TrekPlayer, type TrekSuit, type DtSeat, type DuneSeat, type Faction,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo, type GameOptions, type AxisSeat, type PolitikSeat,
 } from '@bge/shared';
@@ -52,7 +54,7 @@ import { stateMatchesGame } from './save-compat.js';
 // Rooms + lobby + per-game engines. Each room carries a game id ('brass' or
 // 'ttr'); start/action/view dispatch to that game's engine.
 
-type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState | PolitikState | DsState | FeastState | BbState | SetiState | BlokusState;
+type GameState = BrassState | TtrState | TrekState | DtState | DuneState | AxisState | PolitikState | DsState | FeastState | BbState | SetiState | BlokusState | EverdellState;
 
 const engines = {
   brass: {
@@ -202,6 +204,13 @@ const engines = {
     apply: (state: GameState, seat: number, action: unknown) => applyBlokusAction(state as BlokusState, seat, action as BlokusAction),
     minSeats: 1,
     soloSeats: 1,
+  },
+  everdell: {
+    create: (seated: { name: string; color: SeatColor }[], seed: number, _options?: GameOptions): GameState =>
+      createEverdell(seated as { name: string; color: EverdellSeat }[], seed),
+    view: (state: GameState, viewer: number | null | 'dev') => everdellViewFor(state as EverdellState, viewer),
+    apply: (state: GameState, seat: number, action: unknown) => applyEverdellAction(state as EverdellState, seat, action as EverdellAction),
+    soloSeats: 2, // dev convenience: a lone table gets one CPU opponent
   },
 } as const;
 
@@ -511,6 +520,31 @@ function scheduleBots(room: Room): void {
   if (room.game === 'feast') return scheduleFeastBots(room);
   if (room.game === 'bloodborne') return scheduleBbBots(room);
   if (room.game === 'blokus') return scheduleBlokusBots(room);
+  if (room.game === 'everdell') return scheduleEverdellBots(room);
+}
+
+// Everdell: bots answer their pendings briskly and take turns at a narration
+// pace; end_turn confirms follow quickly so the table keeps moving.
+function scheduleEverdellBots(room: Room): void {
+  const s = room.state as EverdellState;
+  if (s.phase !== 'playing') return;
+  const isBot = (seat: number) => seat >= room.players.length || !!room.players[seat]?.isBot;
+  const actingSeat = s.pending.length > 0 ? s.pending[0].seat : s.turn;
+  if (!isBot(actingSeat) || botTimers.has(room.id)) return;
+  const delay = s.pending.length > 0 ? 1000 : s.turnDone ? 700 : 1900;
+  botTimers.set(room.id, setTimeout(() => {
+    botTimers.delete(room.id);
+    try {
+      const state = room.state as EverdellState;
+      if (state.phase !== 'playing') return;
+      const seat = state.pending.length > 0 ? state.pending[0].seat : state.turn;
+      const action = everdellBotAction(state, seat);
+      if (!action) return;
+      const result = applyEverdellAction(state, seat, action);
+      if (result.ok) broadcast(room);
+      else console.error('everdell bot rejected:', result.error, JSON.stringify(action).slice(0, 160));
+    } catch (err) { console.error('bot error:', err); }
+  }, delay));
 }
 
 // Blokus: unclaimed colors are engine CPU seats; a deliberate beat per move

@@ -12,7 +12,7 @@ import {
   saveOwnerTokenKey,
 } from '../saveDeletion';
 import { FallingPieces } from '../three/FallingPieces';
-import { SEAT_HEX } from '../brass/TableScene';
+import { seatHexFor } from '../brass/TableScene';
 import { AXIS_MAP_STUB } from '@bge/shared';
 import type { SaveInfo, GameOptions } from '@bge/shared';
 
@@ -71,6 +71,11 @@ const GAMES = [
     id: 'blokus',
     name: 'Blokus',
     logo: '/blokus/box.webp?v=2', // cache-bust: the tile art changed under the same path
+  },
+  {
+    id: 'everdell',
+    name: 'Everdell',
+    logo: '/everdell/box.webp',
   },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
@@ -533,7 +538,7 @@ export function SelectGame() {
                       <span className="save-row-side">
                         <span className="save-seats">
                           {s.players.map((p, i) => (
-                            <span key={i} className="save-seat" style={{ background: SEAT_HEX[p.color] }} title={p.name} />
+                            <span key={i} className="save-seat" style={{ background: seatHexFor(s.game, p.color) }} title={p.name} />
                           ))}
                         </span>
                         <span className="dim">{dateOf(s.createdAt)}</span>

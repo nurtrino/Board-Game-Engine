@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { useRoom } from '../net';
 import { SidePieces } from '../three/FallingPieces';
-import { TableScene, useBrassScene, SEAT_HEX, type FocusReq, type SceneDef } from '../brass/TableScene';
+import { TableScene, useBrassScene, SEAT_HEX, seatHexFor, type FocusReq, type SceneDef } from '../brass/TableScene';
 import { gameSceneState } from '../brass/gameSceneState';
 import { LOCATION_OF, type BrassView, type BrassEvent } from '@bge/shared';
 import { playSfx, sfxForKind, sfxEnabled, setSfxEnabled } from '../sfx';
@@ -22,6 +22,7 @@ const FeastBoard = lazy(() => import('../feast/FeastBoard').then((module) => ({ 
 const BbBoard = lazy(() => import('../bloodborne/BbBoard').then((module) => ({ default: module.BbBoard })));
 const SetiBoard = lazy(() => import('../seti/SetiBoard').then((module) => ({ default: module.SetiBoard })));
 const BlokusBoard = lazy(() => import('../blokus/BlokusBoard').then((module) => ({ default: module.BlokusBoard })));
+const EverdellBoard = lazy(() => import('../everdell/EverdellBoard').then((module) => ({ default: module.EverdellBoard })));
 
 function BoardGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} table…</div>;
@@ -295,6 +296,11 @@ export function BoardPage() {
         <BlokusBoard view={view} />
       </Suspense>
     );
+    if (view.game === 'everdell') return (
+      <Suspense fallback={<BoardGameLoading game="Everdell" />}>
+        <EverdellBoard view={view} />
+      </Suspense>
+    );
     return <TvBoard view={view} />;
   }
 
@@ -316,7 +322,7 @@ export function BoardPage() {
             <span key={i} className="tv-player-chip">
               <span style={{
                 display: 'inline-block', width: 10, height: 10, borderRadius: '50%',
-                background: SEAT_HEX[p.color], marginRight: 7, verticalAlign: 'baseline',
+                background: seatHexFor(room.game, p.color), marginRight: 7, verticalAlign: 'baseline',
               }} />
               {p.name}{i === 0 && ' (host)'}{p.isBot && ' (bot)'}
             </span>

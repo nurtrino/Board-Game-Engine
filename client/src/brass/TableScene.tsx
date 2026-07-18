@@ -89,6 +89,14 @@ export const SEAT_HEX: Record<string, string> = {
   Crimson: '#b03434', Cobalt: '#3a62b8', Verdant: '#3f8a4e', Amber: '#c8952f',
 };
 
+/** Per-game seat-hex overrides: color names collide across games (TTR's
+ * Brown is its black trains; Everdell's Brown is a true brown). */
+const GAME_SEAT_HEX: Record<string, Record<string, string>> = {
+  everdell: { White: '#e9e6dd', Brown: '#8a5a33', Teal: '#27a098', Orange: '#e2803a' },
+};
+export const seatHexFor = (game: string, color: string): string =>
+  GAME_SEAT_HEX[game]?.[color] ?? SEAT_HEX[color] ?? '#888';
+
 /** Display label for a seat color key (A&A seats are power ids). */
 export const SEAT_LABEL: Record<string, string> = {
   germany: 'Germany', ussr: 'Soviet Union', japan: 'Japan',

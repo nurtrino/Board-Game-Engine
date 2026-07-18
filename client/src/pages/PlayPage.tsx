@@ -7,7 +7,7 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { socket, useRoom } from '../net';
-import { TableScene, useBrassScene, SEAT_HEX, seatLabel, type SceneDef, type CardSheet, type PickTarget } from '../brass/TableScene';
+import { TableScene, useBrassScene, SEAT_HEX, seatHexFor, seatLabel, type SceneDef, type CardSheet, type PickTarget } from '../brass/TableScene';
 import { gameSceneState } from '../brass/gameSceneState';
 import { playSfx } from '../sfx';
 import {
@@ -28,6 +28,7 @@ const FeastPlay = lazy(() => import('../feast/FeastPlay').then((module) => ({ de
 const BbPlay = lazy(() => import('../bloodborne/BbPlay'));
 const SetiPlay = lazy(() => import('../seti/SetiPlay').then((module) => ({ default: module.SetiPlay })));
 const BlokusPlay = lazy(() => import('../blokus/BlokusPlay'));
+const EverdellPlay = lazy(() => import('../everdell/EverdellPlay'));
 
 function PlayerGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} command table…</div>;
@@ -1032,6 +1033,11 @@ export function PlayPage() {
         <BlokusPlay view={view} act={act} seat={me ?? 0} error={error} />
       </Suspense>
     );
+    if (view.game === 'everdell') return (
+      <Suspense fallback={<PlayerGameLoading game="Everdell" />}>
+        <EverdellPlay view={view} act={act} seat={me ?? 0} error={error} />
+      </Suspense>
+    );
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
@@ -1052,6 +1058,7 @@ export function PlayPage() {
     feast: 'A Feast for Odin',
     seti: 'SETI: Search for Extraterrestrial Intelligence',
     blokus: 'Blokus',
+    everdell: 'Everdell',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
   const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
@@ -1063,6 +1070,7 @@ export function PlayPage() {
     : room.game === 'feast' ? 'Your colour marks your Vikings, action spaces, and personal boards.'
     : room.game === 'seti' ? 'Your colour marks your probes, landers, orbiters, signals, and discoveries.'
     : room.game === 'blokus' ? 'Your colour is your 21 pieces and your starting corner. Unpicked colours play themselves.'
+    : room.game === 'everdell' ? 'Your colour is your workers and your growing city.'
     : "Your piece marks your income on the board's turn-order track.";
 
   return (
@@ -1089,7 +1097,7 @@ export function PlayPage() {
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                   padding: 8, borderRadius: 12, cursor: taken ? 'default' : 'pointer',
-                  border: isMine ? `3px solid ${SEAT_HEX[c]}` : '3px solid transparent',
+                  border: isMine ? `3px solid ${seatHexFor(room.game, c)}` : '3px solid transparent',
                   background: 'rgba(255,255,255,0.05)', opacity: taken ? 0.35 : 1,
                 }}
               >
@@ -1099,11 +1107,11 @@ export function PlayPage() {
                     alt={c}
                     style={{
                       width: 56, height: 56, borderRadius: '50%', objectFit: 'cover',
-                      boxShadow: `0 0 0 3px ${SEAT_HEX[c]}`,
+                      boxShadow: `0 0 0 3px ${seatHexFor(room.game, c)}`,
                     }}
                   />
                 ) : (
-                  <span style={{ width: 56, height: 56, borderRadius: '50%', background: SEAT_HEX[c] }} />
+                  <span style={{ width: 56, height: 56, borderRadius: '50%', background: seatHexFor(room.game, c) }} />
                 )}
                 <span style={{ font: '600 12px Inter, sans-serif', color: '#e8ebf0' }}>{seatLabel(c)}</span>
               </button>
@@ -1118,7 +1126,7 @@ export function PlayPage() {
         <ul className="player-list">
           {room.players.map((p, i) => (
             <li key={i}>
-              <span className="swatch" style={{ background: SEAT_HEX[p.color] }} />
+              <span className="swatch" style={{ background: seatHexFor(room.game, p.color) }} />
               {p.name}{i === 0 && <span className="tag">host</span>}{p.isBot && <span className="tag">bot</span>}
             </li>
           ))}

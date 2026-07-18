@@ -152,3 +152,8 @@ export { BB_MAX_HP, BB_MAX_ECHOES, BB_SPEED_RANK, type BbSpeed, type BbStat } fr
 // Blokus 20x20 — all public names are Blokus/BLOKUS_/blokus-prefixed.
 export * from './blokus/state.js';
 export * from './blokus/actions.js';
+
+// Everdell (base game) — all public names are Everdell/EVERDELL_/EV_/ev-prefixed.
+export * from './everdell/catalog.js';
+export * from './everdell/state.js';
+export * from './everdell/actions.js';
