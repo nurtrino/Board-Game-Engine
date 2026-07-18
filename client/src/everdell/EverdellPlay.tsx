@@ -19,6 +19,7 @@ import { playSfx } from '../sfx';
 import { GameIntro, type Intro } from '../ttr/GameIntro';
 import { cardImg, forestImg, specialEventImg } from './ev-assets';
 import { ResIcon } from './EvIcons';
+import { EvBoardMap } from './EvBoardMap';
 import './everdell.css';
 
 const EVERDELL_INTRO: Intro = {
@@ -240,94 +241,17 @@ export default function EverdellPlay({ view, act, seat, error }: Props) {
     );
   };
 
-  // ---------- worker placement ----------
+  // ---------- worker placement: the real board, tappable ----------
   const renderPlacing = () => {
     if (!placing) return null;
-    const locBtn = (loc: EvLocRef, label: string, sub: string, key: string) => {
-      const why = workersFree < 1 ? 'no workers available' : everdellCanPlace(s, seat, loc);
-      return (
-        <button key={key} className="ev-loc" disabled={!!why}
-          onClick={() => { setPlacing(false); doAct({ type: 'place_worker', loc }); }}>
-          <span>{label}</span>
-          <small>{why ? why.toUpperCase() : sub}</small>
-        </button>
-      );
-    };
     return (
       <div className="ev-overlay" onClick={() => setPlacing(false)}>
         <div className="ev-sheet" onClick={(e) => e.stopPropagation()} data-testid="ev-place-sheet">
-          <h3>PLACE A WORKER · {workersFree} FREE</h3>
-          <div className="ev-rail-label">BASIC LOCATIONS</div>
-          <div className="ev-locs">
-            {EV_BASIC_LOCATIONS.map((l) => locBtn(
-              { t: 'basic', id: l.id },
-              Object.entries(l.gain).map(([k, v]) => `${v} ${k.toUpperCase()}`).join(' + '),
-              l.shared ? 'SHARED' : 'EXCLUSIVE',
-              l.id,
-            ))}
-          </div>
-          <div className="ev-rail-label">FOREST</div>
-          <div className="ev-locs">
-            {view.forest.map((f) => locBtn(
-              { t: 'forest', id: f.id },
-              EV_FOREST_BY_ID[f.id]?.text.toUpperCase() ?? f.id,
-              view.players.length >= 4 ? 'UP TO 2 WORKERS' : '1 WORKER',
-              f.id,
-            ))}
-          </div>
-          <div className="ev-rail-label">HAVEN · JOURNEY</div>
-          <div className="ev-locs">
-            {locBtn({ t: 'haven' }, 'HAVEN', 'DISCARD CARDS · 1 ANY PER 2', 'haven')}
-            {EV_JOURNEY.map((j) => locBtn(
-              { t: 'journey', id: j.id },
-              `JOURNEY ${j.points}`,
-              `${j.shared ? 'SHARED' : 'EXCLUSIVE'} · DISCARD ${j.points} CARDS · AUTUMN`,
-              j.id,
-            ))}
-          </div>
-          <div className="ev-rail-label">DESTINATIONS</div>
-          <div className="ev-locs">
-            {view.players.flatMap((p) =>
-              p.city
-                .filter((cc) => {
-                  const d = EV_CARD_BY_ID[cc.card];
-                  return d && (d.color === 'destination' || d.destinationSpot) && (p.seat === seat || d.open);
-                })
-                .map((cc) => locBtn(
-                  { t: 'city', seat: p.seat, uid: cc.uid },
-                  `${EV_CARD_BY_ID[cc.card]!.name.toUpperCase()}${p.seat !== seat ? ` · ${p.name.toUpperCase()}` : ''}`,
-                  p.seat !== seat ? `OPEN · OWNER GAINS ${EV_CARD_BY_ID[cc.card]!.openPoints ?? 1} POINT` : 'YOUR CITY',
-                  `c${p.seat}:${cc.uid}`,
-                )))}
-            {view.players.every((p) => !p.city.some((cc) => {
-              const d = EV_CARD_BY_ID[cc.card];
-              return d && (d.color === 'destination' || d.destinationSpot) && (p.seat === seat || d.open);
-            })) && <span className="dim" style={{ font: '600 11px Inter' }}>NO DESTINATIONS IN PLAY YET</span>}
-          </div>
-          <div className="ev-rail-label">EVENTS</div>
-          <div className="ev-locs">
-            {view.basicEvents.map((e) => {
-              const d = EV_BASIC_EVENT_BY_ID[e.id];
-              return locBtn(
-                { t: 'basicEvent', id: e.id },
-                d.name.toUpperCase(),
-                e.claimedBy !== null ? `ACHIEVED BY ${view.players[e.claimedBy].name.toUpperCase()}` : `${d.count} ${d.requiresColor.toUpperCase()} CARDS · ${d.points} PTS`,
-                e.id,
-              );
-            })}
-            {view.specialEvents.map((e) => {
-              const d = EV_SPECIAL_BY_ID[e.id];
-              const req = d.requiresCards
-                ? d.requiresCards.map((id) => EV_CARD_BY_ID[id]?.name.toUpperCase() ?? id).join(' + ')
-                : '2 OF EACH COLOR';
-              return locBtn(
-                { t: 'specialEvent', id: e.id },
-                d.name.toUpperCase(),
-                e.claimedBy !== null ? `ACHIEVED BY ${view.players[e.claimedBy].name.toUpperCase()}` : req,
-                e.id,
-              );
-            })}
-          </div>
+          <h3>PLACE A WORKER · {workersFree} FREE · TAP A GLOWING SPOT</h3>
+          <EvBoardMap view={view} seat={seat}
+            groups={{ basics: true, forest: true, haven: true, journey: true, dests: true, events: true }}
+            check={(loc) => (workersFree < 1 ? 'no workers available' : everdellCanPlace(s, seat, loc))}
+            onPick={(loc) => { setPlacing(false); doAct({ type: 'place_worker', loc }); }} />
           <button className="ev-btn" onClick={() => setPlacing(false)}>CLOSE</button>
         </div>
       </div>
@@ -931,26 +855,28 @@ function PendingUI({ view, s, seat, pending, me, choose }: {
       );
     case 'ranger-move': {
       const movable = me.workers.filter((w) => !w.permanent);
+      const isMineAt = (loc: EvLocRef) =>
+        movable.some((w) => JSON.stringify(w.loc) === JSON.stringify(loc));
       return (
         <>
-          {title('RANGER · MOVE A WORKER', 'Pick a deployed worker, then its new spot')}
-          <div className="ev-rail-label">FROM</div>
-          <div className="ev-locs">
-            {movable.map((w, i) => (
-              <button key={i} className={'ev-loc' + (fromLoc === w.loc ? ' sel' : '')}
-                onClick={() => setFromLoc(w.loc)}>
-                <span>{locText(view, w.loc)}</span>
-              </button>
-            ))}
-            {movable.length === 0 && <span className="dim">NO DEPLOYED WORKERS</span>}
-          </div>
-          {fromLoc && (
+          {title('RANGER · MOVE A WORKER', fromLoc
+            ? `MOVING FROM ${locText(view, fromLoc)} · TAP THE NEW SPOT`
+            : 'Tap the worker to move')}
+          {!fromLoc ? (
+            <EvBoardMap view={view} seat={seat}
+              groups={{ basics: true, forest: true, haven: true, journey: true, dests: true, events: true }}
+              check={(loc) => (isMineAt(loc) ? null : 'no worker of yours there')}
+              onPick={(loc) => setFromLoc(loc)} />
+          ) : (
             <>
-              <div className="ev-rail-label">TO</div>
-              <RangerTargets view={view} s={s} seat={seat} from={fromLoc}
+              <EvBoardMap view={view} seat={seat}
+                groups={{ basics: true, forest: true, haven: true, journey: true, dests: true, events: true }}
+                check={(loc) => everdellCanPlace(s, seat, loc)}
                 onPick={(to) => choose({ from: fromLoc, to })} />
+              <button className="ev-btn" onClick={() => setFromLoc(null)}>PICK A DIFFERENT WORKER</button>
             </>
           )}
+          {movable.length === 0 && <span className="dim">NO DEPLOYED WORKERS</span>}
           <button className="ev-btn" onClick={() => choose({ skip: true })}>SKIP</button>
         </>
       );
@@ -990,19 +916,13 @@ function PendingUI({ view, s, seat, pending, me, choose }: {
     case 'copy-basic':
       return (
         <>
-          {title('COPY A LOCATION', pending.allowForest ? 'Any basic or forest location' : 'Any basic location')}
-          <div className="ev-locs">
-            {EV_BASIC_LOCATIONS.map((l) => (
-              <button key={l.id} className="ev-loc" onClick={() => choose({ id: l.id })}>
-                <span>{Object.entries(l.gain).map(([k, v]) => `${v} ${k.toUpperCase()}`).join(' + ')}</span>
-              </button>
-            ))}
-            {pending.allowForest && view.forest.map((f) => (
-              <button key={f.id} className="ev-loc" onClick={() => choose({ id: f.id })}>
-                <span>{EV_FOREST_BY_ID[f.id]?.text.toUpperCase()}</span>
-              </button>
-            ))}
-          </div>
+          {title('COPY A LOCATION', pending.allowForest ? 'Tap any basic or forest location · occupied is fine' : 'Tap any basic location')}
+          <EvBoardMap view={view} seat={seat}
+            groups={{ basics: true, forest: pending.allowForest }}
+            check={() => null}
+            onPick={(loc) => {
+              if (loc.t === 'basic' || loc.t === 'forest') choose({ id: loc.id });
+            }} />
         </>
       );
     case 'meadow2-draw': {
@@ -1143,16 +1063,15 @@ function PendingUI({ view, s, seat, pending, me, choose }: {
       );
     case 'clock-tower': {
       const spots = me.workers.filter((w) => w.loc.t === 'basic' || w.loc.t === 'forest');
+      const isMineAt = (loc: EvLocRef) =>
+        spots.some((w) => JSON.stringify(w.loc) === JSON.stringify(loc));
       return (
         <>
-          {title('CLOCK TOWER', 'Spend 1 point token to re-activate a location you occupy')}
-          <div className="ev-locs">
-            {spots.map((w, i) => (
-              <button key={i} className="ev-loc" onClick={() => choose({ loc: w.loc })}>
-                <span>{locText(view, w.loc)}</span>
-              </button>
-            ))}
-          </div>
+          {title('CLOCK TOWER', 'Spend 1 point token to re-activate a location where your worker stands')}
+          <EvBoardMap view={view} seat={seat}
+            groups={{ basics: true, forest: true }}
+            check={(loc) => (isMineAt(loc) ? null : 'no worker of yours there')}
+            onPick={(loc) => choose({ loc })} />
           <button className="ev-btn" onClick={() => choose({ skip: true })}>SKIP · KEEP THE POINT</button>
         </>
       );
@@ -1265,16 +1184,15 @@ function PendingUI({ view, s, seat, pending, me, choose }: {
     }
     case 'well-run-city': {
       const spots = me.workers.filter((w) => !w.permanent);
+      const isMineAt = (loc: EvLocRef) =>
+        spots.some((w) => JSON.stringify(w.loc) === JSON.stringify(loc));
       return (
         <>
-          {title('A WELL RUN CITY', 'Bring back one deployed worker')}
-          <div className="ev-locs">
-            {spots.map((w, i) => (
-              <button key={i} className="ev-loc" onClick={() => choose({ from: w.loc })}>
-                <span>{locText(view, w.loc)}</span>
-              </button>
-            ))}
-          </div>
+          {title('A WELL RUN CITY', 'Tap the worker to bring back')}
+          <EvBoardMap view={view} seat={seat}
+            groups={{ basics: true, forest: true, haven: true, journey: true, dests: true, events: true }}
+            check={(loc) => (isMineAt(loc) ? null : 'no worker of yours there')}
+            onPick={(loc) => choose({ from: loc })} />
         </>
       );
     }
@@ -1349,43 +1267,6 @@ function CityMultiPick({ cards, max, min = 0, onDone, doneLabel }: {
       <button className="ev-btn primary" disabled={picked.length < min}
         onClick={() => onDone(picked)}>{doneLabel} ({picked.length})</button>
     </>
-  );
-}
-
-function RangerTargets({ view, s, seat, from, onPick }: {
-  view: EverdellView; s: EverdellState; seat: number; from: EvLocRef; onPick: (to: EvLocRef) => void;
-}) {
-  const options: { loc: EvLocRef; label: string }[] = [
-    ...EV_BASIC_LOCATIONS.map((l) => ({
-      loc: { t: 'basic', id: l.id } as EvLocRef,
-      label: Object.entries(l.gain).map(([k, v]) => `${v} ${k.toUpperCase()}`).join(' + '),
-    })),
-    ...view.forest.map((f) => ({ loc: { t: 'forest', id: f.id } as EvLocRef, label: EV_FOREST_BY_ID[f.id]?.text.toUpperCase() ?? f.id })),
-    { loc: { t: 'haven' } as EvLocRef, label: 'HAVEN' },
-    ...EV_JOURNEY.map((j) => ({ loc: { t: 'journey', id: j.id } as EvLocRef, label: `JOURNEY ${j.points}` })),
-    ...view.players.flatMap((p) => p.city
-      .filter((cc) => {
-        const d = EV_CARD_BY_ID[cc.card];
-        return d && (d.color === 'destination' || d.destinationSpot) && (p.seat === seat || d.open);
-      })
-      .map((cc) => ({
-        loc: { t: 'city', seat: p.seat, uid: cc.uid } as EvLocRef,
-        label: `${EV_CARD_BY_ID[cc.card]!.name.toUpperCase()}${p.seat !== seat ? ` · ${p.name.toUpperCase()}` : ''}`,
-      }))),
-  ];
-  return (
-    <div className="ev-locs">
-      {options.map((o, i) => {
-        const why = everdellCanPlace(s, seat, o.loc);
-        return (
-          <button key={i} className="ev-loc" disabled={!!why} title={why ?? undefined}
-            onClick={() => onPick(o.loc)}>
-            <span>{o.label}</span>
-            {why && <small>{why.toUpperCase()}</small>}
-          </button>
-        );
-      })}
-    </div>
   );
 }
 

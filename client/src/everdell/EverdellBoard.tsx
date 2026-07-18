@@ -4,7 +4,7 @@
 // critter-meeple workers tinted per seat — plus the universal ig-* HUD.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useLoader } from '@react-three/fiber';
+import { Canvas, useLoader, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
@@ -34,7 +34,7 @@ const MEADOW_PX: [number, number][] = [
 const MEADOW_W_PX = 265;
 
 // forest card anchors (art px): the bush shelves left + right
-const FOREST_PX: [number, number][] = [[225, 1075], [245, 1360], [1885, 1075], [1865, 1360]];
+const FOREST_PX: [number, number][] = [[175, 1030], [195, 1340], [1945, 1030], [1925, 1340]];
 
 // deck + discard at the Ever Tree roots (top center of the art)
 const DECK_PX: [number, number] = [880, 190];
@@ -83,22 +83,29 @@ function BoardPlate() {
 /** The mod's critter meeple, tinted per seat, seated on the table. */
 function Worker({ x, z, hex, y = 0 }: { x: number; z: number; hex: string; y?: number }) {
   const obj = useLoader(OBJLoader, '/everdell/models/worker.obj');
-  const { geo, scale, lift } = useMemo(() => {
-    let g: THREE.BufferGeometry | null = null;
-    obj.traverse((c) => {
-      if (!g && (c as THREE.Mesh).isMesh) g = (c as THREE.Mesh).geometry;
+  const { clone, scale, lift } = useMemo(() => {
+    const c = obj.clone(true);
+    const mat = new THREE.MeshStandardMaterial({ color: hex, roughness: 0.55, metalness: 0.05 });
+    c.traverse((m) => {
+      if ((m as THREE.Mesh).isMesh) {
+        (m as THREE.Mesh).material = mat;
+        (m as THREE.Mesh).castShadow = true;
+      }
     });
-    const geometry = (g ?? new THREE.BoxGeometry(0.4, 0.8, 0.2)) as THREE.BufferGeometry;
-    geometry.computeBoundingBox();
-    const bb = geometry.boundingBox!;
+    const bb = new THREE.Box3().setFromObject(c);
     const height = bb.max.y - bb.min.y || 1;
-    const s = 1.05 / height;
-    return { geo: geometry, scale: s, lift: -bb.min.y * s };
-  }, [obj]);
+    // keep the meeple modest: tall pieces parallax off their printed spots
+    const s = 0.78 / height;
+    return { clone: c, scale: s, lift: -bb.min.y * s };
+  }, [obj, hex]);
   return (
-    <mesh geometry={geo} position={[x, y + lift + 0.02, z]} scale={[scale, scale, scale]} rotation={[0, Math.PI, 0]} castShadow>
-      <meshStandardMaterial color={hex} roughness={0.55} metalness={0.05} />
-    </mesh>
+    <group position={[x, y, z]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.035, 0]}>
+        <circleGeometry args={[0.34, 24]} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.42} />
+      </mesh>
+      <primitive object={clone} position={[0, lift + 0.03, 0]} scale={[scale, scale, scale]} rotation={[0, Math.PI, 0]} />
+    </group>
   );
 }
 
@@ -179,6 +186,20 @@ function Workers({ view }: { view: EverdellView }) {
   );
 }
 
+/** Dev harness: ?cam=x,z,h[,y] pins the camera for zoomed verification shots. */
+function CamOverride() {
+  const camera = useThree((st) => st.camera);
+  useEffect(() => {
+    const q = new URLSearchParams(location.search).get('cam');
+    if (!q) return;
+    const [x, z, h, y] = q.split(',').map(Number);
+    camera.position.set(x, y ?? h, z + h * 0.4);
+    camera.lookAt(x, 0, z);
+    camera.updateProjectionMatrix();
+  }, [camera]);
+  return null;
+}
+
 const SFX_FOR_KIND: Record<string, Parameters<typeof playSfx>[0]> = {
   play: 'build', place: 'build', gain: 'click', event: 'win', season: 'turn',
   pass: 'click', turn: 'turn', win: 'win',
@@ -196,7 +217,7 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
   const [statsSeat, setStatsSeat] = useState<number | null>(null);
   const meadowW = (MEADOW_W_PX / ART_W) * BW;
   const meadowH = meadowW * (1664 / 1179);
-  const forestW = (380 / ART_W) * BW;
+  const forestW = (330 / ART_W) * BW;
   const forestH = forestW * (1034 / 1478);
   const deckW = (210 / ART_W) * BW;
   const deckH = deckW * (1664 / 1179);
@@ -279,9 +300,13 @@ export function EverdellBoard({ view }: { view: EverdellView }) {
 
         <Workers view={view} />
 
-        <OrbitControls makeDefault enablePan={false} minDistance={13} maxDistance={52}
-          maxPolarAngle={Math.PI * 0.42} enableDamping dampingFactor={0.08}
-          target={[0, 0, -1]} />
+        {new URLSearchParams(location.search).get('cam') ? (
+          <CamOverride />
+        ) : (
+          <OrbitControls makeDefault enablePan={false} minDistance={13} maxDistance={52}
+            maxPolarAngle={Math.PI * 0.42} enableDamping dampingFactor={0.08}
+            target={[0, 0, -1]} />
+        )}
       </Canvas>
 
       {/* seat chips: name · season · workers · city · hand · points */}
