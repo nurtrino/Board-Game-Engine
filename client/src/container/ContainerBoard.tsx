@@ -770,6 +770,20 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
         </div>
       </div>
 
+      {/* live bank auctions, pinned bottom-right so the state is unmissable */}
+      {view.bank.auctions.length > 0 && view.phase === 'playing' && (
+        <div className="cont-auction-live ig-glass" data-testid="cont-auction-live">
+          <b>BANK AUCTION LIVE</b>
+          {view.bank.auctions.map((a) => (
+            <span key={`${a.lotType}${a.lot}`}>
+              {view.players[a.bidder].name.toUpperCase()} BIDS{' '}
+              {a.lotType === 'container' ? `$${a.bid}` : `${a.bid} CONTAINER${a.bid > 1 ? 'S' : ''}`} ·{' '}
+              {a.lotType === 'container' ? 'CONTAINER' : 'CASH'} LOT {['I', 'II', 'III'][a.lot]} · WINS NEXT TURN
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* turn narration banner (+ anchor-action explainer when docking) */}
       <div className="cont-banner ig-glass" key={view.lastEvent.seq} role="status" aria-live="polite">
         <span>{view.lastEvent.text}</span>

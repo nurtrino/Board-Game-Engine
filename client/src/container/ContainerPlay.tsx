@@ -611,8 +611,12 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
     return CONT_SCORING_CARDS[p.scoringCard];
   }, [p.scoringCard]);
 
+  // someone ELSE holds a live bank bid: the corner card and CALL BANK glow
+  const rivalAuction = view.bank.auctions.some((a) => a.bidder !== seat);
+
   const actBtn = (tourId: string, label: string, why: string | null, onClick: () => void, primary = false) => (
-    <button className={'ig-btn cont-action' + (primary ? ' primary' : '')}
+    <button className={'ig-btn cont-action' + (primary ? ' primary' : '')
+      + (tourId === 'call-bank' && rivalAuction ? ' cont-glow' : '')}
       disabled={!myTurn || why !== null}
       onClick={onClick}
       data-tour={tourId}>
@@ -801,31 +805,52 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               </div>
             ))}
           </div>
-          {/* the bid tile in hand: shown while you hold the high bid, with the
-              bid physically on it (money cards / containers), mirroring the
-              tile parked next to your board on the TV */}
-          {view.bank.auctions.filter((a) => a.bidder === seat).map((a) => (
-            <div key={`tile-${a.lotType}`} className="cont-bid-tile" data-testid="cont-bid-tile">
-              <span className="cont-bid-tile-art">
-                <img src={a.lotType === 'container' ? S.cards.bidCash : S.cards.bidContainers} alt="Bank bid tile" />
-                {a.lotType === 'container' ? (
-                  <span className="cont-bid-tile-money">
-                    {moneyDenoms(a.bid, 6).map((d, i) => (
-                      <img key={i} src={S.cards.money[String(d)]} alt={`$${d}`}
-                        style={{ transform: `translate(${(i % 3) * 9 - 9}px, ${Math.floor(i / 3) * 8 - 4}px) rotate(${(i * 47) % 17 - 8}deg)` }} />
-                    ))}
+          {/* bottom-right corner: every live bank auction, unmissable — your
+              own bid as the tile in hand (bid physically on it), a rival's
+              bid as a glowing alert that opens the bank close-up */}
+          {view.bank.auctions.length > 0 && (
+            <div className="cont-auction-corner" data-testid="cont-auction-corner">
+              {view.bank.auctions.map((a) => a.bidder === seat ? (
+                <div key={`tile-${a.lotType}`} className="cont-bid-tile" data-testid="cont-bid-tile">
+                  <span className="cont-bid-tile-art">
+                    <img src={a.lotType === 'container' ? S.cards.bidCash : S.cards.bidContainers} alt="Bank bid tile" />
+                    {a.lotType === 'container' ? (
+                      <span className="cont-bid-tile-money">
+                        {moneyDenoms(a.bid, 6).map((d, i) => (
+                          <img key={i} src={S.cards.money[String(d)]} alt={`$${d}`}
+                            style={{ transform: `translate(${(i % 3) * 9 - 9}px, ${Math.floor(i / 3) * 8 - 4}px) rotate(${(i * 47) % 17 - 8}deg)` }} />
+                        ))}
+                      </span>
+                    ) : (
+                      <span className="cont-bid-tile-conts"><Blocks colors={a.bidContainers.map((b) => b.color)} size={13} /></span>
+                    )}
                   </span>
-                ) : (
-                  <span className="cont-bid-tile-conts"><Blocks colors={a.bidContainers.map((b) => b.color)} size={13} /></span>
-                )}
-              </span>
-              <span className="cont-bid-tile-info">
-                <span className="cont-label">YOUR BID TILE · {a.lotType === 'container' ? 'CONTAINER' : 'CASH'} LOT {['I', 'II', 'III'][a.lot]}</span>
-                <b>{a.lotType === 'container' ? `$${a.bid} LOCKED` : `${a.bid} CONTAINER${a.bid > 1 ? 'S' : ''}`}</b>
-                <small>YOU WIN AT THE START OF YOUR NEXT TURN UNLESS OUTBID</small>
-              </span>
+                  <span className="cont-bid-tile-info">
+                    <span className="cont-label">YOUR BID TILE · {a.lotType === 'container' ? 'CONTAINER' : 'CASH'} LOT {['I', 'II', 'III'][a.lot]}</span>
+                    <b>{a.lotType === 'container' ? `$${a.bid} LOCKED` : `${a.bid} CONTAINER${a.bid > 1 ? 'S' : ''}`}</b>
+                    <small>YOU WIN AT THE START OF YOUR NEXT TURN UNLESS OUTBID</small>
+                  </span>
+                </div>
+              ) : (
+                <button key={`alert-${a.lotType}`} className="cont-auction-alert" data-testid="cont-auction-alert"
+                  disabled={!myTurn || rCallBank !== null}
+                  onClick={() => setDialog({ kind: 'bank' })}>
+                  <img src={S.auctionTokenArt.img} alt="Auction token" />
+                  <span className="cont-bid-tile-info">
+                    <span className="cont-label">LIVE BANK AUCTION</span>
+                    <b>
+                      {view.players[a.bidder].name.toUpperCase()} BIDS{' '}
+                      {a.lotType === 'container' ? `$${a.bid}` : `${a.bid} CONTAINER${a.bid > 1 ? 'S' : ''}`}
+                    </b>
+                    <small>
+                      {a.lotType === 'container' ? 'CONTAINER' : 'CASH'} LOT {['I', 'II', 'III'][a.lot]} · WINS AT THE
+                      START OF THEIR NEXT TURN{myTurn && rCallBank === null ? ' · TAP TO OUTBID' : ' · OUTBID WITH CALL BANK'}
+                    </small>
+                  </span>
+                </button>
+              ))}
             </div>
-          ))}
+          )}
         </aside>
       </div>
 

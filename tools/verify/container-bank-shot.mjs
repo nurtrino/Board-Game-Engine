@@ -97,6 +97,9 @@ console.log('end turn:', await clickButton(page, /^END TURN$/));
 await new Promise((r) => setTimeout(r, 900));
 const rival = await activePage();
 if (!rival) { console.error('no rival seat found'); process.exit(1); }
+// the live-auction corner alert + glowing CALL BANK on the rival's device
+await rival.screenshot({ path: `${OUT}/bank-4b-alert.png` });
+console.log('rival sees alert:', await rival.evaluate(() => document.body.innerText.includes('LIVE BANK AUCTION')));
 console.log('rival call bank:', await clickButton(rival, /^CALL BANK$/));
 await new Promise((r) => setTimeout(r, 2200)); // canvas + textures
 await rival.screenshot({ path: `${OUT}/bank-5-outbid.png` });
@@ -112,7 +115,7 @@ console.log('rival holds tile:', body.includes('YOUR BID TILE'));
 // the TV: auction token on the lot, bid tile with the money by the bidder
 const tv = await (await browser.createBrowserContext()).newPage();
 await tv.setViewport({ width: 1280, height: 720 });
-await tv.goto(`${BASE}/board/${roomId}`, { waitUntil: 'networkidle2' });
+await tv.goto(`${BASE}/board/${roomId}`, { waitUntil: 'domcontentloaded' });
 await new Promise((r) => setTimeout(r, 3500));
 await tv.screenshot({ path: `${OUT}/bank-7-tv.png` });
 await browser.close();
