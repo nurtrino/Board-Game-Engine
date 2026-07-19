@@ -44,7 +44,10 @@ const click = (re) => page.evaluate((src) => {
 await click(/walk me through/i);
 await new Promise((r) => setTimeout(r, 700));
 await page.screenshot({ path: `${OUT}/tour-1-welcome.png` });
-for (let i = 0; i < 3; i++) { await click(/^NEXT$/); await new Promise((r) => setTimeout(r, 550)); }
+for (let i = 0; i < 2; i++) { await click(/^NEXT$/); await new Promise((r) => setTimeout(r, 550)); }
+await page.screenshot({ path: `${OUT}/tour-2-board.png` }); // card over the bright spotlighted board
+await click(/^NEXT$/);
+await new Promise((r) => setTimeout(r, 550));
 await page.screenshot({ path: `${OUT}/tour-2-produce.png` });
 for (let i = 0; i < 8; i++) { await click(/^NEXT$/); await new Promise((r) => setTimeout(r, 450)); }
 await page.screenshot({ path: `${OUT}/tour-3-scorecard.png` });
