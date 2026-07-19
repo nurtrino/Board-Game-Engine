@@ -80,7 +80,7 @@ const GAMES = [
   {
     id: 'container',
     name: 'Container',
-    logo: '/container/box.webp',
+    logo: '/container/box.webp?v=2', // cache-bust: official cover replaced the composed tile
   },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
