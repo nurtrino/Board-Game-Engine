@@ -161,83 +161,122 @@ export function Ship({ seatColor, x, z, yaw, children }: {
   );
 }
 
-/** extrude a 2D outline (XY, meters) into a depth-D solid centered on Z */
-function useExtruded(points: [number, number][], depth: number): THREE.ExtrudeGeometry {
-  return useMemo(() => {
-    const shape = new THREE.Shape();
-    shape.moveTo(points[0][0], points[0][1]);
-    for (const [px, py] of points.slice(1)) shape.lineTo(px, py);
-    const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
-    g.translate(0, 0, -depth / 2);
-    return g;
-    // the outlines are static per piece type
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+/** trace the largest opaque blob in a die-cut art image: returns the outline
+ *  as [0..1]x[0..1] image coordinates (y down), simplified for extrusion */
+function traceAlphaOutline(img: HTMLImageElement | ImageBitmap): [number, number][] | null {
+  const MAX = 96;
+  const k = MAX / Math.max(img.width, img.height);
+  const W = Math.max(2, Math.round(img.width * k));
+  const H = Math.max(2, Math.round(img.height * k));
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return null;
+  ctx.drawImage(img, 0, 0, W, H);
+  const a = ctx.getImageData(0, 0, W, H).data;
+  const solid = (px: number, py: number) =>
+    px >= 0 && py >= 0 && px < W && py < H && a[(py * W + px) * 4 + 3] > 48;
+  // start at the topmost-left solid pixel, then walk the boundary
+  // (Moore-neighbor tracing, clockwise)
+  let sx = -1, sy = -1;
+  outer: for (let py = 0; py < H; py++) {
+    for (let px = 0; px < W; px++) if (solid(px, py)) { sx = px; sy = py; break outer; }
+  }
+  if (sx < 0) return null;
+  const DIRS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+  const pts: [number, number][] = [];
+  let cx = sx, cy = sy, dir = 6; // came from below-ish; start scanning upward
+  for (let step = 0; step < W * H * 4; step++) {
+    pts.push([cx, cy]);
+    let found = false;
+    for (let i = 0; i < 8; i++) {
+      const d = (dir + 6 + i) % 8; // turn right of the entry direction first
+      const nx = cx + DIRS[d][0], ny = cy + DIRS[d][1];
+      if (solid(nx, ny)) { cx = nx; cy = ny; dir = d; found = true; break; }
+    }
+    if (!found) break; // isolated pixel
+    if (cx === sx && cy === sy && pts.length > 2) break;
+  }
+  if (pts.length < 8) return null;
+  // simplify: drop points that barely bend (keeps the die-cut read, ~30 verts)
+  const keep: [number, number][] = [];
+  const n = pts.length;
+  for (let i = 0; i < n; i += 2) {
+    const p = pts[i], prev = keep[keep.length - 1];
+    if (!prev || Math.abs(p[0] - prev[0]) + Math.abs(p[1] - prev[1]) >= 2) keep.push(p);
+  }
+  return keep.map(([px, py]) => [px / W, py / H]);
 }
 
-/** a real little factory: hall in the piece's bright color, dark sawtooth
- *  roof with white skylight ridges, brick smokestack — the 2026 edition's
- *  molded building, not a flat die-cut */
-export function FactoryPiece({ color, x, z, ry = 0, scale = 1 }: {
-  color: ContColor; x: number; z: number; ry?: number; scale?: number;
+/** the original flat die-cut art, extended down into a solid piece: the
+ *  printed art on the top face, its silhouette extruded to the table with
+ *  solid-colored sides (what the flat tokens looked like, with thickness) */
+function DieCutPiece({ url, w, h, thickness, side, x, z, ry = 0, scale = 1 }: {
+  url: string; w: number; h: number; thickness: number; side: string;
+  x: number; z: number; ry?: number; scale?: number;
 }) {
-  const W = 0.92, D = 0.6, BH = 0.3, TH = 0.18; // hall height + roof tooth height
-  const roof = useExtruded([
-    [-W / 2, BH], [W / 2, BH], [W / 2, BH + TH], [0.02, BH + 0.02],
-    [0.02, BH + TH], [-W / 2 + 0.02, BH + 0.02],
-  ], D);
-  const hex = CONT_PIECE_HEX[color];
-  const mats = useMemo(() => ({
-    body: new THREE.MeshStandardMaterial({ color: hex, roughness: 0.6, metalness: 0.05 }),
-    roof: new THREE.MeshStandardMaterial({ color: '#565e68', roughness: 0.62, metalness: 0.08 }),
-    glass: new THREE.MeshStandardMaterial({ color: '#eef2f6', roughness: 0.3, metalness: 0.1 }),
-    stack: new THREE.MeshStandardMaterial({ color: '#6b5a4e', roughness: 0.72 }),
-  }), [hex]);
+  const tex = useLoader(THREE.TextureLoader, url);
+  const built = useMemo(() => {
+    const outline = tex.image ? traceAlphaOutline(tex.image as HTMLImageElement) : null;
+    const shape = new THREE.Shape();
+    if (outline) {
+      // image coords -> piece-local XY (art top = +y)
+      outline.forEach(([u, v], i) => {
+        const px = (u - 0.5) * w, py = (0.5 - v) * h;
+        if (i === 0) shape.moveTo(px, py); else shape.lineTo(px, py);
+      });
+      shape.closePath();
+    } else {
+      // fallback: the full art rectangle
+      shape.moveTo(-w / 2, -h / 2); shape.lineTo(w / 2, -h / 2);
+      shape.lineTo(w / 2, h / 2); shape.lineTo(-w / 2, h / 2);
+      shape.closePath();
+    }
+    const geom = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false });
+    // lay it flat: shape plane -> table, extrusion -> up, art cap on top
+    geom.rotateX(-Math.PI / 2);
+    // the art texture UV-mapped over the caps (extrude UVs are shape coords)
+    const capTex = tex.clone();
+    capTex.colorSpace = THREE.SRGBColorSpace;
+    capTex.anisotropy = 8;
+    capTex.wrapS = capTex.wrapT = THREE.ClampToEdgeWrapping;
+    capTex.repeat.set(1 / w, 1 / h);
+    capTex.offset.set(0.5, 0.5);
+    capTex.needsUpdate = true;
+    const mats = [
+      new THREE.MeshStandardMaterial({ map: capTex, roughness: 0.72, metalness: 0.03 }),
+      new THREE.MeshStandardMaterial({ color: side, roughness: 0.7, metalness: 0.04 }),
+    ]; // extrude groups: 0 = caps, 1 = swept sides
+    return { geom, mats };
+  }, [tex, url, w, h, thickness, side]);
   return (
     <group position={[x, 0.03, z]} rotation={[0, ry, 0]} scale={[scale, scale, scale]}>
-      <mesh material={mats.body} position={[0, BH / 2, 0]} castShadow>
-        <boxGeometry args={[W, BH, D]} />
-      </mesh>
-      <mesh geometry={roof} material={mats.roof} castShadow />
-      {/* skylight ridges proud of each roof tooth, so the glass reads from
-       *  the TV's high camera as the classic white sawtooth stripes */}
-      <mesh material={mats.glass} position={[W / 2 - 0.02, BH + TH / 2 + 0.02, 0]}>
-        <boxGeometry args={[0.055, TH, D - 0.1]} />
-      </mesh>
-      <mesh material={mats.glass} position={[0.02, BH + TH / 2 + 0.02, 0]}>
-        <boxGeometry args={[0.055, TH, D - 0.1]} />
-      </mesh>
-      <mesh position={[-W / 2 + 0.12, BH + 0.2, D / 2 - 0.14]} material={mats.stack} castShadow>
-        <cylinderGeometry args={[0.06, 0.075, 0.44, 10]} />
-      </mesh>
+      <mesh geometry={built.geom} material={built.mats} castShadow />
     </group>
   );
 }
 
-/** a gabled warehouse shed: cream corrugated walls, slate roof with a ridge */
+/** the mod's die-cut factory art, extended down into a 3D piece */
+export function FactoryPiece({ color, x, z, ry = 0, scale = 1 }: {
+  color: ContColor; x: number; z: number; ry?: number; scale?: number;
+}) {
+  const fa = S.factoryArt[color];
+  const w = 1.15;
+  return (
+    <DieCutPiece url={fa.img} w={w} h={w * (fa.px[1] / fa.px[0])} thickness={0.3}
+      side={CONT_PIECE_HEX[color]} x={x} z={z} ry={ry} scale={scale} />
+  );
+}
+
+/** the mod's die-cut warehouse art, extended down into a 3D piece */
 export function WarehousePiece({ x, z, ry = 0, scale = 1 }: {
   x: number; z: number; ry?: number; scale?: number;
 }) {
-  const W = 0.86, D = 0.58, BH = 0.3, RH = 0.16;
-  const roof = useExtruded([
-    [-W / 2 - 0.05, BH], [W / 2 + 0.05, BH], [0, BH + RH],
-  ], D + 0.08);
-  const mats = useMemo(() => ({
-    wall: new THREE.MeshStandardMaterial({ color: '#e3dccb', roughness: 0.75, metalness: 0.02 }),
-    door: new THREE.MeshStandardMaterial({ color: '#8a94a0', roughness: 0.55, metalness: 0.12 }),
-    roof: new THREE.MeshStandardMaterial({ color: '#6f7780', roughness: 0.58, metalness: 0.08 }),
-  }), []);
+  const w = 0.92;
   return (
-    <group position={[x, 0.03, z]} rotation={[0, ry, 0]} scale={[scale, scale, scale]}>
-      <mesh material={mats.wall} position={[0, BH / 2, 0]} castShadow>
-        <boxGeometry args={[W, BH, D]} />
-      </mesh>
-      {/* roller door on the long face */}
-      <mesh material={mats.door} position={[0, 0.11, D / 2 + 0.005]}>
-        <boxGeometry args={[0.34, 0.22, 0.02]} />
-      </mesh>
-      <mesh geometry={roof} material={mats.roof} castShadow />
-    </group>
+    <DieCutPiece url={S.warehouseArt.img} w={w} h={w * (S.warehouseArt.px[1] / S.warehouseArt.px[0])}
+      thickness={0.26} side="#b7b0a3" x={x} z={z} ry={ry} scale={scale} />
   );
 }
 
