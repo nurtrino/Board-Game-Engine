@@ -570,14 +570,31 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
         })}
       </div>
 
-      {/* supply counter (the end-trigger everyone watches) */}
+      {/* supply counter: containers (the end trigger), factories, warehouses */}
       <div className="cont-supply ig-glass">
-        {CONT_COLORS.map((c) => (
-          <span key={c} className={'cont-supply-chip' + (view.supply.containers[c] === 0 ? ' out' : '')}>
-            <i style={{ background: { Blue: '#3d6fd0', White: '#e8e5da', Yellow: '#e3c93e', Red: '#cf4837', Green: '#4da84f' }[c] }} />
-            {view.supply.containers[c]}
+        <div className="cont-supply-line">
+          <em>CONTAINERS</em>
+          {CONT_COLORS.map((c) => (
+            <span key={c} className={'cont-supply-chip' + (view.supply.containers[c] === 0 ? ' out' : '')}>
+              <i style={{ background: { Blue: '#3d6fd0', White: '#e8e5da', Yellow: '#e3c93e', Red: '#cf4837', Green: '#4da84f' }[c] }} />
+              {view.supply.containers[c]}
+            </span>
+          ))}
+        </div>
+        <div className="cont-supply-line">
+          <em>FACTORIES</em>
+          {CONT_COLORS.map((c) => (
+            <span key={c} className={'cont-supply-chip' + (view.supply.factories[c] === 0 ? ' out' : '')}>
+              <img src={S.factoryArt[c].img} alt="" />
+              {view.supply.factories[c]}
+            </span>
+          ))}
+          <em>WAREHOUSES</em>
+          <span className={'cont-supply-chip' + (view.supply.warehouses === 0 ? ' out' : '')}>
+            <img src={S.warehouseArt.img} alt="" />
+            {view.supply.warehouses}
           </span>
-        ))}
+        </div>
       </div>
 
       {/* turn narration banner */}
@@ -640,9 +657,9 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
             <b>THE COMPANIES</b>
             <span>Each chip: ship load, island containers, loans. Cash is SECRET in Container, even here. Tap a chip for full public stats.</span>
           </div>
-          <div className="cont-guide-note ig-glass" style={{ top: 64, right: 12 }}>
+          <div className="cont-guide-note ig-glass" style={{ top: 96, right: 12 }}>
             <b>THE SUPPLY, AND THE CLOCK</b>
-            <span>Containers left per color. When TWO colors hit zero, the current turn finishes and the game ends.</span>
+            <span>Containers, factories, and warehouses left. When TWO container colors hit zero, the current turn finishes and the game ends.</span>
           </div>
           <div className="cont-guide-note ig-glass" style={{ bottom: 110, left: '50%', transform: 'translateX(-50%)' }}>
             <b>THE NARRATOR</b>

@@ -67,7 +67,7 @@ const CONT_TOUR: { target?: string; title: string; body: string }[] = [
   { target: 'scorecard', title: 'Your secret scoring card', body: 'The heart of the game. At the end, containers in your island scoring area are worth what THIS card says: $10, $6, $4 or $2 per color, and your two-value color pays $10 each if you collected all five colors, else $5.\n\nThe catch: your MOST COMMON island color is discarded for nothing. Collect variety, not piles, and never let opponents guess your card.' },
   { target: 'bank', title: 'The Off-Shore Bank', body: 'CALL BANK runs auctions both ways: bid cash on a container lot, or bid containers from your shelves on a cash lot. Hold the high bid until your next turn and you win it; winnings wait in your holding hex until your ship collects them.\n\nThe Bank also gives $10 loans: $1 interest every turn, seizure of your containers if you default, and an $11 settlement at game end.' },
   { target: 'cash', title: 'Cash is score, and it is secret', body: 'Nobody can see how much cash you hold, not even the TV. Every dollar you end with counts, plus your island area by your card, $3 per container on your ship or in bank holding, and $2 per container in your harbor. Factory shelves are worth NOTHING at the end.' },
-  { target: 'supply', title: 'How the game ends', body: 'When TWO container colors run out of the shared supply, the current turn finishes and everyone scores. These counters are the clock: watch them to time your last deliveries and to stop producing colors that help an opponent\'s scoring card.' },
+  { target: 'supply', title: 'How the game ends', body: 'When TWO container colors run out of the shared supply, the current turn finishes and everyone scores. These counters are the clock: watch them to time your last deliveries and to stop producing colors that help an opponent\'s scoring card.\n\nThe FACTORIES LEFT and WAREHOUSES LEFT panel on the right shows the buildings still in the supply: when a color runs out of factories, nobody else can build one.' },
   { target: 'end-turn', title: 'The whole engine', body: 'Build, produce, price, truck, sail, deliver, auction. Press END TURN when you are done, and remember: you only get rich by making OTHER players want your containers. Good luck.' },
 ];
 
@@ -624,6 +624,24 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
             <span className="cont-label">BANK HOLDING · {p.holding.length}</span>
             <Blocks colors={p.holding} />
           </div>
+          <div className="cont-panel" data-testid="cont-supply-left" data-tour="supply-left">
+            <span className="cont-label">FACTORIES LEFT</span>
+            <div className="cont-supply-row">
+              {CONT_COLORS.map((c) => (
+                <span key={c} className={'cont-supply-piece' + (view.supply.factories[c] === 0 ? ' out' : '')}>
+                  <img src={S.factoryArt[c].img} alt={`${c} factory`} />
+                  <b>{view.supply.factories[c]}</b>
+                </span>
+              ))}
+            </div>
+            <span className="cont-label">WAREHOUSES LEFT</span>
+            <div className="cont-supply-row">
+              <span className={'cont-supply-piece' + (view.supply.warehouses === 0 ? ' out' : '')}>
+                <img src={S.warehouseArt.img} alt="warehouse" />
+                <b>{view.supply.warehouses}</b>
+              </span>
+            </div>
+          </div>
           <div className="cont-panel cont-bank" data-testid="cont-bank" data-tour="bank">
             <span className="cont-label">OFF-SHORE BANK</span>
             {[0, 1, 2].map((i) => (
@@ -674,6 +692,7 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               <button className="ig-modal-x" onClick={() => setDialog(null)}>✕</button>
             </div>
             <ProducePick dialogRoom={dialog.room} eligible={dialog.eligible}
+              counts={dialog.room === -1 ? view.supply.factories : view.supply.containers}
               onPick={(colors) => {
                 if (dialog.room === -1) { doAct({ type: 'build_factory', color: colors[0] }); setDialog(null); }
                 else setDialog({ kind: 'produce', make: colors });
@@ -949,8 +968,9 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
   );
 }
 
-function ProducePick({ dialogRoom, eligible, onPick }: {
-  dialogRoom: number; eligible: ContColor[]; onPick: (colors: ContColor[]) => void;
+function ProducePick({ dialogRoom, eligible, counts, onPick }: {
+  dialogRoom: number; eligible: ContColor[]; counts?: Partial<Record<ContColor, number>>;
+  onPick: (colors: ContColor[]) => void;
 }) {
   const [sel, setSel] = useState<ContColor[]>([]);
   const target = dialogRoom === -1 ? 1 : dialogRoom;
@@ -960,9 +980,10 @@ function ProducePick({ dialogRoom, eligible, onPick }: {
     <div className="cont-produce-pick">
       <div className="cont-arrange-pool">
         {eligible.map((c) => (
-          <ColorChip key={c} color={c} active={sel.includes(c)} onClick={() => toggle(c)} />
+          <ColorChip key={c} color={c} count={counts?.[c]} active={sel.includes(c)} onClick={() => toggle(c)} />
         ))}
       </div>
+      {counts && <span className="dim cont-hint">THE COUNT IS HOW MANY ARE LEFT IN THE SUPPLY</span>}
       <button className="ig-btn primary" disabled={sel.length !== target} onClick={() => onPick(sel)}>
         CONFIRM
       </button>
