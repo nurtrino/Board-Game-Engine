@@ -13,32 +13,17 @@ import type { ContainerView, ContainerSeat, ContFocus } from '@bge/shared';
 import { CONT_RULES, CONT_COLORS, contLotCount, contBidCards } from '@bge/shared';
 import { playSfx } from '../sfx';
 import {
-  CONT_SCENE, px2r, w2r, boardSpot, MAT_RW, MAT_RH,
+  CONT_SCENE, px2r, w2r, boardSpot,
   islandCenterR, bankCenterR, CONT_UI_HEX, CONT_PIECE_HEX,
 } from './cont-scene';
 import {
   ContFlatImage as FlatImage, useContainerProto, ContainerPiece, packGrid, Ship,
-  FactoryPiece, WarehousePiece, AuctionToken, type ContainerProto,
+  FactoryPiece, WarehousePiece, AuctionToken, ContWaterMat as WaterMat, ContCashStack as CashStack,
+  type ContainerProto,
 } from './cont-three';
 import './container.css';
 
 const S = CONT_SCENE;
-
-/** The water mat — the whole table surface, owner directive. */
-function WaterMat() {
-  const tex = useLoader(THREE.TextureLoader, S.mat.img);
-  useEffect(() => {
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 8;
-    tex.needsUpdate = true;
-  }, [tex]);
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-      <planeGeometry args={[MAT_RW, MAT_RH]} />
-      <meshStandardMaterial map={tex} roughness={0.92} metalness={0.02} />
-    </mesh>
-  );
-}
 
 /** image-top direction per board yaw (see cont-scene yawRot derivation) */
 const BOARD_RY: Record<number, number> = { 180: 0, 90: Math.PI / 2, 270: -Math.PI / 2, 0: Math.PI };
@@ -108,28 +93,6 @@ const TOKEN_CIRCLES: Record<'container' | 'cash', [number, number][]> = {
   container: [[2392, 1487], [2546, 1487], [2700, 1486]],
   cash: [[2399, 2068], [2545, 2068], [2693, 2068]],
 };
-
-/** money card stack for a bank cash lot amount; the top card fills the
- * printed card slot, the rest fan out slightly underneath */
-function CashStack({ amount, at }: { amount: number; at: [number, number] }) {
-  const cards = useMemo(() => {
-    const denoms = [20, 10, 5, 2, 1];
-    const out: number[] = [];
-    let rest = amount;
-    for (const d of denoms) while (rest >= d && out.length < 9) { out.push(d); rest -= d; }
-    return out;
-  }, [amount]);
-  const [x, z] = px2r(at[0], at[1]);
-  const W = 2.35, H = W * 1.4; // sized to the printed slot (~3.4 x 3.6 world)
-  return (
-    <group>
-      {cards.map((d, i) => (
-        <FlatImage key={i} url={S.cards.money[String(d)]} w={W} h={H}
-          pos={[x + (i % 3) * 0.14 - 0.07, 0.04 + i * 0.012, z + Math.floor(i / 3) * 0.16 - 0.08]} ry={0} />
-      ))}
-    </group>
-  );
-}
 
 const SFX_FOR_KIND: Record<string, Parameters<typeof playSfx>[0]> = {
   action: 'build', turn: 'turn', win: 'win', alert: 'error',

@@ -266,11 +266,15 @@ information mapped to a control or display:
   offers the optional holding-load picker (any subset, including none).
 - Reprice: both districts have explicit buttons (gap found in audit: harbor
   repricing was unreachable — fixed).
-- Call Bank: start (either type, any of the 3 lots, contents shown) or outbid
-  (disabled when you lead, when cash can't cover the minimum — audit fix — or
-  vs the once-per-turn/won-auction/end-turn rules, with reasons); cash bids via
-  amount dialog (lock warning shown); container bids picked from both
-  districts with source labels.
+- Call Bank: the device board turns into a 3D close-up of the Off-Shore Bank
+  (lots, cash, tokens, holding hexes as printed on the mat). Tapping a lot
+  hotspot drops the auction token onto it in 3D, then the bid entry opens:
+  cash bids via amount dialog (lock warning shown); container bids picked from
+  both districts with source labels. Lots under auction offer OUTBID instead
+  (disabled when you lead or when cash can't cover the minimum, with reasons);
+  the once-per-turn/won-auction/end-turn rules gate the rail button. While you
+  hold the high bid, the bid tile with your bid physically on it (money cards /
+  containers) sits bottom-right of the device and next to your board on the TV.
 - Loans: take (own turn or during a delivery auction — audit fix disabled it
   elsewhere) and repay, both with reasons; also offered inline while bidding.
 - Delivery: secret amount dialog ($0 allowed = the bluff cards); runoff add;

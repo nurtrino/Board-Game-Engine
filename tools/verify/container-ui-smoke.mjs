@@ -95,6 +95,13 @@ async function drainDialogs(page) {
     await clickButton(page, /^✕$/, { onlyEnabled: false });
     return true;
   }
+  // bank cash-bid amount dialog (left open if a call-bank step mistimed)
+  if (await page.$('.cont-amount') && await hasText(page, /CASH BID · CONTAINER LOT/)) {
+    await clickButton(page, /^\+1$/);
+    if (await clickButton(page, /^PLACE BID$/)) return true;
+    await clickButton(page, /^✕$/, { onlyEnabled: false });
+    return true;
+  }
   // bank distribute / seizure
   if (await hasText(page, /DISTRIBUTE YOUR BID|BANK SEIZURE/)) {
     for (let i = 0; i < 20; i++) {
@@ -119,11 +126,18 @@ async function act(page, idx, turnCounter) {
   const myTurn = await hasText(page, /YOUR TURN ·/);
   if (!myTurn) return null;
 
-  // once, early: exercise CALL BANK through the UI
+  // once, early: exercise CALL BANK through the UI — the board turns into the
+  // Off-Shore Bank close-up; tap a container-lot hotspot to drop the auction
+  // token, then the cash-bid dialog opens after the drop animation
   if (idx === 0 && turnCounter.calls === 0 && await clickButton(page, /^CALL BANK$/)) {
-    if (await clickButton(page, /^BID CASH FOR CONTAINER LOT/)) {
+    let spotted = null;
+    for (let i = 0; i < 10 && !spotted; i++) { // hotspots mount with the canvas
+      spotted = await clickButton(page, /^BID CASH · LOT/);
+      if (!spotted) await new Promise((r) => setTimeout(r, 200));
+    }
+    if (spotted) {
       turnCounter.calls = 1;
-      await new Promise((r) => setTimeout(r, 150));
+      await new Promise((r) => setTimeout(r, 900)); // token drop, then dialog
       await clickButton(page, /^\+1$/);
       await clickButton(page, /^PLACE BID$/);
       return 'call-bank';
@@ -173,6 +187,9 @@ for (let i = 0; i < SEATS; i++) {
   pages.push(page);
 }
 await new Promise((r) => setTimeout(r, 2500));
+// dismiss the auto-opened game intro on every seat, like a human would —
+// its card otherwise swallows the mouse-based clicks in the dialogs
+for (const page of pages) await clickButton(page, /^Got it$/);
 
 let lastProgress = Date.now();
 let steps = 0;

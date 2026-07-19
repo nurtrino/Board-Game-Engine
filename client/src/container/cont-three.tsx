@@ -8,7 +8,7 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import type { ContColor } from '@bge/shared';
 import { CONT_COLORS } from '@bge/shared';
-import { CONT_SCENE, CONT_PIECE_HEX } from './cont-scene';
+import { CONT_SCENE, CONT_PIECE_HEX, px2r, moneyDenoms, MAT_RW, MAT_RH } from './cont-scene';
 
 const S = CONT_SCENE;
 
@@ -321,5 +321,37 @@ export function AuctionToken({ x, z, y = 0 }: { x: number; z: number; y?: number
     <mesh position={[x, y + H / 2 + 0.03, z]} material={mats} castShadow>
       <cylinderGeometry args={[R, R, H, 36]} />
     </mesh>
+  );
+}
+
+/** The water mat — the whole table surface, owner directive. */
+export function ContWaterMat() {
+  const tex = useLoader(THREE.TextureLoader, S.mat.img);
+  useEffect(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
+    tex.needsUpdate = true;
+  }, [tex]);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+      <planeGeometry args={[MAT_RW, MAT_RH]} />
+      <meshStandardMaterial map={tex} roughness={0.92} metalness={0.02} />
+    </mesh>
+  );
+}
+
+/** money card stack for a bank cash lot amount; the top card fills the
+ * printed card slot, the rest fan out slightly underneath */
+export function ContCashStack({ amount, at }: { amount: number; at: [number, number] }) {
+  const cards = useMemo(() => moneyDenoms(amount), [amount]);
+  const [x, z] = px2r(at[0], at[1]);
+  const W = 2.35, H = W * 1.4; // sized to the printed slot (~3.4 x 3.6 world)
+  return (
+    <group>
+      {cards.map((d, i) => (
+        <ContFlatImage key={i} url={S.cards.money[String(d)]} w={W} h={H}
+          pos={[x + (i % 3) * 0.14 - 0.07, 0.04 + i * 0.012, z + Math.floor(i / 3) * 0.16 - 0.08]} ry={0} />
+      ))}
+    </group>
   );
 }

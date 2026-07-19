@@ -14,8 +14,9 @@ import {
 } from '@bge/shared';
 import { playSfx } from '../sfx';
 import { GameIntro, type Intro } from '../ttr/GameIntro';
-import { CONT_SCENE, CONT_PIECE_HEX, CONT_UI_HEX } from './cont-scene';
+import { CONT_SCENE, CONT_PIECE_HEX, CONT_UI_HEX, moneyDenoms } from './cont-scene';
 import { ContainerMat } from './ContainerMat';
+import ContainerBankScene from './ContainerBankScene';
 import './container.css';
 
 const S = CONT_SCENE;
@@ -413,9 +414,27 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
     | { kind: 'opp'; seat: number }
     | { kind: 'card'; img: string; label: string; wide?: boolean }
   >(null);
+  // CALL BANK close-up: token placed locally while the opening bid is entered
+  const [pendingToken, setPendingToken] = useState<{ lotType: 'cash' | 'container'; lot: number } | null>(null);
+  const bankMode = dialog?.kind === 'bank' || dialog?.kind === 'bank-cash-bid' || dialog?.kind === 'bank-cont-bid';
 
   useEffect(() => { if (error) playSfx('error'); }, [error]);
   const doAct = (a: ContAction) => { playSfx('click'); act(a); };
+
+  /** a lot tapped in the bank close-up: drop the 3D token, then open the bid */
+  const pickBankLot = (lotType: 'cash' | 'container', lot: number, outbid: { bid: number } | null) => {
+    playSfx('click');
+    const next = lotType === 'container'
+      ? { kind: 'bank-cash-bid' as const, lot, min: (outbid?.bid ?? 0) + 1 }
+      : { kind: 'bank-cont-bid' as const, lot, min: (outbid?.bid ?? 0) + 1 };
+    if (outbid) { setDialog(next); return; } // token already sits on the lot
+    setPendingToken({ lotType, lot });
+    window.setTimeout(() => {
+      // only advance if the close-up is still open (not cancelled mid-drop)
+      setDialog((d) => (d?.kind === 'bank' ? next : d));
+    }, 620);
+  };
+  const closeBank = () => { setPendingToken(null); setDialog(null); };
 
   // legality mirrors (grey out with reasons; the engine is the authority)
   const myCash = p.cash ?? 0; // own cash is always visible; null is only for others
@@ -573,8 +592,14 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
           </button>
         </nav>
 
-        {/* my board: the real 3D mat */}
+        {/* my board: the real 3D mat — or the Off-Shore Bank close-up while
+            calling the bank */}
         <main className="cont-center">
+          {bankMode ? (
+            <ContainerBankScene view={view} seat={seat} pendingToken={pendingToken}
+              onPick={pickBankLot} onCancel={closeBank} />
+          ) : (
+          <>
           <div data-tour="board" className="cont-center-board">
             <BoardTableau view={view} seat={seat} />
           </div>
@@ -605,6 +630,8 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               </button>
             ))}
           </div>
+          </>
+          )}
         </main>
 
         {/* private panel */}
@@ -671,6 +698,31 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               </div>
             ))}
           </div>
+          {/* the bid tile in hand: shown while you hold the high bid, with the
+              bid physically on it (money cards / containers), mirroring the
+              tile parked next to your board on the TV */}
+          {view.bank.auctions.filter((a) => a.bidder === seat).map((a) => (
+            <div key={`tile-${a.lotType}`} className="cont-bid-tile" data-testid="cont-bid-tile">
+              <span className="cont-bid-tile-art">
+                <img src={a.lotType === 'container' ? S.cards.bidCash : S.cards.bidContainers} alt="Bank bid tile" />
+                {a.lotType === 'container' ? (
+                  <span className="cont-bid-tile-money">
+                    {moneyDenoms(a.bid, 6).map((d, i) => (
+                      <img key={i} src={S.cards.money[String(d)]} alt={`$${d}`}
+                        style={{ transform: `translate(${(i % 3) * 9 - 9}px, ${Math.floor(i / 3) * 8 - 4}px) rotate(${(i * 47) % 17 - 8}deg)` }} />
+                    ))}
+                  </span>
+                ) : (
+                  <span className="cont-bid-tile-conts"><Blocks colors={a.bidContainers.map((b) => b.color)} size={13} /></span>
+                )}
+              </span>
+              <span className="cont-bid-tile-info">
+                <span className="cont-label">YOUR BID TILE · {a.lotType === 'container' ? 'CONTAINER' : 'CASH'} LOT {['I', 'II', 'III'][a.lot]}</span>
+                <b>{a.lotType === 'container' ? `$${a.bid} LOCKED` : `${a.bid} CONTAINER${a.bid > 1 ? 'S' : ''}`}</b>
+                <small>YOU WIN AT THE START OF YOUR NEXT TURN UNLESS OUTBID</small>
+              </span>
+            </div>
+          ))}
         </aside>
       </div>
 
@@ -835,55 +887,15 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
           onClose={() => setDialog(null)} />
       )}
 
-      {dialog?.kind === 'bank' && (
-        <div className="ig-modal" onClick={() => setDialog(null)}>
-          <div className="ig-modal-card ig-glass" onClick={(e) => e.stopPropagation()}>
-            <div className="ig-modal-head">
-              <b>CALL BANK</b>
-              <button className="ig-modal-x" onClick={() => setDialog(null)}>✕</button>
-            </div>
-            <div className="cont-opp-list">
-              {view.bank.auctions.map((a) => {
-                const short = a.lotType === 'container' && myCash < a.bid + 1;
-                return (
-                  <button key={`${a.lotType}${a.lot}`} className="ig-btn" disabled={a.bidder === seat || short}
-                    onClick={() => setDialog(a.lotType === 'container'
-                      ? { kind: 'bank-cash-bid', lot: a.lot, min: a.bid + 1 }
-                      : { kind: 'bank-cont-bid', lot: a.lot, min: a.bid + 1 })}>
-                    OUTBID · {a.lotType === 'container' ? 'CONTAINER' : 'CASH'} LOT {['I', 'II', 'III'][a.lot]} ·
-                    {a.lotType === 'container' ? ` OVER $${a.bid}` : ` OVER ${a.bid} CONTAINERS`}
-                    {a.bidder === seat ? ' · YOUR BID LEADS' : short ? ' · NOT ENOUGH CASH' : ''}
-                  </button>
-                );
-              })}
-              {view.bank.tokensFree > 0 && (view.players.length >= 5 || view.bank.auctions.length === 0) && (
-                <>
-                  {!view.bank.auctions.some((a) => a.lotType === 'container') && [0, 1, 2].map((lot) => (
-                    <button key={`c${lot}`} className="ig-btn" disabled={view.bank.containerLots[lot].length === 0}
-                      onClick={() => setDialog({ kind: 'bank-cash-bid', lot, min: 1 })}>
-                      BID CASH FOR CONTAINER LOT {['I', 'II', 'III'][lot]} · {view.bank.containerLots[lot].length} CONTAINERS
-                    </button>
-                  ))}
-                  {!view.bank.auctions.some((a) => a.lotType === 'cash') && [0, 1, 2].map((lot) => (
-                    <button key={`m${lot}`} className="ig-btn" disabled={view.bank.cashLots[lot] === 0}
-                      onClick={() => setDialog({ kind: 'bank-cont-bid', lot, min: 1 })}>
-                      BID CONTAINERS FOR ${view.bank.cashLots[lot]} · CASH LOT {['I', 'II', 'III'][lot]}
-                    </button>
-                  ))}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
+      {/* CALL BANK renders as the Off-Shore Bank close-up in the center pane;
+          only the bid-entry dialogs remain modal, over the close-up */}
       {dialog?.kind === 'bank-cash-bid' && (
         <AmountDialog title={`CASH BID · CONTAINER LOT ${['I', 'II', 'III'][dialog.lot]}`}
           min={Math.min(dialog.min, p.cash ?? 0)} max={p.cash ?? 0}
-          note="THE CASH IS LOCKED ON THE BID TILE UNTIL THE AUCTION RESOLVES"
+          note="THE CASH GOES ON THE BID TILE AND IS LOCKED THERE UNTIL THE AUCTION RESOLVES"
           confirmLabel="PLACE BID"
-          onConfirm={(n) => { doAct({ type: 'call_bank', lotType: 'container', lot: dialog.lot, cash: n }); setDialog(null); }}
-          onClose={() => setDialog(null)} />
+          onConfirm={(n) => { doAct({ type: 'call_bank', lotType: 'container', lot: dialog.lot, cash: n }); closeBank(); }}
+          onClose={() => { setPendingToken(null); setDialog({ kind: 'bank' }); }} />
       )}
 
       {dialog?.kind === 'bank-cont-bid' && (
@@ -904,9 +916,9 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
                 color: x.color,
               })));
             doAct({ type: 'call_bank', lotType: 'cash', lot: dialog.lot, containers });
-            setDialog(null);
+            closeBank();
           }}
-          onClose={() => setDialog(null)} />
+          onClose={() => { setPendingToken(null); setDialog({ kind: 'bank' }); }} />
       )}
 
       {/* delivery prompts */}

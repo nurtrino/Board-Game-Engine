@@ -101,6 +101,14 @@ export const CONT_PIECE_HEX: Record<ContColor, string> = {
 
 export const CONT_SEAT_ORDER: ContainerSeat[] = ['Brown', 'Pink', 'Teal', 'Purple', 'Orange'];
 
+/** greedy money-card breakdown of an amount, capped for display */
+export const moneyDenoms = (amount: number, cap = 9): number[] => {
+  const out: number[] = [];
+  let rest = amount;
+  for (const d of [20, 10, 5, 2, 1]) while (rest >= d && out.length < cap) { out.push(d); rest -= d; }
+  return out;
+};
+
 /** UI-legible seat hexes (the mod's Brown hand color is too dark for chips) */
 export const CONT_UI_HEX: Record<ContainerSeat, string> = {
   Brown: '#8a5a33', Pink: '#f570ce', Teal: '#21b19b', Purple: '#b45cf0', Orange: '#f4641d',
