@@ -343,6 +343,109 @@ function AmountDialog({ title, max, min = 0, note, confirmLabel, extra, bluffMax
   );
 }
 
+// ---------------- money-hand bid dialog (delivery auctions) ----------------
+
+/** deal an amount into an even spread of denominations: one of each note
+ *  (smallest first) while it fits, then bigger notes for the remainder — so
+ *  most bids are composable without visiting the exchange */
+const dealHand = (amount: number): number[] => {
+  const total = Math.max(0, Math.floor(amount));
+  const out: number[] = [];
+  let sum = 0;
+  // one of each note, smallest first, while it still fits
+  for (const d of [1, 2, 5, 10, 20]) if (sum + d <= total) { out.push(d); sum += d; }
+  // fill the remainder with the biggest notes that fit
+  let rest = total - sum;
+  for (const d of [20, 10, 5, 2, 1]) while (d <= rest) { out.push(d); rest -= d; }
+  return out.sort((a, b) => b - a);
+};
+
+/** what the bank hands back when a note is exchanged for change */
+const CHANGE: Record<number, number[]> = { 20: [10, 10], 10: [5, 5], 5: [2, 2, 1], 2: [1, 1] };
+
+/** delivery bidding as a hand of real money cards: tap cards into the bid
+ *  pile, exchange big notes for change when the exact bid needs it */
+function MoneyBidDialog({ title, note, cash, bluffMax, extra, confirmLabel, onConfirm }: {
+  title: string; note?: string; cash: number; bluffMax: number;
+  extra?: React.ReactNode; confirmLabel: string;
+  onConfirm: (amount: number, bluffs: number) => void;
+}) {
+  const [hand, setHand] = useState<number[]>(() => dealHand(cash));
+  const [bid, setBid] = useState<number[]>([]);
+  const [exchange, setExchange] = useState(false);
+  const [bluffs, setBluffs] = useState(0);
+  const bidSum = bid.reduce((a, b) => a + b, 0);
+  // a mid-dialog loan (or any cash change) re-deals the un-bid remainder
+  useEffect(() => {
+    setHand(dealHand(cash - bidSum));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cash]);
+  const spendCard = (i: number) => {
+    const d = hand[i];
+    if (exchange) {
+      if (!CHANGE[d]) return; // a $1 has no change
+      setHand((h) => [...h.slice(0, i), ...CHANGE[d], ...h.slice(i + 1)].sort((a, b) => b - a));
+      return;
+    }
+    setHand((h) => [...h.slice(0, i), ...h.slice(i + 1)]);
+    setBid((b) => [...b, d].sort((a, b) => b - a));
+  };
+  const takeBack = (i: number) => {
+    const d = bid[i];
+    setBid((b) => [...b.slice(0, i), ...b.slice(i + 1)]);
+    setHand((h) => [...h, d].sort((a, b) => b - a));
+  };
+  const cardRow = (cards: number[], onTap: (i: number) => void, empty: string) => (
+    <div className="cont-hand-cards">
+      {cards.length === 0 && <span className="cont-hand-empty">{empty}</span>}
+      {cards.map((d, i) => (
+        <button key={`${d}-${i}`} className="cont-hand-card" onClick={() => onTap(i)}>
+          <img src={S.cards.money[String(d)]} alt={`$${d} card`} />
+          {exchange && CHANGE[d] && <span className="cont-hand-swap">⇄</span>}
+        </button>
+      ))}
+    </div>
+  );
+  return (
+    <div className="ig-modal">
+      <div className="ig-modal-card ig-glass cont-moneybid">
+        <div className="ig-modal-head"><b>{title}</b></div>
+        {note && <p className="dim">{note}</p>}
+        <div className="cont-hand-row">
+          <div className="cont-hand-label">
+            <span>YOUR HAND · ${cash - bidSum}</span>
+            <button className={'cont-hand-exchange' + (exchange ? ' on' : '')}
+              onClick={() => setExchange((e) => !e)}>
+              {exchange ? 'EXCHANGING · TAP A NOTE TO BREAK IT' : 'EXCHANGE'}
+            </button>
+          </div>
+          {cardRow(hand, spendCard, 'NO CASH LEFT')}
+        </div>
+        <div className="cont-hand-row bid">
+          <div className="cont-hand-label"><span>YOUR BID · ${bidSum}</span>
+            <em>TAP A CARD TO TAKE IT BACK</em>
+          </div>
+          {cardRow(bid, takeBack, 'NO CARDS · A $0 BID IS ALLOWED')}
+        </div>
+        {bluffMax > 0 && (
+          <div className="cont-bluff-row">
+            <span>BLUFF CARDS · WORTH $0, BUT THE TABLE ONLY SEES YOUR PILE SIZE</span>
+            <div>
+              <button className="cont-mini" onClick={() => setBluffs((v) => Math.max(0, v - 1))}>−</button>
+              <b>{bluffs}</b>
+              <button className="cont-mini" onClick={() => setBluffs((v) => Math.min(bluffMax, v + 1))}>+</button>
+            </div>
+          </div>
+        )}
+        {extra}
+        <button className="ig-btn primary" onClick={() => onConfirm(bidSum, bluffs)}>
+          {confirmLabel} · ${bidSum}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ---------------- the board tableau (top-down authentic art) ----------------
 
 /** the 3D personal board in a fixed frame, plus the docked-visitor caption */
@@ -923,16 +1026,16 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
 
       {/* delivery prompts */}
       {(myBidNeeded || myRunoffNeeded) && d && (
-        <AmountDialog
+        <MoneyBidDialog
           title={myRunoffNeeded ? 'RUNOFF · ADD TO YOUR BID' : `SECRET BID · ${view.players[d.deliverer].name.toUpperCase()} DELIVERS ${d.cargo.length}`}
-          min={0} max={Math.max(0, (p.cash ?? 0) - (myRunoffNeeded ? (d.yourBid ?? 0) : 0))}
+          cash={Math.max(0, (p.cash ?? 0) - (myRunoffNeeded ? (d.yourBid ?? 0) : 0))}
           note={`CARGO: ${d.cargo.map((c) => c.toUpperCase()).join(' · ')} · WINNER PLACES THEM IN THEIR SCORING AREA`}
           confirmLabel="PLACE SECRET BID"
           bluffMax={Math.max(0, CONT_BLUFF_MAX - d.yourBluffs)}
           extra={p.loans < 2 ? (
             <button className="ig-btn ghost" onClick={() => doAct({ type: 'take_loan' })}>TAKE A $10 LOAN FIRST</button>
           ) : undefined}
-          onConfirm={(n, bluffs) => doAct({ type: 'delivery_bid', amount: n, bluffs })} />
+          onConfirm={(amount, bluffs) => doAct({ type: 'delivery_bid', amount, bluffs })} />
       )}
 
       {myResolve && d && (() => {
