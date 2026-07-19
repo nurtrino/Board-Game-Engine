@@ -108,6 +108,19 @@ export function packGrid(n: number, cols: number, dx: number, dz: number, perLay
   return out;
 }
 
+/** container spots inside a printed board lot: art-px offsets from the lot's
+ * open-area center plus a stack layer. Pieces lie lengthwise along the board
+ * art's Y axis in a centered grid sized to the printed bays (factory slots fit
+ * 3 x 2 per layer, the narrower harbor bays 2 x 2), then stack upward. */
+export function lotSpots(kind: 'factory' | 'harbor', n: number): [number, number, number][] {
+  return kind === 'factory' ? packGrid(n, 3, 130, 225, 6) : packGrid(n, 2, 150, 225, 4);
+}
+
+/** open-area center of a printed lot (art px): right of the illustrated label
+ * column, below the harbor bays' label band (measured on the board art) */
+export const lotCenter = (kind: 'factory' | 'harbor', at: [number, number]): [number, number] =>
+  kind === 'factory' ? [at[0] + 105, 1448] : [at[0] + 100, 900];
+
 /** yaw = direction of the ship's LONG axis in render space (0 = along X);
  *  the ship glides between spots so every sail reads on the table. */
 /** the mod's own snap points on every boat: the 5 cargo slots, in mesh-local

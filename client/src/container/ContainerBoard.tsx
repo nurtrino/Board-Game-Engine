@@ -19,7 +19,7 @@ import {
 import {
   ContFlatImage as FlatImage, useContainerProto, ContainerPiece, packGrid, Ship,
   FactoryPiece, WarehousePiece, AuctionToken, ContWaterMat as WaterMat, ContCashStack as CashStack,
-  type ContainerProto,
+  lotSpots, lotCenter, type ContainerProto,
 } from './cont-three';
 import './container.css';
 
@@ -470,33 +470,24 @@ function Pieces({ view }: { view: ContainerView }) {
       nodes.push(<FlatImage key={`aid-${p.seat}`} url={S.cards.aid}
         w={4.3} h={4.3 * (477 / 1024)} pos={[x, 0.02, z]} ry={ry} />);
     }
-    // factory lots
-    for (const [price, list] of Object.entries(p.factoryLots)) {
-      const at = S.pb.factoryLots[price];
-      if (!at) continue;
+    // factory + harbor lots: lengthwise grid inside each printed bay
+    for (const which of ['factory', 'harbor'] as const) {
+      const lots = which === 'factory' ? p.factoryLots : p.harborLots;
+      const anchors = which === 'factory' ? S.pb.factoryLots : S.pb.harborLots;
       const yaw = S.boards[seatColor].yaw;
-      list.forEach((color, i) => {
-        const row = Math.floor(i / 2), col = i % 2;
-        const local: [number, number] = [at[0] + (col - 0.5) * 230, at[1] - row * 130];
-        const [x, z] = boardSpot(seatColor, local);
-        const contYaw = BOARD_RY[yaw] ?? 0; // lie along the printed lot row
-        nodes.push(<ContainerPiece key={`fl-${p.seat}-${price}-${i}`} color={color}
-          x={x} z={z} yaw={contYaw} proto={proto} />);
-      });
-    }
-    // harbor lots
-    for (const [price, list] of Object.entries(p.harborLots)) {
-      const at = S.pb.harborLots[price];
-      if (!at) continue;
-      const yaw = S.boards[seatColor].yaw;
-      list.forEach((color, i) => {
-        const row = Math.floor(i / 2), col = i % 2;
-        const local: [number, number] = [at[0] + (col - 0.5) * 230, at[1] + row * 130];
-        const [x, z] = boardSpot(seatColor, local);
-        const contYaw = BOARD_RY[yaw] ?? 0; // lie along the printed lot row
-        nodes.push(<ContainerPiece key={`hl-${p.seat}-${price}-${i}`} color={color}
-          x={x} z={z} yaw={contYaw} proto={proto} />);
-      });
+      for (const [price, list] of Object.entries(lots)) {
+        const at = anchors[price];
+        if (!at) continue;
+        const [cx, cy] = lotCenter(which, at);
+        const spots = lotSpots(which, list.length);
+        list.forEach((color, i) => {
+          const [dx, dy, layer] = spots[i];
+          const [x, z] = boardSpot(seatColor, [cx + dx, cy + dy]);
+          const contYaw = (BOARD_RY[yaw] ?? 0) + Math.PI / 2; // lengthwise along the bay
+          nodes.push(<ContainerPiece key={`${which}-${p.seat}-${price}-${i}`} color={color}
+            x={x} z={z} y={layer * proto.height} yaw={contYaw} proto={proto} />);
+        });
+      }
     }
     // reserve tokens marking bid containers
     const res: [number, 'factory' | 'harbor'][] = [[p.reserves.factory, 'factory'], [p.reserves.harbor, 'harbor']];

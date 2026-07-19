@@ -9,7 +9,10 @@ import { Canvas, useLoader, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { ContainerView, ContColor } from '@bge/shared';
 import { CONT_SCENE } from './cont-scene';
-import { ContainerPiece, FactoryPiece, WarehousePiece, Ship, useContainerProto, ContFlatImage } from './cont-three';
+import {
+  ContainerPiece, FactoryPiece, WarehousePiece, Ship, useContainerProto, ContFlatImage,
+  lotSpots, lotCenter,
+} from './cont-three';
 
 const S = CONT_SCENE;
 const AW = 2712, AH = 1702;
@@ -55,10 +58,13 @@ function MatPieces({ view, seat }: { view: ContainerView; seat: number }) {
     for (const [price, list] of Object.entries(src)) {
       const at = anchors[price];
       if (!at) continue;
+      const [cx, cy] = lotCenter(which, at);
+      const spots = lotSpots(which, (list as ContColor[]).length);
       (list as ContColor[]).forEach((color, i) => {
-        const row = Math.floor(i / 2), col = i % 2;
-        const [x, z] = a2m(at[0] + (col - 0.5) * 230, at[1] + (which === 'factory' ? -row * 130 : row * 130));
-        nodes.push(<ContainerPiece key={`${which}-${price}-${i}`} color={color} x={x} z={z} proto={proto} />);
+        const [dx, dy, layer] = spots[i];
+        const [x, z] = a2m(cx + dx, cy + dy);
+        nodes.push(<ContainerPiece key={`${which}-${price}-${i}`} color={color}
+          x={x} z={z} y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
       });
     }
   };
