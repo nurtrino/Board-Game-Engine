@@ -46,16 +46,19 @@ const wsCall = () => new Promise((resolve, reject) => {
 
 const textOf = (el) => el.evaluate((n) => n.textContent ?? '');
 
+/** find + click a button by text in ONE in-page evaluate (fast) */
 async function clickButton(page, re, { onlyEnabled = true } = {}) {
-  const handles = await page.$$('button');
-  for (const h of handles) {
-    const t = (await textOf(h)).replace(/\s+/g, ' ').trim();
-    if (!re.test(t)) continue;
-    const disabled = await h.evaluate((n) => n.disabled);
-    if (onlyEnabled && disabled) continue;
-    try { await h.click(); return t; } catch { /* covered by another element */ }
-  }
-  return null;
+  return page.evaluate((src, flags, enabledOnly) => {
+    const rx = new RegExp(src, flags);
+    for (const b of document.querySelectorAll('button')) {
+      const t = (b.textContent ?? '').replace(/\s+/g, ' ').trim();
+      if (!rx.test(t)) continue;
+      if (enabledOnly && b.disabled) continue;
+      b.click();
+      return t;
+    }
+    return null;
+  }, re.source, re.flags, onlyEnabled).catch(() => null);
 }
 const hasText = async (page, re) => re.test(await page.evaluate(() => document.body.innerText));
 
@@ -190,10 +193,10 @@ for (let tick = 0; tick < 4000; tick++) {
       lastProgress = Date.now();
       advanced = true;
       if (steps % 10 === 0 || steps < 40) console.log(`#${steps} seatpage ${i}: ${what}`);
-      await new Promise((r) => setTimeout(r, 180));
+      await new Promise((r) => setTimeout(r, 90));
     }
   }
-  if (!advanced) await new Promise((r) => setTimeout(r, 350));
+  if (!advanced) await new Promise((r) => setTimeout(r, 220));
   if (Date.now() - lastProgress > 90000) {
     console.error('UI STALL after', steps, 'clicks');
     for (let i = 0; i < SEATS; i++) {
