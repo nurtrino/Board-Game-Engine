@@ -16,6 +16,7 @@ let view = null;
 let lastSeq = -1;
 let lastProgress = Date.now();
 let acts = 0;
+let errors = 0;
 
 const PRICES_F = [1, 2, 3, 4];
 const PRICES_H = [2, 3, 4, 5, 6];
@@ -23,10 +24,10 @@ const lotCount = (lots) => Object.values(lots).reduce((a, l) => a + l.length, 0)
 const flat = (lots) => Object.values(lots).flat();
 const countBy = (list) => list.reduce((m, c) => ((m[c] = (m[c] ?? 0) + 1), m), {});
 
-const dump = (lots, add, price) => {
+const dump = (lots, add, price, prices) => {
   const all = [...flat(lots), ...add];
   const out = {};
-  for (const p of (price <= 4 ? PRICES_F : PRICES_H)) out[p] = [];
+  for (const p of prices) out[p] = [];
   out[price] = all;
   return out;
 };
@@ -84,7 +85,7 @@ function myAction() {
     const n = Math.min(eligible.length, Math.max(0, room));
     if (n > 0) {
       const make = eligible.slice(0, n);
-      return { type: 'produce', make, lots: dump(p.factoryLots, make, 2) };
+      return { type: 'produce', make, lots: dump(p.factoryLots, make, 2, PRICES_F) };
     }
   }
   if (p.factories.length < 2) {
@@ -144,7 +145,7 @@ function myAction() {
           const hit = picks.find((x) => x.price === o.price && x.color === o.color);
           if (hit) hit.count += 1; else picks.push({ price: o.price, color: o.color, count: 1 });
         }
-        if (picks.length) return { type: 'factory_buy', from, picks, lots: dump(p.harborLots, bought, 4) };
+        if (picks.length) return { type: 'factory_buy', from, picks, lots: dump(p.harborLots, bought, 4, PRICES_H) };
       }
     }
   }
@@ -186,6 +187,7 @@ ws.on('message', (data) => {
     step();
   } else if (m.type === 'error') {
     console.error('server error:', m.message);
+    if (++errors > 12) { console.error('too many rejected actions, aborting'); process.exit(1); }
   }
 });
 ws.on('error', (e) => { console.error('ws error', e.message); process.exit(1); });

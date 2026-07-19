@@ -130,10 +130,15 @@ function packGrid(n: number, cols: number, dx: number, dz: number, perLayer: num
   return out;
 }
 
-function Ship({ seatColor, x, z, yaw }: { seatColor: string; x: number; z: number; yaw: number }) {
+/** yaw = direction of the ship's LONG axis in render space (0 = along X);
+ *  the ship glides between spots so every sail reads on the table. */
+function Ship({ seatColor, x, z, yaw, children }: {
+  seatColor: string; x: number; z: number; yaw: number; children?: React.ReactNode;
+}) {
   const obj = useLoader(OBJLoader, S.models.ship.mesh);
   const tex = useLoader(THREE.TextureLoader, S.models.ship.tex ?? '');
-  const { clone, scale, lift } = useMemo(() => {
+  const group = useRef<THREE.Group>(null);
+  const { clone, scale, lift, alongX } = useMemo(() => {
     tex.colorSpace = THREE.SRGBColorSpace;
     const c = obj.clone(true);
     const mat = new THREE.MeshStandardMaterial({
@@ -147,39 +152,62 @@ function Ship({ seatColor, x, z, yaw }: { seatColor: string; x: number; z: numbe
     bb.getSize(size);
     const long = Math.max(size.x, size.z) || 1;
     const s = 4.6 / long; // the mod ship footprint (scale 1.1/1.2 ~ 4.6 long)
-    return { clone: c, scale: s, lift: -bb.min.y * s };
+    return { clone: c, scale: s, lift: -bb.min.y * s, alongX: size.x >= size.z };
   }, [obj, tex, seatColor]);
+  // glide to the target spot instead of teleporting (visual placement)
+  useFrame((_, dt) => {
+    const g = group.current;
+    if (!g) return;
+    const k = Math.min(1, dt * 2.2);
+    g.position.x += (x - g.position.x) * k;
+    g.position.z += (z - g.position.z) * k;
+  });
   return (
-    <primitive object={clone} position={[x, lift + 0.02, z]}
-      rotation={[0, yaw + Math.PI, 0]} scale={[scale, scale, scale]} />
+    <group ref={group} position={[x, 0, z]}>
+      <primitive object={clone} position={[0, lift + 0.02, 0]}
+        rotation={[0, yaw + (alongX ? 0 : Math.PI / 2), 0]} scale={[scale, scale, scale]} />
+      {children}
+    </group>
   );
 }
 
-/** ship render spot + heading per game location */
+/** ship render spot + long-axis heading per game location */
 function shipPlace(view: ContainerView, seat: number): { x: number; z: number; yaw: number } {
   const p = view.players[seat];
   const seatColor = p.color;
   const loc = p.ship.loc;
   if (loc.kind === 'ocean') {
-    const [wx, wz] = S.shipStarts[seatColor];
+    // idle anchorages sit clear of every board's dock approach (the mod's
+    // drop spots crowd the coves where visiting ships tie up)
+    const OCEAN_IDLE: Record<string, [number, number]> = {
+      Brown: [-11.5, -13.5], Pink: [-20.5, -3.5], Orange: [-20.5, 3.5],
+      Teal: [20.5, -3.5], Purple: [20.5, 3.5],
+    };
+    const [wx, wz] = OCEAN_IDLE[seatColor] ?? S.shipStarts[seatColor];
     const [x, z] = w2r(wx, wz);
-    return { x, z, yaw: wz > 0 ? Math.PI : 0 };
+    // side ships ride north-south along the coast, the rest east-west
+    return { x, z, yaw: Math.abs(wx) > 18 ? Math.PI / 2 : 0 };
   }
   if (loc.kind === 'harbor') {
     const host = view.players[loc.seat];
-    // dock cove index = my seat index, so two visiting ships never overlap
+    // dock cove index = my seat index, so two visiting ships never overlap;
+    // the hull sits in the sea with the bow just inside the printed cove
     const dock = S.pb.docks[seat % S.pb.docks.length];
-    const [x, z] = boardSpot(host.color, [dock[0], dock[1] - 120]);
-    const yaw = { 180: 0, 90: Math.PI / 2, 270: -Math.PI / 2, 0: Math.PI }[S.boards[host.color].yaw] ?? 0;
-    return { x, z, yaw: yaw + Math.PI / 2 };
+    const [x, z] = boardSpot(host.color, [dock[0], -235]);
+    // long axis perpendicular to the board's dock edge
+    const yaw = (BOARD_RY[S.boards[host.color].yaw] ?? 0) + Math.PI / 2;
+    return { x, z, yaw };
   }
   if (loc.kind === 'island') {
-    const [hx, hz] = px2r(S.hexArt[`${seatColor}:scoring`]?.[0] ?? 1500, 2120);
-    return { x: hx, z: hz + 1.5, yaw: Math.PI / 2 };
+    // moored along the island's south pier, one berth per seat
+    const berth = view.players.findIndex((q) => q.seat === seat);
+    const [x, z] = px2r(1450 + berth * 210, 2115);
+    return { x, z, yaw: 0 };
   }
-  // bank
-  const [hx, hz] = px2r(S.hexArt[`${seatColor}:holding`]?.[0] ?? 2550, 2040);
-  return { x: hx, z: hz + 1.2, yaw: Math.PI / 2 };
+  // bank: moored along the bank's south pier by the cash slots
+  const berth = view.players.findIndex((q) => q.seat === seat);
+  const [x, z] = px2r(2380 + berth * 210, 2320);
+  return { x, z, yaw: 0 };
 }
 
 /** money card stack for a bank cash lot amount */
@@ -247,6 +275,32 @@ function FocusFly({ focus, controls }: { focus: RFocus | null; controls: React.R
     c.update();
   });
   return null;
+}
+
+/** pulsing ring at the action's spot while the camera dwells there */
+function FocusRing({ focus, color }: { focus: RFocus | null; color: string }) {
+  const mesh = useRef<THREE.Mesh>(null);
+  const born = useRef<{ seq: number; t: number } | null>(null);
+  useFrame(({ clock }) => {
+    const m = mesh.current;
+    if (!m || !focus) return;
+    if (born.current?.seq !== focus.seq) born.current = { seq: focus.seq, t: clock.elapsedTime };
+    const age = clock.elapsedTime - born.current.t;
+    const LIFE = 4.4;
+    const visible = age < LIFE;
+    m.visible = visible;
+    if (!visible) return;
+    m.position.set(focus.x, 0.09, focus.z);
+    const pulse = 1 + 0.28 * Math.sin(age * 5.2);
+    m.scale.setScalar(pulse);
+    (m.material as THREE.MeshBasicMaterial).opacity = Math.min(0.85, Math.max(0, (LIFE - age) / 1.2));
+  });
+  return (
+    <mesh ref={mesh} rotation={[-Math.PI / 2, 0, 0]} visible={false}>
+      <ringGeometry args={[1.7, 2.05, 48]} />
+      <meshBasicMaterial color={color} transparent depthWrite={false} />
+    </mesh>
+  );
 }
 
 function CamOverride() {
@@ -457,15 +511,18 @@ function Pieces({ view }: { view: ContainerView }) {
       nodes.push(<FlatImage key={`loan-${p.seat}-${i}`} url={S.cards.loan} w={1.5} h={1.5 * 1.4}
         pos={[x, 0.04 + i * 0.01, z]} ry={ry} />);
     }
-    // ship + cargo
+    // ship + cargo riding on its deck (cargo glides with the hull)
     const sp = shipPlace(view, p.seat);
-    nodes.push(<Ship key={`ship-${p.seat}`} seatColor={seatColor} x={sp.x} z={sp.z} yaw={sp.yaw} />);
-    p.ship.cargo.forEach((color, i) => {
-      nodes.push(<ContainerPiece key={`cargo-${p.seat}-${i}`} color={color}
-        x={sp.x + Math.cos(sp.yaw) * (i - 2) * 0.72}
-        z={sp.z - Math.sin(sp.yaw) * (i - 2) * 0.72}
-        y={0.55} yaw={sp.yaw + Math.PI / 2} proto={proto} />);
-    });
+    nodes.push(
+      <Ship key={`ship-${p.seat}`} seatColor={seatColor} x={sp.x} z={sp.z} yaw={sp.yaw}>
+        {p.ship.cargo.map((color, i) => (
+          <ContainerPiece key={`cargo-${p.seat}-${i}`} color={color}
+            x={Math.cos(sp.yaw) * (i - 2) * 0.72}
+            z={-Math.sin(sp.yaw) * (i - 2) * 0.72}
+            y={0.55} yaw={sp.yaw + Math.PI / 2} proto={proto} />
+        ))}
+      </Ship>,
+    );
   }
 
   return <group>{nodes}</group>;
@@ -481,6 +538,7 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
   }, [view.lastEvent.seq, view.lastEvent.kind]);
 
   const [statsSeat, setStatsSeat] = useState<number | null>(null);
+  const [guide, setGuide] = useState(() => new URLSearchParams(location.search).has('guide'));
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
 
   const focus = useMemo<RFocus | null>(() => {
@@ -516,6 +574,8 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
         <WaterMat />
         <PlayerBoards seats={view.players.map((p) => p.color)} />
         <Pieces view={view} />
+        <FocusRing focus={focus}
+          color={CONT_UI_HEX[view.players[view.turn]?.color] ?? '#e8b450'} />
         {new URLSearchParams(location.search).get('cam') ? (
           <CamOverride />
         ) : (
@@ -607,6 +667,50 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
           </div>
         );
       })()}
+
+      {/* host guide toggle: labels every region of the table */}
+      <button className={'ig-glass cont-guide-toggle' + (guide ? ' on' : '')}
+        onClick={() => setGuide((g) => !g)}>
+        {guide ? 'HIDE GUIDE' : 'EXPLAIN THE BOARD'}
+      </button>
+
+      {guide && view.phase !== 'ended' && (
+        <>
+          <div className="cont-guide-note ig-glass" style={{ top: 84, left: '50%', transform: 'translateX(-50%)' }}>
+            <b>THE COMPANIES</b>
+            <span>Each chip: ship load, island containers, loans. Cash is SECRET in Container, even here. Tap a chip for full public stats.</span>
+          </div>
+          <div className="cont-guide-note ig-glass" style={{ top: 64, right: 12 }}>
+            <b>THE SUPPLY, AND THE CLOCK</b>
+            <span>Containers left per color. When TWO colors hit zero, the current turn finishes and the game ends.</span>
+          </div>
+          <div className="cont-guide-note ig-glass" style={{ bottom: 110, left: '50%', transform: 'translateX(-50%)' }}>
+            <b>THE NARRATOR</b>
+            <span>Every action is called out here, and the camera flies to where it happened with a pulsing ring.</span>
+          </div>
+          <div className="cont-guide-panel ig-glass">
+            <h3>THE TABLE, REGION BY REGION</h3>
+            <div className="goal">
+              Most money wins. Cash stays hidden in hand; at the end it is joined by each
+              player's island containers, valued by their SECRET scoring card, minus loans.
+              The whole game is making the other players want your containers.
+            </div>
+            {[
+              ['CONTAINER ISLAND · LEFT', 'Five colored hexes, one scoring area per company. Delivering a ship here auctions its cargo: everyone else bids secret cash, the deliverer collects the bid doubled, and the containers land in the winner\'s hex to score at the end.'],
+              ['THE OFF-SHORE BANK · RIGHT', 'Three container lots (top squares) and three cash slots (bottom) that players auction against each other. The colored hexes are per-company holding areas for auction winnings, picked up later by ship. The loan deck sits beside it: $10 out, $1 interest per turn, $11 to settle.'],
+              ['THE HARBOR BOARDS · EDGES', 'One per company. The green half is its factory district: factories on the track, containers priced $1 to $4. The pale half is its harbor: warehouses, containers priced $2 to $6, and the notched docks where rival ships tie up to buy.'],
+              ['THE SUPPLY PILES · TOP', 'The shared stock of containers by color, spare factories, and warehouses. Producing drains it; when two colors run dry the game ends.'],
+              ['THE OCEAN', 'Ships sail from any board to the open water, then onward to a rival harbor, the Bank, or Container Island. A ship never enters its own harbor: your goods must be bought by someone else.'],
+              ['THE BID TILES + TOKENS', 'The two tiles near the Bank hold the current auction bids: cash on the ship tile, containers on the district tile. The round tokens mark which Bank lot is under auction.'],
+            ].map(([t, d]) => (
+              <div key={t} className="cont-guide-region">
+                <b>{t}</b>
+                <span>{d}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* end overlay */}
       {view.phase === 'ended' && (

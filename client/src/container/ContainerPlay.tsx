@@ -48,6 +48,75 @@ interface Props {
   error: string | null;
 }
 
+// The live interface tour: each step spotlights a REAL control (data-tour)
+// and explains it in the scheme of the whole game. No em dashes.
+const CONT_TOUR: { target?: string; title: string; body: string }[] = [
+  { title: 'Welcome to your shipping company', body: 'The TV is the shared sea: both islands, every harbor board, every ship. You run everything from this screen. The goal is simple: end the game with the most money. Money comes from selling containers to the players around you and from delivering cargo to Container Island. Tap NEXT to walk through every control.' },
+  { target: 'turn', title: 'Two actions per turn', body: 'The header always shows whose turn it is and how many actions you have left. You take TWO actions each turn, the same one twice if you like, except PRODUCE and CALL BANK which are once per turn. The colored counters on the right are the shared container supply.' },
+  { target: 'board', title: 'Your harbor board', body: 'The same board that sits in front of you on the TV table. The bottom half is your FACTORY district: factories make containers and the $1 to $4 lots are the shelves where you price them. The top half is your HARBOR: warehouses set how much you can store, the $2 to $6 lots price it, and the docks along the top are where opponents\' ships tie up to shop.' },
+  { target: 'produce', title: 'Produce', body: 'PRODUCE pays $1 to the player on your right and makes one container per factory you own, taken from the shared supply. You then arrange your whole factory district into priced lots.\n\nPricing is the game: price low and opponents buy fast but you earn little; price high and your shelves sit full, blocking your next PRODUCE.' },
+  { target: 'build-factory', title: 'Build', body: 'BUILD FACTORY adds a new factory color (up to four, all different): one more container per PRODUCE and 2 more factory storage. BUILD WAREHOUSE (up to five) adds 1 harbor storage each. Costs rise along the printed tracks on your board and are paid to the supply.' },
+  { target: 'opponents', title: 'The other companies', body: 'Every opponent\'s shelves and prices are public, and you can NEVER buy your own goods, so this strip is your shopping catalog. FACTORY rows show what a truck can fetch for your harbor; HARBOR rows show what your ship could load. Tap a company to see their full board.' },
+  { target: 'factory-purchase', title: 'Factory purchase', body: 'FACTORY PURCHASE trucks containers from ONE opponent\'s factory shelves straight into your harbor, paying them their printed prices. Then you re-price the goods in your own harbor lots and wait for ships.\n\nBuy low, mark up. That margin is where harbor money is made.' },
+  { target: 'ship', title: 'Your ship', body: 'Your ship holds up to five containers. It can be in the ocean, docked at an opponent\'s harbor, at the Off-Shore Bank, or at Container Island. It can never enter your own harbor: your own goods must be bought by somebody else.' },
+  { target: 'sail', title: 'Sail', body: 'SAIL moves the ship: one action from any board to the ocean, one more to a destination.\n\nDocking at a harbor gives ONE FREE purchase on arrival. Docking at the Bank loads containers you won at auction. Docking at Container Island starts a delivery auction and ends your turn immediately.' },
+  { target: 'harbor-purchase', title: 'Harbor purchase', body: 'HARBOR PURCHASE loads containers from the harbor where your ship is docked, at the owner\'s printed prices, onto your ship. This is the last leg of the supply chain: factory shelf, harbor shelf, ship, island.' },
+  { target: 'island', title: 'Delivering to Container Island', body: 'When you sail to the island, every opponent secretly bids cash for your whole cargo. Accept and you collect the winning bid TWICE (the government matches it) while the winner stacks your containers in their island scoring area.\n\nOr buy the load out yourself: pay the high bid to the Bank and keep the containers in YOUR scoring area.' },
+  { target: 'scorecard', title: 'Your secret scoring card', body: 'The heart of the game. At the end, containers in your island scoring area are worth what THIS card says: $10, $6, $4 or $2 per color, and your two-value color pays $10 each if you collected all five colors, else $5.\n\nThe catch: your MOST COMMON island color is discarded for nothing. Collect variety, not piles, and never let opponents guess your card.' },
+  { target: 'bank', title: 'The Off-Shore Bank', body: 'CALL BANK runs auctions both ways: bid cash on a container lot, or bid containers from your shelves on a cash lot. Hold the high bid until your next turn and you win it; winnings wait in your holding hex until your ship collects them.\n\nThe Bank also gives $10 loans: $1 interest every turn, seizure of your containers if you default, and an $11 settlement at game end.' },
+  { target: 'cash', title: 'Cash is score, and it is secret', body: 'Nobody can see how much cash you hold, not even the TV. Every dollar you end with counts, plus your island area by your card, $3 per container on your ship or in bank holding, and $2 per container in your harbor. Factory shelves are worth NOTHING at the end.' },
+  { target: 'supply', title: 'How the game ends', body: 'When TWO container colors run out of the shared supply, the current turn finishes and everyone scores. These counters are the clock: watch them to time your last deliveries and to stop producing colors that help an opponent\'s scoring card.' },
+  { target: 'end-turn', title: 'The whole engine', body: 'Build, produce, price, truck, sail, deliver, auction. Press END TURN when you are done, and remember: you only get rich by making OTHER players want your containers. Good luck.' },
+];
+
+function ContainerTour({ step, setStep, onClose }: { step: number; setStep: (n: number) => void; onClose: () => void }) {
+  const [rect, setRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+  const s = CONT_TOUR[step];
+  const last = step === CONT_TOUR.length - 1;
+  useEffect(() => {
+    if (!s.target) { setRect(null); return; }
+    const el = document.querySelector(`[data-tour="${s.target}"]`) as HTMLElement | null;
+    if (!el) { setRect(null); return; }
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const t = setTimeout(() => {
+      const r = el.getBoundingClientRect();
+      const pad = 6;
+      setRect({ top: r.top - pad, left: r.left - pad, width: r.width + pad * 2, height: r.height + pad * 2 });
+    }, 260);
+    return () => clearTimeout(t);
+  }, [step, s.target]);
+
+  const topHalf = rect ? rect.top + rect.height / 2 < window.innerHeight / 2 : false;
+  const calloutPos: React.CSSProperties = rect
+    ? (topHalf ? { left: '50%', bottom: 18, transform: 'translateX(-50%)' } : { left: '50%', top: 18, transform: 'translateX(-50%)' })
+    : { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' };
+
+  return (
+    <div className="cont-tour" data-testid="cont-tour">
+      {rect ? (
+        <div className="cont-tour-spot" style={{ top: rect.top, left: rect.left, width: rect.width, height: rect.height }} />
+      ) : (
+        <div className="cont-tour-dim" />
+      )}
+      <div className="cont-tour-card ig-glass" style={calloutPos}>
+        <div className="cont-tour-bars">
+          {CONT_TOUR.map((_, i) => <span key={i} className={i <= step ? 'on' : ''} />)}
+        </div>
+        <span className="cont-label">STEP {step + 1} OF {CONT_TOUR.length}</span>
+        <h2>{s.title}</h2>
+        {s.body.split('\n\n').map((para, i) => <p key={i}>{para}</p>)}
+        <div className="cont-tour-btns">
+          <button className="ig-btn" onClick={() => (step === 0 ? onClose() : setStep(step - 1))}>{step === 0 ? 'CLOSE' : 'BACK'}</button>
+          {!last
+            ? <button className="ig-btn primary" onClick={() => setStep(step + 1)}>NEXT</button>
+            : <button className="ig-btn primary" onClick={onClose}>DONE</button>}
+          <button className="ig-btn ghost" style={{ marginLeft: 'auto' }} onClick={onClose}>SKIP</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 type ColorCounts = Partial<Record<ContColor, number>>;
 
 const countBy = (list: ContColor[]): ColorCounts => {
@@ -333,7 +402,10 @@ function OpponentModal({ view, seat, onClose }: { view: ContainerView; seat: num
 export default function ContainerPlay({ view, act, seat, error }: Props) {
   const p = view.players[seat];
   const myTurn = view.phase === 'playing' && view.turn === seat && !view.delivery && view.pending.length === 0;
-  const [intro, setIntro] = useState(false);
+  // the goal and game logic open for every player the first time they sit down
+  const [intro, setIntro] = useState(() => sessionStorage.getItem('cont-intro-shown') !== '1');
+  const [tour, setTour] = useState<number | null>(null);
+  useEffect(() => { if (intro) sessionStorage.setItem('cont-intro-shown', '1'); }, [intro]);
   const [dialog, setDialog] = useState<
     | null
     | { kind: 'produce'; make: ContColor[] }
@@ -426,11 +498,11 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
     return CONT_SCORING_CARDS[p.scoringCard];
   }, [p.scoringCard]);
 
-  const actBtn = (label: string, why: string | null, onClick: () => void, primary = false) => (
+  const actBtn = (tourId: string, label: string, why: string | null, onClick: () => void, primary = false) => (
     <button className={'ig-btn cont-action' + (primary ? ' primary' : '')}
       disabled={!myTurn || why !== null}
       onClick={onClick}
-      data-tour={label.toLowerCase().replace(/\s+/g, '-')}>
+      data-tour={tourId}>
       <span>{label}</span>
       {why && myTurn && <small>· {why.toUpperCase()}</small>}
     </button>
@@ -438,14 +510,19 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
 
   return (
     <div className="cont-play" data-testid="cont-play">
-      {intro && <GameIntro intro={CONTAINER_INTRO} onClose={() => setIntro(false)} />}
+      {intro && (
+        <GameIntro intro={CONTAINER_INTRO}
+          onClose={() => setIntro(false)}
+          onWalkthrough={() => { setIntro(false); setTour(0); }} />
+      )}
+      {tour !== null && <ContainerTour step={tour} setStep={setTour} onClose={() => setTour(null)} />}
 
       {/* status header */}
       <header className="cont-head ig-glass">
         <span className="cont-head-seat" style={{ borderColor: CONT_UI_HEX[p.color] }}>
           {p.name.toUpperCase()}
         </span>
-        <span className={'cont-head-turn' + (myTurn ? ' mine' : '')} data-testid="cont-turn" key={view.turn}>
+        <span className={'cont-head-turn' + (myTurn ? ' mine' : '')} data-testid="cont-turn" data-tour="turn" key={view.turn}>
           {view.phase === 'ended'
             ? 'GAME OVER'
             : view.delivery
@@ -453,7 +530,7 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               : view.turn === seat ? `YOUR TURN · ${view.actionsLeft} ACTION${view.actionsLeft === 1 ? '' : 'S'}`
                 : `${view.players[view.turn].name.toUpperCase()}'S TURN`}
         </span>
-        <span className="cont-head-supply">
+        <span className="cont-head-supply" data-tour="supply">
           {CONT_COLORS.map((c) => (
             <span key={c} className={'cont-supply-chip' + (view.supply.containers[c] === 0 ? ' out' : '')}>
               <i style={{ background: CONT_PIECE_HEX[c] }} />{view.supply.containers[c]}
@@ -466,24 +543,24 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
       <div className="cont-cols">
         {/* action rail */}
         <nav className="cont-rail ig-glass" data-testid="cont-actions">
-          {actBtn('BUILD FACTORY' + (factoryCost ? ` · $${factoryCost}` : ' · FREE'), rBuildFactory, () => {
+          {actBtn('build-factory', 'BUILD FACTORY' + (factoryCost ? ` · $${factoryCost}` : ' · FREE'), rBuildFactory, () => {
             const options = CONT_COLORS.filter((c) => !p.factories.includes(c) && view.supply.factories[c] > 0);
             if (options.length === 1) doAct({ type: 'build_factory', color: options[0] });
             else setDialog({ kind: 'produce-pick', eligible: options, room: -1 }); // reuse as color pick
           })}
-          {actBtn('BUILD WAREHOUSE' + (warehouseCost ? ` · $${warehouseCost}` : ' · FREE'), rBuildWarehouse,
+          {actBtn('build-warehouse', 'BUILD WAREHOUSE' + (warehouseCost ? ` · $${warehouseCost}` : ' · FREE'), rBuildWarehouse,
             () => doAct({ type: 'build_warehouse' }))}
-          {actBtn(`PRODUCE · ${produceN || ''}`, rProduce, () => {
+          {actBtn('produce', `PRODUCE · ${produceN || ''}`, rProduce, () => {
             if (eligibleProduce.length > produceN) setDialog({ kind: 'produce-pick', eligible: eligibleProduce, room: produceN });
             else setDialog({ kind: 'produce', make: eligibleProduce });
           })}
-          {actBtn('FACTORY PURCHASE', rFactoryBuy, () => setDialog({ kind: 'factory-pick', from: -1 }))}
-          {actBtn('HARBOR PURCHASE' + (freeBuy ? ' · FREE' : ''), rHarborBuy, () => setDialog({ kind: 'harbor-pick' }))}
-          {actBtn('SAIL', rSail, () => setDialog({ kind: 'sail' }))}
-          {actBtn('REPRICE FACTORY', rReprice, () => setDialog({ kind: 'reprice', district: 'factory' }))}
-          {actBtn('REPRICE HARBOR', rReprice, () => setDialog({ kind: 'reprice', district: 'harbor' }))}
-          {actBtn('CALL BANK', rCallBank, () => setDialog({ kind: 'bank' }))}
-          <div className="cont-rail-loans">
+          {actBtn('factory-purchase', 'FACTORY PURCHASE', rFactoryBuy, () => setDialog({ kind: 'factory-pick', from: -1 }))}
+          {actBtn('harbor-purchase', 'HARBOR PURCHASE' + (freeBuy ? ' · FREE' : ''), rHarborBuy, () => setDialog({ kind: 'harbor-pick' }))}
+          {actBtn('sail', 'SAIL', rSail, () => setDialog({ kind: 'sail' }))}
+          {actBtn('reprice-factory', 'REPRICE FACTORY', rReprice, () => setDialog({ kind: 'reprice', district: 'factory' }))}
+          {actBtn('reprice-harbor', 'REPRICE HARBOR', rReprice, () => setDialog({ kind: 'reprice', district: 'harbor' }))}
+          {actBtn('call-bank', 'CALL BANK', rCallBank, () => setDialog({ kind: 'bank' }))}
+          <div className="cont-rail-loans" data-tour="loans">
             <button className="ig-btn ghost"
               disabled={rLoan !== null || view.phase !== 'playing' || (view.turn !== seat && !view.delivery)}
               onClick={() => doAct({ type: 'take_loan' })}>
@@ -503,8 +580,10 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
 
         {/* my board */}
         <main className="cont-center">
-          <BoardTableau view={view} seat={seat} />
-          <div className="cont-opps" data-testid="cont-opps">
+          <div data-tour="board">
+            <BoardTableau view={view} seat={seat} />
+          </div>
+          <div className="cont-opps" data-testid="cont-opps" data-tour="opponents">
             {view.players.filter((q) => q.seat !== seat).map((q) => (
               <button key={q.seat} className="ig-glass cont-opp"
                 style={{ borderColor: CONT_UI_HEX[q.color] }}
@@ -535,19 +614,19 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
 
         {/* private panel */}
         <aside className="cont-side ig-glass" data-testid="cont-side">
-          <div className="cont-cash" data-testid="cont-cash">
+          <div className="cont-cash" data-testid="cont-cash" data-tour="cash">
             <span className="cont-label">CASH</span>
             <b>${p.cash ?? 0}</b>
             {p.loans > 0 && <span className="cont-loans">LOANS {p.loans} · $1 INTEREST EACH TURN</span>}
           </div>
           {p.scoringCard && (
-            <button className="cont-scorecard" data-testid="cont-scorecard"
+            <button className="cont-scorecard" data-testid="cont-scorecard" data-tour="scorecard"
               onClick={() => setDialog({ kind: 'card', img: S.cards.scoring[p.scoringCard!], label: 'FINAL SCORING CARD · SECRET' })}>
               <img src={S.cards.scoring[p.scoringCard]} alt="Secret scoring card" />
               <span>SECRET SCORING</span>
             </button>
           )}
-          <div className="cont-panel">
+          <div className="cont-panel" data-tour="ship">
             <span className="cont-label">SHIP · {p.ship.loc.kind === 'harbor' ? `${view.players[(p.ship.loc as { seat: number }).seat].name.toUpperCase()}'S HARBOR` : p.ship.loc.kind.toUpperCase()}</span>
             <div className="cont-ship-slots">
               {Array.from({ length: 5 }, (_, i) => (
@@ -555,7 +634,7 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               ))}
             </div>
           </div>
-          <div className="cont-panel">
+          <div className="cont-panel" data-tour="island">
             <span className="cont-label">ISLAND SCORING AREA · {p.scoring.length}</span>
             <Blocks colors={p.scoring} />
           </div>
@@ -563,7 +642,7 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
             <span className="cont-label">BANK HOLDING · {p.holding.length}</span>
             <Blocks colors={p.holding} />
           </div>
-          <div className="cont-panel cont-bank" data-testid="cont-bank">
+          <div className="cont-panel cont-bank" data-testid="cont-bank" data-tour="bank">
             <span className="cont-label">OFF-SHORE BANK</span>
             {[0, 1, 2].map((i) => (
               <div key={i} className="cont-bank-lot">
