@@ -90,17 +90,17 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
   }
   if (loc.kind === 'island') {
     // the mat prints five berth strips west of Container Island's pier
-    const [x, z] = px2r(1380, ISLAND_BERTHS_Y[seat % ISLAND_BERTHS_Y.length]);
+    const [x, z] = px2r(1390, ISLAND_BERTHS_Y[seat % ISLAND_BERTHS_Y.length]);
     return { x, z, yaw: 0 };
   }
   // the mat prints five berth strips east of the Off-Shore Bank's pier
-  const [x, z] = px2r(2905, BANK_BERTHS_Y[seat % BANK_BERTHS_Y.length]);
+  const [x, z] = px2r(2903, BANK_BERTHS_Y[seat % BANK_BERTHS_Y.length]);
   return { x, z, yaw: 0 };
 }
 
-// printed berth strip centers (mat art px), measured on grid overlays
-const ISLAND_BERTHS_Y = [1620, 1694, 1768, 1842, 1912];
-const BANK_BERTHS_Y = [1634, 1707, 1781, 1856, 1930];
+// printed berth strip centers (mat art px, detected from the outline rows)
+const ISLAND_BERTHS_Y = [1665, 1722, 1785, 1848, 1906];
+const BANK_BERTHS_Y = [1662, 1725, 1789, 1852, 1915];
 
 /** money card stack for a bank cash lot amount; the top card fills the
  * printed card slot, the rest fan out slightly underneath */
