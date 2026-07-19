@@ -88,7 +88,7 @@ export interface ContDelivery {
 }
 
 export type ContFocus =
-  | { type: 'board'; seat: number }
+  | { type: 'board'; seat: number; sub?: { kind: 'factoryTrack' | 'warehouseTrack' | 'factoryLots' | 'harborLots'; index?: number } }
   | { type: 'ship'; seat: number }
   | { type: 'island' }
   | { type: 'bank' };
@@ -152,6 +152,8 @@ export interface ContainerState {
     seq: number; text: string; kind?: string;
     /** semantic focus for the TV camera fly-to (client maps to world coords) */
     focus?: ContFocus | null;
+    /** containers physically moving between boards (TV animates the truck run) */
+    transfer?: { from: number; to: number; colors: ContColor[] } | null;
   };
 }
 

@@ -30,8 +30,11 @@ export type ContAction =
 type Result = { ok: true } | { ok: false; error: string };
 const err = (error: string): Result => ({ ok: false, error: error.replace(/\s+—\s+/g, ', ').replace(/^\p{Ll}/u, (m) => m.toUpperCase()) });
 
-const event = (state: ContainerState, text: string, kind?: string, focus?: ContFocus | null) => {
-  state.lastEvent = { seq: state.lastEvent.seq + 1, text, kind, focus: focus ?? null };
+const event = (
+  state: ContainerState, text: string, kind?: string, focus?: ContFocus | null,
+  transfer?: { from: number; to: number; colors: ContColor[] } | null,
+) => {
+  state.lastEvent = { seq: state.lastEvent.seq + 1, text, kind, focus: focus ?? null, transfer: transfer ?? null };
 };
 const seatName = (state: ContainerState, seat: number) => state.players[seat].name.toUpperCase();
 
@@ -464,7 +467,8 @@ export function applyContainerAction(state: ContainerState, seat: number, action
       me().cash -= cost; // paid to the supply, not the Bank
       state.supply.factories[color] -= 1;
       me().factories.push(color);
-      event(state, `${seatName(state, seat)} BUILDS A ${color.toUpperCase()} FACTORY`, 'action', { type: 'board', seat });
+      event(state, `${seatName(state, seat)} BUILDS A ${color.toUpperCase()} FACTORY`, 'action',
+        { type: 'board', seat, sub: { kind: 'factoryTrack', index: me().factories.length - 1 } });
       return { ok: true };
     }
 
@@ -478,7 +482,8 @@ export function applyContainerAction(state: ContainerState, seat: number, action
       me().cash -= cost;
       state.supply.warehouses -= 1;
       me().warehouses += 1;
-      event(state, `${seatName(state, seat)} BUILDS A WAREHOUSE`, 'action', { type: 'board', seat });
+      event(state, `${seatName(state, seat)} BUILDS A WAREHOUSE`, 'action',
+        { type: 'board', seat, sub: { kind: 'warehouseTrack', index: me().warehouses - 1 } });
       return { ok: true };
     }
 
@@ -502,7 +507,8 @@ export function applyContainerAction(state: ContainerState, seat: number, action
       state.players[(seat - 1 + n) % n].cash += 1; // union wage to the player on your right
       for (const c of make) state.supply.containers[c] -= 1;
       me().factoryLots = lots;
-      event(state, `${seatName(state, seat)} PRODUCES ${make.length} CONTAINER${make.length > 1 ? 'S' : ''}`, 'action', { type: 'board', seat });
+      event(state, `${seatName(state, seat)} PRODUCES ${make.length} CONTAINER${make.length > 1 ? 'S' : ''}`, 'action',
+        { type: 'board', seat, sub: { kind: 'factoryLots' } });
       checkEndTrigger(state);
       return { ok: true };
     }
@@ -532,7 +538,10 @@ export function applyContainerAction(state: ContainerState, seat: number, action
       other.cash += cost;
       other.factoryLots = sellerLots;
       me().harborLots = lots;
-      event(state, `${seatName(state, seat)} BUYS ${total} FROM ${seatName(state, action.from)}'S FACTORY FOR $${cost}`, 'action', { type: 'board', seat: action.from });
+      // the camera aims where the goods ARRIVE; the TV trucks them over visibly
+      event(state, `${seatName(state, seat)} BUYS ${total} FROM ${seatName(state, action.from)}'S FACTORY FOR $${cost}`, 'action',
+        { type: 'board', seat, sub: { kind: 'harborLots' } },
+        { from: action.from, to: seat, colors: bought });
       return { ok: true };
     }
 

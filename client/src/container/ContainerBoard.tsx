@@ -177,11 +177,11 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
   const seatColor = p.color;
   const loc = p.ship.loc;
   if (loc.kind === 'ocean') {
-    // idle anchorages sit clear of every board's dock approach (the mod's
-    // drop spots crowd the coves where visiting ships tie up)
+    // idle anchorages sit clear of every board's dock approach AND of the
+    // printed berth columns beside the islands (those are for docked ships)
     const OCEAN_IDLE: Record<string, [number, number]> = {
-      Brown: [-11.5, -13.5], Pink: [-20.5, -3.5], Orange: [-20.5, 3.5],
-      Teal: [20.5, -3.5], Purple: [20.5, 3.5],
+      Brown: [-11.5, -13.5], Pink: [-25, -3.5], Orange: [-25, 3.5],
+      Teal: [25, -3.5], Purple: [25, 3.5],
     };
     const [wx, wz] = OCEAN_IDLE[seatColor] ?? S.shipStarts[seatColor];
     const [x, z] = w2r(wx, wz);
@@ -199,16 +199,18 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
     return { x, z, yaw };
   }
   if (loc.kind === 'island') {
-    // moored along the island's south pier, one berth per seat
-    const berth = view.players.findIndex((q) => q.seat === seat);
-    const [x, z] = px2r(1450 + berth * 210, 2115);
+    // the mat prints five berth strips west of Container Island's pier
+    const [x, z] = px2r(1380, ISLAND_BERTHS_Y[seat % ISLAND_BERTHS_Y.length]);
     return { x, z, yaw: 0 };
   }
-  // bank: moored along the bank's south pier by the cash slots
-  const berth = view.players.findIndex((q) => q.seat === seat);
-  const [x, z] = px2r(2380 + berth * 210, 2320);
+  // the mat prints five berth strips east of the Off-Shore Bank's pier
+  const [x, z] = px2r(2905, BANK_BERTHS_Y[seat % BANK_BERTHS_Y.length]);
   return { x, z, yaw: 0 };
 }
+
+// printed berth strip centers (mat art px), measured on grid overlays
+const ISLAND_BERTHS_Y = [1620, 1694, 1768, 1842, 1912];
+const BANK_BERTHS_Y = [1634, 1707, 1781, 1856, 1930];
 
 /** money card stack for a bank cash lot amount */
 function CashStack({ amount, at }: { amount: number; at: [number, number] }) {
@@ -234,7 +236,17 @@ const SFX_FOR_KIND: Record<string, Parameters<typeof playSfx>[0]> = {
   action: 'build', turn: 'turn', win: 'win', alert: 'error',
 };
 
-interface RFocus { seq: number; x: number; z: number }
+interface RFocus { seq: number; x: number; z: number; tight?: boolean }
+
+/** board-art anchor for a focus sub-spot (exact slot the piece landed on) */
+function subSpot(sub: NonNullable<Extract<ContFocus, { type: 'board' }>['sub']>): [number, number] {
+  switch (sub.kind) {
+    case 'factoryTrack': return S.pb.factoryTrack[Math.min(sub.index ?? 0, S.pb.factoryTrack.length - 1)];
+    case 'warehouseTrack': return S.pb.warehouseTrack[Math.min(sub.index ?? 0, S.pb.warehouseTrack.length - 1)];
+    case 'factoryLots': return [1356, 1430];
+    case 'harborLots': return [1250, 570];
+  }
+}
 
 function FocusFly({ focus, controls }: { focus: RFocus | null; controls: React.RefObject<OrbitControlsImpl | null> }) {
   const camera = useThree((st) => st.camera);
@@ -251,7 +263,10 @@ function FocusFly({ focus, controls }: { focus: RFocus | null; controls: React.R
     }
     const t = clock.elapsedTime - anim.current.start;
     const ease = (x: number) => x * x * (3 - 2 * x);
-    const inPos = new THREE.Vector3(focus.x, 13, focus.z + 9.5);
+    // tight focus (an exact slot) gets a closer look than a whole-board focus
+    const inPos = focus.tight
+      ? new THREE.Vector3(focus.x, 8.5, focus.z + 6)
+      : new THREE.Vector3(focus.x, 13, focus.z + 9.5);
     const inTarget = new THREE.Vector3(focus.x, 0, focus.z);
     const h = home.current!;
     if (t < IN) {
@@ -291,7 +306,8 @@ function FocusRing({ focus, color }: { focus: RFocus | null; color: string }) {
     m.visible = visible;
     if (!visible) return;
     m.position.set(focus.x, 0.09, focus.z);
-    const pulse = 1 + 0.28 * Math.sin(age * 5.2);
+    const base = focus.tight ? 0.55 : 1; // slot-sized ring for exact spots
+    const pulse = base * (1 + 0.28 * Math.sin(age * 5.2));
     m.scale.setScalar(pulse);
     (m.material as THREE.MeshBasicMaterial).opacity = Math.min(0.85, Math.max(0, (LIFE - age) / 1.2));
   });
@@ -314,6 +330,52 @@ function CamOverride() {
     camera.updateProjectionMatrix();
   }, [camera]);
   return null;
+}
+
+/** factory-purchase ghosts: the bought containers visibly truck from the
+ * seller's factory shelves to the buyer's harbor, so it is clear where the
+ * goods went. The real pieces are already in place underneath. */
+function TransferGhosts({ view, proto }: { view: ContainerView; proto: ReturnType<typeof useContainerProto> }) {
+  const group = useRef<THREE.Group>(null);
+  const run = useRef<{ seq: number; start: number } | null>(null);
+  const seen = useRef(view.lastEvent.seq); // no replay on page load
+  const transfer = view.lastEvent.transfer;
+  const path = useMemo(() => {
+    if (!transfer) return null;
+    const from = boardSpot(view.players[transfer.from].color, [1356, 1430]); // seller factory shelves
+    const to = boardSpot(view.players[transfer.to].color, [1250, 570]); // buyer harbor shelves
+    return { from, to };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view.lastEvent.seq]);
+  useFrame(({ clock }) => {
+    const g = group.current;
+    if (!g) return;
+    if (view.lastEvent.seq !== seen.current) {
+      seen.current = view.lastEvent.seq;
+      if (transfer && path) run.current = { seq: view.lastEvent.seq, start: clock.elapsedTime };
+    }
+    if (!run.current || !path) { g.visible = false; return; }
+    const DUR = 1.6;
+    const t = (clock.elapsedTime - run.current.start) / DUR;
+    if (t >= 1) { g.visible = false; run.current = null; return; }
+    g.visible = true;
+    const ease = (x: number) => x * x * (3 - 2 * x);
+    const k = ease(Math.min(1, t));
+    const x = path.from[0] + (path.to[0] - path.from[0]) * k;
+    const z = path.from[1] + (path.to[1] - path.from[1]) * k;
+    const lift = Math.sin(Math.PI * k) * 1.6; // an arc so the run reads over the boards
+    g.position.set(x, lift, z);
+  });
+  if (!transfer) return null;
+  return (
+    <group ref={group} visible={false}>
+      {transfer.colors.slice(0, 5).map((color, i) => (
+        <ContainerPiece key={i} color={color}
+          x={(i % 2 - 0.5) * 0.8} z={Math.floor(i / 2) * 0.75 - 0.7}
+          y={i * 0.05} yaw={Math.PI / 2} proto={proto} />
+      ))}
+    </group>
+  );
 }
 
 /** everything that needs the container mesh proto in one subtree */
@@ -525,7 +587,12 @@ function Pieces({ view }: { view: ContainerView }) {
     );
   }
 
-  return <group>{nodes}</group>;
+  return (
+    <group>
+      {nodes}
+      <TransferGhosts view={view} proto={proto} />
+    </group>
+  );
 }
 
 export function ContainerBoard({ view }: { view: ContainerView }) {
@@ -545,11 +612,14 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
     const f = view.lastEvent.focus as ContFocus | null | undefined;
     if (!f) return null;
     let at: [number, number] | null = null;
-    if (f.type === 'board') at = w2r(S.boards[view.players[f.seat].color].pos[0], S.boards[view.players[f.seat].color].pos[1]);
-    else if (f.type === 'ship') { const sp = shipPlace(view, f.seat); at = [sp.x, sp.z]; }
+    let tight = false;
+    if (f.type === 'board') {
+      if (f.sub) { at = boardSpot(view.players[f.seat].color, subSpot(f.sub)); tight = true; }
+      else at = w2r(S.boards[view.players[f.seat].color].pos[0], S.boards[view.players[f.seat].color].pos[1]);
+    } else if (f.type === 'ship') { const sp = shipPlace(view, f.seat); at = [sp.x, sp.z]; }
     else if (f.type === 'island') at = islandCenterR();
     else if (f.type === 'bank') at = bankCenterR();
-    return at ? { seq: view.lastEvent.seq, x: at[0], z: at[1] } : null;
+    return at ? { seq: view.lastEvent.seq, x: at[0], z: at[1], tight } : null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view.lastEvent.seq]);
 
