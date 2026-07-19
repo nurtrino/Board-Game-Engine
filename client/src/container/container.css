@@ -43,10 +43,104 @@
   color: #f0f2f5; font-weight: 600; z-index: 5; animation: cont-pop 0.4s ease;
   max-width: 72vw; text-align: center;
 }
-.cont-delivery {
-  position: absolute; bottom: 62px; left: 50%; transform: translateX(-50%);
-  display: flex; flex-direction: column; gap: 3px; align-items: center;
-  padding: 8px 16px; border-radius: 10px; font-size: 12px; color: #dfe3e8; z-index: 5;
+.cont-anchor-note {
+  display: block; margin-top: 3px; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.1em; color: #8fd0ff;
+}
+.cont-anchor-chip {
+  position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%);
+  padding: 7px 16px; border-radius: 999px; z-index: 5;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; color: #8fd0ff;
+  border: 1px solid rgba(143, 208, 255, 0.45); animation: cont-pop 0.4s ease;
+}
+
+/* ---------- delivery auction (the TV's card-pile table) ---------- */
+.cont-auction {
+  position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; gap: 10px; align-items: center;
+  padding: 14px 22px 12px; border-radius: 16px; z-index: 6;
+  border: 1px solid rgba(232, 180, 74, 0.5);
+  max-width: 88vw; animation: cont-pop 0.4s ease;
+}
+.cont-auction-head {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center;
+}
+.cont-anchor-tag {
+  font-size: 9.5px; font-weight: 800; letter-spacing: 0.16em; color: #8fd0ff;
+}
+.cont-auction-head b { font-size: 19px; letter-spacing: 0.14em; color: #f2e6c8; }
+.cont-auction-cargo {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; letter-spacing: 0.07em; color: #dfe3e8; font-weight: 700;
+}
+.cont-auction-cargo i {
+  width: 20px; height: 10px; border-radius: 2px; display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.55); box-shadow: inset 0 1px rgba(255, 255, 255, 0.3);
+}
+.cont-auction-piles { display: flex; gap: 26px; align-items: flex-end; }
+.cont-auction-bidder {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 8px 10px 6px; border-radius: 12px; transition: opacity 0.4s ease;
+}
+.cont-auction-bidder.dim { opacity: 0.35; }
+.cont-auction-bidder.winner {
+  background: rgba(232, 180, 74, 0.12);
+  box-shadow: 0 0 18px rgba(232, 180, 74, 0.35);
+}
+.cont-auction-name {
+  border-bottom: 2.5px solid; padding: 0 6px 2px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #eef0f4;
+}
+.cont-auction-cards { display: flex; align-items: center; min-height: 66px; perspective: 600px; }
+.cont-auction-cards > .cont-bidcard + .cont-bidcard { margin-left: -26px; }
+/* revealed piles fan wider so every card face reads */
+.cont-auction-cards > .cont-bidcard.flip + .cont-bidcard.flip { margin-left: -6px; }
+.cont-auction-empty { font-size: 10.5px; letter-spacing: 0.08em; opacity: 0.55; font-weight: 700; }
+.cont-bidcard {
+  position: relative; width: 44px; height: 62px;
+  transform-style: preserve-3d; animation: cont-deal 0.35s ease backwards;
+}
+.cont-bidcard.flip { animation: cont-flip 0.6s ease forwards; }
+.cont-bidcard-back, .cont-bidcard-face {
+  position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: 6px; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45);
+}
+.cont-bidcard-back {
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0 5px, transparent 5px 10px),
+    linear-gradient(160deg, #22456b, #14273f 70%);
+}
+.cont-bidcard-back::after {
+  content: '$'; position: absolute; inset: 0; display: grid; place-items: center;
+  color: rgba(255, 255, 255, 0.22); font-size: 20px; font-weight: 800;
+}
+.cont-bidcard-face { transform: rotateY(180deg); background: #101418; }
+.cont-bidcard-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@keyframes cont-deal { from { transform: translateY(-14px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes cont-flip { from { transform: rotateY(0); } to { transform: rotateY(180deg); } }
+.cont-auction-sub {
+  min-height: 15px; font-size: 11px; letter-spacing: 0.06em; color: #dfe3e8;
+}
+.cont-auction-sub b { font-size: 14px; color: #f2e6c8; }
+.cont-auction-sub.thinking { animation: cont-think 1.4s ease-in-out infinite; }
+@keyframes cont-think { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+.cont-auction-status {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.09em; color: #e8b450; text-align: center;
+}
+.cont-auction-result {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 20px 34px; border-radius: 18px; z-index: 8; text-align: center;
+  border: 1px solid rgba(232, 180, 74, 0.55);
+  animation: cont-result 5.2s ease forwards;
+}
+.cont-auction-result span { font-size: 10.5px; font-weight: 800; letter-spacing: 0.18em; color: #e8b450; }
+.cont-auction-result b { font-size: 21px; letter-spacing: 0.08em; color: #f2f4f7; }
+@keyframes cont-result {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); }
+  8%, 88% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.96); }
 }
 
 .cont-stats-modal { min-width: 380px; }
@@ -210,7 +304,17 @@
 .cont-amount { min-width: 380px; }
 .cont-amount-row { display: flex; align-items: center; gap: 10px; justify-content: center; padding: 10px 0; }
 .cont-amount-n { font-size: 34px; min-width: 90px; text-align: center; }
+.cont-bluff-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin: 2px 0 10px; padding: 8px 10px; border-radius: 9px;
+  background: rgba(143, 208, 255, 0.07); border: 1px solid rgba(143, 208, 255, 0.25);
+}
+.cont-bluff-row > span { font-size: 9.5px; letter-spacing: 0.06em; opacity: 0.85; max-width: 240px; }
+.cont-bluff-row > div { display: flex; align-items: center; gap: 8px; }
+.cont-bluff-row b { min-width: 18px; text-align: center; font-size: 16px; }
 .cont-opp-list { display: flex; flex-direction: column; gap: 7px; padding: 8px 0; }
+.cont-sail-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.cont-sail-opt small { font-size: 9px; letter-spacing: 0.07em; color: #8fd0ff; opacity: 0.95; }
 .cont-bid-row {
   display: flex; justify-content: space-between; padding: 6px 10px;
   background: rgba(255, 255, 255, 0.05); border-radius: 8px; letter-spacing: 0.05em;

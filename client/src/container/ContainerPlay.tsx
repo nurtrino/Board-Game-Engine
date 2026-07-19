@@ -10,7 +10,7 @@ import type {
 } from '@bge/shared';
 import {
   CONT_COLORS, CONT_RULES, contLotCount, contDistributeCounts,
-  CONT_SCORING_CARDS,
+  CONT_SCORING_CARDS, CONT_BLUFF_MAX,
 } from '@bge/shared';
 import { playSfx } from '../sfx';
 import { GameIntro, type Intro } from '../ttr/GameIntro';
@@ -300,12 +300,15 @@ function PickDialog({ title, offer, cashCap, countCap, minCount, confirmLabel, o
 
 // ---------------- amount dialog (bids) ----------------
 
-function AmountDialog({ title, max, min = 0, note, confirmLabel, extra, onConfirm, onClose }: {
+function AmountDialog({ title, max, min = 0, note, confirmLabel, extra, bluffMax, onConfirm, onClose }: {
   title: string; max: number; min?: number; note?: string; confirmLabel: string;
   extra?: React.ReactNode;
-  onConfirm: (n: number) => void; onClose?: () => void;
+  /** offer up to this many $0 bluff cards for the pile (delivery bids) */
+  bluffMax?: number;
+  onConfirm: (n: number, bluffs: number) => void; onClose?: () => void;
 }) {
   const [n, setN] = useState(min);
+  const [bluffs, setBluffs] = useState(0);
   const clamp = (v: number) => Math.max(min, Math.min(max, v));
   return (
     <div className="ig-modal">
@@ -322,8 +325,18 @@ function AmountDialog({ title, max, min = 0, note, confirmLabel, extra, onConfir
           <button className="cont-mini" onClick={() => setN((v) => clamp(v + 1))}>+1</button>
           <button className="cont-mini" onClick={() => setN((v) => clamp(v + 5))}>+5</button>
         </div>
+        {bluffMax !== undefined && bluffMax > 0 && (
+          <div className="cont-bluff-row">
+            <span>BLUFF CARDS · WORTH $0, BUT THE TABLE ONLY SEES YOUR PILE SIZE</span>
+            <div>
+              <button className="cont-mini" onClick={() => setBluffs((v) => Math.max(0, v - 1))}>−</button>
+              <b>{bluffs}</b>
+              <button className="cont-mini" onClick={() => setBluffs((v) => Math.min(bluffMax, v + 1))}>+</button>
+            </div>
+          </div>
+        )}
         {extra}
-        <button className="ig-btn primary" onClick={() => onConfirm(n)}>{confirmLabel}</button>
+        <button className="ig-btn primary" onClick={() => onConfirm(n, bluffs)}>{confirmLabel}</button>
       </div>
     </div>
   );
@@ -781,21 +794,24 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               {p.ship.loc.kind === 'ocean' && (
                 <>
                   {view.players.filter((q) => q.seat !== seat).map((q) => (
-                    <button key={q.seat} className="ig-btn"
+                    <button key={q.seat} className="ig-btn cont-sail-opt"
                       onClick={() => { doAct({ type: 'sail', to: { harbor: q.seat } }); setDialog(null); }}>
-                      {q.name.toUpperCase()}'S HARBOR · {contLotCount(q.harborLots)} FOR SALE · FREE PURCHASE
+                      {q.name.toUpperCase()}'S HARBOR · {contLotCount(q.harborLots)} FOR SALE
+                      <small>⚓ ANCHOR ACTION · ONE FREE HARBOR PURCHASE ON ARRIVAL</small>
                     </button>
                   ))}
-                  <button className="ig-btn"
+                  <button className="ig-btn cont-sail-opt"
                     onClick={() => {
                       if (p.holding.length > 0) setDialog({ kind: 'sail-bank-load' });
                       else { doAct({ type: 'sail', to: 'bank' }); setDialog(null); }
                     }}>
-                    OFF-SHORE BANK{p.holding.length > 0 ? ` · LOAD HOLDING (${p.holding.length})` : ''}
+                    OFF-SHORE BANK{p.holding.length > 0 ? ` · HOLDING ${p.holding.length}` : ''}
+                    <small>⚓ ANCHOR ACTION · LOAD YOUR AUCTION WINNINGS, FREE</small>
                   </button>
-                  <button className="ig-btn" disabled={p.ship.cargo.length === 0}
+                  <button className="ig-btn cont-sail-opt" disabled={p.ship.cargo.length === 0}
                     onClick={() => { doAct({ type: 'sail', to: 'island' }); setDialog(null); }}>
                     CONTAINER ISLAND · AUCTION {p.ship.cargo.length} CARGO{p.ship.cargo.length === 0 ? ' · EMPTY SHIP' : ''}
+                    <small>⚓ ANCHOR ACTION · MANDATORY DELIVERY AUCTION, THEN YOUR TURN ENDS</small>
                   </button>
                 </>
               )}
@@ -900,10 +916,11 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
           min={0} max={Math.max(0, (p.cash ?? 0) - (myRunoffNeeded ? (d.yourBid ?? 0) : 0))}
           note={`CARGO: ${d.cargo.map((c) => c.toUpperCase()).join(' · ')} · WINNER PLACES THEM IN THEIR SCORING AREA`}
           confirmLabel="PLACE SECRET BID"
+          bluffMax={Math.max(0, CONT_BLUFF_MAX - d.yourBluffs)}
           extra={p.loans < 2 ? (
             <button className="ig-btn ghost" onClick={() => doAct({ type: 'take_loan' })}>TAKE A $10 LOAN FIRST</button>
           ) : undefined}
-          onConfirm={(n) => doAct({ type: 'delivery_bid', amount: n })} />
+          onConfirm={(n, bluffs) => doAct({ type: 'delivery_bid', amount: n, bluffs })} />
       )}
 
       {myResolve && d && (() => {
@@ -916,7 +933,10 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               <div className="cont-opp-list">
                 {Object.entries(totals).map(([s, b]) => (
                   <div key={s} className="cont-bid-row">
-                    <span>{view.players[Number(s)].name.toUpperCase()}</span>
+                    <span>
+                      {view.players[Number(s)].name.toUpperCase()}
+                      {(d.bluffs?.[Number(s)] ?? 0) > 0 ? ` · ${d.bluffs![Number(s)]} BLUFF` : ''}
+                    </span>
                     <b>${b ?? 0}</b>
                   </div>
                 ))}
