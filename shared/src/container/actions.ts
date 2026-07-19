@@ -5,7 +5,7 @@
 
 import {
   ContainerState, ContPlayer, ContColor, ContLots, ContAuction, ContBidContainer,
-  CONT_COLORS, CONT_RULES, CONT_SCORING_CARDS,
+  CONT_COLORS, CONT_RULES, CONT_SCORING_CARDS, CONT_BLUFF_MAX, contBidCards,
   contFactoryLimit, contHarborLimit, contLotCount, contFactoryUsed, contHarborUsed,
   contEmptyLots, ContFocus,
 } from './state.js';
@@ -22,7 +22,7 @@ export type ContAction =
   | { type: 'take_loan' }
   | { type: 'repay_loan' }
   | { type: 'end_turn' }
-  | { type: 'delivery_bid'; amount: number }
+  | { type: 'delivery_bid'; amount: number; bluffs?: number }
   | { type: 'delivery_resolve'; mode: 'accept' | 'buyout'; winner?: number }
   | { type: 'choose_distribute'; perLot: ContColor[][] }
   | { type: 'choose_seize'; picks: ContColor[] };
@@ -265,7 +265,7 @@ const startDelivery = (state: ContainerState, deliverer: number) => {
   for (const q of state.players) if (q.seat !== deliverer) bids[q.seat] = null;
   state.delivery = {
     deliverer, cargo: [...p.ship.cargo], stage: 'bidding',
-    bids, runoffAmong: [], runoffBids: {}, tied: [],
+    bids, runoffAmong: [], runoffBids: {}, bluffs: {}, tied: [],
   };
   event(state, `${seatName(state, deliverer)} DELIVERS TO CONTAINER ISLAND, SECRET BIDS`, 'action', { type: 'island' });
 };
@@ -347,11 +347,19 @@ export function applyContainerAction(state: ContainerState, seat: number, action
       const amount = Math.floor(Number(action.amount));
       if (!Number.isFinite(amount) || amount < 0) return err('Invalid bid');
       if (amount > p.cash) return err('Not enough cash for that bid');
+      d.bluffs ??= {}; // saves from before bluff cards
+      const bluffs = Math.floor(Number(action.bluffs ?? 0));
+      if (!Number.isFinite(bluffs) || bluffs < 0) return err('Invalid bluff count');
+      if ((d.bluffs[seat] ?? 0) + bluffs > CONT_BLUFF_MAX) {
+        return err(`At most ${CONT_BLUFF_MAX} bluff cards per auction`);
+      }
       if (d.stage === 'bidding') {
         if (d.bids[seat] === undefined) return err('The deliverer does not bid');
         if (d.bids[seat] !== null) return err('Bid already placed');
         d.bids[seat] = amount;
-        event(state, `${seatName(state, seat)} PLACES A SECRET BID`, 'action', { type: 'island' });
+        d.bluffs[seat] = (d.bluffs[seat] ?? 0) + bluffs;
+        const cards = contBidCards(amount).length + d.bluffs[seat];
+        event(state, `${seatName(state, seat)} PILES UP A SECRET BID OF ${cards} CARD${cards === 1 ? '' : 'S'}`, 'action', { type: 'island' });
         if (Object.values(d.bids).every((b) => b !== null)) revealDelivery(state, true);
         return { ok: true };
       }
@@ -360,6 +368,7 @@ export function applyContainerAction(state: ContainerState, seat: number, action
         if (d.runoffBids[seat] !== null) return err('Runoff bid already placed');
         if ((d.bids[seat] ?? 0) + amount > p.cash) return err('Not enough cash for that bid');
         d.runoffBids[seat] = amount;
+        d.bluffs[seat] = (d.bluffs[seat] ?? 0) + bluffs;
         if (d.runoffAmong.every((s) => d.runoffBids[s] !== null)) revealDelivery(state, false);
         return { ok: true };
       }
@@ -757,7 +766,9 @@ export function containerBotAction(state: ContainerState, seat: number): ContAct
     const d = state.delivery;
     if (d.stage === 'bidding' && d.bids[seat] === null) {
       const wish = Math.min(p.cash, d.cargo.length * 2 + Math.floor(botHash(state, seat) * 3));
-      return { type: 'delivery_bid', amount: Math.max(0, wish) };
+      // bots pad their pile with a bluff card now and then, like people do
+      const bluffs = Math.floor(botHash(state, seat + 7) * (CONT_BLUFF_MAX + 1));
+      return { type: 'delivery_bid', amount: Math.max(0, wish), bluffs };
     }
     if (d.stage === 'runoff' && d.runoffAmong.includes(seat) && d.runoffBids[seat] === null) {
       const spare = p.cash - (d.bids[seat] ?? 0);

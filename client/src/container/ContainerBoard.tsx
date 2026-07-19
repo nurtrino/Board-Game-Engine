@@ -10,15 +10,15 @@ import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import type { ContainerView, ContainerSeat, ContFocus } from '@bge/shared';
-import { CONT_RULES, CONT_COLORS, contLotCount } from '@bge/shared';
+import { CONT_RULES, CONT_COLORS, contLotCount, contBidCards } from '@bge/shared';
 import { playSfx } from '../sfx';
 import {
   CONT_SCENE, px2r, w2r, boardSpot, MAT_RW, MAT_RH,
-  islandCenterR, bankCenterR, CONT_UI_HEX,
+  islandCenterR, bankCenterR, CONT_UI_HEX, CONT_PIECE_HEX,
 } from './cont-scene';
 import {
   ContFlatImage as FlatImage, useContainerProto, ContainerPiece, packGrid, Ship,
-  FactoryPiece, WarehousePiece, type ContainerProto,
+  FactoryPiece, WarehousePiece, AuctionToken, type ContainerProto,
 } from './cont-three';
 import './container.css';
 
@@ -102,6 +102,13 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
 const ISLAND_BERTHS_Y = [1665, 1722, 1785, 1848, 1906];
 const BANK_BERTHS_Y = [1662, 1725, 1789, 1852, 1915];
 
+// printed auction-token circles (mat art px): one inside each container lot
+// square, one above each cash slot — the round token sits on its lot's circle
+const TOKEN_CIRCLES: Record<'container' | 'cash', [number, number][]> = {
+  container: [[2392, 1487], [2546, 1487], [2700, 1486]],
+  cash: [[2399, 2068], [2545, 2068], [2693, 2068]],
+};
+
 /** money card stack for a bank cash lot amount; the top card fills the
  * printed card slot, the rest fan out slightly underneath */
 function CashStack({ amount, at }: { amount: number; at: [number, number] }) {
@@ -126,6 +133,86 @@ function CashStack({ amount, at }: { amount: number; at: [number, number] }) {
 
 const SFX_FOR_KIND: Record<string, Parameters<typeof playSfx>[0]> = {
   action: 'build', turn: 'turn', win: 'win', alert: 'error',
+};
+
+/** the delivery auction as the physical table shows it: one face-down card
+ *  pile per bidder (size public, amount secret, bluff cards welcome), then
+ *  every pile flips at once and the totals come up. */
+function AuctionPanel({ view }: { view: ContainerView }) {
+  const d = view.delivery!;
+  const deliverer = view.players[d.deliverer];
+  const bidders = view.players.filter((p) => p.seat !== d.deliverer);
+  const revealed = d.stage === 'resolve';
+  const high = revealed ? Math.max(0, ...Object.values(d.bids ?? {}).map((b) => b ?? 0)) : 0;
+  return (
+    <div className="cont-auction ig-glass" data-testid="cont-auction">
+      <div className="cont-auction-head">
+        <span className="cont-anchor-tag">⚓ ANCHOR ACTION · CONTAINER ISLAND</span>
+        <b>DELIVERY AUCTION</b>
+        <span className="cont-auction-cargo">
+          {deliverer.name.toUpperCase()} DELIVERS
+          {d.cargo.map((c, i) => <i key={i} style={{ background: CONT_PIECE_HEX[c] }} />)}
+        </span>
+      </div>
+      <div className="cont-auction-piles">
+        {bidders.map((p) => {
+          const inRunoff = d.runoffAmong.includes(p.seat);
+          const thinking = !revealed && d.bidsIn[p.seat] === false && (d.stage !== 'runoff' || inRunoff);
+          const total = revealed ? (d.bids?.[p.seat] ?? 0) : null;
+          // reveal lays the pile out as money cards + the bluff cards
+          const cards: (number | 'bluff' | null)[] = revealed
+            ? [...contBidCards(total ?? 0), ...Array<'bluff'>(d.bluffs?.[p.seat] ?? 0).fill('bluff')]
+            : Array<null>(d.piles[p.seat] ?? 0).fill(null);
+          const winner = revealed && d.tied.includes(p.seat);
+          const outOfRunoff = d.stage === 'runoff' && !inRunoff;
+          return (
+            <div key={p.seat}
+              className={'cont-auction-bidder' + (winner ? ' winner' : '') + (outOfRunoff ? ' dim' : '')}>
+              <span className="cont-auction-name" style={{ borderColor: CONT_UI_HEX[p.color] }}>
+                {p.name.toUpperCase()}
+              </span>
+              <div className="cont-auction-cards">
+                {cards.length === 0 && !thinking && (
+                  <span className="cont-auction-empty">{revealed ? '$0 · NO CARDS' : 'NO CARDS'}</span>
+                )}
+                {cards.map((c, i) => (
+                  <div key={`${d.stage}-${i}`} className={'cont-bidcard' + (revealed ? ' flip' : '')}
+                    style={{ animationDelay: `${i * 0.13}s` }}>
+                    <div className="cont-bidcard-back" />
+                    <div className="cont-bidcard-face">
+                      {c === 'bluff'
+                        ? <img src={S.cards.bluff} alt="Bluff card, worth nothing" />
+                        : c !== null && <img src={S.cards.money[String(c)]} alt={`$${c} card`} />}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <span className={'cont-auction-sub' + (thinking ? ' thinking' : '')}>
+                {thinking
+                  ? (d.stage === 'runoff' ? 'ADDING CASH…' : 'BUILDING A PILE…')
+                  : revealed
+                    ? <>TOTAL <b>${total}</b>{winner ? ' · HIGH BID' : ''}{(d.bluffs?.[p.seat] ?? 0) > 0 ? ` · ${d.bluffs![p.seat]} BLUFF` : ''}</>
+                    : d.bidsIn[p.seat] ? `${cards.length} CARD${cards.length === 1 ? '' : 'S'} DOWN` : ''}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="cont-auction-status">
+        {d.stage === 'bidding' && 'SECRET BIDS · CASH FACE-DOWN, UP TO 2 BLUFF CARDS EACH'}
+        {d.stage === 'runoff' && 'TIE AT THE TOP · TIED BIDDERS ADD FACE-DOWN CASH'}
+        {revealed && `HIGH BID $${high} · ${deliverer.name.toUpperCase()} ACCEPTS AND COLLECTS $${high * 2}, OR PAYS $${high} TO KEEP THE CARGO`}
+      </div>
+    </div>
+  );
+}
+
+/** one-line explainer under the narration for each anchor (docking) action */
+const anchorNoteFor = (text: string): string | null => {
+  if (/DOCKS AT THE OFF-SHORE BANK/.test(text)) return 'ANCHOR ACTION · AUCTION WINNINGS LOAD FREE FROM THE HOLDING AREA';
+  if (/DOCKS AT .*'S HARBOR/.test(text)) return 'ANCHOR ACTION · ONE FREE PURCHASE AT THIS HARBOR';
+  if (/DELIVERS TO CONTAINER ISLAND/.test(text)) return 'ANCHOR ACTION · MANDATORY CARGO AUCTION, THEN THE TURN ENDS';
+  return null;
 };
 
 interface RFocus { seq: number; x: number; z: number; tight?: boolean }
@@ -289,12 +376,12 @@ function Pieces({ view }: { view: ContainerView }) {
       nodes.push(<ContainerPiece key={`sup-${color}-${i}`} color={color} x={x} z={z}
         y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
     }
-    // factory supply: 3D building tiles in a short row per color
+    // factory supply: a short row of little factory buildings per color
     const fn = view.supply.factories[color];
     const fx = S.supply.factories.xByColor[color];
     for (let i = 0; i < fn; i++) {
-      const [x, z] = w2r(fx + (i - (fn - 1) / 2) * 0.5, S.supply.factories.z);
-      nodes.push(<FactoryPiece key={`fsup-${color}-${i}`} color={color} x={x} z={z} />);
+      const [x, z] = w2r(fx + (i - (fn - 1) / 2) * 0.78, S.supply.factories.z);
+      nodes.push(<FactoryPiece key={`fsup-${color}-${i}`} color={color} x={x} z={z} scale={0.72} />);
     }
   }
   // warehouse supply row (3D tiles)
@@ -309,29 +396,30 @@ function Pieces({ view }: { view: ContainerView }) {
   view.bank.containerLots.forEach((lot, li) => {
     const at = S.bankLots.containers[li];
     const spots = packGrid(lot.length, 2, 0.75, 1.5, 4);
+    // an auctioned lot carries the round token on its printed circle; the
+    // containers pile on top of it rather than intersecting the cylinder
+    const tokenLift = view.bank.auctions.some((a) => a.lotType === 'container' && a.lot === li) ? 0.18 : 0;
     lot.forEach((color, i) => {
       const [dx, dz, layer] = spots[i];
       const [x, z] = px2r(at[0], at[1]);
       nodes.push(<ContainerPiece key={`bank-${li}-${i}`} color={color}
-        x={x + dx} z={z + dz} y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
+        x={x + dx} z={z + dz} y={tokenLift + layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
     });
   });
   view.bank.cashLots.forEach((amount, li) => {
     if (amount > 0) nodes.push(<CashStack key={`cash-${li}`} amount={amount} at={S.bankLots.cash[li]} />);
   });
-  // auction tokens: free ones at the supply spot, active ones on their lots
-  let tokenIdx = 0;
+  // auction tokens: cylinders — active ones seated on their lot's printed
+  // circle, free ones waiting at the bank-side supply spot
   for (const a of view.bank.auctions) {
-    const at = a.lotType === 'container' ? S.bankLots.containers[a.lot] : S.bankLots.cash[a.lot];
-    const [x, z] = px2r(at[0], at[1]);
-    nodes.push(<FlatImage key={`tok-${a.lotType}-${a.lot}`} url={S.auctionTokenArt.img} w={1.1} h={1.1}
-      pos={[x + 1.15, 0.09, z - 1.1]} />);
-    tokenIdx++;
+    const [cx, cy] = TOKEN_CIRCLES[a.lotType][a.lot];
+    const [x, z] = px2r(cx, cy);
+    nodes.push(<AuctionToken key={`tok-${a.lotType}-${a.lot}`} x={x} z={z} />);
   }
-  for (let i = tokenIdx; i < view.bank.auctions.length + view.bank.tokensFree; i++) {
+  for (let i = 0; i < view.bank.tokensFree; i++) {
     const [wx, wz] = S.supply.bankSide.auctionTokens[i % 2];
     const [x, z] = w2r(wx, wz);
-    nodes.push(<FlatImage key={`tokfree-${i}`} url={S.auctionTokenArt.img} w={1.1} h={1.1} pos={[x, 0.03, z]} />);
+    nodes.push(<AuctionToken key={`tokfree-${i}`} x={x} z={z} />);
   }
   // bid tiles: in the supply when idle, next to the bidder's board when active
   const activeCash = view.bank.auctions.find((a) => a.lotType === 'container'); // cash-bid tile in use
@@ -495,6 +583,20 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
   const [guide, setGuide] = useState(() => new URLSearchParams(location.search).has('guide'));
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
 
+  // hold the auction outcome on screen for a beat after the piles clear
+  const [auctionResult, setAuctionResult] = useState<{ seq: number; text: string } | null>(null);
+  const hadDelivery = useRef(false);
+  useEffect(() => {
+    const has = !!view.delivery;
+    if (hadDelivery.current && !has && /WINS THE DELIVERY|BUYS OUT THE DELIVERY/.test(view.lastEvent.text)) {
+      setAuctionResult({ seq: view.lastEvent.seq, text: view.lastEvent.text });
+      const t = setTimeout(() => setAuctionResult(null), 5200);
+      hadDelivery.current = has;
+      return () => clearTimeout(t);
+    }
+    hadDelivery.current = has;
+  }, [view.delivery, view.lastEvent.seq, view.lastEvent.text]);
+
   const focus = useMemo<RFocus | null>(() => {
     const f = view.lastEvent.focus as ContFocus | null | undefined;
     if (!f) return null;
@@ -594,24 +696,34 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
         </div>
       </div>
 
-      {/* turn narration banner */}
+      {/* turn narration banner (+ anchor-action explainer when docking) */}
       <div className="cont-banner ig-glass" key={view.lastEvent.seq} role="status" aria-live="polite">
         <span>{view.lastEvent.text}</span>
+        {anchorNoteFor(view.lastEvent.text) && (
+          <small className="cont-anchor-note">{anchorNoteFor(view.lastEvent.text)}</small>
+        )}
       </div>
 
-      {/* delivery auction status */}
-      {view.delivery && (
-        <div className="cont-delivery ig-glass">
-          <b>DELIVERY AUCTION · {view.players[view.delivery.deliverer].name.toUpperCase()}</b>
-          <span>
-            {view.delivery.stage === 'resolve'
-              ? 'BIDS REVEALED'
-              : view.delivery.stage === 'runoff' ? 'RUNOFF BIDS' : 'SECRET BIDS'}
-            {' · '}
-            {Object.entries(view.delivery.bidsIn)
-              .map(([s, done]) => `${view.players[Number(s)].name.toUpperCase()} ${done ? '✓' : '…'}`)
-              .join(' · ')}
-          </span>
+      {/* standing anchor reminder while a free harbor purchase is open */}
+      {view.anchorBuy && !view.delivery && view.phase === 'playing' && (() => {
+        const tp = view.players[view.turn];
+        const loc = tp?.ship.loc;
+        if (!tp || loc?.kind !== 'harbor') return null;
+        return (
+          <div className="cont-anchor-chip ig-glass">
+            ⚓ {tp.name.toUpperCase()} HAS A FREE PURCHASE AT {view.players[loc.seat].name.toUpperCase()}'S HARBOR
+          </div>
+        );
+      })()}
+
+      {/* delivery auction: the card piles, the flip, the totals */}
+      {view.delivery && <AuctionPanel view={view} />}
+
+      {/* auction outcome flash once the piles clear */}
+      {auctionResult && (
+        <div className="cont-auction-result ig-glass" key={auctionResult.seq}>
+          <span>AUCTION CONCLUDED</span>
+          <b>{auctionResult.text}</b>
         </div>
       )}
 

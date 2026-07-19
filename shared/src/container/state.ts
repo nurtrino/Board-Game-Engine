@@ -83,9 +83,22 @@ export interface ContDelivery {
   bids: Record<number, number | null>;
   runoffAmong: number[];
   runoffBids: Record<number, number | null>;
+  /** seat -> bluff cards ($0) slipped into the pile; max 2 per player (p15) */
+  bluffs: Record<number, number>;
   /** highest bidders after reveal (post-runoff ties resolved by deliverer) */
   tied: number[];
 }
+
+export const CONT_BLUFF_MAX = 2; // bluff cards a player may add to one auction
+
+/** the money cards a bid amount is laid out with (greedy, mod denominations);
+ *  shared so the engine's public pile counts match the TV's revealed cards */
+export const contBidCards = (amount: number): number[] => {
+  const out: number[] = [];
+  let rest = Math.max(0, Math.floor(amount));
+  for (const d of [20, 10, 5, 2, 1]) while (rest >= d) { out.push(d); rest -= d; }
+  return out;
+};
 
 export type ContFocus =
   | { type: 'board'; seat: number; sub?: { kind: 'factoryTrack' | 'warehouseTrack' | 'factoryLots' | 'harborLots'; index?: number } }
@@ -277,11 +290,18 @@ export interface ContPlayerView extends Omit<ContPlayer, 'cash' | 'scoringCard'>
 export interface ContainerView extends Omit<ContainerState, 'players' | 'delivery' | 'seed'> {
   you: number | null;
   players: ContPlayerView[];
-  delivery: (Omit<ContDelivery, 'bids' | 'runoffBids'> & {
+  delivery: (Omit<ContDelivery, 'bids' | 'runoffBids' | 'bluffs'> & {
     /** seat -> true once submitted; amounts hidden until reveal */
     bidsIn: Record<number, boolean>;
     bids: Record<number, number | null> | null; // revealed at resolve stage / to nobody before
+    /** seat -> face-down cards on the table right now (public, like the
+     *  physical pile: money cards + bluff cards, so size can lie) */
+    piles: Record<number, number>;
+    /** seat -> bluff cards, revealed with the amounts at resolve */
+    bluffs: Record<number, number> | null;
     yourBid: number | null;
+    /** bluff cards you already committed this auction (caps runoff adds) */
+    yourBluffs: number;
   }) | null;
 }
 
@@ -311,7 +331,17 @@ export function containerViewFor(state: ContainerState, viewer: number | null | 
           bids: delivery.stage === 'resolve'
             ? Object.fromEntries(Object.entries(delivery.bids).map(([s, b]) => [s, (b ?? 0) + (delivery.runoffBids[Number(s)] ?? 0)]))
             : null,
+          // card counts on the table are public even while amounts are secret
+          piles: Object.fromEntries(Object.entries(delivery.bids).map(([s, b]) => {
+            const runoff = delivery.runoffBids[Number(s)];
+            const cards = b === null ? 0
+              : contBidCards(b).length + ((delivery.bluffs ?? {})[Number(s)] ?? 0)
+                + (runoff !== null && runoff !== undefined ? contBidCards(runoff).length : 0);
+            return [s, cards];
+          })),
+          bluffs: delivery.stage === 'resolve' ? { ...(delivery.bluffs ?? {}) } : null,
           yourBid: you !== null && delivery.bids[you] !== undefined ? delivery.bids[you] : null,
+          yourBluffs: you !== null ? (delivery.bluffs ?? {})[you] ?? 0 : 0,
         }
       : null,
   };

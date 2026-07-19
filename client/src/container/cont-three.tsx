@@ -29,33 +29,6 @@ export function ContFlatImage({ url, w, h, pos, ry = 0, opacity = 1, alphaTest =
   );
 }
 
-/** An extruded building tile: the printed token art on the top face of a
- * chunky colored slab (the 2026 edition's factories and warehouses are real
- * 3D pieces; the mod only carried the flat die-cut art). */
-export function TokenPiece({ url, w, h, x, z, y = 0, thickness, side, ry = 0 }: {
-  url: string; w: number; h: number; x: number; z: number; y?: number;
-  thickness: number; side: string; ry?: number;
-}) {
-  const tex = useLoader(THREE.TextureLoader, url);
-  const mats = useMemo(() => {
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 8;
-    const sideMat = new THREE.MeshStandardMaterial({ color: side, roughness: 0.7, metalness: 0.05 });
-    const topMat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.02, transparent: true, alphaTest: 0.25 });
-    const underTop = new THREE.MeshStandardMaterial({ color: side, roughness: 0.75 });
-    // box faces: +x, -x, +y (top), -y, +z, -z
-    return { order: [sideMat, sideMat, topMat, sideMat, sideMat, sideMat], underTop };
-  }, [tex, side]);
-  return (
-    <group position={[x, y + thickness / 2 + 0.03, z]} rotation={[0, ry, 0]}>
-      {/* slab slightly inset so the die-cut art edge reads as a beveled top */}
-      <mesh material={mats.order}>
-        <boxGeometry args={[w, thickness, h]} />
-      </mesh>
-    </group>
-  );
-}
-
 export interface ContainerProto {
   geom: THREE.BufferGeometry;
   mats: Partial<Record<ContColor, THREE.Material>>;
@@ -211,24 +184,142 @@ export function Ship({ seatColor, x, z, yaw, cargo = [], proto, children }: {
   );
 }
 
-/** the mod's per-color factory art with a chunky slab body */
+/** trace the largest opaque blob in a die-cut art image: returns the outline
+ *  as [0..1]x[0..1] image coordinates (y down), simplified for extrusion */
+function traceAlphaOutline(img: HTMLImageElement | ImageBitmap): [number, number][] | null {
+  const MAX = 96;
+  const k = MAX / Math.max(img.width, img.height);
+  const W = Math.max(2, Math.round(img.width * k));
+  const H = Math.max(2, Math.round(img.height * k));
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return null;
+  ctx.drawImage(img, 0, 0, W, H);
+  const a = ctx.getImageData(0, 0, W, H).data;
+  const solid = (px: number, py: number) =>
+    px >= 0 && py >= 0 && px < W && py < H && a[(py * W + px) * 4 + 3] > 48;
+  // start at the topmost-left solid pixel, then walk the boundary
+  // (Moore-neighbor tracing, clockwise)
+  let sx = -1, sy = -1;
+  outer: for (let py = 0; py < H; py++) {
+    for (let px = 0; px < W; px++) if (solid(px, py)) { sx = px; sy = py; break outer; }
+  }
+  if (sx < 0) return null;
+  const DIRS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+  const pts: [number, number][] = [];
+  let cx = sx, cy = sy, dir = 6; // came from below-ish; start scanning upward
+  for (let step = 0; step < W * H * 4; step++) {
+    pts.push([cx, cy]);
+    let found = false;
+    for (let i = 0; i < 8; i++) {
+      const d = (dir + 6 + i) % 8; // turn right of the entry direction first
+      const nx = cx + DIRS[d][0], ny = cy + DIRS[d][1];
+      if (solid(nx, ny)) { cx = nx; cy = ny; dir = d; found = true; break; }
+    }
+    if (!found) break; // isolated pixel
+    if (cx === sx && cy === sy && pts.length > 2) break;
+  }
+  if (pts.length < 8) return null;
+  // simplify: drop points that barely bend (keeps the die-cut read, ~30 verts)
+  const keep: [number, number][] = [];
+  const n = pts.length;
+  for (let i = 0; i < n; i += 2) {
+    const p = pts[i], prev = keep[keep.length - 1];
+    if (!prev || Math.abs(p[0] - prev[0]) + Math.abs(p[1] - prev[1]) >= 2) keep.push(p);
+  }
+  return keep.map(([px, py]) => [px / W, py / H]);
+}
+
+/** the original flat die-cut art, extended down into a solid piece: the
+ *  printed art on the top face, its silhouette extruded to the table with
+ *  solid-colored sides (what the flat tokens looked like, with thickness) */
+function DieCutPiece({ url, w, h, thickness, side, x, z, ry = 0, scale = 1 }: {
+  url: string; w: number; h: number; thickness: number; side: string;
+  x: number; z: number; ry?: number; scale?: number;
+}) {
+  const tex = useLoader(THREE.TextureLoader, url);
+  const built = useMemo(() => {
+    const outline = tex.image ? traceAlphaOutline(tex.image as HTMLImageElement) : null;
+    const shape = new THREE.Shape();
+    if (outline) {
+      // image coords -> piece-local XY (art top = +y)
+      outline.forEach(([u, v], i) => {
+        const px = (u - 0.5) * w, py = (0.5 - v) * h;
+        if (i === 0) shape.moveTo(px, py); else shape.lineTo(px, py);
+      });
+      shape.closePath();
+    } else {
+      // fallback: the full art rectangle
+      shape.moveTo(-w / 2, -h / 2); shape.lineTo(w / 2, -h / 2);
+      shape.lineTo(w / 2, h / 2); shape.lineTo(-w / 2, h / 2);
+      shape.closePath();
+    }
+    const geom = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false });
+    // lay it flat: shape plane -> table, extrusion -> up, art cap on top
+    geom.rotateX(-Math.PI / 2);
+    // the art texture UV-mapped over the caps (extrude UVs are shape coords)
+    const capTex = tex.clone();
+    capTex.colorSpace = THREE.SRGBColorSpace;
+    capTex.anisotropy = 8;
+    capTex.wrapS = capTex.wrapT = THREE.ClampToEdgeWrapping;
+    capTex.repeat.set(1 / w, 1 / h);
+    capTex.offset.set(0.5, 0.5);
+    capTex.needsUpdate = true;
+    const mats = [
+      new THREE.MeshStandardMaterial({ map: capTex, roughness: 0.72, metalness: 0.03 }),
+      new THREE.MeshStandardMaterial({ color: side, roughness: 0.7, metalness: 0.04 }),
+    ]; // extrude groups: 0 = caps, 1 = swept sides
+    return { geom, mats };
+  }, [tex, url, w, h, thickness, side]);
+  return (
+    <group position={[x, 0.03, z]} rotation={[0, ry, 0]} scale={[scale, scale, scale]}>
+      <mesh geometry={built.geom} material={built.mats} castShadow />
+    </group>
+  );
+}
+
+/** the mod's die-cut factory art, extended down into a 3D piece */
 export function FactoryPiece({ color, x, z, ry = 0, scale = 1 }: {
   color: ContColor; x: number; z: number; ry?: number; scale?: number;
 }) {
   const fa = S.factoryArt[color];
-  const w = 1.15 * scale;
+  const w = 1.15;
   return (
-    <TokenPiece url={fa.img} w={w} h={w * (fa.px[1] / fa.px[0])} x={x} z={z}
-      thickness={0.34 * scale} side={CONT_PIECE_HEX[color]} ry={ry} />
+    <DieCutPiece url={fa.img} w={w} h={w * (fa.px[1] / fa.px[0])} thickness={0.3}
+      side={CONT_PIECE_HEX[color]} x={x} z={z} ry={ry} scale={scale} />
   );
 }
 
+/** the mod's die-cut warehouse art, extended down into a 3D piece */
 export function WarehousePiece({ x, z, ry = 0, scale = 1 }: {
   x: number; z: number; ry?: number; scale?: number;
 }) {
-  const w = 0.92 * scale;
+  const w = 0.92;
   return (
-    <TokenPiece url={S.warehouseArt.img} w={w} h={w * (S.warehouseArt.px[1] / S.warehouseArt.px[0])} x={x} z={z}
-      thickness={0.3 * scale} side="#b7b0a3" ry={ry} />
+    <DieCutPiece url={S.warehouseArt.img} w={w} h={w * (S.warehouseArt.px[1] / S.warehouseArt.px[0])}
+      thickness={0.26} side="#b7b0a3" x={x} z={z} ry={ry} scale={scale} />
+  );
+}
+
+/** the round bank auction token as the physical piece: a chunky cylinder with
+ *  the printed face up, seated on a lot's printed circle */
+export function AuctionToken({ x, z, y = 0 }: { x: number; z: number; y?: number }) {
+  const tex = useLoader(THREE.TextureLoader, S.auctionTokenArt.img);
+  const mats = useMemo(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
+    tex.center.set(0.5, 0.5);
+    const side = new THREE.MeshStandardMaterial({ color: '#a3937a', roughness: 0.6, metalness: 0.05 });
+    const top = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.03 });
+    const bottom = new THREE.MeshStandardMaterial({ color: '#8d7f69', roughness: 0.7 });
+    return [side, top, bottom]; // cylinder faces: side, top, bottom
+  }, [tex]);
+  const R = 0.55, H = 0.15;
+  return (
+    <mesh position={[x, y + H / 2 + 0.03, z]} material={mats} castShadow>
+      <cylinderGeometry args={[R, R, H, 36]} />
+    </mesh>
   );
 }
