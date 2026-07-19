@@ -1,0 +1,636 @@
+// Container TV board: the mod's water mat (both islands printed on it) as the
+// table surface, the five player harbor boards laid around it exactly as the
+// mod places them, the mod's ship and container meshes seated on their printed
+// spots, supply piles, the Off-Shore Bank lots, and the universal ig-* HUD.
+// Camera flies to every action's location (lastEvent.focus).
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import * as THREE from 'three';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import type { ContainerView, ContColor, ContainerSeat, ContFocus } from '@bge/shared';
+import { CONT_RULES, CONT_COLORS, contLotCount } from '@bge/shared';
+import { playSfx } from '../sfx';
+import {
+  CONT_SCENE, px2r, w2r, boardSpot, MAT_RW, MAT_RH,
+  islandCenterR, bankCenterR, CONT_UI_HEX,
+} from './cont-scene';
+import './container.css';
+
+const S = CONT_SCENE;
+
+function FlatImage({ url, w, h, pos, ry = 0, opacity = 1, alphaTest = 0.05 }: {
+  url: string; w: number; h: number; pos: [number, number, number]; ry?: number; opacity?: number; alphaTest?: number;
+}) {
+  const tex = useLoader(THREE.TextureLoader, url);
+  useEffect(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
+    tex.needsUpdate = true;
+  }, [tex]);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, ry]} position={pos}>
+      <planeGeometry args={[w, h]} />
+      <meshStandardMaterial map={tex} roughness={0.88} metalness={0.02} transparent opacity={opacity} alphaTest={alphaTest} side={THREE.DoubleSide} />
+    </mesh>
+  );
+}
+
+/** The water mat — the whole table surface, owner directive. */
+function WaterMat() {
+  const tex = useLoader(THREE.TextureLoader, S.mat.img);
+  useEffect(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
+    tex.needsUpdate = true;
+  }, [tex]);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+      <planeGeometry args={[MAT_RW, MAT_RH]} />
+      <meshStandardMaterial map={tex} roughness={0.92} metalness={0.02} />
+    </mesh>
+  );
+}
+
+/** image-top direction per board yaw (see cont-scene yawRot derivation) */
+const BOARD_RY: Record<number, number> = { 180: 0, 90: Math.PI / 2, 270: -Math.PI / 2, 0: Math.PI };
+
+function PlayerBoards({ seats }: { seats: ContainerSeat[] }) {
+  return (
+    <group>
+      {seats.map((seatColor) => {
+        const b = S.boards[seatColor];
+        const [x, z] = w2r(b.pos[0], b.pos[1]);
+        const w = b.px[0] * S.pb.s;
+        const h = b.px[1] * S.pb.s;
+        return (
+          <FlatImage key={seatColor} url={b.img} w={w} h={h}
+            pos={[x, 0.03, z]} ry={BOARD_RY[b.yaw] ?? 0} alphaTest={0.3} />
+        );
+      })}
+    </group>
+  );
+}
+
+/** cached OBJ + per-color materials for the container pieces */
+function useContainerProto() {
+  const obj = useLoader(OBJLoader, S.models.container.mesh);
+  const texes = useLoader(THREE.TextureLoader, CONT_COLORS.map((c) => S.models.container.tex[c]));
+  return useMemo(() => {
+    const geoms: THREE.BufferGeometry[] = [];
+    obj.traverse((m) => { if ((m as THREE.Mesh).isMesh) geoms.push((m as THREE.Mesh).geometry); });
+    const geom = geoms[0];
+    geom.computeBoundingBox();
+    const bb = geom.boundingBox!;
+    const size = new THREE.Vector3();
+    bb.getSize(size);
+    // authentic piece footprint measured from the mod's supply stacks:
+    // 1.38 long x 0.62 wide x 0.54 high (per-axis, the mod scales non-uniformly)
+    const alongX = size.x >= size.z; // container length axis in mesh space
+    const scale = new THREE.Vector3(
+      (alongX ? 1.38 : 0.62) / (size.x || 1),
+      0.54 / (size.y || 1),
+      (alongX ? 0.62 : 1.38) / (size.z || 1),
+    );
+    const mats: Partial<Record<ContColor, THREE.Material>> = {};
+    CONT_COLORS.forEach((c, i) => {
+      const t = texes[i];
+      t.colorSpace = THREE.SRGBColorSpace;
+      mats[c] = new THREE.MeshStandardMaterial({ map: t, roughness: 0.6, metalness: 0.15 });
+    });
+    const lift = -bb.min.y * scale.y;
+    const height = 0.54;
+    return { geom, mats, scale, lift, height, alongX };
+  }, [obj, texes]);
+}
+
+function ContainerPiece({ color, x, z, y = 0, yaw = 0, proto }: {
+  color: ContColor; x: number; z: number; y?: number; yaw?: number;
+  proto: ReturnType<typeof useContainerProto>;
+}) {
+  return (
+    <mesh geometry={proto.geom} material={proto.mats[color]}
+      position={[x, proto.lift + y + 0.03, z]}
+      rotation={[0, yaw + (proto.alongX ? 0 : Math.PI / 2), 0]}
+      scale={[proto.scale.x, proto.scale.y, proto.scale.z]} castShadow />
+  );
+}
+
+/** grid layout for n containers around an anchor: rows x cols, then layers */
+function packGrid(n: number, cols: number, dx: number, dz: number, perLayer: number): [number, number, number][] {
+  const out: [number, number, number][] = [];
+  for (let i = 0; i < n; i++) {
+    const layer = Math.floor(i / perLayer);
+    const j = i % perLayer;
+    const row = Math.floor(j / cols), col = j % cols;
+    out.push([(col - (cols - 1) / 2) * dx, (row - (Math.ceil(perLayer / cols) - 1) / 2) * dz, layer]);
+  }
+  return out;
+}
+
+function Ship({ seatColor, x, z, yaw }: { seatColor: string; x: number; z: number; yaw: number }) {
+  const obj = useLoader(OBJLoader, S.models.ship.mesh);
+  const tex = useLoader(THREE.TextureLoader, S.models.ship.tex ?? '');
+  const { clone, scale, lift } = useMemo(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const c = obj.clone(true);
+    const mat = new THREE.MeshStandardMaterial({
+      map: tex, color: S.shipTint[seatColor] ?? '#888', roughness: 0.55, metalness: 0.1,
+    });
+    c.traverse((m) => {
+      if ((m as THREE.Mesh).isMesh) { (m as THREE.Mesh).material = mat; (m as THREE.Mesh).castShadow = true; }
+    });
+    const bb = new THREE.Box3().setFromObject(c);
+    const size = new THREE.Vector3();
+    bb.getSize(size);
+    const long = Math.max(size.x, size.z) || 1;
+    const s = 4.6 / long; // the mod ship footprint (scale 1.1/1.2 ~ 4.6 long)
+    return { clone: c, scale: s, lift: -bb.min.y * s };
+  }, [obj, tex, seatColor]);
+  return (
+    <primitive object={clone} position={[x, lift + 0.02, z]}
+      rotation={[0, yaw + Math.PI, 0]} scale={[scale, scale, scale]} />
+  );
+}
+
+/** ship render spot + heading per game location */
+function shipPlace(view: ContainerView, seat: number): { x: number; z: number; yaw: number } {
+  const p = view.players[seat];
+  const seatColor = p.color;
+  const loc = p.ship.loc;
+  if (loc.kind === 'ocean') {
+    const [wx, wz] = S.shipStarts[seatColor];
+    const [x, z] = w2r(wx, wz);
+    return { x, z, yaw: wz > 0 ? Math.PI : 0 };
+  }
+  if (loc.kind === 'harbor') {
+    const host = view.players[loc.seat];
+    // dock cove index = my seat index, so two visiting ships never overlap
+    const dock = S.pb.docks[seat % S.pb.docks.length];
+    const [x, z] = boardSpot(host.color, [dock[0], dock[1] - 120]);
+    const yaw = { 180: 0, 90: Math.PI / 2, 270: -Math.PI / 2, 0: Math.PI }[S.boards[host.color].yaw] ?? 0;
+    return { x, z, yaw: yaw + Math.PI / 2 };
+  }
+  if (loc.kind === 'island') {
+    const [hx, hz] = px2r(S.hexArt[`${seatColor}:scoring`]?.[0] ?? 1500, 2120);
+    return { x: hx, z: hz + 1.5, yaw: Math.PI / 2 };
+  }
+  // bank
+  const [hx, hz] = px2r(S.hexArt[`${seatColor}:holding`]?.[0] ?? 2550, 2040);
+  return { x: hx, z: hz + 1.2, yaw: Math.PI / 2 };
+}
+
+/** money card stack for a bank cash lot amount */
+function CashStack({ amount, at }: { amount: number; at: [number, number] }) {
+  const cards = useMemo(() => {
+    const denoms = [20, 10, 5, 2, 1];
+    const out: number[] = [];
+    let rest = amount;
+    for (const d of denoms) while (rest >= d && out.length < 9) { out.push(d); rest -= d; }
+    return out;
+  }, [amount]);
+  const [x, z] = px2r(at[0], at[1]);
+  return (
+    <group>
+      {cards.map((d, i) => (
+        <FlatImage key={i} url={S.cards.money[String(d)]} w={1.35} h={1.35 * 1.4}
+          pos={[x + (i % 3) * 0.12, 0.04 + i * 0.012, z + Math.floor(i / 3) * 0.14]} ry={0} />
+      ))}
+    </group>
+  );
+}
+
+const SFX_FOR_KIND: Record<string, Parameters<typeof playSfx>[0]> = {
+  action: 'build', turn: 'turn', win: 'win', alert: 'error',
+};
+
+interface RFocus { seq: number; x: number; z: number }
+
+function FocusFly({ focus, controls }: { focus: RFocus | null; controls: React.RefObject<OrbitControlsImpl | null> }) {
+  const camera = useThree((st) => st.camera);
+  const anim = useRef<{ start: number; seq: number } | null>(null);
+  const home = useRef<{ pos: THREE.Vector3; target: THREE.Vector3 } | null>(null);
+  const doneSeq = useRef(-1);
+  const IN = 1.1, HOLD = 2.2, OUT = 1.1;
+  useFrame(({ clock }) => {
+    const c = controls.current;
+    if (!focus || !c || focus.seq === doneSeq.current) return;
+    if (anim.current?.seq !== focus.seq) {
+      home.current ??= { pos: camera.position.clone(), target: c.target.clone() };
+      anim.current = { start: clock.elapsedTime, seq: focus.seq };
+    }
+    const t = clock.elapsedTime - anim.current.start;
+    const ease = (x: number) => x * x * (3 - 2 * x);
+    const inPos = new THREE.Vector3(focus.x, 13, focus.z + 9.5);
+    const inTarget = new THREE.Vector3(focus.x, 0, focus.z);
+    const h = home.current!;
+    if (t < IN) {
+      const k = ease(t / IN);
+      camera.position.lerpVectors(h.pos, inPos, k);
+      c.target.lerpVectors(h.target, inTarget, k);
+    } else if (t < IN + HOLD) {
+      camera.position.copy(inPos);
+      c.target.copy(inTarget);
+    } else if (t < IN + HOLD + OUT) {
+      const k = ease((t - IN - HOLD) / OUT);
+      camera.position.lerpVectors(inPos, h.pos, k);
+      c.target.lerpVectors(inTarget, h.target, k);
+    } else {
+      camera.position.copy(h.pos);
+      c.target.copy(h.target);
+      doneSeq.current = focus.seq;
+      anim.current = null;
+      home.current = null;
+    }
+    c.update();
+  });
+  return null;
+}
+
+function CamOverride() {
+  const camera = useThree((st) => st.camera);
+  useEffect(() => {
+    const q = new URLSearchParams(location.search).get('cam');
+    if (!q) return;
+    const [x, z, h, y] = q.split(',').map(Number);
+    camera.position.set(x, y ?? h, z + h * 0.4);
+    camera.lookAt(x, 0, z);
+    camera.updateProjectionMatrix();
+  }, [camera]);
+  return null;
+}
+
+/** everything that needs the container mesh proto in one subtree */
+function Pieces({ view }: { view: ContainerView }) {
+  const proto = useContainerProto();
+  const seats = view.players.map((p) => p.color);
+
+  const nodes: React.ReactNode[] = [];
+
+  // ---- supply piles (north band, exactly like the mod's table) ----
+  for (const color of CONT_COLORS) {
+    const n = view.supply.containers[color];
+    const cx = S.supply.containers.xByColor[color];
+    for (let i = 0; i < n; i++) {
+      const layer = Math.floor(i / 10);
+      const j = i % 10;
+      const row = j % 2, col = Math.floor(j / 2);
+      const [x, z] = w2r(cx + (col - 2) * 0.75, S.supply.containers.z[row]);
+      nodes.push(<ContainerPiece key={`sup-${color}-${i}`} color={color} x={x} z={z}
+        y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
+    }
+    // factory supply tokens
+    const fn = view.supply.factories[color];
+    const fx = S.supply.factories.xByColor[color];
+    const fa = S.factoryArt[color];
+    for (let i = 0; i < fn; i++) {
+      const [x, z] = w2r(fx + (i - (fn - 1) / 2) * 0.34, S.supply.factories.z);
+      nodes.push(<FlatImage key={`fsup-${color}-${i}`} url={fa.img}
+        w={1.25} h={1.25 * (fa.px[1] / fa.px[0])} pos={[x, 0.03 + i * 0.012, z]} />);
+    }
+  }
+  // warehouse supply row
+  for (let i = 0; i < view.supply.warehouses; i++) {
+    const [x0, x1] = S.supply.warehouses.x;
+    const wx = x0 + (i / Math.max(1, 13)) * (x1 - x0);
+    const [x, z] = w2r(wx, S.supply.warehouses.z);
+    nodes.push(<FlatImage key={`wsup-${i}`} url={S.warehouseArt.img}
+      w={0.95} h={0.95 * (S.warehouseArt.px[1] / S.warehouseArt.px[0])} pos={[x, 0.03, z]} />);
+  }
+
+  // ---- bank lots ----
+  view.bank.containerLots.forEach((lot, li) => {
+    const at = S.bankLots.containers[li];
+    const spots = packGrid(lot.length, 2, 0.75, 1.5, 4);
+    lot.forEach((color, i) => {
+      const [dx, dz, layer] = spots[i];
+      const [x, z] = px2r(at[0], at[1]);
+      nodes.push(<ContainerPiece key={`bank-${li}-${i}`} color={color}
+        x={x + dx} z={z + dz} y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
+    });
+  });
+  view.bank.cashLots.forEach((amount, li) => {
+    if (amount > 0) nodes.push(<CashStack key={`cash-${li}`} amount={amount} at={S.bankLots.cash[li]} />);
+  });
+  // auction tokens: free ones at the supply spot, active ones on their lots
+  let tokenIdx = 0;
+  for (const a of view.bank.auctions) {
+    const at = a.lotType === 'container' ? S.bankLots.containers[a.lot] : S.bankLots.cash[a.lot];
+    const [x, z] = px2r(at[0], at[1]);
+    nodes.push(<FlatImage key={`tok-${a.lotType}-${a.lot}`} url={S.auctionTokenArt.img} w={1.1} h={1.1}
+      pos={[x + 1.15, 0.09, z - 1.1]} />);
+    tokenIdx++;
+  }
+  for (let i = tokenIdx; i < view.bank.auctions.length + view.bank.tokensFree; i++) {
+    const [wx, wz] = S.supply.bankSide.auctionTokens[i % 2];
+    const [x, z] = w2r(wx, wz);
+    nodes.push(<FlatImage key={`tokfree-${i}`} url={S.auctionTokenArt.img} w={1.1} h={1.1} pos={[x, 0.03, z]} />);
+  }
+  // bid tiles: in the supply when idle, next to the bidder's board when active
+  const activeCash = view.bank.auctions.find((a) => a.lotType === 'container'); // cash-bid tile in use
+  const activeCont = view.bank.auctions.find((a) => a.lotType === 'cash');
+  const tileSpot = (active: typeof activeCash, url: string, idleAt: [number, number], key: string) => {
+    if (active) {
+      const bidder = view.players[active.bidder];
+      const [x, z] = boardSpot(bidder.color, [S.pb.cx, -420]); // just seaward of the board
+      nodes.push(<FlatImage key={key} url={url} w={2.6} h={2.6} pos={[x, 0.05, z]} />);
+      if (active.lotType === 'container') {
+        // cash bid: face-up money on the tile
+        const denoms: number[] = [];
+        let rest = active.bid;
+        for (const d of [20, 10, 5, 2, 1]) while (rest >= d && denoms.length < 6) { denoms.push(d); rest -= d; }
+        denoms.forEach((d, i) => nodes.push(
+          <FlatImage key={`${key}-m${i}`} url={S.cards.money[String(d)]} w={1.1} h={1.55}
+            pos={[x - 0.5 + (i % 3) * 0.55, 0.08 + i * 0.012, z + (i > 2 ? 0.5 : -0.3)]} />));
+      } else {
+        active.bidContainers.forEach((b, i) => nodes.push(
+          <ContainerPiece key={`${key}-c${i}`} color={b.color}
+            x={x + (b.from === 'harbor' ? -0.7 : 0.7)} z={z - 0.8 + Math.floor(i / 2) * 0.75}
+            y={0.06} yaw={Math.PI / 2} proto={proto} />));
+      }
+    } else {
+      const [x, z] = w2r(idleAt[0], idleAt[1]);
+      nodes.push(<FlatImage key={key} url={url} w={2.4} h={2.4} pos={[x, 0.03, z]} />);
+    }
+  };
+  tileSpot(activeCash, S.cards.bidCash, S.supply.bankSide.bidCash, 'tile-cash');
+  tileSpot(activeCont, S.cards.bidContainers, S.supply.bankSide.bidContainers, 'tile-cont');
+
+  // loan deck at the bank side
+  {
+    const [x, z] = w2r(S.supply.bankSide.loans[0], S.supply.bankSide.loans[1]);
+    nodes.push(<FlatImage key="loandeck" url={S.cards.loan} w={1.5} h={1.5 * 1.4} pos={[x, 0.03, z]} />);
+  }
+
+  // ---- per player: island scoring, holding, board pieces, ships, loans ----
+  for (const p of view.players) {
+    const seatColor = p.color;
+    // island scoring hex
+    {
+      const at = S.hexArt[`${seatColor}:scoring`];
+      if (at) {
+        const spots = packGrid(p.scoring.length, 3, 0.8, 1.5, 6);
+        p.scoring.forEach((color, i) => {
+          const [dx, dz, layer] = spots[i];
+          const [x, z] = px2r(at[0], at[1]);
+          nodes.push(<ContainerPiece key={`sc-${p.seat}-${i}`} color={color}
+            x={x + dx} z={z + dz} y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
+        });
+      }
+    }
+    // bank holding hex
+    {
+      const at = S.hexArt[`${seatColor}:holding`];
+      if (at) {
+        const spots = packGrid(p.holding.length, 2, 0.8, 1.5, 4);
+        p.holding.forEach((color, i) => {
+          const [dx, dz, layer] = spots[i];
+          const [x, z] = px2r(at[0], at[1]);
+          nodes.push(<ContainerPiece key={`ho-${p.seat}-${i}`} color={color}
+            x={x + dx} z={z + dz} y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
+        });
+      }
+    }
+    // factories on the build track
+    p.factories.forEach((color, i) => {
+      const at = S.pb.factoryTrack[i];
+      const fa = S.factoryArt[color];
+      const [x, z] = boardSpot(seatColor, at);
+      const ry = BOARD_RY[S.boards[seatColor].yaw] ?? 0;
+      nodes.push(<FlatImage key={`fac-${p.seat}-${i}`} url={fa.img}
+        w={1.15} h={1.15 * (fa.px[1] / fa.px[0])} pos={[x, 0.045, z]} ry={ry} />);
+    });
+    // warehouses
+    for (let i = 0; i < p.warehouses; i++) {
+      const at = S.pb.warehouseTrack[i];
+      const [x, z] = boardSpot(seatColor, at);
+      const ry = BOARD_RY[S.boards[seatColor].yaw] ?? 0;
+      nodes.push(<FlatImage key={`wh-${p.seat}-${i}`} url={S.warehouseArt.img}
+        w={0.9} h={0.9 * (S.warehouseArt.px[1] / S.warehouseArt.px[0])} pos={[x, 0.045, z]} ry={ry} />);
+    }
+    // factory lots
+    for (const [price, list] of Object.entries(p.factoryLots)) {
+      const at = S.pb.factoryLots[price];
+      if (!at) continue;
+      const yaw = S.boards[seatColor].yaw;
+      list.forEach((color, i) => {
+        const row = Math.floor(i / 2), col = i % 2;
+        const local: [number, number] = [at[0] + (col - 0.5) * 150, at[1] - row * 130];
+        const [x, z] = boardSpot(seatColor, local);
+        const contYaw = (BOARD_RY[yaw] ?? 0) + Math.PI / 2;
+        nodes.push(<ContainerPiece key={`fl-${p.seat}-${price}-${i}`} color={color}
+          x={x} z={z} yaw={contYaw} proto={proto} />);
+      });
+    }
+    // harbor lots
+    for (const [price, list] of Object.entries(p.harborLots)) {
+      const at = S.pb.harborLots[price];
+      if (!at) continue;
+      const yaw = S.boards[seatColor].yaw;
+      list.forEach((color, i) => {
+        const row = Math.floor(i / 2), col = i % 2;
+        const local: [number, number] = [at[0] + (col - 0.5) * 150, at[1] + row * 130];
+        const [x, z] = boardSpot(seatColor, local);
+        const contYaw = (BOARD_RY[yaw] ?? 0) + Math.PI / 2;
+        nodes.push(<ContainerPiece key={`hl-${p.seat}-${price}-${i}`} color={color}
+          x={x} z={z} yaw={contYaw} proto={proto} />);
+      });
+    }
+    // reserve tokens marking bid containers
+    const res: [number, 'factory' | 'harbor'][] = [[p.reserves.factory, 'factory'], [p.reserves.harbor, 'harbor']];
+    for (const [count, from] of res) {
+      for (let i = 0; i < count; i++) {
+        const anchor = from === 'factory' ? S.pb.factoryLots['1'] : S.pb.harborLots['2'];
+        const local: [number, number] = [anchor[0] + 220 + i * 90, anchor[1] + 60];
+        const [x, z] = boardSpot(seatColor, local);
+        nodes.push(<FlatImage key={`rs-${p.seat}-${from}-${i}`} url={S.reserveTokenArt.img}
+          w={0.7} h={0.7} pos={[x, 0.06, z]} />);
+      }
+    }
+    // loan cards by the board (the mod keeps a colored loan pile per seat)
+    for (let i = 0; i < p.loans; i++) {
+      const local: [number, number] = [S.pb.px[0] + 260, 300 + i * 260];
+      const [x, z] = boardSpot(seatColor, local);
+      const ry = BOARD_RY[S.boards[seatColor].yaw] ?? 0;
+      nodes.push(<FlatImage key={`loan-${p.seat}-${i}`} url={S.cards.loan} w={1.5} h={1.5 * 1.4}
+        pos={[x, 0.04 + i * 0.01, z]} ry={ry} />);
+    }
+    // ship + cargo
+    const sp = shipPlace(view, p.seat);
+    nodes.push(<Ship key={`ship-${p.seat}`} seatColor={seatColor} x={sp.x} z={sp.z} yaw={sp.yaw} />);
+    p.ship.cargo.forEach((color, i) => {
+      nodes.push(<ContainerPiece key={`cargo-${p.seat}-${i}`} color={color}
+        x={sp.x + Math.cos(sp.yaw) * (i - 2) * 0.72}
+        z={sp.z - Math.sin(sp.yaw) * (i - 2) * 0.72}
+        y={0.55} yaw={sp.yaw + Math.PI / 2} proto={proto} />);
+    });
+  }
+
+  return <group>{nodes}</group>;
+}
+
+export function ContainerBoard({ view }: { view: ContainerView }) {
+  const lastSeq = useRef(view.lastEvent.seq);
+  useEffect(() => {
+    if (view.lastEvent.seq === lastSeq.current) return;
+    lastSeq.current = view.lastEvent.seq;
+    const name = SFX_FOR_KIND[view.lastEvent.kind ?? ''];
+    if (name) playSfx(name);
+  }, [view.lastEvent.seq, view.lastEvent.kind]);
+
+  const [statsSeat, setStatsSeat] = useState<number | null>(null);
+  const controlsRef = useRef<OrbitControlsImpl | null>(null);
+
+  const focus = useMemo<RFocus | null>(() => {
+    const f = view.lastEvent.focus as ContFocus | null | undefined;
+    if (!f) return null;
+    let at: [number, number] | null = null;
+    if (f.type === 'board') at = w2r(S.boards[view.players[f.seat].color].pos[0], S.boards[view.players[f.seat].color].pos[1]);
+    else if (f.type === 'ship') { const sp = shipPlace(view, f.seat); at = [sp.x, sp.z]; }
+    else if (f.type === 'island') at = islandCenterR();
+    else if (f.type === 'bank') at = bankCenterR();
+    return at ? { seq: view.lastEvent.seq, x: at[0], z: at[1] } : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view.lastEvent.seq]);
+
+  return (
+    <div className="cont-board" data-testid="cont-board" aria-label="Container shared board">
+      <Canvas shadows="soft" dpr={[1, 1.5]}
+        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+        camera={{ fov: 40, near: 0.1, far: 320, position: [0, 52, 44] }}
+        onCreated={({ gl }) => {
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.outputColorSpace = THREE.SRGBColorSpace;
+        }}
+        style={{ background: '#05070c' }}>
+        <color attach="background" args={['#05070c']} />
+        <hemisphereLight intensity={0.6} color="#cdd8e8" groundColor="#0d1018" />
+        <directionalLight position={[26, 48, 30]} intensity={2.0} color="#f2ecdd" castShadow
+          shadow-mapSize-width={2048} shadow-mapSize-height={2048}
+          shadow-camera-left={-52} shadow-camera-right={52}
+          shadow-camera-top={52} shadow-camera-bottom={-52}
+          shadow-bias={-0.0002} />
+        <pointLight position={[-30, 24, -22]} intensity={90} distance={140} decay={2} color="#8aa4cc" />
+        <WaterMat />
+        <PlayerBoards seats={view.players.map((p) => p.color)} />
+        <Pieces view={view} />
+        {new URLSearchParams(location.search).get('cam') ? (
+          <CamOverride />
+        ) : (
+          <>
+            <OrbitControls ref={controlsRef} makeDefault enablePan={false} minDistance={16} maxDistance={110}
+              maxPolarAngle={Math.PI * 0.42} enableDamping dampingFactor={0.08}
+              target={[0, 0, 2]} />
+            <FocusFly focus={focus} controls={controlsRef} />
+          </>
+        )}
+      </Canvas>
+
+      {/* seat chips: public info only (cash is secret in Container) */}
+      <div className="cont-hud-top">
+        {view.players.map((p) => {
+          const hex = CONT_UI_HEX[p.color];
+          const active = view.phase === 'playing' && view.turn === p.seat;
+          return (
+            <button key={p.seat}
+              className={'ig-glass cont-seat' + (active ? ' active' : '')}
+              style={{ borderColor: hex }}
+              onClick={() => setStatsSeat(p.seat)}>
+              {active && <span className="cont-seat-turn">{view.delivery ? 'AUCTION' : 'ACTING'}</span>}
+              <span className="cont-seat-name">{p.name.toUpperCase()}</span>
+              <span className="cont-seat-sub">
+                {view.phase === 'ended' && p.finalScore
+                  ? `$${p.finalScore.total}`
+                  : `SHIP ${p.ship.cargo.length}/5 · ISLAND ${p.scoring.length}${p.loans ? ` · LOANS ${p.loans}` : ''}`}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* supply counter (the end-trigger everyone watches) */}
+      <div className="cont-supply ig-glass">
+        {CONT_COLORS.map((c) => (
+          <span key={c} className={'cont-supply-chip' + (view.supply.containers[c] === 0 ? ' out' : '')}>
+            <i style={{ background: { Blue: '#3d6fd0', White: '#e8e5da', Yellow: '#e3c93e', Red: '#cf4837', Green: '#4da84f' }[c] }} />
+            {view.supply.containers[c]}
+          </span>
+        ))}
+      </div>
+
+      {/* turn narration banner */}
+      <div className="cont-banner ig-glass" key={view.lastEvent.seq} role="status" aria-live="polite">
+        <span>{view.lastEvent.text}</span>
+      </div>
+
+      {/* delivery auction status */}
+      {view.delivery && (
+        <div className="cont-delivery ig-glass">
+          <b>DELIVERY AUCTION · {view.players[view.delivery.deliverer].name.toUpperCase()}</b>
+          <span>
+            {view.delivery.stage === 'resolve'
+              ? 'BIDS REVEALED'
+              : view.delivery.stage === 'runoff' ? 'RUNOFF BIDS' : 'SECRET BIDS'}
+            {' · '}
+            {Object.entries(view.delivery.bidsIn)
+              .map(([s, done]) => `${view.players[Number(s)].name.toUpperCase()} ${done ? '✓' : '…'}`)
+              .join(' · ')}
+          </span>
+        </div>
+      )}
+
+      {/* seat detail modal */}
+      {statsSeat !== null && view.players[statsSeat] && (() => {
+        const p = view.players[statsSeat];
+        return (
+          <div className="ig-modal" onClick={() => setStatsSeat(null)}>
+            <div className="ig-modal-card ig-glass cont-stats-modal" onClick={(e) => e.stopPropagation()}
+              style={{ borderColor: CONT_UI_HEX[p.color] }}>
+              <div className="ig-modal-head">
+                <span className="ig-prompt-ring" style={{ borderColor: CONT_UI_HEX[p.color] }} />
+                <b>{p.name.toUpperCase()}</b>
+                <button className="ig-modal-x" onClick={() => setStatsSeat(null)}>✕</button>
+              </div>
+              <div className="cont-stats-grid">
+                <div>FACTORIES · {p.factories.map((c) => c.toUpperCase()).join(' ') || 'NONE'}</div>
+                <div>WAREHOUSES · {p.warehouses}</div>
+                <div>FACTORY STOCK · {contLotCount(p.factoryLots)} / {p.factories.length * CONT_RULES.factoryLimitPer}</div>
+                <div>HARBOR STOCK · {contLotCount(p.harborLots)} / {p.warehouses}</div>
+                <div>SHIP · {p.ship.loc.kind.toUpperCase()} · {p.ship.cargo.length}/5</div>
+                <div>ISLAND · {p.scoring.length} · HOLDING · {p.holding.length}</div>
+                <div>LOANS · {p.loans}</div>
+                <div>CASH · {p.cash === null ? 'SECRET' : `$${p.cash}`}</div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* end overlay */}
+      {view.phase === 'ended' && (
+        <div className="cont-end" role="alert">
+          <div className="cont-end-title">
+            {view.winners.map((w) => view.players[w].name.toUpperCase()).join(' · ')} WIN{view.winners.length === 1 ? 'S' : ''}
+          </div>
+          <div className="cont-end-scores">
+            {[...view.players].sort((a, b) => (b.finalScore?.total ?? 0) - (a.finalScore?.total ?? 0)).map((p) => (
+              <div key={p.seat} className="cont-end-row ig-glass" style={{ borderColor: CONT_UI_HEX[p.color] }}>
+                <b>{p.name.toUpperCase()}</b>
+                <span>${p.finalScore?.total ?? 0}</span>
+                {p.finalScore && (
+                  <small>
+                    CASH {p.finalScore.cash} · ISLAND {p.finalScore.island} · LEFTOVERS {p.finalScore.leftovers}
+                    {p.finalScore.loans !== 0 ? ` · LOANS ${p.finalScore.loans}` : ''}
+                    {p.finalScore.discarded ? ` · DISCARDED ${p.finalScore.discarded.toUpperCase()}` : ''}
+                  </small>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

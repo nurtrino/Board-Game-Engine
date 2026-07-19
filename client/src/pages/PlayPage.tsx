@@ -29,6 +29,7 @@ const BbPlay = lazy(() => import('../bloodborne/BbPlay'));
 const SetiPlay = lazy(() => import('../seti/SetiPlay').then((module) => ({ default: module.SetiPlay })));
 const BlokusPlay = lazy(() => import('../blokus/BlokusPlay'));
 const EverdellPlay = lazy(() => import('../everdell/EverdellPlay'));
+const ContainerPlay = lazy(() => import('../container/ContainerPlay'));
 
 function PlayerGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} command table…</div>;
@@ -1038,6 +1039,11 @@ export function PlayPage() {
         <EverdellPlay view={view} act={act} seat={me ?? 0} error={error} />
       </Suspense>
     );
+    if (view.game === 'container') return (
+      <Suspense fallback={<PlayerGameLoading game="Container" />}>
+        <ContainerPlay view={view} act={act} seat={me ?? 0} error={error} />
+      </Suspense>
+    );
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
@@ -1059,6 +1065,7 @@ export function PlayPage() {
     seti: 'SETI: Search for Extraterrestrial Intelligence',
     blokus: 'Blokus',
     everdell: 'Everdell',
+    container: 'Container',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
   const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
@@ -1071,6 +1078,7 @@ export function PlayPage() {
     : room.game === 'seti' ? 'Your colour marks your probes, landers, orbiters, signals, and discoveries.'
     : room.game === 'blokus' ? 'Your colour is your 21 pieces and your starting corner. Unpicked colours play themselves.'
     : room.game === 'everdell' ? 'Your colour is your workers and your growing city.'
+    : room.game === 'container' ? 'Your colour is your ship, your harbor board, and your island scoring area.'
     : "Your piece marks your income on the board's turn-order track.";
 
   return (

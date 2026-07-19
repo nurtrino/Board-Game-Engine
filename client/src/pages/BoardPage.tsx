@@ -23,6 +23,7 @@ const BbBoard = lazy(() => import('../bloodborne/BbBoard').then((module) => ({ d
 const SetiBoard = lazy(() => import('../seti/SetiBoard').then((module) => ({ default: module.SetiBoard })));
 const BlokusBoard = lazy(() => import('../blokus/BlokusBoard').then((module) => ({ default: module.BlokusBoard })));
 const EverdellBoard = lazy(() => import('../everdell/EverdellBoard').then((module) => ({ default: module.EverdellBoard })));
+const ContainerBoard = lazy(() => import('../container/ContainerBoard').then((module) => ({ default: module.ContainerBoard })));
 
 function BoardGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} table…</div>;
@@ -299,6 +300,11 @@ export function BoardPage() {
     if (view.game === 'everdell') return (
       <Suspense fallback={<BoardGameLoading game="Everdell" />}>
         <EverdellBoard view={view} />
+      </Suspense>
+    );
+    if (view.game === 'container') return (
+      <Suspense fallback={<BoardGameLoading game="Container" />}>
+        <ContainerBoard view={view} />
       </Suspense>
     );
     return <TvBoard view={view} />;

@@ -302,8 +302,13 @@ export function containerViewFor(state: ContainerState, viewer: number | null | 
           stage: delivery.stage,
           runoffAmong: delivery.runoffAmong,
           tied: delivery.tied,
-          bidsIn: Object.fromEntries(Object.entries(delivery.bids).map(([s, b]) => [s, b !== null])),
-          bids: delivery.stage === 'resolve' ? delivery.bids : null,
+          // who still owes a bid in the CURRENT stage (runoff tracks its own)
+          bidsIn: delivery.stage === 'runoff'
+            ? Object.fromEntries(delivery.runoffAmong.map((s) => [s, delivery.runoffBids[s] !== null]))
+            : Object.fromEntries(Object.entries(delivery.bids).map(([s, b]) => [s, b !== null])),
+          bids: delivery.stage === 'resolve'
+            ? Object.fromEntries(Object.entries(delivery.bids).map(([s, b]) => [s, (b ?? 0) + (delivery.runoffBids[Number(s)] ?? 0)]))
+            : null,
           yourBid: you !== null && delivery.bids[you] !== undefined ? delivery.bids[you] : null,
         }
       : null,

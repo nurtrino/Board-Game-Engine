@@ -77,6 +77,11 @@ const GAMES = [
     name: 'Everdell',
     logo: '/everdell/box.webp',
   },
+  {
+    id: 'container',
+    name: 'Container',
+    logo: '/container/box.webp',
+  },
   ...(AXIS_MAP_STUB ? [] : [{
     id: 'axis',
     name: 'Axis & Allies Anniversary',
@@ -200,6 +205,14 @@ const FEAST_OPTION_DEFS = [
   ] },
 ] as const;
 
+const CONTAINER_OPTION_DEFS = [
+  { key: 'length', label: 'GAME LENGTH', values: [
+    { v: 'standard', label: 'STANDARD' },
+    { v: 'short', label: 'SHORT' },
+    { v: 'extended', label: 'EXTENDED' },
+  ] },
+] as const;
+
 const SETI_OPTION_DEFS = [
   { key: 'soloDifficulty', label: 'SOLO RIVAL', values: [
     { v: 3, label: 'STANDARD · 3' },
@@ -300,6 +313,8 @@ export function SelectGame() {
         ? { campaign: 'the-long-hunt', chapter: 1, partySize: 4, ...options }
       : game.id === 'seti'
         ? { soloDifficulty: 3, promoCards: false, ...options }
+      : game.id === 'container'
+        ? { length: 'standard', ...options }
       : undefined;
     socket.send({ type: 'create_room', name: name.trim(), game: game.id, options: opts });
   };
@@ -486,6 +501,28 @@ export function SelectGame() {
                     <CreateOption
                       key={def.key}
                       id={`feast-${def.key}`}
+                      label={def.label}
+                      values={def.values}
+                      current={current}
+                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            {game.id === 'container' && (
+              <div className="create-options">
+                <div className="create-option">
+                  <span className="create-option-label">2026 EDITION · 3-5 PLAYERS</span>
+                  <span className="dim">GAME LENGTH SETS THE CONTAINER SUPPLY</span>
+                </div>
+                {CONTAINER_OPTION_DEFS.map((def) => {
+                  const current = options[def.key] ?? def.values[0].v;
+                  return (
+                    <CreateOption
+                      key={def.key}
+                      id={`container-${def.key}`}
                       label={def.label}
                       values={def.values}
                       current={current}

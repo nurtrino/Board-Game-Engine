@@ -93,6 +93,8 @@ export const SEAT_HEX: Record<string, string> = {
  * Brown is its black trains; Everdell's Brown is a true brown). */
 const GAME_SEAT_HEX: Record<string, Record<string, string>> = {
   everdell: { White: '#e9e6dd', Brown: '#8a5a33', Teal: '#27a098', Orange: '#e2803a' },
+  // Container's mod hand colors (Pink exists only here)
+  container: { Brown: '#8a5a33', Pink: '#f570ce', Teal: '#21b19b', Purple: '#a020f0', Orange: '#f4641d' },
 };
 export const seatHexFor = (game: string, color: string): string =>
   GAME_SEAT_HEX[game]?.[color] ?? SEAT_HEX[color] ?? '#888';
