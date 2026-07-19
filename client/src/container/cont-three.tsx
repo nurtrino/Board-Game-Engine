@@ -29,33 +29,6 @@ export function ContFlatImage({ url, w, h, pos, ry = 0, opacity = 1, alphaTest =
   );
 }
 
-/** An extruded building tile: the printed token art on the top face of a
- * chunky colored slab (the 2026 edition's factories and warehouses are real
- * 3D pieces; the mod only carried the flat die-cut art). */
-export function TokenPiece({ url, w, h, x, z, y = 0, thickness, side, ry = 0 }: {
-  url: string; w: number; h: number; x: number; z: number; y?: number;
-  thickness: number; side: string; ry?: number;
-}) {
-  const tex = useLoader(THREE.TextureLoader, url);
-  const mats = useMemo(() => {
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 8;
-    const sideMat = new THREE.MeshStandardMaterial({ color: side, roughness: 0.7, metalness: 0.05 });
-    const topMat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.02, transparent: true, alphaTest: 0.25 });
-    const underTop = new THREE.MeshStandardMaterial({ color: side, roughness: 0.75 });
-    // box faces: +x, -x, +y (top), -y, +z, -z
-    return { order: [sideMat, sideMat, topMat, sideMat, sideMat, sideMat], underTop };
-  }, [tex, side]);
-  return (
-    <group position={[x, y + thickness / 2 + 0.03, z]} rotation={[0, ry, 0]}>
-      {/* slab slightly inset so the die-cut art edge reads as a beveled top */}
-      <mesh material={mats.order}>
-        <boxGeometry args={[w, thickness, h]} />
-      </mesh>
-    </group>
-  );
-}
-
 export interface ContainerProto {
   geom: THREE.BufferGeometry;
   mats: Partial<Record<ContColor, THREE.Material>>;
@@ -188,24 +161,103 @@ export function Ship({ seatColor, x, z, yaw, children }: {
   );
 }
 
-/** the mod's per-color factory art with a chunky slab body */
+/** extrude a 2D outline (XY, meters) into a depth-D solid centered on Z */
+function useExtruded(points: [number, number][], depth: number): THREE.ExtrudeGeometry {
+  return useMemo(() => {
+    const shape = new THREE.Shape();
+    shape.moveTo(points[0][0], points[0][1]);
+    for (const [px, py] of points.slice(1)) shape.lineTo(px, py);
+    const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
+    g.translate(0, 0, -depth / 2);
+    return g;
+    // the outlines are static per piece type
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
+
+/** a real little factory: hall in the piece's bright color, dark sawtooth
+ *  roof with white skylight ridges, brick smokestack — the 2026 edition's
+ *  molded building, not a flat die-cut */
 export function FactoryPiece({ color, x, z, ry = 0, scale = 1 }: {
   color: ContColor; x: number; z: number; ry?: number; scale?: number;
 }) {
-  const fa = S.factoryArt[color];
-  const w = 1.15 * scale;
+  const W = 0.92, D = 0.6, BH = 0.3, TH = 0.18; // hall height + roof tooth height
+  const roof = useExtruded([
+    [-W / 2, BH], [W / 2, BH], [W / 2, BH + TH], [0.02, BH + 0.02],
+    [0.02, BH + TH], [-W / 2 + 0.02, BH + 0.02],
+  ], D);
+  const hex = CONT_PIECE_HEX[color];
+  const mats = useMemo(() => ({
+    body: new THREE.MeshStandardMaterial({ color: hex, roughness: 0.6, metalness: 0.05 }),
+    roof: new THREE.MeshStandardMaterial({ color: '#565e68', roughness: 0.62, metalness: 0.08 }),
+    glass: new THREE.MeshStandardMaterial({ color: '#eef2f6', roughness: 0.3, metalness: 0.1 }),
+    stack: new THREE.MeshStandardMaterial({ color: '#6b5a4e', roughness: 0.72 }),
+  }), [hex]);
   return (
-    <TokenPiece url={fa.img} w={w} h={w * (fa.px[1] / fa.px[0])} x={x} z={z}
-      thickness={0.34 * scale} side={CONT_PIECE_HEX[color]} ry={ry} />
+    <group position={[x, 0.03, z]} rotation={[0, ry, 0]} scale={[scale, scale, scale]}>
+      <mesh material={mats.body} position={[0, BH / 2, 0]} castShadow>
+        <boxGeometry args={[W, BH, D]} />
+      </mesh>
+      <mesh geometry={roof} material={mats.roof} castShadow />
+      {/* skylight ridges proud of each roof tooth, so the glass reads from
+       *  the TV's high camera as the classic white sawtooth stripes */}
+      <mesh material={mats.glass} position={[W / 2 - 0.02, BH + TH / 2 + 0.02, 0]}>
+        <boxGeometry args={[0.055, TH, D - 0.1]} />
+      </mesh>
+      <mesh material={mats.glass} position={[0.02, BH + TH / 2 + 0.02, 0]}>
+        <boxGeometry args={[0.055, TH, D - 0.1]} />
+      </mesh>
+      <mesh position={[-W / 2 + 0.12, BH + 0.2, D / 2 - 0.14]} material={mats.stack} castShadow>
+        <cylinderGeometry args={[0.06, 0.075, 0.44, 10]} />
+      </mesh>
+    </group>
   );
 }
 
+/** a gabled warehouse shed: cream corrugated walls, slate roof with a ridge */
 export function WarehousePiece({ x, z, ry = 0, scale = 1 }: {
   x: number; z: number; ry?: number; scale?: number;
 }) {
-  const w = 0.92 * scale;
+  const W = 0.86, D = 0.58, BH = 0.3, RH = 0.16;
+  const roof = useExtruded([
+    [-W / 2 - 0.05, BH], [W / 2 + 0.05, BH], [0, BH + RH],
+  ], D + 0.08);
+  const mats = useMemo(() => ({
+    wall: new THREE.MeshStandardMaterial({ color: '#e3dccb', roughness: 0.75, metalness: 0.02 }),
+    door: new THREE.MeshStandardMaterial({ color: '#8a94a0', roughness: 0.55, metalness: 0.12 }),
+    roof: new THREE.MeshStandardMaterial({ color: '#6f7780', roughness: 0.58, metalness: 0.08 }),
+  }), []);
   return (
-    <TokenPiece url={S.warehouseArt.img} w={w} h={w * (S.warehouseArt.px[1] / S.warehouseArt.px[0])} x={x} z={z}
-      thickness={0.3 * scale} side="#b7b0a3" ry={ry} />
+    <group position={[x, 0.03, z]} rotation={[0, ry, 0]} scale={[scale, scale, scale]}>
+      <mesh material={mats.wall} position={[0, BH / 2, 0]} castShadow>
+        <boxGeometry args={[W, BH, D]} />
+      </mesh>
+      {/* roller door on the long face */}
+      <mesh material={mats.door} position={[0, 0.11, D / 2 + 0.005]}>
+        <boxGeometry args={[0.34, 0.22, 0.02]} />
+      </mesh>
+      <mesh geometry={roof} material={mats.roof} castShadow />
+    </group>
+  );
+}
+
+/** the round bank auction token as the physical piece: a chunky cylinder with
+ *  the printed face up, seated on a lot's printed circle */
+export function AuctionToken({ x, z, y = 0 }: { x: number; z: number; y?: number }) {
+  const tex = useLoader(THREE.TextureLoader, S.auctionTokenArt.img);
+  const mats = useMemo(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
+    tex.center.set(0.5, 0.5);
+    const side = new THREE.MeshStandardMaterial({ color: '#a3937a', roughness: 0.6, metalness: 0.05 });
+    const top = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.03 });
+    const bottom = new THREE.MeshStandardMaterial({ color: '#8d7f69', roughness: 0.7 });
+    return [side, top, bottom]; // cylinder faces: side, top, bottom
+  }, [tex]);
+  const R = 0.55, H = 0.15;
+  return (
+    <mesh position={[x, y + H / 2 + 0.03, z]} material={mats} castShadow>
+      <cylinderGeometry args={[R, R, H, 36]} />
+    </mesh>
   );
 }

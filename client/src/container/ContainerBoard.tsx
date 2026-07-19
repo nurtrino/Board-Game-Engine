@@ -18,7 +18,7 @@ import {
 } from './cont-scene';
 import {
   ContFlatImage as FlatImage, useContainerProto, ContainerPiece, packGrid, Ship,
-  FactoryPiece, WarehousePiece, type ContainerProto,
+  FactoryPiece, WarehousePiece, AuctionToken, type ContainerProto,
 } from './cont-three';
 import './container.css';
 
@@ -101,6 +101,13 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
 // printed berth strip centers (mat art px, detected from the outline rows)
 const ISLAND_BERTHS_Y = [1665, 1722, 1785, 1848, 1906];
 const BANK_BERTHS_Y = [1662, 1725, 1789, 1852, 1915];
+
+// printed auction-token circles (mat art px): one inside each container lot
+// square, one above each cash slot — the round token sits on its lot's circle
+const TOKEN_CIRCLES: Record<'container' | 'cash', [number, number][]> = {
+  container: [[2392, 1487], [2546, 1487], [2700, 1486]],
+  cash: [[2399, 2068], [2545, 2068], [2693, 2068]],
+};
 
 /** money card stack for a bank cash lot amount; the top card fills the
  * printed card slot, the rest fan out slightly underneath */
@@ -369,12 +376,12 @@ function Pieces({ view }: { view: ContainerView }) {
       nodes.push(<ContainerPiece key={`sup-${color}-${i}`} color={color} x={x} z={z}
         y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
     }
-    // factory supply: 3D building tiles in a short row per color
+    // factory supply: a short row of little factory buildings per color
     const fn = view.supply.factories[color];
     const fx = S.supply.factories.xByColor[color];
     for (let i = 0; i < fn; i++) {
-      const [x, z] = w2r(fx + (i - (fn - 1) / 2) * 0.5, S.supply.factories.z);
-      nodes.push(<FactoryPiece key={`fsup-${color}-${i}`} color={color} x={x} z={z} />);
+      const [x, z] = w2r(fx + (i - (fn - 1) / 2) * 0.78, S.supply.factories.z);
+      nodes.push(<FactoryPiece key={`fsup-${color}-${i}`} color={color} x={x} z={z} scale={0.72} />);
     }
   }
   // warehouse supply row (3D tiles)
@@ -389,29 +396,30 @@ function Pieces({ view }: { view: ContainerView }) {
   view.bank.containerLots.forEach((lot, li) => {
     const at = S.bankLots.containers[li];
     const spots = packGrid(lot.length, 2, 0.75, 1.5, 4);
+    // an auctioned lot carries the round token on its printed circle; the
+    // containers pile on top of it rather than intersecting the cylinder
+    const tokenLift = view.bank.auctions.some((a) => a.lotType === 'container' && a.lot === li) ? 0.18 : 0;
     lot.forEach((color, i) => {
       const [dx, dz, layer] = spots[i];
       const [x, z] = px2r(at[0], at[1]);
       nodes.push(<ContainerPiece key={`bank-${li}-${i}`} color={color}
-        x={x + dx} z={z + dz} y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
+        x={x + dx} z={z + dz} y={tokenLift + layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
     });
   });
   view.bank.cashLots.forEach((amount, li) => {
     if (amount > 0) nodes.push(<CashStack key={`cash-${li}`} amount={amount} at={S.bankLots.cash[li]} />);
   });
-  // auction tokens: free ones at the supply spot, active ones on their lots
-  let tokenIdx = 0;
+  // auction tokens: cylinders — active ones seated on their lot's printed
+  // circle, free ones waiting at the bank-side supply spot
   for (const a of view.bank.auctions) {
-    const at = a.lotType === 'container' ? S.bankLots.containers[a.lot] : S.bankLots.cash[a.lot];
-    const [x, z] = px2r(at[0], at[1]);
-    nodes.push(<FlatImage key={`tok-${a.lotType}-${a.lot}`} url={S.auctionTokenArt.img} w={1.1} h={1.1}
-      pos={[x + 1.15, 0.09, z - 1.1]} />);
-    tokenIdx++;
+    const [cx, cy] = TOKEN_CIRCLES[a.lotType][a.lot];
+    const [x, z] = px2r(cx, cy);
+    nodes.push(<AuctionToken key={`tok-${a.lotType}-${a.lot}`} x={x} z={z} />);
   }
-  for (let i = tokenIdx; i < view.bank.auctions.length + view.bank.tokensFree; i++) {
+  for (let i = 0; i < view.bank.tokensFree; i++) {
     const [wx, wz] = S.supply.bankSide.auctionTokens[i % 2];
     const [x, z] = w2r(wx, wz);
-    nodes.push(<FlatImage key={`tokfree-${i}`} url={S.auctionTokenArt.img} w={1.1} h={1.1} pos={[x, 0.03, z]} />);
+    nodes.push(<AuctionToken key={`tokfree-${i}`} x={x} z={z} />);
   }
   // bid tiles: in the supply when idle, next to the bidder's board when active
   const activeCash = view.bank.auctions.find((a) => a.lotType === 'container'); // cash-bid tile in use
