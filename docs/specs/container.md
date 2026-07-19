@@ -246,6 +246,47 @@ harbor lot / ship / holding / scoring / bank lot / bid tile; per-color total
 constant; cash ≥ 0 everywhere; storage limits (incl. reserves) never exceeded;
 ship ≤ 5.
 
+## 8b. Rulebook UI-coverage audit (ship gate 1, done Jul 18 2026)
+
+Every player decision, optional cost, amount choice, and piece of public
+information mapped to a control or display:
+
+- Build factory color → color picker (auto when only one legal color); build
+  costs printed on the rail buttons; both builds grey out with reasons.
+- Produce: which containers when supply/limit binds → picker; arrangement +
+  free repricing of the whole factory district → arrange dialog (existing
+  containers are movable); the $1 wage and its recipient named in the dialog
+  title.
+- Factory purchase: opponent choice → list with for-sale counts; per-lot
+  per-color counts → stepper picker with cost + room caps; harbor arrangement
+  → arrange dialog.
+- Harbor purchase: stepper picker; the free anchor variant applies
+  automatically when docked this action (labelled FREE).
+- Sail: destination list; island disabled with an empty ship; bank arrival
+  offers the optional holding-load picker (any subset, including none).
+- Reprice: both districts have explicit buttons (gap found in audit: harbor
+  repricing was unreachable — fixed).
+- Call Bank: start (either type, any of the 3 lots, contents shown) or outbid
+  (disabled when you lead, when cash can't cover the minimum — audit fix — or
+  vs the once-per-turn/won-auction/end-turn rules, with reasons); cash bids via
+  amount dialog (lock warning shown); container bids picked from both
+  districts with source labels.
+- Loans: take (own turn or during a delivery auction — audit fix disabled it
+  elsewhere) and repay, both with reasons; also offered inline while bidding.
+- Delivery: secret amount dialog ($0 allowed = the bluff cards); runoff add;
+  deliverer sees revealed bids and picks accept (tie → explicit winner
+  buttons) or buyout (disabled without cash).
+- Pending: bank-lot color distribution (forced round-robin counts shown) and
+  default seizure (location order simulated so only legal colors are offered).
+- Public info: bank lots/auctions/current bids, supply per color (end
+  trigger), every opponent's priced lots + ship/loans/island/holding on the
+  device; the TV carries the physical table, seat chips (cash hidden — it is
+  secret in Container), narration banner, delivery status, and the final
+  scoring breakdown.
+- Engine action fields the UI sends: all of them (produce.make/lots,
+  factory_buy.from/picks/lots, harbor_buy.free, sail.load, call_bank
+  cash/containers/lot/lotType, delivery_resolve.winner, choose_* payloads).
+
 ## 9. Known mod↔rulebook discrepancies (rulebook wins)
 
 - Mod table has 19 warehouses (rulebook: 20).

@@ -278,12 +278,12 @@ function BoardTableau({ view, seat }: { view: ContainerView; seat: number }) {
       ))}
       {Object.entries(p.factoryLots).map(([price, list]) => list.length > 0 && (
         <div key={`fl${price}`} className="cont-t-lot" style={pct(S.pb.factoryLots[price][0], S.pb.factoryLots[price][1])}>
-          <Blocks colors={list} size={14} />
+          <Blocks colors={list} size={22} />
         </div>
       ))}
       {Object.entries(p.harborLots).map(([price, list]) => list.length > 0 && (
         <div key={`hl${price}`} className="cont-t-lot" style={pct(S.pb.harborLots[price][0], S.pb.harborLots[price][1])}>
-          <Blocks colors={list} size={14} />
+          <Blocks colors={list} size={22} />
         </div>
       ))}
       {(p.reserves.factory > 0 || p.reserves.harbor > 0) && (
@@ -480,10 +480,12 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
           {actBtn('FACTORY PURCHASE', rFactoryBuy, () => setDialog({ kind: 'factory-pick', from: -1 }))}
           {actBtn('HARBOR PURCHASE' + (freeBuy ? ' · FREE' : ''), rHarborBuy, () => setDialog({ kind: 'harbor-pick' }))}
           {actBtn('SAIL', rSail, () => setDialog({ kind: 'sail' }))}
-          {actBtn('REPRICE', rReprice, () => setDialog({ kind: 'reprice', district: 'factory' }))}
+          {actBtn('REPRICE FACTORY', rReprice, () => setDialog({ kind: 'reprice', district: 'factory' }))}
+          {actBtn('REPRICE HARBOR', rReprice, () => setDialog({ kind: 'reprice', district: 'harbor' }))}
           {actBtn('CALL BANK', rCallBank, () => setDialog({ kind: 'bank' }))}
           <div className="cont-rail-loans">
-            <button className="ig-btn ghost" disabled={rLoan !== null || view.phase !== 'playing'}
+            <button className="ig-btn ghost"
+              disabled={rLoan !== null || view.phase !== 'playing' || (view.turn !== seat && !view.delivery)}
               onClick={() => doAct({ type: 'take_loan' })}>
               TAKE LOAN{rLoan ? ` · ${rLoan.toUpperCase()}` : ''}
             </button>
@@ -745,16 +747,19 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
               <button className="ig-modal-x" onClick={() => setDialog(null)}>✕</button>
             </div>
             <div className="cont-opp-list">
-              {view.bank.auctions.map((a) => (
-                <button key={`${a.lotType}${a.lot}`} className="ig-btn" disabled={a.bidder === seat}
-                  onClick={() => setDialog(a.lotType === 'container'
-                    ? { kind: 'bank-cash-bid', lot: a.lot, min: a.bid + 1 }
-                    : { kind: 'bank-cont-bid', lot: a.lot, min: a.bid + 1 })}>
-                  OUTBID · {a.lotType === 'container' ? 'CONTAINER' : 'CASH'} LOT {['I', 'II', 'III'][a.lot]} ·
-                  {a.lotType === 'container' ? ` OVER $${a.bid}` : ` OVER ${a.bid} CONTAINERS`}
-                  {a.bidder === seat ? ' · YOUR BID LEADS' : ''}
-                </button>
-              ))}
+              {view.bank.auctions.map((a) => {
+                const short = a.lotType === 'container' && myCash < a.bid + 1;
+                return (
+                  <button key={`${a.lotType}${a.lot}`} className="ig-btn" disabled={a.bidder === seat || short}
+                    onClick={() => setDialog(a.lotType === 'container'
+                      ? { kind: 'bank-cash-bid', lot: a.lot, min: a.bid + 1 }
+                      : { kind: 'bank-cont-bid', lot: a.lot, min: a.bid + 1 })}>
+                    OUTBID · {a.lotType === 'container' ? 'CONTAINER' : 'CASH'} LOT {['I', 'II', 'III'][a.lot]} ·
+                    {a.lotType === 'container' ? ` OVER $${a.bid}` : ` OVER ${a.bid} CONTAINERS`}
+                    {a.bidder === seat ? ' · YOUR BID LEADS' : short ? ' · NOT ENOUGH CASH' : ''}
+                  </button>
+                );
+              })}
               {view.bank.tokensFree > 0 && (view.players.length >= 5 || view.bank.auctions.length === 0) && (
                 <>
                   {!view.bank.auctions.some((a) => a.lotType === 'container') && [0, 1, 2].map((lot) => (
