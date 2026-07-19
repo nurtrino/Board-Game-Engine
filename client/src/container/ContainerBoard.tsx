@@ -65,12 +65,13 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
   }
   if (loc.kind === 'harbor') {
     const host = view.players[loc.seat];
-    // dock cove index = my seat index, so two visiting ships never overlap;
-    // the hull sits in the sea with the bow just inside the printed cove
-    const dock = S.pb.docks[seat % S.pb.docks.length];
-    const [x, z] = boardSpot(host.color, [dock[0], -310]);
-    // long axis perpendicular to the board's dock edge
-    const yaw = (BOARD_RY[S.boards[host.color].yaw] ?? 0) + Math.PI / 2;
+    // one printed cove per possible visitor (up to 4), so ships never overlap;
+    // hull center sits seaward so the BOW noses just inside the cove notch
+    // (notch water reaches art y~280; bow tip lands at ~230)
+    const cove = S.pb.docks[(seat - loc.seat - 1 + view.players.length) % view.players.length % S.pb.docks.length];
+    const [x, z] = boardSpot(host.color, [cove[0], -333]);
+    // long axis perpendicular to the dock edge, bow toward the board
+    const yaw = (BOARD_RY[S.boards[host.color].yaw] ?? 0) - Math.PI / 2;
     return { x, z, yaw };
   }
   if (loc.kind === 'island') {

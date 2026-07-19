@@ -81,14 +81,15 @@ function MatPieces({ view, seat }: { view: ContainerView; seat: number }) {
     }
   }
 
-  // opponents' ships tied up at my docks
+  // opponents' ships tied up at my docks: same cove assignment as the TV,
+  // bow nosing just inside the printed notch
   view.players
     .filter((q) => q.ship.loc.kind === 'harbor' && q.ship.loc.seat === seat)
-    .forEach((q, i) => {
-      const dock = S.pb.docks[q.seat % S.pb.docks.length] ?? S.pb.docks[i];
-      const [x, z] = a2m(dock[0], -220);
+    .forEach((q) => {
+      const cove = S.pb.docks[(q.seat - seat - 1 + view.players.length) % view.players.length % S.pb.docks.length];
+      const [x, z] = a2m(cove[0], -333);
       nodes.push(
-        <Ship key={`v${q.seat}`} seatColor={q.color} x={x} z={z} yaw={Math.PI / 2}
+        <Ship key={`v${q.seat}`} seatColor={q.color} x={x} z={z} yaw={-Math.PI / 2}
           cargo={q.ship.cargo} proto={proto} />,
       );
     });
