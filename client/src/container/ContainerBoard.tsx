@@ -466,17 +466,11 @@ function Pieces({ view }: { view: ContainerView }) {
       nodes.push(<FlatImage key={`loan-${p.seat}-${i}`} url={S.cards.loan} w={1.5} h={1.5 * 1.4}
         pos={[x, 0.04 + i * 0.01, z]} ry={ry} />);
     }
-    // ship + cargo riding on its deck (cargo glides with the hull)
+    // ship + cargo clipped onto the mod's own deck snap slots
     const sp = shipPlace(view, p.seat);
     nodes.push(
-      <Ship key={`ship-${p.seat}`} seatColor={seatColor} x={sp.x} z={sp.z} yaw={sp.yaw}>
-        {p.ship.cargo.map((color, i) => (
-          <ContainerPiece key={`cargo-${p.seat}-${i}`} color={color}
-            x={Math.cos(sp.yaw) * (i - 2) * 0.62}
-            z={-Math.sin(sp.yaw) * (i - 2) * 0.62}
-            y={0.8} yaw={sp.yaw + Math.PI / 2} proto={proto} />
-        ))}
-      </Ship>,
+      <Ship key={`ship-${p.seat}`} seatColor={seatColor} x={sp.x} z={sp.z} yaw={sp.yaw}
+        cargo={p.ship.cargo} proto={proto} />,
     );
   }
 

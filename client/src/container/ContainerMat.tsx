@@ -82,11 +82,8 @@ function MatPieces({ view, seat }: { view: ContainerView; seat: number }) {
       const dock = S.pb.docks[q.seat % S.pb.docks.length] ?? S.pb.docks[i];
       const [x, z] = a2m(dock[0], -220);
       nodes.push(
-        <Ship key={`v${q.seat}`} seatColor={q.color} x={x} z={z} yaw={Math.PI / 2}>
-          {q.ship.cargo.map((color, j) => (
-            <ContainerPiece key={j} color={color} x={0} z={(j - 2) * 0.62} y={0.8} yaw={0} proto={proto} />
-          ))}
-        </Ship>,
+        <Ship key={`v${q.seat}`} seatColor={q.color} x={x} z={z} yaw={Math.PI / 2}
+          cargo={q.ship.cargo} proto={proto} />,
       );
     });
 

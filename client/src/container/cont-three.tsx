@@ -137,13 +137,22 @@ export function packGrid(n: number, cols: number, dx: number, dz: number, perLay
 
 /** yaw = direction of the ship's LONG axis in render space (0 = along X);
  *  the ship glides between spots so every sail reads on the table. */
-export function Ship({ seatColor, x, z, yaw, children }: {
-  seatColor: string; x: number; z: number; yaw: number; children?: React.ReactNode;
+/** the mod's own snap points on every boat: the 5 cargo slots, in mesh-local
+ * coordinates (x across, z along the hull, deck at y = 0.1) */
+const SHIP_SNAPS: { x: number; z: number }[] = [
+  { x: 0.010, z: 1.021 }, { x: -0.007, z: 0.513 }, { x: -0.011, z: -0.010 },
+  { x: -0.002, z: -0.525 }, { x: 0.000, z: -1.047 },
+];
+const SHIP_SNAP_Y = 0.1;
+
+export function Ship({ seatColor, x, z, yaw, cargo = [], proto, children }: {
+  seatColor: string; x: number; z: number; yaw: number;
+  cargo?: ContColor[]; proto?: ContainerProto; children?: React.ReactNode;
 }) {
   const obj = useLoader(OBJLoader, S.models.ship.mesh);
   const tex = useLoader(THREE.TextureLoader, S.models.ship.tex ?? '');
   const group = useRef<THREE.Group>(null);
-  const { clone, scale, lift, alongX, mid } = useMemo(() => {
+  const { clone, scale, lift, alongX, mid, slots } = useMemo(() => {
     tex.colorSpace = THREE.SRGBColorSpace;
     const c = obj.clone(true);
     const mat = new THREE.MeshStandardMaterial({
@@ -166,7 +175,15 @@ export function Ship({ seatColor, x, z, yaw, children }: {
     // the OBJ's origin is off-center: recentre by the bbox midpoint or the
     // hull lands beside its target, in a direction that rotates with the yaw
     const mid = new THREE.Vector3((bb.min.x + bb.max.x) / 2, 0, (bb.min.z + bb.max.z) / 2);
-    return { clone: c, scale, lift: -bb.min.y * scale.y, alongX, mid };
+    const lift = -bb.min.y * scale.y;
+    // cargo slots = the mod's snap points, recentred like the hull; a snapped
+    // container's CENTER lands on the snap (it sinks into the deck recess)
+    const slots = SHIP_SNAPS.map((s) => new THREE.Vector3(
+      (s.x - mid.x) * scale.x,
+      (SHIP_SNAP_Y - bb.min.y) * scale.y + 0.02,
+      (s.z - mid.z) * scale.z,
+    ));
+    return { clone: c, scale, lift, alongX, mid, slots };
   }, [obj, tex, seatColor]);
   // glide to the target spot instead of teleporting (visual placement)
   useFrame((_, dt) => {
@@ -182,6 +199,12 @@ export function Ship({ seatColor, x, z, yaw, children }: {
         <primitive object={clone}
           position={[-mid.x * scale.x, lift + 0.02, -mid.z * scale.z]}
           scale={[scale.x, scale.y, scale.z]} />
+        {proto && cargo.slice(0, SHIP_SNAPS.length).map((color, i) => (
+          // crosswise in the recess: length across the beam (mesh x axis)
+          <ContainerPiece key={i} color={color}
+            x={slots[i].x} z={slots[i].z} y={slots[i].y - 0.3}
+            yaw={0} proto={proto} />
+        ))}
       </group>
       {children}
     </group>
