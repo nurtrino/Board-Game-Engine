@@ -9,34 +9,20 @@ import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import type { ContainerView, ContColor, ContainerSeat, ContFocus } from '@bge/shared';
+import type { ContainerView, ContainerSeat, ContFocus } from '@bge/shared';
 import { CONT_RULES, CONT_COLORS, contLotCount } from '@bge/shared';
 import { playSfx } from '../sfx';
 import {
   CONT_SCENE, px2r, w2r, boardSpot, MAT_RW, MAT_RH,
   islandCenterR, bankCenterR, CONT_UI_HEX,
 } from './cont-scene';
+import {
+  ContFlatImage as FlatImage, useContainerProto, ContainerPiece, packGrid, Ship,
+  FactoryPiece, WarehousePiece, type ContainerProto,
+} from './cont-three';
 import './container.css';
 
 const S = CONT_SCENE;
-
-function FlatImage({ url, w, h, pos, ry = 0, opacity = 1, alphaTest = 0.05 }: {
-  url: string; w: number; h: number; pos: [number, number, number]; ry?: number; opacity?: number; alphaTest?: number;
-}) {
-  const tex = useLoader(THREE.TextureLoader, url);
-  useEffect(() => {
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 8;
-    tex.needsUpdate = true;
-  }, [tex]);
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, ry]} position={pos}>
-      <planeGeometry args={[w, h]} />
-      <meshStandardMaterial map={tex} roughness={0.88} metalness={0.02} transparent opacity={opacity} alphaTest={alphaTest} side={THREE.DoubleSide} />
-    </mesh>
-  );
-}
 
 /** The water mat — the whole table surface, owner directive. */
 function WaterMat() {
@@ -70,103 +56,6 @@ function PlayerBoards({ seats }: { seats: ContainerSeat[] }) {
             pos={[x, 0.03, z]} ry={BOARD_RY[b.yaw] ?? 0} alphaTest={0.3} />
         );
       })}
-    </group>
-  );
-}
-
-/** cached OBJ + per-color materials for the container pieces */
-function useContainerProto() {
-  const obj = useLoader(OBJLoader, S.models.container.mesh);
-  const texes = useLoader(THREE.TextureLoader, CONT_COLORS.map((c) => S.models.container.tex[c]));
-  return useMemo(() => {
-    const geoms: THREE.BufferGeometry[] = [];
-    obj.traverse((m) => { if ((m as THREE.Mesh).isMesh) geoms.push((m as THREE.Mesh).geometry); });
-    const geom = geoms[0];
-    geom.computeBoundingBox();
-    const bb = geom.boundingBox!;
-    const size = new THREE.Vector3();
-    bb.getSize(size);
-    // authentic piece footprint measured from the mod's supply stacks:
-    // 1.38 long x 0.62 wide x 0.54 high (per-axis, the mod scales non-uniformly)
-    const alongX = size.x >= size.z; // container length axis in mesh space
-    const scale = new THREE.Vector3(
-      (alongX ? 1.38 : 0.62) / (size.x || 1),
-      0.54 / (size.y || 1),
-      (alongX ? 0.62 : 1.38) / (size.z || 1),
-    );
-    const mats: Partial<Record<ContColor, THREE.Material>> = {};
-    CONT_COLORS.forEach((c, i) => {
-      const t = texes[i];
-      t.colorSpace = THREE.SRGBColorSpace;
-      mats[c] = new THREE.MeshStandardMaterial({ map: t, roughness: 0.6, metalness: 0.15 });
-    });
-    const lift = -bb.min.y * scale.y;
-    const height = 0.54;
-    return { geom, mats, scale, lift, height, alongX };
-  }, [obj, texes]);
-}
-
-function ContainerPiece({ color, x, z, y = 0, yaw = 0, proto }: {
-  color: ContColor; x: number; z: number; y?: number; yaw?: number;
-  proto: ReturnType<typeof useContainerProto>;
-}) {
-  return (
-    <mesh geometry={proto.geom} material={proto.mats[color]}
-      position={[x, proto.lift + y + 0.03, z]}
-      rotation={[0, yaw + (proto.alongX ? 0 : Math.PI / 2), 0]}
-      scale={[proto.scale.x, proto.scale.y, proto.scale.z]} castShadow />
-  );
-}
-
-/** grid layout for n containers around an anchor: rows x cols, then layers */
-function packGrid(n: number, cols: number, dx: number, dz: number, perLayer: number): [number, number, number][] {
-  const out: [number, number, number][] = [];
-  for (let i = 0; i < n; i++) {
-    const layer = Math.floor(i / perLayer);
-    const j = i % perLayer;
-    const row = Math.floor(j / cols), col = j % cols;
-    out.push([(col - (cols - 1) / 2) * dx, (row - (Math.ceil(perLayer / cols) - 1) / 2) * dz, layer]);
-  }
-  return out;
-}
-
-/** yaw = direction of the ship's LONG axis in render space (0 = along X);
- *  the ship glides between spots so every sail reads on the table. */
-function Ship({ seatColor, x, z, yaw, children }: {
-  seatColor: string; x: number; z: number; yaw: number; children?: React.ReactNode;
-}) {
-  const obj = useLoader(OBJLoader, S.models.ship.mesh);
-  const tex = useLoader(THREE.TextureLoader, S.models.ship.tex ?? '');
-  const group = useRef<THREE.Group>(null);
-  const { clone, scale, lift, alongX } = useMemo(() => {
-    tex.colorSpace = THREE.SRGBColorSpace;
-    const c = obj.clone(true);
-    const mat = new THREE.MeshStandardMaterial({
-      map: tex, color: S.shipTint[seatColor] ?? '#888', roughness: 0.55, metalness: 0.1,
-    });
-    c.traverse((m) => {
-      if ((m as THREE.Mesh).isMesh) { (m as THREE.Mesh).material = mat; (m as THREE.Mesh).castShadow = true; }
-    });
-    const bb = new THREE.Box3().setFromObject(c);
-    const size = new THREE.Vector3();
-    bb.getSize(size);
-    const long = Math.max(size.x, size.z) || 1;
-    const s = 4.6 / long; // the mod ship footprint (scale 1.1/1.2 ~ 4.6 long)
-    return { clone: c, scale: s, lift: -bb.min.y * s, alongX: size.x >= size.z };
-  }, [obj, tex, seatColor]);
-  // glide to the target spot instead of teleporting (visual placement)
-  useFrame((_, dt) => {
-    const g = group.current;
-    if (!g) return;
-    const k = Math.min(1, dt * 2.2);
-    g.position.x += (x - g.position.x) * k;
-    g.position.z += (z - g.position.z) * k;
-  });
-  return (
-    <group ref={group} position={[x, 0, z]}>
-      <primitive object={clone} position={[0, lift + 0.02, 0]}
-        rotation={[0, yaw + (alongX ? 0 : Math.PI / 2), 0]} scale={[scale, scale, scale]} />
-      {children}
     </group>
   );
 }
@@ -335,7 +224,7 @@ function CamOverride() {
 /** factory-purchase ghosts: the bought containers visibly truck from the
  * seller's factory shelves to the buyer's harbor, so it is clear where the
  * goods went. The real pieces are already in place underneath. */
-function TransferGhosts({ view, proto }: { view: ContainerView; proto: ReturnType<typeof useContainerProto> }) {
+function TransferGhosts({ view, proto }: { view: ContainerView; proto: ContainerProto }) {
   const group = useRef<THREE.Group>(null);
   const run = useRef<{ seq: number; start: number } | null>(null);
   const seen = useRef(view.lastEvent.seq); // no replay on page load
@@ -397,23 +286,20 @@ function Pieces({ view }: { view: ContainerView }) {
       nodes.push(<ContainerPiece key={`sup-${color}-${i}`} color={color} x={x} z={z}
         y={layer * proto.height} yaw={Math.PI / 2} proto={proto} />);
     }
-    // factory supply tokens
+    // factory supply: 3D building tiles in a short row per color
     const fn = view.supply.factories[color];
     const fx = S.supply.factories.xByColor[color];
-    const fa = S.factoryArt[color];
     for (let i = 0; i < fn; i++) {
-      const [x, z] = w2r(fx + (i - (fn - 1) / 2) * 0.34, S.supply.factories.z);
-      nodes.push(<FlatImage key={`fsup-${color}-${i}`} url={fa.img}
-        w={1.25} h={1.25 * (fa.px[1] / fa.px[0])} pos={[x, 0.03 + i * 0.012, z]} />);
+      const [x, z] = w2r(fx + (i - (fn - 1) / 2) * 0.5, S.supply.factories.z);
+      nodes.push(<FactoryPiece key={`fsup-${color}-${i}`} color={color} x={x} z={z} />);
     }
   }
-  // warehouse supply row
+  // warehouse supply row (3D tiles)
   for (let i = 0; i < view.supply.warehouses; i++) {
     const [x0, x1] = S.supply.warehouses.x;
     const wx = x0 + (i / Math.max(1, 13)) * (x1 - x0);
     const [x, z] = w2r(wx, S.supply.warehouses.z);
-    nodes.push(<FlatImage key={`wsup-${i}`} url={S.warehouseArt.img}
-      w={0.95} h={0.95 * (S.warehouseArt.px[1] / S.warehouseArt.px[0])} pos={[x, 0.03, z]} />);
+    nodes.push(<WarehousePiece key={`wsup-${i}`} x={x} z={z} />);
   }
 
   // ---- bank lots ----
@@ -509,22 +395,26 @@ function Pieces({ view }: { view: ContainerView }) {
         });
       }
     }
-    // factories on the build track
+    // factories on the build track (3D building tiles)
     p.factories.forEach((color, i) => {
       const at = S.pb.factoryTrack[i];
-      const fa = S.factoryArt[color];
       const [x, z] = boardSpot(seatColor, at);
       const ry = BOARD_RY[S.boards[seatColor].yaw] ?? 0;
-      nodes.push(<FlatImage key={`fac-${p.seat}-${i}`} url={fa.img}
-        w={1.15} h={1.15 * (fa.px[1] / fa.px[0])} pos={[x, 0.045, z]} ry={ry} />);
+      nodes.push(<FactoryPiece key={`fac-${p.seat}-${i}`} color={color} x={x} z={z} ry={ry} />);
     });
-    // warehouses
+    // warehouses (3D tiles)
     for (let i = 0; i < p.warehouses; i++) {
       const at = S.pb.warehouseTrack[i];
       const [x, z] = boardSpot(seatColor, at);
       const ry = BOARD_RY[S.boards[seatColor].yaw] ?? 0;
-      nodes.push(<FlatImage key={`wh-${p.seat}-${i}`} url={S.warehouseArt.img}
-        w={0.9} h={0.9 * (S.warehouseArt.px[1] / S.warehouseArt.px[0])} pos={[x, 0.045, z]} ry={ry} />);
+      nodes.push(<WarehousePiece key={`wh-${p.seat}-${i}`} x={x} z={z} ry={ry} />);
+    }
+    // the seat's player aid card, laid beside the board like the mod places it
+    {
+      const [x, z] = boardSpot(seatColor, [S.pb.cx, 2357]); // local (0, 7.9): the mod's aid spot
+      const ry = BOARD_RY[S.boards[seatColor].yaw] ?? 0;
+      nodes.push(<FlatImage key={`aid-${p.seat}`} url={S.cards.aid}
+        w={4.3} h={4.3 * (477 / 1024)} pos={[x, 0.02, z]} ry={ry} />);
     }
     // factory lots
     for (const [price, list] of Object.entries(p.factoryLots)) {
@@ -535,7 +425,7 @@ function Pieces({ view }: { view: ContainerView }) {
         const row = Math.floor(i / 2), col = i % 2;
         const local: [number, number] = [at[0] + (col - 0.5) * 150, at[1] - row * 130];
         const [x, z] = boardSpot(seatColor, local);
-        const contYaw = (BOARD_RY[yaw] ?? 0) + Math.PI / 2;
+        const contYaw = BOARD_RY[yaw] ?? 0; // lie along the printed lot row
         nodes.push(<ContainerPiece key={`fl-${p.seat}-${price}-${i}`} color={color}
           x={x} z={z} yaw={contYaw} proto={proto} />);
       });
@@ -549,7 +439,7 @@ function Pieces({ view }: { view: ContainerView }) {
         const row = Math.floor(i / 2), col = i % 2;
         const local: [number, number] = [at[0] + (col - 0.5) * 150, at[1] + row * 130];
         const [x, z] = boardSpot(seatColor, local);
-        const contYaw = (BOARD_RY[yaw] ?? 0) + Math.PI / 2;
+        const contYaw = BOARD_RY[yaw] ?? 0; // lie along the printed lot row
         nodes.push(<ContainerPiece key={`hl-${p.seat}-${price}-${i}`} color={color}
           x={x} z={z} yaw={contYaw} proto={proto} />);
       });

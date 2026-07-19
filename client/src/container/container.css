@@ -94,25 +94,24 @@
 .cont-end-turn { margin-top: 4px; font-weight: 800; letter-spacing: 0.08em; }
 
 .cont-center { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.cont-tableau { position: relative; width: 100%; }
-.cont-tableau-art { width: 100%; display: block; border-radius: 10px; }
-.cont-t-token { position: absolute; transform: translate(-50%, -50%); pointer-events: none; }
-.cont-t-lot {
-  position: absolute; transform: translate(-50%, -50%);
-  display: flex; pointer-events: none; max-width: 18%;
-  background: rgba(255, 255, 255, 0.55); border-radius: 4px; padding: 2px 3px;
+.cont-center-board { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.cont-mat-frame {
+  position: relative; width: 100%; aspect-ratio: 13 / 8.6; max-height: 100%;
+  border-radius: 12px; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 30%, #10151d 0%, #07090d 75%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
-.cont-t-lot .cont-block { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45); }
-.cont-t-reserves {
-  position: absolute; transform: translate(-50%, -50%);
-  display: flex; flex-direction: column; gap: 2px; font-size: 9px; font-weight: 700;
-  color: #0a0c10; background: rgba(122, 152, 200, 0.9); padding: 2px 6px; border-radius: 5px;
+.cont-mat-frame.tall { height: 380px; flex: none; }
+.cont-mat-visitors {
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px; pointer-events: none;
 }
-.cont-t-visitor {
-  position: absolute; transform: translate(-50%, -50%);
-  border: 1.6px solid; border-radius: 6px; padding: 1px 6px;
+.cont-mat-visitors span {
+  border: 1.6px solid; border-radius: 6px; padding: 1px 7px;
   background: rgba(8, 10, 14, 0.82); font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em;
 }
+.cont-aid-btn { font-weight: 800; font-size: 15px; padding: 6px 13px; border-radius: 50%; }
+.cont-card-close.wide { max-width: min(880px, 94vw); }
 .cont-opps { display: flex; gap: 6px; flex: 0 0 auto; }
 .cont-opp {
   flex: 1; display: flex; flex-direction: column; gap: 2px; align-items: flex-start;

@@ -15,6 +15,7 @@ import {
 import { playSfx } from '../sfx';
 import { GameIntro, type Intro } from '../ttr/GameIntro';
 import { CONT_SCENE, CONT_PIECE_HEX, CONT_UI_HEX } from './cont-scene';
+import { ContainerMat } from './ContainerMat';
 import './container.css';
 
 const S = CONT_SCENE;
@@ -53,6 +54,7 @@ interface Props {
 const CONT_TOUR: { target?: string; title: string; body: string }[] = [
   { title: 'Welcome to your shipping company', body: 'The TV is the shared sea: both islands, every harbor board, every ship. You run everything from this screen. The goal is simple: end the game with the most money. Money comes from selling containers to the players around you and from delivering cargo to Container Island. Tap NEXT to walk through every control.' },
   { target: 'turn', title: 'Two actions per turn', body: 'The header always shows whose turn it is and how many actions you have left. You take TWO actions each turn, the same one twice if you like, except PRODUCE and CALL BANK which are once per turn. The colored counters on the right are the shared container supply.' },
+  { target: 'aid', title: 'Your player aid', body: 'The question mark opens your official player aid: the three turn steps and every action on one card, exactly as printed. Your aid card also lies beside your board on the TV table. Come back to it any time.' },
   { target: 'board', title: 'Your harbor board', body: 'The same board that sits in front of you on the TV table. The bottom half is your FACTORY district: factories make containers and the $1 to $4 lots are the shelves where you price them. The top half is your HARBOR: warehouses set how much you can store, the $2 to $6 lots price it, and the docks along the top are where opponents\' ships tie up to shop.' },
   { target: 'produce', title: 'Produce', body: 'PRODUCE pays $1 to the player on your right and makes one container per factory you own, taken from the shared supply. You then arrange your whole factory district into priced lots.\n\nPricing is the game: price low and opponents buy fast but you earn little; price high and your shelves sit full, blocking your next PRODUCE.' },
   { target: 'build-factory', title: 'Build', body: 'BUILD FACTORY adds a new factory color (up to four, all different): one more container per PRODUCE and 2 more factory storage. BUILD WAREHOUSE (up to five) adds 1 harbor storage each. Costs rise along the printed tracks on your board and are paid to the supply.' },
@@ -329,45 +331,21 @@ function AmountDialog({ title, max, min = 0, note, confirmLabel, extra, onConfir
 
 // ---------------- the board tableau (top-down authentic art) ----------------
 
-function BoardTableau({ view, seat }: { view: ContainerView; seat: number }) {
-  const p = view.players[seat];
-  const b = S.boards[p.color];
-  const [W, H] = [2712, 1702];
-  const pct = (px: number, py: number) => ({ left: `${(px / W) * 100}%`, top: `${(py / H) * 100}%` });
+/** the 3D personal board in a fixed frame, plus the docked-visitor caption */
+function BoardTableau({ view, seat, tall }: { view: ContainerView; seat: number; tall?: boolean }) {
+  const visitors = view.players.filter((q) => q.ship.loc.kind === 'harbor' && q.ship.loc.seat === seat);
   return (
-    <div className="cont-tableau" data-testid="cont-tableau">
-      <img className="cont-tableau-art" src={b.img} alt="Your harbor board" />
-      {p.factories.map((c, i) => (
-        <img key={`f${i}`} className="cont-t-token" src={S.factoryArt[c].img} alt={`${c} factory`}
-          style={{ ...pct(S.pb.factoryTrack[i][0], S.pb.factoryTrack[i][1]), width: '7%' }} />
-      ))}
-      {Array.from({ length: p.warehouses }, (_, i) => (
-        <img key={`w${i}`} className="cont-t-token" src={S.warehouseArt.img} alt="warehouse"
-          style={{ ...pct(S.pb.warehouseTrack[i][0], S.pb.warehouseTrack[i][1]), width: '6%' }} />
-      ))}
-      {Object.entries(p.factoryLots).map(([price, list]) => list.length > 0 && (
-        <div key={`fl${price}`} className="cont-t-lot" style={pct(S.pb.factoryLots[price][0], S.pb.factoryLots[price][1])}>
-          <Blocks colors={list} size={22} />
-        </div>
-      ))}
-      {Object.entries(p.harborLots).map(([price, list]) => list.length > 0 && (
-        <div key={`hl${price}`} className="cont-t-lot" style={pct(S.pb.harborLots[price][0], S.pb.harborLots[price][1])}>
-          <Blocks colors={list} size={22} />
-        </div>
-      ))}
-      {(p.reserves.factory > 0 || p.reserves.harbor > 0) && (
-        <div className="cont-t-reserves" style={pct(2350, 1500)}>
-          {p.reserves.factory > 0 && <span>RESERVED {p.reserves.factory}</span>}
-          {p.reserves.harbor > 0 && <span>RESERVED {p.reserves.harbor} · HARBOR</span>}
+    <div className={'cont-mat-frame' + (tall ? ' tall' : '')} data-testid="cont-tableau">
+      <ContainerMat view={view} seat={seat} />
+      {visitors.length > 0 && (
+        <div className="cont-mat-visitors">
+          {visitors.map((q) => (
+            <span key={q.seat} style={{ borderColor: CONT_UI_HEX[q.color] }}>
+              {q.name.toUpperCase()} DOCKED
+            </span>
+          ))}
         </div>
       )}
-      {/* opponents' ships docked at my harbor */}
-      {view.players.filter((q) => q.ship.loc.kind === 'harbor' && q.ship.loc.seat === seat).map((q, i) => (
-        <div key={q.seat} className="cont-t-visitor"
-          style={{ ...pct(S.pb.docks[Math.min(i, S.pb.docks.length - 1)][0], 90), borderColor: CONT_UI_HEX[q.color] }}>
-          {q.name.toUpperCase()}
-        </div>
-      ))}
     </div>
   );
 }
@@ -385,7 +363,7 @@ function OpponentModal({ view, seat, onClose }: { view: ContainerView; seat: num
           <b>{p.name.toUpperCase()}</b>
           <button className="ig-modal-x" onClick={onClose}>✕</button>
         </div>
-        <BoardTableau view={view} seat={seat} />
+        <BoardTableau view={view} seat={seat} tall />
         <div className="cont-opp-facts">
           <span>SHIP · {p.ship.loc.kind.toUpperCase()} · {p.ship.cargo.length}/5</span>
           <span>ISLAND · {p.scoring.length}</span>
@@ -420,7 +398,7 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
     | { kind: 'bank-cash-bid'; lot: number; min: number }
     | { kind: 'bank-cont-bid'; lot: number; min: number }
     | { kind: 'opp'; seat: number }
-    | { kind: 'card'; img: string; label: string }
+    | { kind: 'card'; img: string; label: string; wide?: boolean }
   >(null);
 
   useEffect(() => { if (error) playSfx('error'); }, [error]);
@@ -538,6 +516,10 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
           ))}
         </span>
         <button className="ig-btn ghost" onClick={() => setIntro(true)}>RULES</button>
+        <button className="ig-btn ghost cont-aid-btn" aria-label="Player aid" data-tour="aid"
+          onClick={() => setDialog({ kind: 'card', img: S.cards.aid, label: 'PLAYER AID · TURN REFERENCE', wide: true })}>
+          ?
+        </button>
       </header>
 
       <div className="cont-cols">
@@ -578,9 +560,9 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
           </button>
         </nav>
 
-        {/* my board */}
+        {/* my board: the real 3D mat */}
         <main className="cont-center">
-          <div data-tour="board">
+          <div data-tour="board" className="cont-center-board">
             <BoardTableau view={view} seat={seat} />
           </div>
           <div className="cont-opps" data-testid="cont-opps" data-tour="opponents">
@@ -667,7 +649,7 @@ export default function ContainerPlay({ view, act, seat, error }: Props) {
 
       {dialog?.kind === 'card' && (
         <div className="ig-modal" onClick={() => setDialog(null)}>
-          <div className="cont-card-close" onClick={(e) => e.stopPropagation()}>
+          <div className={'cont-card-close' + (dialog.wide ? ' wide' : '')} onClick={(e) => e.stopPropagation()}>
             <img src={dialog.img} alt={dialog.label} />
             <span>{dialog.label}</span>
             {island && dialog.img === S.cards.scoring[p.scoringCard!] && (
