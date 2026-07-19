@@ -669,7 +669,10 @@ input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px r
 .ig-modal-head { display: flex; align-items: center; gap: .7rem; margin-bottom: 1.1rem; }
 .ig-modal-head b { font-size: 1.2rem; }
 .ig-modal-x { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--brd-2);
-  background: transparent; color: var(--ink); cursor: pointer; font: 700 15px/1 var(--font); }
+  background: transparent; color: var(--ink); cursor: pointer; font: 700 15px/1 var(--font);
+  /* glyph buttons must flex-center: fixed boxes + UA button padding leave
+     the mark off-center otherwise */
+  display: inline-flex; align-items: center; justify-content: center; padding: 0; }
 .ig-build-head { display: flex; align-items: center; justify-content: space-between; margin: 1.1rem 0 .5rem; }
 .ig-build-row { display: flex; align-items: center; gap: .5rem; padding: .42rem 0; border-bottom: 1px solid var(--brd);
   font-size: .86rem; text-transform: uppercase; letter-spacing: .02em; }

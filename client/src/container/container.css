@@ -116,7 +116,11 @@
   border: 1.6px solid; border-radius: 6px; padding: 1px 7px;
   background: rgba(8, 10, 14, 0.82); font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em;
 }
-.cont-aid-btn { font-weight: 800; font-size: 15px; padding: 6px 13px; border-radius: 50%; }
+.cont-aid-btn {
+  font-weight: 800; font-size: 15px; border-radius: 50%;
+  width: 34px; height: 34px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
 .cont-card-close.wide { max-width: min(880px, 94vw); }
 .cont-opps { display: flex; gap: 6px; flex: 0 0 auto; }
 .cont-opp {
@@ -201,9 +205,12 @@
 .cont-pick-cell { display: inline-flex; align-items: center; gap: 5px; }
 .cont-pick-cell b { min-width: 16px; text-align: center; }
 .cont-mini {
-  width: 26px; height: 26px; border-radius: 7px; font-size: 14px; font-weight: 700;
+  min-width: 26px; height: 26px; border-radius: 7px; font-size: 14px; font-weight: 700;
   background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16);
   color: #eef0f4; cursor: pointer;
+  /* glyph buttons flex-center (see playbook: never rely on line-height) */
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 5px; line-height: 1;
 }
 .cont-pick-foot { display: flex; gap: 14px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 0; }
 .cont-warn { color: #ff8d7a; }

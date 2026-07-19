@@ -419,6 +419,11 @@ and must not be duplicated as loose personal pieces.
 
 **HUD specifics**
 - Seat colour is an **outline**, never a dot.
+- **Glyph buttons (`+`, `−`, `✕`, `?`) must be flex-centered**: fixed-size
+  boxes with UA button padding and line-height leave the mark visibly
+  off-center. Always `display:inline-flex; align-items:center;
+  justify-content:center; padding:0` (the shared `.ig-modal-x` does this) —
+  never rely on line-height/padding to center a glyph.
 - TV score chips: **name + cash only**; tap a chip for full stats (VP, income,
   buildings, etc.).
 - Turn-narration banner is **text** (tile name / action title), with **cost +
