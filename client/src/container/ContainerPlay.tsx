@@ -363,45 +363,53 @@ const dealHand = (amount: number): number[] => {
 /** what the bank hands back when a note is exchanged for change */
 const CHANGE: Record<number, number[]> = { 20: [10, 10], 10: [5, 5], 5: [2, 2, 1], 2: [1, 1] };
 
-/** delivery bidding as a hand of real money cards: tap cards into the bid
- *  pile, exchange big notes for change when the exact bid needs it */
+/** a card in the bidding hand: a money note ($1..$20) or a $0 bluff card */
+const BLUFF = 0; // sentinel value: a bluff card is worth $0
+const sortCards = (a: number, b: number) => b - a; // notes desc, bluffs ($0) last
+
+/** delivery bidding as a hand of real cards: your cash dealt into money
+ *  notes plus your two bluff cards, all in one line-up. Tap cards into the
+ *  bid pile; exchange big notes for change when the exact bid needs it. */
 function MoneyBidDialog({ title, note, cash, bluffMax, extra, confirmLabel, onConfirm }: {
   title: string; note?: string; cash: number; bluffMax: number;
   extra?: React.ReactNode; confirmLabel: string;
   onConfirm: (amount: number, bluffs: number) => void;
 }) {
-  const [hand, setHand] = useState<number[]>(() => dealHand(cash));
+  const [hand, setHand] = useState<number[]>(() => [...dealHand(cash), ...Array<number>(bluffMax).fill(BLUFF)]);
   const [bid, setBid] = useState<number[]>([]);
   const [exchange, setExchange] = useState(false);
-  const [bluffs, setBluffs] = useState(0);
-  const bidSum = bid.reduce((a, b) => a + b, 0);
-  // a mid-dialog loan (or any cash change) re-deals the un-bid remainder
+  const bidSum = bid.reduce((a, b) => a + b, 0); // bluffs are $0, so this is the cash total
+  const bidBluffs = bid.filter((d) => d === BLUFF).length;
+  // a mid-dialog loan (or any cash change) re-deals the un-bid money remainder,
+  // keeping whatever bluff cards are already down in the pile
   useEffect(() => {
-    setHand(dealHand(cash - bidSum));
+    setHand([...dealHand(cash - bidSum), ...Array<number>(bluffMax - bidBluffs).fill(BLUFF)]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cash]);
   const spendCard = (i: number) => {
     const d = hand[i];
     if (exchange) {
-      if (!CHANGE[d]) return; // a $1 has no change
-      setHand((h) => [...h.slice(0, i), ...CHANGE[d], ...h.slice(i + 1)].sort((a, b) => b - a));
+      if (d === BLUFF || !CHANGE[d]) return; // bluff or $1 has no change
+      setHand((h) => [...h.slice(0, i), ...CHANGE[d], ...h.slice(i + 1)].sort(sortCards));
       return;
     }
     setHand((h) => [...h.slice(0, i), ...h.slice(i + 1)]);
-    setBid((b) => [...b, d].sort((a, b) => b - a));
+    setBid((b) => [...b, d].sort(sortCards));
   };
   const takeBack = (i: number) => {
     const d = bid[i];
     setBid((b) => [...b.slice(0, i), ...b.slice(i + 1)]);
-    setHand((h) => [...h, d].sort((a, b) => b - a));
+    setHand((h) => [...h, d].sort(sortCards));
   };
   const cardRow = (cards: number[], onTap: (i: number) => void, empty: string) => (
     <div className="cont-hand-cards">
       {cards.length === 0 && <span className="cont-hand-empty">{empty}</span>}
       {cards.map((d, i) => (
-        <button key={`${d}-${i}`} className="cont-hand-card" onClick={() => onTap(i)}>
-          <img src={S.cards.money[String(d)]} alt={`$${d} card`} />
-          {exchange && CHANGE[d] && <span className="cont-hand-swap">⇄</span>}
+        <button key={`${d}-${i}`} className={'cont-hand-card' + (d === BLUFF ? ' bluff' : '')} onClick={() => onTap(i)}>
+          <img src={d === BLUFF ? S.cards.bluff : S.cards.money[String(d)]}
+            alt={d === BLUFF ? 'Bluff card, worth nothing' : `$${d} card`} />
+          {d === BLUFF && <span className="cont-hand-tag">BLUFF · $0</span>}
+          {exchange && d !== BLUFF && CHANGE[d] && <span className="cont-hand-swap">⇄</span>}
         </button>
       ))}
     </div>
@@ -413,32 +421,24 @@ function MoneyBidDialog({ title, note, cash, bluffMax, extra, confirmLabel, onCo
         {note && <p className="dim">{note}</p>}
         <div className="cont-hand-row">
           <div className="cont-hand-label">
-            <span>YOUR HAND · ${cash - bidSum}</span>
+            <span>YOUR HAND · ${cash - bidSum}{bluffMax - bidBluffs > 0 ? ` · ${bluffMax - bidBluffs} BLUFF` : ''}</span>
             <button className={'cont-hand-exchange' + (exchange ? ' on' : '')}
               onClick={() => setExchange((e) => !e)}>
               {exchange ? 'EXCHANGING · TAP A NOTE TO BREAK IT' : 'EXCHANGE'}
             </button>
           </div>
-          {cardRow(hand, spendCard, 'NO CASH LEFT')}
+          {cardRow(hand, spendCard, 'NO CARDS LEFT')}
         </div>
         <div className="cont-hand-row bid">
-          <div className="cont-hand-label"><span>YOUR BID · ${bidSum}</span>
+          <div className="cont-hand-label">
+            <span>YOUR BID · ${bidSum}{bidBluffs > 0 ? ` + ${bidBluffs} BLUFF` : ''}</span>
             <em>TAP A CARD TO TAKE IT BACK</em>
           </div>
           {cardRow(bid, takeBack, 'NO CARDS · A $0 BID IS ALLOWED')}
         </div>
-        {bluffMax > 0 && (
-          <div className="cont-bluff-row">
-            <span>BLUFF CARDS · WORTH $0, BUT THE TABLE ONLY SEES YOUR PILE SIZE</span>
-            <div>
-              <button className="cont-mini" onClick={() => setBluffs((v) => Math.max(0, v - 1))}>−</button>
-              <b>{bluffs}</b>
-              <button className="cont-mini" onClick={() => setBluffs((v) => Math.min(bluffMax, v + 1))}>+</button>
-            </div>
-          </div>
-        )}
+        <p className="cont-hand-hint">Bluff cards are worth $0 — the table only sees how many cards are in your pile.</p>
         {extra}
-        <button className="ig-btn primary" onClick={() => onConfirm(bidSum, bluffs)}>
+        <button className="ig-btn primary" onClick={() => onConfirm(bidSum, bidBluffs)}>
           {confirmLabel} · ${bidSum}
         </button>
       </div>
