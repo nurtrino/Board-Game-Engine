@@ -398,10 +398,19 @@
   transition: transform 0.12s ease;
 }
 .cont-hand-card:hover img { transform: translateY(-3px); }
+.cont-hand-card.bluff img { box-shadow: 0 0 0 1.5px rgba(232, 180, 74, 0.7), 0 2px 5px rgba(0, 0, 0, 0.4); }
+.cont-hand-tag {
+  position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
+  padding: 1px 5px; border-radius: 5px; white-space: nowrap;
+  background: #e8b450; color: #0a0c10; font-size: 7.5px; font-weight: 800; letter-spacing: 0.04em;
+}
 .cont-hand-swap {
   position: absolute; top: -6px; right: -6px; width: 18px; height: 18px;
   display: grid; place-items: center; border-radius: 50%;
   background: #8fd0ff; color: #0a0c10; font-size: 11px; font-weight: 800;
+}
+.cont-hand-hint {
+  font-size: 9.5px; letter-spacing: 0.04em; opacity: 0.6; margin: 4px 2px 8px;
 }
 .cont-bluff-row > span { font-size: 9.5px; letter-spacing: 0.06em; opacity: 0.85; max-width: 240px; }
 .cont-bluff-row > div { display: flex; align-items: center; gap: 8px; }
