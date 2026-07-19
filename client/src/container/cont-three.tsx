@@ -186,9 +186,11 @@ export function Ship({ seatColor, x, z, yaw, cargo = [], proto, children }: {
           position={[-mid.x * scale.x, lift + 0.02, -mid.z * scale.z]}
           scale={[scale.x, scale.y, scale.z]} />
         {proto && cargo.slice(0, SHIP_SNAPS.length).map((color, i) => (
-          // crosswise in the recess: length across the beam (mesh x axis)
+          // crosswise in the recess: length across the beam (mesh x axis).
+          // center sits a bit ABOVE the snap so the piece nestles in the
+          // recess without piercing the hull underside
           <ContainerPiece key={i} color={color}
-            x={slots[i].x} z={slots[i].z} y={slots[i].y - 0.3}
+            x={slots[i].x} z={slots[i].z} y={slots[i].y - 0.15}
             yaw={0} proto={proto} />
         ))}
       </group>
