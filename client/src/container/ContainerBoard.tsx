@@ -66,11 +66,12 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
   const seatColor = p.color;
   const loc = p.ship.loc;
   if (loc.kind === 'ocean') {
-    // idle anchorages sit clear of every board's dock approach AND of the
-    // printed berth columns beside the islands (those are for docked ships)
+    // idle anchorages float in genuinely OPEN water: clear of every board's
+    // dock coves, of the boards' own corners (a ship hugging its own board
+    // reads as a botched docking), and of the printed berth columns
     const OCEAN_IDLE: Record<string, [number, number]> = {
-      Brown: [-11.5, -13.5], Pink: [-25, -3.5], Orange: [-25, 3.5],
-      Teal: [25, -3.5], Purple: [25, 3.5],
+      Brown: [-14, -11], Pink: [-20, -9], Orange: [-20, 9],
+      Teal: [22.5, -9.5], Purple: [22.5, 9.5],
     };
     const [wx, wz] = OCEAN_IDLE[seatColor] ?? S.shipStarts[seatColor];
     const [x, z] = w2r(wx, wz);
@@ -101,7 +102,8 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
 const ISLAND_BERTHS_Y = [1620, 1694, 1768, 1842, 1912];
 const BANK_BERTHS_Y = [1634, 1707, 1781, 1856, 1930];
 
-/** money card stack for a bank cash lot amount */
+/** money card stack for a bank cash lot amount; the top card fills the
+ * printed card slot, the rest fan out slightly underneath */
 function CashStack({ amount, at }: { amount: number; at: [number, number] }) {
   const cards = useMemo(() => {
     const denoms = [20, 10, 5, 2, 1];
@@ -111,11 +113,12 @@ function CashStack({ amount, at }: { amount: number; at: [number, number] }) {
     return out;
   }, [amount]);
   const [x, z] = px2r(at[0], at[1]);
+  const W = 2.35, H = W * 1.4; // sized to the printed slot (~3.4 x 3.6 world)
   return (
     <group>
       {cards.map((d, i) => (
-        <FlatImage key={i} url={S.cards.money[String(d)]} w={1.35} h={1.35 * 1.4}
-          pos={[x + (i % 3) * 0.12, 0.04 + i * 0.012, z + Math.floor(i / 3) * 0.14]} ry={0} />
+        <FlatImage key={i} url={S.cards.money[String(d)]} w={W} h={H}
+          pos={[x + (i % 3) * 0.14 - 0.07, 0.04 + i * 0.012, z + Math.floor(i / 3) * 0.16 - 0.08]} ry={0} />
       ))}
     </group>
   );
