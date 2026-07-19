@@ -13,7 +13,7 @@ import type { ContainerView, ContainerSeat, ContFocus } from '@bge/shared';
 import { CONT_RULES, CONT_COLORS, contLotCount, contBidCards } from '@bge/shared';
 import { playSfx } from '../sfx';
 import {
-  CONT_SCENE, px2r, w2r, boardSpot,
+  CONT_SCENE, px2r, w2r, boardSpot, MAT_RW, MAT_RH,
   islandCenterR, bankCenterR, CONT_UI_HEX, CONT_PIECE_HEX,
 } from './cont-scene';
 import {
@@ -191,7 +191,9 @@ function subSpot(sub: NonNullable<Extract<ContFocus, { type: 'board' }>['sub']>)
   }
 }
 
-function FocusFly({ focus, controls }: { focus: RFocus | null; controls: React.RefObject<OrbitControlsImpl | null> }) {
+function FocusFly({ focus, controls, enabled = true }: {
+  focus: RFocus | null; controls: React.RefObject<OrbitControlsImpl | null>; enabled?: boolean;
+}) {
   const camera = useThree((st) => st.camera);
   const anim = useRef<{ start: number; seq: number } | null>(null);
   const home = useRef<{ pos: THREE.Vector3; target: THREE.Vector3 } | null>(null);
@@ -199,6 +201,8 @@ function FocusFly({ focus, controls }: { focus: RFocus | null; controls: React.R
   const IN = 1.1, HOLD = 2.2, OUT = 1.1;
   useFrame(({ clock }) => {
     const c = controls.current;
+    // an active inspect owns the camera; don't fight it with auto-focus flys
+    if (!enabled) { doneSeq.current = focus?.seq ?? doneSeq.current; return; }
     if (!focus || !c || focus.seq === doneSeq.current) return;
     if (anim.current?.seq !== focus.seq) {
       home.current ??= { pos: camera.position.clone(), target: c.target.clone() };
@@ -272,6 +276,84 @@ function CamOverride() {
     camera.lookAt(x, 0, z);
     camera.updateProjectionMatrix();
   }, [camera]);
+  return null;
+}
+
+/** a clickable region of the table (a player board or an island) */
+interface Region { x: number; z: number; radius: number; kind: string; label: string }
+export interface Inspect extends Region { seq: number }
+
+/** invisible ground catcher: a tap (not a drag) picks the region under it */
+function ClickPlane({ onPick }: { onPick: (x: number, z: number) => void }) {
+  const down = useRef<{ x: number; y: number; t: number } | null>(null);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, 0]}
+      onPointerDown={(e) => { down.current = { x: e.clientX, y: e.clientY, t: performance.now() }; }}
+      onPointerUp={(e) => {
+        const d = down.current;
+        down.current = null;
+        if (!d) return;
+        // a real click, not an orbit drag or a long press
+        if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 6 || performance.now() - d.t > 500) return;
+        onPick(e.point.x, e.point.z);
+      }}>
+      <planeGeometry args={[MAT_RW * 1.5, MAT_RH * 1.5]} />
+      <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+    </mesh>
+  );
+}
+
+/** Fly the camera above the inspected region on entry, then hand back to
+ * OrbitControls so the user can spin it 360; fly home when inspect clears. */
+function InspectFly({ inspect, controls }: {
+  inspect: Inspect | null; controls: React.RefObject<OrbitControlsImpl | null>;
+}) {
+  const camera = useThree((st) => st.camera);
+  const home = useRef<{ pos: THREE.Vector3; target: THREE.Vector3 } | null>(null);
+  const tween = useRef<{
+    start: number; dur: number;
+    fromPos: THREE.Vector3; toPos: THREE.Vector3;
+    fromTarget: THREE.Vector3; toTarget: THREE.Vector3;
+  } | null>(null);
+  const key = useRef<string | null>(null);
+  useFrame(({ clock }) => {
+    const c = controls.current;
+    if (!c) return;
+    const k = inspect ? `${inspect.kind}:${inspect.seq}` : 'HOME';
+    if (key.current !== k) {
+      key.current = k;
+      const begin = (toPos: THREE.Vector3, toTarget: THREE.Vector3) => {
+        tween.current = {
+          start: clock.elapsedTime, dur: 0.9,
+          fromPos: camera.position.clone(), toPos,
+          fromTarget: c.target.clone(), toTarget,
+        };
+      };
+      if (inspect) {
+        home.current ??= { pos: camera.position.clone(), target: c.target.clone() };
+        // above the region, offset south so the 3D pieces read
+        begin(new THREE.Vector3(inspect.x, 15, inspect.z + 8), new THREE.Vector3(inspect.x, 0.4, inspect.z));
+      } else if (home.current) {
+        begin(home.current.pos.clone(), home.current.target.clone());
+        home.current = null;
+      }
+    }
+    const a = tween.current;
+    if (!a) return;
+    const t = (clock.elapsedTime - a.start) / a.dur;
+    const ease = (v: number) => v * v * (3 - 2 * v);
+    if (t >= 1) {
+      camera.position.copy(a.toPos);
+      c.target.copy(a.toTarget);
+      c.update();
+      tween.current = null; // OrbitControls takes over: the user can now orbit
+      return;
+    }
+    const e = ease(t);
+    camera.position.lerpVectors(a.fromPos, a.toPos, e);
+    c.target.lerpVectors(a.fromTarget, a.toTarget, e);
+    c.update();
+  });
   return null;
 }
 
@@ -536,7 +618,32 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
 
   const [statsSeat, setStatsSeat] = useState<number | null>(null);
   const [guide, setGuide] = useState(() => new URLSearchParams(location.search).has('guide'));
+  const [inspect, setInspect] = useState<Inspect | null>(null);
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+
+  // clickable table regions: each player board, and both islands
+  const regions = useMemo<Region[]>(() => {
+    const r: Region[] = view.players.map((p) => {
+      const [x, z] = w2r(S.boards[p.color].pos[0], S.boards[p.color].pos[1]);
+      return { x, z, radius: 9, kind: `board:${p.seat}`, label: `${p.name.toUpperCase()}'S HARBOR` };
+    });
+    const [ix, iz] = islandCenterR();
+    r.push({ x: ix, z: iz, radius: 9, kind: 'island', label: 'CONTAINER ISLAND' });
+    const [bx, bz] = bankCenterR();
+    r.push({ x: bx, z: bz, radius: 9, kind: 'bank', label: 'OFF-SHORE BANK' });
+    return r;
+  }, [view.players]);
+
+  const onPick = (x: number, z: number) => {
+    let best: Region | null = null;
+    let bestD = Infinity;
+    for (const rg of regions) {
+      const d = Math.hypot(x - rg.x, z - rg.z);
+      if (d < rg.radius && d < bestD) { bestD = d; best = rg; }
+    }
+    if (best) { playSfx('click'); setInspect((prev) => ({ ...best!, seq: (prev?.seq ?? 0) + 1 })); }
+    else setInspect(null); // a tap on open water returns to the table
+  };
 
   // hold the auction outcome on screen for a beat after the piles clear
   const [auctionResult, setAuctionResult] = useState<{ seq: number; text: string } | null>(null);
@@ -594,13 +701,25 @@ export function ContainerBoard({ view }: { view: ContainerView }) {
           <CamOverride />
         ) : (
           <>
-            <OrbitControls ref={controlsRef} makeDefault enablePan={false} minDistance={16} maxDistance={110}
+            <ClickPlane onPick={onPick} />
+            <OrbitControls ref={controlsRef} makeDefault enablePan={false}
+              minDistance={inspect ? 7 : 16} maxDistance={110}
               maxPolarAngle={Math.PI * 0.42} enableDamping dampingFactor={0.08}
               target={[0, 0, 2]} />
-            <FocusFly focus={focus} controls={controlsRef} />
+            <FocusFly focus={focus} controls={controlsRef} enabled={!inspect} />
+            <InspectFly inspect={inspect} controls={controlsRef} />
           </>
         )}
       </Canvas>
+
+      {/* inspect mode: label + return to the table */}
+      {inspect && (
+        <div className="cont-inspect ig-glass" role="status">
+          <span className="cont-inspect-lab">VIEWING · {inspect.label}</span>
+          <span className="cont-inspect-hint">DRAG TO SPIN · SCROLL TO ZOOM</span>
+          <button className="ig-btn primary" onClick={() => setInspect(null)}>BACK TO TABLE</button>
+        </div>
+      )}
 
       {/* seat chips: public info only (cash is secret in Container) */}
       <div className="cont-hud-top">
