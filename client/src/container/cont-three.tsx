@@ -93,12 +93,12 @@ export function useContainerProto(): ContainerProto {
     if (size.y > size.z) geom.rotateX(Math.PI / 2);
     geom.center();
     size = measure();
-    // authentic piece footprint measured from the mod's supply stacks:
-    // 1.38 long x 0.62 wide x 0.54 high
+    // authentic piece size = mesh bbox x the mod's own scale (0.225/0.36/0.081):
+    // 1.125 long x 0.567 wide x 0.54 high — small enough to clip onto the ship
     const scale = new THREE.Vector3(
-      1.38 / (size.x || 1),
+      1.125 / (size.x || 1),
       0.54 / (size.y || 1),
-      0.62 / (size.z || 1),
+      0.567 / (size.z || 1),
     );
     const mats: Partial<Record<ContColor, THREE.Material>> = {};
     CONT_COLORS.forEach((c, i) => {
@@ -137,8 +137,8 @@ export function packGrid(n: number, cols: number, dx: number, dz: number, perLay
 
 /** yaw = direction of the ship's LONG axis in render space (0 = along X);
  *  the ship glides between spots so every sail reads on the table. */
-export function Ship({ seatColor, x, z, yaw, size = 4.6, children }: {
-  seatColor: string; x: number; z: number; yaw: number; size?: number; children?: React.ReactNode;
+export function Ship({ seatColor, x, z, yaw, children }: {
+  seatColor: string; x: number; z: number; yaw: number; children?: React.ReactNode;
 }) {
   const obj = useLoader(OBJLoader, S.models.ship.mesh);
   const tex = useLoader(THREE.TextureLoader, S.models.ship.tex ?? '');
@@ -155,13 +155,19 @@ export function Ship({ seatColor, x, z, yaw, size = 4.6, children }: {
     const bb = new THREE.Box3().setFromObject(c);
     const sz = new THREE.Vector3();
     bb.getSize(sz);
-    const long = Math.max(sz.x, sz.z) || 1;
-    const s = size / long; // the mod ship footprint (scale 1.1/1.2 ~ 4.6 long)
+    // authentic hull = mesh bbox x the mod's own scale (1.1, 1.2, 1.2):
+    // 5.91 long, 1.27 beam, 1.73 high — the containers clip onto its deck
+    const alongX = sz.x >= sz.z;
+    const scale = new THREE.Vector3(
+      (alongX ? 5.909 : 1.265) / (sz.x || 1),
+      1.728 / (sz.y || 1),
+      (alongX ? 1.265 : 5.909) / (sz.z || 1),
+    );
     // the OBJ's origin is off-center: recentre by the bbox midpoint or the
     // hull lands beside its target, in a direction that rotates with the yaw
     const mid = new THREE.Vector3((bb.min.x + bb.max.x) / 2, 0, (bb.min.z + bb.max.z) / 2);
-    return { clone: c, scale: s, lift: -bb.min.y * s, alongX: sz.x >= sz.z, mid };
-  }, [obj, tex, seatColor, size]);
+    return { clone: c, scale, lift: -bb.min.y * scale.y, alongX, mid };
+  }, [obj, tex, seatColor]);
   // glide to the target spot instead of teleporting (visual placement)
   useFrame((_, dt) => {
     const g = group.current;
@@ -173,8 +179,9 @@ export function Ship({ seatColor, x, z, yaw, size = 4.6, children }: {
   return (
     <group ref={group} position={[x, 0, z]}>
       <group rotation={[0, yaw + (alongX ? 0 : Math.PI / 2), 0]}>
-        <primitive object={clone} position={[-mid.x * scale, lift + 0.02, -mid.z * scale]}
-          scale={[scale, scale, scale]} />
+        <primitive object={clone}
+          position={[-mid.x * scale.x, lift + 0.02, -mid.z * scale.z]}
+          scale={[scale.x, scale.y, scale.z]} />
       </group>
       {children}
     </group>

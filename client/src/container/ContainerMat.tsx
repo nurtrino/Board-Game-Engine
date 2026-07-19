@@ -57,7 +57,7 @@ function MatPieces({ view, seat }: { view: ContainerView; seat: number }) {
       if (!at) continue;
       (list as ContColor[]).forEach((color, i) => {
         const row = Math.floor(i / 2), col = i % 2;
-        const [x, z] = a2m(at[0] + (col - 0.5) * 150, at[1] + (which === 'factory' ? -row * 130 : row * 130));
+        const [x, z] = a2m(at[0] + (col - 0.5) * 230, at[1] + (which === 'factory' ? -row * 130 : row * 130));
         nodes.push(<ContainerPiece key={`${which}-${price}-${i}`} color={color} x={x} z={z} proto={proto} />);
       });
     }
@@ -84,7 +84,7 @@ function MatPieces({ view, seat }: { view: ContainerView; seat: number }) {
       nodes.push(
         <Ship key={`v${q.seat}`} seatColor={q.color} x={x} z={z} yaw={Math.PI / 2}>
           {q.ship.cargo.map((color, j) => (
-            <ContainerPiece key={j} color={color} x={0} z={(j - 2) * 0.72} y={0.55} yaw={0} proto={proto} />
+            <ContainerPiece key={j} color={color} x={0} z={(j - 2) * 0.62} y={0.8} yaw={0} proto={proto} />
           ))}
         </Ship>,
       );

@@ -83,7 +83,7 @@ function shipPlace(view: ContainerView, seat: number): { x: number; z: number; y
     // dock cove index = my seat index, so two visiting ships never overlap;
     // the hull sits in the sea with the bow just inside the printed cove
     const dock = S.pb.docks[seat % S.pb.docks.length];
-    const [x, z] = boardSpot(host.color, [dock[0], -235]);
+    const [x, z] = boardSpot(host.color, [dock[0], -310]);
     // long axis perpendicular to the board's dock edge
     const yaw = (BOARD_RY[S.boards[host.color].yaw] ?? 0) + Math.PI / 2;
     return { x, z, yaw };
@@ -426,7 +426,7 @@ function Pieces({ view }: { view: ContainerView }) {
       const yaw = S.boards[seatColor].yaw;
       list.forEach((color, i) => {
         const row = Math.floor(i / 2), col = i % 2;
-        const local: [number, number] = [at[0] + (col - 0.5) * 150, at[1] - row * 130];
+        const local: [number, number] = [at[0] + (col - 0.5) * 230, at[1] - row * 130];
         const [x, z] = boardSpot(seatColor, local);
         const contYaw = BOARD_RY[yaw] ?? 0; // lie along the printed lot row
         nodes.push(<ContainerPiece key={`fl-${p.seat}-${price}-${i}`} color={color}
@@ -440,7 +440,7 @@ function Pieces({ view }: { view: ContainerView }) {
       const yaw = S.boards[seatColor].yaw;
       list.forEach((color, i) => {
         const row = Math.floor(i / 2), col = i % 2;
-        const local: [number, number] = [at[0] + (col - 0.5) * 150, at[1] + row * 130];
+        const local: [number, number] = [at[0] + (col - 0.5) * 230, at[1] + row * 130];
         const [x, z] = boardSpot(seatColor, local);
         const contYaw = BOARD_RY[yaw] ?? 0; // lie along the printed lot row
         nodes.push(<ContainerPiece key={`hl-${p.seat}-${price}-${i}`} color={color}
@@ -472,9 +472,9 @@ function Pieces({ view }: { view: ContainerView }) {
       <Ship key={`ship-${p.seat}`} seatColor={seatColor} x={sp.x} z={sp.z} yaw={sp.yaw}>
         {p.ship.cargo.map((color, i) => (
           <ContainerPiece key={`cargo-${p.seat}-${i}`} color={color}
-            x={Math.cos(sp.yaw) * (i - 2) * 0.72}
-            z={-Math.sin(sp.yaw) * (i - 2) * 0.72}
-            y={0.55} yaw={sp.yaw + Math.PI / 2} proto={proto} />
+            x={Math.cos(sp.yaw) * (i - 2) * 0.62}
+            z={-Math.sin(sp.yaw) * (i - 2) * 0.62}
+            y={0.8} yaw={sp.yaw + Math.PI / 2} proto={proto} />
         ))}
       </Ship>,
     );
