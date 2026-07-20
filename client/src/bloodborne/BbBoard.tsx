@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import type { BbView } from '@bge/shared';
-import { BB_HUNT_TRACK } from '@bge/shared';
+import { BB_HUNT_TRACK, BB_HUNTERS, BB_ENEMIES, BB_BOSSES, BB_ITEMS } from '@bge/shared';
 import { BbScene } from './BbScene';
 import { BB_SEAT_HEX, bbHunterName, bbEnemyName, useBbManifest, bbCellCss } from './bb-assets';
 import { bloodborneMusicMuted, useBbAudio } from './useBbAudio';
@@ -23,8 +23,11 @@ export function BbBoard({ view }: { view: BbView }) {
   const chapterDreamPending = view.pending.some((choice) => choice.kind === 'dream-upgrades' || choice.kind === 'dream-incorporate');
 
   return (
-    <div className="bb-board" data-phase={view.phase} aria-label="Bloodborne shared hunt board">
+    <div className={'bb-board' + (view.combat ? ' in-combat' : '')} data-phase={view.phase} aria-label="Bloodborne shared hunt board">
       <BbScene view={view} />
+
+      {/* combat face-off: the attack playing out, mirrored on the big screen */}
+      {view.combat && <BbBoardCombat view={view} manifest={manifest} />}
 
       {/* top strip: campaign · chapter · hunt track · enemy roster */}
       <div className="bb-hud-top">
@@ -147,5 +150,83 @@ export function BbBoard({ view }: { view: BbView }) {
 }
 
 // weapon dashboard cell per hunter id (sheet-2 art)
-import { BB_HUNTERS } from '@bge/shared';
 const huntersCell = (id: string): number => (BB_HUNTERS[id]?.art as { weaponCell?: number })?.weaponCell ?? 0;
+
+// ---------- shared-screen combat face-off ----------
+// The attack the active hunter is resolving on their device, mirrored large on
+// the TV so the whole table watches the same clash: who is striking, what the
+// enemy revealed, and both healths. Display-only — every choice stays on device.
+const BB_BC_RANK: Record<string, number> = { fast: 3, medium: 2, slow: 1 };
+const bbSpeedArrows = (speed: string | null | undefined): string => (speed ? '›'.repeat(BB_BC_RANK[speed] ?? 1) : '');
+
+function BbBoardCombat({ view, manifest }: { view: BbView; manifest: ReturnType<typeof useBbManifest> }) {
+  const combat = view.combat!;
+  const me = view.hunters[combat.seat];
+  const seatColor = BB_SEAT_HEX[String(view.seats[combat.seat]?.color)] ?? '#8b929d';
+  const hunter = me?.hunterId ? BB_HUNTERS[me.hunterId] : null;
+  const weaponSide = hunter?.sides[me.weaponSide];
+
+  const foe = combat.enemyUid != null ? view.enemies.find((e) => e.uid === combat.enemyUid) : null;
+  const boss = combat.bossUid != null ? view.bosses.find((b) => b.uid === combat.bossUid) : null;
+  const foeDef = foe ? BB_ENEMIES[foe.type] : null;
+  const bossDef = boss ? BB_BOSSES[boss.type] : null;
+  const foeName = foeDef?.name ?? bossDef?.name ?? 'Nightmare';
+  const foeSide = foe && foeDef ? foeDef.sides[view.enemySides[foe.type] ?? 0] : null;
+  const bossHpKey = String(Math.max(1, Math.min(4, view.seats.length))) as '1' | '2' | '3' | '4';
+  const foeMaxHp = foeSide?.hp ?? (boss && bossDef ? bossDef.hp[boss.phase - 1][bossHpKey] : 1);
+  const foeHp = Math.max(0, foeMaxHp - (foe?.damage ?? boss?.damage ?? 0));
+  const foeArt = foeDef?.art
+    ? { sheet: foeDef.art.sheet, cell: foeDef.art.cell }
+    : bossDef?.art
+      ? { sheet: bossDef.art.hpSheet, cell: bossDef.art.hpCell }
+      : null;
+
+  const snapshot = combat.enemyAction?.action ?? null;
+  const revealed = !!snapshot;
+  const enemyDamage = Math.max(0, (snapshot?.damage ?? 0) + combat.enemyDmgBonus);
+
+  const firearmAttack = (combat as unknown as { firearmAttack?: { speed: string; damage: number } } | null)?.firearmAttack;
+  const committedSlot = combat.attack ? weaponSide?.slots[combat.attack.slot] : null;
+  const firearm = BB_ITEMS[me?.firearmId ?? ''];
+  const hunterAttacking = !!combat.attack || !!firearmAttack;
+  const hunterAtkName = firearmAttack ? firearm?.name : committedSlot?.name;
+  const hunterAtkSpeed = firearmAttack?.speed ?? committedSlot?.speed ?? null;
+  const hunterAtkDamage = firearmAttack
+    ? firearmAttack.damage + combat.hunterDmgBonus
+    : committedSlot ? committedSlot.damage + combat.hunterDmgBonus : 0;
+
+  const hunterName = bbHunterName(me?.hunterId).toUpperCase();
+  const status = combat.noResponse ? 'AMBUSH — NO RESPONSE'
+    : !hunterAttacking && !revealed ? `${hunterName} CHOOSES A STRIKE`
+      : !revealed ? 'ENEMY ACTION HIDDEN'
+        : 'THE CLASH RESOLVES';
+
+  return (
+    <div className="bb-board-combat" role="status" aria-live="polite"
+      aria-label={`Combat: ${hunterName} versus ${foeName}`}>
+      <div className="bb-board-combat-head">
+        <span>{boss ? `NIGHTMARE · PHASE ${boss.phase}` : 'ATTACK'}</span>
+        <strong>{status}</strong>
+      </div>
+      <div className="bb-board-combat-vs">
+        <div className="bb-bc-side hunter" style={{ borderColor: seatColor }}>
+          <div className="bb-bc-portrait"
+            style={bbCellCss(manifest, 'sheet-2', (hunter?.art as { weaponCell?: number } | undefined)?.weaponCell ?? 0, me?.weaponSide === 1)}
+            aria-hidden="true" />
+          <span className="bb-bc-name">{hunterName}</span>
+          <strong className="bb-bc-move">{hunterAttacking ? (hunterAtkName ?? 'STRIKE') : 'CHOOSING…'}</strong>
+          <small className="bb-bc-stat">{hunterAttacking ? `${bbSpeedArrows(hunterAtkSpeed)} · ${hunterAtkDamage}◆` : `${me?.hp ?? 0}/6 HP`}</small>
+          <div className="bb-bc-hp" role="meter" aria-hidden="true"><span style={{ width: `${(me?.hp ?? 0) / 6 * 100}%`, background: seatColor }} /></div>
+        </div>
+        <div className="bb-bc-clash" aria-hidden="true"><span>VS</span></div>
+        <div className="bb-bc-side foe">
+          <div className="bb-bc-portrait" style={foeArt ? bbCellCss(manifest, foeArt.sheet, foeArt.cell) : undefined} aria-hidden="true" />
+          <span className="bb-bc-name">{foeName.toUpperCase()}</span>
+          <strong className="bb-bc-move">{revealed ? snapshot!.name : '???'}</strong>
+          <small className="bb-bc-stat">{revealed ? (snapshot!.isAbility ? 'ABILITY' : `${bbSpeedArrows(snapshot!.speed)} · ${enemyDamage}◆`) : `${foeHp}/${foeMaxHp} HP`}</small>
+          <div className="bb-bc-hp foe" role="meter" aria-hidden="true"><span style={{ width: `${foeHp / Math.max(1, foeMaxHp) * 100}%` }} /></div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -545,7 +545,7 @@ export default function BbPlay({ view, act, seat, error }: Props) {
       )}
 
       {combatResult && (
-        <BbCombatResultDialog result={combatResult} view={view}
+        <BbCombatResultDialog result={combatResult}
           onContinue={() => setDismissedCombatResult(combatResult.seq)} />
       )}
 
@@ -876,9 +876,8 @@ function BbItemVisual({ manifest, itemId, kindLabel, exhausted = false, stateLab
   );
 }
 
-function BbCombatResultDialog({ result, view, onContinue }: {
+function BbCombatResultDialog({ result, onContinue }: {
   result: NonNullable<BbView['lastCombatResult']>;
-  view: BbView;
   onContinue: () => void;
 }) {
   const title = result.outcome === 'mutual' ? 'BOTH SLAIN'
@@ -889,59 +888,53 @@ function BbCombatResultDialog({ result, view, onContinue }: {
             : result.outcome === 'foe-advantage' ? `${result.foeName.toUpperCase()} WINS THE EXCHANGE`
               : 'EXCHANGE COMPLETE — BOTH REMAIN';
   const hunterLine = !result.hunterAttack
-    ? 'The Hunter committed no attack.'
+    ? 'You made no attack.'
     : result.hunterAttack.cancelled
-      ? `${result.hunterAttack.name} was cancelled before it resolved.`
+      ? `${result.hunterAttack.name} — cancelled.`
       : result.hunterAttack.resolved
-        ? `${result.hunterAttack.name} resolved for ${result.foeDamageTaken} damage.`
-        : `${result.hunterAttack.name} did not resolve.`;
+        ? `${result.hunterAttack.name} — ${result.foeDamageTaken} damage.`
+        : `${result.hunterAttack.name} — no hit.`;
   const enemyLine = result.dodged
-    ? `${result.enemyAction?.name ?? 'Enemy attack'} was Dodged.`
+    ? `${result.enemyAction?.name ?? 'Attack'} — Dodged.`
     : result.enemyAction?.cancelled
-      ? `${result.enemyAction.name} was cancelled.`
+      ? `${result.enemyAction.name} — cancelled.`
       : result.enemyAction?.resolved
-        ? `${result.enemyAction.name} resolved for ${result.hunterDamageTaken} damage${result.blocked ? ` after ${result.blocked} Block` : ''}.`
-        : `${result.enemyAction?.name ?? 'Enemy action'} did not deal damage.`;
-  const speedName = (rank: number | null) => rank == null ? 'Ability'
-    : rank >= 3 ? 'Fast' : rank >= 2 ? 'Medium' : rank >= 1 ? 'Slow' : 'Delayed';
+        ? `${result.enemyAction.name} — ${result.hunterDamageTaken} damage${result.blocked ? ` (${result.blocked} blocked)` : ''}.`
+        : `${result.enemyAction?.name ?? 'Enemy action'} — no damage.`;
   const speedOrder = result.hunterAttack && result.enemyAction
     ? result.hunterAttack.speed === result.enemyAction.speed
-      ? `Equal ${speedName(result.hunterAttack.speed)} speed — both resolve simultaneously unless cancelled.`
+      ? 'Equal speed — both resolve together.'
       : (result.hunterAttack.speed ?? -1) > (result.enemyAction.speed ?? -1)
-        ? `${result.hunterAttack.name} resolves first (${speedName(result.hunterAttack.speed)} before ${speedName(result.enemyAction.speed)}).`
-        : `${result.enemyAction.name} resolves first (${speedName(result.enemyAction.speed)} before ${speedName(result.hunterAttack.speed)}).`
+        ? 'Your attack resolves first.'
+        : `${result.foeName} resolves first.`
     : null;
   return (
     <BbDialog label={title} wide className="bb-combat-result-dialog" testId="bb-combat-result">
       <div className={`bb-combat-result outcome-${result.outcome}`}>
         <header>
-          <span>COMBAT EXCHANGE RESOLVED</span>
+          <span>EXCHANGE RESOLVED</span>
           <h2>{title}</h2>
-          <p>{result.noResponse ? 'Interact ambushes allow no Hunter attack or Dodge response; this exchange resolved immediately.'
-            : result.foeSlain ? 'The foe is removed from the Hunt.'
-            : result.phaseChanged ? `Phase ${result.bossPhaseAfter} begins at full phase health; excess damage is discarded.`
-              : result.hunterSlain ? 'All carried Blood Echoes are lost; the Hunter awakens in the Dream.'
-                : 'The fight may continue in a later action or activation.'}</p>
+          <p>{result.noResponse ? 'Ambush — no response allowed.'
+            : result.foeSlain ? 'The foe is slain.'
+            : result.phaseChanged ? `Phase ${result.bossPhaseAfter} begins at full health.`
+              : result.hunterSlain ? 'You wake in the Dream. All carried Echoes are lost.'
+                : 'The fight continues.'}</p>
         </header>
         <div className="bb-combat-result-score" aria-label="Combat health result">
-          <div><span>HUNTER</span><strong>{result.hunterHpBefore} → {result.hunterHpAfter} HP</strong><small>{result.hunterDamageTaken} DAMAGE TAKEN</small></div>
+          <div><span>YOU</span><strong>{result.hunterHpBefore} → {result.hunterHpAfter} HP</strong><small>−{result.hunterDamageTaken}</small></div>
           <b aria-hidden="true">◆</b>
-          <div><span>{result.foeName.toUpperCase()}</span><strong>{result.foeHpBefore} → {result.foeHpAfter} HP</strong><small>{result.foeDamageTaken} DAMAGE TAKEN</small></div>
+          <div><span>{result.foeName.toUpperCase()}</span><strong>{result.foeHpBefore} → {result.foeHpAfter} HP</strong><small>−{result.foeDamageTaken}</small></div>
         </div>
         <ol className="bb-combat-transcript">
-          {result.noResponse && <li>INTERACT AMBUSH — the enemy resolves without an Attack or Dodge response.</li>}
           {speedOrder && <li>{speedOrder}</li>}
           <li>{hunterLine}</li>
           <li>{enemyLine}</li>
-          {result.phaseChanged && <li>Phase {result.bossPhaseBefore} is broken. The revealed phase action still finishes resolving.</li>}
-          {result.foeSlain && <li>Enemy slain — the Hunter now carries {view.hunters[result.seat]?.echoes ?? 0}/3 Blood Echoes.</li>}
-          {result.hunterSlain && <li>Hunter slain — Hunt Track is now {view.huntTrack + 1}/{view.huntTrackLength}.</li>}
         </ol>
         {result.enemyAction?.text && (
-          <details className="bb-combat-result-rule"><summary>REVEALED ACTION TEXT</summary><p>{bbIconText(result.enemyAction.text)}</p></details>
+          <details className="bb-combat-result-rule"><summary>ACTION TEXT</summary><p>{bbIconText(result.enemyAction.text)}</p></details>
         )}
         <button className="bb-btn primary bb-combat-result-continue" data-testid="bb-combat-result-continue" onClick={onContinue}>
-          CONTINUE THE HUNT
+          CONTINUE
         </button>
       </div>
     </BbDialog>
@@ -1487,16 +1480,20 @@ function BbBattlePromptBoard({ view, seat, act, pending, manifest, pick, setPick
             <strong>{enemyAct ? `${enemyAct.name} is coming.` : `${foeName} attacks you.`}</strong>
           </div>
           <div className="bb-battle-simple-exchange" aria-label="Current exchange">
-            <div>
+            <div className="you" style={{ borderColor: hunterAccent }}>
               <span>YOU</span>
-              <strong>{firearmAttack ? firearm?.name : committedSlot?.name ?? 'No attack chosen'}</strong>
-              <small>{hunterAttacking ? `${speedMarks(hunterAttackRank)} · ${hunterAttackDamage} damage${committedStagger ? ' · Stagger' : ''}` : `${me.hp}/6 HP`}</small>
+              <strong>{hunterAttacking ? (firearmAttack ? firearm?.name : committedSlot?.name) : 'No attack yet'}</strong>
+              <small>{hunterAttacking
+                ? `${speedMarks(hunterAttackRank)} · ${hunterAttackDamage}◆${committedStagger ? ' · Stagger' : ''}`
+                : `${me.hp}/6 HP`}</small>
             </div>
             <b aria-hidden="true">VS</b>
-            <div>
+            <div className="foe">
               <span>{foeName.toUpperCase()}</span>
-              <strong>{enemyAct?.name ?? 'Action hidden'}</strong>
-              <small>{enemyAct ? `${speedMarks(enemyRank)} · ${enemyDamage} damage` : `${foeHp}/${foeMaxHp} HP`}</small>
+              <strong>{enemyAct?.name ?? 'Hidden'}</strong>
+              <small>{enemyAct
+                ? (actionIsAbility ? 'Ability' : `${speedMarks(enemyRank)} · ${enemyDamage}◆`)
+                : `${foeHp}/${foeMaxHp} HP`}</small>
             </div>
           </div>
         </section>
@@ -1660,14 +1657,14 @@ function BbBattlePromptBoard({ view, seat, act, pending, manifest, pick, setPick
           <div className="bb-combat-intro-card">
             <span>{boss ? 'A NIGHTMARE STIRS' : 'ENEMY ATTACK'}</span>
             <h2 id="bb-combat-intro-title">{foeName} attacks!</h2>
-            <p>You will handle this exchange one decision at a time.</p>
+            <p>One step at a time.</p>
             {firstBattle && <ol>
               <li><b>1</b><span>Choose your attack.</span></li>
-              <li><b>2</b><span>Reveal what the enemy does.</span></li>
-              <li><b>3</b><span>Dodge if the attack can hit you.</span></li>
-              <li><b>4</b><span>Fast actions resolve first. The result is shown clearly.</span></li>
+              <li><b>2</b><span>See the enemy's move.</span></li>
+              <li><b>3</b><span>Dodge — or take the hit.</span></li>
+              <li><b>4</b><span>The faster attack lands first.</span></li>
             </ol>}
-            <button className="bb-btn primary" data-testid="bb-combat-begin" onClick={beginExchange}>BEGIN THE EXCHANGE</button>
+            <button className="bb-btn primary" data-testid="bb-combat-begin" onClick={beginExchange}>BEGIN</button>
           </div>
         </section>
       )}
@@ -1675,16 +1672,16 @@ function BbBattlePromptBoard({ view, seat, act, pending, manifest, pick, setPick
       {tutorialOpen && (
         <section className="bb-combat-tutorial" role="dialog" aria-modal="true" aria-labelledby="bb-combat-tutorial-title">
           <div className="bb-combat-tutorial-card">
-            <span>COMBAT IN FOUR STEPS</span>
-            <h2 id="bb-combat-tutorial-title">One decision at a time</h2>
+            <span>COMBAT · 4 STEPS</span>
+            <h2 id="bb-combat-tutorial-title">One step at a time</h2>
             <ol>
-              <li><b>1 · ATTACK</b><p>Choose a card, then an open weapon slot. The slot sets speed and damage.</p></li>
-              <li><b>2 · REVEAL</b><p>Optional On Attack gear comes first. Then the enemy action is shown.</p></li>
-              <li><b>3 · DODGE</b><p>A Dodge card needs another open slot at least as fast as the incoming attack.</p></li>
-              <li><b>4 · RESOLVE</b><p>Fast beats Medium, which beats Slow. Equal speeds happen together.</p></li>
+              <li><b>1 · ATTACK</b><p>Pick a card, then a weapon slot. The slot sets speed and damage.</p></li>
+              <li><b>2 · REVEAL</b><p>Add On Attack gear, then see the enemy's move.</p></li>
+              <li><b>3 · DODGE</b><p>Needs an open slot as fast as the attack.</p></li>
+              <li><b>4 · RESOLVE</b><p>The faster attack lands first. Equal speed lands together.</p></li>
             </ol>
-            <p className="bb-combat-tutorial-note">Filled slots cannot be used. Stagger cancels a slower attack. Block reduces damage. Unavailable choices always show the reason.</p>
-            <button className="bb-btn primary" data-testid="bb-tutorial-continue" onClick={closeTutorial}>BACK TO THIS STEP</button>
+            <p className="bb-combat-tutorial-note">Filled slots are locked. Stagger cancels a slower attack. Block cuts damage.</p>
+            <button className="bb-btn primary" data-testid="bb-tutorial-continue" onClick={closeTutorial}>BACK</button>
           </div>
         </section>
       )}
@@ -1767,7 +1764,7 @@ function BbPrompt({ view, seat, act, pending, manifest, roundDiscard, setRoundDi
 
         {pending.kind === 'tile-orientation' && (
           <>
-            <p className="bb-orientation-rule">The rulebook lets you connect <strong>any exit</strong> on the revealed tile to the space you left. These are the legal placements that keep the map explorable.</p>
+            <p className="bb-orientation-rule">Pick which <strong>exit</strong> connects to the space you left.</p>
             <div className="bb-rot-pick">
               {pending.options.map((rot) => (
                 <button key={rot} className="bb-rot" data-testid={`bb-rot-${rot}`} onClick={() => act({ type: 'choose', rot })}>
