@@ -244,7 +244,13 @@ export class PgStore implements RoomStore {
   constructor(url: string, PgPool: typeof import('pg').Pool) {
     // Render's internal connection string needs no TLS; external ones do.
     const ssl = process.env.DATABASE_SSL ? { rejectUnauthorized: false } : undefined;
-    this.pool = new PgPool({ connectionString: url, ssl, max: 3 });
+    // Bounded waits: an unreachable or stalled database must fail fast, not hang the server.
+    this.pool = new PgPool({ connectionString: url, ssl, max: 3, connectionTimeoutMillis: 8000, query_timeout: 15000 });
+    // An idle connection dropping (database restart, network blip) emits 'error' on the pool.
+    // Unhandled, that would crash the process.
+    (this.pool as { on?: (event: string, cb: (err: Error) => void) => void }).on?.('error', (err) => {
+      console.error('postgres pool error:', err.message);
+    });
   }
 
   async load(): Promise<SavedRoom[]> {
@@ -316,7 +322,11 @@ export async function createStore(dataDir: string): Promise<RoomStore> {
     try {
       const pg = await import('pg');
       const store = new PgStore(url, pg.default.Pool);
-      await store.load(); // proves connectivity + creates the table
+      // proves connectivity + creates the table, with a hard ceiling on the wait
+      await Promise.race([
+        store.load(),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Postgres did not answer within 20 seconds')), 20_000)),
+      ]);
       return store;
     } catch (err) {
       console.error('DATABASE_URL set but Postgres unavailable — falling back to file store:', err);

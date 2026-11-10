@@ -60,7 +60,33 @@ export interface BrassEvent {
   link?: string; // focus: a link name
   incomeDelta?: number; // income steps gained/lost by the actor
   drew?: number; // cards drawn back at end of turn
+  money?: number; // the actor's net cash change from this action (negative = paid)
+  flips?: string[]; // squares whose tile turned over during this action
+  merchantSlot?: number; // sell: the merchant slot that bought
+  merchantBeer?: boolean; // sell: the merchant's own barrel was drunk
+  ironFrom?: string; // develop: the works square the iron came from, or 'market'
 }
+
+// ---- the presentation stream ----
+// One action can cause several things the table should watch in order: the
+// action itself, then a round turning over, an era being scored, the board
+// being cleared for rail, the game ending. Each is a beat, and each beat
+// carries the public state as it stood right after it, so a screen can stage
+// them one at a time without ever inventing an in-between state.
+
+export interface IncomeRow { color: Color; name: string; amount: number; money: number; }
+export interface ScoreRow { color: Color; name: string; links: number; industries: number; before: number; vp: number; }
+export interface Standing { color: Color; name: string; vp: number; income: number; money: number; }
+
+export type BrassBeat =
+  | { t: 'action'; ev: BrassEvent }
+  | { t: 'round'; era: 'canal' | 'rail'; round: number; numRounds: number; order: Color[]; income: IncomeRow[] }
+  | { t: 'score'; era: 'canal' | 'rail'; rows: ScoreRow[] }
+  | { t: 'era'; removed: string[]; links: number; order: Color[]; income: IncomeRow[]; numRounds: number }
+  | { t: 'end'; winner: Color | null; standings: Standing[] };
+
+export interface BrassFrame { beat: BrassBeat; snap: BrassSnap; }
+export interface BrassBatch { seq: number; frames: BrassFrame[]; }
 
 /** slot is the index into the golden merchants array (drives board placement). */
 export interface Merchant { slot: number; location: string; tile: string; beer: boolean; }
@@ -85,6 +111,10 @@ export interface BrassState {
   deadCards: Card[]; // removed face down at setup
   wild: { location: number; industry: number };
   lastEvent: BrassEvent | null;
+  /** everything the last action caused, in watching order (absent on old saves) */
+  batch?: BrassBatch | null;
+  /** monotonic action counter; lives in the state so it survives a restart */
+  seq?: number;
   winner: Color | null;
   log: string[];
 }
@@ -147,6 +177,8 @@ export function createBrass(seated: SeatedPlayer[], seed: number): BrassState {
     deadCards,
     wild: { location: data.wildCards.location, industry: data.wildCards.industry },
     lastEvent: null,
+    batch: null,
+    seq: 0,
     winner: null,
     log: [`Game set up for ${P} players.`],
   };
@@ -190,8 +222,22 @@ export interface BrassView {
   drawCount: number;
   wild: { location: number; industry: number };
   lastEvent: BrassEvent | null;
+  batch: BrassBatch | null;
   winner: Color | null;
   log: string[];
+}
+
+/** The public table at one instant: a view with nothing private and no history. */
+export type BrassSnap = Omit<BrassView, 'game' | 'you' | 'lastEvent' | 'batch' | 'log'>;
+
+/** Freeze the public table as it stands. Safe to call mid-turnover, when
+ * `current` has run off the end of the order and the round is not yet reset. */
+export function snapOf(state: BrassState): BrassSnap {
+  const over = state.current >= state.turnOrder.length;
+  const v = viewFor({ ...state, current: over ? state.turnOrder.length - 1 : state.current }, null);
+  const { game: _g, you: _y, lastEvent: _e, batch: _b, log: _l, ...snap } = v;
+  if (over) snap.actionsLeft = 0;
+  return JSON.parse(JSON.stringify(snap)) as BrassSnap;
 }
 
 /** viewer: a seat number, null (TV / neutral), or 'dev' (everything revealed). */
@@ -233,6 +279,7 @@ export function viewFor(state: BrassState, viewer: number | null | 'dev'): Brass
     drawCount: state.drawDeck.length,
     wild: state.wild,
     lastEvent: state.lastEvent,
+    batch: state.batch ?? null,
     winner: state.winner,
     log: state.log,
   };

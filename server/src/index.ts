@@ -20,6 +20,10 @@ import { resolveRoomSeed } from './room-seed.js';
 import { stateMatchesGame } from './save-compat.js';
 import { claudeStatus, decideAction, decideClaim, decideReply } from './claude.js';
 
+// A game server that crash-loops is worse than one that logs and carries on.
+process.on('uncaughtException', (err) => console.error('uncaught exception:', err));
+process.on('unhandledRejection', (err) => console.error('unhandled rejection:', err));
+
 // Rooms + lobby + per-game engines. Each room carries a game id; start/action/view
 // dispatch to that game's engine.
 
@@ -163,11 +167,19 @@ function stale(r: { started: boolean; state: unknown; updatedAt: number }): bool
 }
 
 {
-  const saved = await store.load();
+  let saved: SavedRoom[] = [];
+  try {
+    saved = await store.load();
+  } catch (err) {
+    console.error('could not load saved rooms, starting with none:', err);
+  }
   let restored = 0;
   for (const r of saved) {
+   try {
+    if (!r || typeof r.id !== 'string' || !Array.isArray(r.players)) continue;
     if (stale(r)) {
-      try { await store.remove(r.id); } catch (err) { console.error(`failed to retire stale room ${r.id}:`, err); }
+      // Not awaited: clearing out an old save must never delay start-up.
+      void store.remove(r.id).catch((err) => console.error(`failed to retire stale room ${r.id}:`, err));
       continue;
     }
     // A Secret Hitler table that was mid-cutscene when the server stopped has no screen to wait for now.
@@ -187,11 +199,18 @@ function stale(r: { started: boolean; state: unknown; updatedAt: number }): bool
       deleted: false,
     });
     restored++;
+   } catch (err) {
+    console.error(`skipping unreadable save ${(r as { id?: string } | null)?.id ?? '?'}:`, err);
+   }
   }
   if (restored) console.log(`  Restored ${restored} saved room${restored === 1 ? '' : 's'} (${store.kind})`);
   // a restored game may be waiting on an AI seat: get it moving again
   // (deferred: the timers below initialize after this block evaluates)
-  setTimeout(() => { for (const room of rooms.values()) scheduleBots(room); }, 1000);
+  setTimeout(() => {
+    for (const room of rooms.values()) {
+      try { scheduleBots(room); } catch (err) { console.error(`could not resume AI seats in ${room.id}:`, err); }
+    }
+  }, 1000);
 }
 
 setInterval(() => {
@@ -298,6 +317,18 @@ const gateTimers = new Map<string, NodeJS.Timeout>();
 const aiBusy = new Map<string, Set<number>>();
 const replyBusy = new Map<string, Set<number>>();
 const busySet = (map: Map<string, Set<number>>, id: string) => map.get(id) ?? map.set(id, new Set()).get(id)!;
+// Claims an AI seat could not make (nothing sensible to say). Remembered so it is not retried forever.
+const skippedClaims = new Map<string, Set<string>>();
+const claimKey = (seat: number, slot: { kind: string; gov: number }) => `${seat}:${slot.kind}:${slot.gov}`;
+function openClaim(room: Room, s: ShRoomState, seat: number) {
+  const skipped = skippedClaims.get(room.id);
+  return s.core.claimSlots[seat].find((c) => !skipped?.has(claimKey(seat, c)));
+}
+function skipClaim(room: Room, seat: number, slot: { kind: string; gov: number }) {
+  const set = skippedClaims.get(room.id) ?? skippedClaims.set(room.id, new Set()).get(room.id)!;
+  set.add(claimKey(seat, slot));
+  if (set.size > 500) set.clear();
+}
 
 const shState = (room: Room): ShRoomState | null => (room.game === 'secrethitler' && room.state ? (room.state as ShRoomState) : null);
 function screenLive(room: Room): boolean {
@@ -334,7 +365,7 @@ function scheduleBots(room: Room): void {
   const busy = busySet(aiBusy, room.id);
   for (let seat = 0; seat < s.core.n; seat++) {
     if (!isAiSeat(room, seat) || busy.has(seat)) continue;
-    if (shLegalActions(s.core, seat).length || s.core.claimSlots[seat].length) void runAi(room, seat);
+    if (shLegalActions(s.core, seat).length || openClaim(room, s, seat)) void runAi(room, seat);
   }
 }
 
@@ -353,7 +384,10 @@ function shAct(room: Room, seat: number, action: ShAction): string | null {
 async function runAi(room: Room, seat: number): Promise<void> {
   const busy = busySet(aiBusy, room.id);
   busy.add(seat);
+  let retryMs = 50;
   try {
+    // Always yield first, so an AI turn never runs inside the stack of whatever triggered it.
+    await sleep(0);
     const started = Date.now();
     while (presenting(room) && Date.now() - started < PRESENT_TIMEOUT_MS) await sleep(250);
     if (screenLive(room) && AI_DELAY_MS > 0) await sleep(AI_DELAY_MS * (0.7 + Math.random() * 0.9));
@@ -374,11 +408,14 @@ async function runAi(room: Room, seat: number): Promise<void> {
       if (decision) cur.notes[seat] = decision.notes;
       if (decision?.say) shAct(room, seat, { type: 'say', text: decision.say });
       const err = shAct(room, seat, action);
-      if (err) console.warn(`[ai] ${cur.core.names[seat]} move rejected: ${err}`);
+      if (err) {
+        console.warn(`[ai] ${cur.core.names[seat]} move rejected: ${err}`);
+        retryMs = 3000;
+      }
       return;
     }
 
-    const slot = view.claimSlots[0];
+    const slot = openClaim(room, s, seat);
     if (slot) {
       const decision = live ? await decideClaim(view, slot, s.events, notes) : null;
       const cur = shState(room);
@@ -388,18 +425,26 @@ async function runAi(room: Room, seat: number): Promise<void> {
         const value = botClaim(shPrivateView(cur.core, seat), slot);
         action = value ? { type: 'claim', kind: slot.kind, value } : null;
       }
-      if (!action) return;
+      if (!action) {
+        skipClaim(room, seat, slot);
+        return;
+      }
       if (decision) cur.notes[seat] = decision.notes;
       const err = shAct(room, seat, action);
-      if (err) console.warn(`[ai] ${cur.core.names[seat]} claim rejected: ${err}`);
-      else if (decision?.say) shAct(room, seat, { type: 'say', text: decision.say });
+      if (err) {
+        console.warn(`[ai] ${cur.core.names[seat]} claim rejected: ${err}`);
+        skipClaim(room, seat, slot);
+      } else if (decision?.say) shAct(room, seat, { type: 'say', text: decision.say });
     }
   } catch (err) {
     console.warn('[ai] turn failed', err);
+    retryMs = 3000;
   } finally {
     busy.delete(seat);
     // Anything new to do (another claim, the next phase)?
-    setTimeout(() => scheduleBots(room), 50);
+    setTimeout(() => {
+      try { scheduleBots(room); } catch (err) { console.error(`AI scheduling failed in ${room.id}:`, err); }
+    }, retryMs);
   }
 }
 
@@ -505,6 +550,7 @@ async function retireRoom(room: Room, closeSockets: boolean): Promise<boolean> {
   rooms.delete(room.id);
   clearTimeout(gateTimers.get(room.id));
   gateTimers.delete(room.id);
+  skippedClaims.delete(room.id);
   aiBusy.delete(room.id);
   replyBusy.delete(room.id);
   try {
@@ -776,6 +822,12 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
     }
   }
 }
+
+// Failing to bind the port is fatal: exit so the host restarts us, rather than idling with no listener.
+server.on('error', (err) => {
+  console.error('server failed to start:', err);
+  process.exit(1);
+});
 
 server.listen(PORT, () => {
   const claude = claudeStatus();
