@@ -20,6 +20,7 @@
     "test": "npm run test -w shared && npm run test -w server && npm run test -w client",
     "typecheck": "tsc -p client/tsconfig.json --noEmit && tsc -p server/tsconfig.json --noEmit",
     "autoplay": "npm run autoplay -w server --",
+    "autoplay:brass": "npm run autoplay:brass -w server --",
     "stage:sh": "node tools/stage-secret-hitler.mjs"
   },
   "devDependencies": {

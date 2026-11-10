@@ -1,7 +1,8 @@
-import type { BrassView } from '@bge/shared';
+import type { BrassSnap } from '@bge/shared';
 import type { GameSceneState } from './TableScene';
 
-export function gameSceneState(view: BrassView): GameSceneState {
+/** The slice of a public table state the 3D scene places pieces from. */
+export function gameSceneState(view: BrassSnap): GameSceneState {
   return {
     era: view.era,
     turnOrder: view.turnOrder,

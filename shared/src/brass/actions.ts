@@ -23,8 +23,9 @@
 import data from './setup-data.json';
 import squareData from './square-industries.json';
 import {
-  incomeAt,
+  incomeAt, snapOf,
   type BrassState, type BrassPlayer, type BuiltIndustry, type Card, type Color, type Merchant,
+  type BrassEvent, type BrassFrame, type IncomeRow, type ScoreRow,
 } from './state.js';
 
 /** Allowed industries per square (read from the board's printed slot icons). */
@@ -262,7 +263,7 @@ export function planBuild(
     }
     if (need > 0) {
       if (!marketConnected(board, merchants, loc)) {
-        return { error: 'Needs coal — no connected mine or market' };
+        return { error: 'Needs coal, and no mine or market is connected' };
       }
       coalFromMarket = need;
     }
@@ -386,8 +387,6 @@ export type BrassAction =
 
 export interface ApplyResult { ok: boolean; error?: string; }
 
-let eventSeq = 1;
-
 export function applyAction(state: BrassState, seat: number, action: BrassAction): ApplyResult {
   if (state.phase !== 'playing') return { ok: false, error: 'The game is over' };
   const player = state.players[seat];
@@ -396,21 +395,24 @@ export function applyAction(state: BrassState, seat: number, action: BrassAction
 
   const fail = (error: string): ApplyResult => ({ ok: false, error });
   const notes: string[] = [];
+  const flips: string[] = [];
   const incomeBefore = incomeAt(player.incomeOffset);
-  const event = (
-    title: string,
-    detail: string,
-    at?: { square?: string; link?: string; tile?: string; location?: string; cost?: string },
-  ) => {
+  const moneyBefore = player.money;
+  // Old saves carry no counter: pick up after the last event they recorded.
+  const seq = (state.seq ?? state.lastEvent?.seq ?? 0) + 1;
+  const event = (title: string, detail: string, at?: Partial<BrassEvent>) => {
     const delta = incomeAt(player.incomeOffset) - incomeBefore;
+    state.seq = seq;
     state.lastEvent = {
-      seq: eventSeq++, color: player.color, player: player.name, title,
+      seq, color: player.color, player: player.name, title,
       detail: [detail, ...notes].filter(Boolean).join(' · '),
       kind: action.type,
       incomeDelta: delta || undefined,
+      money: player.money - moneyBefore || undefined,
+      flips: flips.length ? [...flips] : undefined,
       ...at,
     };
-    state.log.push(`${player.name}: ${title} — ${state.lastEvent.detail}`);
+    state.log.push(`${player.name}: ${title}. ${state.lastEvent.detail}`);
   };
 
   const spend = (amount: number): void => {
@@ -423,9 +425,10 @@ export function applyAction(state: BrassState, seat: number, action: BrassAction
     const b = state.board.industries[sq];
     if (!b || b.flipped || b.cubes > 0) return;
     b.flipped = true;
+    flips.push(sq);
     const owner = state.players.find((p) => p.color === b.color)!;
     owner.incomeOffset = Math.min(99, owner.incomeOffset + TILES[b.tile].income);
-    notes.push(`${b.color}'s ${b.tile} exhausted — their income +${TILES[b.tile].income}`);
+    notes.push(`${b.color}'s ${b.tile} exhausted, their income +${TILES[b.tile].income}`);
     refreshBeerTotals(state);
   };
 
@@ -452,7 +455,7 @@ export function applyAction(state: BrassState, seat: number, action: BrassAction
       }
       const plan = planBuild(state.board, state.markets, state.merchants, player.tiles, state.era, action.industry, action.square);
       if ('error' in plan) return fail(plan.error);
-      if (player.money < plan.total) return fail(`Costs £${plan.total} — you have £${player.money}`);
+      if (player.money < plan.total) return fail(`Costs £${plan.total}. You have £${player.money}`);
       // commit: consume coal/iron cubes from tiles
       for (const sq of plan.coalFromMines) { state.board.industries[sq].cubes--; maybeFlip(sq); }
       for (const sq of plan.ironFromWorks) { state.board.industries[sq].cubes--; maybeFlip(sq); }
@@ -517,18 +520,18 @@ export function applyAction(state: BrassState, seat: number, action: BrassAction
         const end = LINK_ENDS[action.link].find((e) => LOCATIONS[e]) ?? LINK_ENDS[action.link][0];
         const mines = connectedCoalSquares(state.board, end);
         if (mines.length) {
-          if (player.money < cost) return fail(`Costs £${cost} — you have £${player.money}`);
+          if (player.money < cost) return fail(`Costs £${cost}. You have £${player.money}`);
           state.board.industries[mines[0]].cubes--; maybeFlip(mines[0]);
           notes.push('coal from a mine');
         } else {
-          if (!marketConnected(state.board, state.merchants, end)) return fail('Needs coal — no connected mine or market');
+          if (!marketConnected(state.board, state.merchants, end)) return fail('Needs coal, and no mine or market is connected');
           const coalCost = marketBuyPrice(state.markets.coal, 'coal', 1);
           cost += coalCost;
-          if (player.money < cost) return fail(`Costs £${cost} — you have £${player.money}`);
+          if (player.money < cost) return fail(`Costs £${cost}. You have £${player.money}`);
           marketTake(state.markets.coal, 'coal', 1);
         }
       } else if (player.money < cost) {
-        return fail(`Costs £${cost} — you have £${player.money}`);
+        return fail(`Costs £${cost}. You have £${player.money}`);
       }
       spend(cost);
       player.links--;
@@ -551,6 +554,7 @@ export function applyAction(state: BrassState, seat: number, action: BrassAction
       const works = ironSquares(state.board);
       let ironNote = 'iron from works';
       let cost = 0;
+      const ironFrom = works.length ? works[0] : 'market';
       if (!works.length) {
         cost = marketBuyPrice(state.markets.iron, 'iron', 1);
         if (player.money < cost) return fail(`Needs 1 iron (£${cost})`);
@@ -562,7 +566,8 @@ export function applyAction(state: BrassState, seat: number, action: BrassAction
       if (cost) spend(cost);
       player.tiles[action.tile]--;
       discard(action.card);
-      event(`Developed past ${action.tile}`, `Removed from their board · ${ironNote}`);
+      event(`Developed past ${action.tile}`, `Removed from their board · ${ironNote}`,
+        { tile: action.tile, cost: cost ? `£${cost} · 1 iron` : '1 iron', ironFrom });
       break;
     }
 
@@ -590,13 +595,15 @@ export function applyAction(state: BrassState, seat: number, action: BrassAction
         maybeFlip(sq);
       }
       built.flipped = true;
+      flips.push(action.square);
       player.incomeOffset = Math.min(99, player.incomeOffset + t.income);
       refreshBeerTotals(state);
       discard(action.card);
       const beerTxt = beersNeeded === 0 ? 'no beer needed'
         : `${beersNeeded} beer${usedMerchant ? ' incl. the merchant’s' : ''}`;
       event(`Sold ${built.tile}`, `${LOCATION_OF[action.square]} → ${merchant.location} · ${beerTxt} · income +${t.income}`,
-        { square: action.square, tile: built.tile, location: LOCATION_OF[action.square], cost: beerTxt });
+        { square: action.square, tile: built.tile, location: LOCATION_OF[action.square], cost: beerTxt,
+          merchantSlot: merchant.slot, merchantBeer: usedMerchant });
       break;
     }
 
@@ -639,7 +646,9 @@ export function applyAction(state: BrassState, seat: number, action: BrassAction
       return fail('Unknown action');
   }
 
-  advance(state);
+  const frames: BrassFrame[] = [];
+  advance(state, frames);
+  state.batch = { seq, frames };
   return { ok: true };
 }
 
@@ -671,43 +680,67 @@ function refillHand(state: BrassState, p: BrassPlayer): number {
   return drew;
 }
 
-function advance(state: BrassState): void {
+/** Turn order for the next round: least spent goes first, ties keep their order. */
+function nextOrder(state: BrassState): Color[] {
+  return [...state.turnOrder].sort((a, b) => playerByColor(state, a).spent - playerByColor(state, b).spent);
+}
+
+/** Pay everyone their income (the mod pays at the start of every round but the first). */
+function payIncome(state: BrassState): IncomeRow[] {
+  return state.players.map((p) => {
+    const amount = incomeAt(p.incomeOffset);
+    p.money = Math.max(0, p.money + amount);
+    return { color: p.color, name: p.name, amount, money: p.money };
+  });
+}
+
+function advance(state: BrassState, frames: BrassFrame[]): void {
+  const actionFrame = () => {
+    if (state.lastEvent) frames.push({ beat: { t: 'action', ev: { ...state.lastEvent } }, snap: snapOf(state) });
+  };
+
   state.actionsLeft--;
-  if (state.actionsLeft > 0) return;
+  if (state.actionsLeft > 0) { actionFrame(); return; }
 
   // end of turn: refill, next player
   const drew = refillHand(state, playerByColor(state, state.turnOrder[state.current]));
   if (drew > 0 && state.lastEvent) state.lastEvent.drew = drew;
   state.current++;
   state.actionsLeft = state.era === 'canal' && state.round === 1 ? 1 : 2;
+  actionFrame();
 
   if (state.current < state.turnOrder.length) return;
 
   // ---- end of round ----
   if (state.round < state.numRounds) {
     state.round++;
-    state.turnOrder = [...state.turnOrder].sort(
-      (a, b) => playerByColor(state, a).spent - playerByColor(state, b).spent,
-    );
+    state.turnOrder = nextOrder(state);
     for (const p of state.players) p.spent = 0;
-    for (const p of state.players) p.money = Math.max(0, p.money + incomeAt(p.incomeOffset));
+    const income = payIncome(state);
     state.current = 0;
     state.actionsLeft = 2;
+    frames.push({
+      beat: { t: 'round', era: state.era, round: state.round, numRounds: state.numRounds, order: [...state.turnOrder], income },
+      snap: snapOf(state),
+    });
     return;
   }
 
   // ---- end of era ----
-  scoreEra(state);
+  // Scoring is watched on the board as it stood: nothing is cleared yet.
+  const rows = scoreEra(state);
+  frames.push({ beat: { t: 'score', era: state.era, rows }, snap: snapOf(state) });
+
   if (state.era === 'canal') {
+    const links = Object.keys(state.board.links).length;
     state.board.links = {};
+    const removed: string[] = [];
     for (const [sq, b] of Object.entries(state.board.industries)) {
-      if (TILES[b.tile].level === 1) delete state.board.industries[sq];
+      if (TILES[b.tile].level === 1) { delete state.board.industries[sq]; removed.push(sq); }
     }
     state.era = 'rail';
     state.round = 1;
-    state.turnOrder = [...state.turnOrder].sort(
-      (a, b) => playerByColor(state, a).spent - playerByColor(state, b).spent,
-    );
+    state.turnOrder = nextOrder(state);
     for (const p of state.players) { p.spent = 0; p.links = data.constants.linksPerPlayerPerEra; }
     const rng = mulberrySeq(state.seed + 7777);
     const list = [...(data.decks[String(state.players.length) as '2' | '3' | '4'].list as Card[])];
@@ -719,30 +752,44 @@ function advance(state: BrassState): void {
     for (const p of state.players) refillHand(state, p);
     for (const m of state.merchants) if (m.tile.startsWith('Buys ')) m.beer = true;
     refreshBeerTotals(state);
+    // The rail era's first round opens like every round after the very first: income is paid.
+    const income = payIncome(state);
     state.current = 0;
     state.actionsLeft = 2;
     state.log.push('The Canal Era ends. Rail Era begins.');
+    frames.push({
+      beat: { t: 'era', removed, links, order: [...state.turnOrder], income, numRounds: state.numRounds },
+      snap: snapOf(state),
+    });
     return;
   }
 
   // game over
   state.phase = 'ended';
-  let best: BrassPlayer | null = null;
-  for (const p of state.players) {
-    if (!best || p.vp > best.vp
-      || (p.vp === best.vp && incomeAt(p.incomeOffset) > incomeAt(best.incomeOffset))
-      || (p.vp === best.vp && incomeAt(p.incomeOffset) === incomeAt(best.incomeOffset) && p.money > best.money)) {
-      best = p;
-    }
-  }
+  state.current = state.turnOrder.length - 1;
+  state.actionsLeft = 0;
+  const rank = (p: BrassPlayer) => [p.vp, incomeAt(p.incomeOffset), p.money];
+  const standings = [...state.players].sort((a, b) => {
+    const ra = rank(a), rb = rank(b);
+    for (let i = 0; i < ra.length; i++) if (ra[i] !== rb[i]) return rb[i] - ra[i];
+    return 0;
+  });
+  const best = standings[0] ?? null;
   state.winner = best?.color ?? null;
   state.log.push(`Game over. ${best?.name ?? '?'} wins with ${best?.vp ?? 0} VP.`);
+  frames.push({
+    beat: {
+      t: 'end', winner: state.winner,
+      standings: standings.map((p) => ({ color: p.color, name: p.name, vp: p.vp, income: incomeAt(p.incomeOffset), money: p.money })),
+    },
+    snap: snapOf(state),
+  });
 }
 
 /** Era scoring: flipped industries score their points; each link scores the
  * link points of every adjacent location (built tiles' link icons, merchants
- * count 2). */
-function scoreEra(state: BrassState): void {
+ * count 2). Returns each player's breakdown for the scoring cutscene. */
+function scoreEra(state: BrassState): ScoreRow[] {
   const locLinkPoints = (loc: string): number => {
     if (EXTERNAL[loc] !== undefined) return EXTERNAL[loc];
     let sum = 0;
@@ -752,14 +799,24 @@ function scoreEra(state: BrassState): void {
     }
     return sum;
   };
+  const rows = new Map<Color, ScoreRow>(state.players.map((p) => [
+    p.color, { color: p.color, name: p.name, links: 0, industries: 0, before: p.vp, vp: p.vp },
+  ]));
   for (const [link, color] of Object.entries(state.board.links)) {
-    const pts = LINK_ENDS[link].reduce((a, end) => a + locLinkPoints(end), 0);
-    playerByColor(state, color).vp += pts;
+    const row = rows.get(color);
+    if (row) row.links += LINK_ENDS[link].reduce((a, end) => a + locLinkPoints(end), 0);
   }
   for (const b of Object.values(state.board.industries)) {
-    if (b.flipped) playerByColor(state, b.color).vp += TILES[b.tile].points;
+    const row = rows.get(b.color);
+    if (b.flipped && row) row.industries += TILES[b.tile].points;
+  }
+  for (const p of state.players) {
+    const row = rows.get(p.color)!;
+    p.vp += row.links + row.industries;
+    row.vp = p.vp;
   }
   state.log.push(`${state.era === 'canal' ? 'Canal' : 'Rail'} Era scored.`);
+  return state.players.map((p) => rows.get(p.color)!);
 }
 
 function mulberrySeq(seed: number): () => number {

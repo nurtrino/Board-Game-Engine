@@ -4,8 +4,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import '@fontsource-variable/inter';
 import './styles.css';
 import { initSfx } from './sfx';
+import { audio } from './brass/audio';
 
 initSfx();
+// Brass synthesises its sound: the audio clock has to start on a gesture, and
+// the gesture that opens a table usually happens on the hub, before the game loads.
+audio.arm();
 
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })));
 const SelectGame = lazy(() => import('./pages/SelectGame').then((module) => ({ default: module.SelectGame })));

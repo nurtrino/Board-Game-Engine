@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
 import crypto from 'node:crypto';
 import {
-  createBrass, viewFor, applyAction,
+  createBrass, viewFor, applyAction, brassBotMoves,
   createShRoom, shRoomView, shRoomApply, shRematch, shClaudeSeats, shLegalActions, shPrivateView, botAction, botClaim,
   createAxisGame, axisGameViewFor, applyAxisGameAction, normalizeAxisState,
   GAME_SEATS,
@@ -40,7 +40,7 @@ const engines = {
     view: (state: GameState, viewer: number | null | 'dev') => viewFor(state as BrassState, viewer),
     apply: (state: GameState, seat: number, action: unknown, _screenLive: boolean) => applyAction(state as BrassState, seat, action as BrassAction),
     minSeats: 2,
-    soloSeats: 4, // dev convenience: pad an empty table to a full game
+    soloSeats: 4, // one player alone gets a full table: the computer plays the other seats
   },
   secrethitler: {
     create: (seated: Seated[], seed: number, _options?: GameOptions): GameState => createShRoom(seated, seed),
@@ -377,8 +377,72 @@ function armGate(room: Room): void {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const isAiSeat = (room: Room, seat: number) => seat >= room.players.length || !!room.players[seat]?.isBot;
 
+// ---------- Brass: computer seats ----------
+// A player who starts alone gets a full table, and the server plays the empty
+// seats. Brass has no screen handshake, so a computer seat waits out the time
+// the big screen needs to stage whatever just happened, then thinks for a beat.
+
+// 1 is watching pace, 0 is instant (tests). BRASS_CPU=off leaves the seats to be driven by hand.
+const BRASS_PACE = Math.max(0, Number(process.env.BRASS_AI_PACE ?? 1));
+const BRASS_CPU = process.env.BRASS_CPU !== 'off';
+const brassPending = new Map<string, { key: string; timer: NodeJS.Timeout }>();
+const brassActedAt = new Map<string, number>();
+
+/** Roughly how long the big screen takes to play the last thing that happened. */
+function brassStageMs(s: BrassState): number {
+  if (!s.batch) return 12_000; // the opening title and turn order
+  let ms = 0;
+  for (const f of s.batch.frames) {
+    if (f.beat.t === 'action') ms += f.beat.ev.kind === 'pass' ? 2600 : 4500;
+    else if (f.beat.t === 'round') ms += 5200;
+    else if (f.beat.t === 'score') ms += 6500 + s.players.length * 2200;
+    else if (f.beat.t === 'era') ms += 8200;
+  }
+  return ms;
+}
+
+function scheduleBrassSeat(room: Room): void {
+  const s = room.state as BrassState | null;
+  if (!BRASS_CPU || !room.started || !s || !roomStateCompatible(room) || s.phase !== 'playing') return;
+  const seat = s.players.findIndex((p) => p.color === s.turnOrder[s.current]);
+  if (seat < 0 || !isAiSeat(room, seat)) return;
+  const key = `${s.seq ?? 0}:${s.era}:${s.round}:${s.current}:${s.actionsLeft}`;
+  const pending = brassPending.get(room.id);
+  if (pending?.key === key) return;
+  if (pending) clearTimeout(pending.timer);
+  // with no screen up, the pause is what lets a device read the move that just landed
+  const live = screenLive(room);
+  const think = live ? 700 + Math.random() * 800 : 1600 + Math.random() * 1200;
+  const staged = live ? (brassActedAt.get(room.id) ?? 0) + brassStageMs(s) - Date.now() : 0;
+  const delay = (Math.max(0, staged) + think) * BRASS_PACE;
+  const timer = setTimeout(() => {
+    brassPending.delete(room.id);
+    try { playBrassSeat(room, key); } catch (err) { console.error(`computer seat failed in ${room.id}:`, err); }
+  }, delay);
+  brassPending.set(room.id, { key, timer });
+}
+
+function playBrassSeat(room: Room, key: string): void {
+  const s = room.state as BrassState | null;
+  if (!isLiveRoom(room) || room.game !== 'brass' || !s || s.phase !== 'playing') return;
+  const seat = s.players.findIndex((p) => p.color === s.turnOrder[s.current]);
+  // a person may have taken the seat, or the turn may have moved on, while this waited
+  if (seat < 0 || !isAiSeat(room, seat) || key !== `${s.seq ?? 0}:${s.era}:${s.round}:${s.current}:${s.actionsLeft}`) {
+    scheduleBrassSeat(room);
+    return;
+  }
+  for (const action of brassBotMoves(viewFor(s, seat))) {
+    if (!applyAction(s, seat, action).ok) continue;
+    brassActedAt.set(room.id, Date.now());
+    broadcast(room);
+    return;
+  }
+  console.warn(`[cpu] ${s.players[seat].name} has no legal move in ${room.id}`);
+}
+
 function scheduleBots(room: Room): void {
   if (!isLiveRoom(room)) return;
+  if (room.game === 'brass') return scheduleBrassSeat(room);
   const s = shState(room);
   if (!s || s.core.phase === 'over') return;
   const busy = busySet(aiBusy, room.id);
@@ -779,14 +843,15 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
         // Claude takes the empty chairs: enough to reach five, plus any extras chosen at creation.
         seated.push(...shClaudeSeats(seated, Number(room.options?.claudeSeats ?? 0)));
       } else {
-        // Solo dev: fill an empty table to a full game so the dev seat-switcher
-        // has every seat to drive. Real multi-player games are untouched.
+        // One player alone: fill the table to a full game. The server plays
+        // those seats (scheduleBrassSeat). Games of two or more are untouched.
         while (seated.length < engine.minSeats || (room.players.length < 2 && seated.length < engine.soloSeats)) {
           const c = seats.colors.find((cc) => !seated.some((s) => s.color === cc))!;
           seated.push({ name: `CPU ${seated.length + 1}`, color: c });
         }
       }
       room.state = engine.create(seated, newSeed(room), room.options);
+      brassActedAt.set(room.id, Date.now());
       armGate(room);
       broadcast(room);
       return;
@@ -839,6 +904,7 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
       }
       const result = engineOf(room.game).apply(room.state, seat, msg.action, screenLive(room));
       if (!result.ok) return send(ws, { type: 'error', message: result.error ?? 'Illegal action' });
+      brassActedAt.set(room.id, Date.now());
       broadcast(room);
       return;
     }

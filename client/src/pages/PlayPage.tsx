@@ -9,11 +9,14 @@ import { useParams } from 'react-router-dom';
 import { socket, useRoom } from '../net';
 import { TableScene, useBrassScene, SEAT_HEX, seatHexFor, seatLabel, type SceneDef, type CardSheet, type PickTarget } from '../brass/TableScene';
 import { gameSceneState } from '../brass/gameSceneState';
-import { playSfx } from '../sfx';
+import { audio } from '../brass/audio';
+import { focusOf } from '../brass/focus';
+import { Ticker, Pips, ordinal } from '../brass/hud';
+import '../brass/brass.css';
 import {
   buildLocations, freeSquares, buildableLinks, sellableSquares, developableTiles,
   cardIndustries, lowestTile, planBuild, GAME_SEATS,
-  type BrassView, type BrassAction, type Card, type Color,
+  type BrassView, type BrassAction, type BrassBeat, type Card, type Color,
 } from '@bge/shared';
 import { GameIntro, BRASS_INTRO } from '../brass/GameIntro';
 
@@ -238,7 +241,7 @@ function CoinRow({ amount, coins, compact }: { amount: number; coins: SceneDef['
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: compact ? 5 : 8 }}>
       {chip('gold', g)}{chip('silver', s)}{chip('bronze', b)}
-      {amount <= 0 && <span style={{ opacity: 0.5, font: '12px Inter, sans-serif' }}>—</span>}
+      {amount <= 0 && <span style={{ opacity: 0.5, font: '12px Inter, sans-serif' }}>None</span>}
     </span>
   );
 }
@@ -254,9 +257,12 @@ function GameView({ scene, view, act, error }: {
   const [drawn, setDrawn] = useState<{ cards: Card[]; seq: number } | null>(null);
   const [showIntro, setShowIntro] = useState(true);
   const [confirmMsg, setConfirmMsg] = useState<string | null>(null);
-  const confirmSeq = useRef<number>(view.lastEvent?.seq ?? -1);
+  const [feed, setFeed] = useState<{ id: number; color: string; name: string; text: string }[]>([]);
+  const [card, setCard] = useState<{ score?: Extract<BrassBeat, { t: 'score' }>; rail?: boolean; end?: Extract<BrassBeat, { t: 'end' }> } | null>(null);
+  const [turnSweep, setTurnSweep] = useState<string | null>(null);
+  const batchSeq = useRef<number>(view.batch?.seq ?? 0);
   const noticeFor = (msg: string) => {
-    playSfx('error');
+    audio.deny();
     setNotice(msg);
     window.setTimeout(() => setNotice((m) => (m === msg ? null : m)), 4200);
   };
@@ -283,27 +289,76 @@ function GameView({ scene, view, act, error }: {
     const ev = view.lastEvent;
     if (ev?.drew && ev.color === color && mine.hand && ev.seq !== drawn?.seq) {
       setDrawn({ cards: mine.hand.slice(-ev.drew), seq: ev.seq });
+      for (let i = 0; i < ev.drew; i++) audio.card(0.1 + i * 0.14);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view.lastEvent?.seq]);
 
-  // brief device-side confirmation once YOUR action resolves, so a heads-down
-  // player knows the tap landed. End-of-turn draws already get their own reveal.
+  // Everything the last action caused, as this player needs to hear about it:
+  // a line for what the others did, a confirmation for your own move, income
+  // when a round turns over, and a card when an era is scored or the game ends.
   useEffect(() => {
-    const ev = view.lastEvent;
-    if (!ev || ev.color !== color || ev.seq === confirmSeq.current || ev.drew) return;
-    confirmSeq.current = ev.seq;
-    const lead = ev.title.charAt(0).toLowerCase() + ev.title.slice(1);
-    const where = ev.location ? ` in ${ev.location}` : '';
-    const money = ev.cost ? ` · ${ev.cost}` : '';
-    const msg = `You ${lead}${where}${money}`;
-    setConfirmMsg(msg);
-    window.setTimeout(() => setConfirmMsg((m) => (m === msg ? null : m)), 4200);
+    const b = view.batch;
+    if (!b || b.seq === batchSeq.current) return;
+    batchSeq.current = b.seq;
+    const say = (c: string, name: string, text: string) => {
+      const id = performance.now() + Math.random();
+      setFeed((f) => [...f.slice(-2), { id, color: c, name, text }]);
+      window.setTimeout(() => setFeed((f) => f.filter((q) => q.id !== id)), 4700);
+    };
+    const held: { score?: Extract<BrassBeat, { t: 'score' }>; rail?: boolean; end?: Extract<BrassBeat, { t: 'end' }> } = {};
+    for (const f of b.frames) {
+      const beat = f.beat;
+      if (beat.t === 'action') {
+        const ev = beat.ev;
+        const lead = ev.title.charAt(0).toLowerCase() + ev.title.slice(1);
+        const where = !ev.location ? '' : ev.kind === 'network' ? `, ${ev.location}` : ` in ${ev.location}`;
+        if (ev.color !== color) say(ev.color, ev.player, `${lead}${where}`);
+        else if (!ev.drew) {
+          const msg = `You ${lead}${where}${ev.cost ? ` · ${ev.cost}` : ''}`;
+          setConfirmMsg(msg);
+          window.setTimeout(() => setConfirmMsg((m) => (m === msg ? null : m)), 4200);
+        }
+      } else if (beat.t === 'round') {
+        const row = beat.income.find((r) => r.color === color);
+        const amount = row?.amount ?? 0;
+        say(color, `Round ${beat.round}`, `Income ${amount < 0 ? '−' : amount > 0 ? '+' : ''}£${Math.abs(amount)}. You go ${ordinal(beat.order.indexOf(color) + 1)}.`);
+        if (amount > 0) audio.coins(Math.min(6, 1 + Math.floor(amount / 3)), 0.2);
+      } else if (beat.t === 'score') held.score = beat;
+      else if (beat.t === 'era') held.rail = true;
+      else if (beat.t === 'end') held.end = beat;
+    }
+    if (held.score || held.end) {
+      // the big screen reads the scores out first; the card follows it
+      say(color, 'Scoring', 'Watch the big screen.');
+      window.setTimeout(() => setCard(held), held.end ? 19000 : 13000);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view.lastEvent?.seq]);
+  }, [view.batch?.seq]);
+
+  // the turn coming round to you: a sweep, a call, a buzz
+  const turnKey = `${view.era}|${view.round}|${view.currentColor}`;
+  useEffect(() => {
+    // the goal sheet is up at the start of the game: the sweep waits for it
+    if (!isMyTurn || showIntro) return;
+    setTurnSweep(turnKey);
+    audio.yourTurn(me);
+    // browsers refuse to buzz before the first tap, and log it as an error
+    if (navigator.userActivation?.hasBeenActive) { try { navigator.vibrate?.(70); } catch { /* not supported */ } }
+    const id = window.setTimeout(() => setTurnSweep((k) => (k === turnKey ? null : k)), 2000);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMyTurn, turnKey, showIntro]);
+
+  // where the last action happened, so cubes on this screen fly to and from it
+  const hint = useMemo(
+    () => (view.lastEvent ? focusOf(scene, view.lastEvent, view, view) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [scene, view.lastEvent?.seq],
+  );
 
   // the server rejected an action
-  useEffect(() => { if (error) playSfx('error'); }, [error]);
+  useEffect(() => { if (error) audio.deny(); }, [error]);
 
   const board = view.board;
 
@@ -390,15 +445,16 @@ function GameView({ scene, view, act, error }: {
   }, [flow, mine.tiles, view.era, board, view.markets, mine.money, n]);
 
   const onTablePick = (id: string) => {
-    if (flow.step === 'pickSquare') setFlow({ step: 'confirmBuild', card: flow.card, industry: flow.industry, square: id });
-    if (flow.step === 'pickLink') act({ type: 'network', card: flow.card, link: id });
-    if (flow.step === 'pickSell') act({ type: 'sell', card: flow.card, square: id });
+    if (flow.step === 'pickSquare') { audio.target(); setFlow({ step: 'confirmBuild', card: flow.card, industry: flow.industry, square: id }); }
+    if (flow.step === 'pickLink') { audio.confirm(); act({ type: 'network', card: flow.card, link: id }); }
+    if (flow.step === 'pickSell') { audio.confirm(); act({ type: 'sell', card: flow.card, square: id }); }
   };
   const onMatPick = (id: string) => {
     if (flow.step !== 'pickTile') return;
-    if (flow.action === 'build') setFlow({ step: 'pickSquare', card: flow.card, industry: id });
-    else act({ type: 'develop', card: flow.card, tile: id });
+    if (flow.action === 'build') { audio.target(); setFlow({ step: 'pickSquare', card: flow.card, industry: id }); }
+    else { audio.confirm(); act({ type: 'develop', card: flow.card, tile: id }); }
   };
+  const cancel = () => { audio.back(); setFlow({ step: 'idle' }); };
 
   // ---- flow transitions ----
 
@@ -406,7 +462,7 @@ function GameView({ scene, view, act, error }: {
     if (!isMyTurn) return;
     // guard actions that can't possibly succeed right now, with plain answers
     if (id === 'sell' && sellableSquares(board, view.merchants, color).length === 0) {
-      noticeFor('You have nothing to sell — you need an unflipped cotton mill, goods or pottery connected to a merchant that buys it.');
+      noticeFor('Nothing to sell yet. You need an unsold cotton mill, goods or pottery linked to a merchant that buys it.');
       return;
     }
     if (id === 'develop' && developableTiles(mine.tiles).length === 0) {
@@ -419,9 +475,9 @@ function GameView({ scene, view, act, error }: {
     }
     if (id === 'scout') {
       if (hand.length < 3) { noticeFor('Scout needs 3 cards to discard.'); return; }
-      if (hand.some((c) => c.kind === 'wild')) { noticeFor('You already hold a wild card — scout is not allowed.'); return; }
+      if (hand.some((c) => c.kind === 'wild')) { noticeFor('You already hold a wild card, so you cannot scout.'); return; }
     }
-    playSfx('click');
+    audio.tap();
     setFlow((f) => ('action' in f && (f as { action?: string }).action === id ? { step: 'idle' } : { step: 'pickCard', action: id, picked: [] }));
   };
 
@@ -429,10 +485,12 @@ function GameView({ scene, view, act, error }: {
     if (flow.step !== 'pickCard') return;
     if (flow.action === 'scout') {
       const picked = flow.picked.includes(i) ? flow.picked.filter((c) => c !== i) : [...flow.picked, i].slice(0, 3);
+      audio.card();
       setFlow({ ...flow, picked });
       return;
     }
-    if (!cardUsable(hand[i], flow.action)) return;
+    if (!cardUsable(hand[i], flow.action)) { audio.deny(); return; }
+    audio.card();
     // single-card actions: toggle selection; confirm commits
     setFlow({ ...flow, picked: flow.picked[0] === i ? [] : [i] });
   };
@@ -440,9 +498,10 @@ function GameView({ scene, view, act, error }: {
   const confirmPicker = () => {
     if (flow.step !== 'pickCard') return;
     const a = flow.action;
-    if (a === 'scout') { if (flow.picked.length === 3) act({ type: 'scout', cards: flow.picked }); return; }
+    if (a === 'scout') { if (flow.picked.length === 3) { audio.confirm(); act({ type: 'scout', cards: flow.picked }); } return; }
     const card = flow.picked[0];
     if (card === undefined) return;
+    audio.confirm();
     if (a === 'build') setFlow({ step: 'pickTile', action: 'build', card });
     else if (a === 'develop') setFlow({ step: 'pickTile', action: 'develop', card });
     else if (a === 'network') setFlow({ step: 'pickLink', card });
@@ -490,12 +549,26 @@ function GameView({ scene, view, act, error }: {
     ? { position: 'absolute', top: 0, left: 0, bottom: 0, right: RIGHT_W, zIndex: 10 }
     : { position: 'absolute', top: 0, right: 0, width: RIGHT_W, height: '62vh', zIndex: 20 };
 
+  const matTiles = useMemo(() => ({ color, left: mine.tiles }), [color, mine.tiles]);
+  // the same card can be held twice: tell copies apart so a played card leaves
+  // and the rest slide together, instead of the whole fan re-dealing
+  const handKeys = (() => {
+    const seen = new Map<string, number>();
+    return hand.map((c) => {
+      const k = `${c.cell}|${c.name}`;
+      const nth = seen.get(k) ?? 0;
+      seen.set(k, nth + 1);
+      return `${k}#${nth}`;
+    });
+  })();
+
   const tableScene = (
     <TableScene
       scene={scene} filter={(g) => g === 'board'} frame="board" game={gameSceneState(view)}
       interactive={tableIsMain}
       pickTargets={tableIsMain ? tableTargets : undefined}
       onPick={onTablePick}
+      hint={hint}
     />
   );
   const matScene = (
@@ -504,6 +577,7 @@ function GameView({ scene, view, act, error }: {
       interactive={!tableIsMain}
       pickTargets={!tableIsMain ? matTargets : undefined}
       onPick={onMatPick}
+      matTiles={matTiles}
     />
   );
 
@@ -543,10 +617,13 @@ function GameView({ scene, view, act, error }: {
         <div className="ig-prompt ig-glass" style={seatStyle(view.currentColor, { marginBottom: 10, opacity: isMyTurn ? 1 : 0.6 })}>
           <span className="ig-prompt-ring" />
           <span className="who" style={{ letterSpacing: '.04em' }}>{prompt}</span>
+          {isMyTurn && flow.step === 'idle' && (
+            <span className="bbx-prompt-pips"><Pips total={totalActions} left={view.actionsLeft} /></span>
+          )}
           {flow.step !== 'idle' && (
             <button
               className="step"
-              onClick={() => setFlow({ step: 'idle' })}
+              onClick={cancel}
               style={{
                 border: '1px solid var(--brd-2)', background: 'transparent', color: 'var(--ink)',
                 borderRadius: 8, padding: '3px 11px', cursor: 'pointer', font: '600 11px Inter, sans-serif',
@@ -555,7 +632,7 @@ function GameView({ scene, view, act, error }: {
           )}
         </div>
 
-        <div className="ig-acts brass-acts" style={{ alignContent: 'start' }}>
+        <div className={`ig-acts brass-acts${isMyTurn ? ' live' : ''}`} key={isMyTurn ? turnKey : 'idle'} style={{ alignContent: 'start' }}>
           {ACTIONS.map((a) => (
             <button
               key={a.id}
@@ -637,10 +714,10 @@ function GameView({ scene, view, act, error }: {
           <b style={{ fontSize: 15 }}>{mine.name}</b>
         </div>
         <div className="ig-hold">
-          <div><div className="ig-lab">Cash</div><div className="ig-stat-v ig-num">£{mine.money}</div></div>
-          <div><div className="ig-lab">Income</div><div className={`ig-stat-v ig-num ${mine.income < 0 ? 'ig-down' : 'ig-up'}`}>£{mine.income}</div></div>
-          <div><div className="ig-lab">VP</div><div className="ig-stat-v ig-num">{mine.vp}</div></div>
-          <div><div className="ig-lab">Links</div><div className="ig-stat-v ig-num">{mine.links}</div></div>
+          <div><div className="ig-lab">Cash</div><div className="ig-stat-v ig-num"><Ticker value={mine.money} prefix="£" /></div></div>
+          <div><div className="ig-lab">Income</div><div className={`ig-stat-v ig-num ${mine.income < 0 ? 'ig-down' : 'ig-up'}`}><Ticker value={mine.income} prefix="£" /></div></div>
+          <div><div className="ig-lab">VP</div><div className="ig-stat-v ig-num"><Ticker value={mine.vp} /></div></div>
+          <div><div className="ig-lab">Links</div><div className="ig-stat-v ig-num"><Ticker value={mine.links} quiet /></div></div>
         </div>
         {mine.discardTop && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 11, paddingTop: 11, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
@@ -662,7 +739,7 @@ function GameView({ scene, view, act, error }: {
           const rot = off * 6.5;
           return (
             <div
-              key={`${i}-${c.cell}-${c.name}`}
+              key={handKeys[i]}
               className="hand-card"
               onClick={() => setFocus(i)}
               title={c.name}
@@ -686,11 +763,11 @@ function GameView({ scene, view, act, error }: {
 
       {/* foreground card picker */}
       {flow.step === 'pickCard' && (
-        <div className="picker-backdrop" onClick={() => setFlow({ step: 'idle' })}>
+        <div className="picker-backdrop" onClick={cancel}>
           <div style={{ textAlign: 'center', maxWidth: 640 }} onClick={(e) => e.stopPropagation()}>
             <div style={{ font: '700 21px Inter, sans-serif', marginBottom: 6 }}>
               {ACTIONS.find((a) => a.id === flow.action)?.label}
-              {flow.action === 'scout' && ` — ${flow.picked.length}/3 selected`}
+              {flow.action === 'scout' && ` · ${flow.picked.length} of 3 selected`}
             </div>
             <div style={{ font: '13.5px/1.55 Inter, sans-serif', opacity: 0.78 }}>{pickerCopy[flow.action]}</div>
             {flow.action === 'build' && hand.some((c) => !cardUsable(c, 'build')) && (
@@ -733,7 +810,7 @@ function GameView({ scene, view, act, error }: {
                 : 'Discard & continue'}
             </button>
             <button
-              onClick={() => setFlow({ step: 'idle' })}
+              onClick={cancel}
               style={{
                 padding: '12px 22px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.3)',
                 background: 'transparent', color: '#e8ebf0', cursor: 'pointer', font: '600 14px Inter, sans-serif',
@@ -789,25 +866,25 @@ function GameView({ scene, view, act, error }: {
 
               {row('Tile cost', `£${plan.money}`)}
               {plan.coalFromMines.length > 0 && row(
-                `Coal × ${plan.coalFromMines.length} — from connected mine${new Set(plan.coalFromMines.map((sq) => sq)).size > 1 ? 's' : ''}`,
+                `Coal × ${plan.coalFromMines.length} from connected mine${new Set(plan.coalFromMines.map((sq) => sq)).size > 1 ? 's' : ''}`,
                 'free', true,
               )}
-              {plan.coalFromMarket > 0 && row(`Coal × ${plan.coalFromMarket} — from the market`, `£${plan.coalMarketCost}`)}
-              {plan.ironFromWorks.length > 0 && row(`Iron × ${plan.ironFromWorks.length} — from iron works`, 'free', true)}
-              {plan.ironFromMarket > 0 && row(`Iron × ${plan.ironFromMarket} — from the market`, `£${plan.ironMarketCost}`)}
+              {plan.coalFromMarket > 0 && row(`Coal × ${plan.coalFromMarket} from the market`, `£${plan.coalMarketCost}`)}
+              {plan.ironFromWorks.length > 0 && row(`Iron × ${plan.ironFromWorks.length} from iron works`, 'free', true)}
+              {plan.ironFromMarket > 0 && row(`Iron × ${plan.ironFromMarket} from the market`, `£${plan.ironMarketCost}`)}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 4px', font: '800 17px Inter, sans-serif' }}>
                 <span>Total</span>
-                <span>£{plan.total}<span style={{ font: '400 12.5px Inter, sans-serif', opacity: 0.6 }}> — you have £{mine.money}</span></span>
+                <span>£{plan.total}<span style={{ font: '400 12.5px Inter, sans-serif', opacity: 0.6 }}> of your £{mine.money}</span></span>
               </div>
 
               <div style={{ display: 'flex', gap: 10, paddingTop: 16 }}>
                 <button
-                  onClick={() => act({ type: 'build', card: flow.card, industry: flow.industry, square: flow.square })}
+                  onClick={() => { audio.confirm(); act({ type: 'build', card: flow.card, industry: flow.industry, square: flow.square }); }}
                   style={{
                     flex: 1, padding: '12px 0', borderRadius: 10, border: 'none', cursor: 'pointer',
                     background: '#e8ebf0', color: '#0a0c0f', font: '700 15px Inter, sans-serif',
                   }}
-                >Build — £{plan.total}</button>
+                >Build for £{plan.total}</button>
                 <button
                   onClick={() => setFlow({ step: 'pickSquare', card: flow.card, industry: flow.industry })}
                   style={{
@@ -865,17 +942,72 @@ function GameView({ scene, view, act, error }: {
         </div>
       )}
 
-      {/* device-side "the tap worked" confirmation */}
+      {/* your own action landed */}
       {confirmMsg && !drawn && (
-        <div style={{
-          position: 'absolute', left: '50%', bottom: 262, transform: 'translateX(-50%)', zIndex: 79,
-          maxWidth: 520, textAlign: 'center', padding: '10px 18px', borderRadius: 10,
-          background: 'rgba(18,38,26,0.95)', border: '1px solid rgba(120,220,150,0.4)',
-          font: '600 13px/1.5 Inter, sans-serif', boxShadow: '0 8px 26px rgba(0,0,0,0.6)',
-        }}>
-          {confirmMsg}
+        <div className="bbx-result" key={confirmMsg}><i />{confirmMsg}</div>
+      )}
+
+      {/* what the rest of the table is doing */}
+      <div className="bbx-feed">
+        {feed.map((f) => (
+          <div key={f.id} style={seatStyle(f.color)}>
+            {scene.turnTokens[f.color] && <img src={scene.turnTokens[f.color].image} alt="" />}
+            <div><b>{f.name}</b> <span>{f.text}</span></div>
+          </div>
+        ))}
+      </div>
+
+      {/* the turn coming round to you */}
+      {turnSweep && isMyTurn && !drawn && !card && !showIntro && (
+        <div className="bbx-yourturn" key={turnSweep} style={seatStyle(color)}>
+          <div>
+            <b>Your turn</b>
+            <span>{totalActions === 1 ? 'One action' : 'Two actions'} · {view.era === 'canal' ? 'Canal' : 'Rail'} era, round {view.round} of {view.numRounds}</span>
+          </div>
         </div>
       )}
+
+      {/* era scored / game over: your result, after the big screen has read it out */}
+      {card && (() => {
+        const rows = card.end
+          ? card.end.standings.map((r) => ({ color: r.color, name: r.name, vp: r.vp }))
+          : [...(card.score?.rows ?? [])].sort((a, b) => b.vp - a.vp).map((r) => ({ color: r.color, name: r.name, vp: r.vp }));
+        const place = rows.findIndex((r) => r.color === color) + 1;
+        const my = card.score?.rows.find((r) => r.color === color);
+        const era = card.score?.era === 'rail' ? 'Rail' : 'Canal';
+        const won = card.end?.winner === color;
+        return (
+          <div className="bbx-card-backdrop" onClick={() => setCard(null)}>
+            <div className="bbx-card ig-glass" style={seatStyle(color)} onClick={(e) => e.stopPropagation()}>
+              <div className="ig-lab">{card.end ? 'Final scores' : `${era} era scored`}</div>
+              <h2>{card.end ? (won ? 'You win' : `${rows[0]?.name ?? ''} wins`) : `${my?.vp ?? mine.vp} VP`}</h2>
+              <p>
+                You finished {ordinal(place)} of {rows.length}
+                {card.end ? ` with ${mine.vp} VP.` : '.'}
+                {card.rail ? ' The rail era begins: canals and level 1 industries are off the board, and you hold a new hand.' : ''}
+              </p>
+              {my && (
+                <div className="ig-hold">
+                  <div><div className="ig-lab">Links</div><div className="ig-stat-v ig-num">+{my.links}</div></div>
+                  <div><div className="ig-lab">Industries</div><div className="ig-stat-v ig-num">+{my.industries}</div></div>
+                  <div><div className="ig-lab">Score</div><div className="ig-stat-v ig-num">{my.vp}</div></div>
+                </div>
+              )}
+              <div className="bbx-table">
+                {rows.map((r, i) => (
+                  <div key={r.color} className={`bbx-tr in${r.color === color ? ' me' : ''}`} style={{ ...seatStyle(r.color), animationDelay: `${i * 0.07}s` }}>
+                    <span className="n">{ordinal(i + 1)}</span>
+                    {scene.turnTokens[r.color] ? <img src={scene.turnTokens[r.color].image} alt="" /> : <span />}
+                    <span className="nm">{r.name}</span>
+                    <span className="v">{r.vp} VP</span>
+                  </div>
+                ))}
+              </div>
+              <button className="big primary" onClick={() => { audio.tap(); setCard(null); }}>{card.end ? 'Close' : 'Continue'}</button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* focused hand card or the reference sheets */}
       {focus !== null && (focus === -1 ? (scene.actionsSheet ?? scene.cheatSheet) : hand[focus]) && (
@@ -1073,6 +1205,11 @@ export function PlayPage() {
       {room.game === 'secrethitler' && room.players.length < 5 && (
         <p className="dim" style={{ textAlign: 'center', marginTop: '.6rem' }}>
           {room.players.length} of 5 seated. Claude plays the other {5 - room.players.length === 1 ? 'chair' : `${5 - room.players.length} chairs`}.
+        </p>
+      )}
+      {room.game === 'brass' && room.players.length === 1 && me === 0 && (
+        <p className="dim" style={{ textAlign: 'center', marginTop: '.6rem' }}>
+          Start alone and the computer plays the other three seats.
         </p>
       )}
       {error && <div className="toast">{error}</div>}
