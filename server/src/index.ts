@@ -9,15 +9,18 @@ import crypto from 'node:crypto';
 import {
   createBrass, viewFor, applyAction, brassBotMoves,
   createShRoom, shRoomView, shRoomApply, shRematch, shClaudeSeats, shLegalActions, shPrivateView, botAction, botClaim,
+  createAxisGame, axisGameViewFor, applyAxisGameAction, normalizeAxisState,
   GAME_SEATS,
   type BrassState, type BrassAction, type Color,
   type ShRoomState, type ShAction,
+  type AxisState, type AxisAction, type AxisSeat,
   type SeatColor, type ClientMsg, type ServerMsg, type RoomInfo, type GameOptions,
 } from '@bge/shared';
 import { createStore, type SavedRoom } from './store.js';
 import { bearerToken, canDeleteSave } from './save-auth.js';
 import { resolveRoomSeed } from './room-seed.js';
 import { stateMatchesGame } from './save-compat.js';
+import { authorizeAxisAction, controlledAxisPowers } from './axis-authority.js';
 import { claudeStatus, decideAction, decideClaim, decideReply } from './claude.js';
 
 // A game server that crash-loops is worse than one that logs and carries on.
@@ -27,7 +30,7 @@ process.on('unhandledRejection', (err) => console.error('unhandled rejection:', 
 // Rooms + lobby + per-game engines. Each room carries a game id; start/action/view
 // dispatch to that game's engine.
 
-type GameState = BrassState | ShRoomState;
+type GameState = BrassState | ShRoomState | AxisState;
 type Seated = { name: string; color: SeatColor; ai?: boolean };
 
 const engines = {
@@ -45,6 +48,15 @@ const engines = {
     apply: (state: GameState, seat: number, action: unknown, screenLive: boolean) => shRoomApply(state as ShRoomState, seat, action as ShAction, screenLive),
     minSeats: 5,
     soloSeats: 5,
+  },
+  axis: {
+    // All six powers exist whoever is seated; the host covers the empty ones.
+    create: (seated: Seated[], seed: number, options?: GameOptions): GameState =>
+      createAxisGame(seated as { name: string; color: AxisSeat }[], seed, options ?? {}),
+    view: (state: GameState, viewer: number | null | 'dev') => axisGameViewFor(state as AxisState, viewer),
+    apply: (state: GameState, seat: number, action: unknown, _screenLive: boolean) => applyAxisGameAction(state as AxisState, seat, action as AxisAction),
+    minSeats: 1,
+    soloSeats: 1,
   },
 } as const;
 
@@ -184,6 +196,7 @@ function stale(r: { started: boolean; state: unknown; updatedAt: number }): bool
     }
     // A Secret Hitler table that was mid-cutscene when the server stopped has no screen to wait for now.
     if (r.game === 'secrethitler' && r.state) (r.state as ShRoomState).screenSeq = (r.state as ShRoomState).seq;
+    if (r.game === 'axis' && r.state) normalizeAxisState(r.state as AxisState);
     rooms.set(r.id, {
       id: r.id,
       name: r.name ?? `Room ${r.id}`,
@@ -279,6 +292,12 @@ function sendState(room: Room, ws: WebSocket, realSeat: number | null): void {
       view.screenLive = screenLive(room);
       if (!presenting(room)) view.screenSeq = view.seq;
     }
+  }
+  if (view.game === 'axis') {
+    // The screen is a spectator: it never holds a battle up.
+    view.battleVisualReady = true;
+    // Authority follows the real seat, never a dev view override.
+    view.controlledPowers = controlledAxisPowers(room.players, realSeat);
   }
   send(ws, { type: 'state', view });
 }
@@ -870,6 +889,17 @@ function handle(ws: WebSocket, conn: ConnState, msg: ClientMsg): void {
       if (room.game === 'secrethitler') {
         const err = shAct(room, seat, msg.action as ShAction);
         if (err) send(ws, { type: 'error', message: err });
+        return;
+      }
+      if (room.game === 'axis') {
+        // One device may command several powers, so the action names its power
+        // and the real seat decides whether that is allowed.
+        if (conn.playerIdx === null) return send(ws, { type: 'error', message: 'Watchers cannot act' });
+        const authorized = authorizeAxisAction(room.players, conn.playerIdx, msg.action);
+        if (!authorized.ok) return send(ws, { type: 'error', message: authorized.error });
+        const result = engines.axis.apply(room.state, conn.playerIdx, authorized.action, screenLive(room));
+        if (!result.ok) return send(ws, { type: 'error', message: result.error ?? 'Illegal action' });
+        broadcast(room);
         return;
       }
       const result = engineOf(room.game).apply(room.state, seat, msg.action, screenLive(room));

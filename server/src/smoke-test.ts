@@ -1,12 +1,13 @@
 // Live server test over WebSockets: a big screen, human devices and AI seats play Secret Hitler
-// to the end through the real room protocol, a Brass room still starts, and one person plays Brass
-// to the end against the computer seats.
+// to the end through the real room protocol, a Brass room still starts, one person plays Brass
+// to the end against the computer seats, and Germany plays a whole Axis & Allies turn
+// including a battle.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { WebSocket } from 'ws';
-import { botAction, botClaim, brassBotMoves, type BrassAction, type BrassView, type ClientMsg, type RoomInfo, type ServerMsg, type ShView, type StampedEvent } from '@bge/shared';
+import { botAction, botClaim, brassBotMoves, type AxisAction, type AxisView, type BrassAction, type BrassView, type ClientMsg, type RoomInfo, type ServerMsg, type ShView, type StampedEvent } from '@bge/shared';
 
 const PORT = 8799;
 process.env.PORT = String(PORT);
@@ -230,11 +231,105 @@ async function brassSolo() {
   console.log(`ok brass solo: 1 person + 3 computer seats, ${screenSeq} actions, VP ${end.players.map((p) => p.vp).join(' ')}`);
 }
 
+// Axis & Allies: one host commands Germany through a whole turn (buy, attack, fight the battle
+// through the same decisions a device makes, move, deploy), while a second player holding the
+// Soviet Union is refused when it tries to act for Germany. The screen is never needed.
+async function axis() {
+  let roomId = '';
+  let view: AxisView | null = null;
+  const tv = await open((m) => {
+    if (m.type === 'room_created') roomId = m.roomId;
+  });
+  tv.send({ type: 'create_room', name: 'Axis smoke', game: 'axis', options: { scenario: '1941', rnd: false, nationalObjectives: true, winCondition: 'standard' } });
+  await until(() => roomId !== '', 'axis room created');
+  const host = await open((m) => { if (m.type === 'state' && m.view.game === 'axis') view = m.view; });
+  host.send({ type: 'join', roomId, name: 'Host' });
+  await until(() => host.index === 0, 'axis host seated');
+  const guest = await open(() => {});
+  guest.send({ type: 'join', roomId, name: 'Guest' });
+  await until(() => guest.index === 1, 'axis guest seated');
+  guest.send({ type: 'pick_color', color: 'ussr' });
+  host.send({ type: 'pick_color', color: 'germany' });
+  await wait(100);
+  host.send({ type: 'start' });
+  await until(() => view !== null, 'axis started');
+  const v = () => view as unknown as AxisView;
+  assert.equal(v().active, 'germany');
+  assert.deepEqual([...v().controlledPowers].sort(), ['germany', 'italy', 'japan', 'uk', 'usa'], 'the host covers every power nobody took');
+  assert.equal(v().battleVisualReady, true, 'battles never wait for the screen');
+
+  let sent = 0;
+  const act = async (who: Client, action: AxisAction & { asPower?: string }, label: string) => {
+    const errors = who.errors.length;
+    const before = JSON.stringify(view);
+    who.send({ type: 'action', action: action as AxisAction });
+    sent++;
+    await until(() => who.errors.length > errors || JSON.stringify(view) !== before, label, 5000);
+    return who.errors.length > errors ? who.errors[who.errors.length - 1] : null;
+  };
+  const must = async (action: AxisAction & { asPower?: string }, label: string) => {
+    const err = await act(host, action, label);
+    assert.equal(err, null, `${label}: ${err}`);
+  };
+
+  assert.ok(await act(guest, { type: 'endPhase', asPower: 'germany' } as AxisAction & { asPower: string }, 'guest refused'), 'a guest cannot act for Germany');
+  await must({ type: 'buy', key: 'infantry', count: 2 }, 'buy');
+  await must({ type: 'endPhase' }, 'end purchase');
+  assert.equal(v().phase, 'combatMove');
+  const tanks = (v().board['poland'] ?? []).filter((s) => s.power === 'germany' && s.key === 'tank').reduce((n, s) => n + s.count, 0);
+  assert.ok(tanks > 0, 'Germany starts with tanks in Poland');
+  await must({ type: 'attack', target: 'east-poland', forces: [{ from: 'poland', units: [{ key: 'tank', count: tanks }] }] }, 'attack');
+  assert.equal(v().phase, 'battle');
+
+  // Resolve the battle exactly as devices do: roll, pick casualties, press on, continue.
+  for (let guard = 0; guard < 200 && v().combat; guard++) {
+    const c = v().combat!;
+    const ref = { combatId: c.id, visualSeq: c.visualSeq };
+    const d = c.battle.decision;
+    const sidePower = (side: string) => (side === 'attacker' ? c.attacker : v().pendings.find((p) => p.kind !== 'battle-continue')?.power ?? 'ussr');
+    const cont = v().pendings.find((p) => p.kind === 'battle-continue');
+    if (cont) {
+      const who = cont.power === 'ussr' ? guest : host;
+      const err = await act(who, { type: 'battleContinue', ...ref, asPower: cont.power } as AxisAction & { asPower: string }, 'continue');
+      assert.equal(err, null, `continue: ${err}`);
+    } else if (d?.type === 'casualties') {
+      const power = sidePower(d.side);
+      const uids: number[] = [];
+      for (const b of d.buckets) for (const uid of b.eligible) if (uids.length < d.picks && !uids.includes(uid)) uids.push(uid);
+      const err = await act(power === 'ussr' ? guest : host, { type: 'battleCasualties', uids, ...ref, asPower: power } as AxisAction & { asPower: string }, 'casualties');
+      assert.equal(err, null, `casualties: ${err}`);
+    } else if (d?.type === 'retreat') {
+      await must({ type: 'battleRetreat', retreat: false, ...ref }, 'press the attack');
+    } else if (d?.type === 'submerge') {
+      const power = sidePower(d.side);
+      const err = await act(power === 'ussr' ? guest : host, { type: 'battleSubmerge', uids: [], ...ref, asPower: power } as AxisAction & { asPower: string }, 'submerge');
+      assert.equal(err, null, `submerge: ${err}`);
+    } else {
+      await must({ type: 'battleRoll', ...ref }, 'roll');
+    }
+  }
+  assert.equal(v().combat, null, 'the battle resolved without a screen');
+  assert.ok(v().lastBattle && v().lastBattle!.space === 'east-poland');
+  await must({ type: 'endPhase' }, 'end combat');
+  assert.equal(v().phase, 'noncombat');
+  await must({ type: 'endPhase' }, 'end noncombat');
+  assert.equal(v().phase, 'mobilize');
+  await must({ type: 'placeBatch', space: 'germany', units: [{ key: 'infantry', count: 2 }], factory: 'germany' }, 'deploy');
+  const before = v().powers.germany.ipcs;
+  await must({ type: 'endPhase' }, 'end turn');
+  assert.equal(v().active, 'ussr', 'play passes to the Soviet Union');
+  assert.ok(v().powers.germany.ipcs > before, 'Germany collected income');
+  assert.deepEqual(v().controlledPowers.includes('ussr'), false, 'the host does not command a taken power');
+  for (const c of [tv, host, guest]) c.ws.close();
+  console.log(`ok axis: a full German turn over the wire (${sent} actions), battle ${v().lastBattle!.status}`);
+}
+
 await secretHitler(1, 0, 5);
 await secretHitler(4, 0, 5);
 await secretHitler(3, 3, 6);
 await secretHitler(6, 2, 8);
 await brass();
 await brassSolo();
+await axis();
 console.log('ok server smoke');
 process.exit(0);

@@ -20,6 +20,7 @@ import {
 } from '@bge/shared';
 import { GameIntro, BRASS_INTRO } from '../brass/GameIntro';
 
+const AxisPlay = lazy(() => import('../axis/AxisPlay'));
 const ShPlay = lazy(() => import('../sh/ShPlay').then((module) => ({ default: module.ShPlay })));
 
 
@@ -1108,6 +1109,13 @@ export function PlayPage() {
         </Suspense>
       );
     }
+    if (view.game === 'axis') {
+      return (
+        <Suspense fallback={<PlayerGameLoading game="Axis & Allies" />}>
+          <AxisPlay view={view} act={act} error={error} />
+        </Suspense>
+      );
+    }
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
@@ -1118,9 +1126,12 @@ export function PlayPage() {
   const GAME_NAMES: Record<string, string> = {
     brass: 'Brass: Birmingham',
     secrethitler: 'Secret Hitler',
+    axis: 'Axis & Allies',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
-  const colorBlurb = room.game === 'secrethitler'
+  const colorBlurb = room.game === 'axis'
+    ? 'Pick the power you command. The host also commands any power nobody takes.'
+    : room.game === 'secrethitler'
     ? 'Your colour is your chair at the table. The presidency passes clockwise.'
     : "Your piece marks your income on the board's turn-order track.";
 

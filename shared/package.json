@@ -6,7 +6,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "npm run test:brass && npm run test:sh",
+    "test": "npm run test:brass && npm run test:sh && npm run test:axis",
+    "test:axis": "tsx src/axis/axis-movement-rules-test.ts && tsx src/axis/axis-movement-actions-test.ts && tsx src/axis/axis-combat-contract-regression-test.ts && tsx src/axis/axis-mobilization-rules-test.ts && tsx src/axis/axis-mobilization-actions-test.ts && tsx src/axis/axis-staging-contract-regression-test.ts && tsx src/axis/air-movement-test.ts && tsx src/axis/axis-air-actions-test.ts && tsx src/axis/axis-carrier-commitments-test.ts && tsx src/axis/axis-carrier-actions-test.ts && tsx src/axis/axis-defending-carrier-landings-test.ts && tsx src/axis/axis-defending-carrier-actions-test.ts && tsx src/axis/axis-special-technology-rules-test.ts && tsx src/axis/axis-economic-strikes-test.ts && tsx src/axis/axis-paratrooper-actions-test.ts && tsx src/axis/axis-transport-actions-test.ts && tsx src/axis/axis-aa-actions-test.ts && tsx src/axis/axis-aa-contract-regression-test.ts && tsx src/axis/axis-capital-test.ts && tsx src/axis/axis-retreat-test.ts && tsx src/axis/axis-retreat-actions-test.ts && tsx src/axis/axis-test.ts && tsx src/axis/axis-battle-test.ts && tsx src/axis/axis-china-test.ts && tsx src/axis/axis-china-operations-test.ts",
     "test:brass": "tsx src/brass/setup-test.ts && tsx src/brass/actions-test.ts && tsx src/brass/connectivity-test.ts && tsx src/brass/playercount-test.ts && tsx src/brass/stream-test.ts && tsx src/brass/bot-test.ts",
     "test:sh": "tsx src/secret-hitler/rules-test.ts"
   },

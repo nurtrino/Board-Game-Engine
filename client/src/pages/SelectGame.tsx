@@ -26,7 +26,20 @@ const GAMES = [
     name: 'Brass: Birmingham',
     logo: '/brass-logo.webp',
   },
+  {
+    id: 'axis',
+    name: 'Axis & Allies',
+    logo: '/axis-box.webp',
+  },
 ];
+
+const AXIS_OPTION_DEFS = [
+  { key: 'scenario', label: 'Scenario', values: [{ v: '1941', label: '1941' }, { v: '1942', label: '1942' }] },
+  { key: 'winCondition', label: 'Victory cities', values: [{ v: 'short', label: '13' }, { v: 'standard', label: '15' }, { v: 'total', label: '18' }] },
+  { key: 'nationalObjectives', label: 'National objectives', values: [{ v: true, label: 'On' }, { v: false, label: 'Off' }] },
+  { key: 'rnd', label: 'Research', values: [{ v: false, label: 'Off' }, { v: true, label: 'On' }] },
+] as const;
+const AXIS_DEFAULTS = { scenario: '1941', winCondition: 'standard', nationalObjectives: true, rnd: false };
 
 // Create-screen options per game (surfaced above the save name).
 const SH_OPTION_DEFS = [
@@ -108,7 +121,8 @@ export function SelectGame() {
 
   const createRoom = () => {
     if (!game) return;
-    const opts = game.id === 'secrethitler' ? { claudeSeats: 0, ...options } : undefined;
+    const opts = game.id === 'secrethitler' ? { claudeSeats: 0, ...options }
+      : game.id === 'axis' ? { ...AXIS_DEFAULTS, ...options } : undefined;
     socket.send({ type: 'create_room', name: name.trim(), game: game.id, options: opts });
   };
 
@@ -226,6 +240,25 @@ export function SelectGame() {
                     />
                   );
                 })}
+              </div>
+            )}
+
+            {game.id === 'axis' && (
+              <div className="create-options">
+                <div className="create-option">
+                  <span className="create-option-label">1 to 6 players</span>
+                  <span className="dim">The host commands any power nobody takes</span>
+                </div>
+                {AXIS_OPTION_DEFS.map((def) => (
+                  <CreateOption
+                    key={def.key}
+                    id={`axis-${def.key}`}
+                    label={def.label}
+                    values={def.values}
+                    current={options[def.key] ?? AXIS_DEFAULTS[def.key]}
+                    onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
+                  />
+                ))}
               </div>
             )}
 

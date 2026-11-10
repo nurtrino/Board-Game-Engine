@@ -8,6 +8,7 @@ import { useRoom } from '../net';
 import { SidePieces } from '../three/FallingPieces';
 import { seatHexFor } from '../brass/pieces';
 
+const AxisBoard = lazy(() => import('../axis/AxisBoard'));
 const ShBoard = lazy(() => import('../sh/ShBoard').then((module) => ({ default: module.ShBoard })));
 const TvBoard = lazy(() => import('../brass/TvBoard').then((module) => ({ default: module.TvBoard })));
 
@@ -27,6 +28,13 @@ export function BoardPage() {
       return (
         <Suspense fallback={<BoardGameLoading game="Secret Hitler" />}>
           <ShBoard wire={view} room={room} />
+        </Suspense>
+      );
+    }
+    if (view.game === 'axis') {
+      return (
+        <Suspense fallback={<BoardGameLoading game="Axis & Allies" />}>
+          <AxisBoard view={view} />
         </Suspense>
       );
     }
