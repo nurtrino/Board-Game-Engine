@@ -13,7 +13,8 @@ import { axisCapitalTurnPresentation } from './axisCapitalPresentation';
 import { axisCarrierObligationCards, axisCarrierRequiredPlacements } from './axisCarrierPresentation';
 import { axisFirstLegalStagedPlacement, axisMobilizationDestinationPlans, buildPlaceBatchAction } from './axisMobilization';
 import { axisForceInventory } from './axisInventory';
-import { powerInk, spaceName, unitCount } from './world';
+import { TERR, isSea, powerInk, powerName, powerShort, spaceName, unitCount, unitRank } from './world';
+import { Roundel } from './Roundel';
 
 const BUYABLE: UnitKey[] = ['infantry', 'artillery', 'tank', 'aaGun', 'fighter', 'bomber', 'battleship', 'carrier', 'cruiser', 'destroyer', 'submarine', 'transport', 'factory'];
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
@@ -93,15 +94,17 @@ export function Armory({ view, act }: { view: AxisView; act: Act }) {
           const queued = p.purchasedThisTurn[key]?.count ?? 0;
           return (
             <div key={key} className={`axx-buy${queued ? ' on' : ''}`}>
-              <UnitIcon unitKey={key} size={30} title={UNITS[key].name} />
+              <UnitIcon unitKey={key} size={34} title={UNITS[key].name} />
+              <span className="ig-num cost">{ref.cost}</span>
               <span className="nm">
                 <b>{UNITS[key].name}</b>
                 <small>Attack {ref.attack || 0} · Defend {ref.defense || 0} · Move {ref.move || 0}</small>
               </span>
-              <span className="ig-num cost">{ref.cost}</span>
-              <button onClick={() => act({ type: 'unbuy', key, count: 1 })} disabled={!queued} aria-label={`Return one ${UNITS[key].name}`}>-</button>
-              <b className="ig-num qty">{queued}</b>
-              <button onClick={() => act({ type: 'buy', key, count: 1 })} disabled={p.ipcs < ref.cost} aria-label={`Buy one ${UNITS[key].name}`}>+</button>
+              <span className="ctl">
+                <button onClick={() => act({ type: 'unbuy', key, count: 1 })} disabled={!queued} aria-label={`Return one ${UNITS[key].name}`}>-</button>
+                <b className="ig-num qty">{queued}</b>
+                <button onClick={() => act({ type: 'buy', key, count: 1 })} disabled={p.ipcs < ref.cost} aria-label={`Buy one ${UNITS[key].name}`}>+</button>
+              </span>
             </div>
           );
         })}
@@ -303,5 +306,47 @@ export function NationCard({ view, power, onClose }: { view: AxisView; power: Po
         <a className="axx-chip" href="/axis/rulebook.pdf" target="_blank" rel="noreferrer">Rulebook</a>
       </div>
     </div>
+  );
+}
+
+// ---------- inspector ----------
+
+/** What stands on the space that was last touched: who holds it, what it is worth, who is there. */
+export function Inspector({ view, space, onClose }: { view: AxisView; space: string; onClose: () => void }) {
+  const t = TERR[space];
+  const holder = isSea(space) ? null : view.control[space] ?? null;
+  const byPower = new Map<string, Map<string, number>>();
+  for (const st of view.board[space] ?? []) {
+    if (st.count <= 0) continue;
+    const units = byPower.get(st.power) ?? new Map<string, number>();
+    units.set(st.key, (units.get(st.key) ?? 0) + st.count);
+    byPower.set(st.power, units);
+  }
+  const damage = view.factoryDamage[space] ?? 0;
+  const facts = [
+    t ? (t.isImpassable ? 'Neutral, impassable' : `${t.ipc} IPC${t.ipc === 1 ? '' : 's'}`) : 'Sea zone',
+    holder ? powerName(holder) : null,
+    t?.isVictoryCity ? `Victory city${t.victoryCity ? `, ${t.victoryCity}` : ''}` : null,
+    damage ? `Factory damage ${damage}` : null,
+  ].filter(Boolean).join(' · ');
+  return (
+    <aside className="axx-inspect ig-glass" style={{ ['--seat' as string]: powerInk(holder) }}>
+      <div className="axx-inspect-head">
+        {holder && <Roundel power={holder} size={30} />}
+        <span><b>{spaceName(space)}</b><small>{facts}</small></span>
+        <button onClick={onClose} aria-label="Close">✕</button>
+      </div>
+      {byPower.size === 0 && <div className="axx-inspect-empty">No units here.</div>}
+      {[...byPower].map(([power, units]) => (
+        <div key={power} className="axx-inspect-row" style={{ ['--seat' as string]: powerInk(power) }}>
+          <span className="who">{powerShort(power)}</span>
+          <span className="units">
+            {[...units].sort((a, b) => unitRank(a[0]) - unitRank(b[0])).map(([key, n]) => (
+              <span key={key} title={unitCount(n, key)}><UnitIcon unitKey={key as UnitKey} size={18} />{n}</span>
+            ))}
+          </span>
+        </div>
+      ))}
+    </aside>
   );
 }

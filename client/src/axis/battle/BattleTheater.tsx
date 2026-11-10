@@ -3,8 +3,9 @@
 // dice, losses, result) renders directly from view state; the 3D stage plays the same state as a
 // queue of beats and is allowed to be late, to skip, or to be absent.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { AxisView, PowerKey } from '@bge/shared';
+import { UNITS, type AxisView, type PowerKey } from '@bge/shared';
 import UnitIcon from '../UnitIcon';
+import { Roundel } from '../Roundel';
 import { lastVolley } from './dice';
 import { Director } from './director';
 import { DiceStrip, ForceCard, LossFeed, ResultCard, battleKicker, resultFromCombat, resultFromLast, seat } from './Hud';
@@ -61,7 +62,9 @@ function Theater({ combat, after, active }: { combat: Combat; after: LastBattle 
   const director = useRef<Director | null>(null);
   const latest = useRef(combat);
   latest.current = combat;
-  const [mode, setMode] = useState<'3d' | '2d'>('3d');
+  // The battle is shown as a designed board over the map. The modelled battlefield is still here
+  // behind ?battle=3d for the day its art is good enough to lead.
+  const [mode, setMode] = useState<'3d' | '2d'>(() => (new URLSearchParams(window.location.search).get('battle') === '3d' ? '3d' : '2d'));
   const [phase, setPhase] = useState<'loading' | 'ready'>('loading');
   const sound = useRef<BattleSound | null>(null);
   useEffect(() => {
@@ -159,32 +162,53 @@ function Theater({ combat, after, active }: { combat: Combat; after: LastBattle 
   );
 }
 
-/** The same battle without a 3D context: both forces laid out as icons, losses struck out. */
+/** The battle board: both forces drawn up as ranks of pieces over the map, losses struck out.
+ *  One tile is one unit, so the size of a force and what it has lost read from across a room. */
 function FlatField({ combat }: { combat: Combat }) {
   const b = combat.battle;
-  const column = (side: Side, power: string | null, units: typeof b.attacker) => (
-    <div className={`axb-flat-side ${side}`} style={seat(power)}>
-      <h2><span className="axb-ring" />{combatantName(power)}</h2>
-      {forceRows(units).map((r) => {
-        const shown = Math.min(14, r.alive + r.lost);
-        const alive = r.alive + r.lost > shown ? Math.round((r.alive / (r.alive + r.lost)) * shown) : r.alive;
-        return (
-          <div className="axb-flat-row" key={r.key}>
-            <span className="ig-num">{r.alive}</span>
-            <div aria-label={`${r.alive} ${unitName(r.key)}, ${r.lost} lost`}>
-              {Array.from({ length: shown }, (_, i) => (
-                <span key={i} className={i < alive ? '' : 'lost'}><UnitIcon unitKey={r.key} size={34} /></span>
-              ))}
-            </div>
+  const column = (side: Side, power: string | null, units: typeof b.attacker) => {
+    const rows = forceRows(units);
+    const alive = rows.reduce((n, r) => n + r.alive, 0);
+    return (
+      <section className={`axb-flat-side ${side}`} style={seat(power)}>
+        <header>
+          <Roundel power={power} size={72} />
+          <div>
+            <small className="ig-lab">{side === 'attacker' ? 'Attacking' : 'Defending'}</small>
+            <h2>{combatantName(power)}</h2>
           </div>
-        );
-      })}
-    </div>
-  );
+          <b className="ig-num">{alive}</b>
+        </header>
+        <div className="axb-ranks">
+          {rows.map((r) => {
+            const total = r.alive + r.lost;
+            const shown = Math.min(12, total);
+            const standing = total > shown ? Math.round((r.alive / total) * shown) : r.alive;
+            const needs = side === 'attacker' ? UNITS[r.key].attack : UNITS[r.key].defense;
+            return (
+              <div className={`axb-rank${r.alive ? '' : ' gone'}`} key={r.key}>
+                <div className="axb-rank-head">
+                  <b className="ig-num">{r.alive}</b>
+                  <span>{unitName(r.key)}{r.alive === 1 ? '' : 's'}</span>
+                  <em>{needs ? `hits on ${needs} or less` : 'does not fire'}</em>
+                </div>
+                <div className="axb-tiles" aria-label={`${r.alive} ${unitName(r.key)}, ${r.lost} lost`}>
+                  {Array.from({ length: shown }, (_, i) => (
+                    <span key={i} className={i < standing ? '' : 'lost'}><UnitIcon unitKey={r.key} size={40} /></span>
+                  ))}
+                  {total > shown && <i className="ig-num">+{total - shown}</i>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    );
+  };
   return (
     <div className="axb-flat">
       {column('attacker', combat.attacker, b.attacker)}
-      <div className="axb-flat-rule" />
+      <div className="axb-flat-vs"><span>vs</span></div>
       {column('defender', defenderOf(b), b.defender)}
     </div>
   );

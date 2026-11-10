@@ -5,6 +5,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState, type CSSPropertie
 import { POWERS, WIN_CONDITIONS, type AxisView, type PowerKey } from '@bge/shared';
 import { MapStage } from './MapStage';
 import { Boundary } from './Boundary';
+import { Roundel } from './Roundel';
 import { stagedUnits } from './AxisPlay';
 import { MOB_ID, powerInk, powerName } from './world';
 import { playSfx } from '../sfx';
@@ -63,6 +64,7 @@ export default function AxisBoard({ view }: { view: AxisView }) {
     const from = [...new Set(combat.from.map((f) => f.space))].filter((s) => s !== combat.space);
     st.setArrows(from.length ? [{ from, to: combat.space, tone: 'attack' }] : []);
     st.setTargets([{ id: combat.space, tone: 'attack' }], true);
+    void st.flyTo([combat.space, ...from], { pad: 2.6, seconds: 1.1 });
   }, [combatSig]);
 
   // Every logged order is shown in turn: the camera goes there, the caption says it, then the next.
@@ -132,26 +134,36 @@ export default function AxisBoard({ view }: { view: AxisView }) {
       )}
 
       <div className="axt-turn ig-glass">
-        <span className="axx-ring" />
+        <Roundel power={active} size={52} />
         <span>
+          <small className="ig-lab">Round {view.round}</small>
           <b>{view.winner ? (view.winner === 'axis' ? 'The Axis wins' : 'The Allies win') : powerName(active)}</b>
-          <small>Round {view.round} · {PHASE_LABEL[view.phase] ?? ''}</small>
+          <small>{PHASE_LABEL[view.phase] ?? ''}</small>
         </span>
       </div>
 
       <div className="axt-powers">
         {view.turnOrder.map((k) => (
-          <div key={k} className={`axt-power${k === view.active ? ' on' : ''}`} style={seatVar(k)}>
-            <small>{POWERS[k].short}</small>
-            <b className="ig-num">{view.powers[k].ipcs}</b><i className="ig-num">+{view.powers[k].production}</i>
+          <div key={k} className={`axt-power ig-glass${k === view.active ? ' on' : ''}`} style={seatVar(k)}>
+            <Roundel power={k} size={30} />
+            <span>
+              <small>{POWERS[k].short}</small>
+              <b className="ig-num">{view.powers[k].ipcs}<i>+{view.powers[k].production}</i></b>
+            </span>
           </div>
         ))}
       </div>
 
       <div className="axt-cities ig-glass">
-        <span><small className="ig-lab">Axis cities</small><b className="ig-num">{view.vc.axis}</b></span>
-        <span><small className="ig-lab">To win</small><b className="ig-num">{goal}</b></span>
-        <span><small className="ig-lab">Allied cities</small><b className="ig-num">{view.vc.allies}</b></span>
+        <span className="side"><small className="ig-lab">Axis</small><b className="ig-num">{view.vc.axis}</b></span>
+        <span className="track" aria-label={`Victory cities: Axis ${view.vc.axis}, Allies ${view.vc.allies}, ${goal} to win`}>
+          <i className="axis" style={{ width: `${(view.vc.axis / 18) * 100}%` }} />
+          <i className="allies" style={{ width: `${(view.vc.allies / 18) * 100}%` }} />
+          <em style={{ left: `${(goal / 18) * 100}%` }} />
+          <em style={{ right: `${(goal / 18) * 100}%` }} />
+        </span>
+        <span className="side"><small className="ig-lab">Allies</small><b className="ig-num">{view.vc.allies}</b></span>
+        <small className="goal">{goal} victory cities to win</small>
       </div>
 
       {caption && !combat && (
@@ -172,6 +184,7 @@ export default function AxisBoard({ view }: { view: AxisView }) {
               const delta = view.powers[k].ipcs - (ledger.before[k] ?? view.powers[k].ipcs);
               return (
                 <div key={k} className="axt-row" style={seatVar(k)}>
+                  <Roundel power={k} size={26} />
                   <span className="nm">{POWERS[k].name}</span>
                   <span className="bar"><i style={{ width: `${(view.powers[k].production / maxIncome) * 100}%` }} /></span>
                   <b className="ig-num">{view.powers[k].ipcs}</b>

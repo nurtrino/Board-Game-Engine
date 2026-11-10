@@ -19,12 +19,12 @@ interface RawEntry { nation: string | null; unit: string; mesh: string; scale: n
 // How long each sculpt stands on the board, in render units (the board is 95 wide).
 // Land pieces fit the 1.04 spacing between spots; ships run a little longer over open water.
 const FOOTPRINT: Record<string, number> = {
-  infantry: 0.56, artillery: 0.98, tank: 1.0, aaGun: 0.84, factory: 0.74,
-  fighter: 1.02, bomber: 1.3,
-  battleship: 1.7, carrier: 1.7, cruiser: 1.46, destroyer: 1.26, submarine: 1.14, transport: 1.36,
+  infantry: 0.6, artillery: 1.02, tank: 1.04, aaGun: 0.86, factory: 0.78,
+  fighter: 1.06, bomber: 1.34,
+  battleship: 1.8, carrier: 1.8, cruiser: 1.54, destroyer: 1.32, submarine: 1.2, transport: 1.42,
 };
 // Standing figures are measured by height instead of footprint.
-const HEIGHT: Record<string, number> = { infantry: 0.96 };
+const HEIGHT: Record<string, number> = { infantry: 1.02 };
 
 export function unitScale(key: string, size: THREE.Vector3): number {
   const h = HEIGHT[key];

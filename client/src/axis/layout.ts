@@ -5,7 +5,7 @@ import { enumerateAxisPhysicalPieces, type AxisPhysicalPiece, type UnitStack } f
 import { MOB_ZONE, SPACE_CENTER, inRegion, isSea, regionAt, ringsOf, unitRank, type Px } from './world';
 
 /** Centre-to-centre distance between neighbouring pieces, in art pixels. */
-export const SLOT_SPACING = 104;
+export const SLOT_SPACING = 108;
 const EDGE_INSET = 34;
 const MAX_SLOTS = 36;
 /** A space never shows more than this many separate sculpts. */

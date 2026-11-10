@@ -25,6 +25,21 @@ How it fits together now:
   interface for devices.
 - The big screen is a spectator. The server never holds a battle action for it.
 
+Zones are measured, not traced. `python tools/axis-zones.py` reads the printed map
+(`client/public/axis/map-full.jpg`) and writes `client/src/axis/regions-data.json`: coastlines from
+the artwork, borders from the printed lines, every pixel in exactly one space, islands as holes in
+their sea zone, small island territories given standing room. Where the print defeats the detector
+(grey borders on dark forest in central Europe, hatched neutral ground, the wrap seam) a rough
+stroke or a seat goes in `games/axis-allies/golden/zone-hints.json`; the tool widens a stroke into
+a wall for the first pass and then snaps every border to the nearest printed line. The tool prints
+a self-check (labels outside their own region, slivers) and writes overlays to `tmp/` for the eye.
+The board wraps left to right; the scan's paper margin is excluded.
+
+The look: territories are tinted by their current holder with crisp borders over the print; every
+piece is a metal sculpt on a base in its nation's colour, a stack rides a taller base with a count;
+the big screen shows a battle as a board over the map (one tile per unit, losses struck out). The
+modelled 3D battlefield remains behind `?battle=3d`.
+
 Assets are staged by two scripts, both re-runnable:
 
 - `node tools/stage-axis-units.mjs` turns the mod's 24 unit sculpts (38 MB of OBJ text) into

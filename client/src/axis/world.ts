@@ -58,6 +58,19 @@ export function pieceTint(power: string | null | undefined, unit?: string): [num
   return PIECE_TINT[power ?? ''] ?? NEUTRAL_TINT;
 }
 
+/** The colour a nation paints the map and the bases of its pieces. Clear, distinct hues that
+ *  read on the printed board from across a room. */
+const MAP_COLOR: Record<string, string> = {
+  germany: '#4f5d6e',
+  ussr: '#b3261e',
+  japan: '#d97a0f',
+  uk: '#c7a44a',
+  italy: '#8a5a2c',
+  usa: '#3d8a34',
+  china: '#8fc468',
+};
+export const mapColor = (power: string | null | undefined): string => MAP_COLOR[power ?? ''] ?? '#8d9196';
+
 /** Bright companion colour for outlines and text over the dark interface. */
 const POWER_INK: Record<string, string> = {
   germany: '#c9ccd1',
@@ -90,7 +103,10 @@ export const unitRank = (key: string) => {
 // ---------- region borders (traced from the printed map) ----------
 
 type Ring = Px[];
+// Measured from the printed map by tools/axis-zones.py: every pixel of the board belongs to exactly
+// one space. `holes` are the islands inside a sea zone and the like.
 const REGIONS = (regionsJson as unknown as { regions: Record<string, Ring[]> }).regions;
+const HOLES = (regionsJson as unknown as { holes?: Record<string, Ring[]> }).holes ?? {};
 
 function inRing(px: number, py: number, ring: Ring): boolean {
   let inside = false;
@@ -103,12 +119,15 @@ function inRing(px: number, py: number, ring: Ring): boolean {
 }
 
 export const ringsOf = (id: string): Ring[] | null => REGIONS[id] ?? null;
+export const holesOf = (id: string): Ring[] => HOLES[id] ?? [];
 
 export function inRegion(id: string, px: number, py: number): boolean {
   const rings = REGIONS[id];
   if (!rings) return false;
-  for (const dx of [0, -ART_W, ART_W]) {
-    for (const ring of rings) if (inRing(px + dx, py, ring)) return true;
+  for (const ring of rings) {
+    if (!inRing(px, py, ring)) continue;
+    for (const hole of HOLES[id] ?? []) if (inRing(px, py, hole)) return false;
+    return true;
   }
   return false;
 }
@@ -130,15 +149,13 @@ const REGION_IDS = Object.keys(REGIONS);
 const LAND_IDS = REGION_IDS.filter((id) => !isSea(id));
 const SEA_IDS = REGION_IDS.filter(isSea);
 
-/** Which space contains this art point. Islands sit inside sea zones, so land wins. */
+/** Which space contains this art point. */
 export function regionAt(px: number, py: number): string | null {
   const hit = (ids: string[]) => {
     for (const id of ids) {
       const b = REGION_BOX[id];
-      // Wrapped regions are rare: test the box only for the unwrapped copy.
       if (px >= b[0] && px <= b[2] && py >= b[1] && py <= b[3] && inRegion(id, px, py)) return id;
     }
-    for (const id of ids) if (inRegion(id, px, py)) return id;
     return null;
   };
   return hit(LAND_IDS) ?? hit(SEA_IDS);

@@ -13,6 +13,8 @@ import { useOrders, type Act, type Orders } from './useOrders';
 import { Armory, Deploy, NationCard, Research } from './sheets';
 import { axisAvailablePhaseKeys, axisCapitalTurnPresentation, axisPhasePresentation } from './axisCapitalPresentation';
 import UnitIcon from './UnitIcon';
+import { Roundel } from './Roundel';
+import { Inspector } from './sheets';
 import { MOB_ID, listNames, powerInk, powerName, spaceName, unitCount } from './world';
 
 const BattleCommand = lazy(() => import('./battle/BattleCommand').then((m) => ({ default: m.BattleCommand })));
@@ -38,6 +40,7 @@ export default function AxisPlay({ view, act, error }: { view: AxisView; act: (a
   const [loaded, setLoaded] = useState(0);
   const [failed, setFailed] = useState('');
   const [nation, setNation] = useState(false);
+  const [inspect, setInspect] = useState<string | null>(null);
   const [deploySel, setDeploySel] = useState<{ targets: string[]; onPick: (id: string) => void } | null>(null);
 
   const active = view.active;
@@ -69,9 +72,9 @@ export default function AxisPlay({ view, act, error }: { view: AxisView; act: (a
     st.onProgress = setLoaded;
     st.handlers = {
       // While a sheet is asking for a space, a tap on a piece counts as a tap on its space.
-      pieceTap: (hit) => (pick.current ? pick.current(hit.space) : latest.current.tapPiece(hit)),
+      pieceTap: (hit) => { setInspect(hit.space); if (pick.current) pick.current(hit.space); else latest.current.tapPiece(hit); },
       pieceHold: (hit) => latest.current.holdPiece(hit),
-      regionTap: (id) => (pick.current ? pick.current(id) : latest.current.tapRegion(id)),
+      regionTap: (id) => { setInspect(id); if (pick.current) pick.current(id); else latest.current.tapRegion(id); },
       dragStart: (hit) => latest.current.dragStart(hit),
       dragEnd: (space) => latest.current.dragEnd(space),
     };
@@ -145,7 +148,7 @@ export default function AxisPlay({ view, act, error }: { view: AxisView; act: (a
 
       <header className="axx-top">
         <button className="axx-plate ig-glass" onClick={() => setNation(true)}>
-          <span className="axx-ring" />
+          <Roundel power={operating} size={36} />
           <span>
             <b>{powerName(operating)}</b>
             <small>Round {view.round} · {mine ? 'your turn' : `${POWERS[active].name} to play`}</small>
@@ -165,6 +168,7 @@ export default function AxisPlay({ view, act, error }: { view: AxisView; act: (a
         </div>
       </header>
 
+      {inspect && !inBattle && <Inspector view={view} space={inspect} onClose={() => setInspect(null)} />}
       {cap.banner && mine && <div className="axx-note ig-glass"><b>{cap.banner.title}</b> {cap.banner.detail}</div>}
       {error && <div className="toast">{error}</div>}
 

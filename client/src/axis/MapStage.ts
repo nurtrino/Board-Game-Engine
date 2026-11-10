@@ -7,13 +7,15 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import { UNITS, type UnitKey, type UnitStack } from '@bge/shared';
 import { Tweens, ease } from './tween';
 import { UnitLibrary, unitScale, type UnitModel } from './units';
 import { layoutSpace, mobilizationSpots, type PieceSpot } from './layout';
 import {
-  ART_H, ART_W, MAP_D, MAP_W, MOB_ID, SPACE_CENTER, TERR, S,
-  nearestSpace, pieceTint, powerBase, powerInk, powerShort, px2r, r2px, regionAt, regionBox, ringsOf, sideOf,
+  ART_H, ART_W, MAP_D, MAP_W, MOB_ID, SPACE_CENTER, TERR, ZONE, S, mapColor,
+  holesOf, nearestSpace, powerBase, powerInk, powerShort, px2r, r2px, regionAt, regionBox, ringsOf, sideOf,
 } from './world';
 
 export type Tone = 'attack' | 'move' | 'special' | 'origin';
@@ -73,6 +75,7 @@ interface Batch {
   capacity: number;
 }
 
+const SEA_UNITS = new Set(['battleship', 'carrier', 'cruiser', 'destroyer', 'submarine', 'transport']);
 const hash = (s: string) => {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
@@ -109,6 +112,12 @@ export class MapStage {
   private outlineMat: THREE.ShaderMaterial;
   private shadows: THREE.InstancedMesh;
   private rings: THREE.InstancedMesh;
+  private bases: THREE.InstancedMesh;
+  private boardMats: THREE.ShaderMaterial[] = [];
+  private politicalLayer = new THREE.Group();
+  private political = new Map<string, { meshes: THREE.Mesh[]; power: string | null }>();
+  private politicalMats = new Map<string, THREE.MeshBasicMaterial>();
+  private borderMats: LineMaterial[] = [];
   private sprites = new Map<string, Sprite>();
   private movers = new Set<Sprite>();
   private badgeLayer = new THREE.Group();
@@ -137,9 +146,6 @@ export class MapStage {
   private arrows: StageArrow[] = [];
   private dragArrow: { from: string[]; to: [number, number]; tone: Tone } | null = null;
 
-  private markerLayer = new THREE.Group();
-  private markers = new Map<string, { mesh: THREE.Mesh; power: string }>();
-  private markerTex = new Map<string, THREE.Texture>();
 
   private tileLayer = new THREE.Group();
   private tiles: { x: number; y: number; w: number; h: number; file: string; mesh?: THREE.Mesh; loading?: boolean; used: number }[] = [];
@@ -158,7 +164,7 @@ export class MapStage {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mode === 'screen' ? 1.5 : 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1;
+    this.renderer.toneMappingExposure = 0.92;
     this.renderer.setClearColor(0x050607, 1);
     const el = this.renderer.domElement;
     el.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none';
@@ -168,15 +174,15 @@ export class MapStage {
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     pmrem.dispose();
-    this.scene.add(new THREE.HemisphereLight(0xdfe8ff, 0x2a2622, 0.4));
-    const key = new THREE.DirectionalLight(0xfff4e2, 1.35);
+    this.scene.add(new THREE.HemisphereLight(0xdfe8ff, 0x2a2622, 0.32));
+    const key = new THREE.DirectionalLight(0xfff4e2, 1.05);
     key.position.set(-30, 60, 40);
     this.scene.add(key);
     const rim = new THREE.DirectionalLight(0xbcd0ff, 0.5);
     rim.position.set(40, 30, -50);
     this.scene.add(rim);
 
-    this.pieceMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.15, envMapIntensity: 0.6 });
+    this.pieceMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.42, metalness: 0.6, envMapIntensity: 0.75 });
     this.outlineMat = new THREE.ShaderMaterial({
       side: THREE.BackSide,
       depthWrite: false,
@@ -195,19 +201,27 @@ export class MapStage {
         void main() { gl_FragColor = vec4(uColor, 1.0); }`,
     });
 
-    // table surround, board, hi-res tiles
+    // The board is an object on a dark table: a slab with a soft shadow, not a picture in a void.
     const table = new THREE.Mesh(
-      new THREE.PlaneGeometry(MAP_W * 4, MAP_D * 5),
-      new THREE.MeshBasicMaterial({ color: 0x08090b, toneMapped: false }),
+      new THREE.PlaneGeometry(MAP_W * 5, MAP_D * 7),
+      new THREE.MeshBasicMaterial({ map: this.makeTableTexture(), toneMapped: false }),
     );
     table.rotation.x = -Math.PI / 2;
-    table.position.set(MAP_W / 2, -0.03, -MAP_D / 2);
+    table.position.set(MAP_W / 2, -0.62, -MAP_D / 2);
     this.scene.add(table);
-    const rimLine = new THREE.LineLoop(
-      new THREE.BufferGeometry().setFromPoints([new V3(0, 0.004, 0), new V3(MAP_W, 0.004, 0), new V3(MAP_W, 0.004, -MAP_D), new V3(0, 0.004, -MAP_D)]),
-      new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.16 }),
+    const slab = new THREE.Mesh(
+      new THREE.BoxGeometry(MAP_W + 0.5, 0.6, MAP_D + 0.5),
+      new THREE.MeshStandardMaterial({ color: 0x0c0d10, roughness: 0.55, metalness: 0.2 }),
     );
-    this.scene.add(rimLine);
+    slab.position.set(MAP_W / 2, -0.31, -MAP_D / 2);
+    this.scene.add(slab);
+    const under = new THREE.Mesh(
+      new THREE.PlaneGeometry(MAP_W * 1.24, MAP_D * 1.36),
+      new THREE.MeshBasicMaterial({ map: this.makeShadowTexture(true), transparent: true, depthWrite: false, opacity: 0.9, toneMapped: false }),
+    );
+    under.rotation.x = -Math.PI / 2;
+    under.position.set(MAP_W / 2, -0.6, -MAP_D / 2 + 1.2);
+    this.scene.add(under);
     this.scene.add(this.tileLayer);
 
     this.veil = new THREE.Mesh(
@@ -219,7 +233,8 @@ export class MapStage {
     this.veil.renderOrder = 1;
     this.scene.add(this.veil);
     this.highlightLayer.renderOrder = 2;
-    this.scene.add(this.highlightLayer, this.markerLayer, this.arrowLayer, this.badgeLayer);
+    this.scene.add(this.politicalLayer, this.highlightLayer, this.arrowLayer, this.badgeLayer);
+    this.buildBorders();
 
     const shadowTex = this.makeShadowTexture();
     const shadowGeo = new THREE.PlaneGeometry(1, 1);
@@ -236,6 +251,16 @@ export class MapStage {
     this.rings.renderOrder = 4;
     this.rings.count = 0;
     this.scene.add(this.rings);
+    // Every land and air piece stands on a base in its nation's colour, like a painted miniature.
+    // A stack rides on a taller base, the way chips pile under a piece on the cardboard.
+    const baseGeo = new THREE.CylinderGeometry(1, 1.06, 1, 40);
+    baseGeo.translate(0, 0.5, 0);
+    this.bases = new THREE.InstancedMesh(baseGeo, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.62, metalness: 0.05, envMapIntensity: 0.25 }), 1400);
+    this.bases.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(1400 * 3), 3);
+    this.bases.frustumCulled = false;
+    this.bases.renderOrder = 5;
+    this.bases.count = 0;
+    this.scene.add(this.bases);
 
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(host);
@@ -261,7 +286,7 @@ export class MapStage {
     const mapJob = loader.loadAsync(baseUrl).then((tex) => {
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
-      const board = new THREE.Mesh(new THREE.PlaneGeometry(MAP_W, MAP_D), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
+      const board = new THREE.Mesh(new THREE.PlaneGeometry(MAP_W, MAP_D), this.boardMaterial(tex));
       board.rotation.x = -Math.PI / 2;
       board.position.set(MAP_W / 2, 0, -MAP_D / 2);
       this.scene.add(board);
@@ -597,17 +622,37 @@ export class MapStage {
     this.syncedDist = this.cam.dist;
     let si = 0;
     let ri = 0;
+    let bi = 0;
+    const baseColor = new THREE.Color();
     for (const sp of all) {
       const b = this.batchFor(sp.model, need.get(sp.model)!);
       const c = cursor.get(sp.model) ?? [0, 0];
       const s = sp.scale * Math.max(0.001, sp.grow) * zoomScale;
       q.setFromAxisAngle(up, sp.yaw);
-      m.compose(pos.set(sp.x, sp.y, sp.z), q, scl.set(s, s, s));
+      // Every piece rides a base in its nation's colour: round under land and air units, a long
+      // oval under a hull. A stack rides a taller one.
+      const hull = SEA_UNITS.has(sp.unit);
+      const stack = sp.spot?.stacked ? Math.min(6, sp.spot.pieces.length) : 1;
+      const live = zoomScale * Math.max(0.001, sp.grow);
+      const baseH = (0.055 + 0.04 * (stack - 1)) * live;
+      if (bi < 1400) {
+        const half = Math.max(sp.model.size.x, sp.model.size.z) * sp.scale * 0.5;
+        const bx = (hull ? half + 0.08 : Math.max(0.3, Math.min(0.48, half * 0.92))) * live;
+        const bz = (hull ? Math.max(0.2, Math.min(sp.model.size.x, sp.model.size.z) * sp.scale * 0.5 + 0.1) : bx / live) * (hull ? live : live);
+        m.compose(pos.set(sp.x, sp.y, sp.z), hull ? q : noTurn, scl.set(bx, baseH, hull ? bz : bx));
+        this.bases.setMatrixAt(bi, m);
+        baseColor.set(mapColor(sp.power));
+        if (sp.spent) baseColor.multiplyScalar(0.42);
+        this.bases.setColorAt(bi, baseColor);
+        bi++;
+      }
+      m.compose(pos.set(sp.x, sp.y + baseH, sp.z), q, scl.set(s, s, s));
       b.mesh.setMatrixAt(c[0], m);
-      const tint = pieceTint(sp.power, sp.unit);
-      color.setRGB(tint[0], tint[1], tint[2], THREE.SRGBColorSpace);
-      if (sp.damaged) color.lerp(new THREE.Color(0.5, 0.05, 0.02), 0.45);
-      if (sp.spent) color.multiplyScalar(0.5).lerp(new THREE.Color(0.2, 0.2, 0.2), 0.35);
+      // sculpts are pewter for every nation; the base carries the colour
+      // sculpts are metal washed in the nation's colour, so an army reads from across the room
+      color.setRGB(0.66, 0.68, 0.72, THREE.SRGBColorSpace).lerp(baseColor.set(mapColor(sp.power)), 0.5);
+      if (sp.damaged) color.lerp(new THREE.Color(0.75, 0.16, 0.1), 0.55);
+      if (sp.spent) color.multiplyScalar(0.42);
       b.mesh.setColorAt(c[0], color);
       c[0]++;
       if (sp.selected) {
@@ -644,73 +689,94 @@ export class MapStage {
     this.shadows.instanceMatrix.needsUpdate = true;
     this.rings.count = ri;
     this.rings.instanceMatrix.needsUpdate = true;
+    this.bases.count = bi;
+    this.bases.instanceMatrix.needsUpdate = true;
+    if (this.bases.instanceColor) this.bases.instanceColor.needsUpdate = true;
   }
 
-  // ---------- control markers ----------
+  // ---------- who holds what ----------
 
-  /** A roundel on every territory held by someone other than its printed owner. */
+  /** Tints every territory in its holder's colour, so the front line reads at a glance. */
   setControl(control: Record<string, string | null>) {
-    const want = new Map<string, string>();
-    for (const [id, holder] of Object.entries(control)) {
-      const t = TERR[id];
-      if (t && holder && holder !== (t.originalOwner ?? null)) want.set(id, holder);
-    }
-    for (const [id, m] of this.markers) {
-      if (want.get(id) === m.power) continue;
-      this.markerLayer.remove(m.mesh);
-      (m.mesh.material as THREE.Material).dispose();
-      this.markers.delete(id);
-    }
-    for (const [id, power] of want) {
-      if (this.markers.has(id)) continue;
-      const c = SPACE_CENTER[id];
-      if (!c) continue;
-      const [x, z] = px2r(c[0] - 4, c[1] - 92);
-      const mesh = new THREE.Mesh(
-        new THREE.CircleGeometry(0.4, 40),
-        new THREE.MeshBasicMaterial({ map: this.markerTexture(power), transparent: true, depthWrite: false, toneMapped: false }),
-      );
-      mesh.rotation.x = -Math.PI / 2;
-      mesh.position.set(x, 0.02, z);
-      mesh.renderOrder = 3;
-      this.markerLayer.add(mesh);
-      this.markers.set(id, { mesh, power });
-      mesh.scale.setScalar(0.01);
-      this.tweens.run(0.45, (t) => { mesh.scale.setScalar(Math.max(0.01, t)); this.dirty = true; }, ease.outBack);
+    const first = this.political.size === 0;
+    for (const id of Object.keys(TERR)) {
+      const holder = control[id] ?? null;
+      let entry = this.political.get(id);
+      if (entry && entry.power === holder) continue;
+      if (!entry) {
+        entry = { meshes: [], power: null };
+        for (const g of this.regionGeometry(id).fills) {
+          const mesh = new THREE.Mesh(g, undefined);
+          mesh.position.y = 0.004;
+          mesh.renderOrder = 1;
+          mesh.visible = false;
+          this.politicalLayer.add(mesh);
+          entry.meshes.push(mesh);
+        }
+        this.political.set(id, entry);
+      }
+      entry.power = holder;
+      for (const mesh of entry.meshes) {
+        mesh.visible = holder != null;
+        if (holder) mesh.material = this.politicalMaterial(holder);
+      }
+      // a territory that changes hands flashes in its new colour
+      if (!first && holder && entry.meshes.length) {
+        const flash = new THREE.MeshBasicMaterial({ color: mapColor(holder), transparent: true, opacity: 0.85, depthWrite: false, toneMapped: false });
+        const extra = entry.meshes.map((mesh) => {
+          const copy = new THREE.Mesh(mesh.geometry, flash);
+          copy.position.y = 0.008;
+          copy.renderOrder = 2;
+          this.politicalLayer.add(copy);
+          return copy;
+        });
+        void this.tweens.run(1.1, (t) => { flash.opacity = 0.85 * (1 - t); this.dirty = true; }, ease.out).then(() => {
+          for (const c of extra) this.politicalLayer.remove(c);
+          flash.dispose();
+        });
+      }
     }
     this.dirty = true;
   }
 
-  private markerTexture(power: string): THREE.Texture {
-    let tex = this.markerTex.get(power);
-    if (tex) return tex;
-    const c = document.createElement('canvas');
-    c.width = c.height = 160;
-    const g = c.getContext('2d')!;
-    g.fillStyle = '#0a0b0d';
-    g.beginPath();
-    g.arc(80, 80, 78, 0, Math.PI * 2);
-    g.fill();
-    g.strokeStyle = powerInk(power);
-    g.lineWidth = 12;
-    g.beginPath();
-    g.arc(80, 80, 64, 0, Math.PI * 2);
-    g.stroke();
-    g.fillStyle = powerBase(power);
-    g.globalAlpha = 0.5;
-    g.beginPath();
-    g.arc(80, 80, 56, 0, Math.PI * 2);
-    g.fill();
-    g.globalAlpha = 1;
-    g.fillStyle = '#ffffff';
-    g.font = '800 40px Inter, system-ui, sans-serif';
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.fillText(powerShort(power), 80, 84);
-    tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    this.markerTex.set(power, tex);
-    return tex;
+  private politicalMaterial(power: string): THREE.MeshBasicMaterial {
+    let m = this.politicalMats.get(power);
+    if (!m) {
+      m = new THREE.MeshBasicMaterial({ color: mapColor(power), transparent: true, opacity: 0.4, depthWrite: false, toneMapped: false });
+      this.politicalMats.set(power, m);
+    }
+    return m;
+  }
+
+  /** Crisp borders over the print, drawn from the measured zones: dark on land, pale at sea. */
+  private buildBorders() {
+    const land: number[] = [];
+    const sea: number[] = [];
+    const add = (out: number[], ring: [number, number][]) => {
+      for (let i = 0; i < ring.length; i++) {
+        const p0 = px2r(ring[i][0], ring[i][1]);
+        const p1 = px2r(ring[(i + 1) % ring.length][0], ring[(i + 1) % ring.length][1]);
+        out.push(p0[0], 0, p0[1], p1[0], 0, p1[1]);
+      }
+    };
+    for (const id of [...Object.keys(TERR), ...Object.keys(ZONE)]) {
+      const out = id.startsWith('sz-') ? sea : land;
+      for (const ring of ringsOf(id) ?? []) add(out, ring);
+    }
+    const make = (pts: number[], color: number, opacity: number, width: number, y: number) => {
+      const g = new LineSegmentsGeometry();
+      g.setPositions(pts);
+      const mat = new LineMaterial({ color, linewidth: width, transparent: true, opacity, depthWrite: false, toneMapped: false });
+      mat.resolution.set(Math.max(1, this.host.clientWidth), Math.max(1, this.host.clientHeight));
+      this.borderMats.push(mat);
+      const lines = new LineSegments2(g, mat);
+      lines.position.y = y;
+      lines.renderOrder = 1;
+      lines.frustumCulled = false;
+      this.scene.add(lines);
+    };
+    make(sea, 0xdfeaff, 0.34, 1.2, 0.0045);
+    make(land, 0x05060a, 0.9, 1.8, 0.005);
   }
 
   // ---------- highlights ----------
@@ -732,24 +798,37 @@ export class MapStage {
     let geo = this.regionGeo.get(id);
     if (geo) return geo;
     geo = { fills: [], lines: [] };
-    for (const ring of ringsOf(id) ?? []) {
-      const shape = new THREE.Shape();
+    const outline = (ring: [number, number][]) => {
       const pts: number[] = [];
-      ring.forEach(([px, py], i) => {
+      for (const [px, py] of ring) {
         const [x, z] = px2r(px, py);
-        if (i === 0) shape.moveTo(x, -z);
-        else shape.lineTo(x, -z);
         pts.push(x, 0, z);
-      });
+      }
       const [x0, z0] = px2r(ring[0][0], ring[0][1]);
       pts.push(x0, 0, z0);
+      const line = new LineGeometry();
+      line.setPositions(pts);
+      geo!.lines.push(line);
+    };
+    const path = <T extends THREE.Path>(target: T, ring: [number, number][]): T => {
+      ring.forEach(([px, py], i) => {
+        const [x, z] = px2r(px, py);
+        if (i === 0) target.moveTo(x, -z);
+        else target.lineTo(x, -z);
+      });
+      return target;
+    };
+    const holes = holesOf(id);
+    for (const ring of ringsOf(id) ?? []) {
+      const shape = path(new THREE.Shape(), ring);
+      // an island inside a sea zone is a hole in its fill
+      for (const hole of holes) if (pointInRing(hole[0], ring)) shape.holes.push(path(new THREE.Path(), hole));
       const fill = new THREE.ShapeGeometry(shape);
       fill.rotateX(-Math.PI / 2);
       geo.fills.push(fill);
-      const line = new LineGeometry();
-      line.setPositions(pts);
-      geo.lines.push(line);
+      outline(ring);
     }
+    for (const hole of holes) outline(hole);
     this.regionGeo.set(id, geo);
     return geo;
   }
@@ -897,7 +976,7 @@ export class MapStage {
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
-    for (const m of this.lineMats.values()) m.resolution.set(w, h);
+    for (const m of [...this.lineMats.values(), ...this.borderMats]) m.resolution.set(w, h);
     this.dirty = true;
   }
 
@@ -1192,7 +1271,7 @@ export class MapStage {
           if (this.disposed) { tex.dispose(); return; }
           tex.colorSpace = THREE.SRGBColorSpace;
           tex.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
-          const mesh = new THREE.Mesh(new THREE.PlaneGeometry(t.w * S, t.h * S), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
+          const mesh = new THREE.Mesh(new THREE.PlaneGeometry(t.w * S, t.h * S), this.boardMaterial(tex));
           mesh.rotation.x = -Math.PI / 2;
           const [cx, cz] = px2r(t.x + t.w / 2, t.y + t.h / 2);
           mesh.position.set(cx, 0.002, cz);
@@ -1208,7 +1287,8 @@ export class MapStage {
     for (const t of live.slice(0, Math.max(0, live.length - cap))) {
       if (now - t.used < 4000) continue;
       this.tileLayer.remove(t.mesh!);
-      ((t.mesh!.material as THREE.MeshBasicMaterial).map as THREE.Texture).dispose();
+      ((t.mesh!.material as THREE.ShaderMaterial).uniforms.map.value as THREE.Texture).dispose();
+      this.boardMats = this.boardMats.filter((bm) => bm !== t.mesh!.material);
       (t.mesh!.material as THREE.Material).dispose();
       t.mesh!.geometry.dispose();
       t.mesh = undefined;
@@ -1248,13 +1328,50 @@ export class MapStage {
     this.renderer.render(this.scene, this.camera);
   };
 
-  private makeShadowTexture(): THREE.Texture {
+  /** The printed board, graded: a touch less saturated and a touch deeper, so pieces and colour
+   *  overlays sit on it instead of fighting it. */
+  private boardMaterial(tex: THREE.Texture): THREE.ShaderMaterial {
+    const mat = new THREE.ShaderMaterial({
+      uniforms: { map: { value: tex }, uSat: { value: 0.82 }, uGain: { value: 0.9 } },
+      vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: `
+        uniform sampler2D map; uniform float uSat; uniform float uGain; varying vec2 vUv;
+        void main() {
+          vec3 c = texture2D(map, vUv).rgb;
+          float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+          c = mix(vec3(l), c, uSat) * uGain;
+          c = c * c * (3.0 - 2.0 * c) * 0.35 + c * 0.65;
+          gl_FragColor = vec4(c, 1.0);
+          #include <colorspace_fragment>
+        }`,
+      toneMapped: false,
+    });
+    this.boardMats.push(mat);
+    return mat;
+  }
+
+  private makeTableTexture(): THREE.Texture {
+    const c = document.createElement('canvas');
+    c.width = c.height = 512;
+    const g = c.getContext('2d')!;
+    const grad = g.createRadialGradient(256, 256, 20, 256, 256, 360);
+    grad.addColorStop(0, '#15171c');
+    grad.addColorStop(0.55, '#0a0b0e');
+    grad.addColorStop(1, '#030304');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 512, 512);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }
+
+  private makeShadowTexture(wide = false): THREE.Texture {
     const c = document.createElement('canvas');
     c.width = c.height = 128;
     const g = c.getContext('2d')!;
-    const grad = g.createRadialGradient(64, 64, 4, 64, 64, 62);
+    const grad = g.createRadialGradient(64, 64, wide ? 30 : 4, 64, 64, 62);
     grad.addColorStop(0, 'rgba(0,0,0,.85)');
-    grad.addColorStop(0.55, 'rgba(0,0,0,.38)');
+    grad.addColorStop(wide ? 0.78 : 0.55, wide ? 'rgba(0,0,0,.8)' : 'rgba(0,0,0,.38)');
     grad.addColorStop(1, 'rgba(0,0,0,0)');
     g.fillStyle = grad;
     g.fillRect(0, 0, 128, 128);
@@ -1269,8 +1386,9 @@ export class MapStage {
     this.clearSprites();
     for (const b of this.batches.values()) { b.mesh.dispose(); b.outline.dispose(); }
     for (const g of this.regionGeo.values()) { g.fills.forEach((f) => f.dispose()); g.lines.forEach((l) => l.dispose()); }
-    for (const t of [...this.badgeTex.values(), ...this.markerTex.values()]) t.dispose();
-    for (const m of [...this.fillMats.values(), ...this.lineMats.values()]) m.dispose();
+    for (const t of this.badgeTex.values()) t.dispose();
+    for (const m of [...this.fillMats.values(), ...this.lineMats.values(), ...this.politicalMats.values(), ...this.borderMats, ...this.boardMats]) m.dispose();
+    this.bases.dispose();
     this.scene.traverse((o) => {
       const m = o as THREE.Mesh;
       if (m.isMesh && !(m as THREE.InstancedMesh).isInstancedMesh) {
@@ -1291,6 +1409,15 @@ export class MapStage {
   }
 }
 
+function pointInRing(p: [number, number], ring: [number, number][]): boolean {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
+    if ((yi > p[1]) !== (yj > p[1]) && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
 function dist2(a: [number, number] | undefined, b: [number, number]): number {
   return a ? (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 : Infinity;
 }
