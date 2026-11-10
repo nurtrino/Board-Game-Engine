@@ -437,30 +437,50 @@ export function TvBoard({ view }: { view: BrassView }) {
       <div className="bbx-bar top" />
       <div className="bbx-bar bottom" />
 
-      {/* era / round plate */}
-      <div className="ig-era ig-glass bbx-hud">
-        {shown.phase === 'ended' ? (
-          <>
-            <div className="ig-lab">Game over</div>
-            <div className="ig-era-v"><b>{winner?.name ?? shown.winner}</b> wins</div>
-          </>
-        ) : (
-          <>
-            <div className="ig-lab">{shown.era === 'canal' ? 'Canal Era' : 'Rail Era'}</div>
-            <div className="ig-era-v">Round {shown.round} / {shown.numRounds}</div>
-            <RoundBar round={shown.round} numRounds={shown.numRounds} />
-          </>
-        )}
-      </div>
-
-      {/* whose turn: always shown, pops on every turnover */}
-      {turn && (
-        <div className="ig-turn ig-glass bbx-hud" key={turn.key} style={seatVar(turn.color)}>
-          <span className="ig-prompt-ring" />
-          <span><b>{turn.name}</b> to act</span>
-          <Pips total={turn.total} left={turn.left} />
+      {/* one row across the top: round plate, whose turn, the seats. They share
+          the row, so the turn pill can never sit on top of a seat. */}
+      <div className="bbx-top bbx-hud">
+        {/* era / round plate */}
+        <div className="ig-era ig-glass">
+          {shown.phase === 'ended' ? (
+            <>
+              <div className="ig-lab">Game over</div>
+              <div className="ig-era-v"><b>{winner?.name ?? shown.winner}</b> wins</div>
+            </>
+          ) : (
+            <>
+              <div className="ig-lab">{shown.era === 'canal' ? 'Canal Era' : 'Rail Era'}</div>
+              <div className="ig-era-v">Round {shown.round} / {shown.numRounds}</div>
+              <RoundBar round={shown.round} numRounds={shown.numRounds} />
+            </>
+          )}
         </div>
-      )}
+
+        {/* whose turn: always shown, pops on every turnover */}
+        {turn && (
+          <div className="ig-turn ig-glass" key={turn.key} style={seatVar(turn.color)}>
+            <span className="ig-prompt-ring" />
+            <span><b>{turn.name}</b> to act</span>
+            <Pips total={turn.total} left={turn.left} />
+          </div>
+        )}
+
+        {/* score chips: name, VP, cash. Tap for full stats */}
+        <div className="ig-scores">
+          {shown.players.map((p) => (
+            <button
+              key={p.seat}
+              className={`ig-chip${turn?.color === p.color ? ' on' : ''}`}
+              style={seatVar(p.color)}
+              onClick={() => setStatsSeat(p.seat)}
+            >
+              <span className="nm">{p.name}</span>
+              <span className="vp"><Ticker value={p.vp} suffix=" VP" /></span>
+              <span className="mn"><Ticker value={p.money} prefix="£" /></span>
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* the turn changing hands, large enough to read from the sofa */}
       {turn && !cut && (
@@ -472,22 +492,6 @@ export function TvBoard({ view }: { view: BrassView }) {
           </div>
         </div>
       )}
-
-      {/* score chips: name, VP, cash. Tap for full stats */}
-      <div className="ig-scores bbx-hud">
-        {shown.players.map((p) => (
-          <button
-            key={p.seat}
-            className={`ig-chip${turn?.color === p.color ? ' on' : ''}`}
-            style={seatVar(p.color)}
-            onClick={() => setStatsSeat(p.seat)}
-          >
-            <span className="nm">{p.name}</span>
-            <span className="vp"><Ticker value={p.vp} suffix=" VP" /></span>
-            <span className="mn"><Ticker value={p.money} prefix="£" /></span>
-          </button>
-        ))}
-      </div>
 
       {caption && !cut && <Banner ev={caption} scene={scene} />}
 

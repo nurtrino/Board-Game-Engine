@@ -52,6 +52,22 @@
 .bbx.cinema .bbx-hud { opacity: 0; pointer-events: none; }
 .bbx .ig-era { min-width: 10.5rem; }
 .bbx .ig-turn { gap: .7rem; }
+/* The round plate, the turn pill and the seats share one row. Laid out in
+   flow, the pill sits in the gap between the other two however wide the
+   screen is; on a narrow one the seats wrap under it instead of hiding. */
+.bbx-top { position: absolute; top: 1rem; left: 1rem; right: 1rem; z-index: 6; pointer-events: none;
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: flex-end; gap: .5rem .6rem; }
+.bbx-top > * { position: static; pointer-events: auto; flex: none; }
+/* equal slack after the plate and after the pill: the plate stays left, the
+   seats stay right, and the pill sits centred in the gap between them */
+.bbx-top .ig-era, .bbx-top .ig-turn { margin-right: auto; }
+.bbx-top .ig-turn { white-space: nowrap; animation-name: bbx-turnpop; }
+.bbx-top .ig-scores { flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; }
+.bbx.cinema .bbx-top > * { pointer-events: none; }
+@keyframes bbx-turnpop {
+  0%   { opacity: 0; transform: translateY(-8px) scale(.96); }
+  60%  { transform: scale(1.04); }
+  100% { opacity: 1; transform: none; } }
 .bbx .ig-chip .vp { font-weight: 700; }
 
 /* letterbox for cutscenes */

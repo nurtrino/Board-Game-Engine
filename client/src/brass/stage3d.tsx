@@ -547,7 +547,39 @@ function ScoutLift({ piles }: { piles: CardPileDef[] }) {
 // The live table
 // ---------------------------------------------------------------------------
 
-type Cube = { at: [number, number, number]; kind: 'coal' | 'iron' | 'beer' };
+type Cube = { at: [number, number, number]; kind: 'coal' | 'iron' | 'beer'; size?: number; yaw?: number };
+
+// Cubes on a tile are the real pieces' size against it (about a third of its
+// width), so a grid of them reads as separate cubes and a lone one does not
+// blanket the art.
+const TILE_CUBE = 0.74;
+
+/** One coal or iron cube: the mod's mesh and wood grain, in the mod's own
+ * colour. The tint is an sRGB value; read as linear it washes iron out to a
+ * pale tan that is neither iron nor coal. Flat facets keep the bevel visible
+ * from straight above, which is how the close-ups look at it. */
+function ResourceCube({ def, size = 1, yaw = 0 }: { def: ModelDef; size?: number; yaw?: number }) {
+  const obj = useLoader(OBJLoader, def.mesh);
+  const tex = useColorTexture(def.diffuse ?? WHITE_PX);
+  const geo = useMemo(() => {
+    let g: THREE.BufferGeometry | null = null;
+    obj.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && !g) g = m.geometry; });
+    return g ? (g as THREE.BufferGeometry).clone() : new THREE.BoxGeometry(0.7, 0.7, 0.7);
+  }, [obj]);
+  const mat = useMemo(() => {
+    const t = def.tint ?? [1, 1, 1];
+    // coal's tint is dark enough that its faces vanish against the board's
+    // black market squares: lift it to charcoal so the cube still has edges
+    const lift = Math.max(1, 0.33 / Math.max(t[0], t[1], t[2], 0.01));
+    return new THREE.MeshStandardMaterial({
+      map: def.diffuse ? tex : null,
+      color: new THREE.Color().setRGB(t[0] * lift, t[1] * lift, t[2] * lift, THREE.SRGBColorSpace),
+      roughness: 0.75, flatShading: true, side: THREE.DoubleSide,
+    });
+  }, [def, tex]);
+  const s = def.place.scale[0] * size;
+  return <mesh geometry={geo} material={mat} scale={[s, s, s]} rotation-y={yaw} />;
+}
 
 export function SetupPieces({ scene, game }: { scene: SceneDef; game: GameSceneState }) {
   const { animate } = useContext(StageCtx);
@@ -575,8 +607,6 @@ export function SetupPieces({ scene, game }: { scene: SceneDef; game: GameSceneS
 
   const coalDef = useMemo(() => scene.objects.find((o): o is ModelDef => o.t === 'model' && o.name === 'Coal'), [scene]);
   const ironDef = useMemo(() => scene.objects.find((o): o is ModelDef => o.t === 'model' && o.name === 'Iron'), [scene]);
-  const flatCoal = useMemo(() => coalDef && ({ ...coalDef, place: { ...coalDef.place, pos: [0, 0, 0] } }), [coalDef]);
-  const flatIron = useMemo(() => ironDef && ({ ...ironDef, place: { ...ironDef.place, pos: [0, 0, 0] } }), [ironDef]);
   const wildPiles = useMemo(() => scene.objects.filter((o): o is CardPileDef => o.t === 'cardpile'), [scene]);
 
   // ---- what is on the table, as flat keyed lists ----
@@ -622,10 +652,16 @@ export function SetupPieces({ scene, game }: { scene: SceneDef; game: GameSceneS
       // lay the cubes out for the tile's printed count, so they do not shuffle as it empties
       const printed = Math.max(b.cubes, startingCubes(b.tile, game.era));
       const rows = Math.ceil(Math.min(printed, 6) / 2);
+      const beer = kind === 'beer';
+      // the cube's centre: its half height above the tile face
+      const cubeY = tileTopY + 0.1 - 0.1925 * (1 - TILE_CUBE);
       for (let i = 0; i < Math.min(b.cubes, 6); i++) {
-        const px = z.pos[0] + ((i % 2) - 0.5) * 0.4;
-        const pz = z.pos[2] + (Math.floor(i / 2) - (rows - 1) / 2) * 0.36;
-        out[`${sq}|${i}`] = { at: [px, kind === 'beer' ? tileTopY : tileTopY + 0.1, -pz], kind };
+        const px = z.pos[0] + ((i % 2) - 0.5) * (beer ? 0.4 : 0.34);
+        const pz = z.pos[2] + (Math.floor(i / 2) - (rows - 1) / 2) * (beer ? 0.36 : 0.31);
+        out[`${sq}|${i}`] = beer
+          ? { at: [px, tileTopY, -pz], kind }
+          // set down by hand, not on a grid: a few degrees either way
+          : { at: [px, cubeY, -pz], kind, size: TILE_CUBE, yaw: (hash01(`${sq}|${i}`) - 0.5) * 0.3 };
       }
     }
     return out;
@@ -703,7 +739,9 @@ export function SetupPieces({ scene, game }: { scene: SceneDef; game: GameSceneS
           <Suspense fallback={null}>
             {item.kind === 'beer'
               ? <BeerBarrel def={scene.beerBarrel} pos={[0, 0, 0]} scale={key.startsWith('mb') ? 1 : 0.72} />
-              : item.kind === 'coal' ? (flatCoal && <Model def={flatCoal} />) : (flatIron && <Model def={flatIron} />)}
+              : item.kind === 'coal'
+                ? (coalDef && <ResourceCube def={coalDef} size={item.size} yaw={item.yaw} />)
+                : (ironDef && <ResourceCube def={ironDef} size={item.size} yaw={item.yaw} />)}
           </Suspense>
         </Fly>
       ))}
