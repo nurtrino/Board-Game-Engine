@@ -5,20 +5,23 @@ import type { BrassView, Color } from './brass/state.js';
 import type { BrassAction } from './brass/actions.js';
 import type { ShSeat, ShView } from './secret-hitler/room.js';
 import type { ShAction } from './secret-hitler/rules.js';
+import type { AxisView, AxisSeat, AxisAction } from './axis/game.js';
 import { SEAT_COLORS } from './brass/state.js';
+import { AXIS_SEATS } from './axis/state.js';
 import { SH_PICK_ORDER } from './secret-hitler/rules.js';
 
 /** Any seat color across games. */
-export type SeatColor = Color | ShSeat;
+export type SeatColor = Color | ShSeat | AxisSeat;
 
 /** Per-game lobby facts: seat colors in pick order + max players. */
 export const GAME_SEATS: Record<string, { colors: readonly SeatColor[]; max: number }> = {
   brass: { colors: SEAT_COLORS, max: 4 },
   secrethitler: { colors: SH_PICK_ORDER, max: 10 },
+  axis: { colors: AXIS_SEATS, max: 6 },
 };
 
-export type GameView = BrassView | ShView;
-export type GameAction = BrassAction | ShAction;
+export type GameView = BrassView | ShView | AxisView;
+export type GameAction = BrassAction | ShAction | AxisAction;
 
 /** Per-game create options chosen on the create screen (scenario, variants). */
 export type GameOptions = Record<string, string | number | boolean>;

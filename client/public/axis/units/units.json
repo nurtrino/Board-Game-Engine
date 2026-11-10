@@ -1,0 +1,775 @@
+{
+  "version": 1,
+  "units": [
+    {
+      "power": null,
+      "unit": "factory",
+      "file": "/axis/units/factory.glb",
+      "tris": 5996,
+      "size": [
+        0.8441,
+        1.0838,
+        0.8698
+      ]
+    },
+    {
+      "power": null,
+      "unit": "aaGun",
+      "file": "/axis/units/aaGun.glb",
+      "tris": 5969,
+      "size": [
+        1.2907,
+        0.7881,
+        0.5322
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "submarine",
+      "file": "/axis/units/submarine.glb",
+      "tris": 6000,
+      "size": [
+        1.9254,
+        0.1595,
+        0.1796
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "tank",
+      "file": "/axis/units/tank.glb",
+      "tris": 6870,
+      "size": [
+        1.4004,
+        0.5846,
+        0.6535
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "fighter",
+      "file": "/axis/units/fighter.glb",
+      "tris": 5981,
+      "size": [
+        1.5717,
+        0.4847,
+        1.3254
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "battleship",
+      "file": "/axis/units/battleship.glb",
+      "tris": 5905,
+      "size": [
+        2.6911,
+        0.8224,
+        0.3625
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "destroyer",
+      "file": "/axis/units/destroyer.glb",
+      "tris": 5864,
+      "size": [
+        1.5542,
+        0.4654,
+        0.1764
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "cruiser",
+      "file": "/axis/units/cruiser.glb",
+      "tris": 5985,
+      "size": [
+        1.8293,
+        0.5457,
+        0.2342
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "artillery",
+      "file": "/axis/units/artillery.glb",
+      "tris": 5886,
+      "size": [
+        1.5641,
+        0.4639,
+        0.6377
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "bomber",
+      "file": "/axis/units/bomber.glb",
+      "tris": 5993,
+      "size": [
+        2.2329,
+        0.5446,
+        1.7373
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "infantry",
+      "file": "/axis/units/infantry.glb",
+      "tris": 6000,
+      "size": [
+        0.8542,
+        1.0288,
+        0.5744
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "infantry",
+      "file": "/axis/units/infantry.glb",
+      "tris": 6000,
+      "size": [
+        0.8542,
+        1.0288,
+        0.5744
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "artillery",
+      "file": "/axis/units/artillery.glb",
+      "tris": 5886,
+      "size": [
+        1.5641,
+        0.4639,
+        0.6377
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "tank",
+      "file": "/axis/units/tank.glb",
+      "tris": 6870,
+      "size": [
+        1.4004,
+        0.5846,
+        0.6535
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "fighter",
+      "file": "/axis/units/fighter.glb",
+      "tris": 5981,
+      "size": [
+        1.5717,
+        0.4847,
+        1.3254
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "bomber",
+      "file": "/axis/units/bomber.glb",
+      "tris": 5993,
+      "size": [
+        2.2329,
+        0.5446,
+        1.7373
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "destroyer",
+      "file": "/axis/units/destroyer.glb",
+      "tris": 5864,
+      "size": [
+        1.5542,
+        0.4654,
+        0.1764
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "submarine",
+      "file": "/axis/units/submarine.glb",
+      "tris": 6000,
+      "size": [
+        1.9254,
+        0.1595,
+        0.1796
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "cruiser",
+      "file": "/axis/units/cruiser.glb",
+      "tris": 5985,
+      "size": [
+        1.8293,
+        0.5457,
+        0.2342
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "battleship",
+      "file": "/axis/units/battleship.glb",
+      "tris": 5905,
+      "size": [
+        2.6911,
+        0.8224,
+        0.3625
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "fighter",
+      "file": "/axis/units/fighter-italy.glb",
+      "tris": 5995,
+      "size": [
+        1.8751,
+        0.4715,
+        1.4818
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "artillery",
+      "file": "/axis/units/artillery-italy.glb",
+      "tris": 5951,
+      "size": [
+        1.4615,
+        0.6363,
+        0.3975
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "cruiser",
+      "file": "/axis/units/cruiser-italy.glb",
+      "tris": 5973,
+      "size": [
+        2.3817,
+        0.4907,
+        0.2504
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "tank",
+      "file": "/axis/units/tank-italy.glb",
+      "tris": 5981,
+      "size": [
+        1.3896,
+        0.5251,
+        0.5765
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "bomber",
+      "file": "/axis/units/bomber-italy.glb",
+      "tris": 5992,
+      "size": [
+        2.1123,
+        0.3516,
+        2.3647
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "battleship",
+      "file": "/axis/units/battleship-italy.glb",
+      "tris": 5962,
+      "size": [
+        2.5833,
+        0.639,
+        0.3678
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "infantry",
+      "file": "/axis/units/infantry-italy.glb",
+      "tris": 5962,
+      "size": [
+        0.7125,
+        1.1782,
+        0.7027
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "destroyer",
+      "file": "/axis/units/destroyer-italy.glb",
+      "tris": 5986,
+      "size": [
+        1.723,
+        0.4452,
+        0.1933
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "submarine",
+      "file": "/axis/units/submarine-italy.glb",
+      "tris": 5907,
+      "size": [
+        1.4035,
+        0.3847,
+        0.1509
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "infantry",
+      "file": "/axis/units/infantry.glb",
+      "tris": 6000,
+      "size": [
+        0.8542,
+        1.0288,
+        0.5744
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "battleship",
+      "file": "/axis/units/battleship.glb",
+      "tris": 5905,
+      "size": [
+        2.6911,
+        0.8224,
+        0.3625
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "fighter",
+      "file": "/axis/units/fighter.glb",
+      "tris": 5981,
+      "size": [
+        1.5717,
+        0.4847,
+        1.3254
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "bomber",
+      "file": "/axis/units/bomber.glb",
+      "tris": 5993,
+      "size": [
+        2.2329,
+        0.5446,
+        1.7373
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "submarine",
+      "file": "/axis/units/submarine.glb",
+      "tris": 6000,
+      "size": [
+        1.9254,
+        0.1595,
+        0.1796
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "artillery",
+      "file": "/axis/units/artillery.glb",
+      "tris": 5886,
+      "size": [
+        1.5641,
+        0.4639,
+        0.6377
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "destroyer",
+      "file": "/axis/units/destroyer.glb",
+      "tris": 5864,
+      "size": [
+        1.5542,
+        0.4654,
+        0.1764
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "tank",
+      "file": "/axis/units/tank.glb",
+      "tris": 6870,
+      "size": [
+        1.4004,
+        0.5846,
+        0.6535
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "cruiser",
+      "file": "/axis/units/cruiser.glb",
+      "tris": 5985,
+      "size": [
+        1.8293,
+        0.5457,
+        0.2342
+      ]
+    },
+    {
+      "power": "china",
+      "unit": "infantry",
+      "file": "/axis/units/infantry-italy.glb",
+      "tris": 5962,
+      "size": [
+        0.7125,
+        1.1782,
+        0.7027
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "battleship",
+      "file": "/axis/units/battleship.glb",
+      "tris": 5905,
+      "size": [
+        2.6911,
+        0.8224,
+        0.3625
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "infantry",
+      "file": "/axis/units/infantry.glb",
+      "tris": 6000,
+      "size": [
+        0.8542,
+        1.0288,
+        0.5744
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "tank",
+      "file": "/axis/units/tank.glb",
+      "tris": 6870,
+      "size": [
+        1.4004,
+        0.5846,
+        0.6535
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "bomber",
+      "file": "/axis/units/bomber.glb",
+      "tris": 5993,
+      "size": [
+        2.2329,
+        0.5446,
+        1.7373
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "submarine",
+      "file": "/axis/units/submarine.glb",
+      "tris": 6000,
+      "size": [
+        1.9254,
+        0.1595,
+        0.1796
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "artillery",
+      "file": "/axis/units/artillery.glb",
+      "tris": 5886,
+      "size": [
+        1.5641,
+        0.4639,
+        0.6377
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "fighter",
+      "file": "/axis/units/fighter.glb",
+      "tris": 5981,
+      "size": [
+        1.5717,
+        0.4847,
+        1.3254
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "destroyer",
+      "file": "/axis/units/destroyer.glb",
+      "tris": 5864,
+      "size": [
+        1.5542,
+        0.4654,
+        0.1764
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "cruiser",
+      "file": "/axis/units/cruiser.glb",
+      "tris": 5985,
+      "size": [
+        1.8293,
+        0.5457,
+        0.2342
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "carrier",
+      "file": "/axis/units/carrier.glb",
+      "tris": 5967,
+      "size": [
+        3.2339,
+        0.5581,
+        0.4499
+      ]
+    },
+    {
+      "power": "japan",
+      "unit": "transport",
+      "file": "/axis/units/transport.glb",
+      "tris": 6000,
+      "size": [
+        1.5227,
+        0.3691,
+        0.2291
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "carrier",
+      "file": "/axis/units/carrier.glb",
+      "tris": 5967,
+      "size": [
+        3.2339,
+        0.5581,
+        0.4499
+      ]
+    },
+    {
+      "power": "ussr",
+      "unit": "transport",
+      "file": "/axis/units/transport.glb",
+      "tris": 6000,
+      "size": [
+        1.5227,
+        0.3691,
+        0.2291
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "carrier",
+      "file": "/axis/units/carrier.glb",
+      "tris": 5967,
+      "size": [
+        3.2339,
+        0.5581,
+        0.4499
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "battleship",
+      "file": "/axis/units/battleship.glb",
+      "tris": 5905,
+      "size": [
+        2.6911,
+        0.8224,
+        0.3625
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "fighter",
+      "file": "/axis/units/fighter.glb",
+      "tris": 5981,
+      "size": [
+        1.5717,
+        0.4847,
+        1.3254
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "infantry",
+      "file": "/axis/units/infantry.glb",
+      "tris": 6000,
+      "size": [
+        0.8542,
+        1.0288,
+        0.5744
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "submarine",
+      "file": "/axis/units/submarine.glb",
+      "tris": 6000,
+      "size": [
+        1.9254,
+        0.1595,
+        0.1796
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "bomber",
+      "file": "/axis/units/bomber.glb",
+      "tris": 5993,
+      "size": [
+        2.2329,
+        0.5446,
+        1.7373
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "artillery",
+      "file": "/axis/units/artillery.glb",
+      "tris": 5886,
+      "size": [
+        1.5641,
+        0.4639,
+        0.6377
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "carrier",
+      "file": "/axis/units/carrier.glb",
+      "tris": 5967,
+      "size": [
+        3.2339,
+        0.5581,
+        0.4499
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "cruiser",
+      "file": "/axis/units/cruiser.glb",
+      "tris": 5985,
+      "size": [
+        1.8293,
+        0.5457,
+        0.2342
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "destroyer",
+      "file": "/axis/units/destroyer.glb",
+      "tris": 5864,
+      "size": [
+        1.5542,
+        0.4654,
+        0.1764
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "transport",
+      "file": "/axis/units/transport.glb",
+      "tris": 6000,
+      "size": [
+        1.5227,
+        0.3691,
+        0.2291
+      ]
+    },
+    {
+      "power": "germany",
+      "unit": "tank",
+      "file": "/axis/units/tank.glb",
+      "tris": 6870,
+      "size": [
+        1.4004,
+        0.5846,
+        0.6535
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "transport",
+      "file": "/axis/units/transport-italy.glb",
+      "tris": 5976,
+      "size": [
+        1.8352,
+        0.5521,
+        0.26
+      ]
+    },
+    {
+      "power": "italy",
+      "unit": "carrier",
+      "file": "/axis/units/carrier-italy.glb",
+      "tris": 5973,
+      "size": [
+        3.3166,
+        0.7704,
+        0.5573
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "carrier",
+      "file": "/axis/units/carrier.glb",
+      "tris": 5967,
+      "size": [
+        3.2339,
+        0.5581,
+        0.4499
+      ]
+    },
+    {
+      "power": "usa",
+      "unit": "transport",
+      "file": "/axis/units/transport.glb",
+      "tris": 6000,
+      "size": [
+        1.5227,
+        0.3691,
+        0.2291
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "transport",
+      "file": "/axis/units/transport.glb",
+      "tris": 6000,
+      "size": [
+        1.5227,
+        0.3691,
+        0.2291
+      ]
+    },
+    {
+      "power": "uk",
+      "unit": "carrier",
+      "file": "/axis/units/carrier.glb",
+      "tris": 5967,
+      "size": [
+        3.2339,
+        0.5581,
+        0.4499
+      ]
+    }
+  ]
+}

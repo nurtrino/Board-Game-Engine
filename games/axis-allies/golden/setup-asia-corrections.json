@@ -1,0 +1,118 @@
+{
+  "_note": "Authoritative setup-chart correction for tightly packed East Asia. The TTS pieces straddle printed borders, so nearest-center assignment is not reliable here. Sources: official Anniversary national setup charts; rules/China constraints in the Renegade 40th Anniversary rulebook p10.",
+  "1941": {
+    "units": {
+      "burma": [
+        { "power": "uk", "key": "infantry", "count": 1 }
+      ],
+      "french-indo-china-thailand": [
+        { "power": "japan", "key": "infantry", "count": 3 }
+      ],
+      "yunnan": [
+        { "power": "china", "key": "infantry", "count": 1 },
+        { "power": "china", "key": "fighter", "count": 1 }
+      ],
+      "sikang": [],
+      "chinghai": [],
+      "ningxia": [],
+      "suiyuan": [
+        { "power": "china", "key": "infantry", "count": 1 }
+      ],
+      "hupeh": [
+        { "power": "china", "key": "infantry", "count": 1 }
+      ],
+      "fukien": [
+        { "power": "china", "key": "infantry", "count": 1 }
+      ],
+      "kwangtung": [
+        { "power": "uk", "key": "infantry", "count": 1 }
+      ],
+      "kiangsu": [
+        { "power": "japan", "key": "infantry", "count": 3 }
+      ],
+      "manchuria": [
+        { "power": "japan", "key": "infantry", "count": 3 },
+        { "power": "japan", "key": "fighter", "count": 1 }
+      ],
+      "formosa": [
+        { "power": "japan", "key": "fighter", "count": 1 }
+      ]
+    },
+    "control": {
+      "burma": "uk",
+      "french-indo-china-thailand": "japan",
+      "yunnan": "china",
+      "sikang": "china",
+      "chinghai": "china",
+      "ningxia": "china",
+      "suiyuan": "china",
+      "hupeh": "china",
+      "fukien": "china",
+      "kwangtung": "uk",
+      "kiangsu": "japan",
+      "manchuria": "japan",
+      "formosa": "japan"
+    }
+  },
+  "1942": {
+    "units": {
+      "burma": [
+        { "power": "japan", "key": "infantry", "count": 1 }
+      ],
+      "french-indo-china-thailand": [
+        { "power": "japan", "key": "infantry", "count": 2 },
+        { "power": "japan", "key": "fighter", "count": 1 }
+      ],
+      "yunnan": [
+        { "power": "china", "key": "infantry", "count": 2 },
+        { "power": "china", "key": "fighter", "count": 1 }
+      ],
+      "sikang": [
+        { "power": "china", "key": "infantry", "count": 1 }
+      ],
+      "chinghai": [
+        { "power": "china", "key": "infantry", "count": 1 }
+      ],
+      "ningxia": [
+        { "power": "china", "key": "infantry", "count": 1 }
+      ],
+      "suiyuan": [
+        { "power": "china", "key": "infantry", "count": 2 }
+      ],
+      "hupeh": [
+        { "power": "china", "key": "infantry", "count": 1 }
+      ],
+      "fukien": [
+        { "power": "china", "key": "infantry", "count": 1 }
+      ],
+      "kwangtung": [
+        { "power": "japan", "key": "infantry", "count": 1 }
+      ],
+      "kiangsu": [
+        { "power": "japan", "key": "infantry", "count": 3 }
+      ],
+      "manchuria": [
+        { "power": "japan", "key": "infantry", "count": 2 },
+        { "power": "japan", "key": "fighter", "count": 1 }
+      ],
+      "formosa": [
+        { "power": "japan", "key": "fighter", "count": 1 }
+      ]
+    },
+    "control": {
+      "burma": "japan",
+      "french-indo-china-thailand": "japan",
+      "yunnan": "china",
+      "sikang": "china",
+      "chinghai": "china",
+      "ningxia": "china",
+      "suiyuan": "china",
+      "hupeh": "china",
+      "fukien": "china",
+      "kwangtung": "japan",
+      "kiangsu": "japan",
+      "manchuria": "japan",
+      "formosa": "japan"
+    }
+  }
+}

@@ -12,6 +12,7 @@ import { gameSceneState } from '../brass/gameSceneState';
 import { LOCATION_OF, type BrassView, type BrassEvent } from '@bge/shared';
 import { playSfx, sfxForKind, sfxEnabled, setSfxEnabled } from '../sfx';
 
+const AxisBoard = lazy(() => import('../axis/AxisBoard'));
 const ShBoard = lazy(() => import('../sh/ShBoard').then((module) => ({ default: module.ShBoard })));
 
 function BoardGameLoading({ game }: { game: string }) {
@@ -236,6 +237,13 @@ export function BoardPage() {
       return (
         <Suspense fallback={<BoardGameLoading game="Secret Hitler" />}>
           <ShBoard wire={view} room={room} />
+        </Suspense>
+      );
+    }
+    if (view.game === 'axis') {
+      return (
+        <Suspense fallback={<BoardGameLoading game="Axis & Allies" />}>
+          <AxisBoard view={view} />
         </Suspense>
       );
     }

@@ -1,5 +1,6 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": { "noEmit": true, "types": ["node"] },
-  "include": ["src", "../shared/src"]
+  "include": ["src", "../shared/src"],
+  "exclude": ["../shared/src/axis/*-test.ts", "src/axis-authority-test.ts"]
 }

@@ -1,0 +1,2400 @@
+{
+ "source": "TTS mod 1961347286 \"1942 Packup BAG\" memory bag (saved board transforms)",
+ "units": [
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -11.171,
+    20.397
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USSR Tank",
+   "nation": "ussr",
+   "unit": "tank",
+   "pos": [
+    -2.423,
+    20.737
+   ],
+   "rotY": 225.1
+  },
+  {
+   "nick": "UK Bomber",
+   "nation": "uk",
+   "unit": "bomber",
+   "pos": [
+    -26.383,
+    13.428
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "UK Artillery",
+   "nation": "uk",
+   "unit": "artillery",
+   "pos": [
+    -24.856,
+    14.684
+   ],
+   "rotY": 224.9
+  },
+  {
+   "nick": "UK Cruiser",
+   "nation": "uk",
+   "unit": "cruiser",
+   "pos": [
+    -34.534,
+    16.381
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -15.341,
+    18.487
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -1.082,
+    15.196
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -15.653,
+    13.518
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    -12.508,
+    21.227
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "GERMAN Bomber",
+   "nation": "germany",
+   "unit": "bomber",
+   "pos": [
+    -20.471,
+    8.715
+   ],
+   "rotY": 135.3
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -28.189,
+    14.733
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "UK Fighter",
+   "nation": "uk",
+   "unit": "fighter",
+   "pos": [
+    -23.364,
+    13.149
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "UK Transport",
+   "nation": "uk",
+   "unit": "transport",
+   "pos": [
+    -29.809,
+    18.74
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -15.648,
+    19.986
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    -13.929,
+    19.126
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "GERMAN Transport",
+   "nation": "germany",
+   "unit": "transport",
+   "pos": [
+    -17.784,
+    14.418
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -14.804,
+    15.396
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "UK Destroyer",
+   "nation": "uk",
+   "unit": "destroyer",
+   "pos": [
+    -31.321,
+    17.425
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USA Bomber",
+   "nation": "usa",
+   "unit": "bomber",
+   "pos": [
+    -42.631,
+    9.093
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USA Bomber",
+   "nation": "usa",
+   "unit": "bomber",
+   "pos": [
+    -27.139,
+    17.714
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "UK Transport",
+   "nation": "uk",
+   "unit": "transport",
+   "pos": [
+    -38.592,
+    18.545
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -21.669,
+    17.352
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "GERMAN Fighter",
+   "nation": "germany",
+   "unit": "fighter",
+   "pos": [
+    -11.783,
+    11.142
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    -26.366,
+    15.571
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    -4.118,
+    19.099
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "USSR Fighter",
+   "nation": "ussr",
+   "unit": "fighter",
+   "pos": [
+    -12.391,
+    17.911
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -21.431,
+    7.284
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USA Infantry",
+   "nation": "usa",
+   "unit": "infantry",
+   "pos": [
+    -40.633,
+    5.412
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "JPN Fighter",
+   "nation": "japan",
+   "unit": "fighter",
+   "pos": [
+    13.74,
+    9.014
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -14.478,
+    6.376
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "GERMAN Fighter",
+   "nation": "germany",
+   "unit": "fighter",
+   "pos": [
+    -14.765,
+    4.391
+   ],
+   "rotY": 269.8
+  },
+  {
+   "nick": "USA Artillery",
+   "nation": "usa",
+   "unit": "artillery",
+   "pos": [
+    -40.762,
+    6.896
+   ],
+   "rotY": 270.3
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -18.006,
+    10.486
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -24.287,
+    7.134
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -38.82,
+    6.913
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "UK Battleship",
+   "nation": "uk",
+   "unit": "battleship",
+   "pos": [
+    -31.157,
+    15.837
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    -1.15,
+    9.224
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "Italian Tank",
+   "nation": "italy",
+   "unit": "tank",
+   "pos": [
+    -19.012,
+    4.19
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "GERMAN Cruiser",
+   "nation": "germany",
+   "unit": "cruiser",
+   "pos": [
+    -18.863,
+    12.676
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -10.8,
+    13.974
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "USA Bomber",
+   "nation": "usa",
+   "unit": "bomber",
+   "pos": [
+    -43.309,
+    6.696
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "GERMAN Artillery",
+   "nation": "germany",
+   "unit": "artillery",
+   "pos": [
+    -9.965,
+    9.879
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    -8.154,
+    4.707
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -23.063,
+    10.378
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "GERMAN Destroyer",
+   "nation": "germany",
+   "unit": "destroyer",
+   "pos": [
+    -19.578,
+    11.86
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USSR Bomber",
+   "nation": "ussr",
+   "unit": "bomber",
+   "pos": [
+    -4.261,
+    9.888
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "GERMAN Fighter",
+   "nation": "germany",
+   "unit": "fighter",
+   "pos": [
+    -18.205,
+    8.584
+   ],
+   "rotY": 224.9
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    -36.959,
+    14.091
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    1.807,
+    13.758
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -13.774,
+    9.36
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "UK Tank",
+   "nation": "uk",
+   "unit": "tank",
+   "pos": [
+    -36.489,
+    11.395
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -8.365,
+    1.891
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -19.711,
+    6.705
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "GERMAN Fighter",
+   "nation": "germany",
+   "unit": "fighter",
+   "pos": [
+    -24.64,
+    4.665
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -17.833,
+    6.043
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -13.428,
+    8.059
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -16.602,
+    5.854
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "USSR Tank",
+   "nation": "ussr",
+   "unit": "tank",
+   "pos": [
+    -4.452,
+    12.03
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USSR Tank",
+   "nation": "ussr",
+   "unit": "tank",
+   "pos": [
+    -4.419,
+    14.111
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -7.842,
+    8.209
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -8.49,
+    9.953
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    -37.172,
+    8.052
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    1.632,
+    20.611
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -26.692,
+    7.094
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -23.826,
+    9.16
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -12.623,
+    6.015
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    -19.526,
+    10.553
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "Italian Fighter",
+   "nation": "italy",
+   "unit": "fighter",
+   "pos": [
+    -22.72,
+    4.93
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    6.27,
+    6.668
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "USSR Artillery",
+   "nation": "ussr",
+   "unit": "artillery",
+   "pos": [
+    -7.981,
+    11.364
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -22.156,
+    8.701
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "USSR Artillery",
+   "nation": "ussr",
+   "unit": "artillery",
+   "pos": [
+    -5.92,
+    7.054
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "USSR Tank",
+   "nation": "ussr",
+   "unit": "tank",
+   "pos": [
+    -6.034,
+    5.474
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    -2.108,
+    15.782
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -15.078,
+    11.449
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    -26.062,
+    11.643
+   ],
+   "rotY": 179.9
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    6.459,
+    21.183
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    -6.206,
+    11.818
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "GERMAN Artillery",
+   "nation": "germany",
+   "unit": "artillery",
+   "pos": [
+    -12.687,
+    12.863
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    -38.123,
+    12.46
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -10.002,
+    5.71
+   ],
+   "rotY": 90.6
+  },
+  {
+   "nick": "UK Tank",
+   "nation": "uk",
+   "unit": "tank",
+   "pos": [
+    -25.017,
+    12.278
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -10.823,
+    9.136
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "Italian Tank",
+   "nation": "italy",
+   "unit": "tank",
+   "pos": [
+    -21.49,
+    3.669
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -25.808,
+    5.268
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "Italian Infantry",
+   "nation": "italy",
+   "unit": "infantry",
+   "pos": [
+    -20.895,
+    -0.37
+   ],
+   "rotY": 89.9
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    -20.779,
+    2.452
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USA Transport",
+   "nation": "usa",
+   "unit": "transport",
+   "pos": [
+    -37.607,
+    2.349
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "Italian Cruiser",
+   "nation": "italy",
+   "unit": "cruiser",
+   "pos": [
+    -18.417,
+    -2.552
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    -9.206,
+    2.995
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "GERMAN Transport",
+   "nation": "germany",
+   "unit": "transport",
+   "pos": [
+    -25.787,
+    0.151
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "USA Tank",
+   "nation": "usa",
+   "unit": "tank",
+   "pos": [
+    -40.7,
+    4.219
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -19.614,
+    0.171
+   ],
+   "rotY": 134.1
+  },
+  {
+   "nick": "Italian Artillery",
+   "nation": "italy",
+   "unit": "artillery",
+   "pos": [
+    -20.056,
+    1.532
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "UK Artillery",
+   "nation": "uk",
+   "unit": "artillery",
+   "pos": [
+    -8.924,
+    -2.736
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    8.775,
+    7.539
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    8.157,
+    0.369
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "UK Destroyer",
+   "nation": "uk",
+   "unit": "destroyer",
+   "pos": [
+    -15.32,
+    -3.069
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Artillery",
+   "nation": "germany",
+   "unit": "artillery",
+   "pos": [
+    -25.971,
+    -2.219
+   ],
+   "rotY": 45.2
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    15.758,
+    11.471
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    15.349,
+    17.388
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    -2.28,
+    3.295
+   ],
+   "rotY": 89.9
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    -2.551,
+    4.363
+   ],
+   "rotY": 89.5
+  },
+  {
+   "nick": "JPN Fighter",
+   "nation": "japan",
+   "unit": "fighter",
+   "pos": [
+    14.492,
+    -3.411
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "Italian Infantry",
+   "nation": "italy",
+   "unit": "infantry",
+   "pos": [
+    -17.454,
+    -0.62
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    3.789,
+    0.011
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    0.768,
+    6.04
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "Italian Cruiser",
+   "nation": "italy",
+   "unit": "cruiser",
+   "pos": [
+    -17.721,
+    -1.798
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    8.621,
+    5.334
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "UK Destroyer",
+   "nation": "uk",
+   "unit": "destroyer",
+   "pos": [
+    -31.261,
+    -0.776
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    13.136,
+    5.013
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "UK Fighter",
+   "nation": "uk",
+   "unit": "fighter",
+   "pos": [
+    -13.731,
+    -5.869
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -24.263,
+    -2.292
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "Italian Battleship",
+   "nation": "italy",
+   "unit": "battleship",
+   "pos": [
+    -20.3,
+    -1.805
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "Italian Tank",
+   "nation": "italy",
+   "unit": "tank",
+   "pos": [
+    -23.178,
+    1.607
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "JPN Fighter",
+   "nation": "japan",
+   "unit": "fighter",
+   "pos": [
+    9.05,
+    -4.614
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    11.199,
+    -0.536
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "Italian Transport",
+   "nation": "italy",
+   "unit": "transport",
+   "pos": [
+    -21.838,
+    0.839
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "USA Fighter",
+   "nation": "usa",
+   "unit": "fighter",
+   "pos": [
+    4.544,
+    -2.653
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "UK Cruiser",
+   "nation": "uk",
+   "unit": "cruiser",
+   "pos": [
+    -30.458,
+    -2.516
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "JPN Fighter",
+   "nation": "japan",
+   "unit": "fighter",
+   "pos": [
+    19.997,
+    3.567
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -15.722,
+    2.054
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    12.341,
+    22.489
+   ],
+   "rotY": 90.1
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    0.414,
+    -5.902
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    20.064,
+    14.85
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    -15.311,
+    -4.844
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USA Destroyer",
+   "nation": "usa",
+   "unit": "destroyer",
+   "pos": [
+    -42.762,
+    -4.547
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    -5.143,
+    -2.679
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    21.153,
+    -1.679
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Tank",
+   "nation": "japan",
+   "unit": "tank",
+   "pos": [
+    23.846,
+    8.699
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    17.654,
+    17.69
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "UK Tank",
+   "nation": "uk",
+   "unit": "tank",
+   "pos": [
+    -15.209,
+    -7.154
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    6.724,
+    -2.082
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    20.111,
+    16.565
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "UK Aircraft Carriers",
+   "nation": "uk",
+   "unit": "carrier",
+   "pos": [
+    3.445,
+    -9.514
+   ],
+   "rotY": 0,
+   "cargo": [
+    {
+     "nick": "UK Fighter",
+     "nation": "uk",
+     "unit": "fighter"
+    }
+   ]
+  },
+  {
+   "nick": "GERMAN Tank",
+   "nation": "germany",
+   "unit": "tank",
+   "pos": [
+    -19.101,
+    -4.686
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    -1.714,
+    -5.85
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Cruiser",
+   "nation": "japan",
+   "unit": "cruiser",
+   "pos": [
+    19.622,
+    -6.43
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "JPN Bomber",
+   "nation": "japan",
+   "unit": "bomber",
+   "pos": [
+    24.925,
+    12.249
+   ],
+   "rotY": 0.9
+  },
+  {
+   "nick": "Italian Infantry",
+   "nation": "italy",
+   "unit": "infantry",
+   "pos": [
+    -20.992,
+    -4.053
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    21.536,
+    22.784
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "Chinese Infantry",
+   "nation": "china",
+   "unit": "infantry",
+   "pos": [
+    5.96,
+    -3.513
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "JPN Transport",
+   "nation": "japan",
+   "unit": "transport",
+   "pos": [
+    20.001,
+    9.723
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    -11.407,
+    -3.386
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    22.585,
+    20.707
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "JPN Artillery",
+   "nation": "japan",
+   "unit": "artillery",
+   "pos": [
+    22.947,
+    5.013
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    21.68,
+    4.803
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    6.114,
+    -6.35
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Battleship",
+   "nation": "japan",
+   "unit": "battleship",
+   "pos": [
+    22.076,
+    1.775
+   ],
+   "rotY": 45.1
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    11.601,
+    -3.436
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Infantry",
+   "nation": "germany",
+   "unit": "infantry",
+   "pos": [
+    -17.937,
+    -5.369
+   ],
+   "rotY": 0
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    9.334,
+    -6.59
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    17.866,
+    14.626
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    23.94,
+    -8.463
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USSR Infantry",
+   "nation": "ussr",
+   "unit": "infantry",
+   "pos": [
+    24.871,
+    21.365
+   ],
+   "rotY": 90.1
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    17.195,
+    -8.419
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Destroyer",
+   "nation": "japan",
+   "unit": "destroyer",
+   "pos": [
+    26.625,
+    -8.038
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    17.975,
+    -9.305
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    23.17,
+    6.986
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    26.44,
+    1.977
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "UK Destroyer",
+   "nation": "uk",
+   "unit": "destroyer",
+   "pos": [
+    -1.322,
+    -11.173
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    9.026,
+    -9.632
+   ],
+   "rotY": 135.1
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    23.708,
+    10.602
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    14.477,
+    -13.123
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "UK Transport",
+   "nation": "uk",
+   "unit": "transport",
+   "pos": [
+    -1.888,
+    -9.591
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "USA Aircraft Carrier",
+   "nation": "usa",
+   "unit": "carrier",
+   "pos": [
+    31.786,
+    -5.688
+   ],
+   "rotY": 45,
+   "cargo": [
+    {
+     "nick": "USA Fighter",
+     "nation": "usa",
+     "unit": "fighter"
+    }
+   ]
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    28.068,
+    -3.779
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Aircraft Carrier",
+   "nation": "japan",
+   "unit": "carrier",
+   "pos": [
+    28.308,
+    -8.507
+   ],
+   "rotY": 180,
+   "cargo": [
+    {
+     "nick": "JPN Fighter",
+     "nation": "japan",
+     "unit": "fighter"
+    }
+   ]
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    22.833,
+    -15.041
+   ],
+   "rotY": 134.9
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    8.178,
+    -15.002
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "JPN Aircraft Carrier",
+   "nation": "japan",
+   "unit": "carrier",
+   "pos": [
+    6.99,
+    -16.495
+   ],
+   "rotY": 134.7,
+   "cargo": [
+    {
+     "nick": "JPN Fighter",
+     "nation": "japan",
+     "unit": "fighter"
+    },
+    {
+     "nick": "JPN Fighter",
+     "nation": "japan",
+     "unit": "fighter"
+    }
+   ]
+  },
+  {
+   "nick": "USA Fighter",
+   "nation": "usa",
+   "unit": "fighter",
+   "pos": [
+    32.72,
+    -2.155
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "USA Infantry",
+   "nation": "usa",
+   "unit": "infantry",
+   "pos": [
+    32.903,
+    3.395
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    21.057,
+    -17.737
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USA Infantry",
+   "nation": "usa",
+   "unit": "infantry",
+   "pos": [
+    33.87,
+    -3.581
+   ],
+   "rotY": 179.7
+  },
+  {
+   "nick": "USA Destroyer",
+   "nation": "usa",
+   "unit": "destroyer",
+   "pos": [
+    33.983,
+    -7.38
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USSR Submarine",
+   "nation": "ussr",
+   "unit": "submarine",
+   "pos": [
+    -9.746,
+    23.489
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "GERMAN Submarine",
+   "nation": "germany",
+   "unit": "submarine",
+   "pos": [
+    -30.213,
+    7.286
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "JPN Infantry",
+   "nation": "japan",
+   "unit": "infantry",
+   "pos": [
+    29.857,
+    -18.815
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USA Submarine",
+   "nation": "usa",
+   "unit": "submarine",
+   "pos": [
+    36.443,
+    8.441
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "JPN Submarine",
+   "nation": "japan",
+   "unit": "submarine",
+   "pos": [
+    30.612,
+    -13.782
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "JPN Battleship",
+   "nation": "japan",
+   "unit": "battleship",
+   "pos": [
+    10.46,
+    -17.843
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "GERMAN Submarine",
+   "nation": "germany",
+   "unit": "submarine",
+   "pos": [
+    -17.324,
+    16.663
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Submarine",
+   "nation": "germany",
+   "unit": "submarine",
+   "pos": [
+    -27.647,
+    9.828
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "GERMAN Submarine",
+   "nation": "germany",
+   "unit": "submarine",
+   "pos": [
+    -24.217,
+    0.497
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USA Submarine",
+   "nation": "usa",
+   "unit": "submarine",
+   "pos": [
+    -36.975,
+    4.814
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "USA Cruiser",
+   "nation": "usa",
+   "unit": "cruiser",
+   "pos": [
+    37.35,
+    5.523
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USA Battleship",
+   "nation": "usa",
+   "unit": "battleship",
+   "pos": [
+    38.318,
+    10.703
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "USA Infantry",
+   "nation": "usa",
+   "unit": "infantry",
+   "pos": [
+    37.135,
+    18.627
+   ],
+   "rotY": 179.9
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    18.307,
+    -21.03
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "UK Transport",
+   "nation": "uk",
+   "unit": "transport",
+   "pos": [
+    -20.597,
+    -20.938
+   ],
+   "rotY": 315
+  },
+  {
+   "nick": "Anti Air Gun",
+   "nation": null,
+   "unit": "aaGun",
+   "pos": [
+    40.307,
+    10.62
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USA Transport",
+   "nation": "usa",
+   "unit": "transport",
+   "pos": [
+    38.99,
+    2.59
+   ],
+   "rotY": 45
+  },
+  {
+   "nick": "UK Artillery",
+   "nation": "uk",
+   "unit": "artillery",
+   "pos": [
+    -16.81,
+    -21.489
+   ],
+   "rotY": 135
+  },
+  {
+   "nick": "USA Bomber",
+   "nation": "usa",
+   "unit": "bomber",
+   "pos": [
+    40.504,
+    6.21
+   ],
+   "rotY": 270
+  },
+  {
+   "nick": "UK Fighter",
+   "nation": "uk",
+   "unit": "fighter",
+   "pos": [
+    18.674,
+    -22.808
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    -18.017,
+    -22.017
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "USA Fighter",
+   "nation": "usa",
+   "unit": "fighter",
+   "pos": [
+    41.595,
+    8.352
+   ],
+   "rotY": 225
+  },
+  {
+   "nick": "USA Infantry",
+   "nation": "usa",
+   "unit": "infantry",
+   "pos": [
+    40.628,
+    9.269
+   ],
+   "rotY": 180.5
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    31.819,
+    -23.133
+   ],
+   "rotY": 180
+  },
+  {
+   "nick": "Industrial Complex",
+   "nation": null,
+   "unit": "factory",
+   "pos": [
+    41.293,
+    10.698
+   ],
+   "rotY": 90
+  },
+  {
+   "nick": "UK Infantry",
+   "nation": "uk",
+   "unit": "infantry",
+   "pos": [
+    42.101,
+    20.575
+   ],
+   "rotY": 179.8
+  },
+  {
+   "nick": "USA Infantry",
+   "nation": "usa",
+   "unit": "infantry",
+   "pos": [
+    42.714,
+    9.13
+   ],
+   "rotY": 179.8
+  }
+ ],
+ "chips": [
+  {
+   "nick": "One Chip",
+   "pos": [
+    -25.943,
+    11.651
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -21.723,
+    17.254
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -13.931,
+    19.299
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -23.339,
+    12.642
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -10.924,
+    8.986
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -4.04,
+    18.975
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -6.337,
+    11.822
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -40.565,
+    5.387
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -10.887,
+    13.892
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -12.695,
+    6.009
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -15.849,
+    2.141
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -14.734,
+    15.591
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -22.246,
+    8.714
+   ],
+   "count": 3
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    15.98,
+    11.556
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -20.89,
+    -0.474
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    13.143,
+    5.067
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -20.929,
+    -3.993
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -17.388,
+    -0.595
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -8.132,
+    4.714
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    0.524,
+    -6.019
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    -15.358,
+    -4.863
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    23.406,
+    7.123
+   ],
+   "count": 3
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    34.141,
+    -3.66
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    21.277,
+    -17.825
+   ],
+   "count": 2
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    40.641,
+    9.082
+   ],
+   "count": 1
+  },
+  {
+   "nick": "One Chip",
+   "pos": [
+    42.822,
+    9.169
+   ],
+   "count": 1
+  }
+ ],
+ "markers": [
+  {
+   "nick": "German Occupation",
+   "nation": "germany",
+   "pos": [
+    -12.825,
+    14.915
+   ]
+  },
+  {
+   "nick": "German Occupation",
+   "nation": "germany",
+   "pos": [
+    -11,
+    5.118
+   ]
+  },
+  {
+   "nick": "German Occupation",
+   "nation": "germany",
+   "pos": [
+    -12.795,
+    9.347
+   ]
+  },
+  {
+   "nick": "German Occupation",
+   "nation": "germany",
+   "pos": [
+    -10.088,
+    12.966
+   ]
+  },
+  {
+   "nick": "German Occupation",
+   "nation": "germany",
+   "pos": [
+    -9.069,
+    8.101
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    26.795,
+    -3.504
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    12.546,
+    2.644
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    19.555,
+    -10.571
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    16.764,
+    10.12
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    13.802,
+    -14.832
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    29.705,
+    -17.072
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    9.471,
+    -16.425
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    7.897,
+    -6.637
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    11.587,
+    -4.692
+   ]
+  },
+  {
+   "nick": "Japanese Occupation",
+   "nation": "japan",
+   "pos": [
+    24.525,
+    -15.991
+   ]
+  }
+ ]
+}

@@ -25,6 +25,12 @@ the local folder `../Board Game Engine`. Do not bring one back unless asked.
   `Director` plays each as a cutscene, then `Stage.syncTo(view)` snaps the table. The screen reports
   `presented`; until then phones show "Watch the screen" and keep the last settled state.
 - AI seats only ever receive the private view for their own seat.
+- Axis & Allies (branch `axis-revamp`, not yet approved for the hub) keeps its rules in `shared/src/axis`.
+  One `MapStage` draws the world for both screens and knows no rules; `useOrders` turns taps and drags
+  into engine actions; the device is `AxisPlay`, the screen is `AxisBoard`, the battle lives in
+  `client/src/axis/battle`. The screen is a spectator: nothing waits for it. See
+  `docs/specs/axis-allies-anniversary.md`. Unit models and map tiles are staged by
+  `node tools/stage-axis-units.mjs` and `node tools/stage-axis-map.mjs`.
 
 ## Porting a game
 
