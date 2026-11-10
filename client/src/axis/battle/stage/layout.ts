@@ -97,7 +97,7 @@ export interface UnitDims {
 }
 
 export const DIMS: Record<string, UnitDims> = {
-  infantry: { size: 2.7, file: 3.3, rank: 3.6, cap: 30 },
+  infantry: { size: 3.3, file: 3.7, rank: 4.2, cap: 30 },
   artillery: { size: 6, file: 7, rank: 8, cap: 10 },
   tank: { size: 8, file: 6.4, rank: 10.5, cap: 12 },
   aaGun: { size: 5, file: 7, rank: 7, cap: 3 },
@@ -218,7 +218,33 @@ export function layoutField(units: readonly BattleUnit[], terrain: Terrain): Fie
     // On a beach the attackers are squeezed between the surf and the defenders.
     const depthLimit = terrain === 'shore' && side === 'attacker' ? Math.abs(SHORE_X) - 6 : Infinity;
 
-    for (const b of ground) {
+    // A fleet sails as one body: every hull in a few close lines abreast, escorts in front and
+    // the capital ships and transports behind, instead of one long column per type.
+    if (sea) {
+      const perRow = 4, file = 27, rank = 46;
+      const total = ground.reduce((n, b) => n + b.shown, 0);
+      let n = 0;
+      for (const b of ground) {
+        const dims = dimsOf(b.key);
+        const figures: Figure[] = [];
+        let ax = 0;
+        for (let i = 0; i < b.shown; i++, n++) {
+          const row = Math.floor(n / perRow);
+          const col = n % perRow;
+          const inRow = Math.min(perRow, total - row * perRow);
+          const id = `${b.id}#${i}`;
+          const x = s * (26 + row * rank + jitter(id, 1) * 1.6);
+          const z = (col - (inRow - 1) / 2) * file + (row % 2 ? file * 0.3 : 0) + jitter(id, 2) * 1.6;
+          figures.push({ id, groupId: b.id, key: b.key, side, power: b.power, x, z, yaw: facing + s * -0.42 + jitter(id, 3) * 0.06, air: false, offshore: false });
+          extentX = Math.max(extentX, Math.abs(x) + dims.size * 0.55);
+          extentZ = Math.max(extentZ, Math.abs(z) + dims.size * 0.4);
+          ax += x;
+        }
+        groups.push({ id: b.id, key: b.key, side, power: b.power, uids: b.uids, figures, anchor: { x: figures.length ? ax / figures.length : s * 26, z: 0 } });
+      }
+    }
+
+    for (const b of sea ? [] : ground) {
       const dims = dimsOf(b.key);
       let file = dims.file;
       let rank = dims.rank;
@@ -293,9 +319,9 @@ export function layoutField(units: readonly BattleUnit[], terrain: Terrain): Fie
 export interface Scatter { kind: 'tree1' | 'tree2' | 'bush'; x: number; z: number; scale: number; yaw: number }
 
 const FOLIAGE: Record<Climate, { trees: number; bushes: number }> = {
-  temperate: { trees: 14, bushes: 44 },
-  jungle: { trees: 20, bushes: 60 },
-  snow: { trees: 10, bushes: 8 },
+  temperate: { trees: 26, bushes: 60 },
+  jungle: { trees: 34, bushes: 80 },
+  snow: { trees: 16, bushes: 8 },
   desert: { trees: 0, bushes: 16 },
 };
 

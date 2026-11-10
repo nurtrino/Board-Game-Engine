@@ -15,12 +15,13 @@ import { UnitLibrary, unitScale, type UnitModel } from './units';
 import { layoutSpace, mobilizationSpots, type PieceSpot } from './layout';
 import {
   ART_H, ART_W, MAP_D, MAP_W, MOB_ID, SPACE_CENTER, TERR, ZONE, S, mapColor,
-  holesOf, nearestSpace, powerBase, powerInk, powerShort, px2r, r2px, regionAt, regionBox, ringsOf, sideOf,
+  holesOf, isIslandBox, nearestSpace, pieceTint, powerBase, powerInk, powerShort, px2r, r2px, regionAt, regionBox, ringsOf, sideOf,
 } from './world';
 
 export type Tone = 'attack' | 'move' | 'special' | 'origin';
 const TONE_HEX: Record<Tone, number> = { attack: 0xe5534b, move: 0xffffff, special: 0xe8b450, origin: 0xffffff };
-const TONE_FILL: Record<Tone, number> = { attack: 0.24, move: 0.16, special: 0.2, origin: 0.07 };
+const TONE_FILL: Record<Tone, number> = { attack: 0.2, move: 0.07, special: 0.14, origin: 0 };
+const TONE_CSS: Record<Tone, string> = { attack: '#ff5a4d', move: '#ffffff', special: '#f0b955', origin: '#ffffff' };
 
 export interface PieceHit {
   space: string;
@@ -83,6 +84,7 @@ const hash = (s: string) => {
 };
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 const V3 = THREE.Vector3;
+const WHITE = new THREE.Color(0xffffff);
 
 export class MapStage {
   readonly ready: Promise<void>;
@@ -137,10 +139,18 @@ export class MapStage {
   private regionGeo = new Map<string, { fills: THREE.BufferGeometry[]; lines: LineGeometry[] }>();
   private fillMats = new Map<string, THREE.MeshBasicMaterial>();
   private lineMats = new Map<string, LineMaterial>();
-  private targets: { id: string; tone: Tone }[] = [];
+  private targets: { id: string; tone: Tone; label?: string }[] = [];
   private hover: string | null = null;
   private veil: THREE.Mesh;
   private veilTarget = 0;
+  private cutMat = new THREE.MeshBasicMaterial({
+    colorWrite: false, depthWrite: false, depthTest: false,
+    stencilWrite: true, stencilRef: 1, stencilFunc: THREE.AlwaysStencilFunc, stencilZPass: THREE.ReplaceStencilOp,
+  });
+  private pinLayer = new THREE.Group();
+  private pins: { sprite: THREE.Sprite; hot: boolean; phase: number }[] = [];
+  private pinTex = new Map<string, THREE.Texture>();
+  private islandMats = new Map<string, { fill: THREE.MeshBasicMaterial; line: LineMaterial }>();
 
   private arrowLayer = new THREE.Group();
   private arrows: StageArrow[] = [];
@@ -160,7 +170,7 @@ export class MapStage {
 
   constructor(private host: HTMLElement, private mode: 'device' | 'screen') {
     this.pitch = THREE.MathUtils.degToRad(mode === 'screen' ? 56 : 63);
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, stencil: true, powerPreference: 'high-performance' });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mode === 'screen' ? 1.5 : 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -182,7 +192,8 @@ export class MapStage {
     rim.position.set(40, 30, -50);
     this.scene.add(rim);
 
-    this.pieceMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.42, metalness: 0.6, envMapIntensity: 0.75 });
+    // Solid coloured plastic, like the pieces in the box.
+    this.pieceMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.22, envMapIntensity: 0.7 });
     this.outlineMat = new THREE.ShaderMaterial({
       side: THREE.BackSide,
       depthWrite: false,
@@ -226,14 +237,19 @@ export class MapStage {
 
     this.veil = new THREE.Mesh(
       new THREE.PlaneGeometry(MAP_W, MAP_D),
-      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }),
+      // Spaces in reach are cut out of the veil through the stencil, so they stay at full brightness.
+      new THREE.MeshBasicMaterial({
+        color: 0x000000, transparent: true, opacity: 0, depthWrite: false, toneMapped: false,
+        stencilWrite: true, stencilRef: 1, stencilFunc: THREE.NotEqualStencilFunc,
+        stencilFail: THREE.KeepStencilOp, stencilZFail: THREE.KeepStencilOp, stencilZPass: THREE.KeepStencilOp,
+      }),
     );
     this.veil.rotation.x = -Math.PI / 2;
     this.veil.position.set(MAP_W / 2, 0.006, -MAP_D / 2);
     this.veil.renderOrder = 1;
     this.scene.add(this.veil);
     this.highlightLayer.renderOrder = 2;
-    this.scene.add(this.politicalLayer, this.highlightLayer, this.arrowLayer, this.badgeLayer);
+    this.scene.add(this.politicalLayer, this.highlightLayer, this.arrowLayer, this.badgeLayer, this.pinLayer);
     this.buildBorders();
 
     const shadowTex = this.makeShadowTexture();
@@ -310,6 +326,9 @@ export class MapStage {
   }
 
   // ---------- board ----------
+
+  /** The loaded sculpts, for anything else that wants to draw them (menu portraits). */
+  get library(): UnitLibrary { return this.units; }
 
   /** Draws the given position. With animate, units that changed space travel there. */
   setBoard(board: Record<string, UnitStack[]>, staged: UnitStack[], animate: boolean) {
@@ -617,8 +636,8 @@ export class MapStage {
     const scl = new V3();
     const color = new THREE.Color();
     const badgeScale = clamp(this.cam.dist / 26, 0.62, 2.4);
-    // From far away sculpts grow so armies stay readable, the way counters do on a wall map.
-    const zoomScale = clamp(this.cam.dist / 30, 1, 1.85);
+    // From far away sculpts grow a little so armies stay readable, but never past their spacing.
+    const zoomScale = clamp(this.cam.dist / 30, 1, 1.42);
     this.syncedDist = this.cam.dist;
     let si = 0;
     let ri = 0;
@@ -634,23 +653,24 @@ export class MapStage {
       const hull = SEA_UNITS.has(sp.unit);
       const stack = sp.spot?.stacked ? Math.min(6, sp.spot.pieces.length) : 1;
       const live = zoomScale * Math.max(0.001, sp.grow);
-      const baseH = (0.055 + 0.04 * (stack - 1)) * live;
-      if (bi < 1400) {
+      // Ships sit straight on the water; everything else stands on a pale disc of its nation's colour.
+      const baseH = hull ? 0.012 : (0.05 + 0.04 * (stack - 1)) * live;
+      if (!hull && bi < 1400) {
         const half = Math.max(sp.model.size.x, sp.model.size.z) * sp.scale * 0.5;
-        const bx = (hull ? half + 0.08 : Math.max(0.3, Math.min(0.48, half * 0.92))) * live;
-        const bz = (hull ? Math.max(0.2, Math.min(sp.model.size.x, sp.model.size.z) * sp.scale * 0.5 + 0.1) : bx / live) * (hull ? live : live);
-        m.compose(pos.set(sp.x, sp.y, sp.z), hull ? q : noTurn, scl.set(bx, baseH, hull ? bz : bx));
+        const bx = Math.max(0.27, Math.min(0.4, half * 0.9)) * live;
+        m.compose(pos.set(sp.x, sp.y, sp.z), noTurn, scl.set(bx, baseH, bx));
         this.bases.setMatrixAt(bi, m);
-        baseColor.set(mapColor(sp.power));
-        if (sp.spent) baseColor.multiplyScalar(0.42);
+        baseColor.set(mapColor(sp.power)).lerp(WHITE, 0.42);
+        if (sp.spent) baseColor.multiplyScalar(0.45);
         this.bases.setColorAt(bi, baseColor);
         bi++;
       }
       m.compose(pos.set(sp.x, sp.y + baseH, sp.z), q, scl.set(s, s, s));
       b.mesh.setMatrixAt(c[0], m);
-      // sculpts are pewter for every nation; the base carries the colour
-      // sculpts are metal washed in the nation's colour, so an army reads from across the room
-      color.setRGB(0.66, 0.68, 0.72, THREE.SRGBColorSpace).lerp(baseColor.set(mapColor(sp.power)), 0.5);
+      // sculpts are solid plastic in the nation's colour, darker than the disc they stand on
+      const tint = pieceTint(sp.power, sp.unit);
+      color.setRGB(tint[0], tint[1], tint[2], THREE.SRGBColorSpace);
+      if (hull) color.lerp(WHITE, 0.1);
       if (sp.damaged) color.lerp(new THREE.Color(0.75, 0.16, 0.1), 0.55);
       if (sp.spent) color.multiplyScalar(0.42);
       b.mesh.setColorAt(c[0], color);
@@ -713,17 +733,30 @@ export class MapStage {
           this.politicalLayer.add(mesh);
           entry.meshes.push(mesh);
         }
+        // An island box is mostly water: it gets a ring in its holder's colour, not a flood of it.
+        if (isIslandBox(id)) {
+          for (const g of this.regionGeometry(id).lines) {
+            const line = new Line2(g, undefined);
+            line.position.y = 0.0055;
+            line.renderOrder = 1;
+            line.visible = false;
+            this.politicalLayer.add(line);
+            entry.meshes.push(line as unknown as THREE.Mesh);
+          }
+        }
         this.political.set(id, entry);
       }
       entry.power = holder;
       for (const mesh of entry.meshes) {
         mesh.visible = holder != null;
-        if (holder) mesh.material = this.politicalMaterial(holder);
+        if (!holder) continue;
+        if (!isIslandBox(id)) mesh.material = this.politicalMaterial(holder);
+        else mesh.material = (mesh as unknown as Line2).isLine2 ? this.islandMaterial(holder).line : this.islandMaterial(holder).fill;
       }
       // a territory that changes hands flashes in its new colour
       if (!first && holder && entry.meshes.length) {
         const flash = new THREE.MeshBasicMaterial({ color: mapColor(holder), transparent: true, opacity: 0.85, depthWrite: false, toneMapped: false });
-        const extra = entry.meshes.map((mesh) => {
+        const extra = entry.meshes.filter((mesh) => !(mesh as unknown as Line2).isLine2).map((mesh) => {
           const copy = new THREE.Mesh(mesh.geometry, flash);
           copy.position.y = 0.008;
           copy.renderOrder = 2;
@@ -748,7 +781,19 @@ export class MapStage {
     return m;
   }
 
-  /** Crisp borders over the print, drawn from the measured zones: dark on land, pale at sea. */
+  private islandMaterial(power: string) {
+    let m = this.islandMats.get(power);
+    if (!m) {
+      const line = new LineMaterial({ color: new THREE.Color(mapColor(power)).lerp(WHITE, 0.25).getHex(), linewidth: 2.2, transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false });
+      line.resolution.set(Math.max(1, this.host.clientWidth), Math.max(1, this.host.clientHeight));
+      this.borderMats.push(line);
+      m = { fill: new THREE.MeshBasicMaterial({ color: mapColor(power), transparent: true, opacity: 0.16, depthWrite: false, toneMapped: false }), line };
+      this.islandMats.set(power, m);
+    }
+    return m;
+  }
+
+  /** Crisp borders over the print, drawn from the measured zones. The sea keeps its printed lines. */
   private buildBorders() {
     const land: number[] = [];
     const sea: number[] = [];
@@ -759,10 +804,12 @@ export class MapStage {
         out.push(p0[0], 0, p0[1], p1[0], 0, p1[1]);
       }
     };
-    for (const id of [...Object.keys(TERR), ...Object.keys(ZONE)]) {
-      const out = id.startsWith('sz-') ? sea : land;
-      for (const ring of ringsOf(id) ?? []) add(out, ring);
+    for (const id of Object.keys(TERR)) {
+      if (isIslandBox(id)) continue;
+      for (const ring of ringsOf(id) ?? []) add(land, ring);
     }
+    void sea;
+    void ZONE;
     const make = (pts: number[], color: number, opacity: number, width: number, y: number) => {
       const g = new LineSegmentsGeometry();
       g.setPositions(pts);
@@ -775,17 +822,54 @@ export class MapStage {
       lines.frustumCulled = false;
       this.scene.add(lines);
     };
-    make(sea, 0xdfeaff, 0.34, 1.2, 0.0045);
     make(land, 0x05060a, 0.9, 1.8, 0.005);
   }
 
   // ---------- highlights ----------
 
   /** Lights the given spaces; with dim the rest of the board falls back. */
-  setTargets(targets: { id: string; tone: Tone }[], dim: boolean) {
+  setTargets(targets: { id: string; tone: Tone; label?: string }[], dim: boolean) {
     this.targets = targets;
-    this.veilTarget = dim && targets.length ? 0.42 : 0;
+    this.veilTarget = dim && targets.length ? 0.62 : 0;
     this.rebuildHighlights();
+  }
+
+  /** A marker that stands on a space in reach: a waypoint to move to, a reticle to attack. */
+  private pinTexture(tone: Tone, label: string): THREE.Texture {
+    const key = `${tone}|${label}`;
+    let tex = this.pinTex.get(key);
+    if (tex) return tex;
+    const c = document.createElement('canvas');
+    c.width = c.height = 128;
+    const g = c.getContext('2d')!;
+    const ink = TONE_CSS[tone];
+    g.fillStyle = 'rgba(6,7,9,.82)';
+    g.beginPath(); g.arc(64, 64, 50, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = ink;
+    g.lineWidth = tone === 'attack' ? 9 : 7;
+    g.beginPath(); g.arc(64, 64, 46, 0, Math.PI * 2); g.stroke();
+    if (label) {
+      g.fillStyle = '#ffffff';
+      g.font = `700 ${label.length > 1 ? 46 : 56}px Inter, system-ui, sans-serif`;
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(label, 64, 68);
+    } else if (tone === 'attack') {
+      g.lineWidth = 8;
+      g.lineCap = 'round';
+      for (const [x0, y0, x1, y1] of [[64, 8, 64, 34], [64, 94, 64, 120], [8, 64, 34, 64], [94, 64, 120, 64]]) {
+        g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+      }
+      g.fillStyle = ink;
+      g.beginPath(); g.arc(64, 64, 11, 0, Math.PI * 2); g.fill();
+    } else {
+      g.fillStyle = ink;
+      g.beginPath(); g.arc(64, 64, 17, 0, Math.PI * 2); g.fill();
+    }
+    tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    this.pinTex.set(key, tex);
+    return tex;
   }
 
   setHover(id: string | null) {
@@ -835,6 +919,8 @@ export class MapStage {
 
   private rebuildHighlights() {
     this.highlightLayer.clear();
+    for (const p of this.pins) { this.pinLayer.remove(p.sprite); p.sprite.material.dispose(); }
+    this.pins = [];
     const draw = (id: string, tone: Tone, hot: boolean) => {
       const geo = this.regionGeometry(id);
       const fk = `${tone}|${hot ? 1 : 0}`;
@@ -850,10 +936,24 @@ export class MapStage {
         this.lineMats.set(fk, line);
       }
       for (const g of geo.fills) {
+        const cut = new THREE.Mesh(g, this.cutMat);
+        cut.position.y = 0.005;
+        this.highlightLayer.add(cut);
+        if (TONE_FILL[tone] + (hot ? 0.22 : 0) <= 0) continue;
         const mesh = new THREE.Mesh(g, fill);
         mesh.position.y = 0.01;
         mesh.renderOrder = 2;
         this.highlightLayer.add(mesh);
+      }
+      const c = SPACE_CENTER[id];
+      const label = this.targets.find((t) => t.id === id)?.label ?? '';
+      if (c && tone !== 'origin') {
+        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: this.pinTexture(tone, label), depthTest: false, transparent: true, toneMapped: false }));
+        const [x, z] = px2r(c[0], c[1] - 34);
+        sprite.position.set(x, 0.35, z);
+        sprite.renderOrder = 18;
+        this.pinLayer.add(sprite);
+        this.pins.push({ sprite, hot, phase: hash(id) * 6.28 });
       }
       for (const g of geo.lines) {
         const l = new Line2(g, line);
@@ -1318,6 +1418,15 @@ export class MapStage {
       veil.opacity += (this.veilTarget - veil.opacity) * Math.min(1, dt * 9);
       this.dirty = true;
     }
+    // markers on the spaces in reach breathe, so the eye finds them
+    if (this.pins.length) {
+      const size = clamp(this.cam.dist / 24, 0.7, 2.6);
+      for (const p of this.pins) {
+        const s = size * (p.hot ? 1.35 : 1) * (1 + 0.07 * Math.sin(now / 240 + p.phase));
+        p.sprite.scale.set(s, s, 1);
+      }
+      this.dirty = true;
+    }
     if (!this.dirty && !this.instancesDirty) return;
     this.applyCamera();
     if (Math.abs(this.cam.dist - this.syncedDist) > this.syncedDist * 0.02) this.instancesDirty = true;
@@ -1387,6 +1496,10 @@ export class MapStage {
     for (const b of this.batches.values()) { b.mesh.dispose(); b.outline.dispose(); }
     for (const g of this.regionGeo.values()) { g.fills.forEach((f) => f.dispose()); g.lines.forEach((l) => l.dispose()); }
     for (const t of this.badgeTex.values()) t.dispose();
+    for (const t of this.pinTex.values()) t.dispose();
+    for (const p of this.pins) p.sprite.material.dispose();
+    for (const m of this.islandMats.values()) m.fill.dispose();
+    this.cutMat.dispose();
     for (const m of [...this.fillMats.values(), ...this.lineMats.values(), ...this.politicalMats.values(), ...this.borderMats, ...this.boardMats]) m.dispose();
     this.bases.dispose();
     this.scene.traverse((o) => {

@@ -10,7 +10,8 @@ import {
 import { MapStage } from './MapStage';
 import { Boundary } from './Boundary';
 import { useOrders, type Act, type Orders } from './useOrders';
-import { Armory, Deploy, NationCard, Research } from './sheets';
+import { Armory, Deploy, NationCard, Research, type UnitArt } from './sheets';
+import { renderPortraits } from './portraits';
 import { axisAvailablePhaseKeys, axisCapitalTurnPresentation, axisPhasePresentation } from './axisCapitalPresentation';
 import UnitIcon from './UnitIcon';
 import { Roundel } from './Roundel';
@@ -41,7 +42,8 @@ export default function AxisPlay({ view, act, error }: { view: AxisView; act: (a
   const [failed, setFailed] = useState('');
   const [nation, setNation] = useState(false);
   const [inspect, setInspect] = useState<string | null>(null);
-  const [deploySel, setDeploySel] = useState<{ targets: string[]; onPick: (id: string) => void } | null>(null);
+  const [deploySel, setDeploySel] = useState<{ targets: string[]; labels?: Record<string, string>; onPick: (id: string) => void } | null>(null);
+  const [art, setArt] = useState<UnitArt>({});
 
   const active = view.active;
   const mine = view.controlledPowers.includes(active);
@@ -101,7 +103,7 @@ export default function AxisPlay({ view, act, error }: { view: AxisView; act: (a
     const st = stage.current;
     if (!st) return;
     if (deploySel) {
-      st.setTargets(deploySel.targets.map((id) => ({ id, tone: 'move' as const })), true);
+      st.setTargets(deploySel.targets.map((id) => ({ id, tone: 'move' as const, label: deploySel.labels?.[id] })), true);
       st.setArrows([]);
       st.setSelection('', {});
       return;
@@ -123,6 +125,13 @@ export default function AxisPlay({ view, act, error }: { view: AxisView; act: (a
   useEffect(() => {
     if (orders.pending) void stage.current?.flyTo([...orders.pickedSpaces, orders.pending.id], { pad: 2.1, seconds: 0.6 });
   }, [orders.pending?.id]);
+
+  // The menus show the sculpts themselves, in the colour of whoever is buying.
+  useEffect(() => {
+    const st = stage.current;
+    if (!st || loaded < 1) return;
+    setArt(renderPortraits(st.library, active));
+  }, [active, loaded === 1]);
 
   // ---------- chrome ----------
 
@@ -193,9 +202,9 @@ export default function AxisPlay({ view, act, error }: { view: AxisView; act: (a
       ) : view.phase === 'rnd' ? (
         <Research view={view} act={actAs} />
       ) : view.phase === 'purchase' ? (
-        <Armory view={view} act={actAs} />
+        <Armory view={view} act={actAs} art={art} />
       ) : view.phase === 'mobilize' || view.phase === 'income' ? (
-        <Deploy view={view} act={actAs} onTargets={setDeploySel} flyTo={(ids) => void stage.current?.flyTo(ids, { pad: 2.6 })} />
+        <Deploy view={view} act={actAs} art={art} onTargets={setDeploySel} flyTo={(ids) => void stage.current?.flyTo(ids, { pad: 2.6 })} />
       ) : (
         <OrderBar orders={orders} view={view} />
       )}

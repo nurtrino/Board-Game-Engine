@@ -144,6 +144,13 @@ def nearest_in(mask, x, y, reach):
 
 
 land = ((water == 0) & (offmap == 0)).astype(np.uint8)
+HINTS = json.loads((ROOT / 'games/axis-allies/golden/zone-hints.json').read_text(encoding='utf8'))
+# City and territory names printed over the sea read as land. Inside each listed box anything
+# thinner than a real coast (lettering, a roundel) goes back to the water.
+solid = cv2.morphologyEx(land, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (58 // K + 1, 58 // K + 1)))
+for bx0, by0, bx1, by1 in HINTS.get('labels_over_water', []):
+    x0, y0, x1, y1 = bx0 // K, by0 // K, bx1 // K, by1 // K
+    land[y0:y1, x0:x1] &= solid[y0:y1, x0:x1]
 # Land specks in the sea that are really printed ink (zone numbers, lines) are removed: a land
 # component counts only if it is big enough, or a territory is seeded on or beside it.
 n_l, lab_l, stats_l, _ = cv2.connectedComponentsWithStats(land, connectivity=8)
@@ -170,7 +177,6 @@ for z in zones:
         continue
     seed_xy[z['id']] = p
 
-HINTS = json.loads((ROOT / 'games/axis-allies/golden/zone-hints.json').read_text(encoding='utf8'))
 walls = np.zeros((H, W), np.uint8)
 for name, line in HINTS.get('cuts', {}).items():
     cv2.polylines(walls, [np.array([[q[0] / K, q[1] / K] for q in line], np.int32)], False, 1, thickness=3)
@@ -358,12 +364,15 @@ labels[offmap == 1] = 0
 # ---------- island territories get room to stand on ----------
 # A territory that is only a speck of land cannot be tapped or hold pieces. It takes the water
 # around its islands and its printed roundel, the way the cardboard map treats the island box.
+shore_masks = {}
 for t in territories:
     i = index[t['id']]
     area = int((labels == i).sum()) * K * K
     if area >= 26000:
         continue
     m = (labels == i).astype(np.uint8)
+    # the land itself, before the water is added: the map tints this, not the whole island box
+    shore_masks[t['id']] = m.copy()
     x, y = at(t['center'])
     cv2.circle(m, (x, y), 30, 1, -1)
     reach = cv2.dilate(m, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * 44 + 1, 2 * 44 + 1)))
@@ -374,7 +383,7 @@ for t in territories:
 EPS = 1.6  # art pixels
 
 
-def rings_of(mask):
+def rings_of(mask, min_area=500):
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
     outer, holes = [], []
     if hierarchy is None:
@@ -383,7 +392,7 @@ def rings_of(mask):
         if len(c) < 4:
             continue
         pts = c.astype(np.float32) * K + K / 2.0
-        if cv2.contourArea(pts) < 500:
+        if cv2.contourArea(pts) < min_area:
             continue
         simple = cv2.approxPolyDP(pts, EPS, True).reshape(-1, 2)
         if len(simple) < 3:
@@ -406,8 +415,11 @@ for id_ in ids:
     if h:
         holes[id_] = h
 
+# Island territories whose region is the island box (land plus the water around it).
+islands = sorted(shore_masks)
+
 points = sum(len(r) for rs in regions.values() for r in rs) + sum(len(r) for rs in holes.values() for r in rs)
-out = {'art': {'width': W_FULL, 'height': H_FULL}, 'source': 'tools/axis-zones.py', 'regions': regions, 'holes': holes}
+out = {'art': {'width': W_FULL, 'height': H_FULL}, 'source': 'tools/axis-zones.py', 'regions': regions, 'holes': holes, 'islands': islands}
 text = json.dumps(out, separators=(',', ':'))
 (ROOT / 'client/src/axis/regions-data.json').write_text(text, encoding='utf8')
 (ROOT / 'games/axis-allies/golden/regions.json').write_text(text, encoding='utf8')

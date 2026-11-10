@@ -35,10 +35,36 @@ a wall for the first pass and then snaps every border to the nearest printed lin
 a self-check (labels outside their own region, slivers) and writes overlays to `tmp/` for the eye.
 The board wraps left to right; the scan's paper margin is excluded.
 
-The look: territories are tinted by their current holder with crisp borders over the print; every
-piece is a metal sculpt on a base in its nation's colour, a stack rides a taller base with a count;
-the big screen shows a battle as a board over the map (one tile per unit, losses struck out). The
-modelled 3D battlefield remains behind `?battle=3d`.
+Zone hints also carry `seats` for territories whose printed centre sits on water or an emblem
+(French Indo-China, Trans-Jordan, French West Africa, Panama) and `labels_over_water`: boxes
+around city and territory names printed on the sea, so the lettering is not outlined as land.
+Check a regenerated set with an overlay of every region over the art before trusting it.
+
+The look: territories are tinted by their current holder with crisp borders over the print. The sea
+keeps its printed lines (none are drawn over them). An island territory whose region is its box of
+water (`islands` in the regions file) gets a ring in its holder's colour instead of a fill. Pieces
+are solid plastic in the nation's colour on a pale disc; ships sit straight on the water. Spots are
+150 art pixels apart on land and 224 by 132 at sea, wider than any base, and a space that cannot
+hold every piece at that spacing shows one sculpt per type with a count.
+
+Orders: when a unit is in hand the spaces in reach are cut out of a dark veil (stencil), outlined,
+and marked with a pin (a waypoint to move to, a reticle to attack). The deploy pins carry the number
+of units the factory can still build.
+
+Menus: the buy and deploy menus show the sculpts themselves, rendered once per nation by
+`portraits.ts`. Deploying is a tray of pieces to pick up, not a list.
+
+The battle is the modelled battlefield again (`?battle=2d` forces the flat board, which is also the
+fallback when WebGL fails). What makes it read: models painted in their side's colour through the
+instance colour (`bake.ts`), a painted sky with a low sun, raked ground relief, built low-poly
+trees, bloom on fire, scorch marks where shells land, the attackers advancing onto the field in
+the opening, fleets drawn up in close lines, and cameras that stand behind the side that is firing
+and close on the side taking losses. The frame-time governor sheds bloom and the shadow map on a
+weak GPU; soft blob shadows take over so nothing floats.
+
+`/dev/axis` is the bench: the whole game in one tab with no room or server. `?screen=tv` shows the
+big screen, `?fight=land|big|sea` stages a battle, `?hq=1` holds full quality, and `window.__lab`
+steps or resolves the battle from the console.
 
 Assets are staged by two scripts, both re-runnable:
 

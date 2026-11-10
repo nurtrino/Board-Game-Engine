@@ -62,9 +62,9 @@ function Theater({ combat, after, active }: { combat: Combat; after: LastBattle 
   const director = useRef<Director | null>(null);
   const latest = useRef(combat);
   latest.current = combat;
-  // The battle is shown as a designed board over the map. The modelled battlefield is still here
-  // behind ?battle=3d for the day its art is good enough to lead.
-  const [mode, setMode] = useState<'3d' | '2d'>(() => (new URLSearchParams(window.location.search).get('battle') === '3d' ? '3d' : '2d'));
+  // The battle plays out on a modelled battlefield. A screen that cannot draw it, or ?battle=2d,
+  // gets the flat battle board instead.
+  const [mode, setMode] = useState<'3d' | '2d'>(() => (new URLSearchParams(window.location.search).get('battle') === '2d' ? '2d' : '3d'));
   const [phase, setPhase] = useState<'loading' | 'ready'>('loading');
   const sound = useRef<BattleSound | null>(null);
   useEffect(() => {
@@ -88,6 +88,8 @@ function Theater({ combat, after, active }: { combat: Combat; after: LastBattle 
       onPhase: (p) => { if (p === 'failed') setMode('2d'); else setPhase(p); },
     });
     stage.onLost = () => setMode('2d');
+    if (import.meta.env.DEV) (window as unknown as { __battle?: BattleStage }).__battle = stage;
+    if (new URLSearchParams(window.location.search).get('hq') === '1') stage.lockQuality = true;
     director.current = d;
     d.ingest(latest.current);
     const onVisible = () => { if (!document.hidden) d.catchUp(); };

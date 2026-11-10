@@ -58,12 +58,22 @@ export class Particles {
       fragmentShader: /* glsl */`
         uniform vec3 uFogColor; uniform float uFogDensity; uniform float uAdditive;
         varying vec4 vColor; varying float vDepth;
+        float pHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+        float pNoise(vec2 p) {
+          vec2 i = floor(p), f = fract(p);
+          f = f * f * (3.0 - 2.0 * f);
+          return mix(mix(pHash(i), pHash(i + vec2(1.0, 0.0)), f.x), mix(pHash(i + vec2(0.0, 1.0)), pHash(i + vec2(1.0, 1.0)), f.x), f.y);
+        }
         void main() {
           float d = length(gl_PointCoord - 0.5) * 2.0;
           float a = smoothstep(1.0, 0.0, d);
           a *= a;
+          // smoke is not a disc: break its edge up and light it from above
+          float billow = pNoise(gl_PointCoord * 3.4 + vColor.rg * 37.0 + vDepth * 0.013);
+          a *= mix(1.0, 0.45 + billow * 1.05, 1.0 - uAdditive);
           float fog = 1.0 - exp(-uFogDensity * uFogDensity * vDepth * vDepth);
-          vec3 c = mix(vColor.rgb, uFogColor, fog * (1.0 - uAdditive));
+          vec3 lit = vColor.rgb * mix(1.0, 0.72 + (1.0 - gl_PointCoord.y) * 0.62, 1.0 - uAdditive);
+          vec3 c = mix(lit, uFogColor, fog * (1.0 - uAdditive)) * (1.0 + uAdditive * 1.8);
           float alpha = vColor.a * a * (1.0 - fog * uAdditive);
           gl_FragColor = vec4(c, alpha);
           #include <tonemapping_fragment>

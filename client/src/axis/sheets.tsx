@@ -19,6 +19,21 @@ import { Roundel } from './Roundel';
 const BUYABLE: UnitKey[] = ['infantry', 'artillery', 'tank', 'aaGun', 'fighter', 'bomber', 'battleship', 'carrier', 'cruiser', 'destroyer', 'submarine', 'transport', 'factory'];
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
+/** Renders of the sculpts in the active nation's colour, keyed by unit. Empty until they are drawn. */
+export type UnitArt = Record<string, string>;
+
+/** A unit as a picture: the sculpt itself when it has been rendered, the line icon until then. */
+export function UnitPicture({ unitKey, art, size }: { unitKey: UnitKey; art: UnitArt; size: number }) {
+  const src = art[unitKey];
+  if (src) return <img className="axx-pic" src={src} width={size} height={size} alt="" draggable={false} />;
+  return <span className="axx-pic" style={{ width: size, height: size }}><UnitIcon unitKey={unitKey} size={Math.round(size * 0.56)} title={UNITS[unitKey].name} /></span>;
+}
+
+/** A value out of the most it can be, drawn as filled marks. */
+function Marks({ value, max }: { value: number; max: number }) {
+  return <span className="axx-marks" aria-hidden="true">{Array.from({ length: max }, (_, i) => <i key={i} className={i < value ? 'on' : ''} />)}</span>;
+}
+
 // ---------- research ----------
 
 export function Research({ view, act }: { view: AxisView; act: Act }) {
@@ -63,7 +78,7 @@ export function Research({ view, act }: { view: AxisView; act: Act }) {
 
 // ---------- purchase ----------
 
-export function Armory({ view, act }: { view: AxisView; act: Act }) {
+export function Armory({ view, act, art }: { view: AxisView; act: Act; art: UnitArt }) {
   const p = view.powers[view.active];
   const [open, setOpen] = useState(true);
   const bought = Object.values(p.purchasedThisTurn).reduce((n, x) => n + (x?.count ?? 0), 0);
@@ -93,16 +108,20 @@ export function Armory({ view, act }: { view: AxisView; act: Act }) {
           const ref = axisCurrentUnitReference(key, p.techs);
           const queued = p.purchasedThisTurn[key]?.count ?? 0;
           return (
-            <div key={key} className={`axx-buy${queued ? ' on' : ''}`}>
-              <UnitIcon unitKey={key} size={34} title={UNITS[key].name} />
-              <span className="ig-num cost">{ref.cost}</span>
-              <span className="nm">
-                <b>{UNITS[key].name}</b>
-                <small>Attack {ref.attack || 0} · Defend {ref.defense || 0} · Move {ref.move || 0}</small>
-              </span>
+            <div key={key} className={`axx-buy${queued ? ' on' : ''}${p.ipcs < ref.cost && !queued ? ' poor' : ''}`}>
+              <button className="axx-buy-art" onClick={() => act({ type: 'buy', key, count: 1 })} disabled={p.ipcs < ref.cost} aria-label={`Buy one ${UNITS[key].name}`}>
+                <UnitPicture unitKey={key} art={art} size={104} />
+                <span className="ig-num cost">{ref.cost}</span>
+                {queued > 0 && <span className="ig-num qty">{queued}</span>}
+              </button>
+              <b className="nm">{UNITS[key].name}</b>
+              <div className="axx-stats-row" aria-label={`Attack ${ref.attack || 0}, defend ${ref.defense || 0}, move ${ref.move || 0}`}>
+                <span><small>ATK</small><Marks value={ref.attack || 0} max={4} /></span>
+                <span><small>DEF</small><Marks value={ref.defense || 0} max={4} /></span>
+                <span><small>MOVE</small><Marks value={Math.min(6, ref.move || 0)} max={6} /></span>
+              </div>
               <span className="ctl">
                 <button onClick={() => act({ type: 'unbuy', key, count: 1 })} disabled={!queued} aria-label={`Return one ${UNITS[key].name}`}>-</button>
-                <b className="ig-num qty">{queued}</b>
                 <button onClick={() => act({ type: 'buy', key, count: 1 })} disabled={p.ipcs < ref.cost} aria-label={`Buy one ${UNITS[key].name}`}>+</button>
               </span>
             </div>
@@ -129,11 +148,12 @@ export function Armory({ view, act }: { view: AxisView; act: Act }) {
 
 // ---------- deploy ----------
 
-export function Deploy({ view, act, onTargets, flyTo }: {
+export function Deploy({ view, act, onTargets, flyTo, art }: {
   view: AxisView;
   act: Act;
-  onTargets: (t: { targets: string[]; onPick: (id: string) => void } | null) => void;
+  onTargets: (t: { targets: string[]; labels?: Record<string, string>; onPick: (id: string) => void } | null) => void;
   flyTo: (ids: string[]) => void;
+  art: UnitArt;
 }) {
   const p = view.powers[view.active];
   const capital = axisCapitalTurnPresentation(view);
@@ -168,8 +188,15 @@ export function Deploy({ view, act, onTargets, flyTo }: {
   const sig = `${JSON.stringify(selection)}|${spots.join(',')}`;
   useEffect(() => {
     if (!hasSel || !spots.length) { onTargets(null); return; }
+    // each lit space carries the number of units its factory can still build
+    const labels: Record<string, string> = {};
+    for (const plan of plans) {
+      if (plan.factoryRemaining == null) continue;
+      labels[plan.space] = String(Math.max(Number(labels[plan.space] ?? 0), plan.factoryRemaining));
+    }
     onTargets({
       targets: spots,
+      labels,
       onPick: (id) => {
         const here = plans.filter((plan) => plan.space === id);
         if (here.length === 1) place(here[0]);
@@ -216,34 +243,46 @@ export function Deploy({ view, act, onTargets, flyTo }: {
     );
   }
 
+  const waiting = stagedTotal > 0 || view.chinaGrant > 0;
+  const status = capital.mobilize ? `${capital.mobilize.title}. ${capital.mobilize.detail}`
+    : confirmCarry ? `${plural(stagedTotal, 'unit')} will wait for next turn.`
+      : !waiting ? 'Nothing to deploy.'
+        : !hasSel ? (blocked || 'Pick what to place.')
+          : spots.length ? 'Tap a lit factory.' : 'No factory has room for all of this. Pick fewer.';
+  const step = (key: string, max: number, by: number) => setSel((cur) => {
+    const next = Math.max(0, Math.min(max, (cur[key] ?? 0) + by));
+    return key === 'china' ? { china: next } : { ...cur, [key]: next };
+  });
+  const tile = (key: string, unit: UnitKey, n: number, name: string) => {
+    const picked = sel[key] ?? 0;
+    return (
+      <div key={key} className={`axx-tile${picked ? ' on' : ''}`}>
+        <button className="axx-tile-art" onClick={() => step(key, n, picked ? -picked : n)} aria-label={`${picked ? 'Put back' : 'Pick up'} ${name}`}>
+          <UnitPicture unitKey={unit} art={art} size={88} />
+          <span className="ig-num count">{picked}<i>/{n}</i></span>
+        </button>
+        <span className="pips" aria-hidden="true">{Array.from({ length: Math.min(n, 10) }, (_, i) => <i key={i} className={i < Math.round((picked / n) * Math.min(n, 10)) ? 'on' : ''} />)}</span>
+        {n > 1 && (
+          <span className="ctl">
+            <button onClick={() => step(key, n, -1)} disabled={picked <= 0} aria-label={`Fewer ${name}`}>-</button>
+            <button onClick={() => step(key, n, 1)} disabled={picked >= n} aria-label={`More ${name}`}>+</button>
+          </span>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="axx-bar ig-glass">
+    <div className="axx-bar axx-deploy ig-glass">
       <div className="axx-bar-text">
-        <b>{confirmCarry ? 'Leave units undeployed?' : 'Deploy and end your turn'}</b>
-        <small>
-          {capital.mobilize ? `${capital.mobilize.title}. ${capital.mobilize.detail}`
-            : confirmCarry ? `${plural(stagedTotal, 'unit')} will wait in the mobilization zone for next turn.`
-              : stagedTotal || view.chinaGrant ? (hasSel ? (spots.length ? 'Tap a lit space to place them. A factory builds as many units as its territory is worth.' : 'No factory can take this selection. Choose fewer.') : 'Choose what to place.')
-                : 'Nothing to deploy. Ending your turn collects your income.'}
-        </small>
-        {(staged.length > 0 || view.chinaGrant > 0) && !confirmCarry && (
-          <div className="axx-force">
-            {staged.map(([key, n]) => (
-              <span key={key} className="axx-unit">
-                <UnitIcon unitKey={key} size={20} title={UNITS[key].name} />
-                <button onClick={() => setSel((s) => ({ ...s, [key]: Math.max(0, (s[key] ?? 0) - 1) }))} aria-label={`Fewer ${UNITS[key].name}`}>-</button>
-                <b className="ig-num">{sel[key] ?? 0}<i>/{n}</i></b>
-                <button onClick={() => setSel((s) => ({ ...s, [key]: Math.min(n, (s[key] ?? 0) + 1) }))} disabled={(sel[key] ?? 0) >= n} aria-label={`More ${UNITS[key].name}`}>+</button>
-              </span>
-            ))}
-            {view.chinaGrant > 0 && (
-              <span className="axx-unit">
-                <UnitIcon unitKey="infantry" size={20} title="Chinese infantry" /> China
-                <button onClick={() => setSel((s) => ({ china: Math.max(0, (s.china ?? 0) - 1) }))}>-</button>
-                <b className="ig-num">{sel.china ?? 0}<i>/{view.chinaGrant}</i></b>
-                <button onClick={() => setSel((s) => ({ china: Math.min(view.chinaGrant, (s.china ?? 0) + 1) }))}>+</button>
-              </span>
-            )}
+        <div className="axx-deploy-head">
+          <b>{confirmCarry ? 'Leave units undeployed?' : 'Deploy'}</b>
+          <small>{status}</small>
+        </div>
+        {waiting && !confirmCarry && (
+          <div className="axx-tiles">
+            {staged.map(([key, n]) => tile(key, key, n, UNITS[key].name))}
+            {view.chinaGrant > 0 && tile('china', 'infantry', view.chinaGrant, 'Chinese infantry')}
           </div>
         )}
         {required.length > 0 && (
@@ -261,7 +300,6 @@ export function Deploy({ view, act, onTargets, flyTo }: {
             })}
           </div>
         )}
-        {blocked && !hasSel && <small>{blocked}</small>}
       </div>
       {confirmCarry && <button className="axx-x" onClick={() => setConfirmCarry(false)}>Back</button>}
       <button className="axx-go" onClick={end} disabled={requiredCount > 0}>{confirmCarry ? 'End turn anyway' : capital.mobilize?.endLabel ?? 'End turn'}</button>

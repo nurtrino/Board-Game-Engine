@@ -44,13 +44,13 @@ SPACE_CENTER[MOB_ID] = [(MOB_ZONE.x0 + MOB_ZONE.x1) / 2, (MOB_ZONE.y0 + MOB_ZONE
 const hex = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
 // sRGB values.
 const PIECE_TINT: Record<string, [number, number, number]> = {
-  germany: hex('#2b2d32'),
+  germany: hex('#474c56'),
   ussr: hex('#6e1219'),
   japan: hex('#b85212'),
   uk: hex('#b89a64'),
   italy: hex('#6a4426'),
-  usa: hex('#27592b'),
-  china: hex('#a6c578'),
+  usa: hex('#2c6a30'),
+  china: hex('#6f9a48'),
 };
 const NEUTRAL_TINT: [number, number, number] = hex('#70747a');
 export function pieceTint(power: string | null | undefined, unit?: string): [number, number, number] {
@@ -117,6 +117,10 @@ function inRing(px: number, py: number, ring: Ring): boolean {
   }
   return inside;
 }
+
+const ISLAND_BOXES = new Set<string>((regionsJson as unknown as { islands?: string[] }).islands ?? []);
+/** An island territory whose region is its box of water, not only the specks of land in it. */
+export const isIslandBox = (id: string) => ISLAND_BOXES.has(id);
 
 export const ringsOf = (id: string): Ring[] | null => REGIONS[id] ?? null;
 export const holesOf = (id: string): Ring[] => HOLES[id] ?? [];

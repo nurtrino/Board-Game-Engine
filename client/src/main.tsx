@@ -13,6 +13,7 @@ const Join = lazy(() => import('./pages/Join').then((module) => ({ default: modu
 const BoardPage = lazy(() => import('./pages/BoardPage').then((module) => ({ default: module.BoardPage })));
 const PlayPage = lazy(() => import('./pages/PlayPage').then((module) => ({ default: module.PlayPage })));
 const BrassDev = lazy(() => import('./pages/BrassDev').then((module) => ({ default: module.BrassDev })));
+const AxisDev = lazy(() => import('./pages/AxisDev').then((module) => ({ default: module.AxisDev })));
 
 function RouteLoading() {
   return <div className="route-loading" role="status"><span />Loading table…</div>;
@@ -33,6 +34,7 @@ root.render(
           <Route path="/board/:roomId" element={<BoardPage />} />
           <Route path="/play/:roomId" element={<PlayPage />} />
           <Route path="/dev/brass" element={<BrassDev />} />
+          <Route path="/dev/axis" element={<AxisDev />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

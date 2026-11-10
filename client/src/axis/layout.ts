@@ -4,9 +4,12 @@
 import { enumerateAxisPhysicalPieces, type AxisPhysicalPiece, type UnitStack } from '@bge/shared';
 import { MOB_ZONE, SPACE_CENTER, inRegion, isSea, regionAt, ringsOf, unitRank, type Px } from './world';
 
-/** Centre-to-centre distance between neighbouring pieces, in art pixels. */
-export const SLOT_SPACING = 108;
-const EDGE_INSET = 34;
+/** Centre-to-centre distance between neighbouring pieces, in art pixels. Wider than any base, so
+ *  pieces never touch. */
+export const SLOT_SPACING = 150;
+/** Ships are long: they stand further apart along the hull than across it. */
+const SEA_STEP: [number, number] = [224, 132];
+const EDGE_INSET = 40;
 const MAX_SLOTS = 36;
 /** A space never shows more than this many separate sculpts. */
 export const MAX_EACH = 28;
@@ -32,8 +35,8 @@ export function regionSlots(id: string): Px[] {
       for (let gy = -9; gy <= 9; gy++) {
         for (let gx = -9; gx <= 9; gx++) {
           // Offset alternate rows so ranks interlock instead of forming a rigid grid.
-          const x = ox + (gx + (gy & 1 ? 0.5 : 0)) * SLOT_SPACING;
-          const y = oy + gy * SLOT_SPACING * 0.86;
+          const x = ox + (gx + (gy & 1 ? 0.5 : 0)) * (sea ? SEA_STEP[0] : SLOT_SPACING);
+          const y = oy + gy * (sea ? SEA_STEP[1] : SLOT_SPACING * 0.86);
           if (inside(x, y, inset)) found.push({ p: [x, y], d: (x - ox) ** 2 + ((y - oy) * 1.15) ** 2 });
         }
       }

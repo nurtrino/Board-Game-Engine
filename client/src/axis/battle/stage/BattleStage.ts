@@ -4,15 +4,20 @@
 //
 // +x is the defender's side, -x the attacker's. The camera lives on +z looking across the field.
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import type { Beat } from '../timeline';
 import { terrainOf, type Terrain } from '../timeline';
-import { combatantHex, combatantInk, other, plural, unitDomain, type Combat, type Side } from '../model';
+import { combatantInk, combatantPaint, other, plural, unitDomain, type Combat, type Side } from '../model';
 import { BattleSound, fireSoundFor, type BattleSoundName } from '../sound';
 import { loadFoliage, loadSky, loadTexture, loadUnit, releaseGpu, type FoliageModel, type UnitModel } from './assets';
 import { climateOf, heightAt, layoutField, scatterFoliage, DIMS, SHORE_X, type FieldLayout, type Figure, type GroupLayout } from './layout';
 import { Particles } from './particles';
 import { figureCounts, truthFor } from './roster';
-import { buildFlag, buildFoliage, buildGround, buildWater, disposeObject, horizonColor, lookFor, waveFlag, waveHeight, type Flag, type Look } from './scenery';
+import { buildFlag, buildFoliage, buildGround, buildSky, buildTrees, buildWater, disposeObject, lookFor, waveFlag, waveHeight, type Flag, type Look } from './scenery';
 import { Tweens, ease, lerp, type Ease } from './tween';
 
 const V3 = THREE.Vector3;
@@ -130,6 +135,11 @@ interface Fig {
   dive: number;
   /** 1 hidden in the sky .. 0 landed (paratroopers) */
   drop: number;
+  /** Position in the stage's figure list. */
+  index: number;
+  /** 1 still off the field .. 0 in the line (the attackers' advance) */
+  enter: number;
+  enterDist: number;
   burn: number;
   smokeAcc: number;
   damaged: boolean;
@@ -156,6 +166,75 @@ interface Boom { sprite: THREE.Sprite; t: number; active: boolean }
 const EXPL = { cols: 5, rows: 5, frames: 25, fps: 30 };
 const DRAFT: Record<string, number> = { battleship: 0.7, cruiser: 0.58, destroyer: 0.44, carrier: 1.7, submarine: 2.6, transport: 1.0 };
 const WRECK = new THREE.Color(0x1c1a18);
+const SCORCH_MAX = 96;
+
+/** Nothing that is not a number, and nothing absurdly bright, may reach the bloom. */
+const SANITIZE = {
+  uniforms: { tDiffuse: { value: null as THREE.Texture | null } },
+  vertexShader: /* glsl */`varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: /* glsl */`
+    uniform sampler2D tDiffuse; varying vec2 vUv;
+    void main() {
+      vec4 c = texture2D(tDiffuse, vUv);
+      if (!(c.r >= 0.0 && c.g >= 0.0 && c.b >= 0.0 && c.r < 1.0e4 && c.g < 1.0e4 && c.b < 1.0e4)) c = vec4(0.0, 0.0, 0.0, 1.0);
+      gl_FragColor = vec4(min(c.rgb, vec3(48.0)), 1.0);
+    }`,
+};
+
+/** The last pass before output: darker corners and a little more contrast. */
+const GRADE = {
+  uniforms: { tDiffuse: { value: null as THREE.Texture | null }, uVignette: { value: 0.42 } },
+  vertexShader: /* glsl */`varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: /* glsl */`
+    uniform sampler2D tDiffuse; uniform float uVignette; varying vec2 vUv;
+    void main() {
+      vec4 c = texture2D(tDiffuse, vUv);
+      float l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
+      c.rgb = mix(vec3(l), c.rgb, 1.08);
+      vec2 q = (vUv - 0.5) * vec2(1.0, 0.86);
+      c.rgb *= 1.0 - uVignette * smoothstep(0.32, 0.86, length(q) * 1.35);
+      gl_FragColor = c;
+    }`,
+};
+
+function blobTexture(): THREE.Texture {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const g = c.getContext('2d')!;
+  const grad = g.createRadialGradient(32, 32, 2, 32, 32, 31);
+  grad.addColorStop(0, 'rgba(0,0,0,.85)');
+  grad.addColorStop(0.55, 'rgba(0,0,0,.45)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+
+function scorchTexture(): THREE.Texture {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d')!;
+  const grad = g.createRadialGradient(64, 64, 2, 64, 64, 62);
+  grad.addColorStop(0, 'rgba(10,8,6,.92)');
+  grad.addColorStop(0.4, 'rgba(18,14,10,.7)');
+  grad.addColorStop(0.75, 'rgba(26,20,14,.28)');
+  grad.addColorStop(1, 'rgba(30,24,16,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  // thrown earth: streaks out from the middle
+  for (let i = 0; i < 46; i++) {
+    const a = Math.random() * Math.PI * 2, r0 = 10 + Math.random() * 18, r1 = r0 + 12 + Math.random() * 26;
+    g.strokeStyle = `rgba(14,11,8,${(0.18 + Math.random() * 0.3).toFixed(2)})`;
+    g.lineWidth = 1 + Math.random() * 3;
+    g.beginPath();
+    g.moveTo(64 + Math.cos(a) * r0, 64 + Math.sin(a) * r0);
+    g.lineTo(64 + Math.cos(a) * r1, 64 + Math.sin(a) * r1);
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const pick = <T,>(list: readonly T[]): T | undefined => list[Math.floor(Math.random() * list.length)];
 
@@ -189,6 +268,14 @@ export class BattleStage {
   private batches = new Map<string, Batch>();
   private flags: { flag: Flag; follow: Fig | null }[] = [];
   private water: THREE.Mesh | null = null;
+  private composer: EffectComposer;
+  private bloom: UnrealBloomPass;
+  private scorch: THREE.InstancedMesh;
+  private scorchN = 0;
+  private blobs: THREE.InstancedMesh | null = null;
+  private blobTex = blobTexture();
+  /** Set to keep full quality whatever the frame rate (the dev bench, where the pane is throttled). */
+  lockQuality = false;
   private sun!: THREE.DirectionalLight;
   private hemi!: THREE.HemisphereLight;
   private fogColor = new THREE.Color(0x8d959c);
@@ -220,7 +307,7 @@ export class BattleStage {
     r.shadowMap.enabled = true;
     r.shadowMap.type = THREE.PCFSoftShadowMap;
     r.toneMapping = THREE.ACESFilmicToneMapping;
-    r.toneMappingExposure = 0.95;
+    r.toneMappingExposure = 1.02;
     canvas.style.cssText = 'width:100%;height:100%;display:block';
     container.appendChild(canvas);
     this.scene.background = this.fogColor.clone();
@@ -238,6 +325,28 @@ export class BattleStage {
     this.scene.add(sun, sun.target);
 
     this.scene.add(this.set, this.army, this.smoke.points, this.glow.points);
+
+    // craters and burnt ground left where shells land
+    const sg = new THREE.PlaneGeometry(1, 1);
+    sg.rotateX(-Math.PI / 2);
+    this.scorch = new THREE.InstancedMesh(sg, new THREE.MeshBasicMaterial({
+      map: scorchTexture(), transparent: true, depthWrite: false, opacity: 0.9,
+      polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+    }), SCORCH_MAX);
+    this.scorch.count = 0;
+    this.scorch.frustumCulled = false;
+    this.scorch.renderOrder = 1;
+    this.scene.add(this.scorch);
+
+    // The picture goes through a short film chain: bloom on anything hotter than white, then a grade.
+    this.composer = new EffectComposer(r, new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 }));
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
+    this.composer.addPass(new ShaderPass(SANITIZE));
+    this.bloom = new UnrealBloomPass(new THREE.Vector2(4, 4), 0.5, 0.55, 1.0);
+    this.composer.addPass(this.bloom);
+    this.composer.addPass(new ShaderPass(GRADE));
+    this.composer.addPass(new OutputPass());
+
     this.ro = new ResizeObserver(() => this.resize());
     this.ro.observe(container);
     this.resize();
@@ -269,7 +378,7 @@ export class BattleStage {
 
     const [models, foliage, grass, normals, boom, sky] = await Promise.all([
       Promise.all(keys.map((k) => loadUnit(k).then((m) => [k, m] as const))),
-      Promise.all((['tree1', 'tree2', 'bush'] as const).map((k) =>
+      Promise.all((['bush'] as const).map((k) =>
         (scatter.some((s) => s.kind === k) ? loadFoliage(k) : Promise.resolve(null)).then((m) => [k, m] as const))),
       terrain === 'sea' ? Promise.resolve(null) : loadTexture('ground-grass.jpg'),
       terrain === 'land' ? Promise.resolve(null) : loadTexture('waternormals.jpg', { srgb: false }),
@@ -286,22 +395,23 @@ export class BattleStage {
     this.seed = this.seedFor(combat);
     this.calm = terrain === 'sea' ? 1 : 0.38;
 
-    // sky, fog and light
-    this.fogColor.copy(horizonColor(sky, new THREE.Color(0x8d959c)));
-    if (sky) {
-      this.scene.background = sky;
-      this.scene.environment = sky;
-      this.scene.environmentIntensity = 0.55;
-      this.scene.backgroundIntensity = 0.9;
-    } else {
-      this.scene.background = this.fogColor.clone();
-      this.scene.environment = null;
-    }
+    // sky, fog and light: a painted dome with a low sun; the photographed sky only lights the models
+    this.fogColor.copy(look.horizon);
+    this.scene.background = this.fogColor.clone();
+    this.scene.environment = sky;
+    this.scene.environmentIntensity = 0.3;
+    this.set.add(buildSky(look));
     const fog = this.scene.fog as THREE.FogExp2;
     fog.color.copy(this.fogColor);
     fog.density = look.fogDensity;
     this.sun.color.copy(look.sun);
     this.sun.intensity = look.sunIntensity;
+    this.sun.position.copy(look.sunDir).multiplyScalar(230);
+    this.hemi.color.copy(look.zenith).lerp(new THREE.Color(0xffffff), 0.5);
+    this.hemi.groundColor.copy(look.dirt).multiplyScalar(0.7);
+    this.hemi.intensity = 0.5;
+    // snow is already near white: only real fire should bloom on it
+    this.bloom.threshold = climate === 'snow' ? 2.4 : climate === 'desert' ? 1.7 : 1.15;
     const reach = Math.max(70, layout.extentX + 24);
     const cam = this.sun.shadow.camera;
     cam.left = -reach; cam.right = reach; cam.top = reach * 0.8; cam.bottom = -reach * 0.8;
@@ -315,6 +425,7 @@ export class BattleStage {
       const fol = buildFoliage(Object.fromEntries(foliage) as Record<string, FoliageModel | null>, scatter, terrain, look, this.seed);
       fol.traverse((o) => { o.userData.sharedGeometry = true; o.userData.sharedMaps = true; });
       this.set.add(fol);
+      this.set.add(buildTrees(scatter, terrain, climate, this.seed));
     }
     if (terrain !== 'land') {
       this.water = buildWater(terrain, look, normals, this.fogColor);
@@ -357,11 +468,12 @@ export class BattleStage {
       const afloat = domain === 'sea';
       // a unit crowded off the beach wades; it never stands under water
       const y0 = afloat ? -(DRAFT[f.key] ?? 0.5) : Math.max(-0.35, heightAt(f.x, f.z, terrain, this.seed));
-      const tint = new THREE.Color(combatantHex(f.power)).lerp(new THREE.Color(0xffffff), 0.3).multiplyScalar(1.12);
+      const tint = new THREE.Color(combatantPaint(f.power));
       const fig: Fig = {
         f, batch, slot, size: batch.model.size, domain, state: 'alive', submerged: false, aboard: false,
         at: new V3(f.x, y0, f.z), yaw: f.yaw, y0, recoil: 0, death: 0, dying: false, leave: 0, leaving: false,
-        dive: 0, drop: 0, burn: 0, smokeAcc: Math.random(), damaged: false, orbit: null, fall: null, tint,
+        dive: 0, drop: 0, index: this.figs.length, enter: 0, enterDist: (afloat ? 70 : 38) + Math.abs(f.x) * 0.35,
+        burn: 0, smokeAcc: Math.random(), damaged: false, orbit: null, fall: null, tint,
         static: !afloat && !f.air, dirty: true, rollSeed: Math.random() * 100,
       };
       if (f.air) {
@@ -423,6 +535,17 @@ export class BattleStage {
       this.flags.push({ flag, follow });
     }
 
+    if (terrain !== 'sea' && this.figs.length > 0) {
+      const bg = new THREE.PlaneGeometry(1, 1);
+      bg.rotateX(-Math.PI / 2);
+      const blobs = new THREE.InstancedMesh(bg, new THREE.MeshBasicMaterial({ map: this.blobTex, transparent: true, depthWrite: false, opacity: 0.55, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }), this.figs.length);
+      blobs.frustumCulled = false;
+      blobs.renderOrder = 2;
+      blobs.userData.sharedMaps = true;
+      blobs.visible = !this.renderer.shadowMap.enabled;
+      this.set.add(blobs);
+      this.blobs = blobs;
+    }
     for (const p of [this.smoke, this.glow]) p.setView(this.renderer.domElement.height, this.camera.fov, this.fogColor, look.fogDensity);
     this.sync(combat);
     this.rig.cut(this.shot('wide'));
@@ -445,12 +568,15 @@ export class BattleStage {
     this.figs = [];
     this.projectiles = [];
     this.wrecks = 0;
+    this.scorchN = 0;
+    this.scorch.count = 0;
     this.pending = { attacker: 0, defender: 0 };
     for (const batch of this.batches.values()) for (const mesh of batch.meshes) { this.army.remove(mesh); mesh.dispose(); }
     this.batches.clear();
     for (const child of [...this.set.children]) { this.set.remove(child); disposeObject(child); }
     this.flags = [];
     this.water = null;
+    this.blobs = null;
     this.smoke.clear();
     this.glow.clear();
     for (const b of this.booms) { b.active = false; b.sprite.visible = false; }
@@ -528,30 +654,33 @@ export class BattleStage {
 
   // ---------- camera ----------
 
+  /** A camera standing `dist` out from a point at a compass angle (0 looks straight across the field from the near side). */
+  private orbitShot(az: number, dist: number, height: number, look: Vec, fov = 34): Shot {
+    return { pos: new V3(look.x + Math.sin(az) * dist, height, look.z + Math.cos(az) * dist), look, fov };
+  }
+
   private shot(name: 'wide' | 'open' | 'attacker' | 'defender' | 'hit-attacker' | 'hit-defender' | 'result', t = 0): Shot {
     const ex = this.layout?.extentX ?? 45;
     const ez = this.layout?.extentZ ?? 30;
-    const half = THREE.MathUtils.degToRad(38 / 2);
-    const hHalf = Math.atan(Math.tan(half) * Math.max(0.8, this.camera.aspect));
-    const D = Math.max(54, (ex + 12) / Math.tan(hHalf));
-    const lift = this.terrain === 'sea' ? 0.3 : 0.36;
-    const side = (s: number, close: number, height: number): Shot => ({
-      pos: new V3(s * ex * 0.16, D * height, D * close),
-      look: new V3(s * ex * 0.46, 1.5, -ez * 0.1),
-      fov: 38,
-    });
+    // ships are big and stand far apart: every shot backs off and climbs
+    const m = this.terrain === 'sea' ? 1.3 : 1;
+    const narrow = Math.max(1, 1.5 / Math.max(0.7, this.camera.aspect));
+    const reach = (ex + ez * 0.35) * narrow;
     switch (name) {
-      case 'open': return { pos: new V3(-ex * 1.25, D * 0.7, D * 1.2), look: new V3(0, 2, 0), fov: 38 };
-      case 'attacker': return side(-1, 0.66, 0.24);
-      case 'defender': return side(1, 0.66, 0.24);
-      case 'hit-attacker': return side(-1, 0.56, 0.2);
-      case 'hit-defender': return side(1, 0.56, 0.2);
-      case 'result': return { pos: new V3(0, D * 0.5, D * 1.02), look: new V3(0, 1, -ez * 0.1), fov: 38 };
+      case 'open': return this.orbitShot(-1.2, (reach * 1.5 + 44) * m, (reach * 0.62 + 18) * m, new V3(0, 2, 0), 36);
+      // over one side's shoulders toward the enemy: its guns fire in the foreground, the shells land beyond
+      case 'attacker': return this.orbitShot(-1.02, (ex * 0.78 + 26) * m * narrow, (6.5 + ex * 0.08) * m, new V3(ex * 0.18, 2.4, -ez * 0.08), 34);
+      case 'defender': return this.orbitShot(1.02, (ex * 0.78 + 26) * m * narrow, (6.5 + ex * 0.08) * m, new V3(-ex * 0.18, 2.4, -ez * 0.08), 34);
+      // close on the side taking the hits
+      case 'hit-attacker': return this.orbitShot(0.46, (ex * 0.42 + 24) * m * narrow, (7 + ex * 0.06) * m, new V3(-ex * 0.42, 1.8, -ez * 0.05), 31);
+      case 'hit-defender': return this.orbitShot(-0.46, (ex * 0.42 + 24) * m * narrow, (7 + ex * 0.06) * m, new V3(ex * 0.42, 1.8, -ez * 0.05), 31);
+      case 'result': return this.orbitShot(0, (reach * 1.12 + 34) * m, (reach * 0.5 + 14) * m, new V3(0, 1, -ez * 0.1), 36);
       default: {
-        // slow drift: a few degrees either way around the field
-        const a = Math.sin(t * 0.07) * 0.16;
-        const r = D * 0.93;
-        return { pos: new V3(Math.sin(a) * r, D * lift + Math.sin(t * 0.05) * 1.5, Math.cos(a) * r), look: new V3(0, 1.5, -ez * 0.1), fov: 38 };
+        // between beats the camera walks slowly along the near side of the field, low enough that
+        // the nearer army stands tall against the far one
+        const az = Math.sin(t * 0.05 - 1.1) * 0.92;
+        const side = Math.abs(az) / 0.92;
+        return this.orbitShot(az, (reach * (0.92 - side * 0.14) + 28) * m, (reach * 0.14 + 8.5) * m + Math.sin(t * 0.04) * 1.1, new V3(-Math.sin(az) * ex * 0.14, 2.2, -ez * 0.1), 34);
       }
     }
   }
@@ -561,8 +690,13 @@ export class BattleStage {
   /** Establishing sweep. */
   async playOpen(): Promise<void> {
     if (!this.ready) return;
+    // the attackers come onto the field while the camera comes down to it
+    const movers = this.figs.filter((f) => f.f.side === 'attacker' && !f.orbit && !f.f.offshore && f.state === 'alive' && !f.aboard);
+    for (const f of movers) { f.enter = 1; f.static = false; }
     this.rig.cut(this.shot('open'));
-    await this.rig.to(this.shot('wide'), 3.2, ease.inOut);
+    const advance = this.tw.run(3.6, (k) => { for (const f of movers) f.enter = 1 - k; }, ease.out);
+    await Promise.all([this.rig.to(this.shot('wide'), 3.9, ease.inOut), advance]);
+    for (const f of movers) { f.enter = 0; f.dirty = true; }
   }
 
   async playVolley(beat: VolleyBeat): Promise<void> {
@@ -848,11 +982,27 @@ export class BattleStage {
         this.smoke.emit({ x: at.x + rand(-1, 1) * scale * 0.2, y: 0.2, z: at.z + rand(-1, 1) * scale * 0.2, vx: Math.cos(a) * sp * 0.25, vy: rand(6, 13) * Math.sqrt(scale * 0.5), vz: Math.sin(a) * sp * 0.25, life: rand(1, 1.9), size: scale * rand(0.5, 1), grow: 1.8, r: 0.92, g: 0.96, b: 0.98, alpha: 0.75, gravity: 11 });
       } else {
         this.glow.emit({ x: at.x, y: at.y, z: at.z, vx: Math.cos(a) * sp, vy: rand(3, 10), vz: Math.sin(a) * sp, life: rand(0.4, 0.9), size: rand(0.3, 0.7), r: 1, g: 0.6, b: 0.2, gravity: 14, drag: 0.5 });
-        this.smoke.emit({ x: at.x + rand(-1, 1) * scale * 0.3, y: at.y + rand(0, scale * 0.4), z: at.z + rand(-1, 1) * scale * 0.3, vx: Math.cos(a) * sp * 0.3, vy: rand(1.2, 3.5), vz: Math.sin(a) * sp * 0.3, life: rand(1.6, 3.2), size: scale * rand(0.6, 1.1), grow: 2.6, r: 0.16, g: 0.15, b: 0.14, alpha: 0.6, drag: 0.4 });
+        const grey = rand(0.2, 0.36);
+        this.smoke.emit({ x: at.x + rand(-1, 1) * scale * 0.3, y: at.y + rand(0, scale * 0.4), z: at.z + rand(-1, 1) * scale * 0.3, vx: Math.cos(a) * sp * 0.3 + 0.8, vy: rand(1.2, 3.8), vz: Math.sin(a) * sp * 0.3, life: rand(2, 4.2), size: scale * rand(0.7, 1.3), grow: 3, r: grey * 1.06, g: grey, b: grey * 0.93, alpha: 0.5, drag: 0.4 });
       }
+    }
+    if (!water && this.terrain !== 'sea' && scale >= 2.4) {
+      const gy = heightAt(at.x, at.z, this.terrain, this.seed);
+      if (gy > 0.15 && at.y - gy < 4.5) this.addScorch(at.x, gy, at.z, scale * rand(1.5, 2.3));
     }
     this.rig.shake = Math.min(1.6, this.rig.shake + scale * 0.07 * shake);
     if (scale >= 2.6) this.sound.boom(Math.min(2, scale / 5));
+  }
+
+  private addScorch(x: number, y: number, z: number, size: number) {
+    const i = this.scorchN % SCORCH_MAX;
+    this.scorchN += 1;
+    this.e.set(0, Math.random() * Math.PI * 2, 0);
+    this.q.setFromEuler(this.e);
+    this.m4.compose(this.p3.set(x, y + 0.07, z), this.q, this.s3.set(size, 1, size));
+    this.scorch.setMatrixAt(i, this.m4);
+    this.scorch.count = Math.min(SCORCH_MAX, this.scorchN);
+    this.scorch.instanceMatrix.needsUpdate = true;
   }
 
   private impact(p: Projectile) {
@@ -876,6 +1026,8 @@ export class BattleStage {
     const ratio = Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(budget / (w * h)));
     this.renderer.setPixelRatio(Math.max(0.4, ratio));
     this.renderer.setSize(w, h, false);
+    this.composer.setPixelRatio(Math.max(0.4, ratio));
+    this.composer.setSize(w, h);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
     const fog = this.scene.fog as THREE.FogExp2;
@@ -944,6 +1096,10 @@ export class BattleStage {
       x += s * f.leave * 70;
       if (f.leave > 0.8) scale = Math.max(0.0001, 1 - (f.leave - 0.8) * 5);
     }
+    if (f.enter > 0) {
+      x += (f.f.side === 'attacker' ? -1 : 1) * f.enter * f.enterDist;
+      if (f.domain !== 'sea') y = Math.max(-0.35, heightAt(x, z, this.terrain, this.seed));
+    }
     if (f.drop > 0) {
       y += f.drop * 34;
       if (f.aboard || f.drop > 0.97) scale = 0.0001;
@@ -954,6 +1110,17 @@ export class BattleStage {
       if (f.death >= 1) { f.dying = false; f.state = 'dead'; this.wrecks += 1; }
     }
     f.at.set(x, y, z);
+    if (this.blobs?.visible) {
+      const air = f.domain === 'air' && f.state === 'alive';
+      const gone = scale < 0.01 || f.domain === 'sea';
+      const gy = gone ? 0 : Math.max(0, heightAt(x, z, this.terrain, this.seed));
+      const k = gone ? 0 : air ? 0.55 : 1;
+      this.e.set(0, yaw, 0);
+      this.q.setFromEuler(this.e);
+      this.m4.compose(this.p3.set(x, gy + 0.06, z), this.q, this.s3.set(Math.max(1.6, f.size.x * 1.5) * k, 1, Math.max(1.6, f.size.z * 1.25) * k));
+      this.blobs.setMatrixAt(f.index, this.m4);
+      this.blobs.instanceMatrix.needsUpdate = true;
+    }
     this.e.set(pitch, yaw, roll);
     this.q.setFromEuler(this.e);
     this.m4.compose(this.p3.set(x, y, z), this.q, this.s3.setScalar(scale));
@@ -961,7 +1128,7 @@ export class BattleStage {
     const burnt = f.state === 'dead' || f.dying ? Math.max(f.death, f.fall ? 0.6 : 0) : f.damaged ? 0.3 : 0;
     f.batch.setColor(f.slot, TMP_COLOR.copy(f.tint).lerp(WRECK, burnt * 0.86));
     // settled ground units stop being recomputed until something happens to them
-    if (!f.orbit && f.domain !== 'sea' && f.recoil === 0 && !f.dying && !f.leaving && f.drop === 0) f.static = true;
+    if (!f.orbit && f.domain !== 'sea' && f.recoil === 0 && !f.dying && !f.leaving && f.drop === 0 && f.enter === 0) f.static = true;
     f.dirty = false;
   }
 
@@ -977,7 +1144,7 @@ export class BattleStage {
     const top = f.f.key === 'factory' && f.state === 'alive' ? f.size.y : f.size.y * 0.5;
     while (f.smokeAcc >= 1) {
       f.smokeAcc -= 1;
-      const dark = f.f.key === 'factory' && f.state === 'alive' ? 0.42 : rand(0.08, 0.2);
+      const dark = f.f.key === 'factory' && f.state === 'alive' ? 0.42 : rand(0.1, 0.24);
       this.smoke.emit({ x: f.at.x + rand(-0.3, 0.3) * big, y: f.at.y + top, z: f.at.z + rand(-0.3, 0.3) * big, vx: rand(2, 4.5), vy: rand(2.2, 4.6), vz: rand(-0.8, 0.4), life: rand(2.6, 4.8), size: big * rand(0.7, 1.2), grow: 3.2, r: dark, g: dark, b: dark, alpha: f.fall ? 0.75 : 0.42, drag: 0.7 });
       if (f.burn > 0.3 && f.f.key !== 'infantry' && Math.random() < 0.8) {
         this.glow.emit({ x: f.at.x + rand(-0.25, 0.25) * big, y: f.at.y + f.size.y * 0.35, z: f.at.z + rand(-0.25, 0.25) * big, vy: rand(1.5, 3.5), life: rand(0.35, 0.7), size: big * rand(0.5, 0.9), r: 1, g: rand(0.4, 0.62), b: 0.12, alpha: 0.55 * f.burn });
@@ -1028,6 +1195,10 @@ export class BattleStage {
     for (const f of this.figs) {
       if (!f.static || f.dirty) this.pose(f, dt, t);
       this.smokeFrom(f, dt);
+      // vehicles on the move kick up the ground behind them
+      if (f.enter > 0.04 && f.enter < 0.98 && f.domain === 'land' && f.f.key !== 'infantry' && Math.random() < dt * 9) {
+        this.smoke.emit({ x: f.at.x - Math.sin(f.yaw) * f.size.z * 0.4, y: f.at.y + 0.3, z: f.at.z + rand(-1, 1), vx: rand(-1, 1), vy: rand(0.6, 1.6), vz: rand(-0.6, 0.6), life: rand(1.4, 2.4), size: rand(1.6, 2.8), grow: 2.6, r: this.look.dust.r, g: this.look.dust.g, b: this.look.dust.b, alpha: 0.3, drag: 0.5 });
+      }
     }
     for (const b of this.batches.values()) b.commit();
     this.stepProjectiles(dt);
@@ -1075,12 +1246,12 @@ export class BattleStage {
     this.smoke.update(dt);
     this.glow.update(dt);
     this.updateLabels();
-    this.renderer.render(this.scene, this.camera);
+    this.composer.render(dt);
   };
 
   /** Watch the frame time and shed cost (resolution, then shadows) if the GPU cannot keep up. */
   private govern(dt: number) {
-    if (!this.ready || this.quality >= 3 || document.hidden || dt > 0.5) return;
+    if (!this.ready || this.lockQuality || this.quality >= 3 || document.hidden || dt > 0.5) return;
     this.frames += 1;
     if (dt > 1 / 42) this.slowFrames += 1;
     if (this.frames < 150) return;
@@ -1089,9 +1260,11 @@ export class BattleStage {
     this.slowFrames = 0;
     if (slow < 0.4) return;
     this.quality += 1;
+    if (this.quality >= 2) this.bloom.enabled = false;
     if (this.quality === 2) {
       this.sun.castShadow = false;
       this.renderer.shadowMap.enabled = false;
+      if (this.blobs) { this.blobs.visible = true; for (const f of this.figs) f.dirty = true; }
       this.scene.traverse((o) => {
         const mat = (o as THREE.Mesh).material as THREE.Material | THREE.Material[] | undefined;
         for (const m of Array.isArray(mat) ? mat : mat ? [mat] : []) m.needsUpdate = true;
@@ -1128,6 +1301,13 @@ export class BattleStage {
     for (const t of this.boomTex) t.dispose();
     this.smoke.dispose();
     this.glow.dispose();
+    this.scene.remove(this.scorch);
+    this.scorch.geometry.dispose();
+    (this.scorch.material as THREE.MeshBasicMaterial).map?.dispose();
+    (this.scorch.material as THREE.Material).dispose();
+    this.scorch.dispose();
+    this.blobTex.dispose();
+    this.composer.dispose();
     this.sun.shadow.map?.dispose();
     this.scene.environment = null;
     this.scene.background = null;

@@ -36,6 +36,8 @@ export interface Spec {
   doubleSide?: boolean;
   /** Multiply the base colour, for models whose textures are too bright or too dark. */
   dim?: number;
+  /** How far the nation's paint replaces the model's own colours (0..1). */
+  paint?: number;
   /** Bake this animation clip (first match) at a fraction of its length. Skinned models only. */
   pose?: { clips: string[]; at: number };
 }
@@ -51,7 +53,7 @@ export const SPECS: Record<string, Spec> = {
   cruiser: { file: 'cruiser', budget: 8000, autoOrient: true, yaw: 0, fit: 'largest' },
   destroyer: { file: 'destroyer', budget: 7000, autoOrient: true, yaw: 0, fit: 'largest' },
   carrier: { file: 'carrier', budget: 9000, autoOrient: true, yaw: Math.PI, fit: 'largest', doubleSide: true, dim: 0.7 },
-  submarine: { file: 'submarine', budget: 3500, autoOrient: true, yaw: Math.PI, fit: 'largest', dim: 0.35 },
+  submarine: { file: 'submarine', budget: 3500, autoOrient: true, yaw: Math.PI, fit: 'largest', dim: 0.7, paint: 0.94 },
 };
 const FOLIAGE_FILES = ['tree1', 'tree2', 'bush'] as const;
 export type FoliageKind = (typeof FOLIAGE_FILES)[number];
@@ -165,21 +167,38 @@ function capTexture(tex: THREE.Texture | null, cache: Map<string, THREE.Texture>
   return out;
 }
 
-function lightMaterial(source: THREE.Material, spec: Pick<Spec, 'doubleSide' | 'dim'>, textures: Map<string, THREE.Texture>): THREE.MeshStandardMaterial {
+function lightMaterial(source: THREE.Material, spec: Pick<Spec, 'doubleSide' | 'dim' | 'paint'>, textures: Map<string, THREE.Texture>): THREE.MeshStandardMaterial {
   const src = source as THREE.MeshStandardMaterial;
   const cutout = (src.alphaTest ?? 0) > 0;
   const glass = src.transparent === true && !cutout && (src.opacity ?? 1) < 0.95;
   const color = src.color ? src.color.clone() : new THREE.Color(0xffffff);
   if (glass) color.multiplyScalar(0.35);
   if (spec.dim != null) color.multiplyScalar(spec.dim);
-  return new THREE.MeshStandardMaterial({
+  const material = new THREE.MeshStandardMaterial({
     map: capTexture(src.map ?? null, textures),
     color,
-    roughness: 0.78,
-    metalness: 0.12,
+    roughness: 0.72,
+    metalness: 0.14,
     alphaTest: cutout ? Math.max(0.35, src.alphaTest) : 0,
     side: spec.doubleSide || cutout || src.side === THREE.DoubleSide ? THREE.DoubleSide : THREE.FrontSide,
   });
+  const paint = spec.paint ?? 0.6;
+  // The instance colour is the nation's paint. It takes over most of the texture's own hue and
+  // keeps its light and dark, so every model wears its side's colour instead of one shared livery.
+  material.onBeforeCompile = (shader) => {
+    // A decimated mesh can carry a zero normal. Normalised, that is not a number, and one such
+    // pixel spreads through the bloom as a black square: give those fragments a normal that works.
+    shader.fragmentShader = shader.fragmentShader.replace('#include <normal_fragment_begin>', /* glsl */`#include <normal_fragment_begin>
+      if (!(dot(normal, normal) > 0.25)) normal = vec3(0.0, 0.0, 1.0);`);
+    shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', /* glsl */`
+      #if defined( USE_COLOR ) || defined( USE_INSTANCING_COLOR ) || defined( USE_BATCHING_COLOR )
+        float paintLum = dot(diffuseColor.rgb, vec3(0.3, 0.55, 0.15));
+        vec3 painted = vColor * (0.3 + paintLum * 1.75);
+        diffuseColor.rgb = mix(diffuseColor.rgb, painted, ${paint.toFixed(2)});
+      #endif`);
+  };
+  material.customProgramCacheKey = () => `axb-paint-${paint.toFixed(2)}`;
+  return material;
 }
 
 function releaseSource(gltf: GLTF, keep: Set<THREE.Texture>) {

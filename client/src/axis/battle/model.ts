@@ -36,6 +36,13 @@ export function combatantHex(power: string | null | undefined): string {
   return isPower(power) ? POWERS[power].color : '#8a8a8a';
 }
 
+// What a nation's vehicles and uniforms are painted on the battlefield: the box colours, pushed
+// far enough apart that two armies never read as one.
+const PAINT: Record<string, string> = {
+  germany: '#737a84', ussr: '#86423a', japan: '#c58a3c', uk: '#b5a06c', italy: '#86684a', usa: '#5c7c42', china: '#9ab86e',
+};
+export const combatantPaint = (power: string | null | undefined): string => (power && PAINT[power]) || '#8a8a8a';
+
 // Piece colours are too dark to read as a hairline on black, so outlines use a lighter companion.
 const INK: Record<string, string> = {
   germany: '#c3c6c4', ussr: '#e27777', japan: '#efa858', uk: '#dfbd83', italy: '#d09a67', usa: '#74c879', china: '#f0c86f',

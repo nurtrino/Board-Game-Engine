@@ -93,7 +93,7 @@
 .axb .axb-tag[data-empty="1"] { opacity: 0 !important; }
 .axb.axb-tv[data-phase="loading"] .axb-tag { opacity: 0; }
 .axb.axb-tv .axb-shade { position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, rgba(0, 0, 0, .62) 0%, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .74) 100%); }
+  background: linear-gradient(180deg, rgba(0, 0, 0, .3) 0%, rgba(0, 0, 0, 0) 16%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, .5) 100%); }
 .axb.axb-tv.mode-2d .axb-shade { display: none; }
 
 .axb.axb-tv .axb-loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9em; }
