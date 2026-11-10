@@ -14,6 +14,8 @@ the local folder `../Board Game Engine`. Do not bring one back unless asked.
 - `npm run typecheck` checks client and server.
 - `npm run autoplay -- CODE 4 --start` plays a Secret Hitler game on the screen with scripted players.
 - `npm run stage:sh` restages Secret Hitler mod assets into `client/public/sh`.
+- `npm run autoplay:brass -- CODE 3 --start` plays a Brass game on the screen with scripted players (`--fast`, `--turns=N`).
+- `node tools/verify/serve-alt.mjs` serves on 8793 with a throwaway save directory, for when 8790 is taken.
 
 ## How it fits together
 
@@ -25,6 +27,12 @@ the local folder `../Board Game Engine`. Do not bring one back unless asked.
   `Director` plays each as a cutscene, then `Stage.syncTo(view)` snaps the table. The screen reports
   `presented`; until then phones show "Watch the screen" and keep the last settled state.
 - AI seats only ever receive the private view for their own seat.
+- Brass is staged, not just updated. Every action leaves `state.batch`: a list of beats (`action`, `round`,
+  `score`, `era`, `end`), each with a snapshot of the public table right after it (`shared/src/brass/state.ts`).
+  The screen's director (`client/src/brass/TvBoard.tsx`) plays the beats in order and shows each snapshot only
+  when it reaches it. Pieces animate themselves on any state change (`stage3d.tsx`) and announce what they do on
+  an `FxBus`, which is where sound comes from. Brass sound is synthesised (`client/src/brass/audio.ts`), no files.
+  Devices show the live state at once and use the same batch for the feed, the turn sweep and the score cards.
 
 ## Porting a game
 

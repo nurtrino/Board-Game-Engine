@@ -6,7 +6,8 @@
     "dev": "tsx src/index.ts",
     "watch": "tsx watch src/index.ts",
     "test": "tsx src/save-auth-test.ts && tsx src/save-compat-test.ts && tsx src/room-seed-test.ts && tsx src/store-test.ts && tsx src/boot-test.ts && tsx src/smoke-test.ts",
-    "autoplay": "tsx src/autoplay.ts"
+    "autoplay": "tsx src/autoplay.ts",
+    "autoplay:brass": "tsx src/autoplay-brass.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.7.0",
