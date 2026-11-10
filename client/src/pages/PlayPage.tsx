@@ -1196,6 +1196,11 @@ export function PlayPage() {
           {room.players.length} of 5 seated. Claude plays the other {5 - room.players.length === 1 ? 'chair' : `${5 - room.players.length} chairs`}.
         </p>
       )}
+      {room.game === 'brass' && room.players.length === 1 && me === 0 && (
+        <p className="dim" style={{ textAlign: 'center', marginTop: '.6rem' }}>
+          Start alone and the computer plays the other three seats.
+        </p>
+      )}
       {error && <div className="toast">{error}</div>}
     </div>
   );

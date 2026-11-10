@@ -1,15 +1,17 @@
 // Live server test over WebSockets: a big screen, human devices and AI seats play Secret Hitler
-// to the end through the real room protocol, and a Brass room still starts.
+// to the end through the real room protocol, a Brass room still starts, and one person plays Brass
+// to the end against the computer seats.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { WebSocket } from 'ws';
-import { botAction, botClaim, type ClientMsg, type RoomInfo, type ServerMsg, type ShView, type StampedEvent } from '@bge/shared';
+import { botAction, botClaim, brassBotMoves, type BrassAction, type BrassView, type ClientMsg, type RoomInfo, type ServerMsg, type ShView, type StampedEvent } from '@bge/shared';
 
 const PORT = 8799;
 process.env.PORT = String(PORT);
 process.env.SH_AI_DELAY_MS = '0';
+process.env.BRASS_AI_PACE = '0';
 process.env.BGE_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'bge-smoke-'));
 delete process.env.DATABASE_URL;
 // Force the built-in bot so the test never spends API credits.
@@ -172,10 +174,67 @@ async function brass() {
   console.log('ok brass: room starts and deals');
 }
 
+// One person starts alone: the table fills to four and the server plays the other three.
+async function brassSolo() {
+  let roomId = '';
+  let screen: BrassView | null = null;
+  let screenSeq = 0;
+  const tv = await open((m) => {
+    if (m.type === 'room_created') roomId = m.roomId;
+    if (m.type === 'state' && m.view.game === 'brass') {
+      screen = m.view;
+      const seq = m.view.batch?.seq ?? 0;
+      assert.ok(seq >= screenSeq, 'the action counter never runs backwards');
+      screenSeq = seq;
+      assert.ok(m.view.players.every((p) => !p.hand), 'the screen never sees a hand');
+    }
+  });
+  tv.send({ type: 'create_room', name: 'Brass solo', game: 'brass' });
+  await until(() => roomId !== '', 'solo brass room created');
+
+  let mine = 0;
+  let queue: BrassAction[] = [];
+  let lastKey = '';
+  const me = await open((m, c) => {
+    if (m.type === 'error') {
+      const next = queue.shift();
+      if (next) c.send({ type: 'action', action: next });
+      return;
+    }
+    if (m.type !== 'state' || m.view.game !== 'brass') return;
+    const v = m.view;
+    assert.ok(v.players.every((p, i) => (i === v.you) === !!p.hand), 'a device sees its own hand only');
+    if (v.phase !== 'playing' || v.currentColor !== v.players[v.you ?? -1]?.color) return;
+    const key = `${v.batch?.seq ?? 0}:${v.era}:${v.round}:${v.actionsLeft}`;
+    if (key === lastKey) return;
+    lastKey = key;
+    queue = brassBotMoves(v);
+    const first = queue.shift();
+    if (first) { mine++; c.send({ type: 'action', action: first }); }
+  });
+  me.send({ type: 'join', roomId, name: 'Solo' });
+  await until(() => me.index === 0, 'solo player seated');
+  me.send({ type: 'start' });
+  await until(() => screen?.phase === 'ended', 'solo brass game over', 60000);
+  const end = screen! as BrassView;
+  assert.equal(end.players.length, 4, 'a solo table is filled to four');
+  assert.deepEqual(end.players.map((p) => p.name), ['Solo', 'CPU 2', 'CPU 3', 'CPU 4']);
+  assert.ok(end.winner, 'the game names a winner');
+  assert.ok(end.players.every((p) => p.vp > 0 && p.handCount === 0), 'every seat played its hand out and scored');
+  assert.equal(me.errors.length, 0, `the engine refused nothing: ${me.errors.join(' | ')}`);
+  // 4 players: 8 rounds an era, two actions a turn except the opening round
+  assert.equal(mine, 31, 'the person took exactly their own turns');
+  assert.equal(screenSeq, 31 * 4, 'the computer seats took all of theirs');
+  tv.ws.close();
+  me.ws.close();
+  console.log(`ok brass solo: 1 person + 3 computer seats, ${screenSeq} actions, VP ${end.players.map((p) => p.vp).join(' ')}`);
+}
+
 await secretHitler(1, 0, 5);
 await secretHitler(4, 0, 5);
 await secretHitler(3, 3, 6);
 await secretHitler(6, 2, 8);
 await brass();
+await brassSolo();
 console.log('ok server smoke');
 process.exit(0);

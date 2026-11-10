@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "npm run test:brass && npm run test:sh",
-    "test:brass": "tsx src/brass/setup-test.ts && tsx src/brass/actions-test.ts && tsx src/brass/connectivity-test.ts && tsx src/brass/playercount-test.ts && tsx src/brass/stream-test.ts",
+    "test:brass": "tsx src/brass/setup-test.ts && tsx src/brass/actions-test.ts && tsx src/brass/connectivity-test.ts && tsx src/brass/playercount-test.ts && tsx src/brass/stream-test.ts && tsx src/brass/bot-test.ts",
     "test:sh": "tsx src/secret-hitler/rules-test.ts"
   },
   "devDependencies": {

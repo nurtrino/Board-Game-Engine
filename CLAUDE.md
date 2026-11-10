@@ -15,6 +15,7 @@ the local folder `../Board Game Engine`. Do not bring one back unless asked.
 - `npm run autoplay -- CODE 4 --start` plays a Secret Hitler game on the screen with scripted players.
 - `npm run stage:sh` restages Secret Hitler mod assets into `client/public/sh`.
 - `npm run autoplay:brass -- CODE 3 --start` plays a Brass game on the screen with scripted players (`--fast`, `--turns=N`).
+- Brass computer seats: a player who starts alone gets a table of four and the server plays the other three (`shared/src/brass/bot.ts`, scheduled in `server/src/index.ts`). `BRASS_AI_PACE=0` makes them instant, `BRASS_CPU=off` leaves the seats to be driven by hand. `npm run autoplay:brass -- CODE 1 --start` seats one scripted player against them.
 - `node tools/verify/serve-alt.mjs` serves on 8793 with a throwaway save directory, for when 8790 is taken.
 
 ## How it fits together
