@@ -14,7 +14,7 @@ function room(id: string, name: string, updatedAt: number): SavedRoom {
     name,
     game: 'axis',
     createdAt: baseTime,
-    players: [{ name: 'Tester', color: 'germany', token: `${id}-token` }],
+    players: [{ name: 'Tester', color: 'Orange', token: `${id}-token` }],
     started: true,
     state: { marker: name },
     updatedAt,

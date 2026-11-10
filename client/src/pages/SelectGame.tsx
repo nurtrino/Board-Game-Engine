@@ -13,217 +13,28 @@ import {
 } from '../saveDeletion';
 import { FallingPieces } from '../three/FallingPieces';
 import { seatHexFor } from '../brass/TableScene';
-import { AXIS_MAP_STUB } from '@bge/shared';
 import type { SaveInfo, GameOptions } from '@bge/shared';
 
 const GAMES = [
+  {
+    id: 'secrethitler',
+    name: 'Secret Hitler',
+    logo: '/sh/box.jpg',
+  },
   {
     id: 'brass',
     name: 'Brass: Birmingham',
     logo: '/brass-logo.webp',
   },
-  {
-    id: 'ttr',
-    name: 'Ticket to Ride: Rails & Sails',
-    logo: '/ttr-logo.jpg',
-  },
-  {
-    id: 'trek',
-    name: 'Trekking the National Parks',
-    logo: '/trek-logo.jpg',
-  },
-  {
-    id: 'darktower',
-    name: 'Dark Tower',
-    logo: '/darktower-logo.jpg',
-  },
-  {
-    id: 'dune',
-    name: 'Dune: Imperium',
-    logo: '/dune-logo.jpg',
-  },
-  {
-    id: 'politik',
-    name: 'Politik',
-    logo: '/politik/box.webp',
-  },
-  {
-    id: 'darksouls',
-    name: 'Dark Souls: The Board Game',
-    logo: '/dark-souls/box.webp',
-  },
-  {
-    id: 'feast',
-    name: 'A Feast for Odin',
-    logo: '/feast/box.webp',
-  },
-  {
-    id: 'bloodborne',
-    name: 'Bloodborne: The Board Game',
-    logo: '/bloodborne/box.webp',
-  },
-  {
-    id: 'seti',
-    name: 'SETI: Search for Extraterrestrial Intelligence',
-    logo: '/seti/box.webp',
-  },
-  {
-    id: 'blokus',
-    name: 'Blokus',
-    logo: '/blokus/box.webp?v=2', // cache-bust: the tile art changed under the same path
-  },
-  {
-    id: 'everdell',
-    name: 'Everdell',
-    logo: '/everdell/box.webp',
-  },
-  {
-    id: 'container',
-    name: 'Container',
-    logo: '/container/box.webp?v=2', // cache-bust: official cover replaced the composed tile
-  },
-  ...(AXIS_MAP_STUB ? [] : [{
-    id: 'axis',
-    name: 'Axis & Allies Anniversary',
-    logo: '/axis-box.webp',
-  }]),
 ];
 
 // Create-screen options per game (surfaced above the save name).
-const AXIS_OPTION_DEFS = [
-  { key: 'scenario', label: 'Scenario', values: [
-    { v: '1941', label: '1941' },
-    { v: '1942', label: '1942' },
-  ] },
-  { key: 'winCondition', label: 'Victory', values: [
-    { v: 'short', label: 'Short, 13 cities' },
-    { v: 'standard', label: 'Standard, 15 cities' },
-    { v: 'total', label: 'Total domination, 18' },
-  ] },
-  { key: 'rnd', label: 'Research & development', values: [
-    { v: false, label: 'Off' },
-    { v: true, label: 'On' },
-  ] },
-  { key: 'nationalObjectives', label: 'National objectives', values: [
-    { v: true, label: 'On' },
-    { v: false, label: 'Off' },
-  ] },
-] as const;
-
-const POLITIK_OPTION_DEFS = [
-  {
-    key: 'longWar', label: 'LONG WAR', help: 'ADD 1 POWER GRAB TO THE STANDARD VICTORY REQUIREMENT.', values: [
-      { v: false, label: 'STANDARD' },
-      { v: true, label: 'ON' },
-    ],
-  },
-  {
-    key: 'trifecta', label: 'TRIFECTA', help: 'VICTORY REQUIRES AT LEAST ONE MILITARY, POLITICAL, AND CORPORATE POWER GRAB.', values: [
-      { v: false, label: 'STANDARD' },
-      { v: true, label: 'ON' },
-    ],
-  },
-  {
-    key: 'ragingImperials', label: 'RAGING IMPERIALS', help: 'FLIP 1 ADDITIONAL POLITIK CARD FOR IMPERIAL DEFENSE IN MILITARY CLASHES.', values: [
-      { v: false, label: 'STANDARD' },
-      { v: true, label: 'ON' },
-    ],
-  },
-] as const;
-
-const DS_OPTION_DEFS = [
-  { key: 'scenario', label: 'Scenario', values: [
-    { v: 'standard', label: 'Standard game' },
-    { v: 'first-journey', label: 'The First Journey' },
-    { v: 'coiled-sword', label: 'The Coiled Sword' },
-    { v: 'facing-the-abyss', label: 'Facing the Abyss' },
-    { v: 'call-of-the-abyss', label: 'Call of the Abyss' },
-    { v: 'bathed-in-flame', label: 'Bathed in Flame' },
-  ] },
-  { key: 'partySize', label: 'Party size', values: [
-    { v: 4, label: '4' },
-    { v: 3, label: '3' },
-    { v: 2, label: '2' },
-    { v: 1, label: '1' },
-  ] },
-  { key: 'darkrootMix', label: 'Darkroot encounters', values: [
-    { v: 'off', label: 'Off' },
-    { v: 'append', label: 'Add to the deck' },
-    { v: 'replaceSix', label: 'Replace six' },
-  ] },
-  { key: 'darkrootTreasure', label: 'Darkroot treasure', values: [
-    { v: false, label: 'Off' },
-    { v: true, label: 'On' },
-  ] },
-  { key: 'mimics', label: 'Mimics', values: [
-    { v: false, label: 'Off' },
-    { v: true, label: 'On' },
-  ] },
-  { key: 'invaders', label: 'Invaders', values: [
-    { v: false, label: 'Off' },
-    { v: true, label: 'On' },
-  ] },
-  { key: 'summons', label: 'Summons', values: [
-    { v: false, label: 'Off' },
-    { v: true, label: 'On' },
-  ] },
-] as const;
-
-const BB_OPTION_DEFS = [
-  { key: 'campaign', label: 'Campaign', values: [
-    { v: 'the-long-hunt', label: 'The Long Hunt' },
-    { v: 'growing-madness', label: 'Growing Madness' },
-    { v: 'secrets-of-the-church', label: 'Secrets of the Church' },
-    { v: 'fall-of-old-yharnam', label: 'Fall of Old Yharnam' },
-  ] },
-  { key: 'chapter', label: 'Chapter', values: [
-    { v: 1, label: '1' },
-    { v: 2, label: '2' },
-    { v: 3, label: '3' },
-  ] },
-  { key: 'partySize', label: 'Hunters', values: [
-    { v: 4, label: '4' },
-    { v: 3, label: '3' },
-    { v: 2, label: '2' },
-    { v: 1, label: '1' },
-  ] },
-] as const;
-
-const FEAST_OPTION_DEFS = [
-  { key: 'length', label: 'SAGA LENGTH', values: [
-    { v: 'long', label: 'LONG · 7 ROUNDS' },
-    { v: 'short', label: 'SHORT · 6 ROUNDS' },
-  ] },
-  { key: 'occupationMode', label: 'OCCUPATION DECKS', values: [
-    { v: 'A', label: 'DECK A · FIRST GAME' },
-    { v: 'all', label: 'ALL DECKS' },
-    { v: 'BC', label: 'DECKS B + C' },
-  ] },
-  { key: 'soloStartingOccupation', label: 'SOLO STARTING CARD', values: [
-    { v: 'random', label: 'RANDOM' },
-    { v: 'choose', label: 'CHOOSE · OFFICIAL VARIANT' },
-  ] },
-] as const;
-
-const CONTAINER_OPTION_DEFS = [
-  { key: 'length', label: 'GAME LENGTH', values: [
-    { v: 'standard', label: 'STANDARD' },
-    { v: 'short', label: 'SHORT' },
-    { v: 'extended', label: 'EXTENDED' },
-  ] },
-] as const;
-
-const SETI_OPTION_DEFS = [
-  { key: 'soloDifficulty', label: 'SOLO RIVAL', values: [
-    { v: 3, label: 'STANDARD · 3' },
-    { v: 1, label: 'LEVEL 1' },
-    { v: 2, label: 'LEVEL 2' },
-    { v: 4, label: 'LEVEL 4' },
-    { v: 5, label: 'LEVEL 5' },
-  ] },
-  { key: 'promoCards', label: 'PROMO PROJECTS', values: [
-    { v: false, label: 'BASE 138' },
-    { v: true, label: 'ADD 2 PROMOS' },
+const SH_OPTION_DEFS = [
+  { key: 'claudeSeats', label: 'Claude seats', values: [
+    { v: 0, label: 'Fill to five' },
+    { v: 1, label: 'One' },
+    { v: 2, label: 'Two' },
+    { v: 3, label: 'Three' },
   ] },
 ] as const;
 
@@ -280,7 +91,6 @@ function statusLine(s: SaveInfo): string {
   if (s.status === 'ended') return 'Finished';
   if (s.status === 'lobby') return 'In lobby';
   if (s.game === 'brass' && s.era) return `${s.era === 'rail' ? 'Rail' : 'Canal'} era, round ${s.round}/${s.numRounds}`;
-  if (s.game === 'seti' && s.round !== null) return `Round ${s.round}/5`;
   if (s.round !== null && s.numRounds !== null) return `Round ${s.round}/${s.numRounds}`;
   if (s.round !== null) return `Round ${s.round}`;
   return 'In play';
@@ -298,24 +108,7 @@ export function SelectGame() {
 
   const createRoom = () => {
     if (!game) return;
-    const opts = game.id === 'axis'
-      ? { scenario: '1941', winCondition: 'standard', rnd: false, nationalObjectives: true, ...options }
-      : game.id === 'politik'
-        ? { longWar: false, trifecta: false, ragingImperials: false, ...options }
-      : game.id === 'darksouls'
-        ? {
-            scenario: 'standard', partySize: 4, darkrootMix: 'off', darkrootTreasure: false,
-            mimics: false, invaders: false, summons: false, ...options,
-          }
-      : game.id === 'feast'
-        ? { length: 'long', occupationMode: 'A', soloStartingOccupation: 'random', ...options }
-      : game.id === 'bloodborne'
-        ? { campaign: 'the-long-hunt', chapter: 1, partySize: 4, ...options }
-      : game.id === 'seti'
-        ? { soloDifficulty: 3, promoCards: false, ...options }
-      : game.id === 'container'
-        ? { length: 'standard', ...options }
-      : undefined;
+    const opts = game.id === 'secrethitler' ? { claudeSeats: 0, ...options } : undefined;
     socket.send({ type: 'create_room', name: name.trim(), game: game.id, options: opts });
   };
 
@@ -386,9 +179,7 @@ export function SelectGame() {
                 onClick={() => setGame(g)}
               >
                 <span className="game-tile-art" aria-hidden="true">
-                  {g.id === 'seti'
-                    ? <span className="seti-catalog-mark"><i /><b>SETI</b><small>SEARCH FOR<br />EXTRATERRESTRIAL<br />INTELLIGENCE</small></span>
-                    : <img src={g.logo} alt="" />}
+                  <img src={g.logo} alt="" />
                 </span>
               </button>
             ))}
@@ -416,135 +207,18 @@ export function SelectGame() {
               >New save</button>
             </div>
 
-            {game.id === 'axis' && (
-              <div className="create-options">
-                {AXIS_OPTION_DEFS.map((def) => {
-                  const current = options[def.key] ?? def.values[0].v;
-                  return (
-                    <CreateOption
-                      key={def.key}
-                      id={`axis-${def.key}`}
-                      label={def.label}
-                      values={def.values}
-                      current={current}
-                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            {game.id === 'politik' && (
-              <div className="create-options pk-create-options">
-                {POLITIK_OPTION_DEFS.map((def) => {
-                  const current = options[def.key] ?? def.values[0].v;
-                  return (
-                    <CreateOption
-                      key={def.key}
-                      id={`politik-${def.key}`}
-                      label={def.label}
-                      help={def.help}
-                      values={def.values}
-                      current={current}
-                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            {game.id === 'darksouls' && (
-              <div className="create-options">
-                {DS_OPTION_DEFS.map((def) => {
-                  const current = options[def.key] ?? def.values[0].v;
-                  return (
-                    <CreateOption
-                      key={def.key}
-                      id={`darksouls-${def.key}`}
-                      label={def.label}
-                      values={def.values}
-                      current={current}
-                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            {game.id === 'bloodborne' && (
-              <div className="create-options">
-                {BB_OPTION_DEFS.map((def) => {
-                  const current = options[def.key] ?? def.values[0].v;
-                  return (
-                    <CreateOption
-                      key={def.key}
-                      id={`bloodborne-${def.key}`}
-                      label={def.label}
-                      values={def.values}
-                      current={current}
-                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            {game.id === 'feast' && (
-              <div className="create-options feast-create-options">
-                <div className="create-option feast-edition-note">
-                  <span className="create-option-label">CLASSIC BASE · 2016</span>
-                  <span className="dim">COMPLETE ORIGINAL BASE GAME · 1-4 PLAYERS · SOLO INCLUDED</span>
-                </div>
-                {FEAST_OPTION_DEFS.map((def) => {
-                  const current = options[def.key] ?? def.values[0].v;
-                  return (
-                    <CreateOption
-                      key={def.key}
-                      id={`feast-${def.key}`}
-                      label={def.label}
-                      values={def.values}
-                      current={current}
-                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            {game.id === 'container' && (
+            {game.id === 'secrethitler' && (
               <div className="create-options">
                 <div className="create-option">
-                  <span className="create-option-label">2026 EDITION · 3-5 PLAYERS</span>
-                  <span className="dim">GAME LENGTH SETS THE CONTAINER SUPPLY</span>
+                  <span className="create-option-label">5 to 10 players</span>
+                  <span className="dim">Claude plays any chair nobody takes</span>
                 </div>
-                {CONTAINER_OPTION_DEFS.map((def) => {
+                {SH_OPTION_DEFS.map((def) => {
                   const current = options[def.key] ?? def.values[0].v;
                   return (
                     <CreateOption
                       key={def.key}
-                      id={`container-${def.key}`}
-                      label={def.label}
-                      values={def.values}
-                      current={current}
-                      onSelect={(value) => setOptions((state) => ({ ...state, [def.key]: value }))}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            {game.id === 'seti' && (
-              <div className="create-options">
-                <div className="create-option">
-                  <span className="create-option-label">CORE GAME · 1–4 AGENCIES</span>
-                  <span className="dim">ONE AGENCY USES THE OFFICIAL SOLO RIVAL</span>
-                </div>
-                {SETI_OPTION_DEFS.map((def) => {
-                  const current = options[def.key] ?? def.values[0].v;
-                  return (
-                    <CreateOption
-                      key={def.key}
-                      id={`seti-${def.key}`}
+                      id={`sh-${def.key}`}
                       label={def.label}
                       values={def.values}
                       current={current}

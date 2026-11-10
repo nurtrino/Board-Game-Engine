@@ -11,19 +11,8 @@ import { TableScene, useBrassScene, SEAT_HEX, seatHexFor, type FocusReq, type Sc
 import { gameSceneState } from '../brass/gameSceneState';
 import { LOCATION_OF, type BrassView, type BrassEvent } from '@bge/shared';
 import { playSfx, sfxForKind, sfxEnabled, setSfxEnabled } from '../sfx';
-const TtrBoard = lazy(() => import('../ttr/TtrBoard').then((module) => ({ default: module.TtrBoard })));
-const TrekBoard = lazy(() => import('../trek/TrekBoard').then((module) => ({ default: module.TrekBoard })));
-const DtBoard = lazy(() => import('../darktower/DtBoard').then((module) => ({ default: module.DtBoard })));
-const DuneBoard = lazy(() => import('../dune/DuneBoard').then((module) => ({ default: module.DuneBoard })));
-const AxisBoard = lazy(() => import('../axis/AxisBoard'));
-const PolitikBoard = lazy(() => import('../politik/PolitikBoard').then((module) => ({ default: module.PolitikBoard })));
-const DsBoard = lazy(() => import('../darksouls/DsBoard').then((module) => ({ default: module.DsBoard })));
-const FeastBoard = lazy(() => import('../feast/FeastBoard').then((module) => ({ default: module.FeastBoard })));
-const BbBoard = lazy(() => import('../bloodborne/BbBoard').then((module) => ({ default: module.BbBoard })));
-const SetiBoard = lazy(() => import('../seti/SetiBoard').then((module) => ({ default: module.SetiBoard })));
-const BlokusBoard = lazy(() => import('../blokus/BlokusBoard').then((module) => ({ default: module.BlokusBoard })));
-const EverdellBoard = lazy(() => import('../everdell/EverdellBoard').then((module) => ({ default: module.EverdellBoard })));
-const ContainerBoard = lazy(() => import('../container/ContainerBoard').then((module) => ({ default: module.ContainerBoard })));
+
+const ShBoard = lazy(() => import('../sh/ShBoard').then((module) => ({ default: module.ShBoard })));
 
 function BoardGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} table…</div>;
@@ -237,76 +226,19 @@ function TvBoard({ view }: { view: BrassView }) {
 
 export function BoardPage() {
   const { roomId = '' } = useParams();
-  const { room, view, signalBattleVisualReady } = useRoom(roomId, 'watch');
+  const { room, view } = useRoom(roomId, 'watch');
 
   if (!room) return <div className="page center"><h2>Connecting</h2></div>;
 
   if (room.started && view) {
-    if (view.game === 'ttr') return (
-      <Suspense fallback={<BoardGameLoading game="Ticket to Ride" />}>
-        <TtrBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'trek') return (
-      <Suspense fallback={<BoardGameLoading game="Trekking the National Parks" />}>
-        <TrekBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'darktower') return (
-      <Suspense fallback={<BoardGameLoading game="Return to Dark Tower" />}>
-        <DtBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'dune') return (
-      <Suspense fallback={<BoardGameLoading game="Dune: Imperium" />}>
-        <DuneBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'axis') return (
-      <Suspense fallback={<BoardGameLoading game="Axis & Allies" />}>
-        <AxisBoard view={view} onBattleVisualReady={signalBattleVisualReady} />
-      </Suspense>
-    );
-    if (view.game === 'politik') return (
-      <Suspense fallback={<BoardGameLoading game="Politik" />}>
-        <PolitikBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'darksouls') return (
-      <Suspense fallback={<BoardGameLoading game="Dark Souls" />}>
-        <DsBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'feast') return (
-      <Suspense fallback={<BoardGameLoading game="A Feast for Odin" />}>
-        <FeastBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'bloodborne') return (
-      <Suspense fallback={<BoardGameLoading game="Bloodborne" />}>
-        <BbBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'seti') return (
-      <Suspense fallback={<BoardGameLoading game="SETI" />}>
-        <SetiBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'blokus') return (
-      <Suspense fallback={<BoardGameLoading game="Blokus" />}>
-        <BlokusBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'everdell') return (
-      <Suspense fallback={<BoardGameLoading game="Everdell" />}>
-        <EverdellBoard view={view} />
-      </Suspense>
-    );
-    if (view.game === 'container') return (
-      <Suspense fallback={<BoardGameLoading game="Container" />}>
-        <ContainerBoard view={view} />
-      </Suspense>
-    );
+    if (view.game === 'secrethitler') {
+      if (view.role !== 'screen') return null;
+      return (
+        <Suspense fallback={<BoardGameLoading game="Secret Hitler" />}>
+          <ShBoard wire={view} room={room} />
+        </Suspense>
+      );
+    }
     return <TvBoard view={view} />;
   }
 
@@ -334,6 +266,7 @@ export function BoardPage() {
             </span>
           ))}
         </div>
+        {room.game === 'secrethitler' && <p className="dim">Five to ten play. Claude takes any empty chair up to five.</p>}
         <p className="dim">The host starts the game from their device.</p>
       </div>
     </div>

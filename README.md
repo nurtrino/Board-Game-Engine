@@ -1,119 +1,75 @@
 # Board Game Engine
 
-Play board games together in the same room: the **shared board lives on a big
-screen** (any browser — a laptop or TV) and **each player's private hand and
-personal board live on their own phone, tablet, or laptop**. A Node server keeps
-everything in sync. The interaction model is a web port of Tabletop Simulator —
-players make their moves from their own device and the main screen follows.
+Play board games together in the same room: the **shared board lives on a big screen** (any browser,
+a laptop or a TV) and **each player's private hand lives on their own phone**. A Node server keeps
+everything in sync. Games are rebuilt from Tabletop Simulator workshop mods, using each mod's own
+art and rules as the source of truth.
 
-First game: **Brass: Birmingham**, rebuilt from the
-[ikegami/tts_brass](https://github.com/ikegami/tts_brass) Tabletop Simulator mod,
-using the mod's own art and Lua as the source of truth.
+This is version 2 of the engine. Two games are in the hub:
 
-## How it plays
-
-- **The big screen** shows only the main board. Scores stay readable, and every
-  action flies the camera to where it happened with a caption.
-- **Each device** holds that player's board and hand. On your turn you pick an
-  action, choose a card, and tap a glowing legal spot — illegal moves never
-  light up (and the server re-validates everything). Coal/iron/beer, market
-  pricing, network connectivity, and two-era scoring are all enforced.
+- **Secret Hitler**, from the *Secret Hitler Original* mod (Workshop 3322335081). 5 to 10 players,
+  a 3D table with cutscenes for every moment, and seats that Claude can play.
+- **Brass: Birmingham**, from the [ikegami/tts_brass](https://github.com/ikegami/tts_brass) mod.
 
 ## Quick start (local, same Wi-Fi)
 
 ```
 npm install
-npm run start        # builds the client, then serves everything on port 8787
+npm run start        # builds the client, then serves everything on port 8790
 ```
 
-1. On the screen device, open the printed URL (e.g. `http://192.168.4.132:8787`).
-2. Click **Create a room** — a QR code appears.
-3. Everyone scans the QR, enters a name, and picks a color.
+1. On the screen device, open the printed URL.
+2. Press **New game**, pick a game, name the save. A QR code appears.
+3. Everyone scans the QR, enters a name and picks a colour.
 4. The host presses **Start** on their device.
 
-All devices must be on the same network.
+## Claude seats (Secret Hitler)
 
-## Deploy to the web (Render)
+Secret Hitler needs five players. Claude takes any chair nobody sits in, up to five, and you can ask
+for more Claude seats when you create the save.
 
-The lobby uses a public URL instead of a LAN IP when one is available, so it
-works over the open internet with no same-network requirement.
+Set `ANTHROPIC_API_KEY` (copy `.env.example` to `.env` locally, or add it to the service's environment
+when hosted). Without a key those seats still play, using a built-in bot, and the screen says so.
 
-1. Push this repo to GitHub.
-2. In [Render](https://render.com): **New +** → **Blueprint**, point at the repo.
-   [`render.yaml`](render.yaml) sets the build/start commands and provisions the
-   saves database.
-3. Render injects `PORT` and `RENDER_EXTERNAL_URL` automatically; the QR code
-   resolves to the public `https://…onrender.com/join/<room>` URL.
+| Variable | Default | What it does |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | none | Lets Claude play seats |
+| `SH_CLAUDE_MODEL` | `claude-opus-5-5` | Model used for Claude seats |
+| `SH_CLAUDE_EFFORT` | `low` | Thinking effort per decision (`low` keeps turns quick) |
 
-To point at a custom domain (or override), set `PUBLIC_URL` in the service env.
-WebSockets upgrade to `wss` automatically on https.
+Claude gets exactly what a person in that chair would see: its own role, what that role knows, its
+private intel, the public record and the table talk. Each decision comes back as a choice, an
+optional line of table talk (a speech bubble, spoken aloud on the screen) and private notes it
+carries to its next turn. Players talk to it from their phones.
 
-## Saved games
+## Deploy (Render)
 
-Every game is a named, dated save. The new-game screen is select a game →
-continue a save or start a new one, and rooms are continuously persisted
-(`server/src/store.ts`):
-
-- **Locally** to `server/.rooms.json` — games survive server restarts.
-- **Hosted** to Postgres when `DATABASE_URL` is set — games survive deploys,
-  since Render wipes the service filesystem on every push. The blueprint
-  provisions this automatically (Render's free Postgres expires after 30 days;
-  upgrade it or point `DATABASE_URL` at any hosted Postgres — Neon and Supabase
-  have permanent free tiers). Set `DATABASE_SSL=1` if your provider requires TLS.
-
-Devices keep a per-room token in localStorage and reconnect straight into their
-seat, so a resumed game continues exactly where it left off. Finished games and
-never-started lobbies are retired after a week, untouched games after 60 days.
-Deleting a save requires the creating device, the original host device, or an
-administrator bearer credential. Set `BGE_ADMIN_TOKEN` to a long random value
-when deployment-level save administration is needed.
+[`render.yaml`](render.yaml) sets the build and start commands and provisions the saves database.
+Render injects `PORT` and `RENDER_EXTERNAL_URL`; `PUBLIC_URL` overrides the address in the QR code.
+Saves go to Postgres when `DATABASE_URL` is set, otherwise to `server/.rooms.json`.
 
 ## Layout
 
 | Folder | What it is |
 |---|---|
-| `shared/` | Game engine + protocol. Brass rules in `shared/src/brass/` (`state.ts` setup, `actions.ts` action engine, `*-test.ts` playthrough/invariant tests). |
-| `server/` | Express + WebSocket server: rooms, color picks, per-seat redacted state broadcast, join URLs. |
-| `client/` | React + three.js app: home/lobby, `/board/:room` (screen), `/play/:room` (device), `/dev/brass` (viewer). The shared 3D renderer is `client/src/brass/TableScene.tsx`. |
-| `tools/tts-extract/` | Pipeline that turns the TTS mod into the game: `extract-brass.mjs` (Lua + save → golden setup), `prep-viewer-assets.mjs` (stages art → `client/public/bb/`). |
-| `games/brass-birmingham/golden/` | Extracted golden spec (`mod-setup.json`, `board-layout.json`) the engine is validated against. |
+| `shared/` | Rules engines and the wire protocol. `brass/`, `secret-hitler/` (`rules.ts` is the pure reducer, `room.ts` adds the event stream the screen plays). |
+| `server/` | Express + WebSocket server: rooms, saves, colour picks, per-seat redacted state, AI seats (`claude.ts`). |
+| `client/` | React app: the hub (`pages/`), Brass (`brass/`, react-three-fiber), Secret Hitler (`sh/`, a vanilla three.js stage with a cutscene director). |
+| `games/` | Per-game source material: the mods' raw assets, rules notebook and golden setup data. |
+| `tools/` | Asset staging (`stage-secret-hitler.mjs`). |
+| `docs/specs/` | Where every rule and asset comes from. |
 
-## Development
-
-```
-npm run dev -w server                       # server only (serves last built client)
-npm run dev -w client                       # vite dev server w/ hot reload (proxies to :8787)
-npx tsx shared/src/brass/setup-test.ts        # setup vs golden (multiset invariants)
-npx tsx shared/src/brass/actions-test.ts      # full bot-vs-bot playthroughs
-npx tsx shared/src/brass/connectivity-test.ts # coal/iron routing + slot rules
-npx tsx shared/src/brass/playercount-test.ts  # full games at 2, 3, and 4 players
-```
-
-Key design points:
-
-- **Server-authoritative**: clients send actions; `applyAction` validates and
-  applies them; illegal actions return an error. The client's glow/enable logic
-  imports the *same* legality helpers, so the UI can't offer what the server
-  would refuse.
-- **Hidden information**: `viewFor(state, viewer)` redacts other players' hands
-  to counts before broadcast. The screen gets the fully public view.
-- **Faithful to the mod**: tile stats, deck composition, cube counts, board
-  graph, and slot restrictions are all extracted from the mod's Lua/save/art —
-  never hand-keyed from memory. See `tools/tts-extract/`.
-
-## Regenerating the game assets
-
-The staged art in `client/public/bb/` is committed, so the app runs as-is. To
-rebuild it from scratch (e.g. after editing the extractor):
+## Test
 
 ```
-node tts-mods/brass_birmingham/download-assets.mjs   # re-fetch mod art (gitignored cache)
-node tools/tts-extract/extract-brass.mjs             # → golden spec
-node tools/tts-extract/prep-viewer-assets.mjs        # → client/public/bb/
+npm test                               # Brass and Secret Hitler rules, save store, live WebSocket smoke test
+npm run autoplay -- ABCD 4 --start     # seat 4 scripted players in Secret Hitler room ABCD and play it out on the screen
 ```
 
-## A note on assets
+Screen keys in Secret Hitler: `Space` skips the current scene.
 
-The board, card, and piece art belong to the publishers of Brass: Birmingham
-and the mod's author. This project renders them for personal in-room play from a
-mod you can obtain yourself; it ships no game rules text.
+## Credits
+
+Secret Hitler was designed by Max Temkin, Mike Boxleiter and Tommy Maranges and illustrated by
+Mackenzie Schubert, and is licensed CC BY-NC-SA 4.0. The TTS mod was assembled by FragaholiC.
+Brass: Birmingham is by Roxley Games; the TTS mod is by ikegami.

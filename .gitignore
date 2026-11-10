@@ -1,37 +1,10 @@
 node_modules/
 dist/
-assets/imported/
-server/.rooms.json
 *.log
 .DS_Store
-
-# Third-party TTS mod clone (source of the extracted assets). Not vendored;
-# re-clone with: git clone https://github.com/ikegami/tts_brass tts-mods/brass_birmingham
-# The runtime needs none of it — client/public/bb and shared setup-data.json are committed.
-tts-mods/
-
-# TTS built-in model bundle (the barrel is already extracted into client/public/bb)
-tts-standard-assets.zip
-
-# extractor / verifier scratch
-tools/verify/*.png
-
-# machine-specific Claude settings
+.env
+server/.rooms.json
 .claude/settings.local.json
-tools/verify/.dune-phone.json
-# generated verification art (rebuild: node tools/verify/render-axis-setup.mjs)
-client/public/axis/setup-1941.png
-client/public/axis/setup-1942.png
-client/public/axis/zones.png
-client/public/axis/zones-anchors.png
-games/bloodborne/transcribe/
-
-# local scratch / logs / OCR data (never vendored)
 tmp/
-scratch-tmp/
-/public/
-eng.traineddata
-/page.png
-server/.rooms.backup.json
-
 server/.rooms.json.lock
+server/.rooms.backup.json

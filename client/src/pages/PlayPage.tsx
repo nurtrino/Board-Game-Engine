@@ -15,21 +15,10 @@ import {
   cardIndustries, lowestTile, planBuild, GAME_SEATS,
   type BrassView, type BrassAction, type Card, type Color,
 } from '@bge/shared';
-import { GameIntro, BRASS_INTRO } from '../ttr/GameIntro';
+import { GameIntro, BRASS_INTRO } from '../brass/GameIntro';
 
-const TtrPlay = lazy(() => import('../ttr/TtrPlay').then((module) => ({ default: module.TtrPlay })));
-const TrekPlay = lazy(() => import('../trek/TrekPlay').then((module) => ({ default: module.TrekPlay })));
-const DtPlay = lazy(() => import('../darktower/DtPlay').then((module) => ({ default: module.DtPlay })));
-const DunePlay = lazy(() => import('../dune/DunePlay').then((module) => ({ default: module.DunePlay })));
-const AxisPlay = lazy(() => import('../axis/AxisPlay'));
-const PolitikPlay = lazy(() => import('../politik/PolitikPlay').then((module) => ({ default: module.PolitikPlay })));
-const DsPlay = lazy(() => import('../darksouls/DsPlay'));
-const FeastPlay = lazy(() => import('../feast/FeastPlay').then((module) => ({ default: module.FeastPlay })));
-const BbPlay = lazy(() => import('../bloodborne/BbPlay'));
-const SetiPlay = lazy(() => import('../seti/SetiPlay').then((module) => ({ default: module.SetiPlay })));
-const BlokusPlay = lazy(() => import('../blokus/BlokusPlay'));
-const EverdellPlay = lazy(() => import('../everdell/EverdellPlay'));
-const ContainerPlay = lazy(() => import('../container/ContainerPlay'));
+const ShPlay = lazy(() => import('../sh/ShPlay').then((module) => ({ default: module.ShPlay })));
+
 
 function PlayerGameLoading({ game }: { game: string }) {
   return <div className="route-loading" role="status" aria-live="polite"><span />Preparing {game} command table…</div>;
@@ -979,71 +968,14 @@ export function PlayPage() {
 
   if (room.started) {
     if (!view) return <div className="page center"><h2>Dealing…</h2></div>;
-    if (view.game === 'ttr') return (
-      <Suspense fallback={<PlayerGameLoading game="Ticket to Ride" />}>
-        <TtrPlay view={view} act={act} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'trek') return (
-      <Suspense fallback={<PlayerGameLoading game="Trekking the National Parks" />}>
-        <TrekPlay view={view} act={act} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'darktower') return (
-      <Suspense fallback={<PlayerGameLoading game="Return to Dark Tower" />}>
-        <DtPlay view={view} act={act} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'dune') return (
-      <Suspense fallback={<PlayerGameLoading game="Dune: Imperium" />}>
-        <DunePlay view={view} act={act} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'axis') return (
-      <Suspense fallback={<PlayerGameLoading game="Axis & Allies" />}>
-        <AxisPlay view={view} act={act} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'politik') return (
-      <Suspense fallback={<PlayerGameLoading game="Politik" />}>
-        <PolitikPlay view={view} act={act} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'darksouls') return (
-      <Suspense fallback={<PlayerGameLoading game="Dark Souls" />}>
-        <DsPlay view={view} act={act} seat={me ?? 0} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'feast') return (
-      <Suspense fallback={<PlayerGameLoading game="A Feast for Odin" />}>
-        <FeastPlay view={view} act={act} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'bloodborne') return (
-      <Suspense fallback={<PlayerGameLoading game="Bloodborne" />}>
-        <BbPlay view={view} act={act} seat={me ?? 0} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'seti') return (
-      <Suspense fallback={<PlayerGameLoading game="SETI" />}>
-        <SetiPlay view={view} act={act} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'blokus') return (
-      <Suspense fallback={<PlayerGameLoading game="Blokus" />}>
-        <BlokusPlay view={view} act={act} seat={me ?? 0} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'everdell') return (
-      <Suspense fallback={<PlayerGameLoading game="Everdell" />}>
-        <EverdellPlay view={view} act={act} seat={me ?? 0} error={error} />
-      </Suspense>
-    );
-    if (view.game === 'container') return (
-      <Suspense fallback={<PlayerGameLoading game="Container" />}>
-        <ContainerPlay view={view} act={act} seat={me ?? 0} error={error} />
-      </Suspense>
-    );
+    if (view.game === 'secrethitler') {
+      if (view.role !== 'player') return <div className="page center"><h2>Dealing…</h2></div>;
+      return (
+        <Suspense fallback={<PlayerGameLoading game="Secret Hitler" />}>
+          <ShPlay wire={view} room={room} host={me === 0} error={error} />
+        </Suspense>
+      );
+    }
     if (!scene) return <div className="page center"><h2>Dealing…</h2></div>;
     return <GameView scene={scene} view={view} act={act} error={error} />;
   }
@@ -1053,32 +985,11 @@ export function PlayPage() {
   const takenBy = (c: string) => room.players.findIndex((p) => p.color === c);
   const GAME_NAMES: Record<string, string> = {
     brass: 'Brass: Birmingham',
-    ttr: 'Ticket to Ride: Rails & Sails',
-    trek: 'Trekking the National Parks',
-    darktower: 'Dark Tower',
-    dune: 'Dune: Imperium',
-    axis: 'Axis & Allies Anniversary',
-    politik: 'Politik',
-    darksouls: 'Dark Souls: The Board Game',
-    bloodborne: 'Bloodborne: The Board Game',
-    feast: 'A Feast for Odin',
-    seti: 'SETI: Search for Extraterrestrial Intelligence',
-    blokus: 'Blokus',
-    everdell: 'Everdell',
-    container: 'Container',
+    secrethitler: 'Secret Hitler',
   };
   const gameName = GAME_NAMES[room.game] ?? 'the game';
-  const colorBlurb = room.game === 'ttr' ? 'Your colour claims routes across the world.'
-    : room.game === 'trek' ? 'Your colour is your trekker and the stones you collect.'
-    : room.game === 'darktower' ? 'Your colour is your warrior on the quest.'
-    : room.game === 'politik' ? 'Your colour outlines your Nation, influence, support, and power grabs.'
-    : room.game === 'darksouls' ? 'Your colour marks your seat. Pick a class once the party sets out.'
-    : room.game === 'bloodborne' ? 'Your colour marks your seat. Choose a hunter once the Hunt begins.'
-    : room.game === 'feast' ? 'Your colour marks your Vikings, action spaces, and personal boards.'
-    : room.game === 'seti' ? 'Your colour marks your probes, landers, orbiters, signals, and discoveries.'
-    : room.game === 'blokus' ? 'Your colour is your 21 pieces and your starting corner. Unpicked colours play themselves.'
-    : room.game === 'everdell' ? 'Your colour is your workers and your growing city.'
-    : room.game === 'container' ? 'Your colour is your ship, your harbor board, and your island scoring area.'
+  const colorBlurb = room.game === 'secrethitler'
+    ? 'Your colour is your chair at the table. The presidency passes clockwise.'
     : "Your piece marks your income on the board's turn-order track.";
 
   return (
@@ -1090,7 +1001,7 @@ export function PlayPage() {
 
       <div className="card">
         <div className="pl-players-label">Pick your color</div>
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', padding: '6px 0 2px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', padding: '6px 0 2px' }}>
           {seatColors.map((c) => {
             const owner = takenBy(c);
             const isMine = c === myColor;
@@ -1147,6 +1058,11 @@ export function PlayPage() {
         </button>
       ) : (
         <p className="dim">Waiting for the host to start.</p>
+      )}
+      {room.game === 'secrethitler' && room.players.length < 5 && (
+        <p className="dim" style={{ textAlign: 'center', marginTop: '.6rem' }}>
+          {room.players.length} of 5 seated. Claude plays the other {5 - room.players.length === 1 ? 'chair' : `${5 - room.players.length} chairs`}.
+        </p>
       )}
       {error && <div className="toast">{error}</div>}
     </div>

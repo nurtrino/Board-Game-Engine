@@ -10,8 +10,7 @@
         "-w",
         "server"
       ],
-      "port": 8787,
-      "autoPort": true
+      "port": 8790
     },
     {
       "name": "client",
@@ -22,30 +21,7 @@
         "-w",
         "client"
       ],
-      "port": 5173,
-      "autoPort": true
-    },
-    {
-      "name": "server-alt",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "dev:alt",
-        "-w",
-        "server"
-      ],
-      "port": 8899
-    },
-    {
-      "name": "client-alt",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "dev:alt",
-        "-w",
-        "client"
-      ],
-      "port": 5273
+      "port": 5180
     }
   ]
 }
