@@ -12,12 +12,15 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import type { Beat } from '../timeline';
 import { terrainOf, type Terrain } from '../timeline';
 import { combatantInk, combatantPaint, other, plural, unitDomain, type Combat, type Side } from '../model';
-import { BattleSound, fireSoundFor, type BattleSoundName } from '../sound';
-import { loadFoliage, loadSky, loadTexture, loadUnit, releaseGpu, type FoliageModel, type UnitModel } from './assets';
+import { BattleSound, fireSoundFor, shotKindFor, type BattleSoundName, type Scene } from '../sound';
+import { loadFoliage, loadSky, loadTexture, loadUnit, releaseGpu, type FoliageModel } from './assets';
+import { discTexture, markColumn, markRow, markSheet, MARK_COLS, MARK_ROWS } from './insignia';
+import { RigBatch, decalMaterial, newRigState, nodeWorld, poseRig, unitMaterial, type RigMaterials, type RigState, type UnitRig } from './rig';
+import { Soldier, helmetFor } from './soldier';
 import { climateOf, heightAt, layoutField, scatterFoliage, DIMS, SHORE_X, type FieldLayout, type Figure, type GroupLayout } from './layout';
 import { Particles } from './particles';
 import { figureCounts, truthFor } from './roster';
-import { buildFlag, buildFoliage, buildGround, buildSky, buildTrees, buildWater, disposeObject, lookFor, waveFlag, waveHeight, type Flag, type Look } from './scenery';
+import { buildFlag, buildFoliage, buildGround, buildSky, buildTrees, buildWater, disposeObject, lookFor, waveFlag, waveHeight, SEA_STATE, type Flag, type Look } from './scenery';
 import { Tweens, ease, lerp, type Ease } from './tween';
 
 const V3 = THREE.Vector3;
@@ -74,46 +77,29 @@ class Rig {
   }
 }
 
-/** One instanced draw per material part, shared by every figure of a unit type. */
-class Batch {
-  meshes: THREE.InstancedMesh[] = [];
-  private dirtyM = false;
-  private dirtyC = false;
-  constructor(readonly model: UnitModel, capacity: number, parent: THREE.Object3D, shadows: boolean) {
-    for (const part of model.parts) {
-      const mesh = new THREE.InstancedMesh(part.geometry, part.material, capacity);
-      mesh.frustumCulled = false;
-      mesh.castShadow = shadows;
-      mesh.receiveShadow = true;
-      mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-      mesh.userData.sharedGeometry = true;
-      mesh.userData.sharedMaterial = true;
-      parent.add(mesh);
-      this.meshes.push(mesh);
-    }
-  }
-  setMatrix(i: number, m: THREE.Matrix4) {
-    for (const mesh of this.meshes) mesh.setMatrixAt(i, m);
-    this.dirtyM = true;
-  }
-  setColor(i: number, c: THREE.Color) {
-    for (const mesh of this.meshes) mesh.setColorAt(i, c);
-    this.dirtyC = true;
-  }
-  commit() {
-    if (this.dirtyM) for (const mesh of this.meshes) mesh.instanceMatrix.needsUpdate = true;
-    if (this.dirtyC) for (const mesh of this.meshes) if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-    this.dirtyM = this.dirtyC = false;
-  }
-}
-
 type FigState = 'alive' | 'dead' | 'gone';
 
 interface Orbit { cx: number; cz: number; rx: number; rz: number; alt: number; w: number; phase: number }
 
 interface Fig {
   f: Figure;
-  batch: Batch;
+  batch: RigBatch;
+  rig: UnitRig;
+  /** Turrets, guns, wheels, tracks, propellers: everything that moves within the figure. */
+  rs: RigState;
+  soldier: Soldier | null;
+  /** Seconds the guns stay trained after the last shot. */
+  aimHold: number;
+  /** Chosen when a volley is called, so the guns can train before they fire. */
+  target: Vec | null;
+  lastX: number;
+  lastZ: number;
+  /** Ground speed last frame, field units a second. */
+  vel: number;
+  /** Funnel and chimney smoke owed. */
+  stackAcc: number;
+  /** Seconds until its anti-aircraft mounts look for a target again. */
+  flakAcc: number;
   slot: number;
   size: Vec;
   domain: string;
@@ -265,7 +251,14 @@ export class BattleStage {
   private figs: Fig[] = [];
   private groups = new Map<string, GroupRt>();
   private groupOfUid = new Map<number, GroupRt>();
-  private batches = new Map<string, Batch>();
+  private batches = new Map<string, RigBatch>();
+  private unitMats: THREE.Material[] = [];
+  private marks = markSheet();
+  private discTex = discTexture();
+  private decalMat = decalMaterial(this.marks, MARK_COLS, MARK_ROWS);
+  private discMat = new THREE.MeshBasicMaterial({ map: this.discTex, transparent: true, depthWrite: false, side: THREE.DoubleSide, opacity: 0.85 });
+  private fm = new THREE.Matrix4();
+  private fwd = new V3();
   private flags: { flag: Flag; follow: Fig | null }[] = [];
   private water: THREE.Mesh | null = null;
   private composer: EffectComposer;
@@ -393,7 +386,8 @@ export class BattleStage {
     this.layout = layout;
     this.kind = combat.kind;
     this.seed = this.seedFor(combat);
-    this.calm = terrain === 'sea' ? 1 : 0.38;
+    this.calm = terrain === 'sea' ? SEA_STATE : 0.38;
+    this.sound.setBed(terrain);
 
     // sky, fog and light: a painted dome with a low sun; the photographed sky only lights the models
     this.fogColor.copy(look.horizon);
@@ -453,9 +447,14 @@ export class BattleStage {
     for (const g of layout.groups) counts.set(g.key, (counts.get(g.key) ?? 0) + g.figures.length);
     if (needsFactory) counts.set('factory', (counts.get('factory') ?? 0) + 1);
     for (const [key, n] of counts) {
-      const model = modelOf.get(key);
-      if (!model || n === 0) continue;
-      this.batches.set(key, new Batch(model, n, this.army, true));
+      const asset = modelOf.get(key);
+      if (!asset || n === 0) continue;
+      const mats: RigMaterials = { body: unitMaterial(asset.textures, false), track: unitMaterial(asset.textures, true), decal: this.decalMat, propdisc: this.discMat };
+      for (const m of [mats.body, mats.track]) {
+        (m as THREE.MeshStandardMaterial).envMapIntensity = 1;
+        this.unitMats.push(m);
+      }
+      this.batches.set(key, new RigBatch(asset.rig, n, this.army, mats, true));
     }
     const used = new Map<string, number>();
     const airIndex: Record<Side, number> = { attacker: 0, defender: 0 };
@@ -467,10 +466,14 @@ export class BattleStage {
       const domain = unitDomain(f.key);
       const afloat = domain === 'sea';
       // a unit crowded off the beach wades; it never stands under water
-      const y0 = afloat ? -(DRAFT[f.key] ?? 0.5) : Math.max(-0.35, heightAt(f.x, f.z, terrain, this.seed));
+      // a built model floats on its own waterline; a stand-in shape is sunk to look afloat
+      const y0 = afloat ? (batch.rig.standIn ? -(DRAFT[f.key] ?? 0.5) : 0) : Math.max(-0.35, heightAt(f.x, f.z, terrain, this.seed));
       const tint = new THREE.Color(combatantPaint(f.power));
+      const rs = newRigState(batch.rig, helmetFor(f.power));
+      batch.setCells(slot, markColumn(f.power), markRow);
       const fig: Fig = {
-        f, batch, slot, size: batch.model.size, domain, state: 'alive', submerged: false, aboard: false,
+        f, batch, rig: batch.rig, rs, soldier: f.key === 'infantry' && !batch.rig.standIn ? new Soldier(batch.rig, rs) : null,
+        aimHold: 0, target: null, lastX: f.x, lastZ: f.z, vel: 0, stackAcc: Math.random(), flakAcc: Math.random() * 0.5, slot, size: batch.rig.size, domain, state: 'alive', submerged: false, aboard: false,
         at: new V3(f.x, y0, f.z), yaw: f.yaw, y0, recoil: 0, death: 0, dying: false, leave: 0, leaving: false,
         dive: 0, drop: 0, index: this.figs.length, enter: 0, enterDist: (afloat ? 70 : 38) + Math.abs(f.x) * 0.35,
         burn: 0, smokeAcc: Math.random(), damaged: false, orbit: null, fall: null, tint,
@@ -571,8 +574,10 @@ export class BattleStage {
     this.scorchN = 0;
     this.scorch.count = 0;
     this.pending = { attacker: 0, defender: 0 };
-    for (const batch of this.batches.values()) for (const mesh of batch.meshes) { this.army.remove(mesh); mesh.dispose(); }
+    for (const batch of this.batches.values()) batch.dispose(this.army);
     this.batches.clear();
+    for (const m of this.unitMats) m.dispose();
+    this.unitMats = [];
     for (const child of [...this.set.children]) { this.set.remove(child); disposeObject(child); }
     this.flags = [];
     this.water = null;
@@ -716,19 +721,22 @@ export class BattleStage {
 
     const span = Math.min(1.15, 0.2 + shooters.length * 0.045);
     const sounds = new Map<BattleSoundName, number>();
+    // every gun picks its mark now and trains on it; the first shot waits for the slowest turret
+    const lead = shooters.some((f) => f.domain === 'sea') ? 0.95 : shooters.some((f) => f.f.key === 'tank' || f.f.key === 'artillery' || f.f.key === 'aaGun') ? 0.6 : 0.3;
+    for (const f of shooters) this.train(f, kind, beat);
     shooters.forEach((f, i) => {
-      const delay = (i / shooters.length) * span + Math.random() * 0.07;
+      const delay = lead + (i / shooters.length) * span + Math.random() * 0.07;
       void this.tw.wait(delay).then(() => this.fire(f, kind, beat));
       const name: BattleSoundName = kind === 'rocket_damage' ? 'artillery-fire' : fireSoundFor(f.f.key);
       sounds.set(name, (sounds.get(name) ?? 0) + 1);
     });
     for (const [name, n] of sounds) {
-      this.sound.play(name, { delay: 0.05 });
-      if (n > 2) this.sound.play(name, { delay: 0.34, volume: 0.8 });
-      if (n > 6) this.sound.play(name, { delay: 0.7, volume: 0.7 });
+      this.sound.play(name, { delay: lead + 0.05 });
+      if (n > 2) this.sound.play(name, { delay: lead + 0.34, volume: 0.8 });
+      if (n > 6) this.sound.play(name, { delay: lead + 0.7, volume: 0.7 });
     }
     const flight = kind === 'rocket_damage' ? 2.3 : kind === 'raid_damage' ? 1.5 : kind === 'bombardment' ? 1.4 : 0.95;
-    await this.tw.wait(span + flight);
+    await this.tw.wait(lead + span + flight);
   }
 
   async playCasualties(beat: Extract<Beat, { type: 'casualties' }>): Promise<void> {
@@ -789,9 +797,21 @@ export class BattleStage {
       f.fall = { from: f.at.clone(), to, t: 0 };
       f.burn = 1;
       this.burst(f.at.clone(), 5, false, 0.4);
+      this.sound.planeDown(1.9, f.at);
+      return;
+    }
+    if (f.f.key === 'infantry' && f.soldier) {
+      // a man goes down without a fireball
+      this.sound.thud(f.at);
+      for (let i = 0; i < 3; i++) this.smoke.emit({ x: f.at.x + rand(-0.4, 0.4), y: f.at.y + 0.4, z: f.at.z + rand(-0.4, 0.4), vy: rand(0.4, 1.2), life: rand(0.8, 1.4), size: rand(0.9, 1.6), grow: 2, r: this.look.dust.r, g: this.look.dust.g, b: this.look.dust.b, alpha: 0.35 });
       return;
     }
     this.burst(f.at.clone().setY(f.at.y + f.size.y * 0.45), Math.max(3.2, big * 0.5), f.domain === 'sea');
+    if (f.domain === 'sea') this.sound.sink(f.at);
+    if (f.domain === 'land') {
+      // the turret is thrown round and stays there
+      f.rig.nodes.forEach((n, i) => { if (n.anim === 'yaw') f.rs.angle[i] += rand(-1.1, 1.1); });
+    }
     f.burn = 1;
   }
 
@@ -807,6 +827,7 @@ export class BattleStage {
       if (!f) continue;
       f.submerged = true;
       n += 1;
+      this.sound.dive(f.at);
       void this.tw.run(1.9, (k) => { f.dive = k; }, ease.in);
       for (let i = 0; i < 14; i++) {
         this.smoke.emit({ x: f.at.x + rand(-4, 4), y: 0.3, z: f.at.z + rand(-4, 4), vy: rand(0.5, 2), life: rand(1, 2), size: rand(1.5, 3.5), grow: 1.6, r: 0.9, g: 0.95, b: 0.97, alpha: 0.5 });
@@ -884,28 +905,83 @@ export class BattleStage {
     return new V3(x, Math.max(0, heightAt(x, z, this.terrain, this.seed)) + 1, z);
   }
 
-  private muzzle(f: Fig): Vec {
-    const fwd = f.size.z * 0.48;
-    const h = f.orbit ? 0 : f.f.key === 'infantry' ? f.size.y * 0.72 : f.f.key === 'aaGun' ? f.size.y * 0.9 : f.size.y * 0.62;
-    return new V3(f.at.x + Math.sin(f.yaw) * fwd, f.at.y + h, f.at.z + Math.cos(f.yaw) * fwd);
+  /** Pick this figure's mark for the coming volley and start its guns turning toward it. */
+  private train(f: Fig, kind: string, beat: VolleyBeat) {
+    const to = this.targetFor(f, kind, beat);
+    f.target = to;
+    const air = kind === 'aa_fire' || f.f.key === 'aaGun';
+    if (air) f.rs.aimAir = to; else f.rs.aim = to;
+    const naval = f.domain === 'sea';
+    f.rs.loft = kind === 'bombardment' ? 0.3 : f.f.key === 'artillery' ? 0.2 : naval ? 0.07 : 0;
+    f.aimHold = 5;
+    f.soldier?.aim(to);
+  }
+
+  /** The figure's placement on the field, as last posed. */
+  private figureMatrix(f: Fig): THREE.Matrix4 {
+    this.e.set(0, f.yaw, 0);
+    this.q.setFromEuler(this.e);
+    return this.fm.compose(this.p3.copy(f.at), this.q, this.s3.setScalar(1));
+  }
+
+  /**
+   * Where the shots leave from: the model's muzzle markers of the right kind on mounts that bear,
+   * or a point at the front of the figure when the model has none.
+   */
+  private muzzles(f: Fig, kinds: readonly string[], max: number): { at: Vec; dir: Vec }[] {
+    const out: { at: Vec; dir: Vec }[] = [];
+    const rig = f.rig;
+    const fm = this.figureMatrix(f).clone();
+    const list = rig.muzzles.filter((i) => kinds.includes(rig.nodes[i].kind));
+    for (const i of list) {
+      // the gun this marker rides on, and the mount under that
+      const gun = rig.nodes[i].parent;
+      const mount = gun >= 0 ? (rig.nodes[gun].anim === 'yaw' ? gun : rig.nodes[gun].parent) : -1;
+      if (mount >= 0 && rig.nodes[mount].anim === 'yaw' && !f.rs.bears[mount]) continue;
+      const dir = new V3();
+      const at = nodeWorld(rig, f.rs, fm, i, new V3(), dir);
+      out.push({ at, dir });
+      if (gun >= 0 && rig.nodes[gun].anim === 'pitch') f.rs.kick[gun] = 1;
+      if (out.length >= max) break;
+    }
+    if (out.length === 0) {
+      const fwd = f.size.z * 0.48;
+      const h = f.orbit ? 0 : f.f.key === 'infantry' ? f.size.y * 0.72 : f.f.key === 'aaGun' ? f.size.y * 0.9 : f.size.y * 0.62;
+      out.push({ at: new V3(f.at.x + Math.sin(f.yaw) * fwd, f.at.y + h, f.at.z + Math.cos(f.yaw) * fwd), dir: new V3(Math.sin(f.yaw), 0, Math.cos(f.yaw)) });
+    }
+    return out;
   }
 
   private fire(f: Fig, kind: string, beat: VolleyBeat) {
     if (this.disposed || f.state !== 'alive' || this.tw.fast) return;
     const key = f.f.key;
-    const from = this.muzzle(f);
-    const to = this.targetFor(f, kind, beat);
+    const to = f.target ?? this.targetFor(f, kind, beat);
+    f.target = null;
+    f.aimHold = 4;
+    const naval = f.domain === 'sea';
+    const kinds = kind === 'aa_fire' || key === 'aaGun' ? ['flak'] : key === 'submarine' ? ['torpedo'] : key === 'infantry' ? ['rifle'] : key === 'fighter' ? ['mg'] : naval ? ['naval'] : ['cannon'];
+    const ports = this.muzzles(f, kinds, naval ? 9 : key === 'fighter' ? 2 : 1);
+    const from = ports[0].at;
     const dist = from.distanceTo(to);
     const water = this.terrain === 'sea' || (this.terrain === 'shore' && to.x < SHORE_X);
     f.recoil = 1;
-    if (f.static) { f.static = false; }
+    f.soldier?.shoot();
+    if (kind === 'rocket_damage') this.sound.shot('rocket', from);
+    else if (!(kind === 'raid_damage' || (key === 'bomber' && kind !== 'aa_fire'))) this.sound.shot(shotKindFor(key, kind === 'aa_fire'), from, ports.length > 3 ? 1.15 : 1);
+    // every barrel that bears flashes and smokes; the shell is counted once
     const flash = (size: number) => {
-      this.glow.emit({ x: from.x, y: from.y, z: from.z, life: 0.12, size, r: 1, g: 0.82, b: 0.45, alpha: 1 });
-      this.glow.emit({ x: from.x, y: from.y, z: from.z, life: 0.22, size: size * 1.8, r: 1, g: 0.5, b: 0.15, alpha: 0.45 });
+      for (const p of ports) {
+        this.glow.emit({ x: p.at.x, y: p.at.y, z: p.at.z, life: 0.12, size, r: 1, g: 0.82, b: 0.45, alpha: 1 });
+        this.glow.emit({ x: p.at.x + p.dir.x * size * 0.3, y: p.at.y + p.dir.y * size * 0.3, z: p.at.z + p.dir.z * size * 0.3, life: 0.22, size: size * 1.8, r: 1, g: 0.5, b: 0.15, alpha: 0.45 });
+      }
     };
     const puff = (size: number, n: number) => {
-      for (let i = 0; i < n; i++) {
-        this.smoke.emit({ x: from.x, y: from.y, z: from.z, vx: Math.sin(f.yaw) * rand(1, 5) + rand(-1, 1), vy: rand(0.4, 1.8), vz: Math.cos(f.yaw) * rand(1, 5) + rand(-1, 1), life: rand(0.9, 1.8), size: size * rand(0.7, 1.3), grow: 2.4, r: 0.78, g: 0.76, b: 0.72, alpha: 0.35, drag: 0.25 });
+      for (const p of ports) {
+        const each = Math.max(2, Math.round(n / Math.sqrt(ports.length)));
+        for (let i = 0; i < each; i++) {
+          const v = rand(1, 6);
+          this.smoke.emit({ x: p.at.x, y: p.at.y, z: p.at.z, vx: p.dir.x * v + rand(-1, 1), vy: p.dir.y * v + rand(0.3, 1.6), vz: p.dir.z * v + rand(-1, 1), life: rand(0.9, 1.9), size: size * rand(0.7, 1.3), grow: 2.4, r: 0.78, g: 0.76, b: 0.72, alpha: 0.35, drag: 0.25 });
+        }
       }
     };
     const shoot = (p: Partial<Projectile> & Pick<Projectile, 'kind' | 'dur'>) =>
@@ -920,6 +996,7 @@ export class BattleStage {
       for (let i = 0; i < 3; i++) {
         this.projectiles.push({ from: f.at.clone().add(new V3(rand(-1, 1), -0.6, rand(-1, 1))), to: to.clone().add(new V3(rand(-6, 6), 0, rand(-5, 5))), t: -i * 0.14, dur: 1.15, arc: 0, kind: 'bomb', impact: kind === 'raid_damage' ? 7 : 4.2, water, trail: 0 });
       }
+      this.sound.whistle(1.2, to, true);
       return;
     }
     if (kind === 'aa_fire' || key === 'aaGun') {
@@ -948,15 +1025,16 @@ export class BattleStage {
       for (let i = 0; i < 5; i++) this.projectiles.push({ from: from.clone(), to: to.clone().add(new V3(rand(-3, 3), 0, rand(-3, 3))), t: -i * 0.06, dur: Math.max(0.2, dist / 170), arc: 0, kind: 'bullet', impact: 0.9, water, trail: 0 });
       return;
     }
-    const naval = f.domain === 'sea';
     if (naval) {
       flash(key === 'battleship' ? 7 : 4.5); puff(key === 'battleship' ? 5 : 3.2, 9);
       shoot({ kind: 'shell', dur: kind === 'bombardment' ? 1.25 : Math.min(1.1, 0.5 + dist / 150), arc: dist * (kind === 'bombardment' ? 0.2 : 0.07), impact: key === 'battleship' ? 6.5 : 4.5 });
+      if (kind === 'bombardment') this.sound.whistle(1.25, to);
       return;
     }
     if (key === 'artillery') {
       flash(3.6); puff(2.6, 7);
       shoot({ kind: 'shell', dur: 0.85, arc: dist * 0.16, impact: 4.2 });
+      this.sound.whistle(0.85, to);
       return;
     }
     flash(3); puff(2, 5); // tank and anything else that carries a gun
@@ -991,7 +1069,7 @@ export class BattleStage {
       if (gy > 0.15 && at.y - gy < 4.5) this.addScorch(at.x, gy, at.z, scale * rand(1.5, 2.3));
     }
     this.rig.shake = Math.min(1.6, this.rig.shake + scale * 0.07 * shake);
-    if (scale >= 2.6) this.sound.boom(Math.min(2, scale / 5));
+    if (scale >= 1.8) this.sound.explosion(scale, at, water);
   }
 
   private addScorch(x: number, y: number, z: number, size: number) {
@@ -1009,6 +1087,7 @@ export class BattleStage {
     if (p.impact <= 0) return;
     if (p.impact >= 2.4) { this.burst(p.to, p.impact, p.water); return; }
     // small arms: a spit of dust or spray
+    this.sound.tick(p.to);
     for (let i = 0; i < 3; i++) {
       const c = p.water ? [0.92, 0.96, 0.98] : [this.look.dust.r, this.look.dust.g, this.look.dust.b];
       this.smoke.emit({ x: p.to.x, y: Math.max(0.1, p.to.y - 0.6), z: p.to.z, vx: rand(-1, 1), vy: rand(1.5, 4), vz: rand(-1, 1), life: rand(0.5, 1), size: p.impact * rand(0.8, 1.4), grow: 2.2, r: c[0], g: c[1], b: c[2], alpha: 0.5, gravity: 4 });
@@ -1069,9 +1148,13 @@ export class BattleStage {
         if (sea) scale = 0.0001;
       }
     } else if (f.domain === 'sea') {
-      y = f.y0 + waveHeight(x, z, t, this.calm) * 0.7;
+      // a hull rides the swell under its whole length: it lifts with the water and pitches along it
+      const half = f.size.z * 0.36, sx = Math.sin(yaw), cz = Math.cos(yaw);
+      const bow = waveHeight(x + sx * half, z + cz * half, t, this.calm);
+      const stern = waveHeight(x - sx * half, z - cz * half, t, this.calm);
+      y = f.y0 + (bow + stern + waveHeight(x, z, t, this.calm) * 2) * 0.25 * 0.9;
       roll = Math.sin(t * 0.7 + f.rollSeed) * 0.035 * this.calm + wreck * 0.5;
-      pitch = Math.sin(t * 0.52 + f.rollSeed * 1.7) * 0.022 * this.calm + wreck * 0.12;
+      pitch = -Math.atan2(bow - stern, half * 2) * 0.8 + wreck * 0.12;
       y -= wreck * f.size.y * 0.42 + f.dive * (f.size.y * 1.4 + 2);
       if (f.dive >= 0.999) scale = 0.0001;
     } else if (f.domain === 'air') {
@@ -1079,14 +1162,17 @@ export class BattleStage {
       roll = 0.5; pitch = 0.2;
       if (this.terrain === 'sea') scale = 0.0001;
     } else if (wreck > 0) {
-      if (f.f.key === 'infantry') { pitch = -wreck * 1.45; y += wreck * 0.12; }
+      if (f.f.key === 'infantry') { if (!f.soldier) { pitch = -wreck * 1.45; y += wreck * 0.12; } }
       else { roll = wreck * 0.09 * (f.rollSeed > 50 ? 1 : -1); pitch = wreck * 0.05; y -= wreck * 0.12; }
     }
     if (f.recoil > 0) {
-      const back = f.recoil * f.recoil * Math.min(1.1, f.size.z * 0.1);
+      // the barrel takes the recoil on a built model; the carriage only rocks
+      const rigid = f.rig.standIn ? 1 : f.domain === 'sea' ? 0 : 0.14;
+      const back = f.recoil * f.recoil * Math.min(1.1, f.size.z * 0.1) * rigid;
       x -= Math.sin(yaw) * back;
       z -= Math.cos(yaw) * back;
-      if (f.domain !== 'air') pitch -= f.recoil * 0.035;
+      if (f.domain === 'land' && f.f.key !== 'infantry') pitch -= f.recoil * (f.rig.standIn ? 0.035 : 0.018);
+      if (f.domain === 'sea' && !f.rig.standIn) roll += f.recoil * f.recoil * 0.012;
       f.recoil = Math.max(0, f.recoil - dt * 3.2);
     }
     if (f.leave > 0) {
@@ -1124,17 +1210,74 @@ export class BattleStage {
     this.e.set(pitch, yaw, roll);
     this.q.setFromEuler(this.e);
     this.m4.compose(this.p3.set(x, y, z), this.q, this.s3.setScalar(scale));
-    f.batch.setMatrix(f.slot, this.m4);
+    // the parts: wheels and tracks turn with the ground covered, guns train, propellers spin
+    const rs = f.rs;
+    const moved = (x - f.lastX) * Math.sin(yaw) + (z - f.lastZ) * Math.cos(yaw);
+    if (Math.abs(moved) < 4) rs.travel += moved / f.rig.scale;
+    const speed = dt > 0 ? Math.abs(moved) / dt : 0;
+    f.vel = speed;
+    f.lastX = x; f.lastZ = z;
+    rs.flying = f.domain === 'air' && (f.state === 'alive' || f.fall != null);
+    rs.wreck = f.state === 'dead' ? 1 : f.dying && !f.fall ? f.death : 0;
+    if (f.aimHold > 0) {
+      f.aimHold -= dt;
+      if (f.aimHold <= 0 && f.domain !== 'sea') { rs.aim = null; rs.aimAir = null; f.soldier?.aim(null); }
+    }
+    // a fleet keeps its guns on the enemy between salvoes
+    if (f.domain === 'sea' && !rs.aim && f.state === 'alive' && this.layout) {
+      rs.aim = new V3((f.f.side === 'attacker' ? 1 : -1) * this.layout.extentX * 0.5, 4, 0);
+    }
+    // anti-aircraft mounts follow the nearest enemy aircraft whenever there is one
+    if (f.rig.hasFlak && f.state === 'alive') {
+      f.flakAcc -= dt;
+      if (f.flakAcc <= 0) {
+        f.flakAcc = 0.4;
+        let best: Fig | null = null, bd = 1e9;
+        for (const o of this.figs) {
+          if (o.f.side === f.f.side || !o.orbit || o.state !== 'alive') continue;
+          const d = o.at.distanceToSquared(f.at);
+          if (d < bd) { bd = d; best = o; }
+        }
+        if (f.aimHold <= 0 || !rs.aimAir) rs.aimAir = best ? best.at : null;
+      }
+    }
+    f.soldier?.update(dt, t, { moving: speed > 0.6 ? Math.min(1, speed / 9) : 0, death: f.death, dying: f.dying || f.state === 'dead', seed: f.rollSeed });
+    poseRig(f.rig, rs, this.m4, dt, f.batch, f.slot, scale > 0.001);
     const burnt = f.state === 'dead' || f.dying ? Math.max(f.death, f.fall ? 0.6 : 0) : f.damaged ? 0.3 : 0;
-    f.batch.setColor(f.slot, TMP_COLOR.copy(f.tint).lerp(WRECK, burnt * 0.86));
-    // settled ground units stop being recomputed until something happens to them
-    if (!f.orbit && f.domain !== 'sea' && f.recoil === 0 && !f.dying && !f.leaving && f.drop === 0 && f.enter === 0) f.static = true;
+    if (f.rig.standIn) {
+      f.batch.setTint(f.slot, TMP_COLOR.copy(f.tint).lerp(WRECK, burnt * 0.86));
+    } else {
+      f.batch.setTint(f.slot, f.tint);
+      // the fallen do not char; everything else blackens as it burns
+      const link = f.rig.nodes.find((n) => n.anim === 'track')?.link ?? 0.15;
+      f.batch.setFx(f.slot, f.f.key === 'infantry' ? burnt * 0.25 : burnt * 0.92, ((rs.travel / link) % 1 + 1) % 1);
+    }
     f.dirty = false;
   }
 
   private smokeFrom(f: Fig, dt: number) {
     if (f.f.key === 'infantry') return; // the fallen do not smoke
-    const burning = f.burn > 0 || f.damaged || (f.f.key === 'factory' && f.state === 'alive');
+    const rig = f.rig;
+    // funnels and chimneys: a working ship or factory always makes smoke
+    if (rig.smokes.length > 0 && f.state === 'alive' && f.dive < 0.5 && !f.aboard && !f.dying) {
+      const works = f.f.key === 'factory';
+      f.stackAcc += dt * (works ? 2.6 : 3.2) * Math.min(3, rig.smokes.length);
+      const fm = f.stackAcc >= 1 ? this.figureMatrix(f).clone() : null;
+      while (fm && f.stackAcc >= 1) {
+        f.stackAcc -= 1;
+        const p = nodeWorld(rig, f.rs, fm, pick(rig.smokes)!, this.fwd);
+        const shade = works ? rand(0.3, 0.45) : rand(0.16, 0.26);
+        const wide = Math.max(0.8, f.size.x * (works ? 0.07 : 0.16));
+        this.smoke.emit({ x: p.x, y: p.y, z: p.z, vx: rand(1.5, 3.2), vy: rand(1.6, 3.4), vz: rand(-0.4, 0.4), life: rand(3.2, 5.5), size: wide * rand(0.8, 1.3), grow: 3, r: shade, g: shade, b: shade * 1.04, alpha: works ? 0.34 : 0.26, drag: 0.6 });
+      }
+      if (works && f.burn <= 0 && !f.damaged) return;
+    }
+    // exhaust: a vehicle on the move coughs behind itself
+    if (rig.exhausts.length > 0 && f.state === 'alive' && f.domain === 'land' && f.vel > 0.8 && Math.random() < dt * 7) {
+      const p = nodeWorld(rig, f.rs, this.figureMatrix(f).clone(), pick(rig.exhausts)!, this.fwd);
+      this.smoke.emit({ x: p.x, y: p.y, z: p.z, vx: -Math.sin(f.yaw) * 1.5, vy: rand(0.5, 1.4), vz: -Math.cos(f.yaw) * 1.5, life: rand(0.7, 1.3), size: rand(0.5, 0.9), grow: 2.6, r: 0.14, g: 0.14, b: 0.15, alpha: 0.4, drag: 0.6 });
+    }
+    const burning = f.burn > 0 || f.damaged || (f.f.key === 'factory' && f.state === 'alive' && rig.smokes.length === 0);
     if (!burning || f.state === 'gone' || f.dive > 0.5) return;
     // more wrecks, thinner smoke each: the field stays readable and the particle budget holds
     const thin = Math.min(1, 9 / Math.max(1, this.wrecks));
@@ -1193,7 +1336,7 @@ export class BattleStage {
     if (this.water) (this.water.material as THREE.ShaderMaterial).uniforms.uTime.value = t;
 
     for (const f of this.figs) {
-      if (!f.static || f.dirty) this.pose(f, dt, t);
+      this.pose(f, dt, t);
       this.smokeFrom(f, dt);
       // vehicles on the move kick up the ground behind them
       if (f.enter > 0.04 && f.enter < 0.98 && f.domain === 'land' && f.f.key !== 'infantry' && Math.random() < dt * 9) {
@@ -1246,8 +1389,38 @@ export class BattleStage {
     this.smoke.update(dt);
     this.glow.update(dt);
     this.updateLabels();
+    this.hear(dt);
     this.composer.render(dt);
   };
+
+  private heard: Scene = { planes: 0, planeAt: null, planeApproach: 0, tanks: 0, tankAt: null, ships: 0, shipAt: null, fires: 0, fireAt: null };
+  private planeDist = 0;
+
+  /** Tell the sound where the camera is and what is running, flying, floating and burning. */
+  private hear(dt: number) {
+    const cam = this.camera;
+    const m = cam.matrixWorld.elements;
+    this.sound.listen(cam.position, m[0], m[2]);
+    const s = this.heard;
+    let planes = 0, tanks = 0, ships = 0, fires = 0;
+    let planeD = 1e9, tankD = 1e9, shipD = 1e9, fireD = 1e9;
+    s.planeAt = s.tankAt = s.shipAt = s.fireAt = null;
+    for (const f of this.figs) {
+      if (f.state === 'gone' || f.aboard) continue;
+      const d = f.at.distanceToSquared(cam.position);
+      if (f.state === 'alive' && f.orbit && !f.fall) { planes += 0.34; if (d < planeD) { planeD = d; s.planeAt = f.at; } }
+      else if (f.state === 'alive' && f.domain === 'land' && f.f.key !== 'infantry' && f.f.key !== 'factory' && f.f.key !== 'aaGun' && f.f.key !== 'artillery') {
+        tanks += f.vel > 0.5 ? 0.3 : 0.05;
+        if (d < tankD) { tankD = d; s.tankAt = f.at; }
+      } else if (f.state === 'alive' && f.domain === 'sea' && f.dive < 0.5) { ships += 0.4; if (d < shipD) { shipD = d; s.shipAt = f.at; } }
+      if (f.burn > 0.2 && f.f.key !== 'infantry' && f.dive < 0.5) { fires += 0.25 * f.burn; if (d < fireD) { fireD = d; s.fireAt = f.at; } }
+    }
+    const pd = Math.sqrt(planeD);
+    s.planeApproach = s.planeAt && dt > 0 && this.planeDist > 0 ? Math.max(-1, Math.min(1, (this.planeDist - pd) / dt / 30)) : 0;
+    this.planeDist = s.planeAt ? pd : 0;
+    s.planes = planes; s.tanks = tanks; s.ships = ships; s.fires = fires;
+    this.sound.frame(dt, s);
+  }
 
   /** Watch the frame time and shed cost (resolution, then shadows) if the GPU cannot keep up. */
   private govern(dt: number) {
@@ -1307,6 +1480,10 @@ export class BattleStage {
     (this.scorch.material as THREE.Material).dispose();
     this.scorch.dispose();
     this.blobTex.dispose();
+    this.marks.dispose();
+    this.discTex.dispose();
+    this.decalMat.dispose();
+    this.discMat.dispose();
     this.composer.dispose();
     this.sun.shadow.map?.dispose();
     this.scene.environment = null;

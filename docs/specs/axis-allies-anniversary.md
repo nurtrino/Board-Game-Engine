@@ -55,12 +55,32 @@ Menus: the buy and deploy menus show the sculpts themselves, rendered once per n
 `portraits.ts`. Deploying is a tray of pieces to pick up, not a list.
 
 The battle is the modelled battlefield again (`?battle=2d` forces the flat board, which is also the
-fallback when WebGL fails). What makes it read: models painted in their side's colour through the
-instance colour (`bake.ts`), a painted sky with a low sun, raked ground relief, built low-poly
+fallback when WebGL fails). What makes it read: models painted in their side's colour, a painted sky with a low sun, raked ground relief, built low-poly
 trees, bloom on fire, scorch marks where shells land, the attackers advancing onto the field in
 the opening, fleets drawn up in close lines, and cameras that stand behind the side that is firing
 and close on the side taking losses. The frame-time governor sheds bloom and the shadow map on a
 weak GPU; soft blob shadows take over so nothing floats.
+
+The battle's units are our own models, built from code in Blender (`tools/axis-models`, one file per
+unit on a shared `kit.py`; its README has the rules). Nothing is downloaded and nothing is skinned:
+a unit is a tree of rigid parts with pivots and a tag saying how each moves. A build bakes one
+texture atlas per unit (colour, paint mask, roughness, metal, normal, occlusion); `pack.mjs` ships
+it to `client/public/axis/sim/units/<unit>/`. The stage reads that tree (`stage/rig.ts`) and draws
+every part of every figure as one instance in a batch: turrets train on a target before they fire,
+barrels recoil, wheels turn and link tracks run with the ground covered, propellers blur, radars
+sweep, funnels and exhausts smoke. The nation's colour goes on in the shader wherever the paint
+mask is high, so rust, dust, rubber, wood and skin keep their own; markings come from one drawn
+sheet (`stage/insignia.ts`). The rifleman is the same kind of model, posed from tables of joint
+angles (`stage/soldier.ts`): ready, running, aiming standing or kneeling, firing, fallen, with one
+of three helmets by nation. A model that fails to load becomes a plain built shape.
+
+Battle sound is made in the browser (`battle/sound.ts`): every shot, burst, splash, incoming shell,
+falling aircraft and sinking ship is synthesised with its own small variation and placed by where
+it happens (pan, distance, delay), over a bed of wind or sea, engines and burning wrecks. The six
+recorded clips survive as one layer under the first shots of a volley.
+
+`/dev/units?unit=tank` is the model bench: one unit in every nation's colours, driven from the
+console through `window.__u` (aim, fire, speed, fly, wreck, soldier poses, camera).
 
 `/dev/axis` is the bench: the whole game in one tab with no room or server. `?screen=tv` shows the
 big screen, `?fight=land|big|sea` stages a battle, `?hq=1` holds full quality, and `window.__lab`

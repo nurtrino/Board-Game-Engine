@@ -7,7 +7,7 @@
     "build": "vite build",
     "test": "tsx src/saveDeletion-test.ts && npm run test:axis && npm run test:battle",
     "test:axis": "tsx src/axis/axis-air-landing-test.ts && tsx src/axis/axis-authority-test.ts && tsx src/axis/axis-capital-presentation-test.ts && tsx src/axis/axis-carrier-presentation-test.ts && tsx src/axis/axis-mobilization-test.ts && tsx src/axis/axis-movement-targets-test.ts && tsx src/axis/axis-paratrooper-presentation-test.ts && tsx src/axis/axis-special-technology-presentation-test.ts && tsx src/axis/axis-technology-presentation-test.ts && tsx src/axis/axis-transport-orders-test.ts && tsx src/axis/layout-test.ts",
-    "test:battle": "tsx src/axis/battle/timeline-test.ts && tsx src/axis/battle/logic-test.ts && tsx src/axis/battle/director-test.ts && tsx src/axis/battle/stage/decimate-test.ts && tsx src/axis/battle/stage/layout-test.ts && tsx src/axis/battle/stage/roster-test.ts && tsx src/axis/battle/stage/bake-test.ts"
+    "test:battle": "tsx src/axis/battle/timeline-test.ts && tsx src/axis/battle/logic-test.ts && tsx src/axis/battle/director-test.ts && tsx src/axis/battle/stage/layout-test.ts && tsx src/axis/battle/stage/roster-test.ts && tsx src/axis/battle/stage/rig-test.ts"
   },
   "dependencies": {
     "@bge/shared": "*",

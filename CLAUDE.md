@@ -38,8 +38,10 @@ the local folder `../Board Game Engine`. Do not bring one back unless asked.
   One `MapStage` draws the world for both screens and knows no rules; `useOrders` turns taps and drags
   into engine actions; the device is `AxisPlay`, the screen is `AxisBoard`, the battle lives in
   `client/src/axis/battle`. The screen is a spectator: nothing waits for it. See
-  `docs/specs/axis-allies-anniversary.md`. Unit models and map tiles are staged by
-  `node tools/stage-axis-units.mjs` and `node tools/stage-axis-map.mjs`.
+  `docs/specs/axis-allies-anniversary.md`. Board pieces and map tiles are staged by
+  `node tools/stage-axis-units.mjs` and `node tools/stage-axis-map.mjs`. The battle's unit models are
+  built from code in headless Blender (`tools/axis-models`, see its README) and shipped by
+  `node tools/axis-models/pack.mjs`; `/dev/units?unit=tank` shows one with its parts moving.
 
 ## Porting a game
 

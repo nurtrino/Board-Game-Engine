@@ -1,20 +1,23 @@
-// Loads the staged battle assets and caches the processed result for the life of the page.
-// The heavy lifting (bake, decimate, fit) is in bake.ts. GPU copies are released when a stage is
-// disposed; the processed data stays, so the next battle starts without downloading or decimating
-// anything again.
+// Loads the battle assets and caches the processed result for the life of the page. GPU copies are
+// released when a stage is disposed; the parsed data stays, so the next battle starts at once.
 import * as THREE from 'three';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import dracoWrapperUrl from 'three/examples/jsm/libs/draco/gltf/draco_wasm_wrapper.js?url';
 import dracoWasmUrl from 'three/examples/jsm/libs/draco/gltf/draco_decoder.wasm?url';
 import dracoJsUrl from 'three/examples/jsm/libs/draco/gltf/draco_decoder.js?url';
-import { SPECS, buildFoliage, buildUnit, type FoliageKind, type FoliageModel, type UnitModel } from './bake';
+import { buildFoliage, type FoliageKind, type FoliageModel } from './bake';
+import { buildRig, rigFromParts, type UnitRig, type UnitTextures } from './rig';
 import { standIn } from './standins';
 
-export type { FoliageKind, FoliageModel, ModelPart, UnitModel } from './bake';
+export type { FoliageKind, FoliageModel } from './bake';
 
 const BASE = '/axis/sim';
+
+/** A unit ready to draw: its part tree and its textures (none for a built stand-in). */
+export interface UnitAsset { rig: UnitRig; textures: UnitTextures | null }
 
 // ---------- loaders ----------
 
@@ -34,34 +37,58 @@ function makeLoader(): { gltf: GLTFLoader; draco: DRACOLoader } {
     });
   const gltf = new GLTFLoader();
   gltf.setDRACOLoader(draco);
+  gltf.setMeshoptDecoder(MeshoptDecoder);
   return { gltf, draco };
 }
 
-
 // ---------- the cache ----------
 
-const unitCache = new Map<string, Promise<UnitModel>>();
+const unitCache = new Map<string, Promise<UnitAsset>>();
 const foliageCache = new Map<FoliageKind, Promise<FoliageModel | null>>();
 const textureCache = new Map<string, Promise<THREE.Texture | null>>();
 let skyCache: Promise<THREE.DataTexture | null> | null = null;
 let loaders: ReturnType<typeof makeLoader> | null = null;
 
-function loadGltf(file: string): Promise<GLTF> {
+function loadGltf(url: string): Promise<GLTF> {
   loaders ??= makeLoader();
-  return loaders.gltf.loadAsync(`${BASE}/models/${file}.glb`);
+  return loaders.gltf.loadAsync(url);
 }
 
-/** A unit model by engine unit key. Never rejects: a model that fails to load becomes a built stand-in. */
-export function loadUnit(key: string): Promise<UnitModel> {
+function unitTexture(url: string, srgb: boolean): Promise<THREE.Texture> {
+  return new THREE.TextureLoader().loadAsync(url).then((t) => {
+    t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+    t.flipY = false;   // glTF texture coordinates
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.anisotropy = 8;
+    return t;
+  });
+}
+
+/** Half-size textures for screens that are short of memory. Decided once per page. */
+export function liteTextures(): boolean {
+  const nav = navigator as Navigator & { deviceMemory?: number };
+  const q = new URLSearchParams(window.location.search);
+  if (q.get('hq') === '1') return false;
+  return q.get('lite') === '1' || (nav.deviceMemory != null && nav.deviceMemory <= 4) || /Android|iPhone|iPad|SmartTV|Tizen|Web0S|CrKey|AFT/i.test(nav.userAgent);
+}
+
+/** A unit by engine key. Never rejects: a model that fails to load becomes a built stand-in. */
+export function loadUnit(key: string): Promise<UnitAsset> {
   let hit = unitCache.get(key);
   if (!hit) {
-    const spec = SPECS[key];
-    hit = spec
-      ? loadGltf(spec.file).then((gltf) => buildUnit(key, gltf, spec)).catch((error) => {
-          console.warn(`[battle] ${key} model unavailable, using a stand-in`, error);
-          return standIn(key);
-        })
-      : Promise.resolve(standIn(key));
+    const dir = `${BASE}/units/${key}`;
+    const tag = liteTextures() ? '-1k' : '';
+    hit = Promise.all([
+      loadGltf(`${dir}/model.glb`),
+      unitTexture(`${dir}/albedo${tag}.webp`, true),
+      unitTexture(`${dir}/normal${tag}.webp`, false),
+      unitTexture(`${dir}/orm${tag}.webp`, false),
+    ]).then(([gltf, map, normalMap, orm]): UnitAsset => ({ rig: buildRig(key, gltf), textures: { map, normalMap, orm } }))
+      .catch((error): UnitAsset => {
+        console.warn(`[battle] ${key} model unavailable, using a stand-in`, error);
+        const s = standIn(key);
+        return { rig: rigFromParts(key, s.parts, s.size), textures: null };
+      });
     unitCache.set(key, hit);
   }
   return hit;
@@ -70,7 +97,7 @@ export function loadUnit(key: string): Promise<UnitModel> {
 export function loadFoliage(kind: FoliageKind): Promise<FoliageModel | null> {
   let hit = foliageCache.get(kind);
   if (!hit) {
-    hit = loadGltf(kind).then((gltf) => buildFoliage(gltf, kind)).catch((error) => {
+    hit = loadGltf(`${BASE}/models/${kind}.glb`).then((gltf) => buildFoliage(gltf, kind)).catch((error) => {
       console.warn(`[battle] ${kind} unavailable`, error);
       return null;
     });
@@ -108,14 +135,18 @@ export function loadSky(): Promise<THREE.DataTexture | null> {
 }
 
 /**
- * Release the GPU copies held for a renderer that is going away. The processed data stays cached,
- * so the next battle starts without downloading or decimating anything again.
+ * Release the GPU copies held for a renderer that is going away. The parsed data stays cached,
+ * so the next battle starts without downloading anything again.
  */
 export async function releaseGpu(): Promise<void> {
   const settle = async <T,>(p: Promise<T>): Promise<T | null> => p.catch(() => null);
   for (const p of unitCache.values()) {
-    const m = await settle(p);
-    for (const part of m?.parts ?? []) { part.geometry.dispose(); part.material.map?.dispose(); part.material.dispose(); }
+    const a = await settle(p);
+    if (!a) continue;
+    for (const m of a.rig.meshes) { m.geometry.dispose(); m.material?.dispose(); }
+    a.textures?.map.dispose();
+    a.textures?.normalMap.dispose();
+    a.textures?.orm.dispose();
   }
   for (const p of foliageCache.values()) {
     const m = await settle(p);

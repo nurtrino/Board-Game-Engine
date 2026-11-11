@@ -1,139 +1,20 @@
-// Turns a loaded glTF into a handful of light, static, instanceable parts. No loaders and no bundler
-// imports live here, so this module also runs under node for the bake test.
-//
-// The source GLBs are 30k to 290k triangles with up to 135 textures apiece, and the soldier is a
-// skinned rig. Drawn as shipped, thirty units would be several million triangles. So every model is
-// baked once (world transforms and, for the soldier, a firing pose), merged per material, decimated
-// to a per-type budget (decimate.ts), oriented nose-to-+z, stood on y = 0 and scaled to its field
-// size. Only base colour maps are kept, capped in resolution.
+// Turns the bush model into light, static, instanceable leaf cards. (Units are not baked here any
+// more: they arrive ready-made from tools/axis-models and are read by rig.ts.) No loaders and no
+// bundler imports live here.
 import * as THREE from 'three';
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { decimateModel, type RawMesh } from './decimate';
-import { DIMS } from './layout';
 
 export interface ModelPart {
   geometry: THREE.BufferGeometry;
   material: THREE.MeshStandardMaterial;
 }
 
-export interface UnitModel {
-  parts: ModelPart[];
-  /** Size after fitting: x across, y up, z along the facing. */
-  size: THREE.Vector3;
-  triangles: number;
-  /** True when the real mesh could not be loaded and a built shape stands in. */
-  standIn: boolean;
-}
+interface Spec { doubleSide?: boolean; dim?: number }
 
-export interface Spec {
-  file: string;
-  budget: number;
-  /** Turn the long horizontal axis onto z before applying yaw. */
-  autoOrient: boolean;
-  yaw: number;
-  /** Fit this dimension to DIMS[key].size. */
-  fit: 'largest' | 'height';
-  doubleSide?: boolean;
-  /** Multiply the base colour, for models whose textures are too bright or too dark. */
-  dim?: number;
-  /** How far the nation's paint replaces the model's own colours (0..1). */
-  paint?: number;
-  /** Bake this animation clip (first match) at a fraction of its length. Skinned models only. */
-  pose?: { clips: string[]; at: number };
-}
-
-// Orientation values are carried over from the previous simulator, which was tuned against these files.
-export const SPECS: Record<string, Spec> = {
-  infantry: { file: 'infantry', budget: 2400, autoOrient: false, yaw: 0, fit: 'height', pose: { clips: ['fire', 'idle'], at: 0.3 } },
-  tank: { file: 'tank', budget: 6000, autoOrient: true, yaw: 0, fit: 'largest' },
-  artillery: { file: 'artillery', budget: 4500, autoOrient: true, yaw: Math.PI, fit: 'largest' },
-  fighter: { file: 'fighter', budget: 5600, autoOrient: false, yaw: 0, fit: 'largest' },
-  bomber: { file: 'bomber', budget: 6000, autoOrient: false, yaw: 0, fit: 'largest' },
-  battleship: { file: 'warship', budget: 9000, autoOrient: true, yaw: Math.PI, fit: 'largest' },
-  cruiser: { file: 'cruiser', budget: 8000, autoOrient: true, yaw: 0, fit: 'largest' },
-  destroyer: { file: 'destroyer', budget: 7000, autoOrient: true, yaw: 0, fit: 'largest' },
-  carrier: { file: 'carrier', budget: 9000, autoOrient: true, yaw: Math.PI, fit: 'largest', doubleSide: true, dim: 0.7 },
-  submarine: { file: 'submarine', budget: 3500, autoOrient: true, yaw: Math.PI, fit: 'largest', dim: 0.7, paint: 0.94 },
-};
 const FOLIAGE_FILES = ['tree1', 'tree2', 'bush'] as const;
 export type FoliageKind = (typeof FOLIAGE_FILES)[number];
 
 const TEXTURE_CAP = 512;
-
-// ---------- baking ----------
-
-interface Baked { raw: RawMesh; source: THREE.Material }
-
-function posedScene(gltf: GLTF, pose: Spec['pose']): THREE.Object3D {
-  const scene = gltf.scene;
-  if (pose) {
-    const clip = pose.clips.map((name) => gltf.animations.find((a) => a.name.toLowerCase() === name)).find(Boolean)
-      ?? gltf.animations[0];
-    if (clip) {
-      const mixer = new THREE.AnimationMixer(scene);
-      mixer.clipAction(clip).play();
-      mixer.setTime(clip.duration * pose.at);
-    }
-  }
-  scene.updateMatrixWorld(true);
-  scene.traverse((o) => {
-    const s = o as THREE.SkinnedMesh;
-    if (s.isSkinnedMesh) s.skeleton.update();
-  });
-  return scene;
-}
-
-/** Every mesh of a scene as world-space triangles, merged per material. */
-function bake(scene: THREE.Object3D): Baked[] {
-  const byMaterial = new Map<string, { positions: number[]; uvs: number[]; index: number[]; hasUv: boolean; source: THREE.Material }>();
-  const v = new THREE.Vector3();
-  const m4 = new THREE.Matrix4();
-  scene.traverse((o) => {
-    const mesh = o as THREE.Mesh;
-    if (!mesh.isMesh || !mesh.geometry?.attributes.position) return;
-    const source = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
-    if (!source || source.visible === false) return;
-    const geo = mesh.geometry;
-    const pos = geo.attributes.position;
-    const uv = geo.attributes.uv as THREE.BufferAttribute | undefined;
-    let entry = byMaterial.get(source.uuid);
-    if (!entry) {
-      entry = { positions: [], uvs: [], index: [], hasUv: true, source };
-      byMaterial.set(source.uuid, entry);
-    }
-    if (!uv) entry.hasUv = false;
-    const instanced = (mesh as THREE.InstancedMesh).isInstancedMesh ? (mesh as THREE.InstancedMesh) : null;
-    const copies = instanced ? instanced.count : 1;
-    for (let c = 0; c < copies; c++) {
-      if (instanced) {
-        instanced.getMatrixAt(c, m4);
-        m4.premultiply(mesh.matrixWorld);
-      } else m4.copy(mesh.matrixWorld);
-      const base = entry.positions.length / 3;
-      for (let i = 0; i < pos.count; i++) {
-        // getVertexPosition applies skinning and morph targets, and denormalises quantised attributes
-        mesh.getVertexPosition(i, v).applyMatrix4(m4);
-        entry.positions.push(v.x, v.y, v.z);
-        if (uv) entry.uvs.push(uv.getX(i), uv.getY(i));
-        else entry.uvs.push(0, 0);
-      }
-      if (geo.index) {
-        const idx = geo.index;
-        for (let i = 0; i < idx.count; i++) entry.index.push(base + idx.getX(i));
-      } else {
-        for (let i = 0; i < pos.count; i++) entry.index.push(base + i);
-      }
-    }
-  });
-  return [...byMaterial.values()].map((e) => ({
-    raw: {
-      positions: Float32Array.from(e.positions),
-      uvs: e.hasUv ? Float32Array.from(e.uvs) : null,
-      index: Uint32Array.from(e.index),
-    },
-    source: e.source,
-  }));
-}
 
 function capTexture(tex: THREE.Texture | null, cache: Map<string, THREE.Texture>): THREE.Texture | null {
   if (!tex?.image) return tex ?? null;
@@ -167,7 +48,7 @@ function capTexture(tex: THREE.Texture | null, cache: Map<string, THREE.Texture>
   return out;
 }
 
-function lightMaterial(source: THREE.Material, spec: Pick<Spec, 'doubleSide' | 'dim' | 'paint'>, textures: Map<string, THREE.Texture>): THREE.MeshStandardMaterial {
+function lightMaterial(source: THREE.Material, spec: Spec, textures: Map<string, THREE.Texture>): THREE.MeshStandardMaterial {
   const src = source as THREE.MeshStandardMaterial;
   const cutout = (src.alphaTest ?? 0) > 0;
   const glass = src.transparent === true && !cutout && (src.opacity ?? 1) < 0.95;
@@ -182,22 +63,12 @@ function lightMaterial(source: THREE.Material, spec: Pick<Spec, 'doubleSide' | '
     alphaTest: cutout ? Math.max(0.35, src.alphaTest) : 0,
     side: spec.doubleSide || cutout || src.side === THREE.DoubleSide ? THREE.DoubleSide : THREE.FrontSide,
   });
-  const paint = spec.paint ?? 0.6;
-  // The instance colour is the nation's paint. It takes over most of the texture's own hue and
-  // keeps its light and dark, so every model wears its side's colour instead of one shared livery.
   material.onBeforeCompile = (shader) => {
-    // A decimated mesh can carry a zero normal. Normalised, that is not a number, and one such
-    // pixel spreads through the bloom as a black square: give those fragments a normal that works.
+    // A zero normal, normalised, is not a number, and one such pixel spreads through the bloom.
     shader.fragmentShader = shader.fragmentShader.replace('#include <normal_fragment_begin>', /* glsl */`#include <normal_fragment_begin>
       if (!(dot(normal, normal) > 0.25)) normal = vec3(0.0, 0.0, 1.0);`);
-    shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', /* glsl */`
-      #if defined( USE_COLOR ) || defined( USE_INSTANCING_COLOR ) || defined( USE_BATCHING_COLOR )
-        float paintLum = dot(diffuseColor.rgb, vec3(0.3, 0.55, 0.15));
-        vec3 painted = vColor * (0.3 + paintLum * 1.75);
-        diffuseColor.rgb = mix(diffuseColor.rgb, painted, ${paint.toFixed(2)});
-      #endif`);
   };
-  material.customProgramCacheKey = () => `axb-paint-${paint.toFixed(2)}`;
+  material.customProgramCacheKey = () => 'axb-foliage';
   return material;
 }
 
@@ -220,56 +91,6 @@ function releaseSource(gltf: GLTF, keep: Set<THREE.Texture>) {
       mat.dispose();
     }
   });
-}
-
-function fitMatrix(bounds: THREE.Box3, spec: Pick<Spec, 'autoOrient' | 'yaw' | 'fit'>, target: number): THREE.Matrix4 {
-  const size = bounds.getSize(new THREE.Vector3());
-  let turn = spec.yaw;
-  if (spec.autoOrient && size.x > size.z) turn += Math.PI / 2;
-  const rot = new THREE.Matrix4().makeRotationY(turn);
-  const turned = bounds.clone().applyMatrix4(rot);
-  const tSize = turned.getSize(new THREE.Vector3());
-  const centre = turned.getCenter(new THREE.Vector3());
-  const fit = spec.fit === 'height' ? tSize.y : Math.max(tSize.x, tSize.y, tSize.z);
-  const k = target / (fit || 1);
-  return new THREE.Matrix4()
-    .makeScale(k, k, k)
-    .multiply(new THREE.Matrix4().makeTranslation(-centre.x, -turned.min.y, -centre.z))
-    .multiply(rot);
-}
-
-export function buildUnit(key: string, gltf: GLTF, spec: Spec): UnitModel {
-  const baked = bake(posedScene(gltf, spec.pose)).filter((b) => b.raw.index!.length >= 3);
-  if (baked.length === 0) throw new Error(`${key}: no geometry`);
-  const { parts: light } = decimateModel(baked.map((b) => b.raw), spec.budget);
-  const bounds = new THREE.Box3();
-  const geometries: THREE.BufferGeometry[] = [];
-  light.forEach((part) => {
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.BufferAttribute(part.positions, 3));
-    g.setAttribute('normal', new THREE.BufferAttribute(part.normals, 3));
-    if (part.uvs) g.setAttribute('uv', new THREE.BufferAttribute(part.uvs, 2));
-    g.setIndex(new THREE.BufferAttribute(part.index, 1));
-    g.computeBoundingBox();
-    if (part.triangles > 0) bounds.union(g.boundingBox!);
-    geometries.push(g);
-  });
-  const matrix = fitMatrix(bounds, spec, DIMS[key]?.size ?? 6);
-  const textures = new Map<string, THREE.Texture>();
-  const parts: ModelPart[] = [];
-  let triangles = 0;
-  geometries.forEach((g, i) => {
-    const tris = light[i].triangles;
-    if (tris < 4) { g.dispose(); return; }
-    g.applyMatrix4(matrix);
-    g.computeBoundingBox();
-    g.computeBoundingSphere();
-    triangles += tris;
-    parts.push({ geometry: g, material: lightMaterial(baked[i].source, spec, textures) });
-  });
-  releaseSource(gltf, new Set(textures.values()));
-  const size = bounds.clone().applyMatrix4(matrix).getSize(new THREE.Vector3());
-  return { parts, size, triangles, standIn: false };
 }
 
 export interface FoliageModel { parts: ModelPart[]; triangles: number }

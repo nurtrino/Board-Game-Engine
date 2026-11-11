@@ -4,7 +4,8 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { DIMS } from './layout';
-import type { ModelPart, UnitModel } from './bake';
+export interface ModelPart { geometry: THREE.BufferGeometry; material: THREE.MeshStandardMaterial }
+export interface UnitModel { parts: ModelPart[]; size: THREE.Vector3; triangles: number; standIn: boolean }
 import { unitDomain } from '../model';
 
 type Tone = 'hull' | 'dark' | 'deck' | 'light';

@@ -167,6 +167,9 @@ export const SWELL: Swell[] = [
   { dir: [0.6, -0.8], amp: 0.14, len: 11, speed: 1.5 },
 ];
 
+/** How high the open sea runs (1 = the full swell). The ships are small against it, so it is kept moderate. */
+export const SEA_STATE = 0.62;
+
 /** Height of the sea surface. The water shader computes exactly the same sum. */
 export function waveHeight(x: number, z: number, t: number, calm = 1): number {
   let h = 0;
@@ -180,7 +183,7 @@ export function waveHeight(x: number, z: number, t: number, calm = 1): number {
 export function buildWater(terrain: Terrain, look: Look, normals: THREE.Texture | null, fogColor: THREE.Color): THREE.Mesh {
   const skyTint = look.horizon.clone().lerp(look.zenith, 0.45);
   const g = warpedPlane(3200, 200, 1.75);
-  const calm = terrain === 'sea' ? 1 : 0.38;
+  const calm = terrain === 'sea' ? SEA_STATE : 0.38;
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uTime: { value: 0 },
@@ -459,7 +462,8 @@ function star(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, 
   ctx.fill();
 }
 
-function flagTexture(power: string): THREE.CanvasTexture {
+/** A nation's flag, drawn. */
+export function flagCanvas(power: string): HTMLCanvasElement {
   const c = document.createElement('canvas');
   c.width = 320; c.height = 200;
   const ctx = c.getContext('2d')!;
@@ -525,7 +529,11 @@ function flagTexture(power: string): THREE.CanvasTexture {
   shade.addColorStop(1, 'rgba(0,0,0,0.22)');
   ctx.fillStyle = shade;
   ctx.fillRect(0, 0, W, H);
-  const t = new THREE.CanvasTexture(c);
+  return c;
+}
+
+function flagTexture(power: string): THREE.CanvasTexture {
+  const t = new THREE.CanvasTexture(flagCanvas(power));
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 4;
   return t;
